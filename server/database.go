@@ -3,9 +3,19 @@ package server
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/jackc/pgx/v5"
 )
+
+var dbSchema = []string{`
+CREATE TABLE config (
+	name  text PRIMARY KEY,
+	value text NOT NULL
+);
+INSERT INTO config VALUES ('version', 1);
+`,
+}
 
 type database struct {
 	conn *pgx.Conn
@@ -19,8 +29,57 @@ func connectDatabase(address string, username string, password string, schema st
 		return nil, fmt.Errorf("failed to connect to database: %s", err)
 	}
 
-	d := &database{
+	db := &database{
 		conn: conn,
 	}
-	return d, nil
+	err = db.initialize(schema)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize database: %s", err)
+	}
+	err = db.upgrade()
+	if err != nil {
+		return nil, fmt.Errorf("failed to upgrade database: %s", err)
+	}
+	return db, nil
+}
+
+func (db *database) initialize(schema string) error {
+	_, err := db.conn.Exec(context.Background(), "SELECT 1=1")
+	if err != nil {
+		return fmt.Errorf("failed to test database connection: %s", err)
+	}
+
+	var tablecount int
+	err = db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = $1 AND table_name = 'config'", schema).Scan(&tablecount)
+	if err != nil {
+		return fmt.Errorf("failed to select whether config table exists: %s", err)
+	} else if tablecount > 0 {
+		return nil
+	}
+
+	_, err = db.conn.Exec(context.Background(), dbSchema[0])
+	if err != nil {
+		return fmt.Errorf("failed to create database: %s", err)
+	}
+	return nil
+}
+
+func (db *database) upgrade() error {
+	var versionString string
+	err := db.conn.QueryRow(context.Background(), "SELECT value FROM config WHERE name = 'version'").Scan(&versionString)
+	if err != nil {
+		return fmt.Errorf("failed to select database version: %s", err)
+	}
+	version, err := strconv.Atoi(versionString)
+	if err != nil {
+		return fmt.Errorf("failed to parse database version: %s", err)
+	}
+	maxVersion := len(dbSchema)
+	for v := version + 1; v <= maxVersion; v++ {
+		_, err = db.conn.Exec(context.Background(), dbSchema[v-1])
+		if err != nil {
+			return fmt.Errorf("failed to upgrade database to version %d: %s", v, err)
+		}
+	}
+	return nil
 }
