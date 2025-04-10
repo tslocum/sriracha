@@ -8,15 +8,6 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-var dbSchema = []string{`
-CREATE TABLE config (
-	name  text PRIMARY KEY,
-	value text NOT NULL
-);
-INSERT INTO config VALUES ('version', 1);
-`,
-}
-
 type database struct {
 	conn *pgx.Conn
 }

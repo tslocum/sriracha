@@ -12,8 +12,8 @@ sriracha will eventually support loading plugins via shared library files (`.so`
 This application is licensed under [LGPLv3](https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE).
 If you modify the source code of this application, you must share the full
 source code of your changes publicly for free. You may, however, link with this
-application using proprietary shared libraries, so long as the base application
+application with proprietary shared libraries, so long as the base application
 (sriracha) remains unmodified. If your only changes are to create proprietary
 shared libraries, and these librarires would work with other installations of
-sriracha without any modification to sriracha's source code, then you do not
-need to release the source code of your proprietary shared libraries.
+sriracha because you did not make any modifications to sriracha's source code,
+then you do not need to release the source code of your shared libraries.
