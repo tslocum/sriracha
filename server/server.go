@@ -19,13 +19,14 @@ type ServerConfig struct {
 	Address  string
 	Username string
 	Password string
-	Database string
+	Schema   string
 }
 
 type Server struct {
 	Boards []*sriracha.Board
 
 	config ServerConfig
+	db     *database
 }
 
 func New() *Server {
@@ -59,8 +60,8 @@ func (s *Server) parseConfig(configFile string) error {
 	if config.Password == "" {
 		return fmt.Errorf("password (lowercase!) must be set in %s to the database password", configFile)
 	}
-	if config.Database == "" {
-		return fmt.Errorf("database (lowercase!) must be set in %s to the database schema name", configFile)
+	if config.Schema == "" {
+		return fmt.Errorf("schema (lowercase!) must be set in %s to the database schema name", configFile)
 	}
 	s.config = config
 	return nil
@@ -94,6 +95,11 @@ func (s *Server) Run() error {
 	}
 
 	err := s.parseConfig(configFile)
+	if err != nil {
+		return err
+	}
+
+	s.db, err = connectDatabase(s.config.Address, s.config.Username, s.config.Password, s.config.Schema)
 	if err != nil {
 		return err
 	}
