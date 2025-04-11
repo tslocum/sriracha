@@ -1,0 +1,4 @@
+{{define "manage_error"}}{{template "manage_begin" .}}
+<div class="reply" style="padding: 5px;text-align: center;">Error: {{.Error}}</div><br>
+<div style="text-align: center;">- <a href="javascript:history.go(-1)">Click here to go back</a> -</div>
+{{template "manage_end" .}}{{end}}

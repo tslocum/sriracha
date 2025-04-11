@@ -140,7 +140,9 @@ func (db *Database) accountByUsernamePassword(username string, password string) 
 	a := &Account{}
 	var passwordHash string
 	err := db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE username = $1 AND role != $2", username, RoleDisabled).Scan(&a.ID, &a.Username, &passwordHash, &a.Role, &a.LastActive)
-	if err != nil {
+	if err == pgx.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
 		return nil, fmt.Errorf("failed to select account: %s", err)
 	} else if a.ID == 0 || !db.compareHash(password, passwordHash) {
 		return nil, nil
@@ -160,7 +162,10 @@ func (db *Database) GetString(key string) (string, error) {
 	key = db.configKey(key)
 	var value string
 	err := db.conn.QueryRow(context.Background(), "SELECT value FROM config WHERE name = $1", key).Scan(&value)
-	if err != nil {
+	if err == pgx.ErrNoRows {
+		// TODO use default value
+		return "", nil
+	} else if err != nil {
 		return "", fmt.Errorf("failed to get string %s: %s", key, err)
 	}
 	return value, nil

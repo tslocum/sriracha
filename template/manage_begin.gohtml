@@ -13,15 +13,19 @@
 		<link rel="stylesheet" type="text/css" href="/css/futaba.css" title="Futaba" id="mainStylesheet">
 		<link rel="alternate stylesheet" type="text/css" href="/css/burichan.css" title="Burichan">
     </head>
-    {{if eq .Account nil}}
     <body>
 		<div class="adminbar">
+			{{if ne .Account nil}}
+			[<a href="/imgboard" style="text-decoration: underline;">Status</a>] &middot;
+			[<a href="/imgboard" style="text-decoration: underline;">Change Password</a>]
+			[<a href="/imgboard" style="text-decoration: underline;">Log Out</a>] &middot;
+			{{end}}
 			[<a href="/imgboard" style="text-decoration: underline;">Return</a>]
 		</div>
 		<div class="logo">Sriracha</div>
 		<hr width="90%">
 		<div class="replymode">Manage mode</div>
-    {{else}}
-    logged in
-    {{end}}
+		{{if ne .Info ""}}
+		<div class="manageinfo">{{.Info}}</div>
+		{{end}}
 {{end}}

@@ -78,8 +78,10 @@ func (s *Server) parseConfig(configFile string) error {
 func (s *Server) buildData(r *http.Request) *templateData {
 	var account *Account
 	var sessionKey string
+	var failedLogin bool
 	username := r.FormValue("username")
 	if len(username) != 0 {
+		failedLogin = true
 		password := r.FormValue("password")
 		if len(password) != 0 {
 			var err error
@@ -92,6 +94,11 @@ func (s *Server) buildData(r *http.Request) *templateData {
 					Account: account,
 				}
 			}
+		}
+	}
+	if failedLogin {
+		return &templateData{
+			Error: "Invalid username or password.",
 		}
 	}
 	cookies := r.CookiesNamed("sriracha_session")
@@ -114,11 +121,16 @@ func (s *Server) servePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) serveManage(w http.ResponseWriter, r *http.Request) {
+	var page string
 	data := s.buildData(r)
-
-	page := "manage_login"
-	if data.Account != nil {
-		page = "manage_index"
+	if len(data.Error) != 0 {
+		page = "manage_error"
+	} else {
+		if data.Account != nil {
+			page = "manage_index"
+		} else {
+			page = "manage_login"
+		}
 	}
 
 	w.Header().Set("Content-Type", "text/html")
