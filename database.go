@@ -4,12 +4,14 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/jackc/pgx/v5"
 )
 
 type Database struct {
-	conn *pgx.Conn
+	conn   *pgx.Conn
+	plugin string
 }
 
 func connectDatabase(address string, username string, password string, schema string) (*Database, error) {
@@ -73,4 +75,30 @@ func (db *Database) upgrade() error {
 		}
 	}
 	return nil
+}
+
+func (db *Database) configKey(key string) string {
+	key = strings.ToLower(key)
+	if len(db.plugin) != 0 {
+		return db.plugin + "." + key
+	}
+	return key
+}
+
+func (db *Database) GetString(key string) (string, error) {
+	key = db.configKey(key)
+	var value string
+	err := db.conn.QueryRow(context.Background(), "SELECT value FROM config WHERE name = $1", key).Scan(&value)
+	if err != nil {
+		return "", fmt.Errorf("failed to get string %s: %s", key, err)
+	}
+	return value, nil
+}
+
+func (db *Database) GetMultiString(key string) ([]string, error) {
+	value, err := db.GetString(key)
+	if err != nil {
+		return nil, err
+	}
+	return strings.Split(value, "|"), nil
 }

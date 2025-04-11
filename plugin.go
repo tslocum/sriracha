@@ -9,8 +9,30 @@ import (
 
 var srirachaServer *Server
 
+type PluginConfigType int
+
+const (
+	TypeString  PluginConfigType = 0
+	TypeInteger PluginConfigType = 1
+	TypeFloat   PluginConfigType = 2
+	TypeEnum    PluginConfigType = 3
+)
+
+type PluginConfig struct {
+	Type        PluginConfigType
+	Name        string
+	Default     string
+	Description string
+	Multiple    bool
+}
+
 type Plugin interface {
 	About() string
+}
+
+type PluginWithConfig interface {
+	Plugin
+	Config() []*PluginConfig
 }
 
 type PluginWithPost interface {
@@ -30,6 +52,10 @@ func RegisterPlugin(plugin interface{}) {
 
 	var events []string
 
+	pConfig, ok := plugin.(PluginWithConfig)
+	if ok {
+		log.Println(pConfig.Config())
+	}
 	_, ok = plugin.(PluginWithPost)
 	if ok {
 		events = append(events, "post")
