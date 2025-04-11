@@ -4,6 +4,8 @@
 
 This application is in pre-alpha development. Here be dragons.
 
+Only Linux, FreeBSD and macOS are supported.
+
 sriracha will eventually serve as a replacement for imageboards running [TinyIB](https://codeberg.org/tslocum/tinyib).
 
 ## Plugins

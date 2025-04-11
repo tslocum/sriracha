@@ -1,32 +1,32 @@
 {{define "manage_board"}}{{template "manage_begin" .}}
 <form method="post">
     <fieldset>
-    <legend>Add a board</legend>
+    <legend>{{if eq .Manage.Board nil}}Add a board{{else}}Edit /{{.Manage.Board.Dir}}/ {{.Manage.Board.Name}}{{end}}</legend>
     <table border="0">
         <tr>
-            <td><label for="dir">Directory</label></td>
-            <td><input type="text" name="dir"></td>
+            <td class="postblock"><label for="dir">Directory</label></td>
+            <td><input type="text" name="dir" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Dir}}{{end}}"></td>
             <td>The directory where the board files will be located.</td>
         </tr>
         <tr>
-            <td><label for="name">Name</label></td>
-            <td><input type="text" name="name"></td>
+            <td class="postblock"><label for="name">Name</label></td>
+            <td><input type="text" name="name" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Name}}{{end}}"></td>
             <td>The name of the board, displayed in page title and header.</td>
         </tr>
         <tr>
-            <td><label for="description">Description</label></td>
-            <td><input type="text" name="description"></td>
+            <td class="postblock"><label for="description">Description</label></td>
+            <td><input type="text" name="description" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Description}}{{end}}"></td>
             <td>The HTML page description, which will be used by search engines.</td>
         </tr><tr>
-            <td><label for="type">Type</label></td>
-            <td><select name="type">
-                <option value="0">Imageboard</option>
-                <option value="1">Forum</option>
+            <td class="postblock"><label for="type">Type</label></td>
+            <td valign="top"><select name="type" style="width: 100%;">
+                <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Type 0)}} selected{{end}}>Imageboard</option>
+                <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Type 1)}} selected{{end}}>Forum</option>
             </select></td>
             <td>Imageboards show threads and recent replies on index pages,<br>while forums only show thread information on index pages.</td>
         </tr><tr>
             <td>&nbsp;</td>
-            <td align="right"><input type="submit" value="Add" class="managebutton"></td>
+            <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if eq .Manage.Board nil}}Add{{else}}Edit{{end}}"></td>
             <td>&nbsp;</td>
         </tr>
     </table>
@@ -35,6 +35,7 @@
 {{if ne (len .Manage.Boards) 0}}
 <br><table border="1">
     <tr>
+        <th>Dir</th>
         <th>Name</th>
         <th>Description</th>
         <th>Type</th>
@@ -42,7 +43,8 @@
     </tr>
     {{range $i, $board := .Manage.Boards}}
     <tr>
-        <td>/{{$board.Dir}}/ - {{$board.Name}}</td>
+        <td>/{{$board.Dir}}/</td>
+        <td>{{$board.Name}}</td>
         <td>{{$board.Description}}</td>
         <td>{{if eq $board.Type 0}}Imageboard{{else}}Forum{{end}}</td>
         <td><a href="/imgboard/board/{{$board.ID}}">edit</a></td>

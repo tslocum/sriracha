@@ -11,6 +11,7 @@ import (
 	"path"
 	"path/filepath"
 	"plugin"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -20,6 +21,8 @@ import (
 )
 
 const manageTemplate = "manage"
+
+var alphaNumericAndSymbols = regexp.MustCompile(`^[A-Za-z_-]+$`)
 
 type Server struct {
 	Boards []*Board
@@ -147,45 +150,111 @@ func (s *Server) serveManage(w http.ResponseWriter, r *http.Request) {
 		page = "manage_error"
 	} else {
 		if data.Account != nil {
-			if strings.HasPrefix(r.URL.Path, "/imgboard/board/") {
+			if strings.HasPrefix(r.URL.Path, "/imgboard/board") {
 				page = "manage_board"
 
 				boardID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/board/"))
 				if err == nil && boardID > 0 {
+					data.Manage.Board, err = s.db.boardByID(boardID)
+					if err != nil {
+						log.Fatal(err)
+					}
 
-				} else {
-					if r.Method == http.MethodPost {
-						dir := strings.TrimSpace(r.FormValue("dir"))
-						name := strings.TrimSpace(r.FormValue("name"))
-						description := strings.TrimSpace(r.FormValue("description"))
+					if data.Manage.Board != nil && r.Method == http.MethodPost {
+						oldDir := data.Manage.Board.Dir
+						data.Manage.Board.Dir = strings.TrimSpace(r.FormValue("dir"))
+						data.Manage.Board.Name = strings.TrimSpace(r.FormValue("name"))
+						data.Manage.Board.Description = strings.TrimSpace(r.FormValue("description"))
 						typeString := r.FormValue("type")
-						var boardType = TypeImageboard
 						if typeString == "1" {
-							boardType = TypeForum
+							data.Manage.Board.Type = TypeForum
+						} else {
+							data.Manage.Board.Type = TypeImageboard
 						}
-						if dir == "" || name == "" {
+						err := data.Manage.Board.validate()
+						if err != nil {
 							page = "manage_error"
-							data.Error = "Board directory and name must be specified."
+							data.Error = err.Error()
 							return
 						}
 
-						err = os.Mkdir(filepath.Join(s.config.Root, dir), 0755)
+						if data.Manage.Board.Dir != oldDir {
+							_, err := os.Stat(filepath.Join(s.config.Root, data.Manage.Board.Dir))
+							if err != nil {
+								if !os.IsNotExist(err) {
+									log.Fatal(err)
+								}
+							} else {
+								page = "manage_error"
+								data.Error = "New directory already exists"
+								return
+							}
+						}
+
+						err = s.db.updateBoard(data.Manage.Board)
+						if err != nil {
+							page = "manage_error"
+							data.Error = err.Error()
+							return
+						}
+
+						if data.Manage.Board.Dir != oldDir {
+							err := os.Rename(filepath.Join(s.config.Root, oldDir), filepath.Join(s.config.Root, data.Manage.Board.Dir))
+							if err != nil {
+								page = "manage_error"
+								data.Error = fmt.Sprintf("Failed to rename board directory: %s", err)
+								return
+							}
+						}
+
+						http.Redirect(w, r, "/imgboard/board/", http.StatusFound)
+						return
+					}
+				} else {
+					if r.Method == http.MethodPost {
+						b := &Board{
+							Dir:         strings.TrimSpace(r.FormValue("dir")),
+							Name:        strings.TrimSpace(r.FormValue("name")),
+							Description: strings.TrimSpace(r.FormValue("description")),
+							Type:        TypeImageboard,
+						}
+						typeString := r.FormValue("type")
+						if typeString == "1" {
+							b.Type = TypeForum
+						}
+
+						err := data.Manage.Board.validate()
+						if err != nil {
+							page = "manage_error"
+							data.Error = err.Error()
+							return
+						}
+
+						err = os.Mkdir(filepath.Join(s.config.Root, b.Dir), 0755)
 						if err != nil {
 							page = "manage_error"
 							if os.IsExist(err) {
-								data.Error = fmt.Sprintf("Board directory %s already exists.", dir)
+								data.Error = fmt.Sprintf("Board directory %s already exists.", b.Dir)
 							} else {
-								data.Error = fmt.Sprintf("Failed to create board directory %s: %s", dir, err)
+								data.Error = fmt.Sprintf("Failed to create board directory %s: %s", b.Dir, err)
 							}
 							return
 						}
-						_ = boardType
-						_ = description
 
-						// insert board row
-						// write index
+						err = s.db.addBoard(b)
+						if err != nil {
+							page = "manage_error"
+							data.Error = err.Error()
+							return
+						}
+
+						http.Redirect(w, r, "/imgboard/board/", http.StatusFound)
+						return
 					}
-					data.Manage.Boards = []*Board{{ID: 1, Dir: "t", Name: "Test", Description: "Hello, world!"}}
+					data.Manage.Boards, err = s.db.allBoards()
+					if err != nil {
+						log.Fatal(err)
+					}
 				}
 			} else {
 				page = "manage_index"
