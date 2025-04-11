@@ -1,0 +1,30 @@
+{{define "manage_board"}}{{template "manage_begin" .}}
+<form method="post">
+    <fieldset>
+    <legend>Add a board</legend>
+    <table border="0">
+        <tr>
+            <td><label for="dir">Directory</label></td>
+            <td><input type="text" name="dir"></td>
+            <td>The directory where the board files will be located.</td>
+        </tr>
+        <tr>
+            <td><label for="description">Description</label></td>
+            <td><input type="text" name="description"></td>
+            <td>The HTML page description, which will be used by search engines.</td>
+        </tr><tr>
+            <td><label for="type">Type</label></td>
+            <td><select name="type">
+                <option value="0">Imageboard</option>
+                <option value="1">Forum</option>
+            </select></td>
+            <td>Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages.</td>
+        </tr><tr>
+            <td>&nbsp;</td>
+            <td align="right"><input type="submit" value="Add" class="managebutton"></td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+    </fieldset>
+</form>
+{{template "manage_end" .}}{{end}}

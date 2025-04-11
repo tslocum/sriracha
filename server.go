@@ -13,6 +13,7 @@ import (
 	"plugin"
 	"strings"
 
+	"github.com/fsnotify/fsnotify"
 	"gopkg.in/yaml.v3"
 )
 
@@ -140,7 +141,11 @@ func (s *Server) serveManage(w http.ResponseWriter, r *http.Request) {
 		page = "manage_error"
 	} else {
 		if data.Account != nil {
-			page = "manage_index"
+			if r.URL.Path == "/imgboard/board" {
+				page = "manage_board"
+			} else {
+				page = "manage_index"
+			}
 		} else {
 			page = "manage_login"
 		}
@@ -175,6 +180,7 @@ func (s *Server) listen() error {
 
 	mux := http.NewServeMux()
 	mux.Handle("/css/", http.FileServerFS(subFS))
+	mux.HandleFunc("/imgboard/board", s.serve)
 	mux.HandleFunc("/imgboard/logout", s.serve)
 	mux.HandleFunc("/imgboard", s.serve)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -189,7 +195,31 @@ func (s *Server) listen() error {
 	return http.ListenAndServe(s.config.Serve, mux)
 }
 
-func (s *Server) parseTemplates() error {
+func (s *Server) parseTemplates(dir string) error {
+	if dir != "" {
+		s.tpl = template.New("sriracha")
+		entries, err := os.ReadDir("template")
+		if err != nil {
+			return err
+		}
+		for _, f := range entries {
+			if !strings.HasSuffix(f.Name(), ".gohtml") {
+				continue
+			}
+
+			buf, err := os.ReadFile(filepath.Join("template", f.Name()))
+			if err != nil {
+				return err
+			}
+
+			_, err = s.tpl.New(f.Name()).Parse(string(buf))
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+
 	s.tpl = template.New("sriracha")
 	entries, err := templateFS.ReadDir("template")
 	if err != nil {
@@ -220,7 +250,9 @@ func (s *Server) Run() error {
 		fmt.Fprintf(os.Stderr, "\nsriracha imageboard and forum\n  https://codeberg.org/tslocum/sriracha\nGNU LESSER GENERAL PUBLIC LICENSE\n  https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE\n")
 	}
 	var configFile string
+	var devMode bool
 	flag.StringVar(&configFile, "config", "", "path to configuration file (default: ~/.config/sriracha/config.yml)")
+	flag.BoolVar(&devMode, "dev", false, "run in development mode (monitor template files and apply changes)")
 	flag.Parse()
 
 	if configFile == "" {
@@ -228,6 +260,59 @@ func (s *Server) Run() error {
 		if err == nil {
 			configFile = path.Join(homeDir, ".config", "sriracha", "config.yml")
 		}
+	}
+
+	if devMode {
+		watcher, err := fsnotify.NewWatcher()
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer watcher.Close()
+
+		go func() {
+			for {
+				select {
+				case event, ok := <-watcher.Events:
+					if !ok {
+						return
+					}
+					if event.Has(fsnotify.Write) {
+						err := s.parseTemplates(".")
+						if err != nil {
+							log.Printf("error: failed to parse templates: %s", err)
+						}
+					}
+				case err, ok := <-watcher.Errors:
+					if !ok {
+						return
+					}
+					log.Printf("fsnotify error: %s", err)
+				}
+			}
+		}()
+
+		var monitorChanges func(dir string)
+		monitorChanges = func(dir string) {
+			entries, err := os.ReadDir(dir)
+			if err != nil {
+				log.Fatal(err)
+			}
+			for _, entry := range entries {
+				if entry.IsDir() {
+					monitorChanges(path.Join(dir, entry.Name()))
+					continue
+				}
+				// TODO handle reloading CSS
+				if strings.HasSuffix(entry.Name(), ".gohtml") {
+					err = watcher.Add(path.Join("template", entry.Name()))
+					if err != nil {
+						log.Fatal(err)
+					}
+				}
+			}
+		}
+		monitorChanges("template")
+		fmt.Println("Running in development mode. Template files are monitored for changes.")
 	}
 
 	err := s.parseConfig(configFile)
@@ -270,7 +355,7 @@ func (s *Server) Run() error {
 		return err
 	}
 
-	err = s.parseTemplates()
+	err = s.parseTemplates("")
 	if err != nil {
 		return fmt.Errorf("failed to parse templates: %s", err)
 	}
