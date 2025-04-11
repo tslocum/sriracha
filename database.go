@@ -3,12 +3,23 @@ package sriracha
 import (
 	"context"
 	"fmt"
+	"log"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/alexedwards/argon2id"
 	"github.com/jackc/pgx/v5"
 )
+
+var argon2idParameters = &argon2id.Params{
+	Memory:      128 * 1024,
+	Iterations:  2,
+	Parallelism: 2,
+	SaltLength:  16,
+	KeyLength:   64,
+}
 
 type Database struct {
 	conn   *pgx.Conn
@@ -82,6 +93,24 @@ func (db *Database) upgrade() error {
 	return nil
 }
 
+func (db *Database) hashData(data string) string {
+	hash, err := argon2id.CreateHash(data+srirachaServer.config.Salt, argon2idParameters)
+	debug.FreeOSMemory() // Hashing is memory intensive. Return memory to the OS.
+	if err != nil {
+		log.Fatal(err)
+	}
+	return hash
+}
+
+func (db *Database) compareHash(data string, hash string) bool {
+	match, err := argon2id.ComparePasswordAndHash(data+srirachaServer.config.Salt, hash)
+	debug.FreeOSMemory() // Hashing is memory intensive. Return memory to the OS.
+	if err != nil {
+		log.Fatal(err)
+	}
+	return match
+}
+
 func (db *Database) createSuperAdminAccount() error {
 	var numAdmins int
 	err := db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM account WHERE role = $1", RoleSuperAdmin).Scan(&numAdmins)
@@ -90,11 +119,33 @@ func (db *Database) createSuperAdminAccount() error {
 	} else if numAdmins > 0 {
 		return nil
 	}
-	_, err = db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, 'admin', 'admin', $1, $2)", RoleSuperAdmin, time.Now().Unix())
+	err = db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM account WHERE username = 'admin'").Scan(&numAdmins)
+	if err != nil {
+		return fmt.Errorf("failed to select number of super-administrator accounts: %s", err)
+	} else if numAdmins > 0 {
+		_, err = db.conn.Exec(context.Background(), "UPDATE account SET password = $1, role = $2", db.hashData("admin"), RoleSuperAdmin)
+		if err != nil {
+			return fmt.Errorf("failed to insert account: %s", err)
+		}
+		return nil
+	}
+	_, err = db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, 'admin', $1, $2, $3)", db.hashData("admin"), RoleSuperAdmin, time.Now().Unix())
 	if err != nil {
 		return fmt.Errorf("failed to insert account: %s", err)
 	}
 	return nil
+}
+
+func (db *Database) accountByUsernamePassword(username string, password string) (*Account, error) {
+	a := &Account{}
+	var passwordHash string
+	err := db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE username = $1 AND role != $2", username, RoleDisabled).Scan(&a.ID, &a.Username, &passwordHash, &a.Role, &a.LastActive)
+	if err != nil {
+		return nil, fmt.Errorf("failed to select account: %s", err)
+	} else if a.ID == 0 || !db.compareHash(password, passwordHash) {
+		return nil, nil
+	}
+	return a, nil
 }
 
 func (db *Database) configKey(key string) string {

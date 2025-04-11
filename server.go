@@ -75,23 +75,34 @@ func (s *Server) parseConfig(configFile string) error {
 }
 
 func (s *Server) buildData(r *http.Request) *templateData {
+	var account *Account
 	var sessionKey string
 	username := r.FormValue("username")
 	if len(username) != 0 {
 		password := r.FormValue("password")
 		if len(password) != 0 {
-			log.Println("PASSWORD LOGIN")
+			var err error
+			account, err = s.db.accountByUsernamePassword(username, password)
+			if err != nil {
+				log.Fatal(err)
+			} else if account != nil {
+				// TODO Generate / use existing session key
+				return &templateData{
+					Account: account,
+				}
+			}
 		}
 	}
-	cookies := r.CookiesNamed("sriracha_key")
+	cookies := r.CookiesNamed("sriracha_session")
 	if len(cookies) > 0 {
 		sessionKey = cookies[0].Value
 	}
 	if len(sessionKey) == 0 {
 		return guestData
 	}
+	// TODO Use existing session key
 	return &templateData{
-		Account: &Account{ID: 1, Username: "TODO"},
+		Account: account,
 	}
 }
 

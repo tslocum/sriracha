@@ -3,6 +3,7 @@ module codeberg.org/tslocum/sriracha
 go 1.24.2
 
 require (
+	github.com/alexedwards/argon2id v1.0.0
 	github.com/jackc/pgx/v5 v5.7.4
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -13,5 +14,6 @@ require (
 	github.com/kr/text v0.2.0 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 )
