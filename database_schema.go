@@ -6,9 +6,11 @@ CREATE TABLE account (
 	username varchar(255) NOT NULL,
 	password text NOT NULL,
 	role integer NOT NULL,
-	lastactive integer NOT NULL
+	lastactive integer NOT NULL,
+	session varchar(64) NOT NULL
 );
 CREATE UNIQUE INDEX ON account (username);
+CREATE UNIQUE INDEX ON account (session);
 
 CREATE TABLE ban (
 	id bigserial UNIQUE,

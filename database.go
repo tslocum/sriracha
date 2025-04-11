@@ -2,12 +2,13 @@ package sriracha
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"log"
 	"runtime/debug"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/alexedwards/argon2id"
 	"github.com/jackc/pgx/v5"
@@ -123,13 +124,13 @@ func (db *Database) createSuperAdminAccount() error {
 	if err != nil {
 		return fmt.Errorf("failed to select number of super-administrator accounts: %s", err)
 	} else if numAdmins > 0 {
-		_, err = db.conn.Exec(context.Background(), "UPDATE account SET password = $1, role = $2", db.hashData("admin"), RoleSuperAdmin)
+		_, err = db.conn.Exec(context.Background(), "UPDATE account SET password = $1, role = $2, session = '' WHERE username = 'admin'", db.hashData("admin"), RoleSuperAdmin)
 		if err != nil {
 			return fmt.Errorf("failed to insert account: %s", err)
 		}
 		return nil
 	}
-	_, err = db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, 'admin', $1, $2, $3)", db.hashData("admin"), RoleSuperAdmin, time.Now().Unix())
+	_, err = db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, 'admin', $1, $2, 0, '')", db.hashData("admin"), RoleSuperAdmin)
 	if err != nil {
 		return fmt.Errorf("failed to insert account: %s", err)
 	}
@@ -139,13 +140,44 @@ func (db *Database) createSuperAdminAccount() error {
 func (db *Database) accountByUsernamePassword(username string, password string) (*Account, error) {
 	a := &Account{}
 	var passwordHash string
-	err := db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE username = $1 AND role != $2", username, RoleDisabled).Scan(&a.ID, &a.Username, &passwordHash, &a.Role, &a.LastActive)
+	err := db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE username = $1 AND role != $2", username, RoleDisabled).Scan(&a.ID, &a.Username, &passwordHash, &a.Role, &a.LastActive, &a.Session)
 	if err == pgx.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
 		return nil, fmt.Errorf("failed to select account: %s", err)
 	} else if a.ID == 0 || !db.compareHash(password, passwordHash) {
 		return nil, nil
+	}
+	for {
+		sessionKey := newSessionKey()
+		var numAccounts int
+		err := db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM account WHERE session = $1", sessionKey).Scan(&numAccounts)
+		if err != nil {
+			return nil, fmt.Errorf("failed to select number of accounts with session key: %s", err)
+		} else if numAccounts == 0 {
+			a.Session = sessionKey
+			_, err = db.conn.Exec(context.Background(), "UPDATE account SET session = $1 WHERE id = $2", sessionKey, a.ID)
+			if err != nil {
+				return nil, fmt.Errorf("failed to update account: %s", err)
+			}
+			break
+		}
+	}
+	return a, nil
+}
+
+func (db *Database) accountBySessionKey(sessionKey string) (*Account, error) {
+	if strings.TrimSpace(sessionKey) == "" {
+		return nil, nil
+	}
+
+	a := &Account{}
+	var passwordHash string
+	err := db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE session = $1 AND role != $2", sessionKey, RoleDisabled).Scan(&a.ID, &a.Username, &passwordHash, &a.Role, &a.LastActive, &a.Session)
+	if err == pgx.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
+		return nil, fmt.Errorf("failed to select account: %s", err)
 	}
 	return a, nil
 }
@@ -177,4 +209,14 @@ func (db *Database) GetMultiString(key string) ([]string, error) {
 		return nil, err
 	}
 	return strings.Split(value, "|"), nil
+}
+
+func newSessionKey() string {
+	const keyLength = 48
+	buf := make([]byte, keyLength)
+	_, err := rand.Read(buf)
+	if err != nil {
+		panic(err)
+	}
+	return base64.StdEncoding.EncodeToString(buf)
 }

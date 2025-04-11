@@ -14,4 +14,5 @@ type Account struct {
 	Username   string
 	Role       AccountRole
 	LastActive int64
+	Session    string
 }

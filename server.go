@@ -75,9 +75,16 @@ func (s *Server) parseConfig(configFile string) error {
 	return nil
 }
 
-func (s *Server) buildData(r *http.Request) *templateData {
-	var account *Account
-	var sessionKey string
+func (s *Server) buildData(w http.ResponseWriter, r *http.Request) *templateData {
+	if r.URL.Path == "/imgboard/logout" {
+		http.SetCookie(w, &http.Cookie{
+			Name:  "sriracha_session",
+			Value: "",
+			Path:  "/",
+		})
+		return guestData
+	}
+
 	var failedLogin bool
 	username := r.FormValue("username")
 	if len(username) != 0 {
@@ -85,11 +92,15 @@ func (s *Server) buildData(r *http.Request) *templateData {
 		password := r.FormValue("password")
 		if len(password) != 0 {
 			var err error
-			account, err = s.db.accountByUsernamePassword(username, password)
+			account, err := s.db.accountByUsernamePassword(username, password)
 			if err != nil {
 				log.Fatal(err)
 			} else if account != nil {
-				// TODO Generate / use existing session key
+				http.SetCookie(w, &http.Cookie{
+					Name:  "sriracha_session",
+					Value: account.Session,
+					Path:  "/",
+				})
 				return &templateData{
 					Account: account,
 				}
@@ -101,17 +112,19 @@ func (s *Server) buildData(r *http.Request) *templateData {
 			Error: "Invalid username or password.",
 		}
 	}
+
 	cookies := r.CookiesNamed("sriracha_session")
 	if len(cookies) > 0 {
-		sessionKey = cookies[0].Value
+		account, err := s.db.accountBySessionKey(cookies[0].Value)
+		if err != nil {
+			log.Fatal(err)
+		} else if account != nil {
+			return &templateData{
+				Account: account,
+			}
+		}
 	}
-	if len(sessionKey) == 0 {
-		return guestData
-	}
-	// TODO Use existing session key
-	return &templateData{
-		Account: account,
-	}
+	return guestData
 }
 
 func (s *Server) writeIndex() {
@@ -122,7 +135,7 @@ func (s *Server) servePost(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) serveManage(w http.ResponseWriter, r *http.Request) {
 	var page string
-	data := s.buildData(r)
+	data := s.buildData(w, r)
 	if len(data.Error) != 0 {
 		page = "manage_error"
 	} else {
@@ -162,6 +175,7 @@ func (s *Server) listen() error {
 
 	mux := http.NewServeMux()
 	mux.Handle("/css/", http.FileServerFS(subFS))
+	mux.HandleFunc("/imgboard/logout", s.serve)
 	mux.HandleFunc("/imgboard", s.serve)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" && r.URL.Path != "" {
