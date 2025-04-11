@@ -1,0 +1,29 @@
+version: 2
+project_name: sriracha
+builds:
+  -
+    id: sriracha
+    main: ./cmd/sriracha/
+    goos:
+      - darwin
+      - freebsd
+      - linux
+    goarch:
+      - 386
+      - amd64
+archives:
+  -
+    ids:
+      - sriracha
+    wrap_in_directory: sriracha
+    name_template: >-
+      {{- .ProjectName }}_
+      {{- .Version }}_
+      {{- tolower .Os }}_
+      {{- if eq .Arch "386" }}i386{{ else }}
+      {{- tolower .Arch }}{{ end -}}
+    files:
+      - ./*.md
+      - LICENSE
+checksum:
+  name_template: 'checksums.txt'

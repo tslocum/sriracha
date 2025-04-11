@@ -11,6 +11,7 @@ import (
 	"path"
 	"path/filepath"
 	"plugin"
+	"strconv"
 	"strings"
 
 	"github.com/fsnotify/fsnotify"
@@ -135,25 +136,63 @@ func (s *Server) servePost(w http.ResponseWriter, r *http.Request) {
 func (s *Server) serveManage(w http.ResponseWriter, r *http.Request) {
 	var page string
 	data := s.buildData(w, r)
+	defer func() {
+		w.Header().Set("Content-Type", "text/html")
+		err := s.tpl.ExecuteTemplate(w, page, data)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}()
 	if len(data.Error) != 0 {
 		page = "manage_error"
 	} else {
 		if data.Account != nil {
 			if strings.HasPrefix(r.URL.Path, "/imgboard/board/") {
 				page = "manage_board"
-				data.Manage.Boards = []*Board{{ID: 1, Dir: "t", Name: "Test", Description: "Hello, world!"}}
+
+				boardID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/board/"))
+				if err == nil && boardID > 0 {
+
+				} else {
+					if r.Method == http.MethodPost {
+						dir := strings.TrimSpace(r.FormValue("dir"))
+						name := strings.TrimSpace(r.FormValue("name"))
+						description := strings.TrimSpace(r.FormValue("description"))
+						typeString := r.FormValue("type")
+						var boardType = TypeImageboard
+						if typeString == "1" {
+							boardType = TypeForum
+						}
+						if dir == "" || name == "" {
+							page = "manage_error"
+							data.Error = "Board directory and name must be specified."
+							return
+						}
+
+						err = os.Mkdir(filepath.Join(s.config.Root, dir), 0755)
+						if err != nil {
+							page = "manage_error"
+							if os.IsExist(err) {
+								data.Error = fmt.Sprintf("Board directory %s already exists.", dir)
+							} else {
+								data.Error = fmt.Sprintf("Failed to create board directory %s: %s", dir, err)
+							}
+							return
+						}
+						_ = boardType
+						_ = description
+
+						// insert board row
+						// write index
+					}
+					data.Manage.Boards = []*Board{{ID: 1, Dir: "t", Name: "Test", Description: "Hello, world!"}}
+				}
 			} else {
 				page = "manage_index"
 			}
 		} else {
 			page = "manage_login"
 		}
-	}
-
-	w.Header().Set("Content-Type", "text/html")
-	err := s.tpl.ExecuteTemplate(w, page, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
