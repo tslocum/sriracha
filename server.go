@@ -1,7 +1,6 @@
 package sriracha
 
 import (
-	"embed"
 	"flag"
 	"fmt"
 	"html/template"
@@ -15,9 +14,6 @@ import (
 
 	"gopkg.in/yaml.v3"
 )
-
-//go:embed template
-var templatesFS embed.FS
 
 const manageTemplate = "manage"
 
@@ -78,6 +74,27 @@ func (s *Server) parseConfig(configFile string) error {
 	return nil
 }
 
+func (s *Server) buildData(r *http.Request) *templateData {
+	var sessionKey string
+	username := r.FormValue("username")
+	if len(username) != 0 {
+		password := r.FormValue("password")
+		if len(password) != 0 {
+			log.Println("PASSWORD LOGIN")
+		}
+	}
+	cookies := r.CookiesNamed("sriracha_key")
+	if len(cookies) > 0 {
+		sessionKey = cookies[0].Value
+	}
+	if len(sessionKey) == 0 {
+		return guestData
+	}
+	return &templateData{
+		Account: &Account{ID: 1, Name: "TODO"},
+	}
+}
+
 func (s *Server) writeIndex() {
 }
 
@@ -85,8 +102,15 @@ func (s *Server) servePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) serveManage(w http.ResponseWriter, r *http.Request) {
+	data := s.buildData(r)
+
+	page := "manage_login"
+	if data.Account != nil {
+		page = "manage_index"
+	}
+
 	w.Header().Set("Content-Type", "text/html")
-	err := s.tpl.ExecuteTemplate(w, "manage_login", "HELLOWORLD")
+	err := s.tpl.ExecuteTemplate(w, page, data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -142,6 +166,11 @@ func (s *Server) parseTemplates() error {
 }
 
 func (s *Server) Run() error {
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage:\n  sriracha [OPTION...] [PLUGIN...]\n\nOptions:\n")
+		flag.PrintDefaults()
+		fmt.Fprintf(os.Stderr, "\nsriracha imageboard and forum\n  https://codeberg.org/tslocum/sriracha\nGNU LESSER GENERAL PUBLIC LICENSE\n  https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE\n")
+	}
 	var configFile string
 	flag.StringVar(&configFile, "config", "", "path to configuration file (default: ~/.config/sriracha/config.yml)")
 	flag.Parse()

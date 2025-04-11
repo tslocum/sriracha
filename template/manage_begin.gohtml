@@ -10,5 +10,15 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1">
 		<title>sriracha management panel</title>
     </head>
+    {{if eq .Account nil}}
     <body>
+		<div class="adminbar">
+			[<a href="/imgboard" style="text-decoration: underline;">Return</a>]
+		</div>
+		<div class="logo">sriracha</div>
+		<hr width="90%">
+		<div class="replymode">Manage mode</div>
+    {{else}}
+    logged in
+    {{end}}
 {{end}}
