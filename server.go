@@ -14,20 +14,11 @@ import (
 	"strings"
 
 	"github.com/fsnotify/fsnotify"
+	"golang.org/x/sys/unix"
 	"gopkg.in/yaml.v3"
 )
 
 const manageTemplate = "manage"
-
-type ServerConfig struct {
-	Serve string
-	Salt  string
-
-	Address  string
-	Username string
-	Password string
-	Schema   string
-}
 
 type Server struct {
 	Boards []*Board
@@ -54,6 +45,9 @@ func (s *Server) parseConfig(configFile string) error {
 		return err
 	}
 
+	if config.Root == "" {
+		return fmt.Errorf("root (lowercase!) must be set in %s to the root folder (where board files are written)", configFile)
+	}
 	if config.Serve == "" {
 		return fmt.Errorf("serve (lowercase!) must be set in %s to the HTTP server listen address (hostname:port)", configFile)
 	}
@@ -344,6 +338,10 @@ func (s *Server) Run() error {
 	err = s.parseTemplates("")
 	if err != nil {
 		return fmt.Errorf("failed to parse templates: %s", err)
+	}
+
+	if unix.Access(s.config.Root, unix.W_OK) != nil {
+		return fmt.Errorf("failed to set root: %s is not writable", s.config.Root)
 	}
 
 	return s.listen()
