@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -32,6 +33,10 @@ func connectDatabase(address string, username string, password string, schema st
 	err = db.upgrade()
 	if err != nil {
 		return nil, fmt.Errorf("failed to upgrade database: %s", err)
+	}
+	err = db.createSuperAdminAccount()
+	if err != nil {
+		return nil, fmt.Errorf("failed to create super-administrator account: %s", err)
 	}
 	return db, nil
 }
@@ -73,6 +78,21 @@ func (db *Database) upgrade() error {
 		if err != nil {
 			return fmt.Errorf("failed to upgrade database to version %d: %s", v, err)
 		}
+	}
+	return nil
+}
+
+func (db *Database) createSuperAdminAccount() error {
+	var numAdmins int
+	err := db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM account WHERE role = $1", RoleSuperAdmin).Scan(&numAdmins)
+	if err != nil {
+		return fmt.Errorf("failed to select number of super-administrator accounts: %s", err)
+	} else if numAdmins > 0 {
+		return nil
+	}
+	_, err = db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, 'admin', 'admin', $1, $2)", RoleSuperAdmin, time.Now().Unix())
+	if err != nil {
+		return fmt.Errorf("failed to insert account: %s", err)
 	}
 	return nil
 }

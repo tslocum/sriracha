@@ -91,7 +91,7 @@ func (s *Server) buildData(r *http.Request) *templateData {
 		return guestData
 	}
 	return &templateData{
-		Account: &Account{ID: 1, Name: "TODO"},
+		Account: &Account{ID: 1, Username: "TODO"},
 	}
 }
 
