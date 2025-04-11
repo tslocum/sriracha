@@ -25,7 +25,8 @@ CREATE TABLE board (
 	id smallserial UNIQUE,
 	dir varchar(255) NOT NULL,
 	name varchar(255) NOT NULL,
-	description text NOT NULL
+	description text NOT NULL,
+	type smallint NOT NULL
 );
 CREATE UNIQUE INDEX ON board (dir);
 

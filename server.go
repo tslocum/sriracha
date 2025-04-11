@@ -77,12 +77,13 @@ func (s *Server) parseConfig(configFile string) error {
 }
 
 func (s *Server) buildData(w http.ResponseWriter, r *http.Request) *templateData {
-	if r.URL.Path == "/imgboard/logout" {
+	if strings.HasPrefix(r.URL.Path, "/imgboard/logout/") {
 		http.SetCookie(w, &http.Cookie{
 			Name:  "sriracha_session",
 			Value: "",
 			Path:  "/",
 		})
+		http.Redirect(w, r, "/imgboard/", http.StatusFound)
 		return guestData
 	}
 
@@ -104,13 +105,15 @@ func (s *Server) buildData(w http.ResponseWriter, r *http.Request) *templateData
 				})
 				return &templateData{
 					Account: account,
+					Manage:  &manageData{},
 				}
 			}
 		}
 	}
 	if failedLogin {
 		return &templateData{
-			Error: "Invalid username or password.",
+			Error:  "Invalid username or password.",
+			Manage: &manageData{},
 		}
 	}
 
@@ -122,6 +125,7 @@ func (s *Server) buildData(w http.ResponseWriter, r *http.Request) *templateData
 		} else if account != nil {
 			return &templateData{
 				Account: account,
+				Manage:  &manageData{},
 			}
 		}
 	}
@@ -141,8 +145,9 @@ func (s *Server) serveManage(w http.ResponseWriter, r *http.Request) {
 		page = "manage_error"
 	} else {
 		if data.Account != nil {
-			if r.URL.Path == "/imgboard/board" {
+			if strings.HasPrefix(r.URL.Path, "/imgboard/board/") {
 				page = "manage_board"
+				data.Manage.Boards = []*Board{{ID: 1, Dir: "t", Name: "Test", Description: "Hello, world!"}}
 			} else {
 				page = "manage_index"
 			}
@@ -180,9 +185,7 @@ func (s *Server) listen() error {
 
 	mux := http.NewServeMux()
 	mux.Handle("/css/", http.FileServerFS(subFS))
-	mux.HandleFunc("/imgboard/board", s.serve)
-	mux.HandleFunc("/imgboard/logout", s.serve)
-	mux.HandleFunc("/imgboard", s.serve)
+	mux.HandleFunc("/imgboard/", s.serve)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" && r.URL.Path != "" {
 			http.NotFound(w, r)
@@ -275,12 +278,12 @@ func (s *Server) Run() error {
 				case event, ok := <-watcher.Events:
 					if !ok {
 						return
+					} else if !event.Has(fsnotify.Write) {
+						continue
 					}
-					if event.Has(fsnotify.Write) {
-						err := s.parseTemplates(".")
-						if err != nil {
-							log.Printf("error: failed to parse templates: %s", err)
-						}
+					err := s.parseTemplates(".")
+					if err != nil {
+						log.Printf("error: failed to parse templates: %s", err)
 					}
 				case err, ok := <-watcher.Errors:
 					if !ok {
@@ -291,27 +294,10 @@ func (s *Server) Run() error {
 			}
 		}()
 
-		var monitorChanges func(dir string)
-		monitorChanges = func(dir string) {
-			entries, err := os.ReadDir(dir)
-			if err != nil {
-				log.Fatal(err)
-			}
-			for _, entry := range entries {
-				if entry.IsDir() {
-					monitorChanges(path.Join(dir, entry.Name()))
-					continue
-				}
-				// TODO handle reloading CSS
-				if strings.HasSuffix(entry.Name(), ".gohtml") {
-					err = watcher.Add(path.Join("template", entry.Name()))
-					if err != nil {
-						log.Fatal(err)
-					}
-				}
-			}
+		err = watcher.Add("template")
+		if err != nil {
+			log.Fatal(err)
 		}
-		monitorChanges("template")
 		fmt.Println("Running in development mode. Template files are monitored for changes.")
 	}
 

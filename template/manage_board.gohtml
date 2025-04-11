@@ -9,6 +9,11 @@
             <td>The directory where the board files will be located.</td>
         </tr>
         <tr>
+            <td><label for="name">Name</label></td>
+            <td><input type="text" name="name"></td>
+            <td>The name of the board, displayed in page title and header.</td>
+        </tr>
+        <tr>
             <td><label for="description">Description</label></td>
             <td><input type="text" name="description"></td>
             <td>The HTML page description, which will be used by search engines.</td>
@@ -18,7 +23,7 @@
                 <option value="0">Imageboard</option>
                 <option value="1">Forum</option>
             </select></td>
-            <td>Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages.</td>
+            <td>Imageboards show threads and recent replies on index pages,<br>while forums only show thread information on index pages.</td>
         </tr><tr>
             <td>&nbsp;</td>
             <td align="right"><input type="submit" value="Add" class="managebutton"></td>
@@ -27,4 +32,22 @@
     </table>
     </fieldset>
 </form>
+{{if ne (len .Manage.Boards) 0}}
+<br><table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>&nbsp;</th>
+    </tr>
+    {{range $i, $board := .Manage.Boards}}
+    <tr>
+        <td>/{{$board.Dir}}/ - {{$board.Name}}</td>
+        <td>{{$board.Description}}</td>
+        <td>{{if eq $board.Type 0}}Imageboard{{else}}Forum{{end}}</td>
+        <td><a href="/imgboard/board/{{$board.ID}}">edit</a></td>
+    </tr>
+    {{end}}
+</table>
+{{end}}
 {{template "manage_end" .}}{{end}}
