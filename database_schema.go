@@ -1,4 +1,4 @@
-package server
+package sriracha
 
 var dbSchema = []string{`
 CREATE TABLE account (

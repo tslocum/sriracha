@@ -1,16 +1,25 @@
-package server
+package sriracha
 
 import (
+	"embed"
 	"flag"
 	"fmt"
+	"html/template"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
+	"plugin"
 
-	"codeberg.org/tslocum/sriracha"
 	"gopkg.in/yaml.v3"
 )
+
+//go:embed template
+var templatesFS embed.FS
+
+const manageTemplate = "manage"
 
 type ServerConfig struct {
 	Serve string
@@ -23,14 +32,16 @@ type ServerConfig struct {
 }
 
 type Server struct {
-	Boards []*sriracha.Board
+	Boards []*Board
 
 	config ServerConfig
-	db     *database
+	db     *Database
+	tpl    *template.Template
 }
 
-func New() *Server {
-	return &Server{}
+func NewServer() *Server {
+	srirachaServer = &Server{}
+	return srirachaServer
 }
 
 func (s *Server) parseConfig(configFile string) error {
@@ -67,19 +78,67 @@ func (s *Server) parseConfig(configFile string) error {
 	return nil
 }
 
+func (s *Server) writeIndex() {
+}
+
+func (s *Server) servePost(w http.ResponseWriter, r *http.Request) {
+}
+
+func (s *Server) serveManage(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	err := s.tpl.ExecuteTemplate(w, "manage_login", "HELLOWORLD")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
+	action := r.FormValue("action")
+	if action == "" {
+		values := r.URL.Query()
+		action = values.Get("action")
+	}
+	switch action {
+	case "post":
+		s.servePost(w, r)
+	default:
+		s.serveManage(w, r)
+	}
+}
+
 func (s *Server) listen() error {
 	mux := http.NewServeMux()
+	mux.HandleFunc("/imgboard", s.serve)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" && r.URL.Path != "" {
 			http.NotFound(w, r)
 			return
 		}
-		log.Println(r.Method, r.URL)
-		log.Println("GET REQ", r.Header)
+		s.serve(w, r)
 	})
 
 	fmt.Printf("Serving http://%s\n", s.config.Serve)
 	return http.ListenAndServe(s.config.Serve, mux)
+}
+
+func (s *Server) parseTemplates() error {
+	s.tpl = template.New("sriracha")
+	entries, err := templatesFS.ReadDir("template")
+	if err != nil {
+		return err
+	}
+	for _, f := range entries {
+		buf, err := templatesFS.ReadFile(filepath.Join("template", f.Name()))
+		if err != nil {
+			return err
+		}
+
+		_, err = s.tpl.New(f.Name()).Parse(string(buf))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (s *Server) Run() error {
@@ -99,9 +158,39 @@ func (s *Server) Run() error {
 		return err
 	}
 
+	loadPlugin := func(pluginPath string) error {
+		_, err = plugin.Open(pluginPath)
+		if err != nil {
+			return fmt.Errorf("failed to load plugin %s: %s", pluginPath, err)
+		}
+		return err
+	}
+	for _, pluginPath := range flag.Args() {
+		info, err := os.Stat(pluginPath)
+		if os.IsNotExist(err) {
+			return fmt.Errorf("failed to load plugin %s: file or directory not found", pluginPath)
+		}
+		if info.IsDir() {
+			filepath.WalkDir(pluginPath, func(path string, d fs.DirEntry, err error) error {
+				log.Println(path)
+				return nil
+			})
+		} else {
+			err = loadPlugin(pluginPath)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
 	s.db, err = connectDatabase(s.config.Address, s.config.Username, s.config.Password, s.config.Schema)
 	if err != nil {
 		return err
+	}
+
+	err = s.parseTemplates()
+	if err != nil {
+		return fmt.Errorf("failed to parse templates: %s", err)
 	}
 
 	return s.listen()

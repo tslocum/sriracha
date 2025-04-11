@@ -5,8 +5,6 @@ This application is in pre-alpha development. Here be dragons.
 
 sriracha will eventually serve as a replacement for imageboards running [TinyIB](https://codeberg.org/tslocum/tinyib).
 
-sriracha will eventually support loading plugins via shared library files (`.so` files). This functionality is not available yet.
-
 ## License
 
 This application is licensed under [LGPLv3](https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE).

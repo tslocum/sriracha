@@ -1,4 +1,4 @@
-package server
+package sriracha
 
 import (
 	"context"
@@ -8,11 +8,11 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-type database struct {
+type Database struct {
 	conn *pgx.Conn
 }
 
-func connectDatabase(address string, username string, password string, schema string) (*database, error) {
+func connectDatabase(address string, username string, password string, schema string) (*Database, error) {
 	url := fmt.Sprintf("postgres://%s:%s@%s/%s", username, password, address, schema)
 
 	conn, err := pgx.Connect(context.Background(), url)
@@ -20,7 +20,7 @@ func connectDatabase(address string, username string, password string, schema st
 		return nil, fmt.Errorf("failed to connect to database: %s", err)
 	}
 
-	db := &database{
+	db := &Database{
 		conn: conn,
 	}
 	err = db.initialize(schema)
@@ -34,7 +34,7 @@ func connectDatabase(address string, username string, password string, schema st
 	return db, nil
 }
 
-func (db *database) initialize(schema string) error {
+func (db *Database) initialize(schema string) error {
 	_, err := db.conn.Exec(context.Background(), "SELECT 1=1")
 	if err != nil {
 		return fmt.Errorf("failed to test database connection: %s", err)
@@ -55,7 +55,7 @@ func (db *database) initialize(schema string) error {
 	return nil
 }
 
-func (db *database) upgrade() error {
+func (db *Database) upgrade() error {
 	var versionString string
 	err := db.conn.QueryRow(context.Background(), "SELECT value FROM config WHERE name = 'version'").Scan(&versionString)
 	if err != nil {
