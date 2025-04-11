@@ -4,9 +4,12 @@
     <fieldset>
         <legend align="center">Enter a username and password</legend>
         <div class="login">
-            <input type="text" name="username" placeholder="Username"><br>
+            <input type="text" id="manage_username" name="username" placeholder="Username"><br>
             <input type="password" name="password" placeholder="Password"><br>
             <input type="submit" value="Log In" class="managebutton">
+            <script type="text/javascript">
+            document.getElementById("manage_username").focus();
+            </script>
         </div>
     </fieldset>
 </form>

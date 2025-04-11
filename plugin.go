@@ -45,16 +45,24 @@ func RegisterPlugin(plugin interface{}) {
 		panic("sriracha server not yet started")
 	}
 
-	p, ok := plugin.(Plugin)
-	if !ok {
-		log.Fatal("plugin does not implement required methods")
+	v := reflect.ValueOf(plugin)
+	if v.Kind() == reflect.Interface || v.Kind() == reflect.Pointer {
+		v = v.Elem()
 	}
+	name := v.Type().Name()
+
+	pAbout, ok := plugin.(Plugin)
+	if !ok {
+		log.Fatalf("%s does not implement required methods", name)
+	}
+	about := pAbout.About()
+	_ = about // TODO
 
 	var events []string
 
 	pConfig, ok := plugin.(PluginWithConfig)
 	if ok {
-		log.Println(pConfig.Config())
+		log.Println("CONFIG", pConfig.Config())
 	}
 	_, ok = plugin.(PluginWithPost)
 	if ok {
@@ -63,5 +71,5 @@ func RegisterPlugin(plugin interface{}) {
 	if len(events) == 0 {
 		events = append(events, "none")
 	}
-	fmt.Printf("%s loaded. Receives: %s\n", reflect.ValueOf(p).Elem().Type().Name(), strings.Join(events, ", "))
+	fmt.Printf("%s loaded. Receives: %s\n", name, strings.Join(events, ", "))
 }

@@ -8,14 +8,17 @@
 		<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT">
 		<meta http-equiv="pragma" content="no-cache">
 		<meta name="viewport" content="width=device-width,initial-scale=1">
-		<title>sriracha management panel</title>
+		<title>Sriracha Management Panel</title>
+		<link rel="stylesheet" type="text/css" href="/css/global.css">
+		<link rel="stylesheet" type="text/css" href="/css/futaba.css" title="Futaba" id="mainStylesheet">
+		<link rel="alternate stylesheet" type="text/css" href="/css/burichan.css" title="Burichan">
     </head>
     {{if eq .Account nil}}
     <body>
 		<div class="adminbar">
 			[<a href="/imgboard" style="text-decoration: underline;">Return</a>]
 		</div>
-		<div class="logo">sriracha</div>
+		<div class="logo">Sriracha</div>
 		<hr width="90%">
 		<div class="replymode">Manage mode</div>
     {{else}}

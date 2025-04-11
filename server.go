@@ -11,6 +11,7 @@ import (
 	"path"
 	"path/filepath"
 	"plugin"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -142,7 +143,13 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) listen() error {
+	subFS, err := fs.Sub(templateFS, "template")
+	if err != nil {
+		return err
+	}
+
 	mux := http.NewServeMux()
+	mux.Handle("/css/", http.FileServerFS(subFS))
 	mux.HandleFunc("/imgboard", s.serve)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" && r.URL.Path != "" {
@@ -158,12 +165,16 @@ func (s *Server) listen() error {
 
 func (s *Server) parseTemplates() error {
 	s.tpl = template.New("sriracha")
-	entries, err := templatesFS.ReadDir("template")
+	entries, err := templateFS.ReadDir("template")
 	if err != nil {
 		return err
 	}
 	for _, f := range entries {
-		buf, err := templatesFS.ReadFile(filepath.Join("template", f.Name()))
+		if !strings.HasSuffix(f.Name(), ".gohtml") {
+			continue
+		}
+
+		buf, err := templateFS.ReadFile(filepath.Join("template", f.Name()))
 		if err != nil {
 			return err
 		}
@@ -198,7 +209,23 @@ func (s *Server) Run() error {
 		return err
 	}
 
-	loadPlugin := func(pluginPath string) error {
+	var loadPlugin func(pluginPath string) error
+	loadPlugin = func(pluginPath string) error {
+		info, err := os.Stat(pluginPath)
+		if os.IsNotExist(err) {
+			return fmt.Errorf("failed to load plugin %s: file or directory not found", pluginPath)
+		} else if info.IsDir() {
+			return filepath.WalkDir(pluginPath, func(path string, d fs.DirEntry, err error) error {
+				if err != nil {
+					return err
+				} else if path == pluginPath {
+					return nil
+				}
+				return loadPlugin(path)
+			})
+		} else if !strings.HasSuffix(pluginPath, ".so") {
+			return nil
+		}
 		_, err = plugin.Open(pluginPath)
 		if err != nil {
 			return fmt.Errorf("failed to load plugin %s: %s", pluginPath, err)
@@ -206,20 +233,9 @@ func (s *Server) Run() error {
 		return err
 	}
 	for _, pluginPath := range flag.Args() {
-		info, err := os.Stat(pluginPath)
-		if os.IsNotExist(err) {
-			return fmt.Errorf("failed to load plugin %s: file or directory not found", pluginPath)
-		}
-		if info.IsDir() {
-			filepath.WalkDir(pluginPath, func(path string, d fs.DirEntry, err error) error {
-				log.Println(path)
-				return nil
-			})
-		} else {
-			err = loadPlugin(pluginPath)
-			if err != nil {
-				return err
-			}
+		err = loadPlugin(pluginPath)
+		if err != nil {
+			return err
 		}
 	}
 

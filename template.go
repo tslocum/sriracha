@@ -3,7 +3,7 @@ package sriracha
 import "embed"
 
 //go:embed template
-var templatesFS embed.FS
+var templateFS embed.FS
 
 type templateData struct {
 	Account *Account
