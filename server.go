@@ -13,7 +13,6 @@ import (
 	"path/filepath"
 	"plugin"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/fsnotify/fsnotify"
@@ -74,6 +73,86 @@ func (s *Server) parseConfig(configFile string) error {
 	}
 	s.config = config
 	return nil
+}
+
+func (s *Server) parseTemplates(dir string) error {
+	if dir != "" {
+		s.tpl = template.New("sriracha")
+		entries, err := os.ReadDir("template")
+		if err != nil {
+			return err
+		}
+		for _, f := range entries {
+			if !strings.HasSuffix(f.Name(), ".gohtml") {
+				continue
+			}
+
+			buf, err := os.ReadFile(filepath.Join("template", f.Name()))
+			if err != nil {
+				return err
+			}
+
+			_, err = s.tpl.New(f.Name()).Parse(string(buf))
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+
+	s.tpl = template.New("sriracha")
+	entries, err := templateFS.ReadDir("template")
+	if err != nil {
+		return err
+	}
+	for _, f := range entries {
+		if !strings.HasSuffix(f.Name(), ".gohtml") {
+			continue
+		}
+
+		buf, err := templateFS.ReadFile(filepath.Join("template", f.Name()))
+		if err != nil {
+			return err
+		}
+
+		_, err = s.tpl.New(f.Name()).Parse(string(buf))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (s *Server) watchTemplates() error {
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer watcher.Close()
+
+	go func() {
+		for {
+			select {
+			case event, ok := <-watcher.Events:
+				if !ok {
+					return
+				} else if !event.Has(fsnotify.Write) {
+					continue
+				}
+				err := s.parseTemplates(".")
+				if err != nil {
+					log.Printf("error: failed to parse templates: %s", err)
+				}
+			case err, ok := <-watcher.Errors:
+				if !ok {
+					return
+				}
+				log.Printf("fsnotify error: %s", err)
+			}
+		}
+	}()
+
+	return watcher.Add("template")
 }
 
 func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request) *templateData {
@@ -158,296 +237,6 @@ func (s *Server) writeIndexes(board *Board) {
 func (s *Server) writeBoard(board *Board) {
 	s.writeIndexes(board)
 	// for all threads, write thread
-}
-
-func (s *Server) serveChangePassword(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
-	oldPass := r.FormValue("old")
-	newPass := r.FormValue("new")
-	confirmPass := r.FormValue("confirm")
-	data.Template = "manage_password"
-	if r.Method != http.MethodPost {
-		return
-	} else if strings.TrimSpace(oldPass) == "" || strings.TrimSpace(newPass) == "" || strings.TrimSpace(confirmPass) == "" {
-		data.Error("All fields are required")
-		return
-	}
-
-	if newPass != confirmPass {
-		data.Error("New passwords do not match")
-		return
-	}
-
-	match, err := db.loginAccount(data.Account.Username, oldPass)
-	if err != nil {
-		log.Fatal(err)
-	} else if match == nil {
-		data.Error("Current password is incorrect")
-		return
-	}
-
-	err = db.updateAccountPassword(match.ID, newPass)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	http.Redirect(w, r, "/imgboard/", http.StatusFound)
-}
-
-func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
-	data.Template = "manage_account"
-
-	accountID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/account/"))
-	if err == nil && accountID > 0 {
-		data.Manage.Account, err = db.accountByID(accountID)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if data.Manage.Account != nil && r.Method == http.MethodPost {
-			oldUsername := data.Manage.Account.Username
-			data.Manage.Account.loadForm(r)
-
-			err := data.Manage.Account.validate()
-			if err != nil {
-				data.Error(err.Error())
-				return
-			}
-
-			if data.Manage.Account.Username != oldUsername {
-				match, err := db.accountByUsername(data.Manage.Account.Username)
-				if err != nil {
-					log.Fatal(err)
-				} else if match != nil {
-					data.Error("New username already taken")
-					return
-				}
-
-				err = db.updateAccountUsername(data.Manage.Account)
-				if err != nil {
-					data.Error(err.Error())
-					return
-				}
-			}
-
-			err = db.updateAccountRole(data.Manage.Account)
-			if err != nil {
-				data.Error(err.Error())
-				return
-			}
-
-			password := r.FormValue("password")
-			if strings.TrimSpace(password) != "" {
-				err = db.updateAccountPassword(data.Manage.Account.ID, password)
-				if err != nil {
-					data.Error(err.Error())
-					return
-				}
-			}
-
-			http.Redirect(w, r, "/imgboard/account/", http.StatusFound)
-			return
-		}
-		return
-	}
-
-	if r.Method == http.MethodPost {
-		a := &Account{}
-		a.loadForm(r)
-
-		err := a.validate()
-		if err != nil {
-			data.Error(err.Error())
-			return
-		}
-
-		password := r.FormValue("password")
-		if strings.TrimSpace(password) == "" {
-			data.Error("A password is required")
-			return
-		}
-
-		err = db.addAccount(a, password)
-		if err != nil {
-			data.Error(err.Error())
-			return
-		}
-	}
-
-	data.Manage.Accounts, err = db.allAccounts()
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
-	data.Template = "manage_board"
-
-	boardID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/board/"))
-	if err == nil && boardID > 0 {
-		data.Manage.Board, err = db.boardByID(boardID)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if data.Manage.Board != nil && r.Method == http.MethodPost {
-			oldDir := data.Manage.Board.Dir
-			data.Manage.Board.loadForm(r)
-
-			err := data.Manage.Board.validate()
-			if err != nil {
-				data.Error(err.Error())
-				return
-			}
-
-			if data.Manage.Board.Dir != oldDir {
-				_, err := os.Stat(filepath.Join(s.config.Root, data.Manage.Board.Dir))
-				if err != nil {
-					if !os.IsNotExist(err) {
-						log.Fatal(err)
-					}
-				} else {
-					data.Error("New directory already exists")
-					return
-				}
-			}
-
-			err = db.updateBoard(data.Manage.Board)
-			if err != nil {
-				data.Error(err.Error())
-				return
-			}
-
-			if data.Manage.Board.Dir != oldDir {
-				err := os.Rename(filepath.Join(s.config.Root, oldDir), filepath.Join(s.config.Root, data.Manage.Board.Dir))
-				if err != nil {
-					data.Error(fmt.Sprintf("Failed to rename board directory: %s", err))
-					return
-				}
-			}
-
-			s.writeBoard(data.Manage.Board)
-			http.Redirect(w, r, "/imgboard/board/", http.StatusFound)
-			return
-		}
-		return
-	}
-
-	if r.Method == http.MethodPost {
-		b := &Board{}
-		b.loadForm(r)
-
-		err := b.validate()
-		if err != nil {
-			data.Error(err.Error())
-			return
-		}
-
-		err = os.Mkdir(filepath.Join(s.config.Root, b.Dir), 0755)
-		if err != nil {
-			if os.IsExist(err) {
-				data.Error(fmt.Sprintf("Board directory %s already exists.", b.Dir))
-			} else {
-				data.Error(fmt.Sprintf("Failed to create board directory %s: %s", b.Dir, err))
-			}
-			return
-		}
-
-		err = db.addBoard(b)
-		if err != nil {
-			data.Error(err.Error())
-			return
-		}
-
-		s.writeBoard(b)
-		http.Redirect(w, r, "/imgboard/board/", http.StatusFound)
-		return
-	}
-
-	data.Manage.Boards, err = db.allBoards()
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
-	var err error
-	data.Template = "manage_keyword"
-	data.Boards, err = db.allBoards()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	keywordID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/keyword/"))
-	if err == nil && keywordID > 0 {
-		data.Manage.Keyword, err = db.keywordByID(keywordID)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if data.Manage.Keyword != nil && r.Method == http.MethodPost {
-			oldText := data.Manage.Keyword.Text
-			data.Manage.Keyword.loadForm(db, r)
-
-			err := data.Manage.Keyword.validate()
-			if err != nil {
-				data.Error(err.Error())
-				return
-			}
-
-			if data.Manage.Keyword.Text != oldText {
-				match, err := db.keywordByText(data.Manage.Keyword.Text)
-				if err != nil {
-					log.Fatal(err)
-				} else if match != nil {
-					data.Error("Keyword text already exists")
-					return
-				}
-			}
-
-			err = db.updateKeyword(data.Manage.Keyword)
-			if err != nil {
-				data.Error(err.Error())
-				return
-			}
-
-			http.Redirect(w, r, "/imgboard/keyword/", http.StatusFound)
-			return
-		}
-		return
-	}
-
-	if r.Method == http.MethodPost {
-		k := &Keyword{}
-		k.loadForm(db, r)
-
-		err := k.validate()
-		if err != nil {
-			data.Error(err.Error())
-			return
-		}
-
-		match, err := db.keywordByText(k.Text)
-		if err != nil {
-			log.Fatal(err)
-		} else if match != nil {
-			data.Error("Keyword text already exists")
-			return
-		}
-
-		err = db.addKeyword(k)
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-
-		http.Redirect(w, r, "/imgboard/keyword/", http.StatusFound)
-		return
-	}
-
-	data.Manage.Keywords, err = db.allKeywords()
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
 func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Request) {
@@ -541,54 +330,6 @@ func (s *Server) listen() error {
 	return http.ListenAndServe(s.config.Serve, mux)
 }
 
-func (s *Server) parseTemplates(dir string) error {
-	if dir != "" {
-		s.tpl = template.New("sriracha")
-		entries, err := os.ReadDir("template")
-		if err != nil {
-			return err
-		}
-		for _, f := range entries {
-			if !strings.HasSuffix(f.Name(), ".gohtml") {
-				continue
-			}
-
-			buf, err := os.ReadFile(filepath.Join("template", f.Name()))
-			if err != nil {
-				return err
-			}
-
-			_, err = s.tpl.New(f.Name()).Parse(string(buf))
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	}
-
-	s.tpl = template.New("sriracha")
-	entries, err := templateFS.ReadDir("template")
-	if err != nil {
-		return err
-	}
-	for _, f := range entries {
-		if !strings.HasSuffix(f.Name(), ".gohtml") {
-			continue
-		}
-
-		buf, err := templateFS.ReadFile(filepath.Join("template", f.Name()))
-		if err != nil {
-			return err
-		}
-
-		_, err = s.tpl.New(f.Name()).Parse(string(buf))
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func (s *Server) Run() error {
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage:\n  sriracha [OPTION...] [PLUGIN...]\n\nOptions:\n")
@@ -609,35 +350,7 @@ func (s *Server) Run() error {
 	}
 
 	if devMode {
-		watcher, err := fsnotify.NewWatcher()
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer watcher.Close()
-
-		go func() {
-			for {
-				select {
-				case event, ok := <-watcher.Events:
-					if !ok {
-						return
-					} else if !event.Has(fsnotify.Write) {
-						continue
-					}
-					err := s.parseTemplates(".")
-					if err != nil {
-						log.Printf("error: failed to parse templates: %s", err)
-					}
-				case err, ok := <-watcher.Errors:
-					if !ok {
-						return
-					}
-					log.Printf("fsnotify error: %s", err)
-				}
-			}
-		}()
-
-		err = watcher.Add("template")
+		err := s.watchTemplates()
 		if err != nil {
 			log.Fatal(err)
 		}
