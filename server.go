@@ -50,29 +50,31 @@ func (s *Server) parseConfig(configFile string) error {
 		return err
 	}
 
-	if config.Root == "" {
+	switch {
+	case config.Root == "":
 		return fmt.Errorf("root (lowercase!) must be set in %s to the root folder (where board files are written)", configFile)
-	}
-	if config.Serve == "" {
+	case config.Serve == "":
 		return fmt.Errorf("serve (lowercase!) must be set in %s to the HTTP server listen address (hostname:port)", configFile)
-	}
-	if config.Salt == "" {
+	case config.Salt == "":
 		return fmt.Errorf("salt (lowercase!) must be set in %s to the secure data hashing salt (a long string of random data which, once set, never changes)", configFile)
-	}
-	if config.Address == "" {
+	case config.Min <= 0:
+		return fmt.Errorf("min (lowercase!) must be set in %s to the minimum number of connections of the database connection pool (1 is a reasonable choice)", configFile)
+	case config.Max <= 0:
+		return fmt.Errorf("max (lowercase!) must be set in %s to the maximum number of connections of the database connection pool (4 is a reasonable choice)", configFile)
+	case config.Max < config.Min:
+		return fmt.Errorf("max must be greater than or equal to min in %s", configFile)
+	case config.Address == "":
 		return fmt.Errorf("address (lowercase!) must be set in %s to the database address (hostname:port)", configFile)
-	}
-	if config.Username == "" {
+	case config.Username == "":
 		return fmt.Errorf("username (lowercase!) must be set in %s to the database username", configFile)
-	}
-	if config.Password == "" {
+	case config.Password == "":
 		return fmt.Errorf("password (lowercase!) must be set in %s to the database password", configFile)
-	}
-	if config.Schema == "" {
+	case config.Schema == "":
 		return fmt.Errorf("schema (lowercase!) must be set in %s to the database schema name", configFile)
+	default:
+		s.config = config
+		return nil
 	}
-	s.config = config
-	return nil
 }
 
 func (s *Server) parseTemplates(dir string) error {
@@ -392,7 +394,7 @@ func (s *Server) Run() error {
 		}
 	}
 
-	s.dbPool, err = connectDatabase(s.config.Address, s.config.Username, s.config.Password, s.config.Schema)
+	s.dbPool, err = connectDatabase(s.config.Address, s.config.Username, s.config.Password, s.config.Schema, s.config.Min, s.config.Max)
 	if err != nil {
 		return err
 	}

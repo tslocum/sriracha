@@ -5,6 +5,8 @@ type Config struct {
 	Serve string
 	Salt  string
 
+	Min      int
+	Max      int
 	Address  string
 	Username string
 	Password string
