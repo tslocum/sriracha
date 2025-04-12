@@ -1,0 +1,78 @@
+<div class="postarea">
+    <form name="postform" id="postform" action="/imgboard/" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="MAX_FILE_SIZE" value="2097152">
+        <input type="hidden" name="parent" value="0">
+        <table class="postform">
+            <tbody>
+                <tr>
+                    <td class="postblock">
+                        Name
+                    </td>
+                    <td>
+                        <input type="text" name="name" size="28" maxlength="75" accesskey="n">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">
+                        E-mail
+                    </td>
+                    <td>
+                        <input type="text" name="email" size="28" maxlength="320" accesskey="e">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">
+                        Subject
+                    </td>
+                    <td>
+                        <input type="text" name="subject" size="40" maxlength="75" accesskey="s" autocomplete="off">
+                        <input type="submit" value="Submit" accesskey="z">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">
+                        Message
+                    </td>
+                    <td>
+                        <textarea id="message" name="message" cols="48" rows="4" maxlength="8000" accesskey="m"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">
+                        File
+                    </td>
+                    <td>
+                        <input type="file" name="file" size="35" accesskey="f">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">
+                        Embed
+                    </td>
+                    <td>
+                        <input type="text" name="embed" size="28" accesskey="x" autocomplete="off">&nbsp;&nbsp;(paste a YouTube URL)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">
+                        Password
+                    </td>
+                    <td>
+                        <input type="password" name="password" id="newpostpassword" size="8" accesskey="p">&nbsp;&nbsp;(for post and file deletion)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="rules">
+                        <ul>
+                            <li>Supported file types are JPG, PNG, GIF, SWF, MP4 and WEBM.</li>
+                            <li>Maximum file size allowed is 2 MB.</li>
+                            <li>Images greater than 250x250 will be thumbnailed.</li>
+                            <li>Currently 1 unique user posts.</li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+<hr>

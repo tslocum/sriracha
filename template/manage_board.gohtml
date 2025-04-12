@@ -1,12 +1,12 @@
-{{define "manage_board"}}{{template "manage_begin" .}}
+{{template "manage_begin.gohtml" .}}
 <form method="post">
     <fieldset>
-    <legend>{{if eq .Manage.Board nil}}Add a board{{else}}Edit /{{.Manage.Board.Dir}}/ {{.Manage.Board.Name}}{{end}}</legend>
+    <legend>{{if eq .Manage.Board nil}}Add board{{else}}Update /{{.Manage.Board.Dir}}/ {{.Manage.Board.Name}}{{end}}</legend>
     <table border="0">
         <tr>
             <td class="postblock"><label for="dir">Directory</label></td>
             <td><input type="text" name="dir" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Dir}}{{end}}"></td>
-            <td>The directory where the board files will be located.</td>
+            <td>The directory where the board files are located.</td>
         </tr>
         <tr>
             <td class="postblock"><label for="name">Name</label></td>
@@ -16,7 +16,7 @@
         <tr>
             <td class="postblock"><label for="description">Description</label></td>
             <td><input type="text" name="description" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Description}}{{end}}"></td>
-            <td>The HTML page description, which will be used by search engines.</td>
+            <td>The HTML page description, which is used by search engines.</td>
         </tr><tr>
             <td class="postblock"><label for="type">Type</label></td>
             <td valign="top"><select name="type" style="width: 100%;">
@@ -26,7 +26,7 @@
             <td>Imageboards show threads and recent replies on index pages,<br>while forums only show thread information on index pages.</td>
         </tr><tr>
             <td>&nbsp;</td>
-            <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if eq .Manage.Board nil}}Add{{else}}Edit{{end}}"></td>
+            <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if eq .Manage.Board nil}}Add{{else}}Update{{end}}"></td>
             <td>&nbsp;</td>
         </tr>
     </table>
@@ -43,13 +43,13 @@
     </tr>
     {{range $i, $board := .Manage.Boards}}
     <tr>
-        <td>/{{$board.Dir}}/</td>
+        <td><a href="/{{$board.Dir}}/">/{{$board.Dir}}/</a></td>
         <td>{{$board.Name}}</td>
         <td>{{$board.Description}}</td>
         <td>{{if eq $board.Type 0}}Imageboard{{else}}Forum{{end}}</td>
-        <td><a href="/imgboard/board/{{$board.ID}}">edit</a></td>
+        <td><a href="/imgboard/board/{{$board.ID}}">update</a> <a href="/imgboard/board/delete/{{$board.ID}}">delete</a></td>
     </tr>
     {{end}}
 </table>
 {{end}}
-{{template "manage_end" .}}{{end}}
+{{template "manage_end.gohtml" .}}

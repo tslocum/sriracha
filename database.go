@@ -12,6 +12,7 @@ import (
 
 	"github.com/alexedwards/argon2id"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 var argon2idParameters = &argon2id.Params{
@@ -23,17 +24,23 @@ var argon2idParameters = &argon2id.Params{
 }
 
 type Database struct {
-	conn   *pgx.Conn
+	conn   *pgxpool.Conn
 	plugin string
 }
 
-func connectDatabase(address string, username string, password string, schema string) (*Database, error) {
+func connectDatabase(address string, username string, password string, schema string) (*pgxpool.Pool, error) {
 	url := fmt.Sprintf("postgres://%s:%s@%s/%s", username, password, address, schema)
 
-	conn, err := pgx.Connect(context.Background(), url)
+	pool, err := pgxpool.New(context.Background(), url)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %s", err)
 	}
+
+	conn, err := pool.Acquire(context.Background())
+	if err != nil {
+		return nil, fmt.Errorf("failed to acquire conn: %s", err)
+	}
+	defer conn.Release()
 
 	db := &Database{
 		conn: conn,
@@ -50,7 +57,7 @@ func connectDatabase(address string, username string, password string, schema st
 	if err != nil {
 		return nil, fmt.Errorf("failed to create super-administrator account: %s", err)
 	}
-	return db, nil
+	return pool, nil
 }
 
 func (db *Database) initialize(schema string) error {

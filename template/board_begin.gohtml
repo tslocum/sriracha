@@ -15,17 +15,7 @@
     </head>
     <body>
 		<div class="adminbar">
-			{{if ne .Account nil}}
-			[<a href="/imgboard/" style="text-decoration: underline;">Status</a>]
-			[<a href="/imgboard/board/" style="text-decoration: underline;">Boards</a>] &middot;
-			[<a href="/imgboard/password/" style="text-decoration: underline;">Change Password</a>]
-			[<a href="/imgboard/logout/" style="text-decoration: underline;">Log Out</a>] &middot;
-			{{end}}
-			[<a href="/imgboard/" style="text-decoration: underline;">Return</a>]
+			[<a href="/imgboard/" style="text-decoration: underline;">Manage</a>]
 		</div>
-		<div class="logo">Sriracha</div>
+		<div class="logo">{{.Board.Name}}</div>
 		<hr width="90%">
-		<div class="replymode">Manage mode</div>
-		{{if ne .Info ""}}
-		<div class="manageinfo">{{.Info}}</div>
-		{{end}}

@@ -1,4 +1,4 @@
-{{define "manage_login"}}{{template "manage_begin" .}}
+{{template "manage_begin.gohtml" .}}
 <form method="post">
     <input type="hidden" name="action" value="manage">
     <fieldset>
@@ -13,4 +13,4 @@
         </div>
     </fieldset>
 </form>
-{{template "manage_end" .}}{{end}}
+{{template "manage_end.gohtml" .}}

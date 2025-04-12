@@ -1,6 +1,7 @@
 package sriracha
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"html/template"
@@ -16,6 +17,7 @@ import (
 	"strings"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"golang.org/x/sys/unix"
 	"gopkg.in/yaml.v3"
 )
@@ -28,7 +30,7 @@ type Server struct {
 	Boards []*Board
 
 	config ServerConfig
-	db     *Database
+	dbPool *pgxpool.Pool
 	tpl    *template.Template
 }
 
@@ -74,7 +76,7 @@ func (s *Server) parseConfig(configFile string) error {
 	return nil
 }
 
-func (s *Server) buildData(w http.ResponseWriter, r *http.Request) *templateData {
+func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request) *templateData {
 	if strings.HasPrefix(r.URL.Path, "/imgboard/logout/") {
 		http.SetCookie(w, &http.Cookie{
 			Name:  "sriracha_session",
@@ -92,7 +94,7 @@ func (s *Server) buildData(w http.ResponseWriter, r *http.Request) *templateData
 		password := r.FormValue("password")
 		if len(password) != 0 {
 			var err error
-			account, err := s.db.accountByUsernamePassword(username, password)
+			account, err := db.accountByUsernamePassword(username, password)
 			if err != nil {
 				log.Fatal(err)
 			} else if account != nil {
@@ -117,7 +119,7 @@ func (s *Server) buildData(w http.ResponseWriter, r *http.Request) *templateData
 
 	cookies := r.CookiesNamed("sriracha_session")
 	if len(cookies) > 0 {
-		account, err := s.db.accountBySessionKey(cookies[0].Value)
+		account, err := db.accountBySessionKey(cookies[0].Value)
 		if err != nil {
 			log.Fatal(err)
 		} else if account != nil {
@@ -130,18 +132,40 @@ func (s *Server) buildData(w http.ResponseWriter, r *http.Request) *templateData
 	return guestData
 }
 
-func (s *Server) writeIndex() {
+func (s *Server) writeThread(post *Post) {
+	// TODO
 }
 
-func (s *Server) servePost(w http.ResponseWriter, r *http.Request) {
+func (s *Server) writeIndexes(board *Board) {
+	f, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "index.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	data := &templateData{
+		Board:  board,
+		Manage: &manageData{},
+	}
+	err = s.tpl.ExecuteTemplate(f, "board_index.gohtml", data)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
-func (s *Server) serveManage(w http.ResponseWriter, r *http.Request) {
+func (s *Server) writeBoard(board *Board) {
+	s.writeIndexes(board)
+	// for all threads, write thread
+}
+
+func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request) {
+}
+
+func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Request) {
 	var page string
-	data := s.buildData(w, r)
+	data := s.buildData(db, w, r)
 	defer func() {
 		w.Header().Set("Content-Type", "text/html")
-		err := s.tpl.ExecuteTemplate(w, page, data)
+		err := s.tpl.ExecuteTemplate(w, page+".gohtml", data)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
@@ -155,22 +179,15 @@ func (s *Server) serveManage(w http.ResponseWriter, r *http.Request) {
 
 				boardID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/board/"))
 				if err == nil && boardID > 0 {
-					data.Manage.Board, err = s.db.boardByID(boardID)
+					data.Manage.Board, err = db.boardByID(boardID)
 					if err != nil {
 						log.Fatal(err)
 					}
 
 					if data.Manage.Board != nil && r.Method == http.MethodPost {
 						oldDir := data.Manage.Board.Dir
-						data.Manage.Board.Dir = strings.TrimSpace(r.FormValue("dir"))
-						data.Manage.Board.Name = strings.TrimSpace(r.FormValue("name"))
-						data.Manage.Board.Description = strings.TrimSpace(r.FormValue("description"))
-						typeString := r.FormValue("type")
-						if typeString == "1" {
-							data.Manage.Board.Type = TypeForum
-						} else {
-							data.Manage.Board.Type = TypeImageboard
-						}
+						data.Manage.Board.loadForm(r)
+
 						err := data.Manage.Board.validate()
 						if err != nil {
 							page = "manage_error"
@@ -191,7 +208,7 @@ func (s *Server) serveManage(w http.ResponseWriter, r *http.Request) {
 							}
 						}
 
-						err = s.db.updateBoard(data.Manage.Board)
+						err = db.updateBoard(data.Manage.Board)
 						if err != nil {
 							page = "manage_error"
 							data.Error = err.Error()
@@ -207,23 +224,16 @@ func (s *Server) serveManage(w http.ResponseWriter, r *http.Request) {
 							}
 						}
 
+						s.writeBoard(data.Manage.Board)
 						http.Redirect(w, r, "/imgboard/board/", http.StatusFound)
 						return
 					}
 				} else {
 					if r.Method == http.MethodPost {
-						b := &Board{
-							Dir:         strings.TrimSpace(r.FormValue("dir")),
-							Name:        strings.TrimSpace(r.FormValue("name")),
-							Description: strings.TrimSpace(r.FormValue("description")),
-							Type:        TypeImageboard,
-						}
-						typeString := r.FormValue("type")
-						if typeString == "1" {
-							b.Type = TypeForum
-						}
+						b := &Board{}
+						b.loadForm(r)
 
-						err := data.Manage.Board.validate()
+						err := b.validate()
 						if err != nil {
 							page = "manage_error"
 							data.Error = err.Error()
@@ -241,17 +251,18 @@ func (s *Server) serveManage(w http.ResponseWriter, r *http.Request) {
 							return
 						}
 
-						err = s.db.addBoard(b)
+						err = db.addBoard(b)
 						if err != nil {
 							page = "manage_error"
 							data.Error = err.Error()
 							return
 						}
 
+						s.writeBoard(b)
 						http.Redirect(w, r, "/imgboard/board/", http.StatusFound)
 						return
 					}
-					data.Manage.Boards, err = s.db.allBoards()
+					data.Manage.Boards, err = db.allBoards()
 					if err != nil {
 						log.Fatal(err)
 					}
@@ -271,11 +282,32 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		values := r.URL.Query()
 		action = values.Get("action")
 	}
+
+	conn, err := s.dbPool.Acquire(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Release()
+
+	_, err = conn.Exec(context.Background(), "BEGIN")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	db := &Database{
+		conn: conn,
+	}
+
 	switch action {
 	case "post":
-		s.servePost(w, r)
+		s.servePost(db, w, r)
 	default:
-		s.serveManage(w, r)
+		s.serveManage(db, w, r)
+	}
+
+	_, err = conn.Exec(context.Background(), "COMMIT")
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
@@ -288,13 +320,7 @@ func (s *Server) listen() error {
 	mux := http.NewServeMux()
 	mux.Handle("/css/", http.FileServerFS(subFS))
 	mux.HandleFunc("/imgboard/", s.serve)
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/" && r.URL.Path != "" {
-			http.NotFound(w, r)
-			return
-		}
-		s.serve(w, r)
-	})
+	mux.Handle("/", http.FileServer(http.Dir(s.config.Root)))
 
 	fmt.Printf("Serving http://%s\n", s.config.Serve)
 	return http.ListenAndServe(s.config.Serve, mux)
@@ -438,7 +464,7 @@ func (s *Server) Run() error {
 		}
 	}
 
-	s.db, err = connectDatabase(s.config.Address, s.config.Username, s.config.Password, s.config.Schema)
+	s.dbPool, err = connectDatabase(s.config.Address, s.config.Username, s.config.Password, s.config.Schema)
 	if err != nil {
 		return err
 	}
