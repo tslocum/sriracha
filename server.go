@@ -272,6 +272,8 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 		s.serveChangePassword(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/imgboard/account"):
 		s.serveAccount(data, db, w, r)
+	case strings.HasPrefix(r.URL.Path, "/imgboard/ban"):
+		s.serveBan(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/imgboard/board"):
 		s.serveBoard(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/imgboard/keyword"):

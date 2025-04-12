@@ -8,6 +8,8 @@ var templateFS embed.FS
 type manageData struct {
 	Account  *Account
 	Accounts []*Account
+	Ban      *Ban
+	Bans     []*Ban
 	Board    *Board
 	Boards   []*Board
 	Keyword  *Keyword
