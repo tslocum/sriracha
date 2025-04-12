@@ -6,17 +6,23 @@ import "embed"
 var templateFS embed.FS
 
 type manageData struct {
-	Board  *Board
-	Boards []*Board
+	Account  *Account
+	Accounts []*Account
+	Board    *Board
+	Boards   []*Board
 }
 
 type templateData struct {
 	Account  *Account
 	Info     string
-	Error    string
 	Board    *Board
 	Manage   *manageData
 	Template string
+}
+
+func (data *templateData) Error(message string) {
+	data.Template = "manage_error"
+	data.Info = message
 }
 
 var guestData = &templateData{

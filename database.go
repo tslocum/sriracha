@@ -9,6 +9,7 @@ import (
 	"runtime/debug"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/alexedwards/argon2id"
 	"github.com/jackc/pgx/v5"
@@ -119,6 +120,14 @@ func (db *Database) compareHash(data string, hash string) bool {
 	return match
 }
 
+func (db *Database) addAccount(a *Account, password string) error {
+	_, err := db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, '')", a.Username, db.hashData(password), a.Role)
+	if err != nil {
+		return fmt.Errorf("failed to insert account: %s", err)
+	}
+	return nil
+}
+
 func (db *Database) createSuperAdminAccount() error {
 	var numAdmins int
 	err := db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM account WHERE role = $1", RoleSuperAdmin).Scan(&numAdmins)
@@ -144,7 +153,111 @@ func (db *Database) createSuperAdminAccount() error {
 	return nil
 }
 
-func (db *Database) accountByUsernamePassword(username string, password string) (*Account, error) {
+func (db *Database) accountByID(id int) (*Account, error) {
+	a := &Account{}
+	var password string
+	err := db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE id = $1", id).Scan(&a.ID, &a.Username, &password, &a.Role, &a.LastActive, &a.Session)
+	if err == pgx.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
+		return nil, fmt.Errorf("failed to select account: %s", err)
+	}
+	return a, nil
+}
+
+func (db *Database) accountByUsername(username string) (*Account, error) {
+	a := &Account{}
+	var passwordHash string
+	err := db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE username = $1 AND role != $2", username, RoleDisabled).Scan(&a.ID, &a.Username, &passwordHash, &a.Role, &a.LastActive, &a.Session)
+	if err == pgx.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
+		return nil, fmt.Errorf("failed to select account: %s", err)
+	} else if a.ID == 0 {
+		return nil, nil
+	}
+	return a, nil
+}
+
+func (db *Database) accountBySessionKey(sessionKey string) (*Account, error) {
+	if strings.TrimSpace(sessionKey) == "" {
+		return nil, nil
+	}
+
+	a := &Account{}
+	var passwordHash string
+	err := db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE session = $1 AND role != $2", sessionKey, RoleDisabled).Scan(&a.ID, &a.Username, &passwordHash, &a.Role, &a.LastActive, &a.Session)
+	if err == pgx.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
+		return nil, fmt.Errorf("failed to select account: %s", err)
+	}
+	return a, nil
+}
+
+func (db *Database) allAccounts() ([]*Account, error) {
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM account ORDER BY role ASC, username ASC")
+	if err != nil {
+		return nil, fmt.Errorf("failed to select accounts: %s", err)
+	}
+	var accounts []*Account
+	for rows.Next() {
+		a := &Account{}
+		var password string
+		err := rows.Scan(&a.ID, &a.Username, &password, &a.Role, &a.LastActive, &a.Session)
+		if err != nil {
+			return nil, err
+		}
+		accounts = append(accounts, a)
+	}
+	return accounts, nil
+}
+
+func (db *Database) updateAccountUsername(a *Account) error {
+	if a == nil || a.ID <= 0 {
+		return fmt.Errorf("invalid account")
+	}
+	_, err := db.conn.Exec(context.Background(), "UPDATE account SET username = $1, session = '' WHERE id = $2", a.Username, a.ID)
+	if err != nil {
+		return fmt.Errorf("failed to update account: %s", err)
+	}
+	return nil
+}
+
+func (db *Database) updateAccountRole(a *Account) error {
+	if a == nil || a.ID <= 0 {
+		return fmt.Errorf("invalid account")
+	}
+	_, err := db.conn.Exec(context.Background(), "UPDATE account SET role = $1 WHERE id = $2", a.Role, a.ID)
+	if err != nil {
+		return fmt.Errorf("failed to update account: %s", err)
+	}
+	return nil
+}
+
+func (db *Database) updateAccountPassword(id int, password string) error {
+	if id <= 0 {
+		return fmt.Errorf("invalid account ID %d", id)
+	}
+	_, err := db.conn.Exec(context.Background(), "UPDATE account SET password = $1, session = '' WHERE id = $2", db.hashData(password), id)
+	if err != nil {
+		return fmt.Errorf("failed to update account: %s", err)
+	}
+	return nil
+}
+
+func (db *Database) updateAccountLastActive(id int) error {
+	if id <= 0 {
+		return fmt.Errorf("invalid account ID %d", id)
+	}
+	_, err := db.conn.Exec(context.Background(), "UPDATE account SET lastactive = $1 WHERE id = $2", time.Now().Unix(), id)
+	if err != nil {
+		return fmt.Errorf("failed to update account: %s", err)
+	}
+	return nil
+}
+
+func (db *Database) loginAccount(username string, password string) (*Account, error) {
 	a := &Account{}
 	var passwordHash string
 	err := db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE username = $1 AND role != $2", username, RoleDisabled).Scan(&a.ID, &a.Username, &passwordHash, &a.Role, &a.LastActive, &a.Session)
@@ -173,48 +286,10 @@ func (db *Database) accountByUsernamePassword(username string, password string) 
 	return a, nil
 }
 
-func (db *Database) accountBySessionKey(sessionKey string) (*Account, error) {
-	if strings.TrimSpace(sessionKey) == "" {
-		return nil, nil
-	}
-
-	a := &Account{}
-	var passwordHash string
-	err := db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE session = $1 AND role != $2", sessionKey, RoleDisabled).Scan(&a.ID, &a.Username, &passwordHash, &a.Role, &a.LastActive, &a.Session)
-	if err == pgx.ErrNoRows {
-		return nil, nil
-	} else if err != nil {
-		return nil, fmt.Errorf("failed to select account: %s", err)
-	}
-	return a, nil
-}
-
-func (db *Database) updateAccountPassword(id int, password string) error {
-	if id <= 0 {
-		return fmt.Errorf("invalid account ID %d", id)
-	}
-	_, err := db.conn.Exec(context.Background(), "UPDATE account SET password = $1, session = '' WHERE id = $2", db.hashData(password), id)
-	if err != nil {
-		return fmt.Errorf("failed to update account: %s", err)
-	}
-	return nil
-}
-
 func (db *Database) addBoard(b *Board) error {
 	_, err := db.conn.Exec(context.Background(), "INSERT INTO board VALUES (DEFAULT, $1, $2, $3, $4)", b.Dir, b.Name, b.Description, b.Type)
 	if err != nil {
 		return fmt.Errorf("failed to insert board: %s", err)
-	}
-	return nil
-}
-
-func (db *Database) updateBoard(b *Board) error {
-	if b.ID <= 0 {
-		return fmt.Errorf("invalid board ID %d", b.ID)
-	}
-	_, err := db.conn.Exec(context.Background(), "UPDATE board SET dir = $1, name = $2, description = $3, type = $4 WHERE id = $5", b.Dir, b.Name, b.Description, b.Type, b.ID)
-	if err != nil {
-		return fmt.Errorf("failed to update board: %s", err)
 	}
 	return nil
 }
@@ -233,7 +308,7 @@ func (db *Database) boardByID(id int) (*Board, error) {
 func (db *Database) allBoards() ([]*Board, error) {
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM board ORDER BY dir ASC")
 	if err != nil {
-		return nil, fmt.Errorf("failed to insert board: %s", err)
+		return nil, fmt.Errorf("failed to select all boards: %s", err)
 	}
 	var boards []*Board
 	for rows.Next() {
@@ -245,6 +320,17 @@ func (db *Database) allBoards() ([]*Board, error) {
 		boards = append(boards, b)
 	}
 	return boards, nil
+}
+
+func (db *Database) updateBoard(b *Board) error {
+	if b.ID <= 0 {
+		return fmt.Errorf("invalid board ID %d", b.ID)
+	}
+	_, err := db.conn.Exec(context.Background(), "UPDATE board SET dir = $1, name = $2, description = $3, type = $4 WHERE id = $5", b.Dir, b.Name, b.Description, b.Type, b.ID)
+	if err != nil {
+		return fmt.Errorf("failed to update board: %s", err)
+	}
+	return nil
 }
 
 func (db *Database) configKey(key string) string {

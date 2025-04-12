@@ -24,7 +24,7 @@ import (
 
 const manageTemplate = "manage"
 
-var alphaNumericAndSymbols = regexp.MustCompile(`^[A-Za-z_-]+$`)
+var alphaNumericAndSymbols = regexp.MustCompile(`^[0-9A-Za-z_-]+$`)
 
 type Server struct {
 	Boards []*Board
@@ -87,33 +87,36 @@ func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request)
 		return guestData
 	}
 
-	var failedLogin bool
-	username := r.FormValue("username")
-	if len(username) != 0 {
-		failedLogin = true
-		password := r.FormValue("password")
-		if len(password) != 0 {
-			var err error
-			account, err := db.accountByUsernamePassword(username, password)
-			if err != nil {
-				log.Fatal(err)
-			} else if account != nil {
-				http.SetCookie(w, &http.Cookie{
-					Name:  "sriracha_session",
-					Value: account.Session,
-					Path:  "/",
-				})
-				return &templateData{
-					Account: account,
-					Manage:  &manageData{},
+	if r.URL.Path == "/imgboard/" || r.URL.Path == "/imgboard" {
+		var failedLogin bool
+		username := r.FormValue("username")
+		if len(username) != 0 {
+			failedLogin = true
+			password := r.FormValue("password")
+			if len(password) != 0 {
+				var err error
+				account, err := db.loginAccount(username, password)
+				if err != nil {
+					log.Fatal(err)
+				} else if account != nil {
+					http.SetCookie(w, &http.Cookie{
+						Name:  "sriracha_session",
+						Value: account.Session,
+						Path:  "/",
+					})
+					return &templateData{
+						Account: account,
+						Manage:  &manageData{},
+					}
 				}
 			}
 		}
-	}
-	if failedLogin {
-		return &templateData{
-			Error:  "Invalid username or password.",
-			Manage: &manageData{},
+		if failedLogin {
+			return &templateData{
+				Info:     "Invalid username or password.",
+				Template: "manage_error",
+				Manage:   &manageData{},
+			}
 		}
 	}
 
@@ -165,23 +168,20 @@ func (s *Server) serveChangePassword(data *templateData, db *Database, w http.Re
 	if r.Method != http.MethodPost {
 		return
 	} else if strings.TrimSpace(oldPass) == "" || strings.TrimSpace(newPass) == "" || strings.TrimSpace(confirmPass) == "" {
-		data.Error = "All fields are required"
-		data.Template = "manage_error"
+		data.Error("All fields are required")
 		return
 	}
 
 	if newPass != confirmPass {
-		data.Error = "New passwords do not match"
-		data.Template = "manage_error"
+		data.Error("New passwords do not match")
 		return
 	}
 
-	match, err := db.accountByUsernamePassword(data.Account.Username, oldPass)
+	match, err := db.loginAccount(data.Account.Username, oldPass)
 	if err != nil {
 		log.Fatal(err)
 	} else if match == nil {
-		data.Error = "Current password is incorrect"
-		data.Template = "manage_error"
+		data.Error("Current password is incorrect")
 		return
 	}
 
@@ -191,6 +191,92 @@ func (s *Server) serveChangePassword(data *templateData, db *Database, w http.Re
 	}
 
 	http.Redirect(w, r, "/imgboard/", http.StatusFound)
+}
+
+func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
+	data.Template = "manage_account"
+
+	accountID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/account/"))
+	if err == nil && accountID > 0 {
+		data.Manage.Account, err = db.accountByID(accountID)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if data.Manage.Account != nil && r.Method == http.MethodPost {
+			oldUsername := data.Manage.Account.Username
+			data.Manage.Account.loadForm(r)
+
+			err := data.Manage.Account.validate()
+			if err != nil {
+				data.Error(err.Error())
+				return
+			}
+
+			if data.Manage.Account.Username != oldUsername {
+				match, err := db.accountByUsername(data.Manage.Account.Username)
+				if err != nil {
+					log.Fatal(err)
+				} else if match != nil {
+					data.Error("New username already taken")
+					return
+				}
+
+				err = db.updateAccountUsername(data.Manage.Account)
+				if err != nil {
+					data.Error(err.Error())
+					return
+				}
+			}
+
+			err = db.updateAccountRole(data.Manage.Account)
+			if err != nil {
+				data.Error(err.Error())
+				return
+			}
+
+			password := r.FormValue("password")
+			if strings.TrimSpace(password) != "" {
+				err = db.updateAccountPassword(data.Manage.Account.ID, password)
+				if err != nil {
+					data.Error(err.Error())
+					return
+				}
+			}
+
+			http.Redirect(w, r, "/imgboard/account/", http.StatusFound)
+			return
+		}
+		return
+	}
+
+	if r.Method == http.MethodPost {
+		a := &Account{}
+		a.loadForm(r)
+
+		err := a.validate()
+		if err != nil {
+			data.Error(err.Error())
+			return
+		}
+
+		password := r.FormValue("password")
+		if strings.TrimSpace(password) == "" {
+			data.Error("A password is required")
+			return
+		}
+
+		err = db.addAccount(a, password)
+		if err != nil {
+			data.Error(err.Error())
+			return
+		}
+	}
+
+	data.Manage.Accounts, err = db.allAccounts()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
@@ -209,8 +295,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 
 			err := data.Manage.Board.validate()
 			if err != nil {
-				data.Template = "manage_error"
-				data.Error = err.Error()
+				data.Error(err.Error())
 				return
 			}
 
@@ -221,24 +306,21 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 						log.Fatal(err)
 					}
 				} else {
-					data.Template = "manage_error"
-					data.Error = "New directory already exists"
+					data.Error("New directory already exists")
 					return
 				}
 			}
 
 			err = db.updateBoard(data.Manage.Board)
 			if err != nil {
-				data.Template = "manage_error"
-				data.Error = err.Error()
+				data.Error(err.Error())
 				return
 			}
 
 			if data.Manage.Board.Dir != oldDir {
 				err := os.Rename(filepath.Join(s.config.Root, oldDir), filepath.Join(s.config.Root, data.Manage.Board.Dir))
 				if err != nil {
-					data.Template = "manage_error"
-					data.Error = fmt.Sprintf("Failed to rename board directory: %s", err)
+					data.Error(fmt.Sprintf("Failed to rename board directory: %s", err))
 					return
 				}
 			}
@@ -256,26 +338,23 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 
 		err := b.validate()
 		if err != nil {
-			data.Template = "manage_error"
-			data.Error = err.Error()
+			data.Error(err.Error())
 			return
 		}
 
 		err = os.Mkdir(filepath.Join(s.config.Root, b.Dir), 0755)
 		if err != nil {
-			data.Template = "manage_error"
 			if os.IsExist(err) {
-				data.Error = fmt.Sprintf("Board directory %s already exists.", b.Dir)
+				data.Error(fmt.Sprintf("Board directory %s already exists.", b.Dir))
 			} else {
-				data.Error = fmt.Sprintf("Failed to create board directory %s: %s", b.Dir, err)
+				data.Error(fmt.Sprintf("Failed to create board directory %s: %s", b.Dir, err))
 			}
 			return
 		}
 
 		err = db.addBoard(b)
 		if err != nil {
-			data.Template = "manage_error"
-			data.Error = err.Error()
+			data.Error(err.Error())
 			return
 		}
 
@@ -299,22 +378,33 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}()
-	if len(data.Error) != 0 {
+
+	if len(data.Info) != 0 {
 		data.Template = "manage_error"
-	} else {
-		if data.Account != nil {
-			if strings.HasPrefix(r.URL.Path, "/imgboard/password") {
-				s.serveChangePassword(data, db, w, r)
-				return
-			} else if strings.HasPrefix(r.URL.Path, "/imgboard/board") {
-				s.serveBoard(data, db, w, r)
-				return
-			} else {
-				data.Template = "manage_index"
-			}
-		} else {
-			data.Template = "manage_login"
+		return
+	}
+
+	if data.Account != nil {
+		err := db.updateAccountLastActive(data.Account.ID)
+		if err != nil {
+			log.Fatal(err)
 		}
+	}
+
+	data.Template = "manage_login"
+
+	if data.Account == nil {
+		return
+	}
+	switch {
+	case strings.HasPrefix(r.URL.Path, "/imgboard/password"):
+		s.serveChangePassword(data, db, w, r)
+	case strings.HasPrefix(r.URL.Path, "/imgboard/account"):
+		s.serveAccount(data, db, w, r)
+	case strings.HasPrefix(r.URL.Path, "/imgboard/board"):
+		s.serveBoard(data, db, w, r)
+	default:
+		data.Template = "manage_index"
 	}
 }
 

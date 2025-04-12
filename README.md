@@ -22,7 +22,7 @@ directory.
 
 To build a plugin, run the following commands:
 
-```bash
+```
 cd /path/to/sriracha/plugin/fortune
 go build -buildmode=plugin
 ```
@@ -31,7 +31,7 @@ This will compile the fortune plugin as `fortune.so`.
 
 To load a plugin, run the following command:
 
-```bash
+```
 sriracha --config=/path/to/config.yml /path/to/fortune.so
 ```
 

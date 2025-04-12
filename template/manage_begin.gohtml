@@ -17,6 +17,7 @@
 		<div class="adminbar">
 			{{if ne .Account nil}}
 			[<a href="/imgboard/" style="text-decoration: underline;">Status</a>]
+			[<a href="/imgboard/account/" style="text-decoration: underline;">Accounts</a>]
 			[<a href="/imgboard/board/" style="text-decoration: underline;">Boards</a>] &middot;
 			[<a href="/imgboard/password/" style="text-decoration: underline;">Change Password</a>]
 			[<a href="/imgboard/logout/" style="text-decoration: underline;">Log Out</a>] &middot;
@@ -26,6 +27,6 @@
 		<div class="logo">Sriracha</div>
 		<hr width="90%">
 		<div class="replymode">Manage mode</div>
-		{{if ne .Info ""}}
+		{{if and (ne .Info "") (ne .Template "manage_error")}}
 		<div class="manageinfo">{{.Info}}</div>
 		{{end}}

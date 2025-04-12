@@ -1,7 +1,7 @@
 {{template "manage_begin.gohtml" .}}
 <form method="post">
     <fieldset>
-    <legend>{{if eq .Manage.Board nil}}Add board{{else}}Update /{{.Manage.Board.Dir}}/ {{.Manage.Board.Name}}{{end}}</legend>
+    <legend>{{if eq .Manage.Board nil}}Add Board{{else}}Update /{{.Manage.Board.Dir}}/ {{.Manage.Board.Name}}{{end}}</legend>
     <table border="0">
         <tr>
             <td class="postblock"><label for="dir">Directory</label></td>
