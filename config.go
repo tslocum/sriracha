@@ -1,6 +1,6 @@
 package sriracha
 
-type ServerConfig struct {
+type Config struct {
 	Root  string
 	Serve string
 	Salt  string

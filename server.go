@@ -29,7 +29,7 @@ var alphaNumericAndSymbols = regexp.MustCompile(`^[A-Za-z_-]+$`)
 type Server struct {
 	Boards []*Board
 
-	config ServerConfig
+	config Config
 	dbPool *pgxpool.Pool
 	tpl    *template.Template
 }
@@ -45,7 +45,7 @@ func (s *Server) parseConfig(configFile string) error {
 		return err
 	}
 
-	var config ServerConfig
+	var config Config
 	err = yaml.Unmarshal(buf, &config)
 	if err != nil {
 		return err
