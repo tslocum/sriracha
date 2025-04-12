@@ -1,8 +1,10 @@
 package sriracha
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -15,7 +17,31 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 		log.Fatal(err)
 	}
 
-	keywordID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/keyword/"))
+	keywordID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/keyword/check/"))
+	if err == nil && keywordID > 0 {
+		data.Template = "manage_keyword_check"
+		data.Manage.Keyword, err = db.keywordByID(keywordID)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if data.Manage.Keyword != nil && r.Method == http.MethodPost {
+			rgxp, err := regexp.Compile(data.Manage.Keyword.Text)
+			if err != nil {
+				data.Error(fmt.Sprintf("Failed to compile regular expression: %s", err))
+			}
+
+			message := r.FormValue("message")
+			match := rgxp.MatchString(message)
+			if match {
+				data.Info = "Result: MATCH FOUND"
+			} else {
+				data.Info = "Result: NO MATCH FOUND"
+			}
+		}
+		return
+	}
+
+	keywordID, err = strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/keyword/"))
 	if err == nil && keywordID > 0 {
 		data.Manage.Keyword, err = db.keywordByID(keywordID)
 		if err != nil {

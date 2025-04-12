@@ -51,7 +51,7 @@
         <td>{{$keyword.Text}}</td>
         <td>{{$keyword.ActionLabel}}</td>
         <td>{{template "manage_print_board.gohtml" $keyword.Boards}}</td>
-        <td><a href="/imgboard/keyword/{{$keyword.ID}}">update</a> <a href="/imgboard/keyword/delete/{{$keyword.ID}}">delete</a></td>
+        <td><a href="/imgboard/keyword/check/{{$keyword.ID}}">check</a> <a href="/imgboard/keyword/{{$keyword.ID}}">update</a> <a href="/imgboard/keyword/delete/{{$keyword.ID}}">delete</a></td>
     </tr>
     {{end}}
 </table>

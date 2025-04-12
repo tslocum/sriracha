@@ -1,0 +1,24 @@
+{{template "manage_begin.gohtml" .}}
+<form method="post">
+    <fieldset>
+    <legend>Check {{.Manage.Keyword.Text}}</legend>
+    <table border="0">
+        <tr>
+            <td class="postblock"><label for="keyword">Keyword</label></td>
+            <td><input type="text" name="keyword" value="{{.Manage.Keyword.Text}}" disabled></td>
+            <td><a href="https://en.wikipedia.org/wiki/Regular_expression">Regular expression</a> to search for when a new post is created.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="message">Message</label></td>
+            <td><textarea name="message" rows="4" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;width: 100%;"></textarea></td>
+            <td valign="top">Text to check for a keyword match.</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="Check"></td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+    </fieldset>
+</form>
+{{template "manage_end.gohtml" .}}
