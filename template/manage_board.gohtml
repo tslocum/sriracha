@@ -11,12 +11,12 @@
         <tr>
             <td class="postblock"><label for="name">Name</label></td>
             <td><input type="text" name="name" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Name}}{{end}}"></td>
-            <td>The name of the board, displayed in page title and header.</td>
+            <td>The name of the board, which is displayed in the page title and header.</td>
         </tr>
         <tr>
             <td class="postblock"><label for="description">Description</label></td>
             <td><input type="text" name="description" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Description}}{{end}}"></td>
-            <td>The HTML page description, which is used by search engines.</td>
+            <td>The board description, which is used by search engines.</td>
         </tr><tr>
             <td class="postblock"><label for="type">Type</label></td>
             <td valign="top"><select name="type" style="width: 100%;">

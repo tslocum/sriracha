@@ -11,11 +11,12 @@ type manageData struct {
 }
 
 type templateData struct {
-	Account *Account
-	Info    string
-	Error   string
-	Board   *Board
-	Manage  *manageData
+	Account  *Account
+	Info     string
+	Error    string
+	Board    *Board
+	Manage   *manageData
+	Template string
 }
 
 var guestData = &templateData{

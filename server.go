@@ -157,121 +157,163 @@ func (s *Server) writeBoard(board *Board) {
 	// for all threads, write thread
 }
 
-func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request) {
+func (s *Server) serveChangePassword(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
+	oldPass := r.FormValue("old")
+	newPass := r.FormValue("new")
+	confirmPass := r.FormValue("confirm")
+	data.Template = "manage_password"
+	if r.Method != http.MethodPost {
+		return
+	} else if strings.TrimSpace(oldPass) == "" || strings.TrimSpace(newPass) == "" || strings.TrimSpace(confirmPass) == "" {
+		data.Error = "All fields are required"
+		data.Template = "manage_error"
+		return
+	}
+
+	if newPass != confirmPass {
+		data.Error = "New passwords do not match"
+		data.Template = "manage_error"
+		return
+	}
+
+	match, err := db.accountByUsernamePassword(data.Account.Username, oldPass)
+	if err != nil {
+		log.Fatal(err)
+	} else if match == nil {
+		data.Error = "Current password is incorrect"
+		data.Template = "manage_error"
+		return
+	}
+
+	err = db.updateAccountPassword(match.ID, newPass)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	http.Redirect(w, r, "/imgboard/", http.StatusFound)
+}
+
+func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
+	data.Template = "manage_board"
+
+	boardID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/board/"))
+	if err == nil && boardID > 0 {
+		data.Manage.Board, err = db.boardByID(boardID)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if data.Manage.Board != nil && r.Method == http.MethodPost {
+			oldDir := data.Manage.Board.Dir
+			data.Manage.Board.loadForm(r)
+
+			err := data.Manage.Board.validate()
+			if err != nil {
+				data.Template = "manage_error"
+				data.Error = err.Error()
+				return
+			}
+
+			if data.Manage.Board.Dir != oldDir {
+				_, err := os.Stat(filepath.Join(s.config.Root, data.Manage.Board.Dir))
+				if err != nil {
+					if !os.IsNotExist(err) {
+						log.Fatal(err)
+					}
+				} else {
+					data.Template = "manage_error"
+					data.Error = "New directory already exists"
+					return
+				}
+			}
+
+			err = db.updateBoard(data.Manage.Board)
+			if err != nil {
+				data.Template = "manage_error"
+				data.Error = err.Error()
+				return
+			}
+
+			if data.Manage.Board.Dir != oldDir {
+				err := os.Rename(filepath.Join(s.config.Root, oldDir), filepath.Join(s.config.Root, data.Manage.Board.Dir))
+				if err != nil {
+					data.Template = "manage_error"
+					data.Error = fmt.Sprintf("Failed to rename board directory: %s", err)
+					return
+				}
+			}
+
+			s.writeBoard(data.Manage.Board)
+			http.Redirect(w, r, "/imgboard/board/", http.StatusFound)
+			return
+		}
+		return
+	}
+
+	if r.Method == http.MethodPost {
+		b := &Board{}
+		b.loadForm(r)
+
+		err := b.validate()
+		if err != nil {
+			data.Template = "manage_error"
+			data.Error = err.Error()
+			return
+		}
+
+		err = os.Mkdir(filepath.Join(s.config.Root, b.Dir), 0755)
+		if err != nil {
+			data.Template = "manage_error"
+			if os.IsExist(err) {
+				data.Error = fmt.Sprintf("Board directory %s already exists.", b.Dir)
+			} else {
+				data.Error = fmt.Sprintf("Failed to create board directory %s: %s", b.Dir, err)
+			}
+			return
+		}
+
+		err = db.addBoard(b)
+		if err != nil {
+			data.Template = "manage_error"
+			data.Error = err.Error()
+			return
+		}
+
+		s.writeBoard(b)
+		http.Redirect(w, r, "/imgboard/board/", http.StatusFound)
+		return
+	}
+
+	data.Manage.Boards, err = db.allBoards()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Request) {
-	var page string
 	data := s.buildData(db, w, r)
 	defer func() {
 		w.Header().Set("Content-Type", "text/html")
-		err := s.tpl.ExecuteTemplate(w, page+".gohtml", data)
+		err := s.tpl.ExecuteTemplate(w, data.Template+".gohtml", data)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}()
 	if len(data.Error) != 0 {
-		page = "manage_error"
+		data.Template = "manage_error"
 	} else {
 		if data.Account != nil {
-			if strings.HasPrefix(r.URL.Path, "/imgboard/board") {
-				page = "manage_board"
-
-				boardID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/board/"))
-				if err == nil && boardID > 0 {
-					data.Manage.Board, err = db.boardByID(boardID)
-					if err != nil {
-						log.Fatal(err)
-					}
-
-					if data.Manage.Board != nil && r.Method == http.MethodPost {
-						oldDir := data.Manage.Board.Dir
-						data.Manage.Board.loadForm(r)
-
-						err := data.Manage.Board.validate()
-						if err != nil {
-							page = "manage_error"
-							data.Error = err.Error()
-							return
-						}
-
-						if data.Manage.Board.Dir != oldDir {
-							_, err := os.Stat(filepath.Join(s.config.Root, data.Manage.Board.Dir))
-							if err != nil {
-								if !os.IsNotExist(err) {
-									log.Fatal(err)
-								}
-							} else {
-								page = "manage_error"
-								data.Error = "New directory already exists"
-								return
-							}
-						}
-
-						err = db.updateBoard(data.Manage.Board)
-						if err != nil {
-							page = "manage_error"
-							data.Error = err.Error()
-							return
-						}
-
-						if data.Manage.Board.Dir != oldDir {
-							err := os.Rename(filepath.Join(s.config.Root, oldDir), filepath.Join(s.config.Root, data.Manage.Board.Dir))
-							if err != nil {
-								page = "manage_error"
-								data.Error = fmt.Sprintf("Failed to rename board directory: %s", err)
-								return
-							}
-						}
-
-						s.writeBoard(data.Manage.Board)
-						http.Redirect(w, r, "/imgboard/board/", http.StatusFound)
-						return
-					}
-				} else {
-					if r.Method == http.MethodPost {
-						b := &Board{}
-						b.loadForm(r)
-
-						err := b.validate()
-						if err != nil {
-							page = "manage_error"
-							data.Error = err.Error()
-							return
-						}
-
-						err = os.Mkdir(filepath.Join(s.config.Root, b.Dir), 0755)
-						if err != nil {
-							page = "manage_error"
-							if os.IsExist(err) {
-								data.Error = fmt.Sprintf("Board directory %s already exists.", b.Dir)
-							} else {
-								data.Error = fmt.Sprintf("Failed to create board directory %s: %s", b.Dir, err)
-							}
-							return
-						}
-
-						err = db.addBoard(b)
-						if err != nil {
-							page = "manage_error"
-							data.Error = err.Error()
-							return
-						}
-
-						s.writeBoard(b)
-						http.Redirect(w, r, "/imgboard/board/", http.StatusFound)
-						return
-					}
-					data.Manage.Boards, err = db.allBoards()
-					if err != nil {
-						log.Fatal(err)
-					}
-				}
+			if strings.HasPrefix(r.URL.Path, "/imgboard/password") {
+				s.serveChangePassword(data, db, w, r)
+				return
+			} else if strings.HasPrefix(r.URL.Path, "/imgboard/board") {
+				s.serveBoard(data, db, w, r)
+				return
 			} else {
-				page = "manage_index"
+				data.Template = "manage_index"
 			}
 		} else {
-			page = "manage_login"
+			data.Template = "manage_login"
 		}
 	}
 }
@@ -300,7 +342,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 
 	switch action {
 	case "post":
-		s.servePost(db, w, r)
+		//s.servePost(db, w, r)
 	default:
 		s.serveManage(db, w, r)
 	}

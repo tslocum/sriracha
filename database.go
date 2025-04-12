@@ -189,6 +189,17 @@ func (db *Database) accountBySessionKey(sessionKey string) (*Account, error) {
 	return a, nil
 }
 
+func (db *Database) updateAccountPassword(id int, password string) error {
+	if id <= 0 {
+		return fmt.Errorf("invalid account ID %d", id)
+	}
+	_, err := db.conn.Exec(context.Background(), "UPDATE account SET password = $1, session = '' WHERE id = $2", db.hashData(password), id)
+	if err != nil {
+		return fmt.Errorf("failed to update account: %s", err)
+	}
+	return nil
+}
+
 func (db *Database) addBoard(b *Board) error {
 	_, err := db.conn.Exec(context.Background(), "INSERT INTO board VALUES (DEFAULT, $1, $2, $3, $4)", b.Dir, b.Name, b.Description, b.Type)
 	if err != nil {
