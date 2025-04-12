@@ -17,14 +17,16 @@
             <td class="postblock"><label for="description">Description</label></td>
             <td><input type="text" name="description" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Description}}{{end}}"></td>
             <td>The board description, which is used by search engines.</td>
-        </tr><tr>
+        </tr>
+        <tr>
             <td class="postblock"><label for="type">Type</label></td>
             <td valign="top"><select name="type" style="width: 100%;">
                 <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Type 0)}} selected{{end}}>Imageboard</option>
                 <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Type 1)}} selected{{end}}>Forum</option>
             </select></td>
-            <td>Imageboards show threads and recent replies on index pages,<br>while forums only show thread information on index pages.</td>
-        </tr><tr>
+            <td>Imageboards show threads and recent replies on index pages, while forums only show thread information on index pages.</td>
+        </tr>
+        <tr>
             <td>&nbsp;</td>
             <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if eq .Manage.Board nil}}Add{{else}}Update{{end}}"></td>
             <td>&nbsp;</td>

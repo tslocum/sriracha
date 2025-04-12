@@ -1,0 +1,9 @@
+{{if eq (len .Boards) 0}}
+No Boards
+{{else}}
+<select name="boards" style="width: 100%;" size="3" multiple>
+    {{range $i, $board := .Boards}}
+    <option value="{{$board.ID}}"{{if and (ne $.Manage.Keyword nil) ($.Manage.Keyword.HasBoardOption $board.ID)}} selected{{end}}>/{{$board.Dir}}/ {{$board.Name}}</option>
+    {{end}}
+</select>
+{{end}}

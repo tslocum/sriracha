@@ -1,0 +1,5 @@
+{{if eq (len .) 0}}
+All
+{{else}}
+{{range $i, $board := .}}{{if ne $i 0}}, {{end}}/{{$board.Dir}}/ {{$board.Name}}{{end}}
+{{end}}

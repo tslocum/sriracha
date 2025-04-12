@@ -10,12 +10,15 @@ type manageData struct {
 	Accounts []*Account
 	Board    *Board
 	Boards   []*Board
+	Keyword  *Keyword
+	Keywords []*Keyword
 }
 
 type templateData struct {
 	Account  *Account
 	Info     string
 	Board    *Board
+	Boards   []*Board
 	Manage   *manageData
 	Template string
 }

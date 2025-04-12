@@ -1,0 +1,59 @@
+{{template "manage_begin.gohtml" .}}
+<form method="post">
+    <fieldset>
+    <legend>{{if eq .Manage.Keyword nil}}Add Keyword{{else}}Update {{.Manage.Keyword.Text}}{{end}}</legend>
+    <table border="0">
+        <tr>
+            <td class="postblock"><label for="text">Text</label></td>
+            <td><input type="text" name="text" value="{{if ne .Manage.Keyword nil}}{{.Manage.Keyword.Text}}{{end}}"></td>
+            <td><a href="https://en.wikipedia.org/wiki/Regular_expression">Regular expression</a> to search for when a new post is created.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="action">Action</label></td>
+            <td><select name="action" style="width: 100%;">
+                <option value="hide"{{if and (ne .Manage.Keyword nil) (eq .Manage.Keyword.Action "hide")}} selected{{end}}>Hide until approved</option>
+                <option value="report"{{if and (ne .Manage.Keyword nil) (eq .Manage.Keyword.Action "report")}} selected{{end}}>Report</option>
+                <option value="delete"{{if and (ne .Manage.Keyword nil) (eq .Manage.Keyword.Action "delete")}} selected{{end}}>Delete</option>
+                <option value="ban1h"{{if and (ne .Manage.Keyword nil) (eq .Manage.Keyword.Action "ban1h")}} selected{{end}}>Delete + ban for 1 hour</option>
+                <option value="ban1d"{{if and (ne .Manage.Keyword nil) (eq .Manage.Keyword.Action "ban1d")}} selected{{end}}>Delete + ban for 1 day</option>
+                <option value="ban2d"{{if and (ne .Manage.Keyword nil) (eq .Manage.Keyword.Action "ban2d")}} selected{{end}}>Delete + ban for 2 days</option>
+                <option value="ban1w"{{if and (ne .Manage.Keyword nil) (eq .Manage.Keyword.Action "ban1w")}} selected{{end}}>Delete + ban for 1 week</option>
+                <option value="ban2w"{{if and (ne .Manage.Keyword nil) (eq .Manage.Keyword.Action "ban2w")}} selected{{end}}>Delete + ban for 2 weeks</option>
+                <option value="ban1m"{{if and (ne .Manage.Keyword nil) (eq .Manage.Keyword.Action "ban1m")}} selected{{end}}>Delete + ban for 1 month</option>
+                <option value="ban0"{{if and (ne .Manage.Keyword nil) (eq .Manage.Keyword.Action "ban0")}} selected{{end}}>Delete + ban permanently</option>
+            </select></td>
+            <td>What should be done when the keyword is detected.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="boards">Boards</label></td>
+            <td>{{template "manage_input_board.gohtml" .}}</td>
+            <td valign="top">When one or more boards are selected, the keyword will apply only to the selected boards.<br>
+                When no boards are selected, the keyword will apply to all boards.</td>
+        </tr>   
+        <tr>
+            <td>&nbsp;</td>
+            <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if eq .Manage.Keyword nil}}Add{{else}}Update{{end}}"></td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+    </fieldset>
+</form>
+{{if ne (len .Manage.Keywords) 0}}
+<br><table border="1">
+    <tr>
+        <th>Text</th>
+        <th>Action</th>
+        <th>Boards</th>
+        <th>&nbsp;</th>
+    </tr>
+    {{range $i, $keyword := .Manage.Keywords}}
+    <tr>
+        <td>{{$keyword.Text}}</td>
+        <td>{{$keyword.ActionLabel}}</td>
+        <td>{{template "manage_print_board.gohtml" $keyword.Boards}}</td>
+        <td><a href="/imgboard/keyword/{{$keyword.ID}}">update</a> <a href="/imgboard/keyword/delete/{{$keyword.ID}}">delete</a></td>
+    </tr>
+    {{end}}
+</table>
+{{end}}
+{{template "manage_end.gohtml" .}}

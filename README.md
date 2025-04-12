@@ -36,7 +36,7 @@ sriracha --config=/path/to/config.yml /path/to/fortune.so
 ```
 
 Multiple plugin paths may be provided. When a directory is provided, all plugins
-located in the directory are loaded.
+in the directory are loaded.
 
 ### Compatibility
 

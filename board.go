@@ -31,6 +31,8 @@ func (b *Board) validate() error {
 		return fmt.Errorf("dir must only consist of letters, numbers, hyphens and underscores")
 	case strings.EqualFold(b.Dir, "imgboard"):
 		return fmt.Errorf("imgboard is a reserved name")
+	case strings.EqualFold(b.Dir, "sriracha_all"):
+		return fmt.Errorf("sriracha_all is a reserved name")
 	}
 	return nil
 }

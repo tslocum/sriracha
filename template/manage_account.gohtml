@@ -7,11 +7,13 @@
             <td class="postblock"><label for="dir">Username</label></td>
             <td><input type="text" name="username" value="{{if ne .Manage.Account nil}}{{.Manage.Account.Username}}{{end}}"></td>
             <td>Used when logging in and when logging actions.</td>
-        </tr><tr>
+        </tr>
+        <tr>
             <td class="postblock"><label for="name">Password</label></td>
             <td><input type="password" name="password"></td>
             <td>{{if eq .Manage.Account nil}}A password is required.{{else}}Leave blank to keep current password.{{end}}</td>
-        </tr><tr>
+        </tr>
+        <tr>
             <td class="postblock"><label for="role">Role</label></td>
             <td valign="top"><select name="role" style="width: 100%;">
                 <option value="1"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 1)}} selected{{end}}>Super-Administrator</option>
@@ -19,9 +21,9 @@
                 <option value="3"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 3)}} selected{{end}}>Moderator</option>
                 <option value="99"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 99)}} selected{{end}}>Disabled</option>
             </select></td>
-            <td>Super-administrators have full access. Administrators may do anything except manage accounts.<br>
-            Moderators may only sticky/lock threads, approve/delete posts and ban visitors.</td>
-        </tr><tr>
+            <td>Super-administrators have full access. Administrators may do anything except manage accounts. Moderators may only sticky/lock threads, approve/delete posts and ban visitors.</td>
+        </tr>
+        <tr>
             <td>&nbsp;</td>
             <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if eq .Manage.Account nil}}Add{{else}}Update{{end}}"></td>
             <td>&nbsp;</td>
