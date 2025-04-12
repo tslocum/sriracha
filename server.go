@@ -157,7 +157,7 @@ func (s *Server) watchTemplates() error {
 }
 
 func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request) *templateData {
-	if strings.HasPrefix(r.URL.Path, "/imgboard/logout/") {
+	if strings.HasPrefix(r.URL.Path, "/imgboard/logout") {
 		http.SetCookie(w, &http.Cookie{
 			Name:  "sriracha_session",
 			Value: "",
@@ -242,6 +242,9 @@ func (s *Server) writeBoard(board *Board) {
 
 func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Request) {
 	data := s.buildData(db, w, r)
+	if strings.HasPrefix(r.URL.Path, "/imgboard/logout") {
+		return
+	}
 	defer func() {
 		w.Header().Set("Content-Type", "text/html")
 		err := s.tpl.ExecuteTemplate(w, data.Template+".gohtml", data)
@@ -278,6 +281,8 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 		s.serveBoard(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/imgboard/keyword"):
 		s.serveKeyword(data, db, w, r)
+	case strings.HasPrefix(r.URL.Path, "/imgboard/log"):
+		s.serveLog(data, db, w, r)
 	default:
 		data.Template = "manage_index"
 	}

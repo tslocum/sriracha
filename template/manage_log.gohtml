@@ -1,0 +1,25 @@
+{{template "manage_begin.gohtml" .}}
+<fieldset>
+    <legend>Moderation Log</legend>
+    {{if eq (len .Manage.Logs) 0}}
+    No entries.
+    {{else}}
+    <table border="0">
+        <tr>
+            <th align="left">Date</th>
+            <th align="left">User</th>
+            <th align="left">Board</th>
+            <th align="left">Action</th>
+        </tr>
+        {{range $i, $log := .Manage.Logs}}
+        <tr>
+            <td>{{$log.TimestampDate}}</td>
+            <td>{{if eq $log.Account nil}}System{{else}}{{$log.Account.Username}}{{end}}</td>
+            <td>{{if eq $log.Board nil}}System{{else}}/{{$log.Board.Dir}}/ {{$log.Board.Name}}{{end}}</td>
+            <td>{{$log.Message}}</td>
+        </tr>
+        {{end}}
+    </table>
+    {{end}}
+</fieldset>
+{{template "manage_end.gohtml" .}}

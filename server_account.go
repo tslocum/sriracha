@@ -1,6 +1,7 @@
 package sriracha
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -58,6 +59,10 @@ func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseW
 				}
 			}
 
+			err = db.log(data.Account, nil, fmt.Sprintf("Updated >>/account/%d", data.Manage.Account.ID))
+			if err != nil {
+				log.Fatal(err)
+			}
 			http.Redirect(w, r, "/imgboard/account/", http.StatusFound)
 			return
 		}
@@ -85,6 +90,13 @@ func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseW
 			data.Error(err.Error())
 			return
 		}
+
+		err = db.log(data.Account, nil, fmt.Sprintf("Added >>/account/%d", a.ID))
+		if err != nil {
+			log.Fatal(err)
+		}
+		http.Redirect(w, r, "/imgboard/account/", http.StatusFound)
+		return
 	}
 
 	data.Manage.Accounts, err = db.allAccounts()

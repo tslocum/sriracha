@@ -10,9 +10,17 @@ import (
 )
 
 func (db *Database) addAccount(a *Account, password string) error {
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, '')", a.Username, db.hashData(password), a.Role)
+	sessionKey, err := db.newSessionKey()
+	if err != nil {
+		return err
+	}
+	_, err = db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4)", a.Username, db.hashData(password), a.Role, sessionKey)
 	if err != nil {
 		return fmt.Errorf("failed to insert account: %s", err)
+	}
+	err = db.conn.QueryRow(context.Background(), "SELECT id FROM account WHERE username = $1", a.Username).Scan(&a.ID)
+	if err != nil || a.ID == 0 {
+		return fmt.Errorf("failed to select id of inserted account: %s", err)
 	}
 	return nil
 }
@@ -29,7 +37,11 @@ func (db *Database) createSuperAdminAccount() error {
 	if err != nil {
 		return fmt.Errorf("failed to select number of super-administrator accounts: %s", err)
 	} else if numAdmins > 0 {
-		_, err = db.conn.Exec(context.Background(), "UPDATE account SET password = $1, role = $2, session = '' WHERE username = 'admin'", db.hashData("admin"), RoleSuperAdmin)
+		sessionKey, err := db.newSessionKey()
+		if err != nil {
+			return err
+		}
+		_, err = db.conn.Exec(context.Background(), "UPDATE account SET password = $1, role = $2, session = $3 WHERE username = 'admin'", db.hashData("admin"), RoleSuperAdmin, sessionKey)
 		if err != nil {
 			return fmt.Errorf("failed to insert account: %s", err)
 		}
@@ -106,7 +118,11 @@ func (db *Database) updateAccountUsername(a *Account) error {
 	if a == nil || a.ID <= 0 {
 		return fmt.Errorf("invalid account")
 	}
-	_, err := db.conn.Exec(context.Background(), "UPDATE account SET username = $1, session = '' WHERE id = $2", a.Username, a.ID)
+	sessionKey, err := db.newSessionKey()
+	if err != nil {
+		return err
+	}
+	_, err = db.conn.Exec(context.Background(), "UPDATE account SET username = $1, session = $2 WHERE id = $3", a.Username, sessionKey, a.ID)
 	if err != nil {
 		return fmt.Errorf("failed to update account: %s", err)
 	}
@@ -128,7 +144,11 @@ func (db *Database) updateAccountPassword(id int, password string) error {
 	if id <= 0 {
 		return fmt.Errorf("invalid account ID %d", id)
 	}
-	_, err := db.conn.Exec(context.Background(), "UPDATE account SET password = $1, session = '' WHERE id = $2", db.hashData(password), id)
+	sessionKey, err := db.newSessionKey()
+	if err != nil {
+		return err
+	}
+	_, err = db.conn.Exec(context.Background(), "UPDATE account SET password = $1, session = $2 WHERE id = $3", db.hashData(password), sessionKey, id)
 	if err != nil {
 		return fmt.Errorf("failed to update account: %s", err)
 	}
@@ -157,20 +177,13 @@ func (db *Database) loginAccount(username string, password string) (*Account, er
 	} else if a.ID == 0 || !db.compareHash(password, passwordHash) {
 		return nil, nil
 	}
-	for {
-		sessionKey := newSessionKey()
-		var numAccounts int
-		err := db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM account WHERE session = $1", sessionKey).Scan(&numAccounts)
-		if err != nil {
-			return nil, fmt.Errorf("failed to select number of accounts with session key: %s", err)
-		} else if numAccounts == 0 {
-			a.Session = sessionKey
-			_, err = db.conn.Exec(context.Background(), "UPDATE account SET session = $1 WHERE id = $2", sessionKey, a.ID)
-			if err != nil {
-				return nil, fmt.Errorf("failed to update account: %s", err)
-			}
-			break
-		}
+	a.Session, err = db.newSessionKey()
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate new session key: %s", err)
+	}
+	_, err = db.conn.Exec(context.Background(), "UPDATE account SET session = $1 WHERE id = $2", a.Session, a.ID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update account: %s", err)
 	}
 	return a, nil
 }

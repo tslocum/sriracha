@@ -57,6 +57,11 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			}
 
 			s.writeBoard(data.Manage.Board)
+
+			err = db.log(data.Account, nil, fmt.Sprintf("Updated >>/board/%d", data.Manage.Board.ID))
+			if err != nil {
+				log.Fatal(err)
+			}
 			http.Redirect(w, r, "/imgboard/board/", http.StatusFound)
 			return
 		}
@@ -90,6 +95,11 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		}
 
 		s.writeBoard(b)
+
+		err = db.log(data.Account, nil, fmt.Sprintf("Added >>/board/%d", b.ID))
+		if err != nil {
+			log.Fatal(err)
+		}
 		http.Redirect(w, r, "/imgboard/board/", http.StatusFound)
 		return
 	}

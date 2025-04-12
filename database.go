@@ -156,12 +156,22 @@ func (db *Database) GetMultiString(key string) ([]string, error) {
 	return strings.Split(value, "|"), nil
 }
 
-func newSessionKey() string {
+func (db *Database) newSessionKey() (string, error) {
 	const keyLength = 48
 	buf := make([]byte, keyLength)
-	_, err := rand.Read(buf)
-	if err != nil {
-		panic(err)
+	for {
+		_, err := rand.Read(buf)
+		if err != nil {
+			panic(err)
+		}
+		sessionKey := base64.StdEncoding.EncodeToString(buf)
+
+		var numAccounts int
+		err = db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM account WHERE session = $1", sessionKey).Scan(&numAccounts)
+		if err != nil {
+			return "", fmt.Errorf("failed to select number of accounts with session key: %s", err)
+		} else if numAccounts == 0 {
+			return sessionKey, nil
+		}
 	}
-	return base64.StdEncoding.EncodeToString(buf)
 }

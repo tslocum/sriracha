@@ -1,6 +1,7 @@
 package sriracha
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -37,6 +38,10 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 				return
 			}
 
+			err = db.log(data.Account, nil, fmt.Sprintf("Updated >>/ban/%d", data.Manage.Ban.ID))
+			if err != nil {
+				log.Fatal(err)
+			}
 			http.Redirect(w, r, "/imgboard/ban/", http.StatusFound)
 			return
 		}
@@ -72,6 +77,10 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 			return
 		}
 
+		err = db.log(data.Account, nil, fmt.Sprintf("Added >>/ban/%d", b.ID))
+		if err != nil {
+			log.Fatal(err)
+		}
 		http.Redirect(w, r, "/imgboard/ban/", http.StatusFound)
 		return
 	}

@@ -12,6 +12,10 @@ func (db *Database) addBoard(b *Board) error {
 	if err != nil {
 		return fmt.Errorf("failed to insert board: %s", err)
 	}
+	err = db.conn.QueryRow(context.Background(), "SELECT id FROM board WHERE dir = $1", b.Dir).Scan(&b.ID)
+	if err != nil || b.ID == 0 {
+		return fmt.Errorf("failed to select id of inserted board: %s", err)
+	}
 	return nil
 }
 

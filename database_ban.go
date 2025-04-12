@@ -13,6 +13,10 @@ func (db *Database) addBan(b *Ban) error {
 	if err != nil {
 		return fmt.Errorf("failed to insert ban: %s", err)
 	}
+	err = db.conn.QueryRow(context.Background(), "SELECT id FROM ban WHERE ip = $1", b.IP).Scan(&b.ID)
+	if err != nil || b.ID == 0 {
+		return fmt.Errorf("failed to select id of inserted ban: %s", err)
+	}
 	return nil
 }
 

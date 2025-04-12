@@ -14,6 +14,8 @@ type manageData struct {
 	Boards   []*Board
 	Keyword  *Keyword
 	Keywords []*Keyword
+	Log      *Log
+	Logs     []*Log
 }
 
 type templateData struct {
