@@ -24,6 +24,14 @@ type PluginConfig struct {
 	Default     string
 	Description string
 	Multiple    bool
+	Value       string
+}
+
+func (c *PluginConfig) Options() []string {
+	if !c.Multiple {
+		return []string{c.Value}
+	}
+	return strings.Split(c.Value, "|")
 }
 
 type Plugin interface {
@@ -32,7 +40,7 @@ type Plugin interface {
 
 type PluginWithConfig interface {
 	Plugin
-	Config() []*PluginConfig
+	Config() []PluginConfig
 }
 
 type PluginWithPost interface {
@@ -59,10 +67,14 @@ func RegisterPlugin(plugin interface{}) {
 	_ = about // TODO
 
 	var events []string
+	var config []PluginConfig
 
 	pConfig, ok := plugin.(PluginWithConfig)
 	if ok {
-		log.Println("CONFIG", pConfig.Config())
+		config = pConfig.Config()
+		for i := range config {
+			config[i].Value = config[i].Default
+		}
 	}
 	_, ok = plugin.(PluginWithPost)
 	if ok {
@@ -74,9 +86,11 @@ func RegisterPlugin(plugin interface{}) {
 	fmt.Printf("%s loaded. Receives: %s\n", name, strings.Join(events, ", "))
 
 	info := &PluginInfo{
+		ID:     len(allPlugins) + 1,
 		Name:   name,
 		About:  about,
 		Events: events,
+		Config: config,
 	}
 	allPlugins = append(allPlugins, plugin)
 	allPluginInfo = append(allPluginInfo, info)
@@ -86,7 +100,9 @@ var allPlugins []interface{}
 var allPluginInfo []*PluginInfo
 
 type PluginInfo struct {
+	ID     int
 	Name   string
 	About  string
 	Events []string
+	Config []PluginConfig
 }

@@ -18,23 +18,22 @@ func (f *Fortune) About() string {
 	return "Give your posters some good luck (or bad)."
 }
 
-func (f *Fortune) Config() []*sriracha.PluginConfig {
-	var config []*sriracha.PluginConfig
-	config = append(config, &sriracha.PluginConfig{
-		Type:        sriracha.TypeString,
-		Name:        configTriggers,
-		Default:     defaultTrigger,
-		Description: "The text users may input in the name or email field to receive a fortune.",
-		Multiple:    true,
-	})
-	config = append(config, &sriracha.PluginConfig{
-		Type:        sriracha.TypeString,
-		Name:        configFortunes,
-		Default:     defaultFortunes,
-		Description: "The fortunes users may receive.",
-		Multiple:    true,
-	})
-	return config
+func (f *Fortune) Config() []sriracha.PluginConfig {
+	return []sriracha.PluginConfig{
+		{
+			Type:        sriracha.TypeString,
+			Name:        configTriggers,
+			Default:     defaultTrigger,
+			Description: "The text users may input in the name or email field to receive a fortune.",
+			Multiple:    true,
+		}, {
+			Type:        sriracha.TypeString,
+			Name:        configFortunes,
+			Default:     defaultFortunes,
+			Description: "The fortunes users may receive.",
+			Multiple:    true,
+		},
+	}
 }
 
 func (f *Fortune) Post(db *sriracha.Database, post *sriracha.Post) error {
@@ -72,7 +71,11 @@ func init() {
 	sriracha.RegisterPlugin(&Fortune{})
 }
 
-var _ sriracha.Plugin = &Fortune{}
+var (
+	_ sriracha.Plugin           = &Fortune{}
+	_ sriracha.PluginWithConfig = &Fortune{}
+	_ sriracha.PluginWithPost   = &Fortune{}
+)
 
 const defaultTrigger = "#fortune"
 

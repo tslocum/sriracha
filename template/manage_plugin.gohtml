@@ -1,4 +1,29 @@
 {{template "manage_begin.gohtml" .}}
+{{if ne .Manage.Plugin nil}}
+<form method="post">
+    <fieldset>
+    <legend>Configure {{.Manage.Plugin.Name}}</legend>
+    {{if eq (len .Manage.Plugin.Config) 0}}
+    No configuration options.
+    {{else}}
+    <table border="0">
+    {{range $i, $option := .Manage.Plugin.Config}}
+        <tr>
+            <td class="postblock"><label for="config_{{$option.Name}}">{{$option.Name | Title}}</label></td>
+            <td valign="top">{{template "manage_plugin_option.gohtml" $option}}</td>
+            <td valign="top">{{$option.Description}}</td>
+        </tr>
+    {{end}}
+        <tr>
+            <td>&nbsp;[<a href="/imgboard/plugin/reset/{{.Manage.Plugin.ID}}" onclick="return confirm('Are you sure you want to reset all configuration options?');">reset</a>]</td>
+            <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="Save"></td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+    {{end}}
+    </fieldset>
+</form>
+{{else}}
 <fieldset>
     <legend>Plugins</legend>
     {{if eq (len .Manage.Plugins) 0}}
@@ -16,10 +41,11 @@
             <td>{{$plugin.Name}}</td>
             <td>{{if eq (len $plugin.Events) 0}}None{{else}}{{range $i, $event := $plugin.Events}}{{if ne $i 0}}, {{end}}{{$event | Title}}{{end}}{{end}}</td>
             <td>{{if eq $plugin.About ""}}No description{{else}}{{$plugin.About}}{{end}}</td>
-            <td>[<a href="/imgboard/plugin/{{$i | PlusOne}}">configure</a>]</td>
+            <td>{{if eq (len $plugin.Config) 0}}&nbsp;{{else}}[<a href="/imgboard/plugin/{{$i | PlusOne}}">configure</a>]{{end}}</td>
         </tr>
         {{end}}
     </table>
     {{end}}
 </fieldset>
+{{end}}
 {{template "manage_end.gohtml" .}}

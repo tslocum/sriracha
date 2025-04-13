@@ -65,6 +65,10 @@ func connectDatabase(address string, username string, password string, schema st
 	if err != nil {
 		return nil, fmt.Errorf("failed to create super-administrator account: %s", err)
 	}
+	err = db.loadPluginConfig()
+	if err != nil {
+		return nil, fmt.Errorf("failed to load plugin configuration values: %s", err)
+	}
 	return pool, nil
 }
 
@@ -104,6 +108,20 @@ func (db *Database) upgrade() error {
 		_, err = db.conn.Exec(context.Background(), dbSchema[v-1])
 		if err != nil {
 			return fmt.Errorf("failed to upgrade database to version %d: %s", v, err)
+		}
+	}
+	return nil
+}
+
+func (db *Database) loadPluginConfig() error {
+	for _, info := range allPluginInfo {
+		for i, c := range info.Config {
+			v, err := db.GetString(strings.ToLower(info.Name + "." + c.Name))
+			if err != nil {
+				return err
+			} else if v != "" {
+				info.Config[i].Value = v
+			}
 		}
 	}
 	return nil
@@ -154,6 +172,18 @@ func (db *Database) GetMultiString(key string) ([]string, error) {
 		return nil, err
 	}
 	return strings.Split(value, "|"), nil
+}
+
+func (db *Database) SaveString(key string, value string) error {
+	_, err := db.conn.Exec(context.Background(), "INSERT INTO config VALUES ($1, $2) ON CONFLICT (name) DO UPDATE SET value = $3", key, value, value)
+	if err != nil {
+		return fmt.Errorf("failed to save string: %s", err)
+	}
+	return nil
+}
+
+func (db *Database) SaveMultiString(key string, value []string) error {
+	return db.SaveString(key, strings.Join(value, "|"))
 }
 
 func (db *Database) newSessionKey() (string, error) {

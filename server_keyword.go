@@ -17,9 +17,9 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 		log.Fatal(err)
 	}
 
-	keywordID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/keyword/check/"))
+	keywordID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/keyword/rest/"))
 	if err == nil && keywordID > 0 {
-		data.Template = "manage_keyword_check"
+		data.Template = "manage_keyword_test"
 		data.Manage.Keyword, err = db.keywordByID(keywordID)
 		if err != nil {
 			log.Fatal(err)
@@ -35,7 +35,7 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 			if match {
 				data.Info = "Result: MATCH FOUND"
 			} else {
-				data.Info = "Result: NO MATCH FOUND"
+				data.Info = "Result: NO MATCH"
 			}
 		}
 		return

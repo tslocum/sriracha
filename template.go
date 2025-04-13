@@ -16,6 +16,7 @@ type manageData struct {
 	Keywords []*Keyword
 	Log      *Log
 	Logs     []*Log
+	Plugin   *PluginInfo
 	Plugins  []*PluginInfo
 }
 
