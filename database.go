@@ -125,8 +125,8 @@ func (db *Database) loadPluginConfig() error {
 	return nil
 }
 
-func (db *Database) hashData(data string) string {
-	hash, err := argon2id.CreateHash(data+srirachaServer.config.Salt, argon2idParameters)
+func (db *Database) hashPassword(data string) string {
+	hash, err := argon2id.CreateHash(data+srirachaServer.config.SaltPass, argon2idParameters)
 	debug.FreeOSMemory() // Hashing is memory intensive. Return memory to the OS.
 	if err != nil {
 		log.Fatal(err)
@@ -134,8 +134,8 @@ func (db *Database) hashData(data string) string {
 	return hash
 }
 
-func (db *Database) compareHash(data string, hash string) bool {
-	match, err := argon2id.ComparePasswordAndHash(data+srirachaServer.config.Salt, hash)
+func (db *Database) comparePassword(data string, hash string) bool {
+	match, err := argon2id.ComparePasswordAndHash(data+srirachaServer.config.SaltPass, hash)
 	debug.FreeOSMemory() // Hashing is memory intensive. Return memory to the OS.
 	if err != nil {
 		log.Fatal(err)

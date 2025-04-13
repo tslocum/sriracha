@@ -54,7 +54,7 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 
 		ip := strings.TrimSpace(r.FormValue("ip"))
 		if ip != "" {
-			b.IP = db.hashData(ip)
+			b.IP = db.hashPassword(ip)
 		}
 
 		err := b.validate()

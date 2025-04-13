@@ -55,8 +55,10 @@ func (s *Server) parseConfig(configFile string) error {
 		return fmt.Errorf("root (lowercase!) must be set in %s to the root folder (where board files are written)", configFile)
 	case config.Serve == "":
 		return fmt.Errorf("serve (lowercase!) must be set in %s to the HTTP server listen address (hostname:port)", configFile)
-	case config.Salt == "":
-		return fmt.Errorf("salt (lowercase!) must be set in %s to the secure data hashing salt (a long string of random data which, once set, never changes)", configFile)
+	case config.SaltData == "":
+		return fmt.Errorf("saltdata (lowercase!) must be set in %s to the one-way secure data hashing salt (a long string of random data which, once set, never changes)", configFile)
+	case config.SaltPass == "":
+		return fmt.Errorf("saltpass (lowercase!) must be set in %s to the two-way secure data hashing salt (a long string of random data which, once set, never changes)", configFile)
 	case config.Min <= 0:
 		return fmt.Errorf("min (lowercase!) must be set in %s to the minimum number of connections of the database connection pool (1 is a reasonable choice)", configFile)
 	case config.Max <= 0:
