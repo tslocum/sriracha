@@ -64,7 +64,6 @@ func RegisterPlugin(plugin interface{}) {
 		log.Fatalf("%s does not implement required methods", name)
 	}
 	about := pAbout.About()
-	_ = about // TODO
 
 	var events []string
 	var config []PluginConfig
@@ -76,33 +75,40 @@ func RegisterPlugin(plugin interface{}) {
 			config[i].Value = config[i].Default
 		}
 	}
-	_, ok = plugin.(PluginWithPost)
+
+	pPost, ok := plugin.(PluginWithPost)
 	if ok {
 		events = append(events, "post")
+		allPluginPostHandlers = append(allPluginPostHandlers, pPost.Post)
 	}
+
 	if len(events) == 0 {
 		events = append(events, "none")
 	}
+
 	fmt.Printf("%s loaded. Receives: %s\n", name, strings.Join(events, ", "))
 
 	info := &PluginInfo{
 		ID:     len(allPlugins) + 1,
 		Name:   name,
 		About:  about,
-		Events: events,
 		Config: config,
+		Events: events,
 	}
 	allPlugins = append(allPlugins, plugin)
 	allPluginInfo = append(allPluginInfo, info)
 }
 
+type postHandler func(db *Database, post *Post) error
+
 var allPlugins []interface{}
 var allPluginInfo []*PluginInfo
+var allPluginPostHandlers []postHandler
 
 type PluginInfo struct {
 	ID     int
 	Name   string
 	About  string
-	Events []string
 	Config []PluginConfig
+	Events []string
 }

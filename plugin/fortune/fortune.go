@@ -37,32 +37,33 @@ func (f *Fortune) Config() []sriracha.PluginConfig {
 }
 
 func (f *Fortune) Post(db *sriracha.Database, post *sriracha.Post) error {
-	triggers, err := db.GetMultiString(configTriggers)
-	if err != nil {
-		return err
-	}
 	var showFortune bool
-	for _, trigger := range triggers {
+	for _, trigger := range db.GetMultiString(configTriggers) {
 		if strings.EqualFold(post.Name, trigger) {
 			post.Name = ""
 			showFortune = true
+			break
 		}
 		if strings.EqualFold(post.Email, trigger) {
 			post.Email = ""
 			showFortune = true
+			break
 		}
 	}
-	if showFortune {
-		fortunes, err := db.GetMultiString(configFortunes)
-		if err != nil {
-			return err
-		}
-		fortune := fortunes[rand.Intn(len(fortunes))]
-		if len(strings.TrimSpace(post.Message)) == 0 {
-			post.Message = fortune
-		} else {
-			post.Message = fortune + "\n\n" + post.Message
-		}
+	if !showFortune {
+		return nil
+	}
+
+	fortunes := db.GetMultiString(configFortunes)
+	if len(fortunes) == 0 {
+		return nil
+	}
+
+	fortune := fortunes[rand.Intn(len(fortunes))]
+	if len(strings.TrimSpace(post.Message)) == 0 {
+		post.Message = fortune
+	} else {
+		post.Message = fortune + "\n\n" + post.Message
 	}
 	return nil
 }
@@ -71,12 +72,14 @@ func init() {
 	sriracha.RegisterPlugin(&Fortune{})
 }
 
+const (
+	defaultTrigger  = "#fortune"
+	defaultFortunes = `<font color="#B604A2"><b>Your fortune: Godly Luck</b></font>|<font color="indigo"><b>Your fortune: Outlook good</b></font>|<font color="dodgerblue"><b>Your fortune: You will meet a dark handsome stranger</b></font>|<font color="darkorange"><b>Your fortune: Good Luck</b></font>|<font color="royalblue"><b>Your fortune: Better not tell you now</b></font>|<font color="deeppink"><b>Your fortune: Reply hazy; try again</b></font>|<font color="lime"><b>Your fortune: Very Bad Luck</b></font>|<font color="lime"><b>Your fortune: Good news will come to you by mail</b></font>|<font color="#BFC52F"><b>Your fortune: Average Luck</b></font>`
+)
+
+// Validate plugin interfaces during compilation.
 var (
 	_ sriracha.Plugin           = &Fortune{}
 	_ sriracha.PluginWithConfig = &Fortune{}
 	_ sriracha.PluginWithPost   = &Fortune{}
 )
-
-const defaultTrigger = "#fortune"
-
-const defaultFortunes = `<font color="#B604A2"><b>Your fortune: Godly Luck</b></font>|<font color="indigo"><b>Your fortune: Outlook good</b></font>|<font color="dodgerblue"><b>Your fortune: You will meet a dark handsome stranger</b></font>|<font color="darkorange"><b>Your fortune: Good Luck</b></font>|<font color="royalblue"><b>Your fortune: Better not tell you now</b></font>|<font color="deeppink"><b>Your fortune: Reply hazy; try again</b></font>|<font color="lime"><b>Your fortune: Very Bad Luck</b></font>|<font color="lime"><b>Your fortune: Good news will come to you by mail</b></font>|<font color="#BFC52F"><b>Your fortune: Average Luck</b></font>`

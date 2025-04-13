@@ -116,10 +116,8 @@ func (db *Database) upgrade() error {
 func (db *Database) loadPluginConfig() error {
 	for _, info := range allPluginInfo {
 		for i, c := range info.Config {
-			v, err := db.GetString(strings.ToLower(info.Name + "." + c.Name))
-			if err != nil {
-				return err
-			} else if v != "" {
+			v := db.GetString(strings.ToLower(info.Name + "." + c.Name))
+			if v != "" {
 				info.Config[i].Value = v
 			}
 		}
@@ -153,25 +151,20 @@ func (db *Database) configKey(key string) string {
 	return key
 }
 
-func (db *Database) GetString(key string) (string, error) {
+func (db *Database) GetString(key string) string {
 	key = db.configKey(key)
 	var value string
 	err := db.conn.QueryRow(context.Background(), "SELECT value FROM config WHERE name = $1", key).Scan(&value)
 	if err == pgx.ErrNoRows {
-		// TODO use default value
-		return "", nil
+		return ""
 	} else if err != nil {
-		return "", fmt.Errorf("failed to get string %s: %s", key, err)
+		log.Fatalf("failed to get string %s: %s", key, err)
 	}
-	return value, nil
+	return value
 }
 
-func (db *Database) GetMultiString(key string) ([]string, error) {
-	value, err := db.GetString(key)
-	if err != nil {
-		return nil, err
-	}
-	return strings.Split(value, "|"), nil
+func (db *Database) GetMultiString(key string) []string {
+	return strings.Split(db.GetString(key), "|")
 }
 
 func (db *Database) SaveString(key string, value string) error {
