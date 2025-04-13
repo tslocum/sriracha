@@ -13,7 +13,19 @@ import (
 func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_board"
 
-	boardID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/board/"))
+	boardID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/board/rebuild/"))
+	if err == nil && boardID > 0 {
+		b, err := db.boardByID(boardID)
+		if err != nil {
+			log.Fatal(err)
+		} else if b != nil {
+			s.writeBoard(b)
+
+			data.Info = fmt.Sprintf("Rebuilt /%s/ %s", b.Dir, b.Name)
+		}
+	}
+
+	boardID, err = strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/board/"))
 	if err == nil && boardID > 0 {
 		data.Manage.Board, err = db.boardByID(boardID)
 		if err != nil {

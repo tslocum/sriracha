@@ -90,6 +90,7 @@ func (s *Server) parseTemplates(dir string) error {
 
 	if dir != "" {
 		s.tpl = withFuncMap(template.New("sriracha"))
+
 		entries, err := os.ReadDir("template")
 		if err != nil {
 			return err
@@ -113,6 +114,7 @@ func (s *Server) parseTemplates(dir string) error {
 	}
 
 	s.tpl = withFuncMap(template.New("sriracha"))
+
 	entries, err := templateFS.ReadDir("template")
 	if err != nil {
 		return err
