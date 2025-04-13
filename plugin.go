@@ -72,4 +72,21 @@ func RegisterPlugin(plugin interface{}) {
 		events = append(events, "none")
 	}
 	fmt.Printf("%s loaded. Receives: %s\n", name, strings.Join(events, ", "))
+
+	info := &PluginInfo{
+		Name:   name,
+		About:  about,
+		Events: events,
+	}
+	allPlugins = append(allPlugins, plugin)
+	allPluginInfo = append(allPluginInfo, info)
+}
+
+var allPlugins []interface{}
+var allPluginInfo []*PluginInfo
+
+type PluginInfo struct {
+	Name   string
+	About  string
+	Events []string
 }

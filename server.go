@@ -78,8 +78,18 @@ func (s *Server) parseConfig(configFile string) error {
 }
 
 func (s *Server) parseTemplates(dir string) error {
+	withFuncMap := func(tpl *template.Template) *template.Template {
+		funcMap := template.FuncMap{
+			"Title": strings.Title,
+			"PlusOne": func(i int) int {
+				return i + 1
+			},
+		}
+		return tpl.Funcs(funcMap)
+	}
+
 	if dir != "" {
-		s.tpl = template.New("sriracha")
+		s.tpl = withFuncMap(template.New("sriracha"))
 		entries, err := os.ReadDir("template")
 		if err != nil {
 			return err
@@ -102,7 +112,7 @@ func (s *Server) parseTemplates(dir string) error {
 		return nil
 	}
 
-	s.tpl = template.New("sriracha")
+	s.tpl = withFuncMap(template.New("sriracha"))
 	entries, err := templateFS.ReadDir("template")
 	if err != nil {
 		return err
@@ -283,6 +293,8 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 		s.serveKeyword(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/imgboard/log"):
 		s.serveLog(data, db, w, r)
+	case strings.HasPrefix(r.URL.Path, "/imgboard/plugin"):
+		s.servePlugin(data, db, w, r)
 	default:
 		data.Template = "manage_index"
 	}

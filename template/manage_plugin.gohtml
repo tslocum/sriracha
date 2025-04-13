@@ -1,0 +1,25 @@
+{{template "manage_begin.gohtml" .}}
+<fieldset>
+    <legend>Plugins</legend>
+    {{if eq (len .Manage.Plugins) 0}}
+    No plugins are loaded.
+    {{else}}
+    <table border="0">
+        <tr>
+            <th align="left">Name</th>
+            <th align="left">Events</th>
+            <th align="left">Description</th>
+            <th align="left">&nbsp;</th>
+        </tr>
+        {{range $i, $plugin := .Manage.Plugins}}
+        <tr>
+            <td>{{$plugin.Name}}</td>
+            <td>{{if eq (len $plugin.Events) 0}}None{{else}}{{range $i, $event := $plugin.Events}}{{if ne $i 0}}, {{end}}{{$event | Title}}{{end}}{{end}}</td>
+            <td>{{if eq $plugin.About ""}}No description{{else}}{{$plugin.About}}{{end}}</td>
+            <td>[<a href="/imgboard/plugin/{{$i | PlusOne}}">configure</a>]</td>
+        </tr>
+        {{end}}
+    </table>
+    {{end}}
+</fieldset>
+{{template "manage_end.gohtml" .}}

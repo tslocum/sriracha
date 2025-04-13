@@ -16,12 +16,13 @@
     <body>
 		<div class="adminbar">
 			{{if ne .Account nil}}
-			[<a href="/imgboard/" style="text-decoration: underline;">Status</a>]
 			[<a href="/imgboard/account/" style="text-decoration: underline;">Accounts</a>]
 			[<a href="/imgboard/ban/" style="text-decoration: underline;">Bans</a>]
 			[<a href="/imgboard/board/" style="text-decoration: underline;">Boards</a>]
 			[<a href="/imgboard/keyword/" style="text-decoration: underline;">Keywords</a>]
-			[<a href="/imgboard/log/" style="text-decoration: underline;">Moderation Log</a>] &middot;
+			[<a href="/imgboard/log/" style="text-decoration: underline;">Moderation Log</a>]
+			[<a href="/imgboard/plugin/" style="text-decoration: underline;">Plugins</a>]
+			[<a href="/imgboard/" style="text-decoration: underline;">Status</a>] &middot;
 			[<a href="/imgboard/password/" style="text-decoration: underline;">Change Password</a>]
 			[<a href="/imgboard/logout/" style="text-decoration: underline;">Log Out</a>] &middot;
 			{{end}}
