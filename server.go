@@ -298,7 +298,16 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 	case strings.HasPrefix(r.URL.Path, "/imgboard/plugin"):
 		s.servePlugin(data, db, w, r)
 	default:
+		stats := s.dbPool.Stat()
+		idle := stats.IdleConns()
+		total := stats.TotalConns()
+		var idleString string
+		if idle > 0 {
+			idleString = fmt.Sprintf(" (%d idle)", idle)
+		}
+
 		data.Template = "manage_index"
+		data.Message = template.HTML(fmt.Sprintf(`<table border="1"><tr><th colspan="3">Database Statistics</th></tr><tr><th align="left">Connections</th><th>Max</th></tr><tr><td>%d%s</td><td>%d</td></tr></table>`, total, idleString, s.config.Max))
 	}
 }
 

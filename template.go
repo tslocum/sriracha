@@ -1,6 +1,9 @@
 package sriracha
 
-import "embed"
+import (
+	"embed"
+	"html/template"
+)
 
 //go:embed template
 var templateFS embed.FS
@@ -23,6 +26,7 @@ type manageData struct {
 type templateData struct {
 	Account  *Account
 	Info     string
+	Message  template.HTML
 	Board    *Board
 	Boards   []*Board
 	Manage   *manageData

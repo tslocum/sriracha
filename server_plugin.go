@@ -49,6 +49,7 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 				}
 				info.Config[i].Value = newValue
 			}
+			http.Redirect(w, r, "/imgboard/plugin", http.StatusFound)
 		}
 		return
 	}
