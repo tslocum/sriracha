@@ -3,6 +3,7 @@ package sriracha
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -13,13 +14,32 @@ const (
 	TypeForum      BoardType = 1
 )
 
+type BoardApprovalType int
+
+const (
+	ApprovalNone BoardApprovalType = 0
+	ApprovalFile BoardApprovalType = 1
+	ApprovalAll  BoardApprovalType = 2
+)
+
 type Board struct {
 	ID          int
 	Dir         string
 	Name        string
 	Description string
 	Type        BoardType
+	Approval    BoardApprovalType
+	MaxSize     int64
+	ThumbWidth  int
+	ThumbHeight int
+	Unique      int
 }
+
+const (
+	defaultBoardMaxSize     = 2097152
+	defaultBoardThumbWidth  = 250
+	defaultBoardThumbHeight = 250
+)
 
 func (b *Board) validate() error {
 	switch {
@@ -47,4 +67,37 @@ func (b *Board) loadForm(r *http.Request) {
 	} else {
 		b.Type = TypeImageboard
 	}
+	approvalString := r.FormValue("approval")
+	if approvalString == "1" {
+		b.Approval = ApprovalFile
+	} else if approvalString == "2" {
+		b.Approval = ApprovalAll
+	} else {
+		b.Approval = ApprovalNone
+	}
+	maxSizeString := strings.TrimSpace(r.FormValue("maxsize"))
+	if maxSizeString != "" {
+		v, err := strconv.ParseInt(maxSizeString, 10, 64)
+		if err == nil && v >= 0 {
+			b.MaxSize = v
+		}
+	}
+	thumbWidthString := strings.TrimSpace(r.FormValue("thumbwidth"))
+	if thumbWidthString != "" {
+		v, err := strconv.Atoi(thumbWidthString)
+		if err == nil && v >= 0 {
+			b.ThumbWidth = v
+		}
+	}
+	thumbHeightString := strings.TrimSpace(r.FormValue("thumbheight"))
+	if thumbHeightString != "" {
+		v, err := strconv.Atoi(thumbHeightString)
+		if err == nil && v >= 0 {
+			b.ThumbHeight = v
+		}
+	}
+}
+
+func (b *Board) MaxSizeLabel() string {
+	return fmt.Sprintf("%d", b.MaxSize)
 }

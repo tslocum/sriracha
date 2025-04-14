@@ -116,6 +116,12 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		return
 	}
 
+	data.Manage.Board = &Board{
+		MaxSize:     defaultBoardMaxSize,
+		ThumbWidth:  defaultBoardThumbWidth,
+		ThumbHeight: defaultBoardThumbHeight,
+	}
+
 	data.Manage.Boards, err = db.allBoards()
 	if err != nil {
 		log.Fatal(err)

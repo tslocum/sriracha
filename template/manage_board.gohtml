@@ -1,7 +1,7 @@
 {{template "manage_begin.gohtml" .}}
 <form method="post">
     <fieldset>
-    <legend>{{if eq .Manage.Board nil}}Add Board{{else}}Update /{{.Manage.Board.Dir}}/ {{.Manage.Board.Name}}{{end}}</legend>
+    <legend>{{if or (eq .Manage.Board nil) (eq .Manage.Board.ID 0)}}Add Board{{else}}Update /{{.Manage.Board.Dir}}/ {{.Manage.Board.Name}}{{end}}</legend>
     <table border="0">
         <tr>
             <td class="postblock"><label for="dir">Directory</label></td>
@@ -27,8 +27,32 @@
             <td>Imageboards show threads and recent replies on index pages, while forums only show thread information on index pages.</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="approval">Require Approval</label></td>
+            <td valign="top"><select name="approval" style="width: 100%;">
+                <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Approval 0)}} selected{{end}}>Never</option>
+                <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Approval 1)}} selected{{end}}>For posts with files</option>
+                <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Approval 2)}} selected{{end}}>For all posts</option>
+            </select></td>
+            <td>Whether moderator approval is required before displaying newly created posts.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="maxsize">Maximum File Size</label></td>
+            <td><input type="text" name="maxsize" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSize}}{{end}}"></td>
+            <td>Allow file uploads up to this size (in bytes). Set to 0 to disable file uploads.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="thumbwidth">Thumbnail Width</label></td>
+            <td><input type="text" name="thumbwidth" value="{{if ne .Manage.Board nil}}{{.Manage.Board.ThumbWidth}}{{end}}"></td>
+            <td>The maximum width of thumbnails.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="thumbheight">Thumbnail Height</label></td>
+            <td><input type="text" name="thumbheight" value="{{if ne .Manage.Board nil}}{{.Manage.Board.ThumbHeight}}{{end}}"></td>
+            <td>The maximum height of thumbnails.</td>
+        </tr>
+        <tr>
             <td>&nbsp;</td>
-            <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if eq .Manage.Board nil}}Add{{else}}Update{{end}}"></td>
+            <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if or (eq .Manage.Board nil) (eq .Manage.Board.ID 0)}}Add{{else}}Update{{end}}"></td>
             <td>&nbsp;</td>
         </tr>
     </table>

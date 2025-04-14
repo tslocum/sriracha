@@ -65,9 +65,9 @@
                     <td colspan="2" class="rules">
                         <ul>
                             <li>Supported file types are JPG, PNG, GIF, SWF, MP4 and WEBM.</li>
-                            <li>Maximum file size allowed is 2 MB.</li>
-                            <li>Images greater than 250x250 will be thumbnailed.</li>
-                            <li>Currently 1 unique user posts.</li>
+                            <li>Maximum file size allowed is {{.Board.MaxSizeLabel}}.</li>
+                            <li>Images greater than {{.Board.ThumbWidth}}x{{.Board.ThumbHeight}} will be thumbnailed.</li>
+                            <li>Currently {{.Board.Unique}} unique user posts.</li>
                         </ul>
                     </td>
                 </tr>
