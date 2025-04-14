@@ -7,8 +7,7 @@ import (
 	"strings"
 )
 
-var srirachaServer *Server
-
+// PluginConfigType represents the type of a plugin configuration option.
 type PluginConfigType int
 
 const (
@@ -18,15 +17,17 @@ const (
 	TypeEnum    PluginConfigType = 3
 )
 
+// PluginConfig represents a plugin configuration option.
 type PluginConfig struct {
 	Type        PluginConfigType
+	Multiple    bool
 	Name        string
 	Default     string
 	Description string
-	Multiple    bool
 	Value       string
 }
 
+// Options returns the value of the provided option as a collection of strings.
 func (c *PluginConfig) Options() []string {
 	if !c.Multiple {
 		return []string{c.Value}
@@ -34,21 +35,27 @@ func (c *PluginConfig) Options() []string {
 	return strings.Split(c.Value, "|")
 }
 
+// Plugin describes the required methods for any plugin.
 type Plugin interface {
 	About() string
 }
 
+// Plugin describes the required methods for a plugin which has configuration options.
 type PluginWithConfig interface {
 	Plugin
 	Config() []PluginConfig
 }
 
+// PluginWithPost describes the required methods for a plugin which receives post events.
 type PluginWithPost interface {
 	Plugin
 	Post(db *Database, post *Post) error
 }
 
-func RegisterPlugin(plugin interface{}) {
+// RegisterPlugin registers a sriracha plugin. Once registered the plugin will
+// receive any subscribed events. Plugins must call this function in init().
+// See PluginWithConfig and PluginWithPost.
+func RegisterPlugin(plugin any) {
 	if srirachaServer == nil {
 		panic("sriracha server not yet started")
 	}
@@ -88,7 +95,7 @@ func RegisterPlugin(plugin interface{}) {
 
 	fmt.Printf("%s loaded. Receives: %s\n", name, strings.Join(events, ", "))
 
-	info := &PluginInfo{
+	info := &pluginInfo{
 		ID:     len(allPlugins) + 1,
 		Name:   name,
 		About:  about,
@@ -99,16 +106,16 @@ func RegisterPlugin(plugin interface{}) {
 	allPluginInfo = append(allPluginInfo, info)
 }
 
-type postHandler func(db *Database, post *Post) error
-
-var allPlugins []interface{}
-var allPluginInfo []*PluginInfo
-var allPluginPostHandlers []postHandler
-
-type PluginInfo struct {
+type pluginInfo struct {
 	ID     int
 	Name   string
 	About  string
 	Config []PluginConfig
 	Events []string
 }
+
+type postHandler func(db *Database, post *Post) error
+
+var allPlugins []any
+var allPluginInfo []*pluginInfo
+var allPluginPostHandlers []postHandler

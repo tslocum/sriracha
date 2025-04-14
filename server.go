@@ -25,6 +25,8 @@ const manageTemplate = "manage"
 
 var alphaNumericAndSymbols = regexp.MustCompile(`^[0-9A-Za-z_-]+$`)
 
+var srirachaServer *Server
+
 type Server struct {
 	Boards []*Board
 

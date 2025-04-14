@@ -19,8 +19,8 @@ type manageData struct {
 	Keywords []*Keyword
 	Log      *Log
 	Logs     []*Log
-	Plugin   *PluginInfo
-	Plugins  []*PluginInfo
+	Plugin   *pluginInfo
+	Plugins  []*pluginInfo
 }
 
 type templateData struct {
