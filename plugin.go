@@ -40,21 +40,20 @@ type Plugin interface {
 	About() string
 }
 
-// Plugin describes the required methods for a plugin which has configuration options.
+// PluginWithConfig describes the required methods for a plugin with configuration options.
 type PluginWithConfig interface {
 	Plugin
 	Config() []PluginConfig
 }
 
-// PluginWithPost describes the required methods for a plugin which receives post events.
+// PluginWithPost describes the required methods for a plugin subscribing to post events.
 type PluginWithPost interface {
 	Plugin
 	Post(db *Database, post *Post) error
 }
 
-// RegisterPlugin registers a sriracha plugin. Once registered the plugin will
-// receive any subscribed events. Plugins must call this function in init().
-// See PluginWithConfig and PluginWithPost.
+// RegisterPlugin registers a sriracha plugin to receive any subscribed events.
+// Plugins must call this function in init(). See [PluginWithConfig] and [PluginWithPost].
 func RegisterPlugin(plugin any) {
 	if srirachaServer == nil {
 		panic("sriracha server not yet started")

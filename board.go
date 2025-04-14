@@ -99,5 +99,15 @@ func (b *Board) loadForm(r *http.Request) {
 }
 
 func (b *Board) MaxSizeLabel() string {
-	return fmt.Sprintf("%d", b.MaxSize)
+	const base = 1024
+	var sizes = []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
+	unitsLimit := len(sizes)
+
+	var i int
+	size := b.MaxSize
+	for i := 0; size >= base && i < unitsLimit; i++ {
+		size = size / base
+		i++
+	}
+	return fmt.Sprintf("%d %s", size, sizes[i])
 }

@@ -14,7 +14,7 @@ func (db *Database) addAccount(a *Account, password string) error {
 	if err != nil {
 		return err
 	}
-	_, err = db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4)", a.Username, db.hashPassword(password), a.Role, sessionKey)
+	_, err = db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4)", a.Username, db.encryptPassword(password), a.Role, sessionKey)
 	if err != nil {
 		return fmt.Errorf("failed to insert account: %s", err)
 	}
@@ -41,13 +41,13 @@ func (db *Database) createSuperAdminAccount() error {
 		if err != nil {
 			return err
 		}
-		_, err = db.conn.Exec(context.Background(), "UPDATE account SET password = $1, role = $2, session = $3 WHERE username = 'admin'", db.hashPassword("admin"), RoleSuperAdmin, sessionKey)
+		_, err = db.conn.Exec(context.Background(), "UPDATE account SET password = $1, role = $2, session = $3 WHERE username = 'admin'", db.encryptPassword("admin"), RoleSuperAdmin, sessionKey)
 		if err != nil {
 			return fmt.Errorf("failed to insert account: %s", err)
 		}
 		return nil
 	}
-	_, err = db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, 'admin', $1, $2, 0, '')", db.hashPassword("admin"), RoleSuperAdmin)
+	_, err = db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, 'admin', $1, $2, 0, '')", db.encryptPassword("admin"), RoleSuperAdmin)
 	if err != nil {
 		return fmt.Errorf("failed to insert account: %s", err)
 	}
@@ -148,7 +148,7 @@ func (db *Database) updateAccountPassword(id int, password string) error {
 	if err != nil {
 		return err
 	}
-	_, err = db.conn.Exec(context.Background(), "UPDATE account SET password = $1, session = $2 WHERE id = $3", db.hashPassword(password), sessionKey, id)
+	_, err = db.conn.Exec(context.Background(), "UPDATE account SET password = $1, session = $2 WHERE id = $3", db.encryptPassword(password), sessionKey, id)
 	if err != nil {
 		return fmt.Errorf("failed to update account: %s", err)
 	}
