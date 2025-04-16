@@ -16,7 +16,7 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 		log.Fatal(err)
 	}
 
-	banID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/ban/"))
+	banID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/ban/"))
 	if err == nil && banID > 0 {
 		data.Manage.Ban, err = db.banByID(banID)
 		if err != nil {
@@ -42,7 +42,7 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 			if err != nil {
 				log.Fatal(err)
 			}
-			http.Redirect(w, r, "/imgboard/ban/", http.StatusFound)
+			http.Redirect(w, r, "/sriracha/ban/", http.StatusFound)
 			return
 		}
 		return
@@ -81,7 +81,7 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 		if err != nil {
 			log.Fatal(err)
 		}
-		http.Redirect(w, r, "/imgboard/ban/", http.StatusFound)
+		http.Redirect(w, r, "/sriracha/ban/", http.StatusFound)
 		return
 	}
 

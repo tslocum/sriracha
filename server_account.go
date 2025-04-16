@@ -11,7 +11,7 @@ import (
 func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_account"
 
-	accountID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/account/"))
+	accountID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/account/"))
 	if err == nil && accountID > 0 {
 		data.Manage.Account, err = db.accountByID(accountID)
 		if err != nil {
@@ -63,7 +63,7 @@ func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseW
 			if err != nil {
 				log.Fatal(err)
 			}
-			http.Redirect(w, r, "/imgboard/account/", http.StatusFound)
+			http.Redirect(w, r, "/sriracha/account/", http.StatusFound)
 			return
 		}
 		return
@@ -95,7 +95,7 @@ func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseW
 		if err != nil {
 			log.Fatal(err)
 		}
-		http.Redirect(w, r, "/imgboard/account/", http.StatusFound)
+		http.Redirect(w, r, "/sriracha/account/", http.StatusFound)
 		return
 	}
 

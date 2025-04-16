@@ -17,7 +17,7 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 		log.Fatal(err)
 	}
 
-	keywordID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/keyword/rest/"))
+	keywordID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/keyword/rest/"))
 	if err == nil && keywordID > 0 {
 		data.Template = "manage_keyword_test"
 		data.Manage.Keyword, err = db.keywordByID(keywordID)
@@ -41,7 +41,7 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 		return
 	}
 
-	keywordID, err = strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/keyword/"))
+	keywordID, err = strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/keyword/"))
 	if err == nil && keywordID > 0 {
 		data.Manage.Keyword, err = db.keywordByID(keywordID)
 		if err != nil {
@@ -78,7 +78,7 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 			if err != nil {
 				log.Fatal(err)
 			}
-			http.Redirect(w, r, "/imgboard/keyword/", http.StatusFound)
+			http.Redirect(w, r, "/sriracha/keyword/", http.StatusFound)
 			return
 		}
 		return
@@ -112,7 +112,7 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 		if err != nil {
 			log.Fatal(err)
 		}
-		http.Redirect(w, r, "/imgboard/keyword/", http.StatusFound)
+		http.Redirect(w, r, "/sriracha/keyword/", http.StatusFound)
 		return
 	}
 

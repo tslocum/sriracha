@@ -48,7 +48,7 @@ document.sriracha.expire.focus();
         <td>{{$ban.ID}}</td>
         <td>{{$ban.ExpireDate}}</td>
         <td>{{if eq $ban.Reason ""}}No reason provided{{else}}{{$ban.Reason}}{{end}}</td>
-        <td><a href="/imgboard/ban/{{$ban.ID}}">update</a> <a href="/imgboard/ban/delete/{{$ban.ID}}">delete</a></td>
+        <td><a href="/sriracha/ban/{{$ban.ID}}">update</a> <a href="/sriracha/ban/delete/{{$ban.ID}}">delete</a></td>
     </tr>
     {{end}}
 </table>

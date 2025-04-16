@@ -11,7 +11,7 @@ import (
 func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_plugin"
 
-	pluginID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/plugin/reset/"))
+	pluginID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/plugin/reset/"))
 	if err == nil && pluginID > 0 && pluginID <= len(allPluginInfo) {
 		info := allPluginInfo[pluginID-1]
 		for i, c := range info.Config {
@@ -21,11 +21,11 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 			}
 			info.Config[i].Value = c.Default
 		}
-		http.Redirect(w, r, fmt.Sprintf("/imgboard/plugin/%d", pluginID), http.StatusFound)
+		http.Redirect(w, r, fmt.Sprintf("/sriracha/plugin/%d", pluginID), http.StatusFound)
 		return
 	}
 
-	pluginID, err = strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/plugin/"))
+	pluginID, err = strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/plugin/"))
 	if err == nil && pluginID > 0 && pluginID <= len(allPluginInfo) {
 		info := allPluginInfo[pluginID-1]
 		data.Manage.Plugin = info
@@ -49,7 +49,7 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 				}
 				info.Config[i].Value = newValue
 			}
-			http.Redirect(w, r, "/imgboard/plugin", http.StatusFound)
+			http.Redirect(w, r, "/sriracha/plugin", http.StatusFound)
 		}
 		return
 	}

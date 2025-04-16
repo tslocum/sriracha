@@ -29,5 +29,5 @@ func (l *Log) MessageLabel() template.HTML {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return template.HTML(rgxp.ReplaceAllString(message, `<a href="/imgboard/$1/$2">$1 #$2</a>`))
+	return template.HTML(rgxp.ReplaceAllString(message, `<a href="/sriracha/$1/$2">$1 #$2</a>`))
 }

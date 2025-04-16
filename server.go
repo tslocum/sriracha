@@ -175,17 +175,17 @@ func (s *Server) watchTemplates() error {
 }
 
 func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request) *templateData {
-	if strings.HasPrefix(r.URL.Path, "/imgboard/logout") {
+	if strings.HasPrefix(r.URL.Path, "/sriracha/logout") {
 		http.SetCookie(w, &http.Cookie{
 			Name:  "sriracha_session",
 			Value: "",
 			Path:  "/",
 		})
-		http.Redirect(w, r, "/imgboard/", http.StatusFound)
+		http.Redirect(w, r, "/sriracha/", http.StatusFound)
 		return guestData
 	}
 
-	if r.URL.Path == "/imgboard/" || r.URL.Path == "/imgboard" {
+	if r.URL.Path == "/sriracha/" || r.URL.Path == "/sriracha" {
 		var failedLogin bool
 		username := r.FormValue("username")
 		if len(username) != 0 {
@@ -260,7 +260,7 @@ func (s *Server) writeBoard(board *Board) {
 
 func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Request) {
 	data := s.buildData(db, w, r)
-	if strings.HasPrefix(r.URL.Path, "/imgboard/logout") {
+	if strings.HasPrefix(r.URL.Path, "/sriracha/logout") {
 		return
 	}
 	defer func() {
@@ -289,19 +289,19 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 		return
 	}
 	switch {
-	case strings.HasPrefix(r.URL.Path, "/imgboard/password"):
+	case strings.HasPrefix(r.URL.Path, "/sriracha/password"):
 		s.serveChangePassword(data, db, w, r)
-	case strings.HasPrefix(r.URL.Path, "/imgboard/account"):
+	case strings.HasPrefix(r.URL.Path, "/sriracha/account"):
 		s.serveAccount(data, db, w, r)
-	case strings.HasPrefix(r.URL.Path, "/imgboard/ban"):
+	case strings.HasPrefix(r.URL.Path, "/sriracha/ban"):
 		s.serveBan(data, db, w, r)
-	case strings.HasPrefix(r.URL.Path, "/imgboard/board"):
+	case strings.HasPrefix(r.URL.Path, "/sriracha/board"):
 		s.serveBoard(data, db, w, r)
-	case strings.HasPrefix(r.URL.Path, "/imgboard/keyword"):
+	case strings.HasPrefix(r.URL.Path, "/sriracha/keyword"):
 		s.serveKeyword(data, db, w, r)
-	case strings.HasPrefix(r.URL.Path, "/imgboard/log"):
+	case strings.HasPrefix(r.URL.Path, "/sriracha/log"):
 		s.serveLog(data, db, w, r)
-	case strings.HasPrefix(r.URL.Path, "/imgboard/plugin"):
+	case strings.HasPrefix(r.URL.Path, "/sriracha/plugin"):
 		s.servePlugin(data, db, w, r)
 	default:
 		stats := s.dbPool.Stat()
@@ -360,7 +360,7 @@ func (s *Server) listen() error {
 
 	mux := http.NewServeMux()
 	mux.Handle("/css/", http.FileServerFS(subFS))
-	mux.HandleFunc("/imgboard/", s.serve)
+	mux.HandleFunc("/sriracha/", s.serve)
 	mux.Handle("/", http.FileServer(http.Dir(s.config.Root)))
 
 	fmt.Printf("Serving http://%s\n", s.config.Serve)

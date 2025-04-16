@@ -15,7 +15,7 @@
         </tr>
     {{end}}
         <tr>
-            <td>&nbsp;[<a href="/imgboard/plugin/reset/{{.Manage.Plugin.ID}}" onclick="return confirm('Are you sure you want to reset all configuration options?');">reset</a>]</td>
+            <td>&nbsp;[<a href="/sriracha/plugin/reset/{{.Manage.Plugin.ID}}" onclick="return confirm('Are you sure you want to reset all configuration options?');">reset</a>]</td>
             <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="Save"></td>
             <td>&nbsp;</td>
         </tr>
@@ -41,7 +41,7 @@
             <td>{{$plugin.Name}}</td>
             <td>{{if eq (len $plugin.Events) 0}}None{{else}}{{range $i, $event := $plugin.Events}}{{if ne $i 0}}, {{end}}{{$event | Title}}{{end}}{{end}}</td>
             <td>{{if eq $plugin.About ""}}No description{{else}}{{$plugin.About}}{{end}}</td>
-            <td>{{if eq (len $plugin.Config) 0}}&nbsp;{{else}}[<a href="/imgboard/plugin/{{$i | PlusOne}}">configure</a>]{{end}}</td>
+            <td>{{if eq (len $plugin.Config) 0}}&nbsp;{{else}}[<a href="/sriracha/plugin/{{$i | PlusOne}}">configure</a>]{{end}}</td>
         </tr>
         {{end}}
     </table>

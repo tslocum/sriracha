@@ -29,7 +29,7 @@
         <tr>
             <td class="postblock"><label for="lock">Restrict New Posts</label></td>
             <td valign="top"><select name="lock" style="width: 100%;">
-                <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 0)}} selected{{end}}>Allow threads and replies</option>
+                <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 0)}} selected{{end}}>Allow all</option>
                 <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 1)}} selected{{end}}>No visitor threads</option>
                 <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 2)}} selected{{end}}>No visitor posts</option>
                 <option value="3"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 3)}} selected{{end}}>No posts</option>
@@ -138,7 +138,7 @@
         <td>{{$board.Name}}</td>
         <td>{{$board.Description}}</td>
         <td>{{if eq $board.Type 0}}Imageboard{{else}}Forum{{end}}</td>
-        <td><a href="/imgboard/board/rebuild/{{$board.ID}}">rebuild</a> <a href="/imgboard/board/{{$board.ID}}">update</a> <a href="/imgboard/board/delete/{{$board.ID}}">delete</a></td>
+        <td><a href="/sriracha/board/rebuild/{{$board.ID}}">rebuild</a> <a href="/sriracha/board/{{$board.ID}}">update</a> <a href="/sriracha/board/delete/{{$board.ID}}">delete</a></td>
     </tr>
     {{end}}
 </table>

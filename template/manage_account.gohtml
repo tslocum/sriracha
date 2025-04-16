@@ -44,7 +44,7 @@
         <td>{{$account.Username}}</td>
         <td>{{if eq $account.Role 1}}Super-Administrator{{else if eq $account.Role 2}}Administrator{{else if eq $account.Role 3}}Moderator{{else}}Disabled{{end}}</td>
         <td>{{$account.LastActiveDate}}</td>
-        <td><a href="/imgboard/account/{{$account.ID}}">update</a></td>
+        <td><a href="/sriracha/account/{{$account.ID}}">update</a></td>
     </tr>
     {{end}}
 </table>

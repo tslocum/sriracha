@@ -13,7 +13,7 @@ import (
 func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_board"
 
-	boardID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/board/rebuild/"))
+	boardID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/board/rebuild/"))
 	if err == nil && boardID > 0 {
 		b, err := db.boardByID(boardID)
 		if err != nil {
@@ -25,7 +25,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		}
 	}
 
-	boardID, err = strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/imgboard/board/"))
+	boardID, err = strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/board/"))
 	if err == nil && boardID > 0 {
 		data.Manage.Board, err = db.boardByID(boardID)
 		if err != nil {
@@ -74,7 +74,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			if err != nil {
 				log.Fatal(err)
 			}
-			http.Redirect(w, r, "/imgboard/board/", http.StatusFound)
+			http.Redirect(w, r, "/sriracha/board/", http.StatusFound)
 			return
 		}
 		return
@@ -112,7 +112,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		if err != nil {
 			log.Fatal(err)
 		}
-		http.Redirect(w, r, "/imgboard/board/", http.StatusFound)
+		http.Redirect(w, r, "/sriracha/board/", http.StatusFound)
 		return
 	}
 

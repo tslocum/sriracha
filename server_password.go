@@ -36,5 +36,5 @@ func (s *Server) serveChangePassword(data *templateData, db *Database, w http.Re
 		log.Fatal(err)
 	}
 
-	http.Redirect(w, r, "/imgboard/", http.StatusFound)
+	http.Redirect(w, r, "/sriracha/", http.StatusFound)
 }
