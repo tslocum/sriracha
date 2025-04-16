@@ -1,4 +1,16 @@
 {{if eq .Type 0}}
+TODO
+{{else if eq .Type 1}}
+<input name="config_{{.Name}}" type="number">
+{{else if eq .Type 2}}
+<input name="config_{{.Name}}" type="number" step="0.01">
+{{else if eq .Type 3}}
+TODO
+{{else if eq .Type 4}}
+TODO
+<select name="config_{{.Name}}"{{if .Multiple }} multiple{{end}}>
+</select>
+{{else if eq .Type 5}}
 {{if eq .Multiple true}}
 {{range $i, $value := .Options}}
 <textarea name="config_{{$.Name}}{{$i}}" rows="4" cols="80" placeholder="Unused">{{$value}}</textarea><br>
@@ -7,13 +19,6 @@
 {{else}}
 <textarea name="config_{{.Name}}" rows="4">{{.Value}}</textarea>
 {{end}}
-{{else if eq .Type 1}}
-<input name="config_{{.Name}}" type="number">
-{{else if eq .Type 2}}
-<input name="config_{{.Name}}" type="number" step="0.01">
-{{else if eq .Type 3}}
-<select name="config_{{.Name}}"{{if .Multiple }} multiple{{end}}>
-</select>
 {{else}}
-Unknown configuration option.
+Unknown configuration option type.
 {{end}}

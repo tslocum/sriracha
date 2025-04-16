@@ -27,6 +27,16 @@
             <td>Imageboards show threads and recent replies on index pages, while forums only show thread information on index pages.</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="lock">Restrict New Posts</label></td>
+            <td valign="top"><select name="lock" style="width: 100%;">
+                <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 0)}} selected{{end}}>Allow threads and replies</option>
+                <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 1)}} selected{{end}}>No visitor threads</option>
+                <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 2)}} selected{{end}}>No visitor posts</option>
+                <option value="3"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 3)}} selected{{end}}>No posts</option>
+            </select></td>
+            <td>New post restrictions. The 'No visitor threads' option allows visitors to reply to existing threads. The 'No posts' option also prevents staff members from posting.</td>
+        </tr>
+        <tr>
             <td class="postblock"><label for="approval">Require Approval</label></td>
             <td valign="top"><select name="approval" style="width: 100%;">
                 <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Approval 0)}} selected{{end}}>Never</option>
@@ -36,7 +46,52 @@
             <td>Whether moderator approval is required before displaying newly created posts.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="maxsize">Maximum File Size</label></td>
+            <td class="postblock"><label for="delay">Delay</label></td>
+            <td><input type="text" name="delay" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Delay}}{{end}}"></td>
+            <td>Delay (in seconds) visitors must wait before posting again. Set to 0 to disable.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="threads">Index Threads</label></td>
+            <td><input type="text" name="threads" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Threads}}{{end}}"></td>
+            <td>Number of threads to show per board index page. Set to 0 to show all.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="replies">Index Replies</label></td>
+            <td><input type="text" name="replies" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Replies}}{{end}}"></td>
+            <td>Number of replies to show per board index thread. Set to 0 to show none.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="maxthreads">Max Threads</label></td>
+            <td><input type="text" name="maxthreads" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxThreads}}{{end}}"></td>
+            <td>Maximum number of threads in board. Once this limit is reached, the oldest threads are pruned. 0 to disable.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="maxreplies">Max Replies</label></td>
+            <td><input type="text" name="maxreplies" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxReplies}}{{end}}"></td>
+            <td>Maximum number of replies to a thread before the thread stops being bumped to the front. 0 to disable.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="maxname">Max Name Length</label></td>
+            <td><input type="text" name="maxname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxName}}{{end}}"></td>
+            <td>Maximum length of the name field. Values greater than 255 are not supported when using the default database schema.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="maxemail">Max Email Length</label></td>
+            <td><input type="text" name="maxemail" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxEmail}}{{end}}"></td>
+            <td>Maximum length of the email field. Values greater than 255 are not supported when using the default database schema.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="maxsubject">Max Subject Length</label></td>
+            <td><input type="text" name="maxsubject" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSubject}}{{end}}"></td>
+            <td>Maximum length of the subject field. Values greater than 255 are not supported when using the default database schema.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="maxmessage">Max Message Length</label></td>
+            <td><input type="text" name="maxmessage" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxMessage}}{{end}}"></td>
+            <td>Maximum length of the message field.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="maxsize">Max File Size</label></td>
             <td><input type="text" name="maxsize" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSize}}{{end}}"></td>
             <td>Allow file uploads up to this size (in bytes). Set to 0 to disable file uploads.</td>
         </tr>
@@ -49,6 +104,16 @@
             <td class="postblock"><label for="thumbheight">Thumbnail Height</label></td>
             <td><input type="text" name="thumbheight" value="{{if ne .Manage.Board nil}}{{.Manage.Board.ThumbHeight}}{{end}}"></td>
             <td>The maximum height of thumbnails.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="wordbreak">WordBreak</label></td>
+            <td><input type="text" name="wordbreak" value="{{if ne .Manage.Board nil}}{{.Manage.Board.WordBreak}}{{end}}"></td>
+            <td>Number of characters to break long words at in post messages. Set to 0 to never break long words.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="truncate">Truncate</label></td>
+            <td><input type="text" name="truncate" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Truncate}}{{end}}"></td>
+            <td>Number of message lines to display in post preview on board index pages. Set to 0 to show all lines.</td>
         </tr>
         <tr>
             <td>&nbsp;</td>

@@ -11,10 +11,12 @@ import (
 type PluginConfigType int
 
 const (
-	TypeString  PluginConfigType = 0
+	TypeBoolean PluginConfigType = 0
 	TypeInteger PluginConfigType = 1
 	TypeFloat   PluginConfigType = 2
-	TypeEnum    PluginConfigType = 3
+	TypeRange   PluginConfigType = 3
+	TypeEnum    PluginConfigType = 4
+	TypeString  PluginConfigType = 5
 )
 
 // PluginConfig represents a plugin configuration option.
@@ -27,8 +29,21 @@ type PluginConfig struct {
 	Value       string
 }
 
+func (c PluginConfig) validate() error {
+	switch {
+	case strings.TrimSpace(c.Name) == "":
+		return fmt.Errorf("name must be set")
+	case c.Type < TypeBoolean || c.Type > TypeString:
+		return fmt.Errorf("invalid type")
+	case c.Type == TypeBoolean && c.Multiple:
+		return fmt.Errorf("multi-value boolean options are not allowed")
+	default:
+		return nil
+	}
+}
+
 // Options returns the value of the provided option as a collection of strings.
-func (c *PluginConfig) Options() []string {
+func (c PluginConfig) Options() []string {
 	if !c.Multiple {
 		return []string{c.Value}
 	}
@@ -78,6 +93,16 @@ func RegisterPlugin(plugin any) {
 	if ok {
 		config = pConfig.Config()
 		for i := range config {
+			err := config[i].validate()
+			if err != nil {
+				optionName := config[i].Name
+				if strings.TrimSpace(optionName) == "" {
+					optionName = fmt.Sprintf("#%d", i)
+				} else {
+					optionName = fmt.Sprintf(`"%s"`, optionName)
+				}
+				log.Fatalf("%s configuration option %s is invalid: %s", name, optionName, err)
+			}
 			config[i].Value = config[i].Default
 		}
 	}

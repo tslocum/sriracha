@@ -117,6 +117,14 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 	}
 
 	data.Manage.Board = &Board{
+		Threads:     defaultBoardThreads,
+		Replies:     defaultBoardReplies,
+		MaxName:     defaultBoardMaxName,
+		MaxEmail:    defaultBoardMaxEmail,
+		MaxSubject:  defaultBoardMaxSubject,
+		MaxMessage:  defaultBoardMaxMessage,
+		WordBreak:   defaultBoardWordBreak,
+		Truncate:    defaultBoardTruncate,
 		MaxSize:     defaultBoardMaxSize,
 		ThumbWidth:  defaultBoardThumbWidth,
 		ThumbHeight: defaultBoardThumbHeight,

@@ -13,6 +13,15 @@ const (
 	TypeForum      BoardType = 1
 )
 
+type BoardLock int
+
+const (
+	LockNone   BoardLock = 0
+	LockReply  BoardLock = 1
+	LockThread BoardLock = 2
+	LockAll    BoardLock = 3
+)
+
 type BoardApproval int
 
 const (
@@ -27,7 +36,20 @@ type Board struct {
 	Name        string
 	Description string
 	Type        BoardType
+	Lock        BoardLock
 	Approval    BoardApproval
+	Locale      string
+	Delay       int
+	Threads     int
+	Replies     int
+	MaxName     int
+	MaxEmail    int
+	MaxSubject  int
+	MaxMessage  int
+	MaxThreads  int
+	MaxReplies  int
+	WordBreak   int
+	Truncate    int
 	MaxSize     int64
 	ThumbWidth  int
 	ThumbHeight int
@@ -35,6 +57,14 @@ type Board struct {
 }
 
 const (
+	defaultBoardThreads     = 10
+	defaultBoardReplies     = 3
+	defaultBoardMaxName     = 75
+	defaultBoardMaxEmail    = 255
+	defaultBoardMaxSubject  = 75
+	defaultBoardMaxMessage  = 8000
+	defaultBoardWordBreak   = 80
+	defaultBoardTruncate    = 15
 	defaultBoardMaxSize     = 2097152
 	defaultBoardThumbWidth  = 250
 	defaultBoardThumbHeight = 250
@@ -45,7 +75,20 @@ func (b *Board) loadForm(r *http.Request) {
 	b.Name = formString(r, "name")
 	b.Description = formString(r, "description")
 	b.Type = formRange(r, "type", TypeImageboard, TypeForum)
+	b.Lock = formRange(r, "lock", LockNone, LockAll)
 	b.Approval = formRange(r, "approval", ApprovalNone, ApprovalAll)
+	b.Locale = formString(r, "locale")
+	b.Delay = formInt(r, "delay")
+	b.Threads = formInt(r, "threads")
+	b.Replies = formInt(r, "replies")
+	b.MaxName = formInt(r, "maxname")
+	b.MaxEmail = formInt(r, "maxemail")
+	b.MaxSubject = formInt(r, "maxsubject")
+	b.MaxMessage = formInt(r, "maxmessage")
+	b.MaxThreads = formInt(r, "maxthreads")
+	b.MaxReplies = formInt(r, "maxreplies")
+	b.WordBreak = formInt(r, "wordbreak")
+	b.Truncate = formInt(r, "truncate")
 	b.MaxSize = formInt64(r, "maxsize")
 	b.ThumbWidth = formInt(r, "thumbwidth")
 	b.ThumbHeight = formInt(r, "thumbheight")
