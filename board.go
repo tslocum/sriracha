@@ -3,7 +3,6 @@ package sriracha
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -14,12 +13,12 @@ const (
 	TypeForum      BoardType = 1
 )
 
-type BoardApprovalType int
+type BoardApproval int
 
 const (
-	ApprovalNone BoardApprovalType = 0
-	ApprovalFile BoardApprovalType = 1
-	ApprovalAll  BoardApprovalType = 2
+	ApprovalNone BoardApproval = 0
+	ApprovalFile BoardApproval = 1
+	ApprovalAll  BoardApproval = 2
 )
 
 type Board struct {
@@ -28,7 +27,7 @@ type Board struct {
 	Name        string
 	Description string
 	Type        BoardType
-	Approval    BoardApprovalType
+	Approval    BoardApproval
 	MaxSize     int64
 	ThumbWidth  int
 	ThumbHeight int
@@ -58,44 +57,14 @@ func (b *Board) validate() error {
 }
 
 func (b *Board) loadForm(r *http.Request) {
-	b.Dir = strings.TrimSpace(r.FormValue("dir"))
-	b.Name = strings.TrimSpace(r.FormValue("name"))
-	b.Description = strings.TrimSpace(r.FormValue("description"))
-	typeString := r.FormValue("type")
-	if typeString == "1" {
-		b.Type = TypeForum
-	} else {
-		b.Type = TypeImageboard
-	}
-	approvalString := r.FormValue("approval")
-	if approvalString == "1" {
-		b.Approval = ApprovalFile
-	} else if approvalString == "2" {
-		b.Approval = ApprovalAll
-	} else {
-		b.Approval = ApprovalNone
-	}
-	maxSizeString := strings.TrimSpace(r.FormValue("maxsize"))
-	if maxSizeString != "" {
-		v, err := strconv.ParseInt(maxSizeString, 10, 64)
-		if err == nil && v >= 0 {
-			b.MaxSize = v
-		}
-	}
-	thumbWidthString := strings.TrimSpace(r.FormValue("thumbwidth"))
-	if thumbWidthString != "" {
-		v, err := strconv.Atoi(thumbWidthString)
-		if err == nil && v >= 0 {
-			b.ThumbWidth = v
-		}
-	}
-	thumbHeightString := strings.TrimSpace(r.FormValue("thumbheight"))
-	if thumbHeightString != "" {
-		v, err := strconv.Atoi(thumbHeightString)
-		if err == nil && v >= 0 {
-			b.ThumbHeight = v
-		}
-	}
+	b.Dir = formString(r, "dir")
+	b.Name = formString(r, "name")
+	b.Description = formString(r, "description")
+	b.Type = formRange(r, "type", TypeImageboard, TypeForum)
+	b.Approval = formRange(r, "approval", ApprovalNone, ApprovalAll)
+	b.MaxSize = formInt64(r, "maxsize")
+	b.ThumbWidth = formInt(r, "thumbwidth")
+	b.ThumbHeight = formInt(r, "thumbheight")
 }
 
 func (b *Board) MaxSizeLabel() string {

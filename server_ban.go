@@ -52,7 +52,7 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 		b := &Ban{}
 		b.loadForm(r)
 
-		ip := strings.TrimSpace(r.FormValue("ip"))
+		ip := formString(r, "ip")
 		if ip != "" {
 			b.IP = db.encryptPassword(ip)
 		}

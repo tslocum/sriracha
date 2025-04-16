@@ -3,7 +3,6 @@ package sriracha
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -27,11 +26,8 @@ func (b *Ban) validate() error {
 }
 
 func (b *Ban) loadForm(r *http.Request) {
-	expire, err := strconv.ParseInt(strings.TrimSpace(r.FormValue("expire")), 10, 64)
-	if err == nil && expire >= 0 {
-		b.Expire = expire
-	}
-	b.Reason = strings.TrimSpace(r.FormValue("reason"))
+	b.Expire = formInt64(r, "expire")
+	b.Reason = formString(r, "reason")
 }
 
 func (b *Ban) ExpireDate() string {

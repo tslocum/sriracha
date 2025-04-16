@@ -27,8 +27,8 @@ func (k *Keyword) validate() error {
 
 func (k *Keyword) loadForm(db *Database, r *http.Request) {
 	r.ParseForm()
-	k.Text = strings.TrimSpace(r.FormValue("text"))
-	k.Action = strings.TrimSpace(r.FormValue("action"))
+	k.Text = formString(r, "text")
+	k.Action = formString(r, "action")
 	k.Boards = nil
 	boards := r.Form["boards"]
 	if boards != nil {

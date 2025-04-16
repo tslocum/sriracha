@@ -13,10 +13,12 @@ import (
 	"path/filepath"
 	"plugin"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"golang.org/x/exp/constraints"
 	"golang.org/x/sys/unix"
 	"gopkg.in/yaml.v3"
 )
@@ -442,4 +444,32 @@ func (s *Server) Run() error {
 	}
 
 	return s.listen()
+}
+
+func formString(r *http.Request, key string) string {
+	return strings.TrimSpace(r.FormValue(key))
+}
+
+func formInt(r *http.Request, key string) int {
+	v, err := strconv.Atoi(formString(r, key))
+	if err == nil && v >= 0 {
+		return v
+	}
+	return 0
+}
+
+func formInt64(r *http.Request, key string) int64 {
+	v, err := strconv.ParseInt(formString(r, key), 10, 64)
+	if err == nil && v >= 0 {
+		return v
+	}
+	return 0
+}
+
+func formRange[T constraints.Integer](r *http.Request, key string, min T, max T) T {
+	v := formInt(r, key)
+	if v >= int(min) && v <= int(max) {
+		return T(v)
+	}
+	return min
 }

@@ -35,18 +35,8 @@ func (a *Account) validate() error {
 }
 
 func (a *Account) loadForm(r *http.Request) {
-	a.Username = strings.TrimSpace(r.FormValue("username"))
-	roleString := r.FormValue("role")
-	switch roleString {
-	case "1":
-		a.Role = RoleSuperAdmin
-	case "2":
-		a.Role = RoleAdmin
-	case "3":
-		a.Role = RoleMod
-	default:
-		a.Role = RoleDisabled
-	}
+	a.Username = formString(r, "username")
+	a.Role = formRange(r, "role", RoleSuperAdmin, RoleDisabled)
 }
 
 func (a *Account) LastActiveDate() string {
