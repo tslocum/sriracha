@@ -9,7 +9,10 @@ import (
 )
 
 func (db *Database) addKeyword(k *Keyword) error {
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO keyword VALUES (DEFAULT, $1, $2)", k.Text, k.Action)
+	_, err := db.conn.Exec(context.Background(), "INSERT INTO keyword VALUES (DEFAULT, $1, $2)",
+		k.Text,
+		k.Action,
+	)
 	if err != nil {
 		return fmt.Errorf("failed to insert keyword: %s", err)
 	}
@@ -70,7 +73,7 @@ func (db *Database) updateKeywordBoards(k *Keyword) error {
 
 func (db *Database) keywordByID(id int) (*Keyword, error) {
 	k := &Keyword{}
-	err := db.conn.QueryRow(context.Background(), "SELECT * FROM keyword WHERE id = $1", id).Scan(&k.ID, &k.Text, &k.Action)
+	err := scanKeyword(k, db.conn.QueryRow(context.Background(), "SELECT * FROM keyword WHERE id = $1", id))
 	if err == pgx.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
@@ -85,7 +88,7 @@ func (db *Database) keywordByID(id int) (*Keyword, error) {
 
 func (db *Database) keywordByText(text string) (*Keyword, error) {
 	k := &Keyword{}
-	err := db.conn.QueryRow(context.Background(), "SELECT * FROM keyword WHERE text = $1", text).Scan(&k.ID, &k.Text, &k.Action)
+	err := scanKeyword(k, db.conn.QueryRow(context.Background(), "SELECT * FROM keyword WHERE text = $1", text))
 	if err == pgx.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
@@ -106,7 +109,7 @@ func (db *Database) allKeywords() ([]*Keyword, error) {
 	var keywords []*Keyword
 	for rows.Next() {
 		k := &Keyword{}
-		err := rows.Scan(&k.ID, &k.Text, &k.Action)
+		err := scanKeyword(k, rows)
 		if err != nil {
 			return nil, err
 		}
@@ -125,9 +128,21 @@ func (db *Database) updateKeyword(k *Keyword) error {
 	if k.ID <= 0 {
 		return fmt.Errorf("invalid keyword ID %d", k.ID)
 	}
-	_, err := db.conn.Exec(context.Background(), "UPDATE keyword SET text = $1, action = $2 WHERE id = $3", k.Text, k.Action, k.ID)
+	_, err := db.conn.Exec(context.Background(), "UPDATE keyword SET text = $1, action = $2 WHERE id = $3",
+		k.Text,
+		k.Action,
+		k.ID,
+	)
 	if err != nil {
 		return fmt.Errorf("failed to update keyword: %s", err)
 	}
 	return db.updateKeywordBoards(k)
+}
+
+func scanKeyword(k *Keyword, row pgx.Row) error {
+	return row.Scan(
+		&k.ID,
+		&k.Text,
+		&k.Action,
+	)
 }

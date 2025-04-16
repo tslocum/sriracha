@@ -19,7 +19,12 @@ func (db *Database) addLog(l *Log) error {
 	if l.Account != nil {
 		accountID = &l.Account.ID
 	}
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO log VALUES (DEFAULT, $1, $2, $3, $4)", boardID, time.Now().Unix(), accountID, l.Message)
+	_, err := db.conn.Exec(context.Background(), "INSERT INTO log VALUES (DEFAULT, $1, $2, $3, $4)",
+		boardID,
+		time.Now().Unix(),
+		accountID,
+		l.Message,
+	)
 	if err != nil {
 		return fmt.Errorf("failed to insert log: %s", err)
 	}

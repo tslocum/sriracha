@@ -90,14 +90,18 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			return
 		}
 
-		err = os.Mkdir(filepath.Join(s.config.Root, b.Dir), 0755)
-		if err != nil {
-			if os.IsExist(err) {
-				data.Error(fmt.Sprintf("Board directory %s already exists.", b.Dir))
-			} else {
-				data.Error(fmt.Sprintf("Failed to create board directory %s: %s", b.Dir, err))
+		dirs := []string{"", "src", "thumb", "res"}
+		for _, boardDir := range dirs {
+			boardPath := filepath.Join(s.config.Root, b.Dir, boardDir)
+			err = os.Mkdir(boardPath, 0755)
+			if err != nil {
+				if os.IsExist(err) {
+					data.Error(fmt.Sprintf("Board directory %s already exists.", boardPath))
+				} else {
+					data.Error(fmt.Sprintf("Failed to create board directory %s: %s", boardPath, err))
+				}
+				return
 			}
-			return
 		}
 
 		err = db.addBoard(b)

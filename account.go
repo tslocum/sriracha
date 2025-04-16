@@ -19,6 +19,7 @@ const (
 type Account struct {
 	ID         int
 	Username   string
+	Password   string
 	Role       AccountRole
 	LastActive int64
 	Session    string

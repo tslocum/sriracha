@@ -174,6 +174,26 @@ func (s *Server) watchTemplates() error {
 	return watcher.Add("template")
 }
 
+func (s *Server) setDefaultConfigValues() error {
+	conn, err := s.dbPool.Acquire(context.Background())
+	if err != nil {
+		return err
+	}
+	defer conn.Release()
+
+	db := &Database{
+		conn: conn,
+	}
+	for _, info := range allPluginInfo {
+		for _, config := range info.Config {
+			if db.GetString(config.Name) == "" {
+				db.SaveString(config.Name, config.Default)
+			}
+		}
+	}
+	return nil
+}
+
 func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request) *templateData {
 	if strings.HasPrefix(r.URL.Path, "/sriracha/logout") {
 		http.SetCookie(w, &http.Cookie{
@@ -318,10 +338,13 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 }
 
 func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
-	action := r.FormValue("action")
-	if action == "" {
-		values := r.URL.Query()
-		action = values.Get("action")
+	var action string
+	if r.URL.Path == "/sriracha/" || r.URL.Path == "/sriracha" {
+		action = r.FormValue("action")
+		if action == "" {
+			values := r.URL.Query()
+			action = values.Get("action")
+		}
 	}
 
 	conn, err := s.dbPool.Acquire(context.Background())
@@ -341,7 +364,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 
 	switch action {
 	case "post":
-		//s.servePost(db, w, r)
+		s.servePost(db, w, r)
 	default:
 		s.serveManage(db, w, r)
 	}
@@ -430,6 +453,11 @@ func (s *Server) Run() error {
 	}
 
 	s.dbPool, err = connectDatabase(s.config.Address, s.config.Username, s.config.Password, s.config.Schema, s.config.Min, s.config.Max)
+	if err != nil {
+		return err
+	}
+
+	err = s.setDefaultConfigValues()
 	if err != nil {
 		return err
 	}

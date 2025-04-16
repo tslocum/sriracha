@@ -9,7 +9,12 @@ import (
 )
 
 func (db *Database) addBan(b *Ban) error {
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO ban VALUES (DEFAULT, $1, $2, $3, $4)", b.IP, time.Now().Unix(), b.Expire, b.Reason)
+	_, err := db.conn.Exec(context.Background(), "INSERT INTO ban VALUES (DEFAULT, $1, $2, $3, $4)",
+		b.IP,
+		time.Now().Unix(),
+		b.Expire,
+		b.Reason,
+	)
 	if err != nil {
 		return fmt.Errorf("failed to insert ban: %s", err)
 	}
@@ -22,7 +27,7 @@ func (db *Database) addBan(b *Ban) error {
 
 func (db *Database) banByID(id int) (*Ban, error) {
 	b := &Ban{}
-	err := db.conn.QueryRow(context.Background(), "SELECT * FROM ban WHERE id = $1", id).Scan(&b.ID, &b.IP, &b.Timestamp, &b.Expire, &b.Reason)
+	err := scanBan(b, db.conn.QueryRow(context.Background(), "SELECT * FROM ban WHERE id = $1", id))
 	if err == pgx.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
@@ -33,7 +38,7 @@ func (db *Database) banByID(id int) (*Ban, error) {
 
 func (db *Database) banByIP(ip string) (*Ban, error) {
 	b := &Ban{}
-	err := db.conn.QueryRow(context.Background(), "SELECT * FROM ban WHERE ip = $1", ip).Scan(&b.ID, &b.IP, &b.Timestamp, &b.Expire, &b.Reason)
+	err := scanBan(b, db.conn.QueryRow(context.Background(), "SELECT * FROM ban WHERE ip = $1", ip))
 	if err == pgx.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
@@ -50,7 +55,7 @@ func (db *Database) allBans() ([]*Ban, error) {
 	var bans []*Ban
 	for rows.Next() {
 		b := &Ban{}
-		err := rows.Scan(&b.ID, &b.IP, &b.Timestamp, &b.Expire, &b.Reason)
+		err := scanBan(b, rows)
 		if err != nil {
 			return nil, err
 		}
@@ -63,9 +68,23 @@ func (db *Database) updateBan(b *Ban) error {
 	if b.ID <= 0 {
 		return fmt.Errorf("invalid ban ID %d", b.ID)
 	}
-	_, err := db.conn.Exec(context.Background(), "UPDATE ban SET expire = $1, reason = $2 WHERE id = $3", b.Expire, b.Reason, b.ID)
+	_, err := db.conn.Exec(context.Background(), "UPDATE ban SET expire = $1, reason = $2 WHERE id = $3",
+		b.Expire,
+		b.Reason,
+		b.ID,
+	)
 	if err != nil {
 		return fmt.Errorf("failed to update ban: %s", err)
 	}
 	return nil
+}
+
+func scanBan(b *Ban, row pgx.Row) error {
+	return row.Scan(
+		&b.ID,
+		&b.IP,
+		&b.Timestamp,
+		&b.Expire,
+		&b.Reason,
+	)
 }

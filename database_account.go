@@ -14,7 +14,12 @@ func (db *Database) addAccount(a *Account, password string) error {
 	if err != nil {
 		return err
 	}
-	_, err = db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4)", a.Username, db.encryptPassword(password), a.Role, sessionKey)
+	_, err = db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4)",
+		a.Username,
+		db.encryptPassword(password),
+		a.Role,
+		sessionKey,
+	)
 	if err != nil {
 		return fmt.Errorf("failed to insert account: %s", err)
 	}
@@ -41,7 +46,11 @@ func (db *Database) createSuperAdminAccount() error {
 		if err != nil {
 			return err
 		}
-		_, err = db.conn.Exec(context.Background(), "UPDATE account SET password = $1, role = $2, session = $3 WHERE username = 'admin'", db.encryptPassword("admin"), RoleSuperAdmin, sessionKey)
+		_, err = db.conn.Exec(context.Background(), "UPDATE account SET password = $1, role = $2, session = $3 WHERE username = 'admin'",
+			db.encryptPassword("admin"),
+			RoleSuperAdmin,
+			sessionKey,
+		)
 		if err != nil {
 			return fmt.Errorf("failed to insert account: %s", err)
 		}
@@ -56,8 +65,7 @@ func (db *Database) createSuperAdminAccount() error {
 
 func (db *Database) accountByID(id int) (*Account, error) {
 	a := &Account{}
-	var password string
-	err := db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE id = $1", id).Scan(&a.ID, &a.Username, &password, &a.Role, &a.LastActive, &a.Session)
+	err := scanAccount(a, db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE id = $1", id))
 	if err == pgx.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
@@ -68,8 +76,7 @@ func (db *Database) accountByID(id int) (*Account, error) {
 
 func (db *Database) accountByUsername(username string) (*Account, error) {
 	a := &Account{}
-	var passwordHash string
-	err := db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE username = $1 AND role != $2", username, RoleDisabled).Scan(&a.ID, &a.Username, &passwordHash, &a.Role, &a.LastActive, &a.Session)
+	err := scanAccount(a, db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE username = $1 AND role != $2", username, RoleDisabled))
 	if err == pgx.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
@@ -86,8 +93,7 @@ func (db *Database) accountBySessionKey(sessionKey string) (*Account, error) {
 	}
 
 	a := &Account{}
-	var passwordHash string
-	err := db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE session = $1 AND role != $2", sessionKey, RoleDisabled).Scan(&a.ID, &a.Username, &passwordHash, &a.Role, &a.LastActive, &a.Session)
+	err := scanAccount(a, db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE session = $1 AND role != $2", sessionKey, RoleDisabled))
 	if err == pgx.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
@@ -168,13 +174,12 @@ func (db *Database) updateAccountLastActive(id int) error {
 
 func (db *Database) loginAccount(username string, password string) (*Account, error) {
 	a := &Account{}
-	var passwordHash string
-	err := db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE username = $1 AND role != $2", username, RoleDisabled).Scan(&a.ID, &a.Username, &passwordHash, &a.Role, &a.LastActive, &a.Session)
+	err := scanAccount(a, db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE username = $1 AND role != $2", username, RoleDisabled))
 	if err == pgx.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
 		return nil, fmt.Errorf("failed to select account: %s", err)
-	} else if a.ID == 0 || !db.comparePassword(password, passwordHash) {
+	} else if a.ID == 0 || !db.comparePassword(password, a.Password) {
 		return nil, nil
 	}
 	a.Session, err = db.newSessionKey()
@@ -186,4 +191,15 @@ func (db *Database) loginAccount(username string, password string) (*Account, er
 		return nil, fmt.Errorf("failed to update account: %s", err)
 	}
 	return a, nil
+}
+
+func scanAccount(a *Account, row pgx.Row) error {
+	return row.Scan(
+		&a.ID,
+		&a.Username,
+		&a.Password,
+		&a.Role,
+		&a.LastActive,
+		&a.Session,
+	)
 }

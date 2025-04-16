@@ -1,6 +1,7 @@
 <div class="postarea">
     <form name="postform" id="postform" action="/sriracha/" method="post" enctype="multipart/form-data">
         <input type="hidden" name="MAX_FILE_SIZE" value="2097152">
+        <input type="hidden" name="action" value="post">
         <input type="hidden" name="board" value="{{.Board.Dir}}">
         <input type="hidden" name="parent" value="0">
         <table class="postform">

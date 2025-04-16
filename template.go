@@ -3,6 +3,8 @@ package sriracha
 import (
 	"embed"
 	"html/template"
+	"io"
+	"log"
 )
 
 //go:embed template
@@ -36,6 +38,13 @@ type templateData struct {
 func (data *templateData) Error(message string) {
 	data.Template = "manage_error"
 	data.Info = message
+}
+
+func (data *templateData) execute(w io.Writer) {
+	err := srirachaServer.tpl.ExecuteTemplate(w, data.Template+".gohtml", data)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 var guestData = &templateData{
