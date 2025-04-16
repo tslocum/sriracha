@@ -25,6 +25,18 @@ func (k *Keyword) validate() error {
 	return nil
 }
 
+func (k *Keyword) HasBoard(id int) bool {
+	if len(k.Boards) == 0 {
+		return true
+	}
+	for _, b := range k.Boards {
+		if b.ID == id {
+			return true
+		}
+	}
+	return false
+}
+
 func (k *Keyword) loadForm(db *Database, r *http.Request) {
 	r.ParseForm()
 	k.Text = formString(r, "text")
@@ -46,18 +58,6 @@ func (k *Keyword) loadForm(db *Database, r *http.Request) {
 			k.Boards = append(k.Boards, b)
 		}
 	}
-}
-
-func (k *Keyword) HasBoard(id int) bool {
-	if len(k.Boards) == 0 {
-		return true
-	}
-	for _, b := range k.Boards {
-		if b.ID == id {
-			return true
-		}
-	}
-	return false
 }
 
 func (k *Keyword) HasBoardOption(id int) bool {

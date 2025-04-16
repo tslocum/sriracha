@@ -15,6 +15,11 @@ type Ban struct {
 	Reason    string
 }
 
+func (b *Ban) loadForm(r *http.Request) {
+	b.Expire = formInt64(r, "expire")
+	b.Reason = formString(r, "reason")
+}
+
 func (b *Ban) validate() error {
 	switch {
 	case strings.TrimSpace(b.IP) == "":
@@ -23,11 +28,6 @@ func (b *Ban) validate() error {
 		return fmt.Errorf("expiraton must be greater than or equal to zero")
 	}
 	return nil
-}
-
-func (b *Ban) loadForm(r *http.Request) {
-	b.Expire = formInt64(r, "expire")
-	b.Reason = formString(r, "reason")
 }
 
 func (b *Ban) ExpireDate() string {

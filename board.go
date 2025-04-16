@@ -40,6 +40,17 @@ const (
 	defaultBoardThumbHeight = 250
 )
 
+func (b *Board) loadForm(r *http.Request) {
+	b.Dir = formString(r, "dir")
+	b.Name = formString(r, "name")
+	b.Description = formString(r, "description")
+	b.Type = formRange(r, "type", TypeImageboard, TypeForum)
+	b.Approval = formRange(r, "approval", ApprovalNone, ApprovalAll)
+	b.MaxSize = formInt64(r, "maxsize")
+	b.ThumbWidth = formInt(r, "thumbwidth")
+	b.ThumbHeight = formInt(r, "thumbheight")
+}
+
 func (b *Board) validate() error {
 	switch {
 	case strings.TrimSpace(b.Dir) == "":
@@ -54,17 +65,6 @@ func (b *Board) validate() error {
 		return fmt.Errorf("sriracha_all is a reserved name")
 	}
 	return nil
-}
-
-func (b *Board) loadForm(r *http.Request) {
-	b.Dir = formString(r, "dir")
-	b.Name = formString(r, "name")
-	b.Description = formString(r, "description")
-	b.Type = formRange(r, "type", TypeImageboard, TypeForum)
-	b.Approval = formRange(r, "approval", ApprovalNone, ApprovalAll)
-	b.MaxSize = formInt64(r, "maxsize")
-	b.ThumbWidth = formInt(r, "thumbwidth")
-	b.ThumbHeight = formInt(r, "thumbheight")
 }
 
 func (b *Board) MaxSizeLabel() string {

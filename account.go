@@ -24,6 +24,11 @@ type Account struct {
 	Session    string
 }
 
+func (a *Account) loadForm(r *http.Request) {
+	a.Username = formString(r, "username")
+	a.Role = formRange(r, "role", RoleSuperAdmin, RoleDisabled)
+}
+
 func (a *Account) validate() error {
 	switch {
 	case strings.TrimSpace(a.Username) == "":
@@ -32,11 +37,6 @@ func (a *Account) validate() error {
 		return fmt.Errorf("username must only consist of letters, numbers, hyphens and underscores")
 	}
 	return nil
-}
-
-func (a *Account) loadForm(r *http.Request) {
-	a.Username = formString(r, "username")
-	a.Role = formRange(r, "role", RoleSuperAdmin, RoleDisabled)
 }
 
 func (a *Account) LastActiveDate() string {
