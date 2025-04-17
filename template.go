@@ -54,33 +54,30 @@ func (data *templateData) execute(w io.Writer) {
 	}
 }
 
-func withFuncMap(tpl *template.Template) *template.Template {
-	funcMap := template.FuncMap{
-		"Title": strings.Title,
-		"HTML": func(text string) template.HTML {
-			return template.HTML(text)
-		},
-		"Omitted": func(showReplies int, threadPosts int) int {
-			numReplies := threadPosts - 1
-			if showReplies == 0 || numReplies <= showReplies {
-				return 0
-			}
-			return numReplies - showReplies
-		},
-		"PlusOne": func(i int) int {
-			return i + 1
-		},
-		"ShowReply": func(showReplies int, threadPosts int, postIndex int) bool {
-			if showReplies == 0 {
-				return true
-			}
-			return postIndex >= threadPosts-showReplies
-		},
-		"URLEscape": func(text string) string {
-			return url.PathEscape(text)
-		},
-	}
-	return tpl.Funcs(funcMap)
+var templateFuncMap = template.FuncMap{
+	"Title": strings.Title,
+	"HTML": func(text string) template.HTML {
+		return template.HTML(text)
+	},
+	"Omitted": func(showReplies int, threadPosts int) int {
+		numReplies := threadPosts - 1
+		if showReplies == 0 || numReplies <= showReplies {
+			return 0
+		}
+		return numReplies - showReplies
+	},
+	"PlusOne": func(i int) int {
+		return i + 1
+	},
+	"ShowReply": func(showReplies int, threadPosts int, postIndex int) bool {
+		if showReplies == 0 {
+			return true
+		}
+		return postIndex >= threadPosts-showReplies
+	},
+	"URLEscape": func(text string) string {
+		return url.PathEscape(text)
+	},
 }
 
 var guestData = &templateData{

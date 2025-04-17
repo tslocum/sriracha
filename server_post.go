@@ -54,6 +54,13 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		}
 	}
 
+	if post.Message == "" && post.File == "" {
+		data := s.buildData(db, w, r)
+		data.Error("Please upload a file and/or enter a message.")
+		data.execute(w)
+		return
+	}
+
 	for _, postHandler := range allPluginPostHandlers {
 		err := postHandler(db, post)
 		if err != nil {

@@ -95,7 +95,7 @@ func (s *Server) parseConfig(configFile string) error {
 
 func (s *Server) parseTemplates(dir string) error {
 	if dir != "" {
-		s.tpl = withFuncMap(template.New("sriracha"))
+		s.tpl = template.New("sriracha").Funcs(templateFuncMap)
 
 		entries, err := os.ReadDir("template")
 		if err != nil {
@@ -119,7 +119,7 @@ func (s *Server) parseTemplates(dir string) error {
 		return nil
 	}
 
-	s.tpl = withFuncMap(template.New("sriracha"))
+	s.tpl = template.New("sriracha").Funcs(templateFuncMap)
 
 	entries, err := templateFS.ReadDir("template")
 	if err != nil {

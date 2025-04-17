@@ -38,7 +38,6 @@ func (k *Keyword) HasBoard(id int) bool {
 }
 
 func (k *Keyword) loadForm(db *Database, r *http.Request) {
-	r.ParseForm()
 	k.Text = formString(r, "text")
 	k.Action = formString(r, "action")
 	k.Boards = nil
