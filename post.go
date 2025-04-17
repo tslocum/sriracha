@@ -49,6 +49,8 @@ type Post struct {
 var postUploadFileLock = &sync.Mutex{}
 
 func (p *Post) loadForm(r *http.Request, b *Board, rootDir string) error {
+	p.Parent = formInt(r, "parent")
+
 	p.Name = formString(r, "name")
 	p.Email = formString(r, "email")
 	p.Subject = formString(r, "subject")
@@ -111,7 +113,6 @@ func (p *Post) loadForm(r *http.Request, b *Board, rootDir string) error {
 
 		postUploadFileLock.Unlock()
 	}
-	log.Printf("OK POST %+v", *p)
 	return nil
 }
 
@@ -120,4 +121,8 @@ func (p *Post) ThreadID() int {
 		return p.Parent
 	}
 	return p.ID
+}
+
+func (p *Post) FileSizeLabel() string {
+	return formatFileSize(p.FileSize)
 }

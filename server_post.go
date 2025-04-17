@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
+	"time"
 )
 
 func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request) {
@@ -28,13 +30,27 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		data.execute(w)
 	}
 
-	post := &Post{}
+	now := time.Now().Unix()
+	post := &Post{
+		Timestamp: now,
+		Bumped:    now,
+	}
 	err = post.loadForm(r, b, s.config.Root)
 	if err != nil {
 		data := s.buildData(db, w, r)
 		data.Error(err.Error())
 		data.execute(w)
 		return
+	}
+
+	if post.Parent != 0 {
+		parent := db.postByID(b, post.Parent)
+		if parent == nil || parent.Parent != 0 {
+			data := s.buildData(db, w, r)
+			data.Error("invalid post parent")
+			data.execute(w)
+			return
+		}
 	}
 
 	for _, postHandler := range allPluginPostHandlers {
@@ -49,9 +65,16 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		}
 	}
 
+	post.Message = strings.ReplaceAll(post.Message, "\n", "<br>\n")
+
 	err = db.addPost(b, post)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if post.Parent != 0 && strings.ToLower(post.Email) != "sage" {
+		// TODO check reply limit
+		db.bumpThread(post.Parent, now)
 	}
 
 	s.rebuildThread(db, b, post)

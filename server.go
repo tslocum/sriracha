@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"io/fs"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"path"
@@ -84,16 +85,6 @@ func (s *Server) parseConfig(configFile string) error {
 }
 
 func (s *Server) parseTemplates(dir string) error {
-	withFuncMap := func(tpl *template.Template) *template.Template {
-		funcMap := template.FuncMap{
-			"Title": strings.Title,
-			"PlusOne": func(i int) int {
-				return i + 1
-			},
-		}
-		return tpl.Funcs(funcMap)
-	}
-
 	if dir != "" {
 		s.tpl = withFuncMap(template.New("sriracha"))
 
@@ -253,16 +244,17 @@ func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request)
 	return guestData
 }
 
-func (s *Server) writeThread(db *Database, board *Board, post *Post) {
-	f, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "res", fmt.Sprintf("%d.html", post.ID)), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+func (s *Server) writeThread(db *Database, board *Board, postID int) {
+	f, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "res", fmt.Sprintf("%d.html", postID)), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	data := &templateData{
-		Board:   board,
-		Threads: [][]*Post{db.allPostsInThread(board, post)},
-		Manage:  &manageData{},
+		Board:     board,
+		Threads:   [][]*Post{db.allPostsInThread(board, postID)},
+		ReplyMode: postID,
+		Manage:    &manageData{},
 	}
 	err = s.tpl.ExecuteTemplate(f, "board_page.gohtml", data)
 	if err != nil {
@@ -282,7 +274,7 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 	}
 	threads := db.allThreads(board)
 	for _, thread := range threads {
-		data.Threads = append(data.Threads, db.allPostsInThread(board, thread))
+		data.Threads = append(data.Threads, db.allPostsInThread(board, thread.ID))
 	}
 	err = s.tpl.ExecuteTemplate(f, "board_page.gohtml", data)
 	if err != nil {
@@ -291,13 +283,13 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 }
 
 func (s *Server) rebuildThread(db *Database, board *Board, post *Post) {
-	s.writeThread(db, board, post)
+	s.writeThread(db, board, post.ThreadID())
 	s.writeIndexes(db, board)
 }
 
 func (s *Server) rebuildBoard(db *Database, board *Board) {
 	for _, post := range db.allThreads(board) {
-		s.writeThread(db, board, post)
+		s.writeThread(db, board, post.ID)
 	}
 	s.writeIndexes(db, board)
 }
@@ -524,4 +516,15 @@ func formRange[T constraints.Integer](r *http.Request, key string, min T, max T)
 		return T(v)
 	}
 	return min
+}
+
+func formatFileSize(size int64) string {
+	v := float64(size)
+	for _, unit := range []string{"", "K", "M", "G", "T", "P", "E", "Z"} {
+		if math.Abs(v) < 1024.0 {
+			return fmt.Sprintf("%.0f%sB", v, unit)
+		}
+		v /= 1024.0
+	}
+	return fmt.Sprintf("%.0fYB", v)
 }

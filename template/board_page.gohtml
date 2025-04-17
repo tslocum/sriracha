@@ -5,12 +5,58 @@
 {{end}}
 {{template "board_postarea.gohtml" .}}
 {{range $i, $thread := .Threads}}
-{{if ne $i 0}}
-<hr>
-{{end}}
-{{range $i, $post := $thread}}
-Post {{$post}}
-{{end}}
-thread end
+    <hr>
+    {{range $i, $post := $thread}}
+        {{if eq .Parent 0}}
+		<div id="post{{.ID}}" class="op">
+			<span class="filesize">File: <a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{.File}}</a>&ndash;({{.FileSizeLabel}}, {{.FileWidth}}x{{.FileHeight}}, {{.FileOriginal}})</span><br>
+			<div id="thumbfile{{.ID}}">
+				<a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="/{{$.Board.Dir}}/thumb/{{.Thumb}}" alt="{{.ID}}" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
+			</div>
+			<div id="expand{{.ID}}" style="display: none;">%3Ca%20href%3D%22src%2F1623399703401.jpg%22%20onclick%3D%22return%20expandFile%28event%2C%20%272%27%29%3B%22%3E%3Cimg%20src%3D%22src%2F1623399703401.jpg%22%20width%3D%22908%22%20style%3D%22min-width%3A%20250px%3Bmin-height%3A%20188px%3Bmax-width%3A%2085vw%3Bheight%3A%20auto%3B%22%3E%3C%2Fa%3E</div>
+			<div id="file{{.ID}}" class="thumb" style="display: none;"></div><a id="{{.ID}}"></a>
+			<label>
+				<input type="checkbox" name="delete[]" value="{{.ID}}"> <a href="mailto:admin"><span class="postername">Pellentesque</span></a> 21/06/11(Fri)08:21:43
+			</label>
+			<span class="reflink">
+				<a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html#{{.ID}}">No.</a><a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html#q{{.ID}}">{{.ID}}</a>
+			</span>{{if not $.ReplyMode}}&nbsp;[<a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html">Reply</a>]{{end}}
+			<div class="message">
+			{{.Message | HTML}}
+			</div>
+		</div>
+		{{if gt (Omitted $.Board.Replies (len $thread)) 0}}
+		<span class="omittedposts">{{Omitted $.Board.Replies (len $thread)}} posts omitted. Click Reply to view.</span>
+		{{end}}
+        {{else if (or (ne $.ReplyMode 0) (ShowReply $.Board.Replies (len $thread) $i))}}
+		<table>
+		<tbody>
+			<tr>
+				<td class="doubledash">
+					&#0168;
+				</td>
+				<td class="reply" id="post{{.ID}}">
+					<a id="{{.ID}}"></a>
+					<label>
+					<input type="checkbox" name="delete[]" value="{{.ID}}"> <span class="postername">Curabitur</span> 21/06/11(Fri)08:37:00
+					</label>
+					<span class="reflink">
+					<a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html#{{.ID}}">No.</a><a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html#q{{.ID}}">{{.ID}}</a>
+					</span> <small><span id="backlinks{{.ID}}" class="backlinks"></span></small><br>
+					<span class="filesize"><a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{.File}}</a>&ndash;({{.FileSizeLabel}}, {{.FileWidth}}x{{.FileHeight}}, {{.FileOriginal}})</span><br>
+					<div id="thumbfile{{.ID}}">
+						<a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="/{{$.Board.Dir}}/thumb/{{.Thumb}}" alt="6" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
+					</div>
+					<div id="expand{{.ID}}" style="display: none;">%3Ca%20href%3D%22src%2F1623400620071.jpg%22%20onclick%3D%22return%20expandFile%28event%2C%20%276%27%29%3B%22%3E%3Cimg%20src%3D%22src%2F1623400620071.jpg%22%20width%3D%22750%22%20style%3D%22min-width%3A%20250px%3Bmin-height%3A%20242px%3Bmax-width%3A%2085vw%3Bheight%3A%20auto%3B%22%3E%3C%2Fa%3E</div>
+					<div id="file{{.ID}}" class="thumb" style="display: none;"></div>
+					<div class="message">
+						{{.Message | HTML}}
+					</div>
+				</td>
+			</tr>
+		</tbody>
+		</table>
+		{{end}}
+	{{end}}
 {{end}}
 {{template "board_end.gohtml" .}}

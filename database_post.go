@@ -58,8 +58,8 @@ func (db *Database) allThreads(board *Board) []*Post {
 	return posts
 }
 
-func (db *Database) allPostsInThread(board *Board, post *Post) []*Post {
-	rows, err := db.conn.Query(context.Background(), "SELECT * FROM post WHERE board = $1 AND (id = $2 OR parent = $2) ORDER BY id ASC", board.ID, post.ID)
+func (db *Database) allPostsInThread(board *Board, postID int) []*Post {
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM post WHERE board = $1 AND (id = $2 OR parent = $2) ORDER BY id ASC", board.ID, postID)
 	if err != nil {
 		log.Fatalf("failed to select all posts: %s", err)
 	}
@@ -73,6 +73,24 @@ func (db *Database) allPostsInThread(board *Board, post *Post) []*Post {
 		posts = append(posts, p)
 	}
 	return posts
+}
+
+func (db *Database) postByID(board *Board, postID int) *Post {
+	p := &Post{}
+	err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT * FROM post WHERE board = $1 AND id = $2", board.ID, postID))
+	if err == pgx.ErrNoRows {
+		return nil
+	} else if err != nil || p.ID == 0 {
+		log.Fatalf("failed to select keyword: %s", err)
+	}
+	return p
+}
+
+func (db *Database) bumpThread(threadID int, timestamp int64) {
+	_, err := db.conn.Exec(context.Background(), "UPDATE post SET bumped = $1 WHERE id = $2", timestamp, threadID)
+	if err != nil {
+		log.Fatalf("failed to update account: %s", err)
+	}
 }
 
 func scanPost(p *Post, row pgx.Row) error {

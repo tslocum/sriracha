@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"io"
 	"log"
+	"strings"
 )
 
 //go:embed template
@@ -32,7 +33,7 @@ type templateData struct {
 	Board     *Board
 	Boards    []*Board
 	Threads   [][]*Post
-	ReplyMode bool
+	ReplyMode int
 	Manage    *manageData
 	Template  string
 }
@@ -47,6 +48,32 @@ func (data *templateData) execute(w io.Writer) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func withFuncMap(tpl *template.Template) *template.Template {
+	funcMap := template.FuncMap{
+		"Title": strings.Title,
+		"HTML": func(text string) template.HTML {
+			return template.HTML(text)
+		},
+		"Omitted": func(showReplies int, threadPosts int) int {
+			numReplies := threadPosts - 1
+			if showReplies == 0 || numReplies <= showReplies {
+				return 0
+			}
+			return numReplies - showReplies
+		},
+		"PlusOne": func(i int) int {
+			return i + 1
+		},
+		"ShowReply": func(showReplies int, threadPosts int, postIndex int) bool {
+			if showReplies == 0 {
+				return true
+			}
+			return postIndex >= threadPosts-showReplies
+		},
+	}
+	return tpl.Funcs(funcMap)
 }
 
 var guestData = &templateData{

@@ -53,7 +53,9 @@ type Board struct {
 	MaxSize     int64
 	ThumbWidth  int
 	ThumbHeight int
-	Unique      int
+
+	// Calculated fields.
+	Unique int
 }
 
 const (
@@ -111,15 +113,5 @@ func (b *Board) validate() error {
 }
 
 func (b *Board) MaxSizeLabel() string {
-	const base = 1024
-	var sizes = []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
-	unitsLimit := len(sizes)
-
-	var i int
-	size := b.MaxSize
-	for i := 0; size >= base && i < unitsLimit; i++ {
-		size = size / base
-		i++
-	}
-	return fmt.Sprintf("%d %s", size, sizes[i])
+	return formatFileSize(b.MaxSize)
 }
