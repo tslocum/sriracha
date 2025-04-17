@@ -28,6 +28,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		data := s.buildData(db, w, r)
 		data.Error("no board was specified")
 		data.execute(w)
+		return
 	}
 
 	now := time.Now().Unix()

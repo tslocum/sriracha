@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"html"
 	"image"
-	_ "image/gif"
-	_ "image/jpeg"
-	_ "image/png"
+	"image/gif"
+	"image/jpeg"
+	"image/png"
 	"io"
 	"log"
 	"net/http"
@@ -17,6 +17,8 @@ import (
 	"path/filepath"
 	"sync"
 	"time"
+
+	"github.com/nfnt/resize"
 )
 
 type Post struct {
@@ -97,6 +99,29 @@ func (p *Post) loadForm(r *http.Request, b *Board, rootDir string) error {
 		p.File = fileIDString + "." + fileExt
 		p.Thumb = fileIDString + "s." + fileExt
 
+		var img image.Image
+		switch mimeType {
+		case "image/jpeg":
+			img, err = jpeg.Decode(bytes.NewReader(buf))
+			if err != nil {
+				return fmt.Errorf("unsupported filetype")
+			}
+		case "image/gif":
+			img, err = gif.Decode(bytes.NewReader(buf))
+			if err != nil {
+				return fmt.Errorf("unsupported filetype")
+			}
+		case "image/png":
+			img, err = png.Decode(bytes.NewReader(buf))
+			if err != nil {
+				return fmt.Errorf("unsupported filetype")
+			}
+		}
+		thumbImg := resize.Thumbnail(uint(b.ThumbWidth), uint(b.ThumbHeight), img, resize.Lanczos3)
+
+		bounds := thumbImg.Bounds()
+		p.ThumbWidth, p.ThumbHeight = bounds.Dx(), bounds.Dy()
+
 		srcPath := filepath.Join(rootDir, b.Dir, "src", p.File)
 		thumbPath := filepath.Join(rootDir, b.Dir, "thumb", p.Thumb)
 
@@ -105,10 +130,28 @@ func (p *Post) loadForm(r *http.Request, b *Board, rootDir string) error {
 			log.Fatal(err)
 		}
 
-		// TODO thumb
-		err = os.WriteFile(thumbPath, buf, 0600)
+		thumb, err := os.OpenFile(thumbPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 		if err != nil {
 			log.Fatal(err)
+		}
+		defer thumb.Close()
+
+		switch mimeType {
+		case "image/jpeg":
+			err = jpeg.Encode(thumb, thumbImg, nil)
+			if err != nil {
+				return fmt.Errorf("unsupported filetype")
+			}
+		case "image/gif":
+			err = gif.Encode(thumb, thumbImg, nil)
+			if err != nil {
+				return fmt.Errorf("unsupported filetype")
+			}
+		case "image/png":
+			err = png.Encode(thumb, thumbImg)
+			if err != nil {
+				return fmt.Errorf("unsupported filetype")
+			}
 		}
 
 		postUploadFileLock.Unlock()
