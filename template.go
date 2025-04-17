@@ -34,6 +34,7 @@ type templateData struct {
 	Boards    []*Board
 	Threads   [][]*Post
 	ReplyMode int
+	Opt       *ServerOptions
 	Manage    *manageData
 	Template  string
 }
@@ -44,6 +45,8 @@ func (data *templateData) Error(message string) {
 }
 
 func (data *templateData) execute(w io.Writer) {
+	data.Opt = &srirachaServer.opt
+
 	err := srirachaServer.tpl.ExecuteTemplate(w, data.Template+".gohtml", data)
 	if err != nil {
 		log.Fatal(err)

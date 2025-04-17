@@ -10,7 +10,7 @@
         {{if eq .Parent 0}}
 		<div id="post{{.ID}}" class="op">
 			{{if ne .File ""}}
-			<span class="filesize">File: <a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{.File}}</a>&ndash;({{.FileSizeLabel}}, {{.FileWidth}}x{{.FileHeight}}, {{.FileOriginal}})</span><br>
+			<span class="filesize">File: <a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{.File}}</a>&ndash;({{.FileSizeLabel}}{{if and (ne .FileWidth 0) (ne .FileHeight 0)}}, {{.FileWidth}}x{{.FileHeight}}{{end}}{{if ne .FileOriginal ""}}, {{.FileOriginal}}{{end}})</span><br>
 			<div id="thumbfile{{.ID}}">
 				<a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="/{{$.Board.Dir}}/thumb/{{.Thumb}}" alt="{{.ID}}" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
 			</div>
@@ -48,7 +48,7 @@
 					</span>
 					<small><span id="backlinks{{.ID}}" class="backlinks"></span></small><br>
 					{{if ne .File ""}}
-					<span class="filesize"><a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{.File}}</a>&ndash;({{.FileSizeLabel}}, {{.FileWidth}}x{{.FileHeight}}, {{.FileOriginal}})</span><br>
+					<span class="filesize"><a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{.File}}</a>&ndash;({{.FileSizeLabel}}{{if and (ne .FileWidth 0) (ne .FileHeight 0)}}, {{.FileWidth}}x{{.FileHeight}}{{end}}{{if ne .FileOriginal ""}}, {{.FileOriginal}}{{end}})</span><br>
 					<div id="thumbfile{{.ID}}">
 						<a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="/{{$.Board.Dir}}/thumb/{{.Thumb}}" alt="6" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
 					</div>

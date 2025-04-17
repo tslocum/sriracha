@@ -30,11 +30,20 @@ var alphaNumericAndSymbols = regexp.MustCompile(`^[0-9A-Za-z_-]+$`)
 
 var srirachaServer *Server
 
+const (
+	defaultServerSiteName = "Sriracha"
+)
+
+type ServerOptions struct {
+	SiteName string
+}
+
 type Server struct {
 	Boards []*Board
 
 	config Config
 	dbPool *pgxpool.Pool
+	opt    ServerOptions
 	tpl    *template.Template
 }
 
@@ -175,6 +184,13 @@ func (s *Server) setDefaultConfigValues() error {
 	db := &Database{
 		conn: conn,
 	}
+
+	siteName := db.GetString("sitename")
+	if siteName == "" {
+		siteName = defaultServerSiteName
+	}
+	s.opt.SiteName = siteName
+
 	for _, info := range allPluginInfo {
 		for _, config := range info.Config {
 			if db.GetString(config.Name) == "" {
@@ -255,11 +271,9 @@ func (s *Server) writeThread(db *Database, board *Board, postID int) {
 		Threads:   [][]*Post{db.allPostsInThread(board, postID)},
 		ReplyMode: postID,
 		Manage:    &manageData{},
+		Template:  "board_page",
 	}
-	err = s.tpl.ExecuteTemplate(f, "board_page.gohtml", data)
-	if err != nil {
-		log.Fatal(err)
-	}
+	data.execute(f)
 }
 
 func (s *Server) writeIndexes(db *Database, board *Board) {
@@ -269,17 +283,15 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 	}
 
 	data := &templateData{
-		Board:  board,
-		Manage: &manageData{},
+		Board:    board,
+		Manage:   &manageData{},
+		Template: "board_page",
 	}
 	threads := db.allThreads(board)
 	for _, thread := range threads {
 		data.Threads = append(data.Threads, db.allPostsInThread(board, thread.ID))
 	}
-	err = s.tpl.ExecuteTemplate(f, "board_page.gohtml", data)
-	if err != nil {
-		log.Fatal(err)
-	}
+	data.execute(f)
 }
 
 func (s *Server) rebuildThread(db *Database, board *Board, post *Post) {
@@ -301,10 +313,7 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 	}
 	defer func() {
 		w.Header().Set("Content-Type", "text/html")
-		err := s.tpl.ExecuteTemplate(w, data.Template+".gohtml", data)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
+		data.execute(w)
 	}()
 
 	if len(data.Info) != 0 {
@@ -339,6 +348,8 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 		s.serveLog(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/plugin"):
 		s.servePlugin(data, db, w, r)
+	case strings.HasPrefix(r.URL.Path, "/sriracha/setting"):
+		s.serveSetting(data, db, w, r)
 	default:
 		stats := s.dbPool.Stat()
 		idle := stats.IdleConns()
@@ -487,6 +498,15 @@ func (s *Server) Run() error {
 		return fmt.Errorf("failed to set root: %s is not writable", s.config.Root)
 	}
 
+	siteIndexFile := filepath.Join(s.config.Root, "index.html")
+	_, err = os.Stat(siteIndexFile)
+	if os.IsNotExist(err) {
+		err = os.WriteFile(siteIndexFile, siteIndexHTML, 0600)
+		if err != nil {
+			log.Fatalf("failed to write site index at %s: %s", siteIndexFile, err)
+		}
+	}
+
 	return s.listen()
 }
 
@@ -528,3 +548,13 @@ func formatFileSize(size int64) string {
 	}
 	return fmt.Sprintf("%.0fYB", v)
 }
+
+var siteIndexHTML = []byte(`
+<!DOCTYPE html>
+<html>
+	<body>
+		<meta http-equiv="refresh" content="0; url=/sriracha/">
+		<a href="/sriracha/">Redirecting...</a>
+	</body>
+</html>
+`)

@@ -1,0 +1,19 @@
+{{template "manage_begin.gohtml" .}}
+<form method="post">
+    <fieldset>
+    <legend>Settings</legend>
+    <table border="0">
+        <tr>
+            <td class="postblock"><label for="sitename">Site Name</label></td>
+            <td valign="top"><input type="text" name="sitename" value="{{.Opt.SiteName}}"></input></td>
+            <td valign="top">Appears in page title and header.</td>
+        </tr>
+        <tr>
+            <td>&nbsp;[<a href="/sriracha/setting/reset" onclick="return confirm('Are you sure you want to reset all settings?');">reset</a>]</td>
+            <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="Save"></td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+    </fieldset>
+</form>
+{{template "manage_end.gohtml" .}}
