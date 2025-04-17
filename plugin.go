@@ -67,11 +67,11 @@ type PluginWithPost interface {
 	Post(db *Database, post *Post) error
 }
 
-// RegisterPlugin registers a sriracha plugin to receive any subscribed events.
+// RegisterPlugin registers a Sriracha plugin to receive any subscribed events.
 // Plugins must call this function in init(). See [PluginWithConfig] and [PluginWithPost].
 func RegisterPlugin(plugin any) {
 	if srirachaServer == nil {
-		panic("sriracha server not yet started")
+		panic("Sriracha server not yet started")
 	}
 
 	v := reflect.ValueOf(plugin)
