@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"io"
 	"log"
+	"net/url"
 	"strings"
 )
 
@@ -74,6 +75,9 @@ func withFuncMap(tpl *template.Template) *template.Template {
 				return true
 			}
 			return postIndex >= threadPosts-showReplies
+		},
+		"URLEscape": func(text string) string {
+			return url.PathEscape(text)
 		},
 	}
 	return tpl.Funcs(funcMap)

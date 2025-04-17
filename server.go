@@ -410,6 +410,7 @@ func (s *Server) listen() error {
 
 	mux := http.NewServeMux()
 	mux.Handle("/css/", http.FileServerFS(subFS))
+	mux.Handle("/js/", http.FileServerFS(subFS))
 	mux.HandleFunc("/sriracha/", s.serve)
 	mux.Handle("/", http.FileServer(http.Dir(s.config.Root)))
 
