@@ -99,6 +99,8 @@ func (p *Post) loadForm(r *http.Request, b *Board, rootDir string) error {
 		p.File = fileIDString + "." + fileExt
 		p.Thumb = fileIDString + "s." + fileExt
 
+		postUploadFileLock.Unlock()
+
 		var img image.Image
 		switch mimeType {
 		case "image/jpeg":
@@ -153,8 +155,6 @@ func (p *Post) loadForm(r *http.Request, b *Board, rootDir string) error {
 				return fmt.Errorf("unsupported filetype")
 			}
 		}
-
-		postUploadFileLock.Unlock()
 	}
 	return nil
 }
@@ -168,4 +168,8 @@ func (p *Post) ThreadID() int {
 
 func (p *Post) FileSizeLabel() string {
 	return formatFileSize(p.FileSize)
+}
+
+func (p *Post) TimestampLabel() string {
+	return time.Unix(p.Timestamp, 0).Format("2006/01/02(Mon)15:04:05")
 }

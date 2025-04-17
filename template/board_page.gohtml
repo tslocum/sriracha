@@ -18,11 +18,12 @@
 			<div id="file{{.ID}}" class="thumb" style="display: none;"></div><a id="{{.ID}}"></a>
 			{{end}}
 			<label>
-				<input type="checkbox" name="delete[]" value="{{.ID}}"> <a href="mailto:admin"><span class="postername">Pellentesque</span></a> 21/06/11(Fri)08:21:43
+				<input type="checkbox" name="delete[]" value="{{.ID}}"> {{template "board_page_subject.gohtml" .}} {{template "board_page_name.gohtml" .}}
 			</label>
 			<span class="reflink">
 				<a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html#{{.ID}}">No.</a><a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html#q{{.ID}}">{{.ID}}</a>
-			</span>{{if not $.ReplyMode}}&nbsp;[<a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html">Reply</a>]{{end}}
+			</span>
+			{{if not $.ReplyMode}}&nbsp;[<a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html">Reply</a>]{{end}}
 			<div class="message">
 			{{.Message | HTML}}
 			</div>
@@ -40,11 +41,12 @@
 				<td class="reply" id="post{{.ID}}">
 					<a id="{{.ID}}"></a>
 					<label>
-					<input type="checkbox" name="delete[]" value="{{.ID}}"> <span class="postername">Curabitur</span> 21/06/11(Fri)08:37:00
+						<input type="checkbox" name="delete[]" value="{{.ID}}"> {{template "board_page_subject.gohtml" .}} {{template "board_page_name.gohtml" .}}
 					</label>
 					<span class="reflink">
-					<a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html#{{.ID}}">No.</a><a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html#q{{.ID}}">{{.ID}}</a>
-					</span> <small><span id="backlinks{{.ID}}" class="backlinks"></span></small><br>
+						<a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html#{{.ID}}">No.</a><a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html#q{{.ID}}">{{.ID}}</a>
+					</span>
+					<small><span id="backlinks{{.ID}}" class="backlinks"></span></small><br>
 					{{if ne .File ""}}
 					<span class="filesize"><a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{.File}}</a>&ndash;({{.FileSizeLabel}}, {{.FileWidth}}x{{.FileHeight}}, {{.FileOriginal}})</span><br>
 					<div id="thumbfile{{.ID}}">
