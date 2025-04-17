@@ -8,7 +8,7 @@
 		<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT">
 		<meta http-equiv="pragma" content="no-cache">
 		<meta name="viewport" content="width=device-width,initial-scale=1">
-		<title>Sriracha Management Panel</title>
+		<title>{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}</title>
 		<link rel="stylesheet" type="text/css" href="/css/global.css">
 		<link rel="stylesheet" type="text/css" href="/css/futaba.css" title="Futaba" id="mainStylesheet">
 		<link rel="alternate stylesheet" type="text/css" href="/css/burichan.css" title="Burichan">
@@ -17,5 +17,5 @@
 		<div class="adminbar">
 			[<a href="/sriracha/" style="text-decoration: underline;">Manage</a>]
 		</div>
-		<div class="logo">{{.Board.Name}}</div>
+		<div class="logo">{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}</div>
 		<hr width="90%">
