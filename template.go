@@ -26,13 +26,15 @@ type manageData struct {
 }
 
 type templateData struct {
-	Account  *Account
-	Info     string
-	Message  template.HTML
-	Board    *Board
-	Boards   []*Board
-	Manage   *manageData
-	Template string
+	Account   *Account
+	Info      string
+	Message   template.HTML
+	Board     *Board
+	Boards    []*Board
+	Threads   [][]*Post
+	ReplyMode bool
+	Manage    *manageData
+	Template  string
 }
 
 func (data *templateData) Error(message string) {

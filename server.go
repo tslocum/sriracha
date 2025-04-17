@@ -253,11 +253,24 @@ func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request)
 	return guestData
 }
 
-func (s *Server) writeThread(post *Post) {
-	// TODO
+func (s *Server) writeThread(db *Database, board *Board, post *Post) {
+	f, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "res", fmt.Sprintf("%d.html", post.ID)), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	data := &templateData{
+		Board:   board,
+		Threads: [][]*Post{db.allPostsInThread(board, post)},
+		Manage:  &manageData{},
+	}
+	err = s.tpl.ExecuteTemplate(f, "board_page.gohtml", data)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
-func (s *Server) writeIndexes(board *Board) {
+func (s *Server) writeIndexes(db *Database, board *Board) {
 	f, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "index.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		log.Fatal(err)
@@ -267,15 +280,26 @@ func (s *Server) writeIndexes(board *Board) {
 		Board:  board,
 		Manage: &manageData{},
 	}
-	err = s.tpl.ExecuteTemplate(f, "board_index.gohtml", data)
+	threads := db.allThreads(board)
+	for _, thread := range threads {
+		data.Threads = append(data.Threads, db.allPostsInThread(board, thread))
+	}
+	err = s.tpl.ExecuteTemplate(f, "board_page.gohtml", data)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func (s *Server) writeBoard(board *Board) {
-	s.writeIndexes(board)
-	// for all threads, write thread
+func (s *Server) rebuildThread(db *Database, board *Board, post *Post) {
+	s.writeThread(db, board, post)
+	s.writeIndexes(db, board)
+}
+
+func (s *Server) rebuildBoard(db *Database, board *Board) {
+	for _, post := range db.allThreads(board) {
+		s.writeThread(db, board, post)
+	}
+	s.writeIndexes(db, board)
 }
 
 func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Request) {

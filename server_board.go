@@ -19,7 +19,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		if err != nil {
 			log.Fatal(err)
 		} else if b != nil {
-			s.writeBoard(b)
+			s.rebuildBoard(db, b)
 
 			data.Info = fmt.Sprintf("Rebuilt /%s/ %s", b.Dir, b.Name)
 		}
@@ -68,7 +68,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 				}
 			}
 
-			s.writeBoard(data.Manage.Board)
+			s.rebuildBoard(db, data.Manage.Board)
 
 			err = db.log(data.Account, nil, fmt.Sprintf("Updated >>/board/%d", data.Manage.Board.ID))
 			if err != nil {
@@ -110,7 +110,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			return
 		}
 
-		s.writeBoard(b)
+		s.rebuildBoard(db, b)
 
 		err = db.log(data.Account, nil, fmt.Sprintf("Added >>/board/%d", b.ID))
 		if err != nil {

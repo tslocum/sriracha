@@ -1,0 +1,16 @@
+{{template "board_begin.gohtml" .}}
+{{if .ReplyMode}}
+[<a href="../">Return</a>]
+<div class="replymode">Posting mode: Reply</div> 
+{{end}}
+{{template "board_postarea.gohtml" .}}
+{{range $i, $thread := .Threads}}
+{{if ne $i 0}}
+<hr>
+{{end}}
+{{range $i, $post := $thread}}
+Post {{$post}}
+{{end}}
+thread end
+{{end}}
+{{template "board_end.gohtml" .}}

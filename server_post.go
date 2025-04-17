@@ -54,8 +54,8 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		log.Fatal(err)
 	}
 
-	s.writeThread(post)
+	s.rebuildThread(db, b, post)
 
-	redir := fmt.Sprintf("/res/%d.html#%d", post.ThreadID(), post.ID)
+	redir := fmt.Sprintf("/%s/res/%d.html#%d", b.Dir, post.ThreadID(), post.ID)
 	http.Redirect(w, r, redir, http.StatusFound)
 }

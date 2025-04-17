@@ -3,6 +3,9 @@ package sriracha
 import (
 	"context"
 	"fmt"
+	"log"
+
+	"github.com/jackc/pgx/v5"
 )
 
 func (db *Database) addPost(b *Board, p *Post) error {
@@ -36,4 +39,69 @@ func (db *Database) addPost(b *Board, p *Post) error {
 		return fmt.Errorf("failed to insert post: %s", err)
 	}
 	return nil
+}
+
+func (db *Database) allThreads(board *Board) []*Post {
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM post WHERE board = $1 AND parent = 0 ORDER BY bumped DESC", board.ID)
+	if err != nil {
+		log.Fatalf("failed to select all posts: %s", err)
+	}
+	var posts []*Post
+	for rows.Next() {
+		p := &Post{}
+		err := scanPost(p, rows)
+		if err != nil {
+			log.Fatal(err)
+		}
+		posts = append(posts, p)
+	}
+	return posts
+}
+
+func (db *Database) allPostsInThread(board *Board, post *Post) []*Post {
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM post WHERE board = $1 AND (id = $2 OR parent = $2) ORDER BY id ASC", board.ID, post.ID)
+	if err != nil {
+		log.Fatalf("failed to select all posts: %s", err)
+	}
+	var posts []*Post
+	for rows.Next() {
+		p := &Post{}
+		err := scanPost(p, rows)
+		if err != nil {
+			log.Fatal(err)
+		}
+		posts = append(posts, p)
+	}
+	return posts
+}
+
+func scanPost(p *Post, row pgx.Row) error {
+	var boardID int
+	return row.Scan(
+		&p.ID,
+		&p.Parent,
+		&boardID,
+		&p.Timestamp,
+		&p.Bumped,
+		&p.IP,
+		&p.Name,
+		&p.Tripcode,
+		&p.Email,
+		&p.NameBlock,
+		&p.Subject,
+		&p.Message,
+		&p.Password,
+		&p.File,
+		&p.FileHash,
+		&p.FileOriginal,
+		&p.FileSize,
+		&p.FileWidth,
+		&p.FileHeight,
+		&p.Thumb,
+		&p.ThumbWidth,
+		&p.ThumbHeight,
+		&p.Moderated,
+		&p.Stickied,
+		&p.Locked,
+	)
 }
