@@ -19,7 +19,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		if b != nil {
 			s.rebuildBoard(db, b)
 
-			data.Info = fmt.Sprintf("Rebuilt /%s/ %s", b.Dir, b.Name)
+			data.Info = fmt.Sprintf("Rebuilt %s %s", b.Path(), b.Name)
 		}
 	}
 

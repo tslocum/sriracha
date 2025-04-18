@@ -41,7 +41,7 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 				return
 			}
 
-			posts := db.allPostsInThread(b, post.ID)
+			posts := db.allPostsInThread(b, post.ID, false)
 			for _, p := range posts {
 				s.deletePost(db, b, p)
 			}

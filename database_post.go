@@ -39,8 +39,12 @@ func (db *Database) addPost(b *Board, p *Post) {
 	}
 }
 
-func (db *Database) allThreads(board *Board) []*Post {
-	rows, err := db.conn.Query(context.Background(), "SELECT * FROM post WHERE board = $1 AND parent = 0 ORDER BY bumped DESC", board.ID)
+func (db *Database) allThreads(board *Board, moderated bool) []*Post {
+	var extra string
+	if moderated {
+		extra = " AND moderated > 0"
+	}
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM post WHERE board = $1 AND parent = 0"+extra+" ORDER BY bumped DESC", board.ID)
 	if err != nil {
 		log.Fatalf("failed to select all posts: %s", err)
 	}
@@ -56,8 +60,12 @@ func (db *Database) allThreads(board *Board) []*Post {
 	return posts
 }
 
-func (db *Database) allPostsInThread(board *Board, postID int) []*Post {
-	rows, err := db.conn.Query(context.Background(), "SELECT * FROM post WHERE board = $1 AND (id = $2 OR parent = $2) ORDER BY id ASC", board.ID, postID)
+func (db *Database) allPostsInThread(board *Board, postID int, moderated bool) []*Post {
+	var extra string
+	if moderated {
+		extra = " AND moderated > 0"
+	}
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM post WHERE board = $1 AND (id = $2 OR parent = $2)"+extra+" ORDER BY id ASC", board.ID, postID)
 	if err != nil {
 		log.Fatalf("failed to select all posts: %s", err)
 	}

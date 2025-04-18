@@ -292,7 +292,7 @@ func (s *Server) writeThread(db *Database, board *Board, postID int) {
 
 	data := &templateData{
 		Board:     board,
-		Threads:   [][]*Post{db.allPostsInThread(board, postID)},
+		Threads:   [][]*Post{db.allPostsInThread(board, postID, true)},
 		ReplyMode: postID,
 		Manage:    &manageData{},
 		Template:  "board_page",
@@ -311,9 +311,9 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 		Manage:   &manageData{},
 		Template: "board_page",
 	}
-	threads := db.allThreads(board)
+	threads := db.allThreads(board, true)
 	for _, thread := range threads {
-		data.Threads = append(data.Threads, db.allPostsInThread(board, thread.ID))
+		data.Threads = append(data.Threads, db.allPostsInThread(board, thread.ID, true))
 	}
 	data.execute(f)
 }
@@ -324,7 +324,7 @@ func (s *Server) rebuildThread(db *Database, board *Board, post *Post) {
 }
 
 func (s *Server) rebuildBoard(db *Database, board *Board) {
-	for _, post := range db.allThreads(board) {
+	for _, post := range db.allThreads(board, true) {
 		s.writeThread(db, board, post.ID)
 	}
 	s.writeIndexes(db, board)
