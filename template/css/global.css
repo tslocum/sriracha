@@ -114,6 +114,21 @@ hr {
 	color: #FF0000;
 }
 
+.managetitle {
+	margin-top: 5px;
+	margin-bottom: 10px;
+	margin-left: 5px;
+}
+
+.managetable {
+	border-collapse: collapse;
+}
+
+.managetable th, .managetable td {
+	border: 2px solid;
+	padding: 5px;
+}
+
 .managebutton {
 	font-size: 15px;
 	height: 28px;

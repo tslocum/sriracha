@@ -1,4 +1,25 @@
 {{template "manage_begin.gohtml" .}}
+<h2 class="managetitle">Boards</h2>
+{{if ne (len .Manage.Boards) 0}}
+<table class="managetable">
+    <tr>
+        <th>Dir</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>&nbsp;</th>
+    </tr>
+    {{range $i, $board := .Manage.Boards}}
+    <tr>
+        <td><a href="/{{$board.Dir}}/">/{{$board.Dir}}/</a></td>
+        <td>{{$board.Name}}</td>
+        <td>{{$board.Description}}</td>
+        <td>{{if eq $board.Type 0}}Imageboard{{else}}Forum{{end}}</td>
+        <td><a href="/sriracha/board/rebuild/{{$board.ID}}">rebuild</a> <a href="/sriracha/board/{{$board.ID}}">update</a> <a href="/sriracha/board/delete/{{$board.ID}}">delete</a></td>
+    </tr>
+    {{end}}
+</table><br>
+{{end}}
 <form method="post">
     <fieldset>
     <legend>{{if or (eq .Manage.Board nil) (eq .Manage.Board.ID 0)}}Add Board{{else}}Update /{{.Manage.Board.Dir}}/ {{.Manage.Board.Name}}{{end}}</legend>
@@ -123,24 +144,4 @@
     </table>
     </fieldset>
 </form>
-{{if ne (len .Manage.Boards) 0}}
-<br><table border="1">
-    <tr>
-        <th>Dir</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>&nbsp;</th>
-    </tr>
-    {{range $i, $board := .Manage.Boards}}
-    <tr>
-        <td><a href="/{{$board.Dir}}/">/{{$board.Dir}}/</a></td>
-        <td>{{$board.Name}}</td>
-        <td>{{$board.Description}}</td>
-        <td>{{if eq $board.Type 0}}Imageboard{{else}}Forum{{end}}</td>
-        <td><a href="/sriracha/board/rebuild/{{$board.ID}}">rebuild</a> <a href="/sriracha/board/{{$board.ID}}">update</a> <a href="/sriracha/board/delete/{{$board.ID}}">delete</a></td>
-    </tr>
-    {{end}}
-</table>
-{{end}}
 {{template "manage_end.gohtml" .}}

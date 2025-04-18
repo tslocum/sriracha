@@ -1,4 +1,23 @@
 {{template "manage_begin.gohtml" .}}
+<h2 class="managetitle">Accounts</h2>
+{{if ne (len .Manage.Accounts) 0}}
+<table class="managetable">
+    <tr>
+        <th>Username</th>
+        <th>Role</th>
+        <th>Last Active</th>
+        <th>&nbsp;</th>
+    </tr>
+    {{range $i, $account := .Manage.Accounts}}
+    <tr>
+        <td>{{$account.Username}}</td>
+        <td>{{if eq $account.Role 1}}Super-Administrator{{else if eq $account.Role 2}}Administrator{{else if eq $account.Role 3}}Moderator{{else}}Disabled{{end}}</td>
+        <td>{{$account.LastActiveDate}}</td>
+        <td><a href="/sriracha/account/{{$account.ID}}">update</a></td>
+    </tr>
+    {{end}}
+</table><br>
+{{end}}
 <form method="post">
     <fieldset>
     <legend>{{if eq .Manage.Account nil}}Add Account{{else}}Update {{.Manage.Account.Username}}{{end}}</legend>
@@ -31,22 +50,4 @@
     </table>
     </fieldset>
 </form>
-{{if ne (len .Manage.Accounts) 0}}
-<br><table border="1">
-    <tr>
-        <th>Username</th>
-        <th>Role</th>
-        <th>Last Active</th>
-        <th>&nbsp;</th>
-    </tr>
-    {{range $i, $account := .Manage.Accounts}}
-    <tr>
-        <td>{{$account.Username}}</td>
-        <td>{{if eq $account.Role 1}}Super-Administrator{{else if eq $account.Role 2}}Administrator{{else if eq $account.Role 3}}Moderator{{else}}Disabled{{end}}</td>
-        <td>{{$account.LastActiveDate}}</td>
-        <td><a href="/sriracha/account/{{$account.ID}}">update</a></td>
-    </tr>
-    {{end}}
-</table>
-{{end}}
 {{template "manage_end.gohtml" .}}

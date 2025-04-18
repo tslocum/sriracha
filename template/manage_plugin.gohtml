@@ -1,4 +1,5 @@
 {{template "manage_begin.gohtml" .}}
+<h2 class="managetitle">Plugins</h2>
 {{if ne .Manage.Plugin nil}}
 <form method="post">
     <fieldset>
@@ -24,28 +25,25 @@
     </fieldset>
 </form>
 {{else}}
-<fieldset>
-    <legend>Plugins</legend>
-    {{if eq (len .Manage.Plugins) 0}}
-    No plugins are loaded.
-    {{else}}
-    <table border="0">
-        <tr>
-            <th align="left">Name</th>
-            <th align="left">Events</th>
-            <th align="left">Description</th>
-            <th align="left">&nbsp;</th>
-        </tr>
-        {{range $i, $plugin := .Manage.Plugins}}
-        <tr>
-            <td>{{$plugin.Name}}</td>
-            <td>{{if eq (len $plugin.Events) 0}}None{{else}}{{range $i, $event := $plugin.Events}}{{if ne $i 0}}, {{end}}{{$event | Title}}{{end}}{{end}}</td>
-            <td>{{if eq $plugin.About ""}}No description{{else}}{{$plugin.About}}{{end}}</td>
-            <td>{{if eq (len $plugin.Config) 0}}&nbsp;{{else}}[<a href="/sriracha/plugin/{{$i | PlusOne}}">configure</a>]{{end}}</td>
-        </tr>
-        {{end}}
-    </table>
+{{if eq (len .Manage.Plugins) 0}}
+No plugins are loaded.
+{{else}}
+<table class="managetable">
+    <tr>
+        <th align="left">Name</th>
+        <th align="left">Events</th>
+        <th align="left">Description</th>
+        <th align="left">&nbsp;</th>
+    </tr>
+    {{range $i, $plugin := .Manage.Plugins}}
+    <tr>
+        <td>{{$plugin.Name}}</td>
+        <td>{{if eq (len $plugin.Events) 0}}None{{else}}{{range $i, $event := $plugin.Events}}{{if ne $i 0}}, {{end}}{{$event | Title}}{{end}}{{end}}</td>
+        <td>{{if eq $plugin.About ""}}No description{{else}}{{$plugin.About}}{{end}}</td>
+        <td>{{if eq (len $plugin.Config) 0}}&nbsp;{{else}}[<a href="/sriracha/plugin/{{$i | PlusOne}}">configure</a>]{{end}}</td>
+    </tr>
     {{end}}
-</fieldset>
+</table>
+{{end}}
 {{end}}
 {{template "manage_end.gohtml" .}}

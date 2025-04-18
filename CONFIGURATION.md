@@ -9,7 +9,7 @@ specified via the `--config` option:
 If no configuration file path is specified, the default path
 `~/.config/sriracha/config.yml` is used.
 
-[PostgreSQL](https://www.postgresql.org) is the only supported database.
+[PostgreSQL](https://www.postgresql.org) is the only supported database system.
 
 ## Example config.yml
 
