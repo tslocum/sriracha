@@ -21,10 +21,8 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		data.execute(w)
 		return
 	}
-	b, err := db.boardByDir(boardDir)
-	if err != nil {
-		log.Fatal(err)
-	} else if b == nil {
+	b := db.boardByDir(boardDir)
+	if b == nil {
 		data := s.buildData(db, w, r)
 		data.Error("no board was specified")
 		data.execute(w)
@@ -36,7 +34,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		Timestamp: now,
 		Bumped:    now,
 	}
-	err = post.loadForm(r, b, s.config.Root)
+	err := post.loadForm(r, b, s.config.Root)
 	if err != nil {
 		data := s.buildData(db, w, r)
 		data.Error(err.Error())
@@ -75,10 +73,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 
 	post.Message = strings.ReplaceAll(post.Message, "\n", "<br>\n")
 
-	err = db.addPost(b, post)
-	if err != nil {
-		log.Fatal(err)
-	}
+	db.addPost(b, post)
 
 	if post.Parent != 0 && strings.ToLower(post.Email) != "sage" {
 		// TODO check reply limit

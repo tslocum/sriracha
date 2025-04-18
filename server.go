@@ -25,8 +25,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const manageTemplate = "manage"
-
 var alphaNumericAndSymbols = regexp.MustCompile(`^[0-9A-Za-z_-]+$`)
 
 var srirachaServer *Server
@@ -220,11 +218,8 @@ func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request)
 			failedLogin = true
 			password := r.FormValue("password")
 			if len(password) != 0 {
-				var err error
-				account, err := db.loginAccount(username, password)
-				if err != nil {
-					log.Fatal(err)
-				} else if account != nil {
+				account := db.loginAccount(username, password)
+				if account != nil {
 					http.SetCookie(w, &http.Cookie{
 						Name:  "sriracha_session",
 						Value: account.Session,
@@ -248,10 +243,8 @@ func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request)
 
 	cookies := r.CookiesNamed("sriracha_session")
 	if len(cookies) > 0 {
-		account, err := db.accountBySessionKey(cookies[0].Value)
-		if err != nil {
-			log.Fatal(err)
-		} else if account != nil {
+		account := db.accountBySessionKey(cookies[0].Value)
+		if account != nil {
 			return &templateData{
 				Account: account,
 				Manage:  &manageData{},
@@ -323,10 +316,7 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 	}
 
 	if data.Account != nil {
-		err := db.updateAccountLastActive(data.Account.ID)
-		if err != nil {
-			log.Fatal(err)
-		}
+		db.updateAccountLastActive(data.Account.ID)
 	}
 
 	data.Template = "manage_login"

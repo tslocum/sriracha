@@ -2,13 +2,12 @@ package sriracha
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/jackc/pgx/v5"
 )
 
-func (db *Database) addPost(b *Board, p *Post) error {
+func (db *Database) addPost(b *Board, p *Post) {
 	err := db.conn.QueryRow(context.Background(), "INSERT INTO post VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) RETURNING id",
 		p.Parent,
 		b.ID,
@@ -36,9 +35,8 @@ func (db *Database) addPost(b *Board, p *Post) error {
 		p.Locked,
 	).Scan(&p.ID)
 	if err != nil || p.ID == 0 {
-		return fmt.Errorf("failed to insert post: %s", err)
+		log.Fatalf("failed to insert post: %s", err)
 	}
-	return nil
 }
 
 func (db *Database) allThreads(board *Board) []*Post {

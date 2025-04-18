@@ -2,7 +2,6 @@ package sriracha
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 )
@@ -41,10 +40,10 @@ func (db *Database) log(account *Account, board *Board, message string, changes 
 	})
 }
 
-func (db *Database) allLogs() ([]*Log, error) {
+func (db *Database) allLogs() []*Log {
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM log ORDER BY id DESC")
 	if err != nil {
-		return nil, fmt.Errorf("failed to select all logs: %s", err)
+		log.Fatalf("failed to select all logs: %s", err)
 	}
 	var logs []*Log
 	var boardIDs []int
@@ -55,7 +54,7 @@ func (db *Database) allLogs() ([]*Log, error) {
 		var accountID *int
 		err := rows.Scan(&l.ID, &boardID, &l.Timestamp, &accountID, &l.Message, &l.Changes)
 		if err != nil {
-			return nil, err
+			log.Fatalf("failed to select all logs: %s", err)
 		}
 		logs = append(logs, l)
 		if boardID == nil {
@@ -73,17 +72,11 @@ func (db *Database) allLogs() ([]*Log, error) {
 		boardID := boardIDs[i]
 		accountID := accountIDs[i]
 		if boardID > 0 {
-			l.Board, err = db.boardByID(boardID)
-			if err != nil {
-				return nil, err
-			}
+			l.Board = db.boardByID(boardID)
 		}
 		if accountID > 0 {
-			l.Account, err = db.accountByID(accountID)
-			if err != nil {
-				return nil, err
-			}
+			l.Account = db.accountByID(accountID)
 		}
 	}
-	return logs, nil
+	return logs
 }

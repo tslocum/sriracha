@@ -2,7 +2,6 @@ package sriracha
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -13,10 +12,7 @@ func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseW
 
 	accountID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/account/"))
 	if err == nil && accountID > 0 {
-		data.Manage.Account, err = db.accountByID(accountID)
-		if err != nil {
-			log.Fatal(err)
-		}
+		data.Manage.Account = db.accountByID(accountID)
 
 		if data.Manage.Account != nil && r.Method == http.MethodPost {
 			oldAccount := *data.Manage.Account
@@ -30,34 +26,20 @@ func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseW
 			}
 
 			if data.Manage.Account.Username != oldUsername {
-				match, err := db.accountByUsername(data.Manage.Account.Username)
-				if err != nil {
-					log.Fatal(err)
-				} else if match != nil {
+				match := db.accountByUsername(data.Manage.Account.Username)
+				if match != nil {
 					data.Error("New username already taken")
 					return
 				}
 
-				err = db.updateAccountUsername(data.Manage.Account)
-				if err != nil {
-					data.Error(err.Error())
-					return
-				}
+				db.updateAccountUsername(data.Manage.Account)
 			}
 
-			err = db.updateAccountRole(data.Manage.Account)
-			if err != nil {
-				data.Error(err.Error())
-				return
-			}
+			db.updateAccountRole(data.Manage.Account)
 
 			password := r.FormValue("password")
 			if strings.TrimSpace(password) != "" {
-				err = db.updateAccountPassword(data.Manage.Account.ID, password)
-				if err != nil {
-					data.Error(err.Error())
-					return
-				}
+				db.updateAccountPassword(data.Manage.Account.ID, password)
 			}
 
 			changes := printChanges(oldAccount, *data.Manage.Account)
@@ -85,11 +67,7 @@ func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseW
 			return
 		}
 
-		err = db.addAccount(a, password)
-		if err != nil {
-			data.Error(err.Error())
-			return
-		}
+		db.addAccount(a, password)
 
 		db.log(data.Account, nil, fmt.Sprintf("Added >>/account/%d", a.ID), "")
 
@@ -97,8 +75,5 @@ func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseW
 		return
 	}
 
-	data.Manage.Accounts, err = db.allAccounts()
-	if err != nil {
-		log.Fatal(err)
-	}
+	data.Manage.Accounts = db.allAccounts()
 }

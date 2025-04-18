@@ -2,7 +2,6 @@ package sriracha
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -11,17 +10,11 @@ import (
 func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
 	var err error
 	data.Template = "manage_ban"
-	data.Boards, err = db.allBoards()
-	if err != nil {
-		log.Fatal(err)
-	}
+	data.Boards = db.allBoards()
 
 	banID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/ban/"))
 	if err == nil && banID > 0 {
-		data.Manage.Ban, err = db.banByID(banID)
-		if err != nil {
-			log.Fatal(err)
-		}
+		data.Manage.Ban = db.banByID(banID)
 
 		if data.Manage.Ban != nil && r.Method == http.MethodPost {
 			oldBan := *data.Manage.Ban
@@ -33,11 +26,7 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 				return
 			}
 
-			err = db.updateBan(data.Manage.Ban)
-			if err != nil {
-				data.Error(err.Error())
-				return
-			}
+			db.updateBan(data.Manage.Ban)
 
 			changes := printChanges(oldBan, *data.Manage.Ban)
 			db.log(data.Account, nil, fmt.Sprintf("Updated >>/ban/%d", data.Manage.Ban.ID), changes)
@@ -63,19 +52,13 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 			return
 		}
 
-		match, err := db.banByIP(b.IP)
-		if err != nil {
-			log.Fatal(err)
-		} else if match != nil {
+		match := db.banByIP(b.IP)
+		if match != nil {
 			data.Error("Ban text already exists")
 			return
 		}
 
-		err = db.addBan(b)
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
+		db.addBan(b)
 
 		db.log(data.Account, nil, fmt.Sprintf("Added >>/ban/%d", b.ID), "")
 
@@ -83,8 +66,5 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 		return
 	}
 
-	data.Manage.Bans, err = db.allBans()
-	if err != nil {
-		log.Fatal(err)
-	}
+	data.Manage.Bans = db.allBans()
 }

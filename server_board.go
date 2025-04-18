@@ -15,10 +15,8 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 
 	boardID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/board/rebuild/"))
 	if err == nil && boardID > 0 {
-		b, err := db.boardByID(boardID)
-		if err != nil {
-			log.Fatal(err)
-		} else if b != nil {
+		b := db.boardByID(boardID)
+		if b != nil {
 			s.rebuildBoard(db, b)
 
 			data.Info = fmt.Sprintf("Rebuilt /%s/ %s", b.Dir, b.Name)
@@ -27,10 +25,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 
 	boardID, err = strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/board/"))
 	if err == nil && boardID > 0 {
-		data.Manage.Board, err = db.boardByID(boardID)
-		if err != nil {
-			log.Fatal(err)
-		}
+		data.Manage.Board = db.boardByID(boardID)
 
 		if data.Manage.Board != nil && r.Method == http.MethodPost {
 			oldBoard := *data.Manage.Board
@@ -56,11 +51,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 				}
 			}
 
-			err = db.updateBoard(data.Manage.Board)
-			if err != nil {
-				data.Error(err.Error())
-				return
-			}
+			db.updateBoard(data.Manage.Board)
 
 			if data.Manage.Board.Dir != oldDir {
 				err := os.Rename(filepath.Join(s.config.Root, oldDir), filepath.Join(s.config.Root, data.Manage.Board.Dir))
@@ -105,11 +96,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			}
 		}
 
-		err = db.addBoard(b)
-		if err != nil {
-			data.Error(err.Error())
-			return
-		}
+		db.addBoard(b)
 
 		s.rebuildBoard(db, b)
 
@@ -133,8 +120,5 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		ThumbHeight: defaultBoardThumbHeight,
 	}
 
-	data.Manage.Boards, err = db.allBoards()
-	if err != nil {
-		log.Fatal(err)
-	}
+	data.Manage.Boards = db.allBoards()
 }

@@ -2,7 +2,6 @@ package sriracha
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -12,18 +11,12 @@ import (
 func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
 	var err error
 	data.Template = "manage_keyword"
-	data.Boards, err = db.allBoards()
-	if err != nil {
-		log.Fatal(err)
-	}
+	data.Boards = db.allBoards()
 
 	keywordID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/keyword/test/"))
 	if err == nil && keywordID > 0 {
 		data.Template = "manage_keyword_test"
-		data.Manage.Keyword, err = db.keywordByID(keywordID)
-		if err != nil {
-			log.Fatal(err)
-		}
+		data.Manage.Keyword = db.keywordByID(keywordID)
 		if data.Manage.Keyword != nil && r.Method == http.MethodPost {
 			rgxp, err := regexp.Compile(data.Manage.Keyword.Text)
 			if err != nil {
@@ -43,10 +36,7 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 
 	keywordID, err = strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/keyword/"))
 	if err == nil && keywordID > 0 {
-		data.Manage.Keyword, err = db.keywordByID(keywordID)
-		if err != nil {
-			log.Fatal(err)
-		}
+		data.Manage.Keyword = db.keywordByID(keywordID)
 
 		if data.Manage.Keyword != nil && r.Method == http.MethodPost {
 			oldKeyword := *data.Manage.Keyword
@@ -60,20 +50,14 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 			}
 
 			if data.Manage.Keyword.Text != oldText {
-				match, err := db.keywordByText(data.Manage.Keyword.Text)
-				if err != nil {
-					log.Fatal(err)
-				} else if match != nil {
+				match := db.keywordByText(data.Manage.Keyword.Text)
+				if match != nil {
 					data.Error("Keyword text already exists")
 					return
 				}
 			}
 
-			err = db.updateKeyword(data.Manage.Keyword)
-			if err != nil {
-				data.Error(err.Error())
-				return
-			}
+			db.updateKeyword(data.Manage.Keyword)
 
 			changes := printChanges(oldKeyword, *data.Manage.Keyword)
 			db.log(data.Account, nil, fmt.Sprintf("Updated >>/keyword/%d", data.Manage.Keyword.ID), changes)
@@ -94,19 +78,13 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 			return
 		}
 
-		match, err := db.keywordByText(k.Text)
-		if err != nil {
-			log.Fatal(err)
-		} else if match != nil {
+		match := db.keywordByText(k.Text)
+		if match != nil {
 			data.Error("Keyword text already exists")
 			return
 		}
 
-		err = db.addKeyword(k)
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
+		db.addKeyword(k)
 
 		db.log(data.Account, nil, fmt.Sprintf("Added >>/keyword/%d", k.ID), "")
 
@@ -114,8 +92,5 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 		return
 	}
 
-	data.Manage.Keywords, err = db.allKeywords()
-	if err != nil {
-		log.Fatal(err)
-	}
+	data.Manage.Keywords = db.allKeywords()
 }

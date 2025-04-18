@@ -1,7 +1,6 @@
 package sriracha
 
 import (
-	"log"
 	"net/http"
 	"strings"
 )
@@ -23,18 +22,13 @@ func (s *Server) serveChangePassword(data *templateData, db *Database, w http.Re
 		return
 	}
 
-	match, err := db.loginAccount(data.Account.Username, oldPass)
-	if err != nil {
-		log.Fatal(err)
-	} else if match == nil {
+	match := db.loginAccount(data.Account.Username, oldPass)
+	if match == nil {
 		data.Error("Current password is incorrect")
 		return
 	}
 
-	err = db.updateAccountPassword(match.ID, newPass)
-	if err != nil {
-		log.Fatal(err)
-	}
+	db.updateAccountPassword(match.ID, newPass)
 
 	http.Redirect(w, r, "/sriracha/", http.StatusFound)
 }

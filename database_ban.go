@@ -2,13 +2,13 @@ package sriracha
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/jackc/pgx/v5"
 )
 
-func (db *Database) addBan(b *Ban) error {
+func (db *Database) addBan(b *Ban) {
 	_, err := db.conn.Exec(context.Background(), "INSERT INTO ban VALUES (DEFAULT, $1, $2, $3, $4)",
 		b.IP,
 		time.Now().Unix(),
@@ -16,57 +16,56 @@ func (db *Database) addBan(b *Ban) error {
 		b.Reason,
 	)
 	if err != nil {
-		return fmt.Errorf("failed to insert ban: %s", err)
+		log.Fatalf("failed to insert ban: %s", err)
 	}
 	err = db.conn.QueryRow(context.Background(), "SELECT id FROM ban WHERE ip = $1", b.IP).Scan(&b.ID)
 	if err != nil || b.ID == 0 {
-		return fmt.Errorf("failed to select id of inserted ban: %s", err)
+		log.Fatalf("failed to select id of inserted ban: %s", err)
 	}
-	return nil
 }
 
-func (db *Database) banByID(id int) (*Ban, error) {
+func (db *Database) banByID(id int) *Ban {
 	b := &Ban{}
 	err := scanBan(b, db.conn.QueryRow(context.Background(), "SELECT * FROM ban WHERE id = $1", id))
 	if err == pgx.ErrNoRows {
-		return nil, nil
+		return nil
 	} else if err != nil {
-		return nil, fmt.Errorf("failed to select ban: %s", err)
+		log.Fatalf("failed to select ban: %s", err)
 	}
-	return b, nil
+	return b
 }
 
-func (db *Database) banByIP(ip string) (*Ban, error) {
+func (db *Database) banByIP(ip string) *Ban {
 	b := &Ban{}
 	err := scanBan(b, db.conn.QueryRow(context.Background(), "SELECT * FROM ban WHERE ip = $1", ip))
 	if err == pgx.ErrNoRows {
-		return nil, nil
+		return nil
 	} else if err != nil {
-		return nil, fmt.Errorf("failed to select ban: %s", err)
+		log.Fatalf("failed to select ban: %s", err)
 	}
-	return b, nil
+	return b
 }
 
-func (db *Database) allBans() ([]*Ban, error) {
+func (db *Database) allBans() []*Ban {
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM ban ORDER BY timestamp DESC")
 	if err != nil {
-		return nil, fmt.Errorf("failed to select all bans: %s", err)
+		log.Fatalf("failed to select all bans: %s", err)
 	}
 	var bans []*Ban
 	for rows.Next() {
 		b := &Ban{}
 		err := scanBan(b, rows)
 		if err != nil {
-			return nil, err
+			return nil
 		}
 		bans = append(bans, b)
 	}
-	return bans, nil
+	return bans
 }
 
-func (db *Database) updateBan(b *Ban) error {
+func (db *Database) updateBan(b *Ban) {
 	if b.ID <= 0 {
-		return fmt.Errorf("invalid ban ID %d", b.ID)
+		log.Fatalf("invalid ban ID %d", b.ID)
 	}
 	_, err := db.conn.Exec(context.Background(), "UPDATE ban SET expire = $1, reason = $2 WHERE id = $3",
 		b.Expire,
@@ -74,9 +73,8 @@ func (db *Database) updateBan(b *Ban) error {
 		b.ID,
 	)
 	if err != nil {
-		return fmt.Errorf("failed to update ban: %s", err)
+		log.Fatalf("failed to update ban: %s", err)
 	}
-	return nil
 }
 
 func scanBan(b *Ban, row pgx.Row) error {

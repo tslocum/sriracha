@@ -62,10 +62,7 @@ func connectDatabase(address string, username string, password string, schema st
 	if err != nil {
 		return nil, fmt.Errorf("failed to upgrade database: %s", err)
 	}
-	err = db.createSuperAdminAccount()
-	if err != nil {
-		return nil, fmt.Errorf("failed to create super-administrator account: %s", err)
-	}
+	db.createSuperAdminAccount()
 	err = db.loadPluginConfig()
 	if err != nil {
 		return nil, fmt.Errorf("failed to load plugin configuration values: %s", err)
@@ -185,7 +182,7 @@ func (db *Database) SaveMultiString(key string, value []string) error {
 	return db.SaveString(key, strings.Join(value, "|"))
 }
 
-func (db *Database) newSessionKey() (string, error) {
+func (db *Database) newSessionKey() string {
 	const keyLength = 48
 	buf := make([]byte, keyLength)
 	for {
@@ -198,9 +195,9 @@ func (db *Database) newSessionKey() (string, error) {
 		var numAccounts int
 		err = db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM account WHERE session = $1", sessionKey).Scan(&numAccounts)
 		if err != nil {
-			return "", fmt.Errorf("failed to select number of accounts with session key: %s", err)
+			log.Fatalf("failed to select number of accounts with session key: %s", err)
 		} else if numAccounts == 0 {
-			return sessionKey, nil
+			return sessionKey
 		}
 	}
 }

@@ -2,7 +2,6 @@ package sriracha
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -42,20 +41,16 @@ func (k *Keyword) loadForm(db *Database, r *http.Request) {
 	k.Action = formString(r, "action")
 	k.Boards = nil
 	boards := r.Form["boards"]
-	if boards != nil {
-		for _, board := range boards {
-			boardID, err := strconv.Atoi(board)
-			if err != nil || boardID <= 0 {
-				continue
-			}
-			b, err := db.boardByID(boardID)
-			if err != nil {
-				log.Fatal(err)
-			} else if b == nil {
-				continue
-			}
-			k.Boards = append(k.Boards, b)
+	for _, board := range boards {
+		boardID, err := strconv.Atoi(board)
+		if err != nil || boardID <= 0 {
+			continue
 		}
+		b := db.boardByID(boardID)
+		if b == nil {
+			continue
+		}
+		k.Boards = append(k.Boards, b)
 	}
 }
 
