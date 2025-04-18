@@ -154,7 +154,7 @@ func (p *Post) FileSizeLabel() string {
 }
 
 func (p *Post) TimestampLabel() string {
-	return time.Unix(p.Timestamp, 0).Format("2006/01/02(Mon)15:04:05")
+	return formatTimestamp(p.Timestamp)
 }
 
 func (p *Post) ExpandHTML(b *Board) template.HTML {

@@ -16,6 +16,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -389,12 +390,36 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	db := &Database{
 		conn: conn,
 	}
+	var handled bool
 
-	switch action {
-	case "post":
-		s.servePost(db, w, r)
-	default:
-		s.serveManage(db, w, r)
+	// Check IP ban.
+	ip := r.RemoteAddr
+	if ip != "" {
+		ban := db.banByIP(ip)
+		if ban != nil {
+			var info string
+			if ban.Expire == 0 {
+				info += " This ban is permanent."
+			} else {
+				info += fmt.Sprintf("This ban will expire at %s.", formatTimestamp(ban.Expire))
+			}
+			if ban.Reason != "" {
+				info += " Reason: " + ban.Reason
+			}
+			data := s.buildData(db, w, r)
+			data.Error("You are banned." + info)
+			data.execute(w)
+			handled = true
+		}
+	}
+
+	if !handled {
+		switch action {
+		case "post":
+			s.servePost(db, w, r)
+		default:
+			s.serveManage(db, w, r)
+		}
 	}
 
 	_, err = conn.Exec(context.Background(), "COMMIT")
@@ -538,6 +563,10 @@ func formRange[T constraints.Integer](r *http.Request, key string, min T, max T)
 		return T(v)
 	}
 	return min
+}
+
+func formatTimestamp(timestamp int64) string {
+	return time.Unix(timestamp, 0).Format("2006/01/02(Mon)15:04:05")
 }
 
 func formatFileSize(size int64) string {

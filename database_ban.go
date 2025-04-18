@@ -37,7 +37,7 @@ func (db *Database) banByID(id int) *Ban {
 
 func (db *Database) banByIP(ip string) *Ban {
 	b := &Ban{}
-	err := scanBan(b, db.conn.QueryRow(context.Background(), "SELECT * FROM ban WHERE ip = $1", ip))
+	err := scanBan(b, db.conn.QueryRow(context.Background(), "SELECT * FROM ban WHERE ip = $1 AND (expire = 0 OR expire > $2)", ip, time.Now().Unix()))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {
