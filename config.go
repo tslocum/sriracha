@@ -11,5 +11,5 @@ type Config struct {
 	Address  string // Address:Port to connect to the database.
 	Username string // Database username.
 	Password string // Database password.
-	Schema   string // Database schema.
+	DBName   string // Database name.
 }

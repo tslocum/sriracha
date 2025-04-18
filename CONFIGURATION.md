@@ -41,6 +41,6 @@ username: sriracha
 # Database password.
 password: hunter2
 
-# Database schema.
-schema: sriracha
+# Database name.
+dbname: sriracha
 ```

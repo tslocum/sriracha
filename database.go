@@ -29,8 +29,8 @@ type Database struct {
 	plugin string
 }
 
-func connectDatabase(address string, username string, password string, schema string, poolMin int, poolMax int) (*pgxpool.Pool, error) {
-	url := fmt.Sprintf("postgres://%s:%s@%s/%s", username, password, address, schema)
+func connectDatabase(address string, username string, password string, dbName string, poolMin int, poolMax int) (*pgxpool.Pool, error) {
+	url := fmt.Sprintf("postgres://%s:%s@%s/%s", username, password, address, dbName)
 
 	config, err := pgxpool.ParseConfig(url)
 	if err != nil {
@@ -59,7 +59,7 @@ func connectDatabase(address string, username string, password string, schema st
 	db := &Database{
 		conn: conn,
 	}
-	err = db.initialize(schema)
+	err = db.initialize()
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize database: %s", err)
 	}
@@ -83,14 +83,14 @@ func connectDatabase(address string, username string, password string, schema st
 	return pool, nil
 }
 
-func (db *Database) initialize(schema string) error {
+func (db *Database) initialize() error {
 	_, err := db.conn.Exec(context.Background(), "SELECT 1=1")
 	if err != nil {
 		return fmt.Errorf("failed to test database connection: %s", err)
 	}
 
 	var tablecount int
-	err = db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = $1 AND table_name = 'account'", schema).Scan(&tablecount)
+	err = db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'account'").Scan(&tablecount)
 	if err != nil {
 		return fmt.Errorf("failed to select whether account table exists: %s", err)
 	} else if tablecount > 0 {

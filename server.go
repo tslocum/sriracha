@@ -84,8 +84,8 @@ func (s *Server) parseConfig(configFile string) error {
 		return fmt.Errorf("username (lowercase!) must be set in %s to the database username", configFile)
 	case config.Password == "":
 		return fmt.Errorf("password (lowercase!) must be set in %s to the database password", configFile)
-	case config.Schema == "":
-		return fmt.Errorf("schema (lowercase!) must be set in %s to the database schema name", configFile)
+	case config.DBName == "":
+		return fmt.Errorf("dbname (lowercase!) must be set in %s to the database name", configFile)
 	default:
 		s.config = config
 		return nil
@@ -180,6 +180,11 @@ func (s *Server) setDefaultConfigValues() error {
 	}
 	defer conn.Release()
 
+	_, err = conn.Exec(context.Background(), "BEGIN")
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %s", err)
+	}
+
 	db := &Database{
 		conn: conn,
 	}
@@ -196,6 +201,11 @@ func (s *Server) setDefaultConfigValues() error {
 				db.SaveString(config.Name, config.Default)
 			}
 		}
+	}
+
+	_, err = conn.Exec(context.Background(), "COMMIT")
+	if err != nil {
+		return fmt.Errorf("failed to commit transaction: %s", err)
 	}
 	return nil
 }
@@ -471,7 +481,7 @@ func (s *Server) Run() error {
 		}
 	}
 
-	s.dbPool, err = connectDatabase(s.config.Address, s.config.Username, s.config.Password, s.config.Schema, s.config.Min, s.config.Max)
+	s.dbPool, err = connectDatabase(s.config.Address, s.config.Username, s.config.Password, s.config.DBName, s.config.Min, s.config.Max)
 	if err != nil {
 		return err
 	}
