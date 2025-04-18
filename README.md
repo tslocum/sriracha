@@ -8,6 +8,24 @@ Only Linux, FreeBSD and macOS are supported.
 
 Sriracha will eventually serve as a replacement for imageboards running [TinyIB](https://codeberg.org/tslocum/tinyib).
 
+## Feature Parity with TinyIB
+
+- [ ] GIF, JPG, PNG, SWF, MP4 and WebM upload.
+- [ ] YouTube, Vimeo and SoundCloud embedding.
+- [ ] CAPTCHA.
+- [ ] Reference links. `>>###`
+- [ ] Fetch new replies automatically.
+- [ ] Delete posts via password.
+- [ ] Report posts.
+- [X] Block keywords.
+- [X] Management panel:
+  - [ ] Post using raw HTML.
+  - [X] Account system:
+    - [X] Super administrators (all privileges)
+    - [ ] Administrators (all privileges except account management)
+    - [ ] Moderators (only able to sticky threads, lock threads, approve posts and delete posts)
+    - [X] Ban offensive/abusive posters across all boards.
+
 ## Documentation
 
 ### Server
