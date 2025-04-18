@@ -1,9 +1,14 @@
 {{template "manage_begin.gohtml" .}}
 <form method="post">
+    <input type="hidden" name="action" value="delete">
+    <input type="hidden" name="board" value="{{.Board.Dir}}">
+    <input type="hidden" name="delete[]" value="{{.Post.ID}}">
+    <input type="hidden" name="password" value="{{.Extra}}">
+    <input type="hidden" name="confirm" value="1">
 	<fieldset>
-        <legend>Delete #{{.Post.ID}}</legend>
+        <legend>Delete Post #{{.Post.ID}}</legend>
         <table border="0">
-            <tr><td class="postblock">Confirm</td><td>Are you sure you want to delete <a href="{{.Board.Path}}res/{{.Post.Thread}}.html#{{.Post.ID}}">&gt;&gt;{{.Post.ID}}</a>?</td></tr>
+            <tr><td class="postblock">Confirm</td><td>Are you sure you want to delete {{.Post.RefLink .Board}}?</td></tr>
             <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="Delete"></td></tr>
         </table>
         <legend>

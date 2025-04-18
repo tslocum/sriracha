@@ -36,6 +36,7 @@ type templateData struct {
 	Post      *Post
 	Threads   [][]*Post
 	ReplyMode int
+	Extra     string
 	Opt       *ServerOptions
 	Manage    *manageData
 	Template  string

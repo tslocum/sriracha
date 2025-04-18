@@ -2,7 +2,6 @@ package sriracha
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -10,8 +9,6 @@ import (
 )
 
 func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	log.Println(r.Form)
 	data := s.buildData(db, w, r)
 	postID, err := strconv.Atoi(r.FormValue("delete[]"))
 	if err == nil && postID > 0 {
@@ -30,6 +27,16 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 			if post.Password == "" || db.hashData(password) != post.Password {
 				data.Template = "board_error"
 				data.Info = "Invalid password."
+				data.execute(w)
+				return
+			}
+
+			confirm := r.FormValue("confirm")
+			if confirm != "1" {
+				data.Board = b
+				data.Post = post
+				data.Extra = password
+				data.Template = "board_delete"
 				data.execute(w)
 				return
 			}

@@ -167,6 +167,10 @@ func (p *Post) ExpandHTML(b *Board) template.HTML {
 	return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, srcPath, p.ID, srcPath, p.FileWidth, p.ThumbWidth, p.ThumbHeight)))
 }
 
+func (p *Post) RefLink(b *Board) template.HTML {
+	return template.HTML(fmt.Sprintf(`<a href="%sres/%d.html#%d">&gt;&gt;%d</a>`, b.Path(), p.Thread(), p.ID, p.ID))
+}
+
 func mimeToExt(mimeType string) string {
 	switch mimeType {
 	case "image/jpeg":
