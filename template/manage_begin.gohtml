@@ -16,16 +16,16 @@
     <body>
 		<div class="adminbar">
 			{{if ne .Account nil}}
-			[<a href="/sriracha/account/" style="text-decoration: underline;">Accounts</a>]
-			[<a href="/sriracha/ban/" style="text-decoration: underline;">Bans</a>]
-			[<a href="/sriracha/board/" style="text-decoration: underline;">Boards</a>]
-			[<a href="/sriracha/keyword/" style="text-decoration: underline;">Keywords</a>]
-			[<a href="/sriracha/log/" style="text-decoration: underline;">Logs</a>]
-			[<a href="/sriracha/plugin/" style="text-decoration: underline;">Plugins</a>]
-			[<a href="/sriracha/setting/" style="text-decoration: underline;">Settings</a>]
-			[<a href="/sriracha/" style="text-decoration: underline;">Status</a>] &middot;
-			[<a href="/sriracha/password/" style="text-decoration: underline;">Change Password</a>]
-			[<a href="/sriracha/logout/" style="text-decoration: underline;">Log Out</a>] &middot;
+				[<a href="/sriracha/account/" style="text-decoration: underline;">Accounts</a>]
+				[<a href="/sriracha/ban/" style="text-decoration: underline;">Bans</a>]
+				[<a href="/sriracha/board/" style="text-decoration: underline;">Boards</a>]
+				[<a href="/sriracha/keyword/" style="text-decoration: underline;">Keywords</a>]
+				[<a href="/sriracha/log/" style="text-decoration: underline;">Logs</a>]
+				[<a href="/sriracha/plugin/" style="text-decoration: underline;">Plugins</a>]
+				[<a href="/sriracha/setting/" style="text-decoration: underline;">Settings</a>]
+				[<a href="/sriracha/" style="text-decoration: underline;">Status</a>] &middot;
+				[<a href="/sriracha/password/" style="text-decoration: underline;">Change Password</a>]
+				[<a href="/sriracha/logout/" style="text-decoration: underline;">Log Out</a>] &middot;
 			{{end}}
 			[<a href="/sriracha/" style="text-decoration: underline;">Return</a>]
 		</div>
@@ -33,5 +33,5 @@
 		<hr width="90%">
 		<div class="replymode">Manage mode</div>
 		{{if and (ne .Info "") (ne .Template "manage_error")}}
-		<div class="manageinfo">{{.Info}}</div>
+			<div class="manageinfo">{{.Info}}</div>
 		{{end}}

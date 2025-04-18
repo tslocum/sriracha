@@ -1,22 +1,22 @@
 {{template "manage_begin.gohtml" .}}
 <h2 class="managetitle">Bans</h2>
 {{if ne (len .Manage.Bans) 0}}
-<table class="managetable">
-    <tr>
-        <th>ID</th>
-        <th>Expires</th>
-        <th>Reason</th>
-        <th>&nbsp;</th>
-    </tr>
-    {{range $i, $ban := .Manage.Bans}}
-    <tr>
-        <td>{{$ban.ID}}</td>
-        <td>{{$ban.ExpireDate}}</td>
-        <td>{{if eq $ban.Reason ""}}No reason provided{{else}}{{$ban.Reason}}{{end}}</td>
-        <td><a href="/sriracha/ban/{{$ban.ID}}">update</a> <a href="/sriracha/ban/delete/{{$ban.ID}}">delete</a></td>
-    </tr>
-    {{end}}
-</table><br>
+    <table class="managetable">
+        <tr>
+            <th>ID</th>
+            <th>Expires</th>
+            <th>Reason</th>
+            <th>&nbsp;</th>
+        </tr>
+        {{range $i, $ban := .Manage.Bans}}
+            <tr>
+                <td>{{$ban.ID}}</td>
+                <td>{{$ban.ExpireDate}}</td>
+                <td>{{if eq $ban.Reason ""}}No reason provided{{else}}{{$ban.Reason}}{{end}}</td>
+                <td><a href="/sriracha/ban/{{$ban.ID}}">update</a> <a href="/sriracha/ban/delete/{{$ban.ID}}">delete</a></td>
+            </tr>
+        {{end}}
+    </table><br>
 {{end}}
 <form name="sriracha" method="post">
     <fieldset>
@@ -49,9 +49,9 @@
 </form>
 <script type="text/javascript">
 {{if eq .Manage.Ban nil}}
-document.sriracha.ip.focus();
+    document.sriracha.ip.focus();
 {{else}}
-document.sriracha.expire.focus();
+    document.sriracha.expire.focus();
 {{end}}
 </script>
 {{template "manage_end.gohtml" .}}
