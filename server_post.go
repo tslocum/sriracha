@@ -15,12 +15,6 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	}
 
 	boardDir := formString(r, "board")
-	if boardDir == "" {
-		data := s.buildData(db, w, r)
-		data.Error("no board was specified")
-		data.execute(w)
-		return
-	}
 	b := db.boardByDir(boardDir)
 	if b == nil {
 		data := s.buildData(db, w, r)
@@ -82,6 +76,6 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 
 	s.rebuildThread(db, b, post)
 
-	redir := fmt.Sprintf("/%s/res/%d.html#%d", b.Dir, post.ThreadID(), post.ID)
+	redir := fmt.Sprintf("%sres/%d.html#%d", b.Path(), post.ThreadID(), post.ID)
 	http.Redirect(w, r, redir, http.StatusFound)
 }

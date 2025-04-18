@@ -137,18 +137,23 @@ func (b *Board) loadForm(r *http.Request) {
 
 func (b *Board) validate() error {
 	switch {
-	case strings.TrimSpace(b.Dir) == "":
-		return fmt.Errorf("dir must be set")
+	case b.Dir != "" && !alphaNumericAndSymbols.MatchString(b.Dir):
+		return fmt.Errorf("dir must only consist of letters, numbers, hyphens and underscores")
 	case strings.TrimSpace(b.Name) == "":
 		return fmt.Errorf("name must be set")
-	case !alphaNumericAndSymbols.MatchString(b.Dir):
-		return fmt.Errorf("dir must only consist of letters, numbers, hyphens and underscores")
 	case strings.EqualFold(b.Dir, "sriracha"):
 		return fmt.Errorf("sriracha is a reserved name")
 	case strings.EqualFold(b.Dir, "sriracha_all"):
 		return fmt.Errorf("sriracha_all is a reserved name")
 	}
 	return nil
+}
+
+func (b *Board) Path() string {
+	if b.Dir == "" {
+		return "/"
+	}
+	return "/" + b.Dir + "/"
 }
 
 func (b *Board) MaxSizeLabel() string {

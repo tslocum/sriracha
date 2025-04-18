@@ -84,6 +84,9 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 
 		dirs := []string{"", "src", "thumb", "res"}
 		for _, boardDir := range dirs {
+			if b.Dir == "" && boardDir == "" {
+				continue
+			}
 			boardPath := filepath.Join(s.config.Root, b.Dir, boardDir)
 			err = os.Mkdir(boardPath, 0755)
 			if err != nil {

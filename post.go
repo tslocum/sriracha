@@ -161,7 +161,7 @@ func (p *Post) ExpandHTML(b *Board) template.HTML {
 	if p.File == "" {
 		return ""
 	}
-	srcPath := fmt.Sprintf("/%s/src/%s", b.Dir, p.File)
+	srcPath := fmt.Sprintf("%ssrc/%s", b.Path(), p.File)
 
 	const expandFormat = `<a href="%s" onclick="return expandFile(event, '%d');"><img src="%s" width="%d" style="min-width: %dpx;min-height: %dpx;max-width: 85vw;height: auto;"></a>`
 	return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, srcPath, p.ID, srcPath, p.FileWidth, p.ThumbWidth, p.ThumbHeight)))

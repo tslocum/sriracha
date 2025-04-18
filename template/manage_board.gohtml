@@ -11,7 +11,7 @@
         </tr>
         {{range $i, $board := .Manage.Boards}}
             <tr>
-                <td><a href="/{{$board.Dir}}/">/{{$board.Dir}}/</a></td>
+                <td><a href="{{$board.Path}}">{{$board.Path}}</a></td>
                 <td>{{$board.Name}}</td>
                 <td>{{$board.Description}}</td>
                 <td>{{if eq $board.Type 0}}Imageboard{{else}}Forum{{end}}</td>
@@ -22,12 +22,12 @@
 {{end}}
 <form method="post">
     <fieldset>
-    <legend>{{if or (eq .Manage.Board nil) (eq .Manage.Board.ID 0)}}Add Board{{else}}Update /{{.Manage.Board.Dir}}/ {{.Manage.Board.Name}}{{end}}</legend>
+    <legend>{{if or (eq .Manage.Board nil) (eq .Manage.Board.ID 0)}}Add Board{{else}}Update {{.Manage.Board.Path}} {{.Manage.Board.Name}}{{end}}</legend>
     <table border="0">
         <tr>
             <td class="postblock"><label for="dir">Directory</label></td>
             <td><input type="text" name="dir" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Dir}}{{end}}"></td>
-            <td>The directory where the board files are located.</td>
+            <td>The directory where the board files are located. Leave blank to place the board at the server root.</td>
         </tr>
         <tr>
             <td class="postblock"><label for="name">Name</label></td>
