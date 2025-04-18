@@ -1,16 +1,16 @@
-{{template "board_begin.gohtml" .}}
+{{template "imgboard_begin.gohtml" .}}
 {{if .ReplyMode}}
 [<a href="../">Return</a>]
 <div class="replymode">Posting mode: Reply</div> 
 {{end}}
-{{template "board_postarea.gohtml" .}}
+{{template "imgboard_postarea.gohtml" .}}
 {{range $i, $thread := .Threads}}
     <hr>
     {{range $i, $post := $thread}}
         {{if eq .Parent 0}}
 		<div id="post{{.ID}}" class="op">
 			{{if ne .File ""}}
-			<span class="filesize">File: <a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{.File}}</a>&ndash;{{template "board_page_fileinfo.gohtml" .}}</span><br>
+			<span class="filesize">File: <a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{.File}}</a>&ndash;{{template "imgboard_page_fileinfo.gohtml" .}}</span><br>
 			<div id="thumbfile{{.ID}}">
 				<a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="/{{$.Board.Dir}}/thumb/{{.Thumb}}" alt="{{.ID}}" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
 			</div>
@@ -18,14 +18,14 @@
 			<div id="file{{.ID}}" class="thumb" style="display: none;"></div><a id="{{.ID}}"></a>
 			{{end}}
 			<label>
-				<input type="checkbox" name="delete[]" value="{{.ID}}"> {{template "board_page_subject.gohtml" .}} {{template "board_page_name.gohtml" .}}
+				<input type="checkbox" name="delete[]" value="{{.ID}}"> {{template "imgboard_page_subject.gohtml" .}} {{template "imgboard_page_name.gohtml" .}}
 			</label>
 			<span class="reflink">
 				<a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html#{{.ID}}">No.</a><a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html#q{{.ID}}">{{.ID}}</a>
 			</span>
 			{{if not $.ReplyMode}}&nbsp;[<a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html">Reply</a>]{{end}}
 			<div class="message">
-			{{.Message | HTML}}
+				{{.Message | HTML}}
 			</div>
 		</div>
 		{{if and (eq $.ReplyMode 0) (gt (Omitted $.Board.Replies (len $thread)) 0)}}
@@ -41,14 +41,14 @@
 				<td class="reply" id="post{{.ID}}">
 					<a id="{{.ID}}"></a>
 					<label>
-						<input type="checkbox" name="delete[]" value="{{.ID}}"> {{template "board_page_subject.gohtml" .}} {{template "board_page_name.gohtml" .}}
+						<input type="checkbox" name="delete[]" value="{{.ID}}"> {{template "imgboard_page_subject.gohtml" .}} {{template "imgboard_page_name.gohtml" .}}
 					</label>
 					<span class="reflink">
 						<a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html#{{.ID}}">No.</a><a href="/{{$.Board.Dir}}/res/{{.ThreadID}}.html#q{{.ID}}">{{.ID}}</a>
 					</span>
 					<small><span id="backlinks{{.ID}}" class="backlinks"></span></small><br>
 					{{if ne .File ""}}
-					<span class="filesize"><a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{.File}}</a>&ndash;{{template "board_page_fileinfo.gohtml" .}}</span><br>
+					<span class="filesize"><a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{.File}}</a>&ndash;{{template "imgboard_page_fileinfo.gohtml" .}}</span><br>
 					<div id="thumbfile{{.ID}}">
 						<a href="/{{$.Board.Dir}}/src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="/{{$.Board.Dir}}/thumb/{{.Thumb}}" alt="6" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
 					</div>
@@ -65,4 +65,4 @@
 		{{end}}
 	{{end}}
 {{end}}
-{{template "board_end.gohtml" .}}
+{{template "imgboard_end.gohtml" .}}

@@ -24,6 +24,7 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 		}
 
 		if data.Manage.Ban != nil && r.Method == http.MethodPost {
+			oldBan := *data.Manage.Ban
 			data.Manage.Ban.loadForm(r)
 
 			err := data.Manage.Ban.validate()
@@ -38,10 +39,9 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 				return
 			}
 
-			err = db.log(data.Account, nil, fmt.Sprintf("Updated >>/ban/%d", data.Manage.Ban.ID))
-			if err != nil {
-				log.Fatal(err)
-			}
+			changes := printChanges(oldBan, *data.Manage.Ban)
+			db.log(data.Account, nil, fmt.Sprintf("Updated >>/ban/%d", data.Manage.Ban.ID), changes)
+
 			http.Redirect(w, r, "/sriracha/ban/", http.StatusFound)
 			return
 		}
@@ -77,10 +77,8 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 			return
 		}
 
-		err = db.log(data.Account, nil, fmt.Sprintf("Added >>/ban/%d", b.ID))
-		if err != nil {
-			log.Fatal(err)
-		}
+		db.log(data.Account, nil, fmt.Sprintf("Added >>/ban/%d", b.ID), "")
+
 		http.Redirect(w, r, "/sriracha/ban/", http.StatusFound)
 		return
 	}

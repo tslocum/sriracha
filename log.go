@@ -14,6 +14,7 @@ type Log struct {
 	Timestamp int64
 	Account   *Account
 	Message   string
+	Changes   string
 }
 
 func (l *Log) TimestampDate() string {

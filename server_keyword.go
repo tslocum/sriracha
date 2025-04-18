@@ -17,7 +17,7 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 		log.Fatal(err)
 	}
 
-	keywordID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/keyword/rest/"))
+	keywordID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/keyword/test/"))
 	if err == nil && keywordID > 0 {
 		data.Template = "manage_keyword_test"
 		data.Manage.Keyword, err = db.keywordByID(keywordID)
@@ -49,6 +49,7 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 		}
 
 		if data.Manage.Keyword != nil && r.Method == http.MethodPost {
+			oldKeyword := *data.Manage.Keyword
 			oldText := data.Manage.Keyword.Text
 			data.Manage.Keyword.loadForm(db, r)
 
@@ -74,10 +75,9 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 				return
 			}
 
-			err = db.log(data.Account, nil, fmt.Sprintf("Updated >>/keyword/%d", data.Manage.Keyword.ID))
-			if err != nil {
-				log.Fatal(err)
-			}
+			changes := printChanges(oldKeyword, *data.Manage.Keyword)
+			db.log(data.Account, nil, fmt.Sprintf("Updated >>/keyword/%d", data.Manage.Keyword.ID), changes)
+
 			http.Redirect(w, r, "/sriracha/keyword/", http.StatusFound)
 			return
 		}
@@ -108,10 +108,8 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 			return
 		}
 
-		err = db.log(data.Account, nil, fmt.Sprintf("Added >>/keyword/%d", k.ID))
-		if err != nil {
-			log.Fatal(err)
-		}
+		db.log(data.Account, nil, fmt.Sprintf("Added >>/keyword/%d", k.ID), "")
+
 		http.Redirect(w, r, "/sriracha/keyword/", http.StatusFound)
 		return
 	}

@@ -3,12 +3,13 @@ package sriracha
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 )
 
-func (db *Database) addLog(l *Log) error {
+func (db *Database) addLog(l *Log) {
 	if l.Message == "" {
-		return nil
+		return
 	}
 
 	var boardID *int
@@ -19,23 +20,24 @@ func (db *Database) addLog(l *Log) error {
 	if l.Account != nil {
 		accountID = &l.Account.ID
 	}
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO log VALUES (DEFAULT, $1, $2, $3, $4)",
+	_, err := db.conn.Exec(context.Background(), "INSERT INTO log VALUES (DEFAULT, $1, $2, $3, $4, $5)",
 		boardID,
 		time.Now().Unix(),
 		accountID,
 		l.Message,
+		l.Changes,
 	)
 	if err != nil {
-		return fmt.Errorf("failed to insert log: %s", err)
+		log.Fatalf("failed to insert log: %s", err)
 	}
-	return nil
 }
 
-func (db *Database) log(account *Account, board *Board, message string) error {
-	return db.addLog(&Log{
+func (db *Database) log(account *Account, board *Board, message string, changes string) {
+	db.addLog(&Log{
 		Account: account,
 		Board:   board,
 		Message: message,
+		Changes: changes,
 	})
 }
 
@@ -51,7 +53,7 @@ func (db *Database) allLogs() ([]*Log, error) {
 		l := &Log{}
 		var boardID *int
 		var accountID *int
-		err := rows.Scan(&l.ID, &boardID, &l.Timestamp, &accountID, &l.Message)
+		err := rows.Scan(&l.ID, &boardID, &l.Timestamp, &accountID, &l.Message, &l.Changes)
 		if err != nil {
 			return nil, err
 		}

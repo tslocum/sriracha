@@ -14,10 +14,17 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 	}
 
 	if r.Method == http.MethodPost {
+		oldOpt := s.opt
+
 		siteName := formString(r, "sitename")
 		if siteName != "" {
 			db.SaveString("sitename", siteName)
 			s.opt.SiteName = siteName
+		}
+
+		changes := printChanges(oldOpt, s.opt)
+		if changes != "" {
+			db.log(data.Account, nil, "Updated settings", changes)
 		}
 	}
 	data.Template = "manage_setting"

@@ -72,7 +72,8 @@ CREATE TABLE log (
 	board smallint NULL REFERENCES board (id),
 	timestamp integer NOT NULL,
 	account smallint NULL REFERENCES account (id),
-	message text NOT NULL
+	message text NOT NULL,
+	changes text NOT NULL
 );
 
 CREATE TABLE post (

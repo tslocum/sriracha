@@ -62,7 +62,7 @@ the [Fortune](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/fortu
 ## Events
 
 Plugins may subscribe to receive one or more types of events by implementing
-the associated event handlers. For instance, a plugin that subscribes to `Post`
+the associated event handlers. For instance, a plugin that subscribes to [Post](https://pkg.go.dev/codeberg.org/tslocum/sriracha#Post)
 events would implement [PluginWithPost](https://pkg.go.dev/codeberg.org/tslocum/sriracha#PluginWithPost):
 
 ```go

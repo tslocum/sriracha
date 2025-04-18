@@ -19,6 +19,7 @@ func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseW
 		}
 
 		if data.Manage.Account != nil && r.Method == http.MethodPost {
+			oldAccount := *data.Manage.Account
 			oldUsername := data.Manage.Account.Username
 			data.Manage.Account.loadForm(r)
 
@@ -59,10 +60,9 @@ func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseW
 				}
 			}
 
-			err = db.log(data.Account, nil, fmt.Sprintf("Updated >>/account/%d", data.Manage.Account.ID))
-			if err != nil {
-				log.Fatal(err)
-			}
+			changes := printChanges(oldAccount, *data.Manage.Account)
+			db.log(data.Account, nil, fmt.Sprintf("Updated >>/account/%d", data.Manage.Account.ID), changes)
+
 			http.Redirect(w, r, "/sriracha/account/", http.StatusFound)
 			return
 		}
@@ -91,10 +91,8 @@ func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseW
 			return
 		}
 
-		err = db.log(data.Account, nil, fmt.Sprintf("Added >>/account/%d", a.ID))
-		if err != nil {
-			log.Fatal(err)
-		}
+		db.log(data.Account, nil, fmt.Sprintf("Added >>/account/%d", a.ID), "")
+
 		http.Redirect(w, r, "/sriracha/account/", http.StatusFound)
 		return
 	}

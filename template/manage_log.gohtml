@@ -10,6 +10,7 @@
             <th align="left">User</th>
             <th align="left">Board</th>
             <th align="left">Action</th>
+            <th align="left" width="60%">Changes</th>
         </tr>
         {{range $i, $log := .Manage.Logs}}
         <tr>
@@ -17,6 +18,7 @@
             <td>{{if eq $log.Account nil}}System{{else}}{{$log.Account.Username}}{{end}}</td>
             <td>{{if eq $log.Board nil}}System{{else}}/{{$log.Board.Dir}}/ {{$log.Board.Name}}{{end}}</td>
             <td>{{$log.MessageLabel}}</td>
+            <td>{{$log.Changes}}</td>
         </tr>
         {{end}}
     </table>

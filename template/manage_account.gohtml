@@ -15,7 +15,7 @@
         </tr>
         <tr>
             <td class="postblock"><label for="role">Role</label></td>
-            <td valign="top"><select name="role" style="width: 100%;">
+            <td><select name="role" style="width: 100%;">
                 <option value="1"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 1)}} selected{{end}}>Super-Administrator</option>
                 <option value="2"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 2)}} selected{{end}}>Administrator</option>
                 <option value="3"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 3)}} selected{{end}}>Moderator</option>

@@ -16,6 +16,21 @@ const (
 	RoleDisabled   AccountRole = 99
 )
 
+func formatRole(role AccountRole) string {
+	switch role {
+	case RoleSuperAdmin:
+		return "Super-Administrator"
+	case RoleAdmin:
+		return "Administrator"
+	case RoleMod:
+		return "Moderator"
+	case RoleDisabled:
+		return "Disabled"
+	default:
+		return "Unknown"
+	}
+}
+
 type Account struct {
 	ID         int
 	Username   string

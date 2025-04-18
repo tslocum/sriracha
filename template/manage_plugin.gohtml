@@ -10,8 +10,8 @@
     {{range $i, $option := .Manage.Plugin.Config}}
         <tr>
             <td class="postblock"><label for="config_{{$option.Name}}">{{$option.Name | Title}}</label></td>
-            <td valign="top">{{template "manage_plugin_option.gohtml" $option}}</td>
-            <td valign="top">{{$option.Description}}</td>
+            <td>{{template "manage_plugin_option.gohtml" $option}}</td>
+            <td>{{$option.Description}}</td>
         </tr>
     {{end}}
         <tr>

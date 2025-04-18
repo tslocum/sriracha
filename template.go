@@ -48,6 +48,18 @@ func (data *templateData) Error(message string) {
 func (data *templateData) execute(w io.Writer) {
 	data.Opt = &srirachaServer.opt
 
+	if strings.HasPrefix(data.Template, "board_") {
+		boardType := TypeImageboard
+		if data.Board != nil && data.Board.Type == TypeForum {
+			boardType = TypeForum
+		}
+		if boardType == TypeImageboard {
+			data.Template = "imgboard_" + strings.TrimPrefix(data.Template, "board_")
+		} else {
+			data.Template = "forum_" + strings.TrimPrefix(data.Template, "board_")
+		}
+	}
+
 	err := srirachaServer.tpl.ExecuteTemplate(w, data.Template+".gohtml", data)
 	if err != nil {
 		log.Fatal(err)

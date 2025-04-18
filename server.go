@@ -19,6 +19,7 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/r3labs/diff/v3"
 	"golang.org/x/exp/constraints"
 	"golang.org/x/sys/unix"
 	"gopkg.in/yaml.v3"
@@ -548,6 +549,46 @@ func formatFileSize(size int64) string {
 		v /= 1024.0
 	}
 	return fmt.Sprintf("%.0fYB", v)
+}
+
+func formatValue(v interface{}) interface{} {
+	if role, ok := v.(AccountRole); ok {
+		return formatRole(role)
+	} else if t, ok := v.(BoardType); ok {
+		return formatBoardType(t)
+	} else if t, ok := v.(BoardLock); ok {
+		return formatBoardLock(t)
+	} else if t, ok := v.(BoardApproval); ok {
+		return formatBoardApproval(t)
+	}
+	return v
+}
+
+func printChanges(old interface{}, new interface{}) string {
+	const mask = "***"
+	diff, err := diff.Diff(old, new)
+	if err != nil {
+		log.Fatal(err)
+	} else if len(diff) == 0 {
+		return ""
+	}
+	var label string
+	for _, change := range diff {
+		from := change.From
+		to := change.To
+
+		var name string
+		if len(change.Path) > 0 {
+			name = change.Path[0]
+			if name == "Password" {
+				from = mask
+				to = mask
+			}
+		}
+
+		label += fmt.Sprintf(` (%s: "%v" -> "%v")`, name, formatValue(from), formatValue(to))
+	}
+	return label
 }
 
 var siteIndexHTML = []byte(`

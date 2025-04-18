@@ -3,6 +3,10 @@ body {
 	margin: 0 0 auto;
 }
 
+td {
+	vertical-align: top;
+}
+
 blockquote blockquote {
 	margin-left: 0;
 }

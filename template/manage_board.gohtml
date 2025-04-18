@@ -20,7 +20,7 @@
         </tr>
         <tr>
             <td class="postblock"><label for="type">Type</label></td>
-            <td valign="top"><select name="type" style="width: 100%;">
+            <td><select name="type" style="width: 100%;">
                 <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Type 0)}} selected{{end}}>Imageboard</option>
                 <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Type 1)}} selected{{end}}>Forum</option>
             </select></td>
@@ -28,7 +28,7 @@
         </tr>
         <tr>
             <td class="postblock"><label for="lock">Restrict New Posts</label></td>
-            <td valign="top"><select name="lock" style="width: 100%;">
+            <td><select name="lock" style="width: 100%;">
                 <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 0)}} selected{{end}}>Allow all</option>
                 <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 1)}} selected{{end}}>No visitor threads</option>
                 <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 2)}} selected{{end}}>No visitor posts</option>
@@ -38,7 +38,7 @@
         </tr>
         <tr>
             <td class="postblock"><label for="approval">Require Approval</label></td>
-            <td valign="top"><select name="approval" style="width: 100%;">
+            <td><select name="approval" style="width: 100%;">
                 <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Approval 0)}} selected{{end}}>Never</option>
                 <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Approval 1)}} selected{{end}}>For posts with files</option>
                 <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Approval 2)}} selected{{end}}>For all posts</option>

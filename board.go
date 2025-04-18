@@ -13,6 +13,17 @@ const (
 	TypeForum      BoardType = 1
 )
 
+func formatBoardType(t BoardType) string {
+	switch t {
+	case TypeImageboard:
+		return "Imageboard"
+	case TypeForum:
+		return "Forum"
+	default:
+		return "Unknown"
+	}
+}
+
 type BoardLock int
 
 const (
@@ -22,6 +33,21 @@ const (
 	LockAll    BoardLock = 3
 )
 
+func formatBoardLock(l BoardLock) string {
+	switch l {
+	case LockNone:
+		return "None"
+	case LockReply:
+		return "Reply"
+	case LockThread:
+		return "Thread"
+	case LockAll:
+		return "All"
+	default:
+		return "Unknown"
+	}
+}
+
 type BoardApproval int
 
 const (
@@ -29,6 +55,19 @@ const (
 	ApprovalFile BoardApproval = 1
 	ApprovalAll  BoardApproval = 2
 )
+
+func formatBoardApproval(a BoardApproval) string {
+	switch a {
+	case ApprovalNone:
+		return "None"
+	case ApprovalFile:
+		return "File"
+	case ApprovalAll:
+		return "All"
+	default:
+		return "Unknown"
+	}
+}
 
 type Board struct {
 	ID          int

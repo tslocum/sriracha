@@ -33,6 +33,8 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		}
 
 		if data.Manage.Board != nil && r.Method == http.MethodPost {
+			oldBoard := *data.Manage.Board
+
 			oldDir := data.Manage.Board.Dir
 			data.Manage.Board.loadForm(r)
 
@@ -70,10 +72,9 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 
 			s.rebuildBoard(db, data.Manage.Board)
 
-			err = db.log(data.Account, nil, fmt.Sprintf("Updated >>/board/%d", data.Manage.Board.ID))
-			if err != nil {
-				log.Fatal(err)
-			}
+			changes := printChanges(oldBoard, *data.Manage.Board)
+			db.log(data.Account, nil, fmt.Sprintf("Updated >>/board/%d", data.Manage.Board.ID), changes)
+
 			http.Redirect(w, r, "/sriracha/board/", http.StatusFound)
 			return
 		}
@@ -112,10 +113,8 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 
 		s.rebuildBoard(db, b)
 
-		err = db.log(data.Account, nil, fmt.Sprintf("Added >>/board/%d", b.ID))
-		if err != nil {
-			log.Fatal(err)
-		}
+		db.log(data.Account, nil, fmt.Sprintf("Added >>/board/%d", b.ID), "")
+
 		http.Redirect(w, r, "/sriracha/board/", http.StatusFound)
 		return
 	}
