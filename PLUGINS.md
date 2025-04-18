@@ -40,3 +40,37 @@ failed to load plugin ./plugin/fortune/fortune.so: plugin.Open("./plugin/fortune
 ```
 
 The solution is to rebuild all plugins and Sriracha itself.
+
+## Configuration
+
+Plugins may provide configuration options for users to set in the management panel.
+
+The following single-value data types are supported:
+
+- Boolean
+- Integer
+- Float
+- Range
+- Enum
+- String
+
+All data types except booleans may also have multiple values.
+
+An example how to implement a plugin with configuration options is available in
+the [Fortune](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/fortune/fortune.go) plugin.
+
+## Events
+
+Plugins may subscribe to receive one or more types of events by implementing
+the associated event handlers. For instance, a plugin that subscribes to `Post`
+events would implement [PluginWithPost](https://pkg.go.dev/codeberg.org/tslocum/sriracha#PluginWithPost):
+
+```go
+type PluginWithPost interface {
+	Plugin
+	Post(db *Database, post *Post) error
+}
+```
+
+An example of how to implement a plugin which receives new post events is
+available in the [Fortune](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/fortune/fortune.go) plugin.
