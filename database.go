@@ -51,6 +51,11 @@ func connectDatabase(address string, username string, password string, schema st
 	}
 	defer conn.Release()
 
+	_, err = conn.Exec(context.Background(), "BEGIN")
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %s", err)
+	}
+
 	db := &Database{
 		conn: conn,
 	}
@@ -58,14 +63,22 @@ func connectDatabase(address string, username string, password string, schema st
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize database: %s", err)
 	}
+
 	err = db.upgrade()
 	if err != nil {
 		return nil, fmt.Errorf("failed to upgrade database: %s", err)
 	}
+
 	db.createSuperAdminAccount()
+
 	err = db.loadPluginConfig()
 	if err != nil {
 		return nil, fmt.Errorf("failed to load plugin configuration values: %s", err)
+	}
+
+	_, err = conn.Exec(context.Background(), "COMMIT")
+	if err != nil {
+		return nil, fmt.Errorf("failed to commit transaction: %s", err)
 	}
 	return pool, nil
 }
@@ -77,9 +90,9 @@ func (db *Database) initialize(schema string) error {
 	}
 
 	var tablecount int
-	err = db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = $1 AND table_name = 'config'", schema).Scan(&tablecount)
+	err = db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = $1 AND table_name = 'account'", schema).Scan(&tablecount)
 	if err != nil {
-		return fmt.Errorf("failed to select whether config table exists: %s", err)
+		return fmt.Errorf("failed to select whether account table exists: %s", err)
 	} else if tablecount > 0 {
 		return nil
 	}
