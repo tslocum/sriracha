@@ -142,7 +142,7 @@ func (p *Post) loadForm(r *http.Request, b *Board, rootDir string) error {
 	return nil
 }
 
-func (p *Post) ThreadID() int {
+func (p *Post) Thread() int {
 	if p.Parent == 0 {
 		return p.ID
 	}

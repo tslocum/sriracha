@@ -33,6 +33,7 @@ type templateData struct {
 	Message   template.HTML
 	Board     *Board
 	Boards    []*Board
+	Post      *Post
 	Threads   [][]*Post
 	ReplyMode int
 	Opt       *ServerOptions

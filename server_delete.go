@@ -1,0 +1,59 @@
+package sriracha
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strconv"
+)
+
+func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	log.Println(r.Form)
+	data := s.buildData(db, w, r)
+	postID, err := strconv.Atoi(r.FormValue("delete[]"))
+	if err == nil && postID > 0 {
+		boardDir := formString(r, "board")
+		b := db.boardByDir(boardDir)
+		if b == nil {
+			data.Template = "board_error"
+			data.Info = "No board was specified."
+			data.execute(w)
+			return
+		}
+
+		post := db.postByID(b, postID)
+		if post != nil {
+			password := r.FormValue("password")
+			if post.Password == "" || db.hashData(password) != post.Password {
+				data.Template = "board_error"
+				data.Info = "Invalid password."
+				data.execute(w)
+				return
+			}
+
+			posts := db.allPostsInThread(b, post.ID)
+			for _, p := range posts {
+				s.deletePost(db, b, p)
+			}
+
+			if post.Parent == 0 {
+				os.Remove(filepath.Join(s.config.Root, b.Dir, "res", fmt.Sprintf("%d.html", post.ID)))
+			} else {
+				s.writeThread(db, b, post.Thread())
+			}
+			s.writeIndexes(db, b)
+
+			data.Template = "board_info"
+			data.Info = fmt.Sprintf("Deleted #%d", post.ID)
+			data.execute(w)
+			return
+		}
+	}
+	data.Template = "board_error"
+	data.Info = "No post selected."
+	data.execute(w)
+	return
+}

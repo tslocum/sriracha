@@ -211,6 +211,25 @@ func (s *Server) setDefaultConfigValues() error {
 	return nil
 }
 
+func (s *Server) deletePostFiles(b *Board, p *Post) {
+	if p.File == "" {
+		return
+	}
+	srcPath := filepath.Join(s.config.Root, b.Dir, "src", p.File)
+	os.Remove(srcPath)
+
+	if p.Thumb == "" {
+		return
+	}
+	thumbPath := filepath.Join(s.config.Root, b.Dir, "thumb", p.Thumb)
+	os.Remove(thumbPath)
+}
+
+func (s *Server) deletePost(db *Database, b *Board, p *Post) {
+	s.deletePostFiles(b, p)
+	db.deletePost(p.ID)
+}
+
 func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request) *templateData {
 	if strings.HasPrefix(r.URL.Path, "/sriracha/logout") {
 		http.SetCookie(w, &http.Cookie{
@@ -300,7 +319,7 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 }
 
 func (s *Server) rebuildThread(db *Database, board *Board, post *Post) {
-	s.writeThread(db, board, post.ThreadID())
+	s.writeThread(db, board, post.Thread())
 	s.writeIndexes(db, board)
 }
 
@@ -417,6 +436,8 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		switch action {
 		case "post":
 			s.servePost(db, w, r)
+		case "delete":
+			s.serveDelete(db, w, r)
 		default:
 			s.serveManage(db, w, r)
 		}

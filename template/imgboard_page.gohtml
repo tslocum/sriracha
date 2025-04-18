@@ -4,6 +4,9 @@
 	<div class="replymode">Posting mode: Reply</div> 
 {{end}}
 {{template "imgboard_postarea.gohtml" .}}
+<form method="post" action="/sriracha/">
+<input type="hidden" name="action" value="delete">
+<input type="hidden" name="board" value="{{.Board.Dir}}">
 {{range $i, $thread := .Threads}}
     <hr>
     {{range $i, $post := $thread}}
@@ -21,9 +24,9 @@
 					<input type="checkbox" name="delete[]" value="{{.ID}}"> {{template "imgboard_page_subject.gohtml" .}} {{template "imgboard_page_name.gohtml" .}}
 				</label>
 				<span class="reflink">
-					<a href="{{$.Board.Path}}res/{{.ThreadID}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.ThreadID}}.html#q{{.ID}}">{{.ID}}</a>
+					<a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}">{{.ID}}</a>
 				</span>
-				{{if not $.ReplyMode}}&nbsp;[<a href="{{$.Board.Path}}res/{{.ThreadID}}.html">Reply</a>]{{end}}
+				{{if not $.ReplyMode}}&nbsp;[<a href="{{$.Board.Path}}res/{{.Thread}}.html">Reply</a>]{{end}}
 				<div class="message">
 					{{.Message | HTML}}
 				</div>
@@ -44,7 +47,7 @@
 							<input type="checkbox" name="delete[]" value="{{.ID}}"> {{template "imgboard_page_subject.gohtml" .}} {{template "imgboard_page_name.gohtml" .}}
 						</label>
 						<span class="reflink">
-							<a href="{{$.Board.Path}}res/{{.ThreadID}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.ThreadID}}.html#q{{.ID}}">{{.ID}}</a>
+							<a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}">{{.ID}}</a>
 						</span>
 						<small><span id="backlinks{{.ID}}" class="backlinks"></span></small><br>
 						{{if ne .File ""}}
@@ -65,4 +68,31 @@
 		{{end}}
 	{{end}}
 {{end}}
+<hr>
+<table class="userdelete">
+<tbody>
+	<tr>
+		<td>
+			Delete Post <input type="password" name="password" id="deletepostpassword" size="8" placeholder="Password">&nbsp;<input name="deletepost" value="Delete" type="submit">
+		</td>
+	</tr>
+</tbody>
+</table>
+</form>
+<table border="1" style="display: inline-block;">
+<tbody>
+	<tr>
+		<td>Previous</td>
+		<td>&#91;0&#93; </td>
+		<td>Next</td>
+	</tr>
+</tbody>
+</table>
+<table border="1" style="display: inline-block;margin-left: 21px;">
+<tbody>
+	<tr>
+		<td><form method="get" action="catalog.html"><input value="Catalog" type="submit"></form></td>
+	</tr>
+</tbody>
+</table>
 {{template "imgboard_end.gohtml" .}}

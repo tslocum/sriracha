@@ -53,6 +53,11 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	password := formString(r, "password")
+	if password != "" {
+		post.Password = db.hashData(password)
+	}
+
 	for _, postHandler := range allPluginPostHandlers {
 		err := postHandler(db, post)
 		if err != nil {
@@ -76,6 +81,6 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 
 	s.rebuildThread(db, b, post)
 
-	redir := fmt.Sprintf("%sres/%d.html#%d", b.Path(), post.ThreadID(), post.ID)
+	redir := fmt.Sprintf("%sres/%d.html#%d", b.Path(), post.Thread(), post.ID)
 	http.Redirect(w, r, redir, http.StatusFound)
 }
