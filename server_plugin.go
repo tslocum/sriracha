@@ -13,10 +13,19 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 
 	pluginID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/plugin/reset/"))
 	if err == nil && pluginID > 0 && pluginID <= len(allPluginInfo) {
+		pUpdate, _ := allPlugins[pluginID-1].(PluginWithUpdate)
 		info := allPluginInfo[pluginID-1]
 		for i, c := range info.Config {
 			db.SaveString(strings.ToLower(info.Name+"."+c.Name), c.Default)
 			info.Config[i].Value = c.Default
+
+			if pUpdate != nil {
+				pluginDB := &Database{
+					conn:   db.conn,
+					plugin: strings.ToLower(info.Name),
+				}
+				pUpdate.Update(pluginDB, c.Name)
+			}
 		}
 
 		db.log(data.Account, nil, fmt.Sprintf("Reset plugin %s", info.Name), "")
@@ -42,6 +51,8 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 				return formKeys[i] < formKeys[j]
 			})
 
+			pUpdate, _ := allPlugins[pluginID-1].(PluginWithUpdate)
+
 			var changes string
 			for i, c := range info.Config {
 				var newValue string
@@ -58,10 +69,32 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 				}
 
 				if info.Config[i].Value != newValue {
-					changes += fmt.Sprintf(` (%s: "%s" -> "%s")`, strings.Title(c.Name), info.Config[i].Value, newValue)
+					oldLabel := info.Config[i].Value
+					newLabel := newValue
+					if info.Config[i].Type == TypeBoolean {
+						if info.Config[i].Value != "1" {
+							oldLabel = "false"
+						} else {
+							oldLabel = "true"
+						}
+						if newValue != "1" {
+							newLabel = "false"
+						} else {
+							newLabel = "true"
+						}
+					}
+					changes += fmt.Sprintf(` (%s: "%s" -> "%s")`, strings.Title(c.Name), oldLabel, newLabel)
 
 					db.SaveString(strings.ToLower(info.Name+"."+c.Name), newValue)
 					info.Config[i].Value = newValue
+
+					if pUpdate != nil {
+						pluginDB := &Database{
+							conn:   db.conn,
+							plugin: strings.ToLower(info.Name),
+						}
+						pUpdate.Update(pluginDB, c.Name)
+					}
 				}
 			}
 

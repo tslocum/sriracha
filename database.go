@@ -183,6 +183,10 @@ func (db *Database) GetMultiString(key string) []string {
 	return strings.Split(db.GetString(key), "|")
 }
 
+func (db *Database) GetBool(key string) bool {
+	return db.GetString(key) == "1"
+}
+
 func (db *Database) SaveString(key string, value string) {
 	_, err := db.conn.Exec(context.Background(), "INSERT INTO config VALUES ($1, $2) ON CONFLICT (name) DO UPDATE SET value = $3", key, value, value)
 	if err != nil {

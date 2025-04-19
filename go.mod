@@ -6,6 +6,7 @@ toolchain go1.24.2
 
 require (
 	github.com/alexedwards/argon2id v1.0.0
+	github.com/frustra/bbcode v0.0.0-20201127003707-6ef347fbe1c8
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/jackc/pgx/v5 v5.7.4
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646

@@ -1,6 +1,7 @@
 package sriracha
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"reflect"
@@ -61,6 +62,12 @@ type PluginWithConfig interface {
 	Config() []PluginConfig
 }
 
+// PluginWithUpdate describes the required methods for a plugin subscribing to configuration updates.
+type PluginWithUpdate interface {
+	Plugin
+	Update(db *Database, key string) error
+}
+
 // PluginWithPost describes the required methods for a plugin subscribing to post events.
 type PluginWithPost interface {
 	Plugin
@@ -89,6 +96,22 @@ func RegisterPlugin(plugin any) {
 	var events []string
 	var config []PluginConfig
 
+	pUpdate, ok := plugin.(PluginWithUpdate)
+	if ok {
+		events = append(events, "Update")
+	}
+
+	conn, err := srirachaServer.dbPool.Acquire(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Release()
+
+	_, err = conn.Exec(context.Background(), "BEGIN")
+	if err != nil {
+		log.Fatalf("failed to begin transaction: %s", err)
+	}
+
 	pConfig, ok := plugin.(PluginWithConfig)
 	if ok {
 		config = pConfig.Config()
@@ -102,22 +125,32 @@ func RegisterPlugin(plugin any) {
 					optionName = fmt.Sprintf(`"%s"`, optionName)
 				}
 				log.Fatalf("%s configuration option %s is invalid: %s", name, optionName, err)
+			} else if config[i].Type == TypeBoolean && config[i].Default == "" {
+				config[i].Default = "0"
 			}
 			config[i].Value = config[i].Default
+
+			if pUpdate != nil {
+				db := &Database{
+					conn:   conn,
+					plugin: strings.ToLower(name),
+				}
+				pUpdate.Update(db, config[i].Name)
+			}
 		}
 	}
 
 	pPost, ok := plugin.(PluginWithPost)
 	if ok {
-		events = append(events, "post")
+		events = append(events, "Post")
 		allPluginPostHandlers = append(allPluginPostHandlers, pPost.Post)
 	}
 
 	if len(events) == 0 {
-		events = append(events, "none")
+		events = append(events, "None")
 	}
 
-	fmt.Printf("%s loaded. Receives: %s\n", name, strings.Join(events, ", "))
+	fmt.Printf("%s loaded. Events: %s\n", name, strings.Join(events, ", "))
 
 	info := &pluginInfo{
 		ID:     len(allPlugins) + 1,
@@ -128,6 +161,11 @@ func RegisterPlugin(plugin any) {
 	}
 	allPlugins = append(allPlugins, plugin)
 	allPluginInfo = append(allPluginInfo, info)
+
+	_, err = conn.Exec(context.Background(), "COMMIT")
+	if err != nil {
+		log.Fatalf("failed to commit transaction: %s", err)
+	}
 }
 
 type pluginInfo struct {

@@ -96,6 +96,109 @@ func (s *Server) parseConfig(configFile string) error {
 	}
 }
 
+func (s *Server) loadPlugin(pluginPath string) error {
+	info, err := os.Stat(pluginPath)
+	if os.IsNotExist(err) {
+		return fmt.Errorf("failed to load plugin %s: file or directory not found", pluginPath)
+	} else if info.IsDir() {
+		return filepath.WalkDir(pluginPath, func(path string, d fs.DirEntry, err error) error {
+			if err != nil {
+				return err
+			} else if path == pluginPath {
+				return nil
+			}
+			return s.loadPlugin(path)
+		})
+	} else if !strings.HasSuffix(pluginPath, ".so") {
+		return nil
+	}
+
+	_, err = plugin.Open(pluginPath)
+	if err != nil {
+		return fmt.Errorf("failed to load plugin %s: %s", pluginPath, err)
+	}
+	return err
+}
+
+func (s *Server) loadPlugins() error {
+	for _, pluginPath := range flag.Args() {
+		err := s.loadPlugin(pluginPath)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (s *Server) setDefaultServerConfig() error {
+	conn, err := s.dbPool.Acquire(context.Background())
+	if err != nil {
+		return err
+	}
+	defer conn.Release()
+
+	_, err = conn.Exec(context.Background(), "BEGIN")
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %s", err)
+	}
+
+	db := &Database{
+		conn: conn,
+	}
+
+	siteName := db.GetString("sitename")
+	if siteName == "" {
+		siteName = defaultServerSiteName
+	}
+	s.opt.SiteName = siteName
+
+	siteHome := db.GetString("sitehome")
+	if siteHome == "" {
+		siteHome = defaultServerSiteHome
+	}
+	s.opt.SiteHome = siteHome
+
+	boardIndex := db.GetString("boardindex")
+	s.opt.BoardIndex = boardIndex == "" || boardIndex == "1"
+
+	_, err = conn.Exec(context.Background(), "COMMIT")
+	if err != nil {
+		return fmt.Errorf("failed to commit transaction: %s", err)
+	}
+	return nil
+}
+
+func (s *Server) setDefaultPluginConfig() error {
+	conn, err := s.dbPool.Acquire(context.Background())
+	if err != nil {
+		return err
+	}
+	defer conn.Release()
+
+	_, err = conn.Exec(context.Background(), "BEGIN")
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %s", err)
+	}
+
+	db := &Database{
+		conn: conn,
+	}
+
+	for _, info := range allPluginInfo {
+		for _, config := range info.Config {
+			if db.GetString(config.Name) == "" {
+				db.SaveString(config.Name, config.Default)
+			}
+		}
+	}
+
+	_, err = conn.Exec(context.Background(), "COMMIT")
+	if err != nil {
+		return fmt.Errorf("failed to commit transaction: %s", err)
+	}
+	return nil
+}
+
 func (s *Server) parseTemplates(dir string) error {
 	if dir != "" {
 		s.tpl = template.New("sriracha").Funcs(templateFuncMap)
@@ -175,52 +278,6 @@ func (s *Server) watchTemplates() error {
 	}()
 
 	return watcher.Add("template")
-}
-
-func (s *Server) setDefaultConfigValues() error {
-	conn, err := s.dbPool.Acquire(context.Background())
-	if err != nil {
-		return err
-	}
-	defer conn.Release()
-
-	_, err = conn.Exec(context.Background(), "BEGIN")
-	if err != nil {
-		return fmt.Errorf("failed to begin transaction: %s", err)
-	}
-
-	db := &Database{
-		conn: conn,
-	}
-
-	siteName := db.GetString("sitename")
-	if siteName == "" {
-		siteName = defaultServerSiteName
-	}
-	s.opt.SiteName = siteName
-
-	siteHome := db.GetString("sitehome")
-	if siteHome == "" {
-		siteHome = defaultServerSiteHome
-	}
-	s.opt.SiteHome = siteHome
-
-	boardIndex := db.GetString("boardindex")
-	s.opt.BoardIndex = boardIndex == "" || boardIndex == "1"
-
-	for _, info := range allPluginInfo {
-		for _, config := range info.Config {
-			if db.GetString(config.Name) == "" {
-				db.SaveString(config.Name, config.Default)
-			}
-		}
-	}
-
-	_, err = conn.Exec(context.Background(), "COMMIT")
-	if err != nil {
-		return fmt.Errorf("failed to commit transaction: %s", err)
-	}
-	return nil
 }
 
 func (s *Server) deletePostFiles(b *Board, p *Post) {
@@ -459,7 +516,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 
 	_, err = conn.Exec(context.Background(), "COMMIT")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to commit transaction: %s", err)
 	}
 }
 
@@ -511,42 +568,22 @@ func (s *Server) Run() error {
 		return err
 	}
 
-	var loadPlugin func(pluginPath string) error
-	loadPlugin = func(pluginPath string) error {
-		info, err := os.Stat(pluginPath)
-		if os.IsNotExist(err) {
-			return fmt.Errorf("failed to load plugin %s: file or directory not found", pluginPath)
-		} else if info.IsDir() {
-			return filepath.WalkDir(pluginPath, func(path string, d fs.DirEntry, err error) error {
-				if err != nil {
-					return err
-				} else if path == pluginPath {
-					return nil
-				}
-				return loadPlugin(path)
-			})
-		} else if !strings.HasSuffix(pluginPath, ".so") {
-			return nil
-		}
-		_, err = plugin.Open(pluginPath)
-		if err != nil {
-			return fmt.Errorf("failed to load plugin %s: %s", pluginPath, err)
-		}
-		return err
-	}
-	for _, pluginPath := range flag.Args() {
-		err = loadPlugin(pluginPath)
-		if err != nil {
-			return err
-		}
-	}
-
 	s.dbPool, err = connectDatabase(s.config.Address, s.config.Username, s.config.Password, s.config.DBName, s.config.Min, s.config.Max)
 	if err != nil {
 		return err
 	}
 
-	err = s.setDefaultConfigValues()
+	err = s.setDefaultServerConfig()
+	if err != nil {
+		return err
+	}
+
+	err = s.loadPlugins()
+	if err != nil {
+		return err
+	}
+
+	err = s.setDefaultPluginConfig()
 	if err != nil {
 		return err
 	}

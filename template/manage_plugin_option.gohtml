@@ -1,5 +1,8 @@
 {{if eq .Type 0}}
-    TODO
+    <select name="config_{{.Name}}" style="width: 100%;">
+        <option value="0"{{if ne .Value "1"}} selected{{end}}>Disable</option>
+        <option value="1"{{if eq .Value "1"}} selected{{end}}>Enable</option>
+    </select>
 {{else if eq .Type 1}}
     <input name="config_{{.Name}}" type="number">
 {{else if eq .Type 2}}

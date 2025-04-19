@@ -48,13 +48,6 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		}
 	}
 
-	if post.Message == "" && post.File == "" {
-		data := s.buildData(db, w, r)
-		data.Error("Please upload a file and/or enter a message.")
-		data.execute(w)
-		return
-	}
-
 	password := formString(r, "password")
 	if password != "" {
 		post.Password = db.hashData(password)
@@ -126,6 +119,13 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			log.Printf("warning: plugin failed to handle post event: %s", err.Error())
 			return
 		}
+	}
+
+	if strings.TrimSpace(post.Message) == "" && post.File == "" {
+		data := s.buildData(db, w, r)
+		data.Error("Please upload a file and/or enter a message.")
+		data.execute(w)
+		return
 	}
 
 	post.Message = strings.ReplaceAll(post.Message, "\n", "<br>\n")
