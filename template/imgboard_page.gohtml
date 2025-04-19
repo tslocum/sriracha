@@ -21,9 +21,14 @@
 					<div id="file{{.ID}}" class="thumb" style="display: none;"></div><a id="{{.ID}}"></a>
 				{{end}}
 				<label>
-					<input type="checkbox" name="delete[]" value="{{.ID}}"> {{template "imgboard_page_subject.gohtml" .}} {{template "imgboard_page_name.gohtml" .}}
+					<input type="checkbox" name="delete[]" value="{{.ID}}">
+					{{template "imgboard_page_subject.gohtml" .}}
+					{{template "imgboard_page_name.gohtml" .}}
 				</label>
 				<span class="reflink">
+					{{if $.Board.Reports}}
+						<a href="/sriracha/?action=report&post={{.ID}}" title="Report">R</a>
+					{{end}}
 					<a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}">{{.ID}}</a>
 				</span>
 				{{if not $.ReplyMode}}&nbsp;[<a href="{{$.Board.Path}}res/{{.Thread}}.html">Reply</a>]{{end}}
@@ -44,9 +49,14 @@
 					<td class="reply" id="post{{.ID}}">
 						<a id="{{.ID}}"></a>
 						<label>
-							<input type="checkbox" name="delete[]" value="{{.ID}}"> {{template "imgboard_page_subject.gohtml" .}} {{template "imgboard_page_name.gohtml" .}}
+							<input type="checkbox" name="delete[]" value="{{.ID}}">
+							{{template "imgboard_page_subject.gohtml" .}}
+							{{template "imgboard_page_name.gohtml" .}}
 						</label>
 						<span class="reflink">
+							{{if $.Board.Reports}}
+								<a href="/sriracha/?action=report&post={{.ID}}" title="Report">R</a>
+							{{end}}
 							<a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}">{{.ID}}</a>
 						</span>
 						<small><span id="backlinks{{.ID}}" class="backlinks"></span></small><br>
