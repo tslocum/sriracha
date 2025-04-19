@@ -57,7 +57,7 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 
 		db.addBan(b)
 
-		db.log(data.Account, nil, fmt.Sprintf("Added >>/ban/%d", b.ID), "")
+		db.log(data.Account, nil, fmt.Sprintf("Added >>/ban/%d", b.ID), b.Info())
 
 		http.Redirect(w, r, "/sriracha/ban/", http.StatusFound)
 		return

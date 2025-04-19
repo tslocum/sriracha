@@ -36,3 +36,16 @@ func (b *Ban) ExpireDate() string {
 	}
 	return time.Unix(b.Expire, 0).Format("2006-01-02 15:04:05 MST")
 }
+
+func (b *Ban) Info() string {
+	var info string
+	if b.Expire == 0 {
+		info += " This ban is permanent."
+	} else {
+		info += fmt.Sprintf("This ban will expire at %s.", formatTimestamp(b.Expire))
+	}
+	if b.Reason != "" {
+		info += " Reason: " + b.Reason
+	}
+	return info
+}

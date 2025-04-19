@@ -452,7 +452,7 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 		}
 
 		data.Template = "manage_index"
-		data.Message = template.HTML(fmt.Sprintf(`<table border="1"><tr><th colspan="3">Database Statistics</th></tr><tr><th align="left">Connections</th><th>Max</th></tr><tr><td>%d%s</td><td>%d</td></tr></table>`, total, idleString, s.config.Max))
+		data.Message = template.HTML(fmt.Sprintf(`<table class="managetable" style="margin-top: 5px;"><tr><th colspan="3">Database Statistics</th></tr><tr><th align="left">Connections</th><th align="left">Max</th></tr><tr><td>%d%s</td><td>%d</td></tr></table>`, total, idleString, s.config.Max))
 	}
 }
 
@@ -487,17 +487,8 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	if ip != "" {
 		ban := db.banByIP(ip)
 		if ban != nil {
-			var info string
-			if ban.Expire == 0 {
-				info += " This ban is permanent."
-			} else {
-				info += fmt.Sprintf("This ban will expire at %s.", formatTimestamp(ban.Expire))
-			}
-			if ban.Reason != "" {
-				info += " Reason: " + ban.Reason
-			}
 			data := s.buildData(db, w, r)
-			data.ManageError("You are banned." + info)
+			data.ManageError("You are banned." + ban.Info())
 			data.execute(w)
 			handled = true
 		}
