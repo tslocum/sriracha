@@ -44,7 +44,7 @@
 						<a href="/sriracha/mod/{{$.Board.ID}}/{{.ID}}" title="Delete &amp; ban">D&amp;B</a></b>
 					{{end}}
 				</span>
-				{{if not $.ReplyMode}}{{if not $.ModMode}}&nbsp;[<a href="{{$.Board.Path}}res/{{.Thread}}.html">Reply</a>]{{else}}&nbsp;[<a href="/sriracha/board/mod/{{$.Board.ID}}/{{.Thread}}">Mod</a>]{{end}}{{end}}
+				{{if not $.ReplyMode}}{{if not $.ModMode}}&nbsp;[<a href="{{$.Board.Path}}res/{{.Thread}}.html">Reply</a>]{{else}}&nbsp;[<a href="/sriracha/board/mod/{{$.Board.ID}}/{{.Thread}}">View</a>]{{end}}{{end}}
 				<div class="message">
 					{{.Message | HTML}}
 				</div>
@@ -119,7 +119,7 @@
 <table border="1" style="display: inline-block;margin-left: 21px;">
 <tbody>
 	<tr>
-		<td><form method="get" action="catalog.html"><input value="Catalog" type="submit"></form></td>
+		<td><form method="get" action="{{.Board.Path}}catalog.html"><input value="Catalog" type="submit"></form></td>
 	</tr>
 </tbody>
 </table>

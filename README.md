@@ -14,6 +14,7 @@ Sriracha will eventually serve as a replacement for imageboards running [TinyIB]
 - [ ] YouTube, Vimeo and SoundCloud embedding.
 - [ ] CAPTCHA.
 - [ ] Reference links. `>>###`
+- [ ] Thread catalog.
 - [ ] Fetch new replies automatically.
 - [X] Delete posts via password.
 - [ ] Report posts.
