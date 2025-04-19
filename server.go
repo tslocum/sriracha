@@ -497,7 +497,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 				info += " Reason: " + ban.Reason
 			}
 			data := s.buildData(db, w, r)
-			data.Error("You are banned." + info)
+			data.ManageError("You are banned." + info)
 			data.execute(w)
 			handled = true
 		}

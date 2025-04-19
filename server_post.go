@@ -19,7 +19,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	b := db.boardByDir(boardDir)
 	if b == nil {
 		data := s.buildData(db, w, r)
-		data.Error("no board was specified")
+		data.ManageError("no board was specified")
 		data.execute(w)
 		return
 	}
@@ -33,7 +33,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	err := post.loadForm(r, b, s.config.Root)
 	if err != nil {
 		data := s.buildData(db, w, r)
-		data.Error(err.Error())
+		data.ManageError(err.Error())
 		data.execute(w)
 		return
 	}
@@ -42,7 +42,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		parent := db.postByID(b, post.Parent)
 		if parent == nil || parent.Parent != 0 {
 			data := s.buildData(db, w, r)
-			data.Error("invalid post parent")
+			data.ManageError("invalid post parent")
 			data.execute(w)
 			return
 		}
@@ -114,7 +114,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		if err != nil {
 			// TODO cleanup uploaded file
 			data := s.buildData(db, w, r)
-			data.Error(err.Error())
+			data.ManageError(err.Error())
 			data.execute(w)
 			log.Printf("warning: plugin failed to handle post event: %s", err.Error())
 			return
@@ -123,7 +123,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 
 	if strings.TrimSpace(post.Message) == "" && post.File == "" {
 		data := s.buildData(db, w, r)
-		data.Error("Please upload a file and/or enter a message.")
+		data.ManageError("Please upload a file and/or enter a message.")
 		data.execute(w)
 		return
 	}

@@ -20,7 +20,7 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 		if data.Manage.Keyword != nil && r.Method == http.MethodPost {
 			rgxp, err := regexp.Compile(data.Manage.Keyword.Text)
 			if err != nil {
-				data.Error(fmt.Sprintf("Failed to compile regular expression: %s", err))
+				data.ManageError(fmt.Sprintf("Failed to compile regular expression: %s", err))
 			}
 
 			message := r.FormValue("message")
@@ -45,14 +45,14 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 
 			err := data.Manage.Keyword.validate()
 			if err != nil {
-				data.Error(err.Error())
+				data.ManageError(err.Error())
 				return
 			}
 
 			if data.Manage.Keyword.Text != oldText {
 				match := db.keywordByText(data.Manage.Keyword.Text)
 				if match != nil {
-					data.Error("Keyword text already exists")
+					data.ManageError("Keyword text already exists")
 					return
 				}
 			}
@@ -74,13 +74,13 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 
 		err := k.validate()
 		if err != nil {
-			data.Error(err.Error())
+			data.ManageError(err.Error())
 			return
 		}
 
 		match := db.keywordByText(k.Text)
 		if match != nil {
-			data.Error("Keyword text already exists")
+			data.ManageError("Keyword text already exists")
 			return
 		}
 

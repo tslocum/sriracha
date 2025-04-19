@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"io"
 	"log"
+	"net/http"
 	"net/url"
 	"strings"
 )
@@ -42,7 +43,13 @@ type templateData struct {
 	Template  string
 }
 
-func (data *templateData) Error(message string) {
+func (data *templateData) BoardError(w http.ResponseWriter, message string) {
+	data.Template = "board_error"
+	data.Info = message
+	data.execute(w)
+}
+
+func (data *templateData) ManageError(message string) {
 	data.Template = "manage_error"
 	data.Info = message
 }

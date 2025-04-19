@@ -15,9 +15,7 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 		boardDir := formString(r, "board")
 		b := db.boardByDir(boardDir)
 		if b == nil {
-			data.Template = "board_error"
-			data.Info = "No board was specified."
-			data.execute(w)
+			data.BoardError(w, "No board was specified.")
 			return
 		}
 
@@ -25,9 +23,7 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 		if post != nil {
 			password := r.FormValue("password")
 			if post.Password == "" || db.hashData(password) != post.Password {
-				data.Template = "board_error"
-				data.Info = "Invalid password."
-				data.execute(w)
+				data.BoardError(w, "Invalid password.")
 				return
 			}
 
@@ -59,8 +55,5 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 			return
 		}
 	}
-	data.Template = "board_error"
-	data.Info = "No post selected."
-	data.execute(w)
-	return
+	data.BoardError(w, "No post selected.")
 }

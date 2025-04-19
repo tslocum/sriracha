@@ -22,7 +22,7 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 
 			err := data.Manage.Ban.validate()
 			if err != nil {
-				data.Error(err.Error())
+				data.ManageError(err.Error())
 				return
 			}
 
@@ -48,13 +48,13 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 
 		err := b.validate()
 		if err != nil {
-			data.Error(err.Error())
+			data.ManageError(err.Error())
 			return
 		}
 
 		match := db.banByIP(b.IP)
 		if match != nil {
-			data.Error("Ban text already exists")
+			data.ManageError("Ban text already exists")
 			return
 		}
 

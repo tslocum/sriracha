@@ -35,7 +35,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 
 			err := data.Manage.Board.validate()
 			if err != nil {
-				data.Error(err.Error())
+				data.ManageError(err.Error())
 				return
 			}
 
@@ -46,7 +46,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 						log.Fatal(err)
 					}
 				} else {
-					data.Error("New directory already exists")
+					data.ManageError("New directory already exists")
 					return
 				}
 			}
@@ -56,7 +56,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			if data.Manage.Board.Dir != oldDir {
 				err := os.Rename(filepath.Join(s.config.Root, oldDir), filepath.Join(s.config.Root, data.Manage.Board.Dir))
 				if err != nil {
-					data.Error(fmt.Sprintf("Failed to rename board directory: %s", err))
+					data.ManageError(fmt.Sprintf("Failed to rename board directory: %s", err))
 					return
 				}
 			}
@@ -78,7 +78,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 
 		err := b.validate()
 		if err != nil {
-			data.Error(err.Error())
+			data.ManageError(err.Error())
 			return
 		}
 
@@ -91,9 +91,9 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			err = os.Mkdir(boardPath, 0755)
 			if err != nil {
 				if os.IsExist(err) {
-					data.Error(fmt.Sprintf("Board directory %s already exists.", boardPath))
+					data.ManageError(fmt.Sprintf("Board directory %s already exists.", boardPath))
 				} else {
-					data.Error(fmt.Sprintf("Failed to create board directory %s: %s", boardPath, err))
+					data.ManageError(fmt.Sprintf("Failed to create board directory %s: %s", boardPath, err))
 				}
 				return
 			}

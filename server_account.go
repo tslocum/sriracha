@@ -21,14 +21,14 @@ func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseW
 
 			err := data.Manage.Account.validate()
 			if err != nil {
-				data.Error(err.Error())
+				data.ManageError(err.Error())
 				return
 			}
 
 			if data.Manage.Account.Username != oldUsername {
 				match := db.accountByUsername(data.Manage.Account.Username)
 				if match != nil {
-					data.Error("New username already taken")
+					data.ManageError("New username already taken")
 					return
 				}
 
@@ -57,13 +57,13 @@ func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseW
 
 		err := a.validate()
 		if err != nil {
-			data.Error(err.Error())
+			data.ManageError(err.Error())
 			return
 		}
 
 		password := r.FormValue("password")
 		if strings.TrimSpace(password) == "" {
-			data.Error("A password is required")
+			data.ManageError("A password is required")
 			return
 		}
 

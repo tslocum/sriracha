@@ -13,18 +13,18 @@ func (s *Server) serveChangePassword(data *templateData, db *Database, w http.Re
 	if r.Method != http.MethodPost {
 		return
 	} else if strings.TrimSpace(oldPass) == "" || strings.TrimSpace(newPass) == "" || strings.TrimSpace(confirmPass) == "" {
-		data.Error("All fields are required")
+		data.ManageError("All fields are required")
 		return
 	}
 
 	if newPass != confirmPass {
-		data.Error("New passwords do not match")
+		data.ManageError("New passwords do not match")
 		return
 	}
 
 	match := db.loginAccount(data.Account.Username, oldPass)
 	if match == nil {
-		data.Error("Current password is incorrect")
+		data.ManageError("Current password is incorrect")
 		return
 	}
 
