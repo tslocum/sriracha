@@ -17,11 +17,21 @@
     <body>
 		{{if and .Opt.BoardIndex (gt (len .Boards) 1)}}
 			{{range $i, $board := .Boards}}
-				[<a href="{{.Path}}" title="{{.Name}}" style="text-decoration: underline;">{{.Dir}}</a>]
+				{{if not $.ModMode}}
+					[<a href="{{.Path}}" title="{{.Name}}" style="text-decoration: underline;">{{.Dir}}</a>]
+				{{else}}
+					[<a href="/sriracha/board/mod/{{.ID}}" title="{{.Name}}" style="text-decoration: underline;">{{.Dir}}</a>]
+				{{end}}
 			{{end}}
 		{{end}}
 		<div class="adminbar">
+			{{if .ModMode}}
+				[<a href="{{.Board.Path}}" style="text-decoration: underline;">Exit</a>] &middot;
+			{{end}}
 			[<a href="/sriracha/" style="text-decoration: underline;">Manage</a>]
 		</div>
 		<div class="logo">{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}</div>
 		<hr width="90%">
+		{{if .ModMode}}
+			<div class="replymode">Mod mode</div>
+		{{end}}

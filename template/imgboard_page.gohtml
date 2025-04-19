@@ -1,14 +1,22 @@
 {{template "imgboard_begin.gohtml" .}}
 {{if .ReplyMode}}
+	{{if not .ModMode}}
 	[<a href="{{.Board.Path}}">Return</a>]
-	<div class="replymode">Posting mode: Reply</div> 
+	<div class="replymode">Posting mode: Reply</div>
+	{{else}}
+	[<a href="/sriracha/board/mod/{{.Board.ID}}">Return</a>]
+	{{end}}
 {{end}}
-{{template "imgboard_postarea.gohtml" .}}
+{{if not .ModMode}}
+	{{template "imgboard_postarea.gohtml" .}}
+{{end}}
 <form method="post" action="/sriracha/">
 <input type="hidden" name="action" value="delete">
 <input type="hidden" name="board" value="{{.Board.Dir}}">
 {{range $i, $thread := .Threads}}
-    <hr>
+    {{if or (gt $i 0) (not $.ModMode)}}
+        <hr>
+    {{end}}
     {{range $i, $post := $thread}}
         {{if eq .Parent 0}}
 			<div id="post{{.ID}}" class="op">
@@ -30,8 +38,13 @@
 						<a href="/sriracha/?action=report&post={{.ID}}" title="Report">R</a>
 					{{end}}
 					<a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}">{{.ID}}</a>
+					{{if $.ModMode}}
+						<b><a href="/sriracha/mod/delete/{{$.Board.ID}}/{{.ID}}" title="Delete">D</a>
+						<a href="/sriracha/mod/ban/{{$.Board.ID}}/{{.ID}}" title="Ban">B</a>
+						<a href="/sriracha/mod/{{$.Board.ID}}/{{.ID}}" title="Delete &amp; ban">D&amp;B</a></b>
+					{{end}}
 				</span>
-				{{if not $.ReplyMode}}&nbsp;[<a href="{{$.Board.Path}}res/{{.Thread}}.html">Reply</a>]{{end}}
+				{{if not $.ReplyMode}}{{if not $.ModMode}}&nbsp;[<a href="{{$.Board.Path}}res/{{.Thread}}.html">Reply</a>]{{else}}&nbsp;[<a href="/sriracha/board/mod/{{$.Board.ID}}/{{.Thread}}">Mod</a>]{{end}}{{end}}
 				<div class="message">
 					{{.Message | HTML}}
 				</div>
@@ -58,6 +71,11 @@
 								<a href="/sriracha/?action=report&post={{.ID}}" title="Report">R</a>
 							{{end}}
 							<a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}">{{.ID}}</a>
+							{{if $.ModMode}}
+								<b><a href="/sriracha/mod/delete/{{$.Board.ID}}/{{.ID}}" title="Delete">D</a>
+								<a href="/sriracha/mod/ban/{{$.Board.ID}}/{{.ID}}" title="Ban">B</a>
+								<a href="/sriracha/mod/{{$.Board.ID}}/{{.ID}}" title="Delete &amp; ban">D&amp;B</a></b>
+							{{end}}
 						</span>
 						<small><span id="backlinks{{.ID}}" class="backlinks"></span></small><br>
 						{{if ne .File ""}}

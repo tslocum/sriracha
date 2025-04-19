@@ -1,0 +1,8 @@
+{{template "manage_begin.gohtml" .}}
+<h2 class="managetitle">Mod <a href="{{.Board.Path}}res/{{.Post.Thread}}.html#{{.Post.ID}}">&gt;&gt;{{.Post.ID}}</a></h2>
+{{if or (eq .Extra "b") (eq .Extra "db") }}
+    {{template "manage_ban_form.gohtml" .}}
+{{else}}
+    submit delete
+{{end}}
+{{template "manage_end.gohtml" .}}

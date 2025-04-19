@@ -438,6 +438,8 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 		s.serveKeyword(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/log"):
 		s.serveLog(data, db, w, r)
+	case strings.HasPrefix(r.URL.Path, "/sriracha/mod"):
+		s.serveMod(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/plugin"):
 		s.servePlugin(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/setting"):
@@ -600,6 +602,14 @@ func (s *Server) Run() error {
 	return s.listen()
 }
 
+func parseInt(v string) int {
+	i, err := strconv.Atoi(v)
+	if err == nil && i > 0 {
+		return i
+	}
+	return 0
+}
+
 func formString(r *http.Request, key string) string {
 	return strings.TrimSpace(r.FormValue(key))
 }
@@ -633,11 +643,21 @@ func formRange[T constraints.Integer](r *http.Request, key string, min T, max T)
 }
 
 func pathInt(r *http.Request, prefix string) int {
-	v, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, prefix))
-	if err == nil && v > 0 {
-		return v
+	pathValue := pathString(r, prefix)
+	if pathValue != "" {
+		v, err := strconv.Atoi(pathValue)
+		if err == nil && v > 0 {
+			return v
+		}
 	}
 	return 0
+}
+
+func pathString(r *http.Request, prefix string) string {
+	if !strings.HasPrefix(r.URL.Path, prefix) {
+		return ""
+	}
+	return strings.TrimPrefix(r.URL.Path, prefix)
 }
 
 func formatTimestamp(timestamp int64) string {

@@ -16,6 +16,7 @@
                 <td>{{$board.Description}}</td>
                 <td>{{if eq $board.Type 0}}Imageboard{{else}}Forum{{end}}</td>
                 <td>
+                    [<a href="/sriracha/board/mod/{{$board.ID}}">mod</a>]
                     [<a href="/sriracha/board/post/{{$board.ID}}">post</a>]
                     [<a href="/sriracha/board/rebuild/{{$board.ID}}">rebuild</a>]
                     [<a href="/sriracha/board/{{$board.ID}}">update</a>]

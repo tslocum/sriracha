@@ -1,0 +1,36 @@
+<form name="sriracha" method="post">
+    <fieldset>
+    <legend>{{if eq .Manage.Ban nil}}Add Ban{{else}}Update #{{.Manage.Ban.ID}}{{end}}</legend>
+    <table border="0">
+        {{if eq .Manage.Ban nil}}
+        <tr>
+            <td class="postblock"><label for="ip">IP Address</label></td>
+            <td><input type="text" name="ip"></td>
+            <td>The IP address to ban.</td>
+        </tr>
+        {{end}}
+        <tr>
+            <td class="postblock"><label for="expire">Expire</label></td>
+            <td><input type="text" name="expire" value="{{if and (ne .Manage.Ban nil) (ne .Manage.Ban.Expire 0)}}{{.Manage.Ban.Expire}}{{end}}"></td>
+            <td><small>[<a href="#" onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+3600;document.sriracha.reason.focus();return false;">1 hour</a>]&nbsp;[<a href="#" onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+86400;document.sriracha.reason.focus();return false;">1 day</a>]&nbsp;[<a href="#" onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+172800;document.sriracha.reason.focus();return false;">2 days</a>]&nbsp;[<a href="#" onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+604800;document.sriracha.reason.focus();return false;">1 week</a>]&nbsp;[<a href="#" onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+1209600;document.sriracha.reason.focus();return false;">2 weeks</a>]&nbsp;[<a href="#" onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+2592000;document.sriracha.reason.focus();return false;">1 month</a>]&nbsp;[<a href="#" onclick="document.sriracha.expire.value='';document.sriracha.reason.focus();return false;">never</a>]</small></td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="reason">Reason</label></td>
+            <td><input type="text" name="reason" value="{{if ne .Manage.Ban nil}}{{.Manage.Ban.Reason}}{{end}}"></td>
+            <td>Optional.</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if eq .Manage.Ban nil}}Add{{else}}Update{{end}}"></td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+    </fieldset>
+</form>
+<script type="text/javascript">
+{{if eq .Manage.Ban nil}}
+    document.sriracha.ip.focus();
+{{else}}
+    document.sriracha.expire.focus();
+{{end}}
+</script>

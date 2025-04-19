@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 )
 
 func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
@@ -19,6 +21,38 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 
 			data.Info = fmt.Sprintf("Rebuilt %s %s", b.Path(), b.Name)
 		}
+	}
+
+	modBoard := pathString(r, "/sriracha/board/mod/")
+	if modBoard != "" {
+		var postID int
+		split := strings.Split(modBoard, "/")
+		if len(split) == 2 {
+			boardID, _ = strconv.Atoi(split[0])
+			postID, _ = strconv.Atoi(split[1])
+		} else if len(split) == 1 {
+			boardID, _ = strconv.Atoi(split[0])
+		}
+
+		b := db.boardByID(boardID)
+		if b != nil {
+			data.Template = "board_page"
+			data.Board = b
+			data.Boards = db.allBoards()
+			data.ModMode = true
+			if postID > 0 {
+				data.Threads = [][]*Post{db.allPostsInThread(b, postID, true)}
+				data.ReplyMode = postID
+			} else {
+				for _, thread := range db.allThreads(b, true) {
+					data.Threads = append(data.Threads, db.allPostsInThread(b, thread.ID, true))
+				}
+			}
+			return
+		}
+
+		data.ManageError("Invalid or deleted board or post")
+		return
 	}
 
 	boardID = pathInt(r, "/sriracha/board/")
