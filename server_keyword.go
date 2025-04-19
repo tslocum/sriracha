@@ -2,6 +2,7 @@ package sriracha
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -24,12 +25,14 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 			}
 
 			message := r.FormValue("message")
+			data.Extra = message
+
 			match := rgxp.MatchString(message)
+			matchLabel := "NO MATCH"
 			if match {
-				data.Info = "Result: MATCH FOUND"
-			} else {
-				data.Info = "Result: NO MATCH"
+				matchLabel = "MATCH FOUND"
 			}
+			data.Message = template.HTML(fmt.Sprintf(`Result: <b>%s</b>`, matchLabel))
 		}
 		return
 	}

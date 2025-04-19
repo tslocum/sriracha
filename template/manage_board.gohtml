@@ -15,7 +15,12 @@
                 <td>{{$board.Name}}</td>
                 <td>{{$board.Description}}</td>
                 <td>{{if eq $board.Type 0}}Imageboard{{else}}Forum{{end}}</td>
-                <td><a href="/sriracha/board/rebuild/{{$board.ID}}">rebuild</a> <a href="/sriracha/board/{{$board.ID}}">update</a> <a href="/sriracha/board/delete/{{$board.ID}}">delete</a></td>
+                <td>
+                    [<a href="/sriracha/board/post/{{$board.ID}}">post</a>]
+                    [<a href="/sriracha/board/rebuild/{{$board.ID}}">rebuild</a>]
+                    [<a href="/sriracha/board/{{$board.ID}}">update</a>]
+                    [<a href="/sriracha/board/delete/{{$board.ID}}">delete</a>]
+                </td>
             </tr>
         {{end}}
     </table><br>

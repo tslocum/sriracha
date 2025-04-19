@@ -10,13 +10,13 @@
         </tr>
         <tr>
             <td class="postblock"><label for="message">Message</label></td>
-            <td><textarea name="message" rows="4" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;width: 100%;"></textarea></td>
+            <td><textarea name="message" rows="4" oninput="document.getElementById('keywordresult').innerHTML = '';" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;width: 100%;">{{.Extra}}</textarea></td>
             <td>Text to test for a keyword match.</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
             <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="Test"></td>
-            <td>&nbsp;</td>
+            <td id="keywordresult" style="vertical-align: middle;">{{.Message}}</td>
         </tr>
     </table>
     </fieldset>
