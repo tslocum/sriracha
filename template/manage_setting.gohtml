@@ -9,6 +9,14 @@
             <td>Appears in page title and header.</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="boardindex">Board Index</label></td>
+            <td><select name="boardindex" style="width: 100%;">
+                <option value="0"{{if not .Opt.BoardIndex}} selected{{end}}>Disable</option>
+                <option value="1"{{if .Opt.BoardIndex}} selected{{end}}>Enable</option>
+            </select></td>
+            <td>Link to all boards in page header.</td>
+        </tr>
+        <tr>
             <td>&nbsp;[<a href="/sriracha/setting/reset" onclick="return confirm('Are you sure you want to reset all settings?');">reset</a>]</td>
             <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="Save"></td>
             <td>&nbsp;</td>

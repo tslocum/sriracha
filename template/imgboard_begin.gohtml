@@ -15,6 +15,11 @@
 		<script src="/js/sriracha.js"></script>
     </head>
     <body>
+		{{if .Opt.BoardIndex}}
+			{{range $i, $board := .Boards}}
+				[<a href="{{.Path}}" title="{{.Name}}" style="text-decoration: underline;">{{.Dir}}</a>]
+			{{end}}
+		{{end}}
 		<div class="adminbar">
 			[<a href="/sriracha/" style="text-decoration: underline;">Manage</a>]
 		</div>

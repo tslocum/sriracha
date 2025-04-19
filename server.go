@@ -35,7 +35,9 @@ const (
 )
 
 type ServerOptions struct {
-	SiteName string
+	SiteName   string
+	SiteHome   string
+	BoardIndex bool
 }
 
 type Server struct {
@@ -196,6 +198,9 @@ func (s *Server) setDefaultConfigValues() error {
 	}
 	s.opt.SiteName = siteName
 
+	boardIndex := db.GetString("boardindex")
+	s.opt.BoardIndex = boardIndex == "" || boardIndex == "1"
+
 	for _, info := range allPluginInfo {
 		for _, config := range info.Config {
 			if db.GetString(config.Name) == "" {
@@ -292,6 +297,7 @@ func (s *Server) writeThread(db *Database, board *Board, postID int) {
 
 	data := &templateData{
 		Board:     board,
+		Boards:    db.allBoards(),
 		Threads:   [][]*Post{db.allPostsInThread(board, postID, true)},
 		ReplyMode: postID,
 		Manage:    &manageData{},
@@ -308,6 +314,7 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 
 	data := &templateData{
 		Board:    board,
+		Boards:   db.allBoards(),
 		Manage:   &manageData{},
 		Template: "board_page",
 	}
@@ -576,6 +583,10 @@ func formInt64(r *http.Request, key string) int64 {
 		return v
 	}
 	return 0
+}
+
+func formBool(r *http.Request, key string) bool {
+	return formInt(r, key) == 1
 }
 
 func formRange[T constraints.Integer](r *http.Request, key string, min T, max T) T {

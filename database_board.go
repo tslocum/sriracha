@@ -8,13 +8,18 @@ import (
 )
 
 func (db *Database) addBoard(b *Board) {
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO board VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)",
+	var reports int
+	if b.Reports {
+		reports = 1
+	}
+	_, err := db.conn.Exec(context.Background(), "INSERT INTO board VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)",
 		b.Dir,
 		b.Name,
 		b.Description,
 		b.Type,
 		b.Lock,
 		b.Approval,
+		reports,
 		b.Locale,
 		b.Delay,
 		b.Threads,
@@ -83,13 +88,18 @@ func (db *Database) updateBoard(b *Board) {
 	if b.ID <= 0 {
 		log.Fatalf("invalid board ID %d", b.ID)
 	}
-	_, err := db.conn.Exec(context.Background(), "UPDATE board SET dir = $1, name = $2, description = $3, type = $4, lock = $5, approval = $6, locale = $7, delay = $8, threads = $9, replies = $10, maxname = $11, maxemail = $12, maxsubject = $13, maxmessage = $14, maxthreads = $15, maxreplies = $16, wordbreak = $17, truncate = $18, maxsize = $19, thumbwidth = $20, thumbheight = $21 WHERE id = $22",
+	var reports int
+	if b.Reports {
+		reports = 1
+	}
+	_, err := db.conn.Exec(context.Background(), "UPDATE board SET dir = $1, name = $2, description = $3, type = $4, lock = $5, approval = $6, reports = $7, locale = $8, delay = $9, threads = $10, replies = $11, maxname = $12, maxemail = $13, maxsubject = $14, maxmessage = $15, maxthreads = $16, maxreplies = $17, wordbreak = $18, truncate = $19, maxsize = $20, thumbwidth = $21, thumbheight = $22 WHERE id = $23",
 		b.Dir,
 		b.Name,
 		b.Description,
 		b.Type,
 		b.Lock,
 		b.Approval,
+		reports,
 		b.Locale,
 		b.Delay,
 		b.Threads,
@@ -113,7 +123,8 @@ func (db *Database) updateBoard(b *Board) {
 }
 
 func scanBoard(b *Board, row pgx.Row) error {
-	return row.Scan(
+	var reports int
+	err := row.Scan(
 		&b.ID,
 		&b.Dir,
 		&b.Name,
@@ -121,6 +132,7 @@ func scanBoard(b *Board, row pgx.Row) error {
 		&b.Type,
 		&b.Lock,
 		&b.Approval,
+		&reports,
 		&b.Locale,
 		&b.Delay,
 		&b.Threads,
@@ -137,4 +149,9 @@ func scanBoard(b *Board, row pgx.Row) error {
 		&b.ThumbWidth,
 		&b.ThumbHeight,
 	)
+	if err != nil {
+		return err
+	}
+	b.Reports = reports == 1
+	return nil
 }

@@ -2,7 +2,6 @@ package sriracha
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"sort"
 	"strconv"
@@ -16,10 +15,7 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 	if err == nil && pluginID > 0 && pluginID <= len(allPluginInfo) {
 		info := allPluginInfo[pluginID-1]
 		for i, c := range info.Config {
-			err := db.SaveString(strings.ToLower(info.Name+"."+c.Name), c.Default)
-			if err != nil {
-				log.Fatal(err)
-			}
+			db.SaveString(strings.ToLower(info.Name+"."+c.Name), c.Default)
 			info.Config[i].Value = c.Default
 		}
 
@@ -64,10 +60,7 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 				if info.Config[i].Value != newValue {
 					changes += fmt.Sprintf(` (%s: "%s" -> "%s")`, strings.Title(c.Name), info.Config[i].Value, newValue)
 
-					err := db.SaveString(strings.ToLower(info.Name+"."+c.Name), newValue)
-					if err != nil {
-						log.Fatal(err)
-					}
+					db.SaveString(strings.ToLower(info.Name+"."+c.Name), newValue)
 					info.Config[i].Value = newValue
 				}
 			}

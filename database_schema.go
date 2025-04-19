@@ -29,6 +29,7 @@ CREATE TABLE board (
 	type smallint NOT NULL,
 	lock smallint NOT NULL,
 	approval smallint NOT NULL,
+	reports smallint NOT NULL,
 	locale varchar(255) NOT NULL,
 	delay integer NOT NULL,
 	threads smallint NOT NULL,

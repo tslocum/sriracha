@@ -67,6 +67,14 @@
             <td>Whether moderator approval is required before displaying newly created posts.</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="reports">User Reports</label></td>
+            <td><select name="reports" style="width: 100%;">
+                <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Reports)}} selected{{end}}>Disable</option>
+                <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Reports)}} selected{{end}}>Enable</option>
+            </select></td>
+            <td>Whether users may report posts.</td>
+        </tr>
+        <tr>
             <td class="postblock"><label for="delay">Delay</label></td>
             <td><input type="text" name="delay" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Delay}}{{end}}"></td>
             <td>Delay (in seconds) visitors must wait before posting again. Set to 0 to disable.</td>

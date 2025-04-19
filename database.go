@@ -183,16 +183,23 @@ func (db *Database) GetMultiString(key string) []string {
 	return strings.Split(db.GetString(key), "|")
 }
 
-func (db *Database) SaveString(key string, value string) error {
+func (db *Database) SaveString(key string, value string) {
 	_, err := db.conn.Exec(context.Background(), "INSERT INTO config VALUES ($1, $2) ON CONFLICT (name) DO UPDATE SET value = $3", key, value, value)
 	if err != nil {
-		return fmt.Errorf("failed to save string: %s", err)
+		log.Fatalf("failed to save string: %s", err)
 	}
-	return nil
 }
 
-func (db *Database) SaveMultiString(key string, value []string) error {
-	return db.SaveString(key, strings.Join(value, "|"))
+func (db *Database) SaveBool(key string, value bool) {
+	v := "0"
+	if value {
+		v = "1"
+	}
+	db.SaveString(key, v)
+}
+
+func (db *Database) SaveMultiString(key string, value []string) {
+	db.SaveString(key, strings.Join(value, "|"))
 }
 
 func (db *Database) newSessionKey() string {
