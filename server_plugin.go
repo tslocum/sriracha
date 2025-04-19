@@ -4,15 +4,14 @@ import (
 	"fmt"
 	"net/http"
 	"sort"
-	"strconv"
 	"strings"
 )
 
 func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_plugin"
 
-	pluginID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/plugin/reset/"))
-	if err == nil && pluginID > 0 && pluginID <= len(allPluginInfo) {
+	pluginID := pathInt(r, "/sriracha/plugin/reset/")
+	if pluginID > 0 && pluginID <= len(allPluginInfo) {
 		pUpdate, _ := allPlugins[pluginID-1].(PluginWithUpdate)
 		info := allPluginInfo[pluginID-1]
 		for i, c := range info.Config {
@@ -34,8 +33,8 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 		return
 	}
 
-	pluginID, err = strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/plugin/"))
-	if err == nil && pluginID > 0 && pluginID <= len(allPluginInfo) {
+	pluginID = pathInt(r, "/sriracha/plugin/")
+	if pluginID > 0 && pluginID <= len(allPluginInfo) {
 		info := allPluginInfo[pluginID-1]
 		data.Manage.Plugin = info
 

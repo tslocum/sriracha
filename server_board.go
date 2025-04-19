@@ -6,15 +6,13 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strconv"
-	"strings"
 )
 
 func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_board"
 
-	boardID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/board/rebuild/"))
-	if err == nil && boardID > 0 {
+	boardID := pathInt(r, "/sriracha/board/rebuild/")
+	if boardID > 0 {
 		b := db.boardByID(boardID)
 		if b != nil {
 			s.rebuildBoard(db, b)
@@ -23,8 +21,8 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		}
 	}
 
-	boardID, err = strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/board/"))
-	if err == nil && boardID > 0 {
+	boardID = pathInt(r, "/sriracha/board/")
+	if boardID > 0 {
 		data.Manage.Board = db.boardByID(boardID)
 
 		if data.Manage.Board != nil && r.Method == http.MethodPost {

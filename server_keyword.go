@@ -13,8 +13,8 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 	data.Template = "manage_keyword"
 	data.Boards = db.allBoards()
 
-	keywordID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/keyword/test/"))
-	if err == nil && keywordID > 0 {
+	keywordID := pathInt(r, "/sriracha/keyword/test/")
+	if keywordID > 0 {
 		data.Template = "manage_keyword_test"
 		data.Manage.Keyword = db.keywordByID(keywordID)
 		if data.Manage.Keyword != nil && r.Method == http.MethodPost {

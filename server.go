@@ -641,6 +641,14 @@ func formRange[T constraints.Integer](r *http.Request, key string, min T, max T)
 	return min
 }
 
+func pathInt(r *http.Request, prefix string) int {
+	v, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, prefix))
+	if err == nil && v > 0 {
+		return v
+	}
+	return 0
+}
+
 func formatTimestamp(timestamp int64) string {
 	return time.Unix(timestamp, 0).Format("2006/01/02(Mon)15:04:05")
 }

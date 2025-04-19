@@ -3,17 +3,14 @@ package sriracha
 import (
 	"fmt"
 	"net/http"
-	"strconv"
-	"strings"
 )
 
 func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
-	var err error
 	data.Template = "manage_ban"
 	data.Boards = db.allBoards()
 
-	banID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/ban/"))
-	if err == nil && banID > 0 {
+	banID := pathInt(r, "/sriracha/ban/")
+	if banID > 0 {
 		data.Manage.Ban = db.banByID(banID)
 
 		if data.Manage.Ban != nil && r.Method == http.MethodPost {

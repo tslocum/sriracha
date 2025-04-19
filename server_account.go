@@ -3,15 +3,14 @@ package sriracha
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
 func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_account"
 
-	accountID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/account/"))
-	if err == nil && accountID > 0 {
+	accountID := pathInt(r, "/sriracha/account/")
+	if accountID > 0 {
 		data.Manage.Account = db.accountByID(accountID)
 
 		if data.Manage.Account != nil && r.Method == http.MethodPost {
