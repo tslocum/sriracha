@@ -1,5 +1,6 @@
 package sriracha
 
+// Config represents the server configuration.
 type Config struct {
 	Root     string // Directory where board files are written to.
 	Serve    string // Address:Port to listen for HTTP connections on.

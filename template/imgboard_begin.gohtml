@@ -15,7 +15,7 @@
 		<script src="/js/sriracha.js"></script>
     </head>
     <body>
-		{{if .Opt.BoardIndex}}
+		{{if and .Opt.BoardIndex (gt (len .Boards) 1)}}
 			{{range $i, $board := .Boards}}
 				[<a href="{{.Path}}" title="{{.Name}}" style="text-decoration: underline;">{{.Dir}}</a>]
 			{{end}}

@@ -11,6 +11,7 @@ import (
 // PluginConfigType represents the type of a plugin configuration option.
 type PluginConfigType int
 
+// Plugin config types.
 const (
 	TypeBoolean PluginConfigType = 0
 	TypeInteger PluginConfigType = 1
@@ -51,26 +52,35 @@ func (c PluginConfig) Options() []string {
 	return strings.Split(c.Value, "|")
 }
 
-// Plugin describes the required methods for any plugin.
+// Plugin describes the required methods for a plugin.
 type Plugin interface {
+	// About returns the plugin description.
 	About() string
 }
 
 // PluginWithConfig describes the required methods for a plugin with configuration options.
 type PluginWithConfig interface {
 	Plugin
+
+	// Config returns the available configuration options.
 	Config() []PluginConfig
 }
 
 // PluginWithUpdate describes the required methods for a plugin subscribing to configuration updates.
 type PluginWithUpdate interface {
 	Plugin
+
+	// Update events are sent when a configuration option is modified. Update events
+	// are also sent for each configuration option when the server initializes.
 	Update(db *Database, key string) error
 }
 
 // PluginWithPost describes the required methods for a plugin subscribing to post events.
 type PluginWithPost interface {
 	Plugin
+
+	// Post events are sent when a new post is being created. Message is the
+	// only HTML-escaped field.
 	Post(db *Database, post *Post) error
 }
 

@@ -8,6 +8,7 @@ import (
 
 type BoardType int
 
+// Board types.
 const (
 	TypeImageboard BoardType = 0
 	TypeForum      BoardType = 1
@@ -26,6 +27,7 @@ func formatBoardType(t BoardType) string {
 
 type BoardLock int
 
+// Board lock types.
 const (
 	LockNone   BoardLock = 0
 	LockReply  BoardLock = 1

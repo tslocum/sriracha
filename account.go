@@ -9,6 +9,7 @@ import (
 
 type AccountRole int
 
+// Account roles.
 const (
 	RoleSuperAdmin AccountRole = 1
 	RoleAdmin      AccountRole = 2
