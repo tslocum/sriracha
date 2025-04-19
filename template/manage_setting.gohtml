@@ -9,6 +9,11 @@
             <td>Appears in page title and header.</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="sitehome">Site Home</label></td>
+            <td><input type="text" name="sitehome" value="{{.Opt.SiteHome}}"></input></td>
+            <td>Home address. May be a path or URL. Used in return links.</td>
+        </tr>
+        <tr>
             <td class="postblock"><label for="boardindex">Board Index</label></td>
             <td><select name="boardindex" style="width: 100%;">
                 <option value="0"{{if not .Opt.BoardIndex}} selected{{end}}>Disable</option>

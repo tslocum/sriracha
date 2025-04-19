@@ -32,6 +32,7 @@ var srirachaServer *Server
 
 const (
 	defaultServerSiteName = "Sriracha"
+	defaultServerSiteHome = "/"
 )
 
 type ServerOptions struct {
@@ -197,6 +198,12 @@ func (s *Server) setDefaultConfigValues() error {
 		siteName = defaultServerSiteName
 	}
 	s.opt.SiteName = siteName
+
+	siteHome := db.GetString("sitehome")
+	if siteHome == "" {
+		siteHome = defaultServerSiteHome
+	}
+	s.opt.SiteHome = siteHome
 
 	boardIndex := db.GetString("boardindex")
 	s.opt.BoardIndex = boardIndex == "" || boardIndex == "1"

@@ -1,6 +1,6 @@
 {{template "imgboard_begin.gohtml" .}}
 {{if .ReplyMode}}
-	[<a href="../">Return</a>]
+	[<a href="{{.Board.Path}}">Return</a>]
 	<div class="replymode">Posting mode: Reply</div> 
 {{end}}
 {{template "imgboard_postarea.gohtml" .}}

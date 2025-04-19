@@ -9,8 +9,13 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 	if r.URL.Path == "/sriracha/setting/reset" {
 		db.SaveString("sitename", defaultServerSiteName)
 		s.opt.SiteName = defaultServerSiteName
+
+		db.SaveString("sitehome", defaultServerSiteHome)
+		s.opt.SiteHome = defaultServerSiteHome
+
 		db.SaveBool("boardindex", true)
 		s.opt.BoardIndex = true
+
 		http.Redirect(w, r, "/sriracha/setting", http.StatusFound)
 		return
 	}
