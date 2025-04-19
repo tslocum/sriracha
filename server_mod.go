@@ -1,6 +1,7 @@
 package sriracha
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 )
@@ -42,5 +43,45 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 		return
 	}
 	data.Manage.Ban = db.banByIP(data.Post.IP)
+	if r.FormValue("confirm") == "1" {
+		var oldBan Ban
+		if data.Manage.Ban != nil {
+			oldBan = *data.Manage.Ban
+		}
+		if action == "b" || action == "db" {
+			if data.Manage.Ban != nil {
+				data.Manage.Ban.loadForm(r)
+				db.updateBan(data.Manage.Ban)
+
+				changes := printChanges(oldBan, *data.Manage.Ban)
+				db.log(data.Account, nil, fmt.Sprintf("Updated >>/ban/%d", data.Manage.Ban.ID), changes)
+			} else {
+				ban := &Ban{}
+				ban.loadForm(r)
+				ban.IP = data.Post.IP
+				db.addBan(ban)
+
+				db.log(data.Account, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info())
+			}
+		}
+		if action == "d" || action == "db" {
+			s.deletePost(db, data.Board, data.Post)
+
+			db.log(data.Account, data.Board, fmt.Sprintf("Deleted %s%d", data.Board.Path(), data.Post.ID), "")
+		}
+
+		label := "Deleted"
+		switch action {
+		case "b":
+			label = "Banned"
+		case "db":
+			label = "Deleted and banned"
+		}
+
+		data.Template = "manage_index"
+		data.Info = fmt.Sprintf("%s No.%d", label, data.Post.ID)
+		return
+	}
+
 	data.Extra = action
 }

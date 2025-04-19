@@ -2,6 +2,8 @@ package sriracha
 
 import (
 	"context"
+	"crypto/sha512"
+	"encoding/base64"
 	"flag"
 	"fmt"
 	"html/template"
@@ -14,10 +16,12 @@ import (
 	"path/filepath"
 	"plugin"
 	"regexp"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/alexedwards/argon2id"
 	"github.com/fsnotify/fsnotify"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/r3labs/diff/v3"
@@ -484,13 +488,15 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 	var handled bool
 
+	db.deleteExpiredBans()
+
 	// Check IP ban.
 	ip := r.RemoteAddr
 	if ip != "" {
-		ban := db.banByIP(ip)
+		ban := db.banByIP(hashIP(ip))
 		if ban != nil {
 			data := s.buildData(db, w, r)
-			data.ManageError("You are banned." + ban.Info())
+			data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (Ban #%d)", ban.ID))
 			data.execute(w)
 			handled = true
 		}
@@ -600,6 +606,45 @@ func (s *Server) Run() error {
 	}
 
 	return s.listen()
+}
+
+func hashData(data string) string {
+	checksum := sha512.Sum384([]byte(data + srirachaServer.config.SaltData))
+	return base64.StdEncoding.EncodeToString(checksum[:])
+}
+
+func hashIP(address string) string {
+	if address == "" {
+		return ""
+	}
+	leftBracket, rightBracket := strings.IndexByte(address, '['), strings.IndexByte(address, ']')
+	if leftBracket != -1 && rightBracket != -1 && rightBracket > leftBracket {
+		address = address[1:rightBracket]
+	} else if strings.IndexByte(address, '.') != -1 {
+		colon := strings.IndexByte(address, ':')
+		if colon != -1 {
+			address = address[:colon]
+		}
+	}
+	return hashData(address)
+}
+
+func encryptPassword(password string) string {
+	hash, err := argon2id.CreateHash(password+srirachaServer.config.SaltPass, argon2idParameters)
+	debug.FreeOSMemory() // Hashing is memory intensive. Return memory to the OS.
+	if err != nil {
+		log.Fatal(err)
+	}
+	return hash
+}
+
+func comparePassword(password string, hash string) bool {
+	match, err := argon2id.ComparePasswordAndHash(password+srirachaServer.config.SaltPass, hash)
+	debug.FreeOSMemory() // Hashing is memory intensive. Return memory to the OS.
+	if err != nil {
+		log.Fatal(err)
+	}
+	return match
 }
 
 func parseInt(v string) int {

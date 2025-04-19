@@ -13,7 +13,7 @@ func (db *Database) addAccount(a *Account, password string) {
 	sessionKey := db.newSessionKey()
 	_, err := db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4)",
 		a.Username,
-		db.encryptPassword(password),
+		encryptPassword(password),
 		a.Role,
 		sessionKey,
 	)
@@ -40,7 +40,7 @@ func (db *Database) createSuperAdminAccount() {
 	} else if numAdmins > 0 {
 		sessionKey := db.newSessionKey()
 		_, err = db.conn.Exec(context.Background(), "UPDATE account SET password = $1, role = $2, session = $3 WHERE username = 'admin'",
-			db.encryptPassword("admin"),
+			encryptPassword("admin"),
 			RoleSuperAdmin,
 			sessionKey,
 		)
@@ -49,7 +49,7 @@ func (db *Database) createSuperAdminAccount() {
 		}
 		return
 	}
-	_, err = db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, 'admin', $1, $2, 0, '')", db.encryptPassword("admin"), RoleSuperAdmin)
+	_, err = db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, 'admin', $1, $2, 0, '')", encryptPassword("admin"), RoleSuperAdmin)
 	if err != nil {
 		log.Fatalf("failed to insert account: %s", err)
 	}
@@ -138,7 +138,7 @@ func (db *Database) updateAccountPassword(id int, password string) {
 		log.Fatalf("invalid account ID %d", id)
 	}
 	sessionKey := db.newSessionKey()
-	_, err := db.conn.Exec(context.Background(), "UPDATE account SET password = $1, session = $2 WHERE id = $3", db.encryptPassword(password), sessionKey, id)
+	_, err := db.conn.Exec(context.Background(), "UPDATE account SET password = $1, session = $2 WHERE id = $3", encryptPassword(password), sessionKey, id)
 	if err != nil {
 		log.Fatalf("failed to update account: %s", err)
 	}
@@ -161,7 +161,7 @@ func (db *Database) loginAccount(username string, password string) *Account {
 		return nil
 	} else if err != nil {
 		log.Fatalf("failed to select account: %s", err)
-	} else if a.ID == 0 || !db.comparePassword(password, a.Password) {
+	} else if a.ID == 0 || !comparePassword(password, a.Password) {
 		return nil
 	}
 	a.Session = db.newSessionKey()

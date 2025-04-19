@@ -37,7 +37,7 @@ func (db *Database) banByID(id int) *Ban {
 
 func (db *Database) banByIP(ip string) *Ban {
 	b := &Ban{}
-	err := scanBan(b, db.conn.QueryRow(context.Background(), "SELECT * FROM ban WHERE ip = $1 AND (expire = 0 OR expire > $2)", ip, time.Now().Unix()))
+	err := scanBan(b, db.conn.QueryRow(context.Background(), "SELECT * FROM ban WHERE ip = $1", ip))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {
@@ -74,6 +74,13 @@ func (db *Database) updateBan(b *Ban) {
 	)
 	if err != nil {
 		log.Fatalf("failed to update ban: %s", err)
+	}
+}
+
+func (db *Database) deleteExpiredBans() {
+	_, err := db.conn.Exec(context.Background(), "DELETE FROM ban WHERE expire != 0 AND expire <= $1", time.Now().Unix())
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 

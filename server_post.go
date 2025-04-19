@@ -48,9 +48,14 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		}
 	}
 
+	ip := r.RemoteAddr
+	if ip != "" {
+		post.IP = hashIP(ip)
+	}
+
 	password := formString(r, "password")
 	if password != "" {
-		post.Password = db.hashData(password)
+		post.Password = hashData(password)
 	}
 
 	for _, keyword := range db.allKeywords() {

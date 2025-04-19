@@ -22,7 +22,7 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 		post := db.postByID(b, postID)
 		if post != nil {
 			password := r.FormValue("password")
-			if post.Password == "" || db.hashData(password) != post.Password {
+			if post.Password == "" || hashData(password) != post.Password {
 				data.BoardError(w, "Invalid password.")
 				return
 			}

@@ -1,8 +1,11 @@
 <form name="sriracha" method="post">
+    {{if ne .Extra ""}}
+    <input type="hidden" name="confirm" value="1">
+    {{end}}
     <fieldset>
     <legend>{{if eq .Manage.Ban nil}}Add Ban{{else}}Update #{{.Manage.Ban.ID}}{{end}}</legend>
     <table border="0">
-        {{if eq .Manage.Ban nil}}
+        {{if and (eq .Manage.Ban nil) (eq .Extra "")}}
         <tr>
             <td class="postblock"><label for="ip">IP Address</label></td>
             <td><input type="text" name="ip"></td>

@@ -3,11 +3,9 @@ package sriracha
 import (
 	"context"
 	"crypto/rand"
-	"crypto/sha512"
 	"encoding/base64"
 	"fmt"
 	"log"
-	"runtime/debug"
 	"strconv"
 	"strings"
 
@@ -134,29 +132,6 @@ func (db *Database) loadPluginConfig() error {
 		}
 	}
 	return nil
-}
-
-func (db *Database) hashData(data string) string {
-	checksum := sha512.Sum384([]byte(data + srirachaServer.config.SaltData))
-	return base64.StdEncoding.EncodeToString(checksum[:])
-}
-
-func (db *Database) encryptPassword(password string) string {
-	hash, err := argon2id.CreateHash(password+srirachaServer.config.SaltPass, argon2idParameters)
-	debug.FreeOSMemory() // Hashing is memory intensive. Return memory to the OS.
-	if err != nil {
-		log.Fatal(err)
-	}
-	return hash
-}
-
-func (db *Database) comparePassword(password string, hash string) bool {
-	match, err := argon2id.ComparePasswordAndHash(password+srirachaServer.config.SaltPass, hash)
-	debug.FreeOSMemory() // Hashing is memory intensive. Return memory to the OS.
-	if err != nil {
-		log.Fatal(err)
-	}
-	return match
 }
 
 func (db *Database) configKey(key string) string {

@@ -40,7 +40,7 @@ func (b *Ban) ExpireDate() string {
 func (b *Ban) Info() string {
 	var info string
 	if b.Expire == 0 {
-		info += " This ban is permanent."
+		info += "This ban is permanent."
 	} else {
 		info += fmt.Sprintf("This ban will expire at %s.", formatTimestamp(b.Expire))
 	}
