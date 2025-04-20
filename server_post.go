@@ -103,12 +103,26 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			case "report":
 				// TODO add report
 			case "ban":
-				_ = banExpire
-				// TODO
+				existing := db.banByIP(post.IP)
+				if existing == nil {
+					ban := &Ban{
+						IP:        post.IP,
+						Timestamp: time.Now().Unix(),
+						Expire:    banExpire,
+						Reason:    "Detected banned keyword.",
+					}
+					db.addBan(ban)
+
+					db.log(nil, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info()+fmt.Sprintf(" Detected >>/keyword/%d", keyword.ID))
+				}
 			}
 
 			if action == "delete" || action == "ban" {
 				s.deletePostFiles(b, post)
+
+				data := s.buildData(db, w, r)
+				data.ManageError("Banned keyword detected in post.")
+				data.execute(w)
 				return
 			}
 		}
