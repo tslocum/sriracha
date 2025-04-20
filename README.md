@@ -20,7 +20,7 @@ Sriracha will eventually serve as a replacement for imageboards running [TinyIB]
 - [ ] Report posts.
 - [X] Block keywords.
 - [X] Management panel:
-  - [ ] Post using raw HTML.
+  - [X] Post using raw HTML.
   - [X] Account system:
     - [X] Super administrators (all privileges)
     - [ ] Administrators (all privileges except account management)

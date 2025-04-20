@@ -9,14 +9,19 @@
 {{end}}
 {{if not .ModMode}}
 	{{template "imgboard_postarea.gohtml" .}}
+{{else}}
+	<details>
+		<summary style="cursor: pointer;">{{if eq .ReplyMode 0}}Create thread{{else}}Reply to thread{{end}}</summary>
+		<div>
+			{{template "imgboard_postarea.gohtml" .}}
+		</div>
+	</details>
 {{end}}
 <form method="post" action="/sriracha/">
 <input type="hidden" name="action" value="delete">
 <input type="hidden" name="board" value="{{.Board.Dir}}">
 {{range $i, $thread := .Threads}}
-    {{if or (gt $i 0) (not $.ModMode)}}
-        <hr>
-    {{end}}
+	<hr>
     {{range $i, $post := $thread}}
         {{if eq .Parent 0}}
 			<div id="post{{.ID}}" class="op">

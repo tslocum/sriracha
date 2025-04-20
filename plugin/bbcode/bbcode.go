@@ -151,7 +151,7 @@ func (f *BBCode) Post(db *sriracha.Database, post *sriracha.Post) error {
 		f.updated = false
 	}
 
-	post.Message = f.compiler.Compile(post.Message)
+	post.Message = f.compiler.Compile(html.UnescapeString(post.Message))
 	return nil
 }
 
