@@ -10,9 +10,9 @@ import (
 
 type Log struct {
 	ID        int
+	Account   *Account
 	Board     *Board
 	Timestamp int64
-	Account   *Account
 	Message   string
 	Changes   string
 }

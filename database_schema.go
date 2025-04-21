@@ -6,17 +6,17 @@ CREATE TABLE account (
 	username varchar(255) NOT NULL,
 	password text NOT NULL,
 	role integer NOT NULL,
-	lastactive integer NOT NULL,
+	lastactive bigint NOT NULL,
 	session varchar(64) NOT NULL
 );
 CREATE UNIQUE INDEX ON account (username);
 CREATE UNIQUE INDEX ON account (session);
 
 CREATE TABLE ban (
-	id bigserial UNIQUE,
+	id serial UNIQUE,
 	ip varchar(255) NOT NULL,
-	timestamp integer NOT NULL,
-	expire integer NOT NULL,
+	timestamp bigint NOT NULL,
+	expire bigint NOT NULL,
 	reason text NOT NULL
 );
 CREATE UNIQUE INDEX ON ban (ip);
@@ -70,20 +70,20 @@ CREATE TABLE keyword_board (
 );
 
 CREATE TABLE log (
-	id bigserial UNIQUE,
+	id serial UNIQUE,
 	board smallint NULL REFERENCES board (id),
-	timestamp integer NOT NULL,
 	account smallint NULL REFERENCES account (id),
+	timestamp bigint NOT NULL,
 	message text NOT NULL,
 	changes text NOT NULL
 );
 
 CREATE TABLE post (
-	id bigserial UNIQUE,
-	parent integer NOT NULL,
+	id serial UNIQUE,
 	board smallint NOT NULL REFERENCES board (id),
-	timestamp integer NOT NULL,
-	bumped integer NOT NULL,
+	parent integer NOT NULL REFERENCES post (id),
+	timestamp bigint NOT NULL,
+	bumped bigint NOT NULL,
 	ip varchar(255) NOT NULL,
 	name varchar(75) NOT NULL,
 	tripcode varchar(24) NOT NULL,
@@ -103,18 +103,20 @@ CREATE TABLE post (
 	thumbheight smallint NOT NULL default '0',
 	moderated smallint NOT NULL default '1',
 	stickied smallint NOT NULL default '0',
-	locked smallint NOT NULL default '0',
-	PRIMARY KEY	(board, id)
+	locked smallint NOT NULL default '0'
 );
+CREATE INDEX ON post (board);
 CREATE INDEX ON post (parent);
 CREATE INDEX ON post (bumped);
 CREATE INDEX ON post (stickied);
 CREATE INDEX ON post (moderated);
 
 CREATE TABLE report (
-	id bigserial UNIQUE,
+	id serial UNIQUE,
 	board smallint NOT NULL REFERENCES board (id),
-	ip varchar(255) NOT NULL,
-	post integer NOT NULL
-);`,
-}
+	post integer NOT NULL REFERENCES post (id),
+	timestamp bigint NOT NULL,
+	ip varchar(255) NOT NULL
+);
+CREATE INDEX ON report (board);
+`}

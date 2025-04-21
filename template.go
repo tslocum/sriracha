@@ -26,6 +26,7 @@ type manageData struct {
 	Logs     []*Log
 	Plugin   *pluginInfo
 	Plugins  []*pluginInfo
+	Reports  []*Report
 }
 
 type templateData struct {

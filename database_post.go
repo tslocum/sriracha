@@ -104,7 +104,7 @@ func (db *Database) deletePost(postID int) {
 		log.Panicf("invalid postID %d", postID)
 	}
 
-	_, err := db.conn.Exec(context.Background(), "DELETE FROM post WHERE id = $1 OR parent = $1", postID)
+	_, err := db.conn.Exec(context.Background(), "DELETE FROM post WHERE id = $1 OR parent = $1 CASCADE", postID)
 	if err != nil {
 		log.Fatalf("failed to delete post: %s", err)
 	}

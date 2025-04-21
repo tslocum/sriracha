@@ -1,3 +1,14 @@
 {{template "manage_begin.gohtml" .}}
+<div style="float:right;">
 {{.Message}}
+</div>
+<h2 class="managetitle">Status</h2>
+{{if eq (len .Manage.Reports) 0}}
+    No pending posts or reports.
+{{else}}
+    <fieldset>
+        <legend>Reports</legend>
+        Test 123
+    </fieldset>
+{{end}}
 {{template "manage_end.gohtml" .}}

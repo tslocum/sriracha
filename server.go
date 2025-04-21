@@ -458,7 +458,7 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 		}
 
 		data.Template = "manage_index"
-		data.Message = template.HTML(fmt.Sprintf(`<table class="managetable" style="margin-top: 5px;"><tr><th colspan="3">Database Statistics</th></tr><tr><th align="left">Connections</th><th align="left">Max</th></tr><tr><td>%d%s</td><td>%d</td></tr></table>`, total, idleString, s.config.Max))
+		data.Message = template.HTML(fmt.Sprintf(`<table class="managetable" style="margin-top: 10px;margin-bottom: 15px;"><tr><th align="center">Connections</th></tr><tr><td align="center">%d%s / %d</td></tr></table>`, total, idleString, s.config.Max))
 	}
 }
 

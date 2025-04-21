@@ -11,18 +11,18 @@ func (db *Database) addLog(l *Log) {
 		return
 	}
 
-	var boardID *int
-	if l.Board != nil {
-		boardID = &l.Board.ID
-	}
 	var accountID *int
 	if l.Account != nil {
 		accountID = &l.Account.ID
 	}
+	var boardID *int
+	if l.Board != nil {
+		boardID = &l.Board.ID
+	}
 	_, err := db.conn.Exec(context.Background(), "INSERT INTO log VALUES (DEFAULT, $1, $2, $3, $4, $5)",
+		accountID,
 		boardID,
 		time.Now().Unix(),
-		accountID,
 		l.Message,
 		l.Changes,
 	)
@@ -46,36 +46,36 @@ func (db *Database) allLogs() []*Log {
 		log.Fatalf("failed to select all logs: %s", err)
 	}
 	var logs []*Log
-	var boardIDs []int
 	var accountIDs []int
+	var boardIDs []int
 	for rows.Next() {
 		l := &Log{}
 		var boardID *int
 		var accountID *int
-		err := rows.Scan(&l.ID, &boardID, &l.Timestamp, &accountID, &l.Message, &l.Changes)
+		err := rows.Scan(&l.ID, &accountID, &boardID, &l.Timestamp, &l.Message, &l.Changes)
 		if err != nil {
 			log.Fatalf("failed to select all logs: %s", err)
 		}
 		logs = append(logs, l)
-		if boardID == nil {
-			boardIDs = append(boardIDs, 0)
-		} else {
-			boardIDs = append(boardIDs, *boardID)
-		}
 		if accountID == nil {
 			accountIDs = append(accountIDs, 0)
 		} else {
 			accountIDs = append(accountIDs, *accountID)
 		}
+		if boardID == nil {
+			boardIDs = append(boardIDs, 0)
+		} else {
+			boardIDs = append(boardIDs, *boardID)
+		}
 	}
 	for i, l := range logs {
-		boardID := boardIDs[i]
 		accountID := accountIDs[i]
-		if boardID > 0 {
-			l.Board = db.boardByID(boardID)
-		}
+		boardID := boardIDs[i]
 		if accountID > 0 {
 			l.Account = db.accountByID(accountID)
+		}
+		if boardID > 0 {
+			l.Board = db.boardByID(boardID)
 		}
 	}
 	return logs
