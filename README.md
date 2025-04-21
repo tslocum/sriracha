@@ -10,22 +10,23 @@ Sriracha will eventually serve as a replacement for imageboards running [TinyIB]
 
 ## Feature Parity with TinyIB
 
-- [ ] GIF, JPG, PNG, SWF, MP4 and WebM upload.
-- [ ] YouTube, Vimeo and SoundCloud embedding.
-- [ ] CAPTCHA.
-- [ ] Reference links. `>>###`
-- [ ] Thread catalog.
-- [ ] Fetch new replies automatically.
-- [X] Delete posts via password.
-- [ ] Report posts.
-- [X] Block keywords.
+- [ ] GIF, JPG, PNG, SWF, MP4 and WebM upload
+- [ ] YouTube, Vimeo and SoundCloud embedding
+- [ ] CAPTCHA
+- [ ] Reference links `>>###`
+- [X] Delete posts via password
+- [ ] Report posts
+- [ ] Thread catalog
+- [ ] Fetch new replies automatically
 - [X] Management panel:
-  - [X] Post using raw HTML.
+  - [X] Automatically moderate new posts using [regular expressions](https://en.wikipedia.org/wiki/Regular_expression)
+  - [X] Ban offensive/abusive posters across all boards
+  - [X] Post using Admin/Mod capcode
+  - [X] Post using raw HTML
   - [X] Account system:
     - [X] Super administrators (all privileges)
-    - [ ] Administrators (all privileges except account management)
-    - [ ] Moderators (only able to sticky threads, lock threads, approve posts and delete posts)
-    - [X] Ban offensive/abusive posters across all boards.
+    - [ ] Administrators (all privileges except managing accounts and deleting boards)
+    - [ ] Moderators (may only add bans, approve/delete posts and sticky/lock threads)
 
 ## Documentation
 

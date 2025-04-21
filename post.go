@@ -26,6 +26,7 @@ import (
 
 type Post struct {
 	ID           int
+	Board        *Board
 	Parent       int
 	Timestamp    int64
 	Bumped       int64

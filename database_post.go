@@ -7,10 +7,14 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (db *Database) addPost(b *Board, p *Post) {
+func (db *Database) addPost(p *Post) {
+	var parent *int
+	if p.Parent != 0 {
+		parent = &p.Parent
+	}
 	err := db.conn.QueryRow(context.Background(), "INSERT INTO post VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) RETURNING id",
-		p.Parent,
-		b.ID,
+		p.Board.ID,
+		parent,
 		p.Timestamp,
 		p.Bumped,
 		p.IP,
@@ -44,7 +48,7 @@ func (db *Database) allThreads(board *Board, moderated bool) []*Post {
 	if moderated {
 		extra = " AND moderated > 0"
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT * FROM post WHERE board = $1 AND parent = 0"+extra+" ORDER BY bumped DESC", board.ID)
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM post WHERE board = $1 AND parent IS NULL"+extra+" ORDER BY bumped DESC", board.ID)
 	if err != nil {
 		log.Fatalf("failed to select all posts: %s", err)
 	}
@@ -55,6 +59,7 @@ func (db *Database) allThreads(board *Board, moderated bool) []*Post {
 		if err != nil {
 			log.Fatal(err)
 		}
+		p.Board = board
 		posts = append(posts, p)
 	}
 	return posts
@@ -76,6 +81,7 @@ func (db *Database) allPostsInThread(board *Board, postID int, moderated bool) [
 		if err != nil {
 			log.Fatal(err)
 		}
+		p.Board = board
 		posts = append(posts, p)
 	}
 	return posts
@@ -89,6 +95,7 @@ func (db *Database) postByID(board *Board, postID int) *Post {
 	} else if err != nil || p.ID == 0 {
 		log.Fatalf("failed to select keyword: %s", err)
 	}
+	p.Board = board
 	return p
 }
 
@@ -104,7 +111,7 @@ func (db *Database) deletePost(postID int) {
 		log.Panicf("invalid postID %d", postID)
 	}
 
-	_, err := db.conn.Exec(context.Background(), "DELETE FROM post WHERE id = $1 OR parent = $1 CASCADE", postID)
+	_, err := db.conn.Exec(context.Background(), "DELETE FROM post WHERE id = $1 CASCADE", postID)
 	if err != nil {
 		log.Fatalf("failed to delete post: %s", err)
 	}
@@ -112,10 +119,11 @@ func (db *Database) deletePost(postID int) {
 
 func scanPost(p *Post, row pgx.Row) error {
 	var boardID int
-	return row.Scan(
+	var parentID *int
+	err := row.Scan(
 		&p.ID,
-		&p.Parent,
 		&boardID,
+		&parentID,
 		&p.Timestamp,
 		&p.Bumped,
 		&p.IP,
@@ -139,4 +147,10 @@ func scanPost(p *Post, row pgx.Row) error {
 		&p.Stickied,
 		&p.Locked,
 	)
+	if err != nil {
+		return err
+	} else if parentID != nil {
+		p.Parent = *parentID
+	}
+	return nil
 }

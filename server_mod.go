@@ -65,7 +65,7 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 			}
 		}
 		if action == "d" || action == "db" {
-			s.deletePost(db, data.Board, data.Post)
+			s.deletePost(db, data.Post)
 
 			db.log(data.Account, data.Board, fmt.Sprintf("Deleted %s%d", data.Board.Path(), data.Post.ID), "")
 		}

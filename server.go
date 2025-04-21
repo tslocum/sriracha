@@ -284,22 +284,26 @@ func (s *Server) watchTemplates() error {
 	return watcher.Add("template")
 }
 
-func (s *Server) deletePostFiles(b *Board, p *Post) {
-	if p.File == "" {
+func (s *Server) deletePostFiles(p *Post) {
+	if p.File == "" || p.Board == nil {
 		return
 	}
-	srcPath := filepath.Join(s.config.Root, b.Dir, "src", p.File)
+	srcPath := filepath.Join(s.config.Root, p.Board.Dir, "src", p.File)
 	os.Remove(srcPath)
 
 	if p.Thumb == "" {
 		return
 	}
-	thumbPath := filepath.Join(s.config.Root, b.Dir, "thumb", p.Thumb)
+	thumbPath := filepath.Join(s.config.Root, p.Board.Dir, "thumb", p.Thumb)
 	os.Remove(thumbPath)
 }
 
-func (s *Server) deletePost(db *Database, b *Board, p *Post) {
-	s.deletePostFiles(b, p)
+func (s *Server) deletePost(db *Database, p *Post) {
+	posts := db.allPostsInThread(p.Board, p.ID, false)
+	for _, post := range posts {
+		s.deletePostFiles(post)
+	}
+
 	db.deletePost(p.ID)
 }
 

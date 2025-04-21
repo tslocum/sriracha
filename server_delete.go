@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime/debug"
 	"strconv"
 )
 
@@ -15,6 +16,7 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 		boardDir := formString(r, "board")
 		b := db.boardByDir(boardDir)
 		if b == nil {
+			debug.PrintStack()
 			data.BoardError(w, "No board was specified.")
 			return
 		}
@@ -37,10 +39,7 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 				return
 			}
 
-			posts := db.allPostsInThread(b, post.ID, false)
-			for _, p := range posts {
-				s.deletePost(db, b, p)
-			}
+			s.deletePost(db, post)
 
 			if post.Parent == 0 {
 				os.Remove(filepath.Join(s.config.Root, b.Dir, "res", fmt.Sprintf("%d.html", post.ID)))

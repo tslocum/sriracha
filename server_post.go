@@ -27,12 +27,16 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 
 	now := time.Now().Unix()
 	post := &Post{
+		Board:     b,
 		Timestamp: now,
 		Bumped:    now,
 		Moderated: 1,
 	}
+
 	err := post.loadForm(r, b, s.config.Root)
 	if err != nil {
+		s.deletePostFiles(post)
+
 		data := s.buildData(db, w, r)
 		data.ManageError(err.Error())
 		data.execute(w)
@@ -42,6 +46,8 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	if post.Parent != 0 {
 		parent := db.postByID(b, post.Parent)
 		if parent == nil || parent.Parent != 0 {
+			s.deletePostFiles(post)
+
 			data := s.buildData(db, w, r)
 			data.ManageError("invalid post parent")
 			data.execute(w)
@@ -78,6 +84,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			case 2:
 				staffCapcode = "Admin"
 			}
+
 			rawHTML = formBool(r, "raw")
 			if rawHTML {
 				post.Message = html.UnescapeString(post.Message)
@@ -89,6 +96,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		for _, keyword := range db.allKeywords() {
 			rgxp, err := regexp.Compile(keyword.Text)
 			if err != nil {
+				s.deletePostFiles(post)
 				log.Fatalf("failed to compile regexp %s: %s", keyword.Text, err)
 			}
 			if rgxp.MatchString(post.Name) || rgxp.MatchString(post.Email) || rgxp.MatchString(post.Subject) || rgxp.MatchString(post.Message) {
@@ -122,6 +130,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 				case "ban0":
 					action = "ban"
 				default:
+					s.deletePostFiles(post)
 					log.Fatalf("unknown keyword action: %s", keyword.Action)
 				}
 
@@ -146,7 +155,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 				}
 
 				if action == "delete" || action == "ban" {
-					s.deletePostFiles(b, post)
+					s.deletePostFiles(post)
 
 					data := s.buildData(db, w, r)
 					data.ManageError("Banned keyword detected in post.")
@@ -161,7 +170,8 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		for _, postHandler := range allPluginPostHandlers {
 			err := postHandler(db, post)
 			if err != nil {
-				// TODO cleanup uploaded file
+				s.deletePostFiles(post)
+
 				data := s.buildData(db, w, r)
 				data.ManageError(err.Error())
 				data.execute(w)
@@ -188,7 +198,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		post.Moderated = 0
 	}
 
-	db.addPost(b, post)
+	db.addPost(post)
 
 	if post.Parent != 0 && strings.ToLower(post.Email) != "sage" {
 		// TODO check reply limit

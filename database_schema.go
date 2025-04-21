@@ -81,7 +81,7 @@ CREATE TABLE log (
 CREATE TABLE post (
 	id serial UNIQUE,
 	board smallint NOT NULL REFERENCES board (id),
-	parent integer NOT NULL REFERENCES post (id),
+	parent integer REFERENCES post (id),
 	timestamp bigint NOT NULL,
 	bumped bigint NOT NULL,
 	ip varchar(255) NOT NULL,
