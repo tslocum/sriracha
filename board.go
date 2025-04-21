@@ -90,6 +90,7 @@ type Board struct {
 	MaxMessage  int
 	MaxThreads  int
 	MaxReplies  int
+	DefaultName string
 	WordBreak   int
 	Truncate    int
 	MaxSize     int64
@@ -108,6 +109,7 @@ const (
 	defaultBoardMaxSubject  = 75
 	defaultBoardMaxMessage  = 8000
 	defaultBoardWordBreak   = 80
+	defaultBoardDefaultName = "Anonymous"
 	defaultBoardTruncate    = 15
 	defaultBoardMaxSize     = 2097152
 	defaultBoardThumbWidth  = 250
@@ -132,6 +134,7 @@ func (b *Board) loadForm(r *http.Request) {
 	b.MaxMessage = formInt(r, "maxmessage")
 	b.MaxThreads = formInt(r, "maxthreads")
 	b.MaxReplies = formInt(r, "maxreplies")
+	b.DefaultName = formString(r, "defaultname")
 	b.WordBreak = formInt(r, "wordbreak")
 	b.Truncate = formInt(r, "truncate")
 	b.MaxSize = formInt64(r, "maxsize")

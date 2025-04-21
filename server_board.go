@@ -148,6 +148,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		MaxEmail:    defaultBoardMaxEmail,
 		MaxSubject:  defaultBoardMaxSubject,
 		MaxMessage:  defaultBoardMaxMessage,
+		DefaultName: defaultBoardDefaultName,
 		WordBreak:   defaultBoardWordBreak,
 		Truncate:    defaultBoardTruncate,
 		MaxSize:     defaultBoardMaxSize,

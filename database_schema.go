@@ -40,6 +40,7 @@ CREATE TABLE board (
 	maxmessage smallint NOT NULL,
 	maxthreads smallint NOT NULL,
 	maxreplies smallint NOT NULL,
+	defaultname varchar(255) NOT NULL,
 	wordbreak smallint NOT NULL,
 	truncate smallint NOT NULL,
 	maxsize bigint NOT NULL,

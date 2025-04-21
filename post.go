@@ -17,6 +17,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -140,6 +141,42 @@ func (p *Post) loadForm(r *http.Request, b *Board, rootDir string) error {
 		log.Fatal(err)
 	}
 	return nil
+}
+
+func (p *Post) setNameBlock(defaultName string, capcode string) {
+	var out strings.Builder
+
+	emailLink := p.Email != "" && strings.ToLower(p.Email) != "Noko"
+
+	name := p.Name
+	if name == "" {
+		name = defaultName
+	}
+
+	if emailLink {
+		out.WriteString(`<a href="mailto:"` + html.EscapeString(p.Email) + `">`)
+	}
+	out.WriteString(`<span class="postername">`)
+	out.WriteString(html.EscapeString(name))
+	out.WriteString(`</span>`)
+	if p.Tripcode != "" {
+		out.WriteString(`<span class="postertrip">!` + html.EscapeString(p.Tripcode) + `</span>`)
+	}
+	if emailLink {
+		out.WriteString(`</a>`)
+	}
+
+	if capcode != "" {
+		spanColor := "red"
+		if capcode == "Admin" {
+			spanColor = "purple"
+		}
+		out.WriteString(` <span style="color: ` + spanColor + `;">## ` + capcode + `</span>`)
+	}
+
+	out.WriteString(" " + p.TimestampLabel())
+
+	p.NameBlock = out.String()
 }
 
 func (p *Post) Thread() int {

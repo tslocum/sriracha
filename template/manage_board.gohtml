@@ -80,6 +80,11 @@
             <td>Whether users may report posts.</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="defaultname">Default Name</label></td>
+            <td><input type="text" name="defaultname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.DefaultName}}{{end}}"></td>
+            <td>The name shown when no name is entered. May be blank.</td>
+        </tr>
+        <tr>
             <td class="postblock"><label for="delay">Delay</label></td>
             <td><input type="text" name="delay" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Delay}}{{end}}"></td>
             <td>Delay (in seconds) visitors must wait before posting again. Set to 0 to disable.</td>

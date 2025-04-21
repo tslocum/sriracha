@@ -60,8 +60,9 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	}
 
 	var (
-		rawHTML   bool
-		staffPost bool
+		rawHTML      bool
+		staffPost    bool
+		staffCapcode string
 	)
 	data := s.buildData(db, w, r)
 	if data.Account != nil {
@@ -73,9 +74,9 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			}
 			switch capcode {
 			case 1:
-				// TODO nameblock, add in post?
+				staffCapcode = "Mod"
 			case 2:
-
+				staffCapcode = "Admin"
 			}
 			rawHTML = formBool(r, "raw")
 			if rawHTML {
@@ -180,6 +181,8 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	if !rawHTML {
 		post.Message = strings.ReplaceAll(post.Message, "\n", "<br>\n")
 	}
+
+	post.setNameBlock(b.DefaultName, staffCapcode)
 
 	if !staffPost && (b.Approval == ApprovalAll || (b.Approval == ApprovalFile && post.File != "")) {
 		post.Moderated = 0
