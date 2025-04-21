@@ -1,0 +1,81 @@
+{{range $i, $thread := .Threads}}
+	<hr>
+	{{range $i, $post := $thread}}
+        {{if eq .Parent 0}}
+            <div id="post{{.ID}}" class="op">
+                {{if ne .File ""}}
+                    <span class="filesize">File: <a href="{{$.Board.Path}}src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{.File}}</a>&ndash;{{template "imgboard_page_fileinfo.gohtml" .}}</span><br>
+                    <div id="thumbfile{{.ID}}">
+                        <a href="{{$.Board.Path}}src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$.Board.Path}}thumb/{{.Thumb}}" alt="{{.ID}}" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
+                    </div>
+                    <div id="expand{{.ID}}" style="display: none;">{{.ExpandHTML $.Board}}</div>
+                    <div id="file{{.ID}}" class="thumb" style="display: none;"></div><a id="{{.ID}}"></a>
+                {{end}}
+                <label>
+                    <input type="checkbox" name="delete[]" value="{{.ID}}">
+                    {{template "imgboard_page_subject.gohtml" .}}
+                    {{.NameBlock | HTML}}
+                </label>
+                <span class="reflink">
+                    {{if $.Board.Reports}}
+                        <a href="/sriracha/?action=report&post={{.ID}}" title="Report">R</a>
+                    {{end}}
+                    <a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}">{{.ID}}</a>
+                    {{if $.ModMode}}
+                        <b><a href="/sriracha/mod/delete/{{$.Board.ID}}/{{.ID}}" title="Delete">D</a>
+                        <a href="/sriracha/mod/ban/{{$.Board.ID}}/{{.ID}}" title="Ban">B</a>
+                        <a href="/sriracha/mod/{{$.Board.ID}}/{{.ID}}" title="Delete &amp; ban">D&amp;B</a></b>
+                    {{end}}
+                </span>
+                {{if not $.ReplyMode}}{{if not $.ModMode}}&nbsp;[<a href="{{$.Board.Path}}res/{{.Thread}}.html">Reply</a>]{{else}}&nbsp;[<a href="/sriracha/board/mod/{{$.Board.ID}}/{{.Thread}}">View</a>]{{end}}{{end}}
+                <div class="message">
+                    {{.Message | HTML}}
+                </div>
+            </div>
+            {{if and (eq $.ReplyMode 0) (gt (Omitted $.Board.Replies (len $thread)) 0)}}
+                <span class="omittedposts">{{Omitted $.Board.Replies (len $thread)}} {{if eq (Omitted $.Board.Replies (len $thread)) 1}}post{{else}}posts{{end}} omitted. Click Reply to view.</span>
+            {{end}}
+        {{else if (or (ne $.ReplyMode 0) (ShowReply $.Board.Replies (len $thread) $i))}}
+            <table>
+            <tbody>
+                <tr>
+                    <td class="doubledash">
+                        &#0168;
+                    </td>
+                    <td class="reply" id="post{{.ID}}">
+                        <a id="{{.ID}}"></a>
+                        <label>
+                            <input type="checkbox" name="delete[]" value="{{.ID}}">
+                            {{template "imgboard_page_subject.gohtml" .}}
+                            {{.NameBlock | HTML}}
+                        </label>
+                        <span class="reflink">
+                            {{if $.Board.Reports}}
+                                <a href="/sriracha/?action=report&post={{.ID}}" title="Report">R</a>
+                            {{end}}
+                            <a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}">{{.ID}}</a>
+                            {{if $.ModMode}}
+                                <b><a href="/sriracha/mod/delete/{{$.Board.ID}}/{{.ID}}" title="Delete">D</a>
+                                <a href="/sriracha/mod/ban/{{$.Board.ID}}/{{.ID}}" title="Ban">B</a>
+                                <a href="/sriracha/mod/{{$.Board.ID}}/{{.ID}}" title="Delete &amp; ban">D&amp;B</a></b>
+                            {{end}}
+                        </span>
+                        <small><span id="backlinks{{.ID}}" class="backlinks"></span></small><br>
+                        {{if ne .File ""}}
+                            <span class="filesize"><a href="{{$.Board.Path}}src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{.File}}</a>&ndash;{{template "imgboard_page_fileinfo.gohtml" .}}</span><br>
+                            <div id="thumbfile{{.ID}}">
+                                <a href="{{$.Board.Path}}src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$.Board.Path}}thumb/{{.Thumb}}" alt="6" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
+                            </div>
+                            <div id="expand{{.ID}}" style="display: none;">{{.ExpandHTML $.Board}}</div>
+                            <div id="file{{.ID}}" class="thumb" style="display: none;"></div>
+                        {{end}}
+                        <div class="message">
+                            {{.Message | HTML}}
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+        {{end}}
+    {{end}}
+{{end}}
