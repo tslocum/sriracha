@@ -1,0 +1,19 @@
+{{template "manage_begin.gohtml" .}}
+<h2 class="managetitle">Status</h2>
+{{if ne .Message ""}}
+<fieldset>
+    <legend>Reports</legend>
+    <div>{{.Message}}</div>
+</fieldset>
+{{end}}
+{{if ne .Message2 ""}}
+<fieldset>
+    <legend>Posts</legend>
+    <div>{{.Message2}}</div>
+</fieldset>
+{{end}}
+<fieldset>
+    <legend>Connections</legend>
+    <div>{{.Message3}}</div>
+</fieldset>
+{{template "manage_end.gohtml" .}}

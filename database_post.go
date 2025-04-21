@@ -106,12 +106,19 @@ func (db *Database) bumpThread(threadID int, timestamp int64) {
 	}
 }
 
+func (db *Database) moderatePost(boardID int, postID int, moderated PostModerated) {
+	_, err := db.conn.Exec(context.Background(), "UPDATE post SET moderated = $1 WHERE board = $2 AND id = $3", moderated, boardID, postID)
+	if err != nil {
+		log.Fatalf("failed to moderate post: %s", err)
+	}
+}
+
 func (db *Database) deletePost(postID int) {
 	if postID <= 0 {
 		log.Panicf("invalid postID %d", postID)
 	}
 
-	_, err := db.conn.Exec(context.Background(), "DELETE FROM post WHERE id = $1 CASCADE", postID)
+	_, err := db.conn.Exec(context.Background(), "DELETE FROM post WHERE id = $1", postID)
 	if err != nil {
 		log.Fatalf("failed to delete post: %s", err)
 	}

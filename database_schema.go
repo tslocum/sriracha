@@ -64,8 +64,8 @@ CREATE TABLE keyword (
 CREATE UNIQUE INDEX ON keyword (text);
 
 CREATE TABLE keyword_board (
-	keyword smallint NOT NULL REFERENCES keyword (id),
-	board smallint NOT NULL REFERENCES board (id),
+	keyword smallint NOT NULL REFERENCES keyword (id) ON DELETE CASCADE,
+	board smallint NOT NULL REFERENCES board (id) ON DELETE CASCADE,
 	PRIMARY KEY	(keyword, board)
 );
 
@@ -80,8 +80,8 @@ CREATE TABLE log (
 
 CREATE TABLE post (
 	id serial UNIQUE,
-	board smallint NOT NULL REFERENCES board (id),
-	parent integer REFERENCES post (id),
+	board smallint NOT NULL REFERENCES board (id) ON DELETE CASCADE,
+	parent integer REFERENCES post (id) ON DELETE CASCADE,
 	timestamp bigint NOT NULL,
 	bumped bigint NOT NULL,
 	ip varchar(255) NOT NULL,
@@ -113,10 +113,11 @@ CREATE INDEX ON post (moderated);
 
 CREATE TABLE report (
 	id serial UNIQUE,
-	board smallint NOT NULL REFERENCES board (id),
-	post integer NOT NULL REFERENCES post (id),
+	board smallint NOT NULL REFERENCES board (id) ON DELETE CASCADE,
+	post integer NOT NULL REFERENCES post (id) ON DELETE CASCADE,
 	timestamp bigint NOT NULL,
-	ip varchar(255) NOT NULL
+	ip varchar(255) NOT NULL,
+	PRIMARY KEY	(board, post, ip)
 );
 CREATE INDEX ON report (board);
 `}

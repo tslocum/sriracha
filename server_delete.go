@@ -29,7 +29,7 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 				return
 			}
 
-			confirm := r.FormValue("confirm")
+			confirm := r.FormValue("confirmation")
 			if confirm != "1" {
 				data.Board = b
 				data.Post = post

@@ -15,9 +15,10 @@ Sriracha will eventually serve as a replacement for imageboards running [TinyIB]
 - [ ] CAPTCHA
 - [ ] Reference links `>>###`
 - [X] Delete posts via password
-- [ ] Report posts
+- [X] Report posts
 - [ ] Thread catalog
 - [ ] Fetch new replies automatically
+- [ ] Support additional languages
 - [X] Management panel:
   - [X] Automatically moderate new posts using [regular expressions](https://en.wikipedia.org/wiki/Regular_expression)
   - [X] Ban offensive/abusive posters across all boards

@@ -1,5 +1,7 @@
 {{range $i, $thread := .Threads}}
-	<hr>
+	{{if gt $i 0}}
+        <hr>
+    {{end}}
 	{{range $i, $post := $thread}}
         {{if eq .Parent 0}}
             <div id="post{{.ID}}" class="op">
@@ -18,7 +20,7 @@
                 </label>
                 <span class="reflink">
                     {{if $.Board.Reports}}
-                        <a href="/sriracha/?action=report&post={{.ID}}" title="Report">R</a>
+                        <a href="/sriracha/?action=report&board={{.Board.ID}}&post={{.ID}}" title="Report">R</a>
                     {{end}}
                     <a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}">{{.ID}}</a>
                     {{if $.ModMode}}
@@ -51,7 +53,7 @@
                         </label>
                         <span class="reflink">
                             {{if $.Board.Reports}}
-                                <a href="/sriracha/?action=report&post={{.ID}}" title="Report">R</a>
+                                <a href="/sriracha/?action=report&board={{.Board.ID}}&post={{.ID}}" title="Report">R</a>
                             {{end}}
                             <a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}">{{.ID}}</a>
                             {{if $.ModMode}}

@@ -285,7 +285,13 @@ func (s *Server) watchTemplates() error {
 }
 
 func (s *Server) deletePostFiles(p *Post) {
-	if p.File == "" || p.Board == nil {
+	if p.Board == nil {
+		return
+	} else if p.ID != 0 && p.Parent == 0 {
+		os.Remove(filepath.Join(s.config.Root, p.Board.Dir, "res", fmt.Sprintf("%d.html", p.ID)))
+	}
+
+	if p.File == "" {
 		return
 	}
 	srcPath := filepath.Join(s.config.Root, p.Board.Dir, "src", p.File)
@@ -362,6 +368,11 @@ func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request)
 }
 
 func (s *Server) writeThread(db *Database, board *Board, postID int) {
+	posts := db.allPostsInThread(board, postID, true)
+	if len(posts) == 0 {
+		return
+	}
+
 	f, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "res", fmt.Sprintf("%d.html", postID)), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		log.Fatal(err)
@@ -370,7 +381,7 @@ func (s *Server) writeThread(db *Database, board *Board, postID int) {
 	data := &templateData{
 		Board:     board,
 		Boards:    db.allBoards(),
-		Threads:   [][]*Post{db.allPostsInThread(board, postID, true)},
+		Threads:   [][]*Post{posts},
 		ReplyMode: postID,
 		Manage:    &manageData{},
 		Template:  "board_page",
@@ -453,16 +464,7 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 	case strings.HasPrefix(r.URL.Path, "/sriracha/setting"):
 		s.serveSetting(data, db, w, r)
 	default:
-		stats := s.dbPool.Stat()
-		idle := stats.IdleConns()
-		total := stats.TotalConns()
-		var idleString string
-		if idle > 0 {
-			idleString = fmt.Sprintf(" (%d idle)", idle)
-		}
-
-		data.Template = "manage_index"
-		data.Message = template.HTML(fmt.Sprintf(`<table class="managetable" style="margin-top: 10px;margin-bottom: 15px;"><tr><th align="center">Connections</th></tr><tr><td align="center">%d%s / %d</td></tr></table>`, total, idleString, s.config.Max))
+		s.serveStatus(data, db, w, r)
 	}
 }
 
@@ -510,6 +512,8 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		switch action {
 		case "post":
 			s.servePost(db, w, r)
+		case "report":
+			s.serveReport(db, w, r)
 		case "delete":
 			s.serveDelete(db, w, r)
 		default:

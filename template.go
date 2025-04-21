@@ -26,6 +26,7 @@ type manageData struct {
 	Logs     []*Log
 	Plugin   *pluginInfo
 	Plugins  []*pluginInfo
+	Report   *Report
 	Reports  []*Report
 }
 
@@ -33,6 +34,8 @@ type templateData struct {
 	Account   *Account
 	Info      string
 	Message   template.HTML
+	Message2  template.HTML
+	Message3  template.HTML
 	Board     *Board
 	Boards    []*Board
 	Post      *Post

@@ -8,7 +8,7 @@ import (
 func (s *Server) serveChangePassword(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
 	oldPass := r.FormValue("old")
 	newPass := r.FormValue("new")
-	confirmPass := r.FormValue("confirm")
+	confirmPass := r.FormValue("confirmation")
 	data.Template = "manage_password"
 	if r.Method != http.MethodPost {
 		return

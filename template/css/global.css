@@ -114,6 +114,10 @@ hr {
 	color: #FF0000;
 }
 
+legend {
+	font-weight: bold;
+}
+
 .managetitle {
 	margin-top: 5px;
 	margin-bottom: 10px;

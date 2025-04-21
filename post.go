@@ -24,6 +24,14 @@ import (
 	"github.com/nfnt/resize"
 )
 
+type PostModerated int
+
+const (
+	ModeratedHidden   PostModerated = 0
+	ModeratedVisible  PostModerated = 1
+	ModeratedApproved PostModerated = 2
+)
+
 type Post struct {
 	ID           int
 	Board        *Board
@@ -47,7 +55,7 @@ type Post struct {
 	Thumb        string
 	ThumbWidth   int
 	ThumbHeight  int
-	Moderated    int
+	Moderated    PostModerated
 	Stickied     int
 	Locked       int
 }
