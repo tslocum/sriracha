@@ -13,7 +13,7 @@ Sriracha will eventually serve as a replacement for imageboards running [TinyIB]
 - [ ] GIF, JPG, PNG, SWF, MP4 and WebM upload
 - [ ] YouTube, Vimeo and SoundCloud embedding
 - [ ] CAPTCHA
-- [ ] Reference links `>>###`
+- [X] Reference links `>>###`
 - [X] Delete posts via password
 - [X] Report posts
 - [ ] Thread catalog

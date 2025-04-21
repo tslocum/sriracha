@@ -6,9 +6,12 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
+
+var reflinkPattern = regexp.MustCompile(`&gt;&gt;([0-9]+)`)
 
 func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -179,6 +182,22 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 				return
 			}
 		}
+
+		post.Message = reflinkPattern.ReplaceAllStringFunc(post.Message, func(s string) string {
+			postID, err := strconv.Atoi(s[8:])
+			if err != nil || postID <= 0 {
+				return s
+			}
+			refPost := db.postByID(post.Board, postID)
+			if refPost == nil {
+				return s
+			}
+			className := "refop"
+			if refPost.Parent != 0 {
+				className = "refreply"
+			}
+			return fmt.Sprintf(`<a href="%sres/%d.html#%d" class="%s">%s</a>`, refPost.Board.Path(), refPost.Thread(), refPost.ID, className, s)
+		})
 	}
 
 	if strings.TrimSpace(post.Message) == "" && post.File == "" {

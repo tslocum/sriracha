@@ -11,8 +11,9 @@
                         <a href="{{$.Board.Path}}src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$.Board.Path}}thumb/{{.Thumb}}" alt="{{.ID}}" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
                     </div>
                     <div id="expand{{.ID}}" style="display: none;">{{.ExpandHTML $.Board}}</div>
-                    <div id="file{{.ID}}" class="thumb" style="display: none;"></div><a id="{{.ID}}"></a>
+                    <div id="file{{.ID}}" class="thumb" style="display: none;"></div>
                 {{end}}
+                <a id="{{.ID}}"></a>
                 <label>
                     <input type="checkbox" name="delete[]" value="{{.ID}}">
                     {{template "imgboard_page_subject.gohtml" .}}
