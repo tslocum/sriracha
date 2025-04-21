@@ -17,8 +17,14 @@ func (s *Server) serveStatus(data *templateData, db *Database, w http.ResponseWr
 				if b != nil {
 					post := db.postByID(b, approve)
 					if post != nil {
+						rebuild := post.Moderated == ModeratedHidden
+
 						db.moderatePost(b.ID, post.ID, ModeratedApproved)
 						db.deleteReports(post)
+
+						if rebuild {
+							s.rebuildThread(db, b, post)
+						}
 					}
 				}
 			}
@@ -46,7 +52,7 @@ func (s *Server) serveStatus(data *templateData, db *Database, w http.ResponseWr
 		}
 
 		d := s.buildData(db, w, r)
-		d.Template = "manage_report"
+		d.Template = "manage_status_item"
 		d.Board = report.Post.Board
 		d.Post = report.Post
 		d.Threads = [][]*Post{{report.Post}}
@@ -55,7 +61,21 @@ func (s *Server) serveStatus(data *templateData, db *Database, w http.ResponseWr
 	}
 	data.Message = template.HTML(buf.String())
 
-	data.Message2 = template.HTML("TODO")
+	buf.Reset()
+	pending := db.pendingPosts()
+	for i, post := range pending {
+		if i > 0 {
+			buf.WriteString("<hr>\n")
+		}
+
+		d := s.buildData(db, w, r)
+		d.Template = "manage_status_item"
+		d.Board = post.Board
+		d.Post = post
+		d.Threads = [][]*Post{{post}}
+		d.execute(buf)
+	}
+	data.Message2 = template.HTML(buf.String())
 
 	data.Message3 = template.HTML(fmt.Sprintf(`%d%s / %d`, total, idleString, s.config.Max))
 }

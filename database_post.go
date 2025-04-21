@@ -55,7 +55,7 @@ func (db *Database) allThreads(board *Board, moderated bool) []*Post {
 	var posts []*Post
 	for rows.Next() {
 		p := &Post{}
-		err := scanPost(p, rows)
+		_, err := scanPost(p, rows)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -77,7 +77,7 @@ func (db *Database) allPostsInThread(board *Board, postID int, moderated bool) [
 	var posts []*Post
 	for rows.Next() {
 		p := &Post{}
-		err := scanPost(p, rows)
+		_, err := scanPost(p, rows)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -87,9 +87,31 @@ func (db *Database) allPostsInThread(board *Board, postID int, moderated bool) [
 	return posts
 }
 
+func (db *Database) pendingPosts() []*Post {
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM post WHERE moderated = $1 ORDER BY id ASC", ModeratedHidden)
+	if err != nil {
+		log.Fatalf("failed to select pending posts: %s", err)
+	}
+	var posts []*Post
+	var boardIDs []int
+	for rows.Next() {
+		p := &Post{}
+		boardID, err := scanPost(p, rows)
+		if err != nil {
+			log.Fatal(err)
+		}
+		posts = append(posts, p)
+		boardIDs = append(boardIDs, boardID)
+	}
+	for i := range posts {
+		posts[i].Board = db.boardByID(boardIDs[i])
+	}
+	return posts
+}
+
 func (db *Database) postByID(board *Board, postID int) *Post {
 	p := &Post{}
-	err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT * FROM post WHERE board = $1 AND id = $2", board.ID, postID))
+	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT * FROM post WHERE board = $1 AND id = $2", board.ID, postID))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil || p.ID == 0 {
@@ -124,7 +146,7 @@ func (db *Database) deletePost(postID int) {
 	}
 }
 
-func scanPost(p *Post, row pgx.Row) error {
+func scanPost(p *Post, row pgx.Row) (int, error) {
 	var boardID int
 	var parentID *int
 	err := row.Scan(
@@ -155,9 +177,9 @@ func scanPost(p *Post, row pgx.Row) error {
 		&p.Locked,
 	)
 	if err != nil {
-		return err
+		return 0, err
 	} else if parentID != nil {
 		p.Parent = *parentID
 	}
-	return nil
+	return boardID, nil
 }

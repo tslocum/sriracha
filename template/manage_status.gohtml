@@ -1,16 +1,16 @@
 {{template "manage_begin.gohtml" .}}
 <h2 class="managetitle">Status</h2>
 {{if ne .Message ""}}
-<fieldset>
-    <legend>Reports</legend>
-    <div>{{.Message}}</div>
-</fieldset>
+    <fieldset>
+        <legend>Reports</legend>
+        <div>{{.Message}}</div>
+    </fieldset><br>
 {{end}}
 {{if ne .Message2 ""}}
-<fieldset>
-    <legend>Posts</legend>
-    <div>{{.Message2}}</div>
-</fieldset>
+    <fieldset>
+        <legend>Posts</legend>
+        <div>{{.Message2}}</div>
+    </fieldset><br>
 {{end}}
 <fieldset>
     <legend>Connections</legend>

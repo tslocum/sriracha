@@ -22,7 +22,7 @@ Sriracha will eventually serve as a replacement for imageboards running [TinyIB]
 - [X] Management panel:
   - [X] Automatically moderate new posts using [regular expressions](https://en.wikipedia.org/wiki/Regular_expression)
   - [X] Ban offensive/abusive posters across all boards
-  - [X] Post using Admin/Mod capcode
+  - [X] Post using admin or mod capcode
   - [X] Post using raw HTML
   - [X] Account system:
     - [X] Super administrators (all privileges)

@@ -14,6 +14,8 @@
     <form method="get" action="/sriracha/mod/{{.Post.Board.ID}}/{{.Post.ID}}" style="display: inline-block;">
         <input type="submit" value="Delete &amp; Ban"> &nbsp;
     </form>
-    {{.Manage.Report.Count}} report{{if ne .Manage.Report.Count 1}}s{{end}}
+    {{if ne .Manage.Report nil}}
+        {{.Manage.Report.Count}} report{{if ne .Manage.Report.Count 1}}s{{end}}
+    {{end}}
 </div>
 {{template "imgboard_post.gohtml" $}}
