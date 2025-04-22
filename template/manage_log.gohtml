@@ -15,7 +15,7 @@
             <tr>
                 <td>{{$log.TimestampDate}}</td>
                 <td>{{if eq $log.Account nil}}System{{else}}{{$log.Account.Username}}{{end}}</td>
-                <td>{{if eq $log.Board nil}}System{{else}}/{{$log.Board.Dir}}/ {{$log.Board.Name}}{{end}}</td>
+                <td>{{if eq $log.Board nil}}System{{else}}{{$log.Board.Path}}{{end}}</td>
                 <td>{{$log.MessageLabel}}</td>
                 <td>{{$log.InfoLabel}}</td>
             </tr>

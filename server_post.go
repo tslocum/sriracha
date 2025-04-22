@@ -3,6 +3,7 @@ package sriracha
 import (
 	"fmt"
 	"html"
+	"html/template"
 	"log"
 	"net/http"
 	"regexp"
@@ -51,6 +52,23 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 
 			data := s.buildData(db, w, r)
 			data.BoardError(w, "invalid post parent")
+			return
+		}
+	}
+
+	if post.FileHash != "" {
+		existing := db.postByFileHash(b, post.FileHash)
+		if existing != nil {
+			var postLink string
+			if existing.Moderated != ModeratedHidden {
+				postLink = fmt.Sprintf(` <a href="%sres/%d.html#%d">here</a>`, existing.Board.Path(), existing.Thread(), existing.ID)
+			}
+
+			data := s.buildData(db, w, r)
+			data.Template = "board_error"
+			data.Info = "Duplicate file uploaded."
+			data.Message = template.HTML(fmt.Sprintf(`<div style="text-align: center;">That file has already been posted%s.</div><br>`, postLink))
+			data.execute(w)
 			return
 		}
 	}

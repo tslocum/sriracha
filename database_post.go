@@ -121,6 +121,18 @@ func (db *Database) postByID(board *Board, postID int) *Post {
 	return p
 }
 
+func (db *Database) postByFileHash(board *Board, hash string) *Post {
+	p := &Post{}
+	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT * FROM post WHERE board = $1 AND filehash = $2", board.ID, hash))
+	if err == pgx.ErrNoRows {
+		return nil
+	} else if err != nil || p.ID == 0 {
+		log.Fatalf("failed to select post: %s", err)
+	}
+	p.Board = board
+	return p
+}
+
 func (db *Database) bumpThread(threadID int, timestamp int64) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE post SET bumped = $1 WHERE id = $2 AND bumped < $1", timestamp, threadID)
 	if err != nil {
