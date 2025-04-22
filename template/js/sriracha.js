@@ -1,21 +1,29 @@
 function expandFile(e, id) {
     if (e == undefined || e.which == undefined || e.which == 1) {
-        var message = "expand " + id;
-        if (document.querySelector("#thumbfile" + id).getAttribute('expanded') != 'true') {
-            document.querySelector("#thumbfile" + id).setAttribute('expanded', 'true');
-            document.querySelector("#file" + id).style.display = "none";
-            document.querySelector("#file" + id).innerHTML = decodeURIComponent(document.querySelector("#expand" + id).innerHTML);
+        var srcFile = document.querySelector("#file" + id);
+        var thumbFile = document.querySelector("#thumbfile" + id);
+        if (!srcFile || !thumbFile) {
+            return;
+        }
+
+        if (thumbFile.getAttribute('expanded') != 'true') {
+            thumbFile.setAttribute('expanded', 'true');
+
+            srcFile.style.display = "none";
+            srcFile.innerHTML = decodeURIComponent(document.querySelector("#expand" + id).innerHTML);
+
             setTimeout(function (id) {
                 return function () {
-                    document.querySelector("#thumbfile" + id).style.display = "none";
-                    document.querySelector("#file" + id).style.display = "block";
+                    thumbFile.style.display = "none";
+                    srcFile.style.display = "block";
                 }
             }(id), 100);
         } else {
-            document.querySelector("#file" + id).style.display = "none";
-            document.querySelector("#file" + id).innerHTML = "";
-            document.querySelector("#thumbfile" + id).style.display = "block";
-            document.querySelector("#thumbfile" + id).setAttribute('expanded', 'false');
+            srcFile.style.display = "none";
+            srcFile.innerHTML = "";
+
+            thumbFile.style.display = "block";
+            thumbFile.setAttribute('expanded', 'false');
         }
 
         return false;
