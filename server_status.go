@@ -16,11 +16,11 @@ func (s *Server) serveStatus(data *templateData, db *Database, w http.ResponseWr
 			if boardID > 0 {
 				b := db.boardByID(boardID)
 				if b != nil {
-					post := db.postByID(b, approve)
+					post := db.postByID(approve)
 					if post != nil {
 						rebuild := post.Moderated == ModeratedHidden
 
-						db.moderatePost(b.ID, post.ID, ModeratedApproved)
+						db.moderatePost(post.ID, ModeratedApproved)
 						db.deleteReports(post)
 
 						if rebuild {

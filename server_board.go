@@ -19,7 +19,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		if b != nil {
 			s.rebuildBoard(db, b)
 
-			data.Info = fmt.Sprintf("Rebuilt %s %s", b.Path(), b.Name)
+			data.Info = fmt.Sprintf("Rebuilt %s", b.Path())
 		}
 	}
 
@@ -41,11 +41,11 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			data.Boards = db.allBoards()
 			data.ModMode = true
 			if postID > 0 {
-				data.Threads = [][]*Post{db.allPostsInThread(b, postID, true)}
+				data.Threads = [][]*Post{db.allPostsInThread(postID, true)}
 				data.ReplyMode = postID
 			} else {
 				for _, thread := range db.allThreads(b, true) {
-					data.Threads = append(data.Threads, db.allPostsInThread(b, thread.ID, true))
+					data.Threads = append(data.Threads, db.allPostsInThread(thread.ID, true))
 				}
 			}
 			return

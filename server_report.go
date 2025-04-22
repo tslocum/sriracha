@@ -23,7 +23,7 @@ func (s *Server) serveReport(db *Database, w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	post := db.postByID(b, postID)
+	post := db.postByID(postID)
 	if post == nil {
 		data.BoardError(w, "No post selected.")
 		return

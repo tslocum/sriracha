@@ -21,7 +21,7 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 			return
 		}
 
-		post := db.postByID(b, postID)
+		post := db.postByID(postID)
 		if post != nil {
 			password := r.FormValue("password")
 			if post.Password == "" || hashData(password) != post.Password {
@@ -49,7 +49,7 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 			s.writeIndexes(db, b)
 
 			data.Template = "board_info"
-			data.Info = fmt.Sprintf("Deleted #%d", post.ID)
+			data.Info = fmt.Sprintf("Deleted No.%d", post.ID)
 			data.execute(w)
 			return
 		}

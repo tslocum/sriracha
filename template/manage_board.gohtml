@@ -60,7 +60,7 @@
                 <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 2)}} selected{{end}}>No visitor posts</option>
                 <option value="3"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 3)}} selected{{end}}>No posts</option>
             </select></td>
-            <td>New post restrictions. The 'No visitor threads' option allows visitors to reply to existing threads. The 'No posts' option also prevents staff members from posting.</td>
+            <td>New post restrictions. 'No visitor threads' allows visitors to post replies. 'No posts' prevents even staff members from posting.</td>
         </tr>
         <tr>
             <td class="postblock"><label for="approval">Require Approval</label></td>
@@ -110,22 +110,22 @@
             <td>Maximum number of replies to a thread before the thread stops being bumped to the front. 0 to disable.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="maxname">Name Length</label></td>
+            <td class="postblock"><label for="maxname">Max Name Length</label></td>
             <td><input type="text" name="maxname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxName}}{{end}}"></td>
             <td>Maximum length of the name field. Values greater than 255 are not supported when using the default database schema.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="maxemail">Email Length</label></td>
+            <td class="postblock"><label for="maxemail">Max Email Length</label></td>
             <td><input type="text" name="maxemail" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxEmail}}{{end}}"></td>
             <td>Maximum length of the email field. Values greater than 255 are not supported when using the default database schema.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="maxsubject">Subject Length</label></td>
+            <td class="postblock"><label for="maxsubject">Max Subject Length</label></td>
             <td><input type="text" name="maxsubject" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSubject}}{{end}}"></td>
             <td>Maximum length of the subject field. Values greater than 255 are not supported when using the default database schema.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="maxmessage">Message Length</label></td>
+            <td class="postblock"><label for="maxmessage">Max Message Length</label></td>
             <td><input type="text" name="maxmessage" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxMessage}}{{end}}"></td>
             <td>Maximum length of the message field.</td>
         </tr>

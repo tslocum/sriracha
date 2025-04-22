@@ -46,7 +46,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	}
 
 	if post.Parent != 0 {
-		parent := db.postByID(b, post.Parent)
+		parent := db.postByID(post.Parent)
 		if parent == nil || parent.Parent != 0 {
 			s.deletePostFiles(post)
 
@@ -57,7 +57,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	}
 
 	if post.FileHash != "" {
-		existing := db.postByFileHash(b, post.FileHash)
+		existing := db.postByFileHash(post.FileHash)
 		if existing != nil {
 			var postLink string
 			if existing.Moderated != ModeratedHidden {
@@ -202,7 +202,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			if err != nil || postID <= 0 {
 				return s
 			}
-			refPost := db.postByID(post.Board, postID)
+			refPost := db.postByID(postID)
 			if refPost == nil {
 				return s
 			}

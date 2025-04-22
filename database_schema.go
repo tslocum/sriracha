@@ -2,7 +2,7 @@ package sriracha
 
 var dbSchema = []string{`
 CREATE TABLE account (
-	id smallserial UNIQUE,
+	id smallserial PRIMARY KEY,
 	username varchar(255) NOT NULL,
 	password text NOT NULL,
 	role integer NOT NULL,
@@ -13,7 +13,7 @@ CREATE UNIQUE INDEX ON account (username);
 CREATE UNIQUE INDEX ON account (session);
 
 CREATE TABLE ban (
-	id serial UNIQUE,
+	id serial PRIMARY KEY,
 	ip varchar(255) NOT NULL,
 	timestamp bigint NOT NULL,
 	expire bigint NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE ban (
 CREATE UNIQUE INDEX ON ban (ip);
 
 CREATE TABLE board (
-	id smallserial UNIQUE,
+	id smallserial PRIMARY KEY,
 	dir varchar(255) NOT NULL,
 	name varchar(255) NOT NULL,
 	description text NOT NULL,
@@ -50,14 +50,13 @@ CREATE TABLE board (
 CREATE UNIQUE INDEX ON board (dir);
 
 CREATE TABLE config (
-	name  text NOT NULL,
-	value text NOT NULL,
-	PRIMARY KEY	(name)
+	name  text PRIMARY KEY,
+	value text NOT NULL
 );
 INSERT INTO config VALUES ('version', 1);
 
 CREATE TABLE keyword (
-	id smallserial UNIQUE,
+	id smallserial PRIMARY KEY,
 	text varchar(255) NOT NULL,
 	action varchar(255) NOT NULL
 );
@@ -70,7 +69,7 @@ CREATE TABLE keyword_board (
 );
 
 CREATE TABLE log (
-	id serial UNIQUE,
+	id serial PRIMARY KEY,
 	board smallint NULL REFERENCES board (id),
 	account smallint NULL REFERENCES account (id),
 	timestamp bigint NOT NULL,
@@ -79,9 +78,9 @@ CREATE TABLE log (
 );
 
 CREATE TABLE post (
-	id serial UNIQUE,
-	board smallint NOT NULL REFERENCES board (id) ON DELETE CASCADE,
+	id serial PRIMARY KEY,
 	parent integer REFERENCES post (id) ON DELETE CASCADE,
+	board smallint NOT NULL REFERENCES board (id) ON DELETE CASCADE,
 	timestamp bigint NOT NULL,
 	bumped bigint NOT NULL,
 	ip varchar(255) NOT NULL,
@@ -93,7 +92,7 @@ CREATE TABLE post (
 	message text NOT NULL,
 	password varchar(255) NOT NULL,
 	file text NOT NULL,
-	filehash varchar(64) NOT NULL,
+	filehash varchar(64) NULL,
 	fileoriginal varchar(255) NOT NULL,
 	filesize integer NOT NULL default '0',
 	filewidth smallint NOT NULL default '0',
@@ -107,17 +106,17 @@ CREATE TABLE post (
 );
 CREATE INDEX ON post (board);
 CREATE INDEX ON post (parent);
-CREATE INDEX ON post (bumped);
-CREATE INDEX ON post (stickied);
 CREATE INDEX ON post (moderated);
+CREATE INDEX ON post (stickied);
+CREATE INDEX ON post (bumped);
+CREATE UNIQUE INDEX ON post (filehash);
 
 CREATE TABLE report (
-	id serial UNIQUE,
+	id serial PRIMARY KEY,
 	board smallint NOT NULL REFERENCES board (id) ON DELETE CASCADE,
 	post integer NOT NULL REFERENCES post (id) ON DELETE CASCADE,
 	timestamp bigint NOT NULL,
-	ip varchar(255) NOT NULL,
-	PRIMARY KEY	(board, post, ip)
+	ip varchar(255) NOT NULL
 );
-CREATE INDEX ON report (board);
+CREATE UNIQUE INDEX ON report (board, post, ip);
 `}

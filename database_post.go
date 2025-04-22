@@ -12,9 +12,13 @@ func (db *Database) addPost(p *Post) {
 	if p.Parent != 0 {
 		parent = &p.Parent
 	}
+	var fileHash *string
+	if p.FileHash != "" {
+		fileHash = &p.FileHash
+	}
 	err := db.conn.QueryRow(context.Background(), "INSERT INTO post VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) RETURNING id",
-		p.Board.ID,
 		parent,
+		p.Board.ID,
 		p.Timestamp,
 		p.Bumped,
 		p.IP,
@@ -26,7 +30,7 @@ func (db *Database) addPost(p *Post) {
 		p.Message,
 		p.Password,
 		p.File,
-		p.FileHash,
+		fileHash,
 		p.FileOriginal,
 		p.FileSize,
 		p.FileWidth,
@@ -65,24 +69,28 @@ func (db *Database) allThreads(board *Board, moderated bool) []*Post {
 	return posts
 }
 
-func (db *Database) allPostsInThread(board *Board, postID int, moderated bool) []*Post {
+func (db *Database) allPostsInThread(postID int, moderated bool) []*Post {
 	var extra string
 	if moderated {
 		extra = " AND moderated > 0"
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT * FROM post WHERE board = $1 AND (id = $2 OR parent = $2)"+extra+" ORDER BY id ASC", board.ID, postID)
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM post WHERE (id = $1 OR parent = $1)"+extra+" ORDER BY id ASC", postID)
 	if err != nil {
 		log.Fatalf("failed to select all posts: %s", err)
 	}
 	var posts []*Post
+	var boardIDs []int
 	for rows.Next() {
 		p := &Post{}
-		_, err := scanPost(p, rows)
+		boardID, err := scanPost(p, rows)
 		if err != nil {
 			log.Fatal(err)
 		}
-		p.Board = board
 		posts = append(posts, p)
+		boardIDs = append(boardIDs, boardID)
+	}
+	for i := range posts {
+		posts[i].Board = db.boardByID(boardIDs[i])
 	}
 	return posts
 }
@@ -109,27 +117,27 @@ func (db *Database) pendingPosts() []*Post {
 	return posts
 }
 
-func (db *Database) postByID(board *Board, postID int) *Post {
+func (db *Database) postByID(postID int) *Post {
 	p := &Post{}
-	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT * FROM post WHERE board = $1 AND id = $2", board.ID, postID))
+	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT * FROM post WHERE id = $1", postID))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil || p.ID == 0 {
 		log.Fatalf("failed to select post: %s", err)
 	}
-	p.Board = board
+	p.Board = db.boardByID(boardID)
 	return p
 }
 
-func (db *Database) postByFileHash(board *Board, hash string) *Post {
+func (db *Database) postByFileHash(hash string) *Post {
 	p := &Post{}
-	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT * FROM post WHERE board = $1 AND filehash = $2", board.ID, hash))
+	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT * FROM post WHERE filehash = $1", hash))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil || p.ID == 0 {
 		log.Fatalf("failed to select post: %s", err)
 	}
-	p.Board = board
+	p.Board = db.boardByID(boardID)
 	return p
 }
 
@@ -140,8 +148,8 @@ func (db *Database) bumpThread(threadID int, timestamp int64) {
 	}
 }
 
-func (db *Database) moderatePost(boardID int, postID int, moderated PostModerated) {
-	_, err := db.conn.Exec(context.Background(), "UPDATE post SET moderated = $1 WHERE board = $2 AND id = $3", moderated, boardID, postID)
+func (db *Database) moderatePost(postID int, moderated PostModerated) {
+	_, err := db.conn.Exec(context.Background(), "UPDATE post SET moderated = $1 WHERE id = $2", moderated, postID)
 	if err != nil {
 		log.Fatalf("failed to moderate post: %s", err)
 	}
@@ -159,12 +167,13 @@ func (db *Database) deletePost(postID int) {
 }
 
 func scanPost(p *Post, row pgx.Row) (int, error) {
-	var boardID int
 	var parentID *int
+	var boardID int
+	var fileHash *string
 	err := row.Scan(
 		&p.ID,
-		&boardID,
 		&parentID,
+		&boardID,
 		&p.Timestamp,
 		&p.Bumped,
 		&p.IP,
@@ -176,7 +185,7 @@ func scanPost(p *Post, row pgx.Row) (int, error) {
 		&p.Message,
 		&p.Password,
 		&p.File,
-		&p.FileHash,
+		&fileHash,
 		&p.FileOriginal,
 		&p.FileSize,
 		&p.FileWidth,
@@ -190,8 +199,13 @@ func scanPost(p *Post, row pgx.Row) (int, error) {
 	)
 	if err != nil {
 		return 0, err
-	} else if parentID != nil {
+	}
+
+	if parentID != nil {
 		p.Parent = *parentID
+	}
+	if fileHash != nil {
+		p.FileHash = *fileHash
 	}
 	return boardID, nil
 }

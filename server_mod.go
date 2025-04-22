@@ -15,7 +15,7 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 	modInfo := pathString(r, "/sriracha/mod/")
 	if modInfo != "" {
 		split := strings.Split(modInfo, "/")
-		if len(split) == 3 {
+		if len(split) == 2 {
 			switch split[0] {
 			case "delete":
 				action = "d"
@@ -25,21 +25,19 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 				data.ManageError("Unknown mod action")
 				return
 			}
-			boardID = parseInt(split[1])
-			postID = parseInt(split[2])
-		} else if len(split) == 2 {
-			boardID = parseInt(split[0])
 			postID = parseInt(split[1])
+		} else if len(split) == 1 {
+			postID = parseInt(split[0])
 		}
 	}
-	if boardID == 0 || postID == 0 {
-		data.ManageError("Unknown board or post")
+	if postID == 0 {
+		data.ManageError("Unknown post")
 		return
 	}
 	data.Board = db.boardByID(boardID)
-	data.Post = db.postByID(data.Board, postID)
+	data.Post = db.postByID(postID)
 	if data.Board == nil || data.Post == nil {
-		data.ManageError("Unknown board or post")
+		data.ManageError("Unknown post")
 		return
 	}
 	data.Manage.Ban = db.banByIP(data.Post.IP)
@@ -67,7 +65,7 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 		if action == "d" || action == "db" {
 			s.deletePost(db, data.Post)
 
-			db.log(data.Account, data.Board, fmt.Sprintf("Deleted %s%d", data.Board.Path(), data.Post.ID), "")
+			db.log(data.Account, data.Board, fmt.Sprintf("Deleted No.%d", data.Post.ID), "")
 
 			s.rebuildThread(db, data.Board, data.Post)
 		}

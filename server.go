@@ -305,7 +305,7 @@ func (s *Server) deletePostFiles(p *Post) {
 }
 
 func (s *Server) deletePost(db *Database, p *Post) {
-	posts := db.allPostsInThread(p.Board, p.ID, false)
+	posts := db.allPostsInThread(p.ID, false)
 	for _, post := range posts {
 		s.deletePostFiles(post)
 	}
@@ -368,7 +368,7 @@ func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request)
 }
 
 func (s *Server) writeThread(db *Database, board *Board, postID int) {
-	posts := db.allPostsInThread(board, postID, true)
+	posts := db.allPostsInThread(postID, true)
 	if len(posts) == 0 {
 		return
 	}
@@ -406,7 +406,7 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 	}
 	threads := db.allThreads(board, true)
 	for _, thread := range threads {
-		data.Threads = append(data.Threads, db.allPostsInThread(board, thread.ID, true))
+		data.Threads = append(data.Threads, db.allPostsInThread(thread.ID, true))
 	}
 	data.execute(indexFile)
 

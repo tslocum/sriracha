@@ -50,7 +50,7 @@ func (db *Database) allReports() []*Report {
 
 		r := &Report{}
 		r.Board = db.boardByID(boardID)
-		r.Post = db.postByID(r.Board, postID)
+		r.Post = db.postByID(postID)
 		r.count = db.numReports(r.Post)
 		reports[i] = r
 	}
