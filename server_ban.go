@@ -17,6 +17,11 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 			oldBan := *data.Manage.Ban
 			data.Manage.Ban.loadForm(r)
 
+			shorter := data.Manage.Ban.Expire != 0 && (oldBan.Expire == 0 || data.Manage.Ban.Expire < oldBan.Expire)
+			if shorter && data.forbidden(w, RoleAdmin) {
+				return
+			}
+
 			err := data.Manage.Ban.validate()
 			if err != nil {
 				data.ManageError(err.Error())

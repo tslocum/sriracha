@@ -15,11 +15,16 @@
                 <td>{{if eq $ban.Reason ""}}No reason provided{{else}}{{$ban.Reason}}{{end}}</td>
                 <td>
                     [<a href="/sriracha/ban/{{$ban.ID}}">update</a>]
-                    [<a href="/sriracha/ban/delete/{{$ban.ID}}">delete</a>]
+                    {{if le $.Account.Role 2}}{{/* Admin */}}
+                        [<a href="/sriracha/ban/delete/{{$ban.ID}}">delete</a>]
+                    {{end}}
                 </td>
             </tr>
         {{end}}
     </table><br>
+{{end}}
+{{if ne .Manage.Ban nil}}
+    [<a href="/sriracha/ban/">Return</a>]<br>
 {{end}}
 {{template "manage_ban_form.gohtml" .}}
 {{template "manage_end.gohtml" .}}

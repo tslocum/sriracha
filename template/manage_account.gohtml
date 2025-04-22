@@ -18,6 +18,9 @@
         {{end}}
     </table><br>
 {{end}}
+{{if ne .Manage.Account nil}}
+    [<a href="/sriracha/account/">Return</a>]<br>
+{{end}}
 <form method="post">
     <fieldset>
     <legend>{{if eq .Manage.Account nil}}Add Account{{else}}Update {{.Manage.Account.Username}}{{end}}</legend>

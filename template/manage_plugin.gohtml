@@ -1,6 +1,7 @@
 {{template "manage_begin.gohtml" .}}
 <h2 class="managetitle">Plugins</h2>
 {{if ne .Manage.Plugin nil}}
+    [<a href="/sriracha/plugin/">Return</a>]<br>
     <form method="post">
         <fieldset>
         <legend>Configure {{.Manage.Plugin.Name}}</legend>

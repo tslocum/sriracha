@@ -59,6 +59,16 @@ func (data *templateData) ManageError(message string) {
 	data.Info = message
 }
 
+func (data *templateData) forbidden(w http.ResponseWriter, required AccountRole) bool {
+	allow := data.Account != nil && data.Account.Role != 0 && data.Account.Role <= required
+	if allow {
+		return false
+	}
+	data.Template = "manage_error"
+	data.Info = "Access forbidden."
+	return true
+}
+
 func (data *templateData) execute(w io.Writer) {
 	data.Opt = &srirachaServer.opt
 

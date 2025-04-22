@@ -26,8 +26,8 @@ Sriracha will eventually serve as a replacement for imageboards running [TinyIB]
   - [X] Post using raw HTML
   - [X] Account system:
     - [X] Super administrators (all privileges)
-    - [ ] Administrators (all privileges except managing accounts and deleting boards)
-    - [ ] Moderators (may only add bans, approve/delete posts and sticky/lock threads)
+    - [X] Administrators (all privileges except managing accounts and deleting boards)
+    - [X] Moderators (may only add bans, approve/delete posts and sticky/lock threads)
 
 ## Documentation
 

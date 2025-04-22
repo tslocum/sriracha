@@ -7,6 +7,9 @@ import (
 )
 
 func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
+	if data.forbidden(w, RoleSuperAdmin) {
+		return
+	}
 	data.Template = "manage_account"
 
 	accountID := pathInt(r, "/sriracha/account/")

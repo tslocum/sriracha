@@ -5,7 +5,10 @@ import (
 )
 
 func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
-	// TODO restrict access
+	if data.forbidden(w, RoleAdmin) {
+		return
+	}
+
 	if r.URL.Path == "/sriracha/setting/reset" {
 		db.SaveString("sitename", defaultServerSiteName)
 		s.opt.SiteName = defaultServerSiteName

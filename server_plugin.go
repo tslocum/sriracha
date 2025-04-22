@@ -8,6 +8,9 @@ import (
 )
 
 func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
+	if data.forbidden(w, RoleAdmin) {
+		return
+	}
 	data.Template = "manage_plugin"
 
 	pluginID := pathInt(r, "/sriracha/plugin/reset/")

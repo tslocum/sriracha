@@ -22,6 +22,9 @@
         {{end}}
     </table><br>
 {{end}}
+{{if ne .Manage.Keyword nil}}
+    [<a href="/sriracha/keyword/">Return</a>]<br>
+{{end}}
 <form method="post">
     <fieldset>
     <legend>{{if eq .Manage.Keyword nil}}Add Keyword{{else}}Update {{.Manage.Keyword.Text}}{{end}}</legend>

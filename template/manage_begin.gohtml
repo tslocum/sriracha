@@ -15,13 +15,19 @@
     </head>
     <body>
 		{{if ne .Account nil}}
-			[<a href="/sriracha/account/" style="text-decoration: underline;">Accounts</a>]
+			{{if eq .Account.Role 1}}{{/* Super-Admin */}}
+				[<a href="/sriracha/account/" style="text-decoration: underline;">Accounts</a>]
+			{{end}}
 			[<a href="/sriracha/ban/" style="text-decoration: underline;">Bans</a>]
 			[<a href="/sriracha/board/" style="text-decoration: underline;">Boards</a>]
-			[<a href="/sriracha/keyword/" style="text-decoration: underline;">Keywords</a>]
+			{{if le .Account.Role 2}}{{/* Admin */}}
+				[<a href="/sriracha/keyword/" style="text-decoration: underline;">Keywords</a>]
+			{{end}}
 			[<a href="/sriracha/log/" style="text-decoration: underline;">Logs</a>]
-			[<a href="/sriracha/plugin/" style="text-decoration: underline;">Plugins</a>]
-			[<a href="/sriracha/setting/" style="text-decoration: underline;">Settings</a>]
+			{{if le .Account.Role 2}}{{/* Admin */}}
+				[<a href="/sriracha/plugin/" style="text-decoration: underline;">Plugins</a>]
+				[<a href="/sriracha/setting/" style="text-decoration: underline;">Settings</a>]
+			{{end}}
 			[<a href="/sriracha/" style="text-decoration: underline;">Status</a>]
 		{{end}}
 		<div class="adminbar">

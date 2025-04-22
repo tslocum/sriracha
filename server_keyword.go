@@ -10,6 +10,9 @@ import (
 )
 
 func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
+	if data.forbidden(w, RoleAdmin) {
+		return
+	}
 	var err error
 	data.Template = "manage_keyword"
 	data.Boards = db.allBoards()
