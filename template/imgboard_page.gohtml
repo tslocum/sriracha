@@ -1,17 +1,18 @@
 {{template "imgboard_begin.gohtml" .}}
 {{if .ReplyMode}}
 	{{if not .ModMode}}
-	[<a href="{{.Board.Path}}">Return</a>]
-	<div class="replymode">Posting mode: Reply</div>
+		<div class="replymode">Posting mode: Reply</div>
 	{{else}}
-	[<a href="/sriracha/board/mod/{{.Board.ID}}">Return</a>]
+		<div class="replymode">Mod mode: View</div>
 	{{end}}
+{{else if .ModMode}}
+	<div class="replymode">Mod mode</div>
 {{end}}
 {{if not .ModMode}}
 	{{template "imgboard_postarea.gohtml" .}}
 {{else}}
 	<details>
-		<summary style="cursor: pointer;">{{if eq .ReplyMode 0}}Create thread{{else}}Reply to thread{{end}}</summary>
+		<summary style="cursor: pointer;">{{if eq .ReplyMode 0}}Create thread{{else}}Reply{{end}}</summary>
 		<div>
 			{{template "imgboard_postarea.gohtml" .}}
 		</div>

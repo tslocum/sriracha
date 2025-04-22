@@ -1,0 +1,26 @@
+{{template "imgboard_begin.gohtml" .}}
+<div class="replymode">Catalog</div>
+<div id="posts" style="margin-top: 5px;">
+    {{range $i, $thread := .Threads}}
+        {{range $i, $post := $thread}}
+            {{if eq .Parent 0}}
+                <div class="catalogpost" style="max-width: 250px;">
+                    <a href="{{.Board.Path}}res/{{.ID}}.html">
+                        {{if ne .File ""}}
+                            <img src="{{.Board.Path}}thumb/{{.Thumb}}" alt="1" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}" border="0">
+                        {{else}}
+                            No.{{.ID}}
+                        {{end}}
+                    </a><br>
+                    <b>{{len $thread}}</b><br>
+                    {{if ne .Subject ""}}
+                        {{.Subject}}
+                    {{else}}
+                        {{.Message | HTML}}
+                    {{end}}
+                </div>
+            {{end}}
+        {{end}}
+    {{end}}
+</div>
+{{template "imgboard_end.gohtml" .}}

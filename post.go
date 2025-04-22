@@ -155,7 +155,7 @@ func (p *Post) loadForm(r *http.Request, b *Board, rootDir string) error {
 func (p *Post) setNameBlock(defaultName string, capcode string) {
 	var out strings.Builder
 
-	emailLink := p.Email != "" && strings.ToLower(p.Email) != "Noko"
+	emailLink := p.Email != "" && strings.ToLower(p.Email) != "noko"
 
 	name := p.Name
 	if name == "" {

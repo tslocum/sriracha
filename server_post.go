@@ -23,8 +23,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	b := db.boardByDir(boardDir)
 	if b == nil {
 		data := s.buildData(db, w, r)
-		data.ManageError("no board was specified")
-		data.execute(w)
+		data.BoardError(w, "no board was specified")
 		return
 	}
 
@@ -41,8 +40,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		s.deletePostFiles(post)
 
 		data := s.buildData(db, w, r)
-		data.ManageError(err.Error())
-		data.execute(w)
+		data.BoardError(w, err.Error())
 		return
 	}
 
@@ -52,8 +50,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			s.deletePostFiles(post)
 
 			data := s.buildData(db, w, r)
-			data.ManageError("invalid post parent")
-			data.execute(w)
+			data.BoardError(w, "invalid post parent")
 			return
 		}
 	}
@@ -95,6 +92,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		}
 	}
 
+	var addReport bool
 	if !staffPost {
 		for _, keyword := range db.allKeywords() {
 			rgxp, err := regexp.Compile(keyword.Text)
@@ -141,7 +139,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 				case "hide":
 					post.Moderated = 0
 				case "report":
-					// TODO add report
+					addReport = true
 				case "ban":
 					existing := db.banByIP(post.IP)
 					if existing == nil {
@@ -161,8 +159,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 					s.deletePostFiles(post)
 
 					data := s.buildData(db, w, r)
-					data.ManageError("Banned keyword detected in post.")
-					data.execute(w)
+					data.BoardError(w, "Banned keyword detected in post.")
 					return
 				}
 			}
@@ -176,8 +173,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 				s.deletePostFiles(post)
 
 				data := s.buildData(db, w, r)
-				data.ManageError(err.Error())
-				data.execute(w)
+				data.BoardError(w, err.Error())
 				log.Printf("warning: plugin failed to handle post event: %s", err.Error())
 				return
 			}
@@ -202,8 +198,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 
 	if strings.TrimSpace(post.Message) == "" && post.File == "" {
 		data := s.buildData(db, w, r)
-		data.ManageError("Please upload a file and/or enter a message.")
-		data.execute(w)
+		data.BoardError(w, "Please upload a file and/or enter a message.")
 		return
 	}
 
@@ -218,6 +213,21 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	}
 
 	db.addPost(post)
+
+	if post.Moderated == ModeratedHidden {
+		data.Template = "board_info"
+		data.Info = "Your post will be shown once it has been approved."
+		data.execute(w)
+		return
+	} else if addReport {
+		report := &Report{
+			Board:     b,
+			Post:      post,
+			Timestamp: time.Now().Unix(),
+			IP:        hashIP(r.RemoteAddr),
+		}
+		db.addReport(report)
+	}
 
 	if post.Parent != 0 && strings.ToLower(post.Email) != "sage" {
 		// TODO check reply limit

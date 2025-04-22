@@ -32,6 +32,10 @@
 		</div>
 		<div class="logo">{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}</div>
 		<hr width="90%">
-		{{if .ModMode}}
-			<div class="replymode">Mod mode</div>
+		{{if .ReplyMode}}
+			{{if not .ModMode}}
+				[<a href="{{.Board.Path}}">Return</a>]
+			{{else}}
+				[<a href="/sriracha/board/mod/{{.Board.ID}}">Return</a>]
+			{{end}}
 		{{end}}

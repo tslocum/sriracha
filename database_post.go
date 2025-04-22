@@ -115,16 +115,16 @@ func (db *Database) postByID(board *Board, postID int) *Post {
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil || p.ID == 0 {
-		log.Fatalf("failed to select keyword: %s", err)
+		log.Fatalf("failed to select post: %s", err)
 	}
 	p.Board = board
 	return p
 }
 
 func (db *Database) bumpThread(threadID int, timestamp int64) {
-	_, err := db.conn.Exec(context.Background(), "UPDATE post SET bumped = $1 WHERE id = $2", timestamp, threadID)
+	_, err := db.conn.Exec(context.Background(), "UPDATE post SET bumped = $1 WHERE id = $2 AND bumped < $1", timestamp, threadID)
 	if err != nil {
-		log.Fatalf("failed to update account: %s", err)
+		log.Fatalf("failed to bump thread: %s", err)
 	}
 }
 
@@ -137,7 +137,7 @@ func (db *Database) moderatePost(boardID int, postID int, moderated PostModerate
 
 func (db *Database) deletePost(postID int) {
 	if postID <= 0 {
-		log.Panicf("invalid postID %d", postID)
+		log.Panicf("invalid post ID %d", postID)
 	}
 
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM post WHERE id = $1", postID)

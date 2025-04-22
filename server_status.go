@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"time"
 )
 
 func (s *Server) serveStatus(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
@@ -23,6 +24,7 @@ func (s *Server) serveStatus(data *templateData, db *Database, w http.ResponseWr
 						db.deleteReports(post)
 
 						if rebuild {
+							db.bumpThread(post.Thread(), time.Now().Unix())
 							s.rebuildThread(db, b, post)
 						}
 					}

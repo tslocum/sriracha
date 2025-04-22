@@ -63,15 +63,11 @@ func (data *templateData) execute(w io.Writer) {
 	data.Opt = &srirachaServer.opt
 
 	if strings.HasPrefix(data.Template, "board_") {
-		boardType := TypeImageboard
+		prefix := "imgboard_"
 		if data.Board != nil && data.Board.Type == TypeForum {
-			boardType = TypeForum
+			prefix = "forum_"
 		}
-		if boardType == TypeImageboard {
-			data.Template = "imgboard_" + strings.TrimPrefix(data.Template, "board_")
-		} else {
-			data.Template = "forum_" + strings.TrimPrefix(data.Template, "board_")
-		}
+		data.Template = prefix + strings.TrimPrefix(data.Template, "board_")
 	}
 
 	err := srirachaServer.tpl.ExecuteTemplate(w, data.Template+".gohtml", data)

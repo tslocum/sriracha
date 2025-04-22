@@ -390,10 +390,13 @@ func (s *Server) writeThread(db *Database, board *Board, postID int) {
 }
 
 func (s *Server) writeIndexes(db *Database, board *Board) {
-	f, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "index.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	// Write index.
+
+	indexFile, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "index.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer indexFile.Close()
 
 	data := &templateData{
 		Board:    board,
@@ -405,7 +408,19 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 	for _, thread := range threads {
 		data.Threads = append(data.Threads, db.allPostsInThread(board, thread.ID, true))
 	}
-	data.execute(f)
+	data.execute(indexFile)
+
+	// Write catalog.
+
+	catalogFile, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "catalog.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer catalogFile.Close()
+
+	data.Template = "board_catalog"
+	data.ReplyMode = 1
+	data.execute(catalogFile)
 }
 
 func (s *Server) rebuildThread(db *Database, board *Board, post *Post) {
