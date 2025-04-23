@@ -3,6 +3,7 @@ package sriracha
 import (
 	"context"
 	"crypto/sha512"
+	"embed"
 	"encoding/base64"
 	"flag"
 	"fmt"
@@ -24,6 +25,7 @@ import (
 	"github.com/alexedwards/argon2id"
 	"github.com/fsnotify/fsnotify"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/leonelquinteros/gotext"
 	"github.com/r3labs/diff/v3"
 	"golang.org/x/exp/constraints"
 	"golang.org/x/sys/unix"
@@ -31,6 +33,9 @@ import (
 )
 
 var alphaNumericAndSymbols = regexp.MustCompile(`^[0-9A-Za-z_-]+$`)
+
+//go:embed locale
+var localeFS embed.FS
 
 var srirachaServer *Server
 
@@ -43,6 +48,10 @@ var defaultServerEmbeds = [][2]string{
 	{"YouTube", "https://youtube.com/oembed?format=json&url=SRIRACHA_EMBED"},
 	{"Vimeo", "https://vimeo.com/api/oembed.json?url=SRIRACHA_EMBED"},
 	{"SoundCloud", "https://soundcloud.com/oembed?format=json&url=SRIRACHA_EMBED"},
+}
+
+func init() {
+	gotext.SetDomain("sriracha")
 }
 
 type ServerOptions struct {
@@ -622,6 +631,17 @@ func (s *Server) Run() error {
 	err := s.parseConfig(configFile)
 	if err != nil {
 		return err
+	}
+
+	if s.config.Locale != "" && s.config.Locale != "en" {
+		buf, err := localeFS.ReadFile(fmt.Sprintf("locale/%s/%s.po", s.config.Locale, s.config.Locale))
+		if err != nil {
+			log.Fatalf("failed to load locale %s: %s", s.config.Locale, err)
+		}
+
+		po := gotext.NewPo()
+		po.Parse(buf)
+		gotext.GetStorage().AddTranslator("sriracha", po)
 	}
 
 	s.dbPool, err = connectDatabase(s.config.Address, s.config.Username, s.config.Password, s.config.DBName, s.config.Min, s.config.Max)

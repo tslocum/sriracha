@@ -1,10 +1,10 @@
 package sriracha
 
 import (
-	"fmt"
 	"net/http"
-	"runtime/debug"
 	"time"
+
+	"github.com/leonelquinteros/gotext"
 )
 
 func (s *Server) serveReport(db *Database, w http.ResponseWriter, r *http.Request) {
@@ -12,24 +12,17 @@ func (s *Server) serveReport(db *Database, w http.ResponseWriter, r *http.Reques
 
 	postID := formInt(r, "post")
 	if postID <= 0 {
-		data.BoardError(w, "No post selected.")
-		return
-	}
-
-	b := db.boardByID(formInt(r, "board"))
-	if b == nil {
-		debug.PrintStack()
-		data.BoardError(w, "No board was specified.")
+		data.BoardError(w, gotext.Get("No post selected."))
 		return
 	}
 
 	post := db.postByID(postID)
 	if post == nil {
-		data.BoardError(w, "No post selected.")
+		data.BoardError(w, gotext.Get("No post selected."))
 		return
 	} else if post.Moderated == ModeratedVisible {
 		report := &Report{
-			Board:     b,
+			Board:     post.Board,
 			Post:      post,
 			Timestamp: time.Now().Unix(),
 			IP:        hashIP(r.RemoteAddr),
@@ -38,6 +31,6 @@ func (s *Server) serveReport(db *Database, w http.ResponseWriter, r *http.Reques
 	}
 
 	data.Template = "board_info"
-	data.Info = fmt.Sprintf("Reported No.%d", post.ID)
+	data.Info = gotext.Get("Reported No.%d", post.ID)
 	data.execute(w)
 }

@@ -4,6 +4,7 @@ package sriracha
 type Config struct {
 	Root     string // Directory where board files are written to.
 	Serve    string // Address:Port to listen for HTTP connections on.
+	Locale   string // Default locale. See locale directory for available languages.
 	SaltData string // Long random string of text used when one-way hashing data. Must not change once set.
 	SaltPass string // Long random string of text used when two-way hashing data. Must not change once set.
 
