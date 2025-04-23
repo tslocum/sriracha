@@ -117,7 +117,7 @@ const (
 	defaultBoardThumbHeight = 250
 )
 
-func (b *Board) loadForm(r *http.Request, availableEmbeds map[string]string) {
+func (b *Board) loadForm(r *http.Request, availableEmbeds [][2]string) {
 	b.Dir = formString(r, "dir")
 	b.Name = formString(r, "name")
 	b.Description = formString(r, "description")
@@ -146,8 +146,8 @@ func (b *Board) loadForm(r *http.Request, availableEmbeds map[string]string) {
 	embeds := r.Form["embeds"]
 	for _, embed := range embeds {
 		var found bool
-		for available := range availableEmbeds {
-			if available == embed {
+		for _, info := range availableEmbeds {
+			if info[0] == embed {
 				found = true
 				break
 			}

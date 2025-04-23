@@ -1,9 +1,13 @@
 package sriracha
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"html"
 	"html/template"
+	"image"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -15,6 +19,13 @@ import (
 )
 
 var reflinkPattern = regexp.MustCompile(`&gt;&gt;([0-9]+)`)
+
+type embedInfo struct {
+	URL   string `json:"url"`
+	Title string `json:"title"`
+	Thumb string `json:"thumbnail_url"`
+	HTML  string `json:"html"`
+}
 
 func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -89,6 +100,87 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		}
 	}
 
+	if post.File == "" && len(b.Embeds) > 0 {
+		embed := formString(r, "embed")
+		if embed != "" {
+			for _, embedName := range b.Embeds {
+				var embedURL string
+				for _, info := range s.opt.Embeds {
+					if info[0] == embedName {
+						embedURL = info[1]
+						break
+					}
+				}
+				if embedURL == "" {
+					continue
+				}
+
+				resp, err := http.Get(strings.ReplaceAll(embedURL, "SRIRACHA_EMBED", embed))
+				if err != nil {
+					continue
+				}
+				defer resp.Body.Close()
+
+				info := &embedInfo{}
+				err = json.NewDecoder(resp.Body).Decode(&info)
+				if err != nil || info.Title == "" || info.Thumb == "" || info.HTML == "" || !strings.HasPrefix(info.Thumb, "https://") {
+					continue
+				}
+
+				thumbResp, err := http.Get(info.Thumb)
+				if err != nil {
+					continue
+				}
+				defer thumbResp.Body.Close()
+
+				buf, err := io.ReadAll(thumbResp.Body)
+				if err != nil {
+					continue
+				}
+
+				mimeType := http.DetectContentType(buf)
+
+				fileExt := mimeToExt(mimeType)
+				if fileExt == "" {
+					continue
+				}
+
+				imgConfig, _, err := image.DecodeConfig(bytes.NewReader(buf))
+				if err != nil {
+					continue
+				}
+				post.ThumbWidth, post.ThumbHeight = imgConfig.Width, imgConfig.Height
+
+				thumbName := fmt.Sprintf("%d.%s", time.Now().UnixNano(), fileExt)
+				thumbPath := filepath.Join(s.config.Root, b.Dir, "thumb", thumbName)
+
+				thumbFile, err := os.OpenFile(thumbPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+				if err != nil {
+					log.Fatal(err)
+				}
+				defer thumbFile.Close()
+
+				_, err = thumbFile.Write(buf)
+				if err != nil {
+					os.Remove(thumbPath)
+					log.Fatal(err)
+				}
+
+				post.FileHash = "e " + embedName + " " + info.Title
+				post.FileOriginal = embed
+				post.File = info.HTML
+				post.Thumb = thumbName
+				break
+			}
+
+			if post.File == "" {
+				data := s.buildData(db, w, r)
+				data.BoardError(w, "Failed to embed media.")
+				return
+			}
+		}
+	}
+
 	if post.FileHash != "" {
 		existing := db.postByFileHash(post.FileHash)
 		if existing != nil {
@@ -97,10 +189,15 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 				postLink = fmt.Sprintf(` <a href="%sres/%d.html#%d">here</a>`, existing.Board.Path(), existing.Thread(), existing.ID)
 			}
 
+			var uploadType = "file"
+			if post.IsEmbed() {
+				uploadType = "embed"
+			}
+
 			data := s.buildData(db, w, r)
 			data.Template = "board_error"
 			data.Info = "Duplicate file uploaded."
-			data.Message = template.HTML(fmt.Sprintf(`<div style="text-align: center;">That file has already been posted%s.</div><br>`, postLink))
+			data.Message = template.HTML(fmt.Sprintf(`<div style="text-align: center;">That %s has already been posted%s.</div><br>`, uploadType, postLink))
 			data.execute(w)
 			return
 		}

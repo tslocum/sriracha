@@ -39,10 +39,10 @@ const (
 	defaultServerSiteHome = "/"
 )
 
-var defaultServerEmbeds = map[string]string{
-	"SoundCloud": "https://soundcloud.com/oembed?format=json&url=SRIRACHA_EMBED",
-	"Vimeo":      "https://vimeo.com/api/oembed.json?url=SRIRACHA_EMBED",
-	"YouTube":    "https://youtube.com/oembed?format=json&url=SRIRACHA_EMBED",
+var defaultServerEmbeds = [][2]string{
+	{"YouTube", "https://youtube.com/oembed?format=json&url=SRIRACHA_EMBED"},
+	{"Vimeo", "https://vimeo.com/api/oembed.json?url=SRIRACHA_EMBED"},
+	{"SoundCloud", "https://soundcloud.com/oembed?format=json&url=SRIRACHA_EMBED"},
 }
 
 type ServerOptions struct {
@@ -50,7 +50,7 @@ type ServerOptions struct {
 	SiteHome   string
 	BoardIndex bool
 	CAPTCHA    bool
-	Embeds     map[string]string
+	Embeds     [][2]string
 }
 
 type Server struct {
@@ -175,10 +175,10 @@ func (s *Server) setDefaultServerConfig() error {
 
 	s.opt.CAPTCHA = db.GetBool("captcha")
 
-	s.opt.Embeds = make(map[string]string)
+	s.opt.Embeds = nil
 	if !db.HaveConfig("embeds") {
-		for embedName, embedURL := range defaultServerEmbeds {
-			s.opt.Embeds[embedName] = embedURL
+		for _, info := range defaultServerEmbeds {
+			s.opt.Embeds = append(s.opt.Embeds, info)
 		}
 	} else {
 		embeds := db.GetMultiString("embeds")
@@ -187,7 +187,7 @@ func (s *Server) setDefaultServerConfig() error {
 			if len(split) != 2 {
 				continue
 			}
-			s.opt.Embeds[split[0]] = split[1]
+			s.opt.Embeds = append(s.opt.Embeds, [2]string{split[0], split[1]})
 		}
 	}
 

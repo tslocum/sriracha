@@ -11,7 +11,7 @@ Sriracha will eventually serve as a replacement for imageboards running [TinyIB]
 ## Feature Parity with TinyIB
 
 - [ ] GIF, JPG, PNG, SWF, MP4 and WebM upload
-- [ ] YouTube, Vimeo and SoundCloud embedding
+- [X] YouTube, Vimeo and SoundCloud embedding
 - [X] CAPTCHA
 - [X] Reference links `>>###`
 - [X] Delete posts via password

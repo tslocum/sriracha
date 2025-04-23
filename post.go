@@ -203,9 +203,26 @@ func (p *Post) TimestampLabel() string {
 	return formatTimestamp(p.Timestamp)
 }
 
+func (p *Post) IsEmbed() bool {
+	return len(p.FileHash) > 2 && p.FileHash[1] == ' ' && p.FileHash[0] == 'e'
+}
+
+func (p *Post) EmbedInfo() []string {
+	if !p.IsEmbed() {
+		return nil
+	}
+	split := strings.SplitN(p.FileHash, " ", 3)
+	if len(split) != 3 {
+		return nil
+	}
+	return split
+}
+
 func (p *Post) ExpandHTML(b *Board) template.HTML {
 	if p.File == "" {
 		return ""
+	} else if p.IsEmbed() {
+		return template.HTML(p.File)
 	}
 	srcPath := fmt.Sprintf("%ssrc/%s", b.Path(), p.File)
 

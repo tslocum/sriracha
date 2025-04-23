@@ -2,6 +2,7 @@ package sriracha
 
 import (
 	"embed"
+	"fmt"
 	"html/template"
 	"io"
 	"log"
@@ -106,6 +107,9 @@ var templateFuncMap = template.FuncMap{
 			return true
 		}
 		return postIndex >= threadPosts-showReplies
+	},
+	"ZeroPadTo3": func(i int) string {
+		return fmt.Sprintf("%03d", i)
 	},
 	"URLEscape": func(text string) string {
 		return url.PathEscape(text)

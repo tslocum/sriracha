@@ -2,6 +2,7 @@ package sriracha
 
 import (
 	"net/http"
+	"sort"
 	"strings"
 )
 
@@ -25,10 +26,11 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 		db.SaveBool("captcha", false)
 		s.opt.CAPTCHA = false
 
-		clear(s.opt.Embeds)
+		s.opt.Embeds = nil
 		var embeds []string
-		for embedName, embedURL := range defaultServerEmbeds {
-			s.opt.Embeds[embedName] = embedURL
+		for _, info := range defaultServerEmbeds {
+			embedName, embedURL := info[0], info[1]
+			s.opt.Embeds = append(s.opt.Embeds, info)
 			embeds = append(embeds, embedName+" "+embedURL)
 		}
 		db.SaveMultiString("embeds", embeds)
@@ -69,14 +71,18 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 		db.SaveBool("captcha", enableCAPTCHA)
 		s.opt.CAPTCHA = enableCAPTCHA
 
-		clear(s.opt.Embeds)
+		s.opt.Embeds = nil
 		r.ParseForm()
-		var embeds []string
-		for name, v := range r.Form {
-			if !strings.HasPrefix(name, "embeds") {
-				continue
+		var embedNames []string
+		for name := range r.Form {
+			if strings.HasPrefix(name, "embeds") {
+				embedNames = append(embedNames, name)
 			}
-			for _, vv := range v {
+		}
+		sort.Strings(embedNames)
+		var embeds []string
+		for _, name := range embedNames {
+			for _, vv := range r.Form[name] {
 				value := strings.TrimSpace(vv)
 				if value == "" {
 					continue
@@ -85,7 +91,7 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 				if len(split) != 2 || (!strings.HasPrefix(split[1], "http://") && !strings.HasPrefix(split[1], "https://")) || !strings.Contains(split[1], "SRIRACHA_EMBED") {
 					continue
 				}
-				s.opt.Embeds[split[0]] = split[1]
+				s.opt.Embeds = append(s.opt.Embeds, [2]string{split[0], split[1]})
 				embeds = append(embeds, vv)
 			}
 		}

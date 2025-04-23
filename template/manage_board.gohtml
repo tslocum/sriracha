@@ -165,7 +165,8 @@
                     <td class="postblock"><label for="embeds">Allow Embedding</label></td>
                     <td>
                         <select name="embeds" style="width: 100%;" size="3" multiple>
-                            {{range $name, $url := .Opt.Embeds}}
+                            {{range $i, $info := .Opt.Embeds}}
+                                {{$name := index $info 0}}
                                 <option value="{{$name}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasEmbed $name)}} selected{{end}}>{{$name}}</option>
                             {{end}}
                         </select>

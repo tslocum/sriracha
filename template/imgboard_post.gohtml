@@ -6,9 +6,10 @@
         {{if eq .Parent 0}}
             <div id="post{{.ID}}" class="op">
                 {{if ne .File ""}}
-                    <span class="filesize">File: <a href="{{$.Board.Path}}src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{.File}}</a>&ndash;{{template "imgboard_page_fileinfo.gohtml" .}}</span><br>
+                    {{$embed := .EmbedInfo}}
+                    <span class="filesize">{{if not .IsEmbed}}File{{else}}Embed{{end}}: <a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
                     <div id="thumbfile{{.ID}}">
-                        <a href="{{$.Board.Path}}src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$.Board.Path}}thumb/{{.Thumb}}" alt="{{.ID}}" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
+                        <a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$.Board.Path}}thumb/{{.Thumb}}" alt="{{.ID}}" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
                     </div>
                     <div id="expand{{.ID}}" style="display: none;">{{.ExpandHTML $.Board}}</div>
                     <div id="file{{.ID}}" class="thumb" style="display: none;"></div>
@@ -65,9 +66,10 @@
                         </span>
                         <small><span id="backlinks{{.ID}}" class="backlinks"></span></small><br>
                         {{if ne .File ""}}
-                            <span class="filesize"><a href="{{$.Board.Path}}src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{.File}}</a>&ndash;{{template "imgboard_page_fileinfo.gohtml" .}}</span><br>
+                            {{$embed := .EmbedInfo}}
+                            <span class="filesize"><a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
                             <div id="thumbfile{{.ID}}">
-                                <a href="{{$.Board.Path}}src/{{.File}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$.Board.Path}}thumb/{{.Thumb}}" alt="6" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
+                                <a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$.Board.Path}}thumb/{{.Thumb}}" alt="6" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
                             </div>
                             <div id="expand{{.ID}}" style="display: none;">{{.ExpandHTML $.Board}}</div>
                             <div id="file{{.ID}}" class="thumb" style="display: none;"></div>

@@ -106,7 +106,7 @@ CREATE TABLE post (
 	message text NOT NULL,
 	password varchar(255) NOT NULL,
 	file text NOT NULL,
-	filehash varchar(64) NULL,
+	filehash text NULL,
 	fileoriginal varchar(255) NOT NULL,
 	filesize integer NOT NULL default '0',
 	filewidth smallint NOT NULL default '0',
