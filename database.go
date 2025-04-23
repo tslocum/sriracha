@@ -142,6 +142,18 @@ func (db *Database) configKey(key string) string {
 	return key
 }
 
+func (db *Database) HaveConfig(key string) bool {
+	key = db.configKey(key)
+	var count int
+	err := db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM config WHERE name = $1", key).Scan(&count)
+	if err == pgx.ErrNoRows {
+		return false
+	} else if err != nil {
+		log.Fatalf("failed to select config count %s: %s", key, err)
+	}
+	return count > 0
+}
+
 func (db *Database) GetString(key string) string {
 	key = db.configKey(key)
 	var value string

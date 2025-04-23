@@ -31,6 +31,19 @@
             <td>Whether visitors must pass a CAPTCHA when posting.</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="captcha">Embed Services</label></td>
+            <td>
+                {{$i := 0}}
+                {{range $name, $url := .Opt.Embeds}}
+                    <textarea name="embeds{{$i}}" rows="4" cols="80" placeholder="Unused">{{$name}} {{$url}}</textarea><br>
+                    {{$i = ($i | PlusOne)}}
+                {{end}}
+                <textarea name="embeds{{$i}}" rows="4" cols="80" placeholder="Unused"></textarea>
+            </td>
+            <td>Available embed services. Visit board settings to enable usage.<br>
+            Format: <pre style="display: inline-block;border: 1px solid;padding: 2px;">Name https://service.com/path/to/oembed?url=SRIRACHA_EMBED</pre></td>
+        </tr>
+        <tr>
             <td>&nbsp;[<a href="/sriracha/setting/reset" onclick="return confirm('Reset all settings?');">reset</a>]</td>
             <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="Update"></td>
             <td>&nbsp;</td>

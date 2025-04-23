@@ -39,11 +39,18 @@ const (
 	defaultServerSiteHome = "/"
 )
 
+var defaultServerEmbeds = map[string]string{
+	"SoundCloud": "https://soundcloud.com/oembed?format=json&url=SRIRACHA_EMBED",
+	"Vimeo":      "https://vimeo.com/api/oembed.json?url=SRIRACHA_EMBED",
+	"YouTube":    "https://youtube.com/oembed?format=json&url=SRIRACHA_EMBED",
+}
+
 type ServerOptions struct {
 	SiteName   string
 	SiteHome   string
 	BoardIndex bool
 	CAPTCHA    bool
+	Embeds     map[string]string
 }
 
 type Server struct {
@@ -167,6 +174,22 @@ func (s *Server) setDefaultServerConfig() error {
 	s.opt.BoardIndex = boardIndex == "" || boardIndex == "1"
 
 	s.opt.CAPTCHA = db.GetBool("captcha")
+
+	s.opt.Embeds = make(map[string]string)
+	if !db.HaveConfig("embeds") {
+		for embedName, embedURL := range defaultServerEmbeds {
+			s.opt.Embeds[embedName] = embedURL
+		}
+	} else {
+		embeds := db.GetMultiString("embeds")
+		for _, v := range embeds {
+			split := strings.SplitN(v, " ", 2)
+			if len(split) != 2 {
+				continue
+			}
+			s.opt.Embeds[split[0]] = split[1]
+		}
+	}
 
 	_, err = conn.Exec(context.Background(), "COMMIT")
 	if err != nil {
