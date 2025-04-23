@@ -73,14 +73,16 @@
                         <input type="file" name="file" size="35" accesskey="f">
                     </td>
                 </tr>
-                <tr>
-                    <td class="postblock">
-                        Embed
-                    </td>
-                    <td>
-                        <input type="text" name="embed" size="28" accesskey="x" autocomplete="off">&nbsp;&nbsp;(paste a YouTube URL)
-                    </td>
-                </tr>
+                {{if ne (len .Board.Embeds) 0}}
+                    <tr>
+                        <td class="postblock">
+                            Embed
+                        </td>
+                        <td>
+                            <input type="text" name="embed" size="28" accesskey="x" autocomplete="off">&nbsp;&nbsp;(paste a YouTube URL)
+                        </td>
+                    </tr>
+                {{end}}
                 <tr>
                     <td class="postblock">
                         Password

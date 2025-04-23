@@ -44,6 +44,28 @@ func (db *Database) addBoard(b *Board) {
 	if err != nil || b.ID == 0 {
 		log.Fatalf("failed to select id of inserted board: %s", err)
 	}
+	for _, embed := range b.Embeds {
+		_, err := db.conn.Exec(context.Background(), "INSERT INTO board_embed VALUES ($1, $2)", b.ID, embed)
+		if err != nil {
+			log.Fatalf("failed to insert board embeds: %s", err)
+		}
+	}
+}
+
+func (db *Database) setBoardEmbeds(b *Board) {
+	rows, err := db.conn.Query(context.Background(), "SELECT embed FROM board_embed WHERE board = $1", b.ID)
+	if err != nil {
+		log.Fatalf("failed to select board embeds: %s", err)
+	}
+	b.Embeds = nil
+	for rows.Next() {
+		var name string
+		err := rows.Scan(&name)
+		if err != nil {
+			log.Fatalf("failed to select board embeds: %s", err)
+		}
+		b.Embeds = append(b.Embeds, name)
+	}
 }
 
 func (db *Database) boardByID(id int) *Board {
@@ -54,6 +76,7 @@ func (db *Database) boardByID(id int) *Board {
 	} else if err != nil {
 		log.Fatalf("failed to select board: %s", err)
 	}
+	db.setBoardEmbeds(b)
 	return b
 }
 
@@ -65,6 +88,7 @@ func (db *Database) boardByDir(dir string) *Board {
 	} else if err != nil {
 		log.Fatalf("failed to select board: %s", err)
 	}
+	db.setBoardEmbeds(b)
 	return b
 }
 
@@ -81,6 +105,9 @@ func (db *Database) allBoards() []*Board {
 			log.Fatalf("failed to select all boards: %s", err)
 		}
 		boards = append(boards, b)
+	}
+	for _, b := range boards {
+		db.setBoardEmbeds(b)
 	}
 	return boards
 }
@@ -121,6 +148,17 @@ func (db *Database) updateBoard(b *Board) {
 	)
 	if err != nil {
 		log.Fatalf("failed to update board: %s", err)
+	}
+
+	_, err = db.conn.Exec(context.Background(), "DELETE FROM board_embed WHERE board = $1", b.ID)
+	if err != nil {
+		log.Fatalf("failed to delete board embeds: %s", err)
+	}
+	for _, embed := range b.Embeds {
+		_, err := db.conn.Exec(context.Background(), "INSERT INTO board_embed VALUES ($1, $2)", b.ID, embed)
+		if err != nil {
+			log.Fatalf("failed to insert board embeds: %s", err)
+		}
 	}
 }
 

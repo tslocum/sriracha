@@ -98,6 +98,7 @@ type Board struct {
 	ThumbHeight int
 
 	// Calculated fields.
+	Embeds []string
 	Unique int
 }
 
@@ -116,7 +117,7 @@ const (
 	defaultBoardThumbHeight = 250
 )
 
-func (b *Board) loadForm(r *http.Request) {
+func (b *Board) loadForm(r *http.Request, availableEmbeds map[string]string) {
 	b.Dir = formString(r, "dir")
 	b.Name = formString(r, "name")
 	b.Description = formString(r, "description")
@@ -140,6 +141,21 @@ func (b *Board) loadForm(r *http.Request) {
 	b.MaxSize = formInt64(r, "maxsize")
 	b.ThumbWidth = formInt(r, "thumbwidth")
 	b.ThumbHeight = formInt(r, "thumbheight")
+
+	b.Embeds = nil
+	embeds := r.Form["embeds"]
+	for _, embed := range embeds {
+		var found bool
+		for available := range availableEmbeds {
+			if available == embed {
+				found = true
+				break
+			}
+		}
+		if found {
+			b.Embeds = append(b.Embeds, embed)
+		}
+	}
 }
 
 func (b *Board) validate() error {
@@ -167,4 +183,16 @@ func (b *Board) Path() string {
 
 func (b *Board) MaxSizeLabel() string {
 	return formatFileSize(b.MaxSize)
+}
+
+func (b *Board) HasEmbed(name string) bool {
+	if len(b.Embeds) == 0 {
+		return false
+	}
+	for _, embed := range b.Embeds {
+		if embed == name {
+			return true
+		}
+	}
+	return false
 }

@@ -73,7 +73,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			oldBoard := *data.Manage.Board
 
 			oldDir := data.Manage.Board.Dir
-			data.Manage.Board.loadForm(r)
+			data.Manage.Board.loadForm(r, s.opt.Embeds)
 
 			err := data.Manage.Board.validate()
 			if err != nil {
@@ -119,7 +119,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			return
 		}
 		b := &Board{}
-		b.loadForm(r)
+		b.loadForm(r, s.opt.Embeds)
 
 		err := b.validate()
 		if err != nil {

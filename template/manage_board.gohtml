@@ -160,6 +160,19 @@
                 <td><input type="text" name="truncate" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Truncate}}{{end}}"></td>
                 <td>Number of message lines to display in post preview on board index pages. Set to 0 to show all lines.</td>
             </tr>
+            {{if ne (len .Opt.Embeds) 0}}
+                <tr>
+                    <td class="postblock"><label for="embeds">Allow Embedding</label></td>
+                    <td>
+                        <select name="embeds" style="width: 100%;" size="3" multiple>
+                            {{range $name, $url := .Opt.Embeds}}
+                                <option value="{{$name}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasEmbed $name)}} selected{{end}}>{{$name}}</option>
+                            {{end}}
+                        </select>
+                    </td>
+                    <td>Posters may embed media from selected services instead of uploading a file.</td>
+                </tr>
+            {{end}}
             {{if le $.Account.Role 2}}
                 <tr>
                     <td>&nbsp;</td>

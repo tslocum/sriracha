@@ -49,6 +49,12 @@ CREATE TABLE board (
 );
 CREATE UNIQUE INDEX ON board (dir);
 
+CREATE TABLE board_embed (
+	board smallint NOT NULL REFERENCES board (id) ON DELETE CASCADE,
+	embed varchar(64) NOT NULL,
+	PRIMARY KEY	(board, embed)
+);
+
 CREATE TABLE captcha (
 	ip varchar(64) PRIMARY KEY,
 	timestamp bigint NOT NULL,
