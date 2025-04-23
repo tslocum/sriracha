@@ -1,12 +1,10 @@
 package sriracha
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"html"
 	"html/template"
-	"image"
 	"io"
 	"log"
 	"net/http"
@@ -145,25 +143,12 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 					continue
 				}
 
-				imgConfig, _, err := image.DecodeConfig(bytes.NewReader(buf))
-				if err != nil {
-					continue
-				}
-				post.ThumbWidth, post.ThumbHeight = imgConfig.Width, imgConfig.Height
-
 				thumbName := fmt.Sprintf("%d.%s", time.Now().UnixNano(), fileExt)
 				thumbPath := filepath.Join(s.config.Root, b.Dir, "thumb", thumbName)
 
-				thumbFile, err := os.OpenFile(thumbPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+				err = post.createThumbnail(b, buf, mimeType, thumbPath)
 				if err != nil {
-					log.Fatal(err)
-				}
-				defer thumbFile.Close()
-
-				_, err = thumbFile.Write(buf)
-				if err != nil {
-					os.Remove(thumbPath)
-					log.Fatal(err)
+					continue
 				}
 
 				post.FileHash = "e " + embedName + " " + info.Title
@@ -196,7 +181,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 
 			data := s.buildData(db, w, r)
 			data.Template = "board_error"
-			data.Info = "Duplicate file uploaded."
+			data.Info = fmt.Sprintf("Duplicate %s uploaded.", uploadType)
 			data.Message = template.HTML(fmt.Sprintf(`<div style="text-align: center;">That %s has already been posted%s.</div><br>`, uploadType, postLink))
 			data.execute(w)
 			return
