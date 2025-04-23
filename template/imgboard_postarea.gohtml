@@ -54,6 +54,17 @@
                         <textarea id="message" name="message" cols="48" rows="4" maxlength="8000" accesskey="m"></textarea>
                     </td>
                 </tr>
+                {{if .Opt.CAPTCHA}}
+                    <tr>
+                        <td class="postblock">
+                            CAPTCHA
+                        </td>
+                        <td>
+                            <input type="text" name="captcha" id="newpostcaptcha" accesskey="c" style="vertical-align: middle;box-sizing: border-box;width: 70px;height: 40px;">
+                            <a href="#" onclick="javascript:document.getElementById('captchaimage').src = '/sriracha/captcha/captcha.png?new=' + new Date().getTime();"><img src="/sriracha/captcha/test.png" alt="CAPTCHA Challenge" id="captchaimage" width="225" height="40" border="0" style="vertical-align: middle;"></a>&nbsp;&nbsp;<span style="vertical-align: middle;">(click to refresh)</span>
+                        </td>
+                    </tr>
+                {{end}}
                 <tr>
                     <td class="postblock">
                         File

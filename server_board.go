@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
+func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) (skipExecute bool) {
 	data.Template = "manage_board"
 
 	boardID := pathInt(r, "/sriracha/board/rebuild/")
@@ -51,7 +51,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 					data.Threads = append(data.Threads, db.allPostsInThread(thread.ID, true))
 				}
 			}
-			return
+			return false
 		}
 
 		data.ManageError("Invalid or deleted board or post")
@@ -61,6 +61,10 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 	boardID = pathInt(r, "/sriracha/board/")
 	if boardID > 0 {
 		data.Manage.Board = db.boardByID(boardID)
+		if data.Manage.Board == nil {
+			data.ManageError("Board not found")
+			return
+		}
 
 		if data.Manage.Board != nil && r.Method == http.MethodPost {
 			if data.forbidden(w, RoleAdmin) {
@@ -85,7 +89,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 					}
 				} else {
 					data.ManageError("New directory already exists")
-					return
+					return false
 				}
 			}
 
@@ -95,7 +99,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 				err := os.Rename(filepath.Join(s.config.Root, oldDir), filepath.Join(s.config.Root, data.Manage.Board.Dir))
 				if err != nil {
 					data.ManageError(fmt.Sprintf("Failed to rename board directory: %s", err))
-					return
+					return false
 				}
 			}
 
@@ -105,9 +109,9 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			db.log(data.Account, nil, fmt.Sprintf("Updated >>/board/%d", data.Manage.Board.ID), changes)
 
 			http.Redirect(w, r, "/sriracha/board/", http.StatusFound)
-			return
+			return true
 		}
-		return
+		return false
 	}
 
 	if r.Method == http.MethodPost {
@@ -120,7 +124,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		err := b.validate()
 		if err != nil {
 			data.ManageError(err.Error())
-			return
+			return false
 		}
 
 		dirs := []string{"", "src", "thumb", "res"}
@@ -136,7 +140,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 				} else {
 					data.ManageError(fmt.Sprintf("Failed to create board directory %s: %s", boardPath, err))
 				}
-				return
+				return false
 			}
 		}
 
@@ -147,7 +151,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		db.log(data.Account, nil, fmt.Sprintf("Added >>/board/%d", b.ID), "")
 
 		http.Redirect(w, r, "/sriracha/board/", http.StatusFound)
-		return
+		return true
 	}
 
 	data.Manage.Board = &Board{
@@ -166,4 +170,5 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 	}
 
 	data.Manage.Boards = db.allBoards()
+	return false
 }

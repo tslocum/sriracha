@@ -148,10 +148,12 @@ func (b *Board) validate() error {
 		return fmt.Errorf("dir must only consist of letters, numbers, hyphens and underscores")
 	case strings.TrimSpace(b.Name) == "":
 		return fmt.Errorf("name must be set")
-	case strings.EqualFold(b.Dir, "sriracha"):
-		return fmt.Errorf("sriracha is a reserved name")
-	case strings.EqualFold(b.Dir, "sriracha_all"):
-		return fmt.Errorf("sriracha_all is a reserved name")
+	}
+	reservedDirs := []string{"captcha", "css", "js", "sriracha", "sriracha_all"}
+	for _, reserved := range reservedDirs {
+		if strings.EqualFold(b.Dir, reserved) {
+			return fmt.Errorf("%s is a reserved name", reserved)
+		}
 	}
 	return nil
 }

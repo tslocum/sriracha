@@ -43,6 +43,7 @@ type ServerOptions struct {
 	SiteName   string
 	SiteHome   string
 	BoardIndex bool
+	CAPTCHA    bool
 }
 
 type Server struct {
@@ -164,6 +165,8 @@ func (s *Server) setDefaultServerConfig() error {
 
 	boardIndex := db.GetString("boardindex")
 	s.opt.BoardIndex = boardIndex == "" || boardIndex == "1"
+
+	s.opt.CAPTCHA = db.GetBool("captcha")
 
 	_, err = conn.Exec(context.Background(), "COMMIT")
 	if err != nil {
@@ -440,8 +443,12 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 	if strings.HasPrefix(r.URL.Path, "/sriracha/logout") {
 		return
 	}
+	var skipExecute bool
 	defer func() {
 		w.Header().Set("Content-Type", "text/html")
+		if skipExecute {
+			return
+		}
 		data.execute(w)
 	}()
 
@@ -467,7 +474,7 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 	case strings.HasPrefix(r.URL.Path, "/sriracha/ban"):
 		s.serveBan(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/board"):
-		s.serveBoard(data, db, w, r)
+		skipExecute = s.serveBoard(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/keyword"):
 		s.serveKeyword(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/log"):
@@ -491,6 +498,8 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 			values := r.URL.Query()
 			action = values.Get("action")
 		}
+	} else if strings.HasPrefix(r.URL.Path, "/sriracha/captcha/") {
+		action = "captcha"
 	}
 
 	conn, err := s.dbPool.Acquire(context.Background())
@@ -531,6 +540,8 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 			s.serveReport(db, w, r)
 		case "delete":
 			s.serveDelete(db, w, r)
+		case "captcha":
+			s.serveCAPTCHA(db, w, r)
 		default:
 			s.serveManage(db, w, r)
 		}
@@ -619,6 +630,15 @@ func (s *Server) Run() error {
 		return fmt.Errorf("failed to set root: %s is not writable", s.config.Root)
 	}
 
+	captchaDir := filepath.Join(s.config.Root, "captcha")
+	_, err = os.Stat(captchaDir)
+	if os.IsNotExist(err) {
+		err := os.Mkdir(captchaDir, 0755)
+		if err != nil {
+			log.Fatalf("failed to create captcha dir: %s", err)
+		}
+	}
+
 	siteIndexFile := filepath.Join(s.config.Root, "index.html")
 	_, err = os.Stat(siteIndexFile)
 	if os.IsNotExist(err) {
@@ -633,7 +653,7 @@ func (s *Server) Run() error {
 
 func hashData(data string) string {
 	checksum := sha512.Sum384([]byte(data + srirachaServer.config.SaltData))
-	return base64.StdEncoding.EncodeToString(checksum[:])
+	return base64.URLEncoding.EncodeToString(checksum[:])
 }
 
 func hashIP(address string) string {

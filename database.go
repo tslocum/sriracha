@@ -189,7 +189,7 @@ func (db *Database) newSessionKey() string {
 		if err != nil {
 			panic(err)
 		}
-		sessionKey := base64.StdEncoding.EncodeToString(buf)
+		sessionKey := base64.URLEncoding.EncodeToString(buf)
 
 		var numAccounts int
 		err = db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM account WHERE session = $1", sessionKey).Scan(&numAccounts)

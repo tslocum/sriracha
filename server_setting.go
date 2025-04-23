@@ -10,6 +10,8 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 	}
 
 	if r.URL.Path == "/sriracha/setting/reset" {
+		oldOpt := s.opt
+
 		db.SaveString("sitename", defaultServerSiteName)
 		s.opt.SiteName = defaultServerSiteName
 
@@ -18,6 +20,18 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 
 		db.SaveBool("boardindex", true)
 		s.opt.BoardIndex = true
+
+		db.SaveBool("captcha", false)
+		s.opt.CAPTCHA = false
+
+		changes := printChanges(oldOpt, s.opt)
+		if changes != "" {
+			db.log(data.Account, nil, "Reset settings", changes)
+		}
+
+		for _, b := range db.allBoards() {
+			s.rebuildBoard(db, b)
+		}
 
 		http.Redirect(w, r, "/sriracha/setting", http.StatusFound)
 		return
@@ -41,6 +55,10 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 		boardIndex := formBool(r, "boardindex")
 		db.SaveBool("boardindex", boardIndex)
 		s.opt.BoardIndex = boardIndex
+
+		enableCAPTCHA := formBool(r, "captcha")
+		db.SaveBool("captcha", enableCAPTCHA)
+		s.opt.CAPTCHA = enableCAPTCHA
 
 		changes := printChanges(oldOpt, s.opt)
 		if changes != "" {

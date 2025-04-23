@@ -75,7 +75,7 @@ func (p *Post) setFileAndThumb(fileExt string) {
 
 func (p *Post) setFileAttributes(buf []byte, name string) error {
 	checksum := sha512.Sum384(buf)
-	p.FileHash = base64.StdEncoding.EncodeToString(checksum[:])
+	p.FileHash = base64.URLEncoding.EncodeToString(checksum[:])
 
 	p.FileOriginal = name
 

@@ -6,6 +6,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -36,6 +38,11 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		Moderated: 1,
 	}
 
+	ip := r.RemoteAddr
+	if ip != "" {
+		post.IP = hashIP(ip)
+	}
+
 	err := post.loadForm(r, b, s.config.Root)
 	if err != nil {
 		s.deletePostFiles(post)
@@ -56,6 +63,32 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		}
 	}
 
+	if s.opt.CAPTCHA {
+		expired := db.expiredCAPTCHAs()
+		for _, c := range expired {
+			db.deleteCAPTCHA(c.IP)
+			os.Remove(filepath.Join(s.config.Root, "captcha", c.Image+".png"))
+		}
+
+		var solved bool
+		challenge := db.getCAPTCHA(post.IP)
+		if challenge != nil {
+			solution := formString(r, "captcha")
+			if strings.ToLower(solution) == challenge.Text {
+				solved = true
+				db.deleteCAPTCHA(post.IP)
+				os.Remove(filepath.Join(s.config.Root, "captcha", challenge.Image+".png"))
+			}
+		}
+		if !solved {
+			s.deletePostFiles(post)
+
+			data := s.buildData(db, w, r)
+			data.BoardError(w, "Incorrect CAPTCHA text. Please try again.")
+			return
+		}
+	}
+
 	if post.FileHash != "" {
 		existing := db.postByFileHash(post.FileHash)
 		if existing != nil {
@@ -71,11 +104,6 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			data.execute(w)
 			return
 		}
-	}
-
-	ip := r.RemoteAddr
-	if ip != "" {
-		post.IP = hashIP(ip)
 	}
 
 	password := formString(r, "password")

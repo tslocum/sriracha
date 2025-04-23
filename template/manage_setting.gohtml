@@ -23,6 +23,14 @@
             <td>Link to boards in page header.</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="captcha">CAPTCHA</label></td>
+            <td><select name="captcha" style="width: 100%;">
+                <option value="0"{{if not .Opt.CAPTCHA}} selected{{end}}>Disable</option>
+                <option value="1"{{if .Opt.CAPTCHA}} selected{{end}}>Enable</option>
+            </select></td>
+            <td>Whether visitors must pass a CAPTCHA when posting.</td>
+        </tr>
+        <tr>
             <td>&nbsp;[<a href="/sriracha/setting/reset" onclick="return confirm('Reset all settings?');">reset</a>]</td>
             <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="Update"></td>
             <td>&nbsp;</td>

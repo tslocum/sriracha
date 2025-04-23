@@ -14,7 +14,7 @@ CREATE UNIQUE INDEX ON account (session);
 
 CREATE TABLE ban (
 	id serial PRIMARY KEY,
-	ip varchar(255) NOT NULL,
+	ip varchar(64) NOT NULL,
 	timestamp bigint NOT NULL,
 	expire bigint NOT NULL,
 	reason text NOT NULL
@@ -49,6 +49,14 @@ CREATE TABLE board (
 );
 CREATE UNIQUE INDEX ON board (dir);
 
+CREATE TABLE captcha (
+	ip varchar(64) PRIMARY KEY,
+	timestamp bigint NOT NULL,
+	refresh smallint NOT NULL,
+	image varchar(64) NOT NULL,
+	text varchar(5) NOT NULL
+);
+
 CREATE TABLE config (
 	name  text PRIMARY KEY,
 	value text NOT NULL
@@ -70,8 +78,8 @@ CREATE TABLE keyword_board (
 
 CREATE TABLE log (
 	id serial PRIMARY KEY,
-	board smallint NULL REFERENCES board (id),
 	account smallint NULL REFERENCES account (id),
+	board smallint NULL REFERENCES board (id),
 	timestamp bigint NOT NULL,
 	message text NOT NULL,
 	changes text NOT NULL
@@ -83,7 +91,7 @@ CREATE TABLE post (
 	board smallint NOT NULL REFERENCES board (id) ON DELETE CASCADE,
 	timestamp bigint NOT NULL,
 	bumped bigint NOT NULL,
-	ip varchar(255) NOT NULL,
+	ip varchar(64) NOT NULL,
 	name varchar(75) NOT NULL,
 	tripcode varchar(24) NOT NULL,
 	email varchar(75) NOT NULL,
@@ -116,7 +124,7 @@ CREATE TABLE report (
 	board smallint NOT NULL REFERENCES board (id) ON DELETE CASCADE,
 	post integer NOT NULL REFERENCES post (id) ON DELETE CASCADE,
 	timestamp bigint NOT NULL,
-	ip varchar(255) NOT NULL
+	ip varchar(64) NOT NULL
 );
 CREATE UNIQUE INDEX ON report (board, post, ip);
 `}

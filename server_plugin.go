@@ -15,9 +15,16 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 
 	pluginID := pathInt(r, "/sriracha/plugin/reset/")
 	if pluginID > 0 && pluginID <= len(allPluginInfo) {
+		var changes string
+
 		pUpdate, _ := allPlugins[pluginID-1].(PluginWithUpdate)
 		info := allPluginInfo[pluginID-1]
 		for i, c := range info.Config {
+			if info.Config[i].Value == c.Default {
+				continue
+			}
+			oldValue := info.Config[i].Value
+
 			db.SaveString(strings.ToLower(info.Name+"."+c.Name), c.Default)
 			info.Config[i].Value = c.Default
 
@@ -28,9 +35,30 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 				}
 				pUpdate.Update(pluginDB, c.Name)
 			}
+
+			oldLabel := oldValue
+			newLabel := info.Config[i].Value
+			if info.Config[i].Type == TypeBoolean {
+				if oldValue != "1" {
+					oldLabel = "false"
+				} else {
+					oldLabel = "true"
+				}
+				if info.Config[i].Value != "1" {
+					newLabel = "false"
+				} else {
+					newLabel = "true"
+				}
+			}
+			if changes != "" {
+				changes += " "
+			}
+			changes += fmt.Sprintf(`(%s: "%s" -> "%s")`, strings.Title(c.Name), oldLabel, newLabel)
 		}
 
-		db.log(data.Account, nil, fmt.Sprintf("Reset plugin %s", info.Name), "")
+		if changes != "" {
+			db.log(data.Account, nil, fmt.Sprintf("Reset plugin %s", info.Name), changes)
+		}
 
 		http.Redirect(w, r, fmt.Sprintf("/sriracha/plugin/%d", pluginID), http.StatusFound)
 		return
@@ -85,7 +113,10 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 							newLabel = "true"
 						}
 					}
-					changes += fmt.Sprintf(` (%s: "%s" -> "%s")`, strings.Title(c.Name), oldLabel, newLabel)
+					if changes != "" {
+						changes += " "
+					}
+					changes += fmt.Sprintf(`(%s: "%s" -> "%s")`, strings.Title(c.Name), oldLabel, newLabel)
 
 					db.SaveString(strings.ToLower(info.Name+"."+c.Name), newValue)
 					info.Config[i].Value = newValue
@@ -100,7 +131,9 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 				}
 			}
 
-			db.log(data.Account, nil, fmt.Sprintf("Updated plugin %s", info.Name), changes)
+			if changes != "" {
+				db.log(data.Account, nil, fmt.Sprintf("Updated plugin %s", info.Name), changes)
+			}
 
 			http.Redirect(w, r, "/sriracha/plugin", http.StatusFound)
 		}
