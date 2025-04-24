@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"runtime/debug"
 	"strconv"
+
+	"github.com/leonelquinteros/gotext"
 )
 
 func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Request) {
@@ -17,7 +19,7 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 		b := db.boardByDir(boardDir)
 		if b == nil {
 			debug.PrintStack()
-			data.BoardError(w, "No board was specified.")
+			data.BoardError(w, gotext.Get("No board specified."))
 			return
 		}
 
@@ -25,7 +27,7 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 		if post != nil {
 			password := r.FormValue("password")
 			if post.Password == "" || hashData(password) != post.Password {
-				data.BoardError(w, "Invalid password.")
+				data.BoardError(w, gotext.Get("Incorrect password."))
 				return
 			}
 
@@ -54,5 +56,5 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 			return
 		}
 	}
-	data.BoardError(w, "No post selected.")
+	data.BoardError(w, gotext.Get("No post selected."))
 }

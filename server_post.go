@@ -14,6 +14,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/leonelquinteros/gotext"
 )
 
 var reflinkPattern = regexp.MustCompile(`&gt;&gt;([0-9]+)`)
@@ -35,7 +37,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	b := db.boardByDir(boardDir)
 	if b == nil {
 		data := s.buildData(db, w, r)
-		data.BoardError(w, "no board was specified")
+		data.BoardError(w, gotext.Get("No board specified."))
 		return
 	}
 
@@ -67,7 +69,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			s.deletePostFiles(post)
 
 			data := s.buildData(db, w, r)
-			data.BoardError(w, "invalid post parent")
+			data.BoardError(w, gotext.Get("No post selected."))
 			return
 		}
 	}
@@ -93,7 +95,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			s.deletePostFiles(post)
 
 			data := s.buildData(db, w, r)
-			data.BoardError(w, "Incorrect CAPTCHA text. Please try again.")
+			data.BoardError(w, gotext.Get("Incorrect CAPTCHA text. Please try again."))
 			return
 		}
 	}
@@ -160,7 +162,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 
 			if post.File == "" {
 				data := s.buildData(db, w, r)
-				data.BoardError(w, "Failed to embed media.")
+				data.BoardError(w, gotext.Get("Failed to embed media."))
 				return
 			}
 		}
@@ -275,7 +277,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 							IP:        post.IP,
 							Timestamp: time.Now().Unix(),
 							Expire:    banExpire,
-							Reason:    "Detected banned keyword.",
+							Reason:    gotext.Get("Detected banned keyword."),
 						}
 						db.addBan(ban)
 
@@ -287,7 +289,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 					s.deletePostFiles(post)
 
 					data := s.buildData(db, w, r)
-					data.BoardError(w, "Banned keyword detected in post.")
+					data.BoardError(w, gotext.Get("Detected banned keyword."))
 					return
 				}
 			}
@@ -344,7 +346,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 
 	if post.Moderated == ModeratedHidden {
 		data.Template = "board_info"
-		data.Info = "Your post will be shown once it has been approved."
+		data.Info = gotext.Get("Your post will be shown once it has been approved.")
 		data.execute(w)
 		return
 	} else if addReport {

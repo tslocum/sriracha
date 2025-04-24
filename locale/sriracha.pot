@@ -19,6 +19,9 @@ msgstr ""
 msgid "Ban"
 msgstr ""
 
+msgid "Banned keyword detected in post."
+msgstr ""
+
 msgid "Bans"
 msgstr ""
 
@@ -60,6 +63,9 @@ msgstr ""
 msgid "Delete Post"
 msgstr ""
 
+msgid "Detected banned keyword."
+msgstr ""
+
 msgid "Email"
 msgstr ""
 
@@ -72,10 +78,19 @@ msgstr ""
 msgid "Exit"
 msgstr ""
 
+msgid "Failed to embed media."
+msgstr ""
+
 msgid "File"
 msgstr ""
 
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
+msgstr ""
+
+msgid "Incorrect CAPTCHA text. Please try again."
+msgstr ""
+
+msgid "Incorrect password."
 msgstr ""
 
 msgid "Keywords"
@@ -112,6 +127,9 @@ msgid "Name"
 msgstr ""
 
 msgid "Next"
+msgstr ""
+
+msgid "No board specified."
 msgstr ""
 
 msgid "No post selected."
@@ -157,6 +175,9 @@ msgid "Submit"
 msgstr ""
 
 msgid "View"
+msgstr ""
+
+msgid "Your post will be shown once it has been approved."
 msgstr ""
 
 msgid "click to refresh"
