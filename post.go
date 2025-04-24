@@ -125,7 +125,15 @@ func (p *Post) loadForm(r *http.Request, rootDir string) error {
 
 	mimeType := http.DetectContentType(buf)
 
-	fileExt := mimeToExt(mimeType)
+	var fileExt string
+	if p.Board.HasUpload(mimeType) {
+		for _, u := range srirachaServer.config.UploadTypes() {
+			if u.MIME == mimeType {
+				fileExt = u.Ext
+				break
+			}
+		}
+	}
 	if fileExt == "" {
 		return fmt.Errorf("unsupported filetype")
 	}

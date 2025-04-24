@@ -63,7 +63,7 @@ dbname: sriracha
 # thumbnail for all uploads of that type, or 'none' to not create a thumbnail.
 # Otherwise, thumbnails are generated automatically based on the uploaded file.
 #
-# Format: mimeType ext thumbnail
+# Format: mime ext thumbnail
 uploads:
   - image/jpeg  jpg
   - image/pjpeg jpg
