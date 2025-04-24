@@ -559,15 +559,12 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	db.deleteExpiredBans()
 
 	// Check IP ban.
-	ip := r.RemoteAddr
-	if ip != "" {
-		ban := db.banByIP(hashIP(ip))
-		if ban != nil {
-			data := s.buildData(db, w, r)
-			data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (Ban #%d)", ban.ID))
-			data.execute(w)
-			handled = true
-		}
+	ban := db.banByIP(hashIP(r))
+	if ban != nil {
+		data := s.buildData(db, w, r)
+		data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (Ban #%d)", ban.ID))
+		data.execute(w)
+		handled = true
 	}
 
 	if !handled {
@@ -705,7 +702,7 @@ func hashData(data string) string {
 	return base64.URLEncoding.EncodeToString(checksum[:])
 }
 
-func hashIP(address string) string {
+func _hashIP(address string) string {
 	if address == "" {
 		return ""
 	}
@@ -719,6 +716,24 @@ func hashIP(address string) string {
 		}
 	}
 	return hashData(address)
+}
+
+func hashIP(r *http.Request) string {
+	var address string
+	if srirachaServer == nil {
+		log.Panicf("sriracha server not running")
+	} else if srirachaServer.config.Header != "" {
+		values := r.Header[srirachaServer.config.Header]
+		if len(values) > 0 {
+			address = values[0]
+		}
+	} else {
+		address = r.RemoteAddr
+	}
+	if address == "" {
+		log.Fatal("Error: No client IP address specified in HTTP request. Are you sure the header server option is correct? See CONFIGURATION.md for more info.")
+	}
+	return _hashIP(address)
 }
 
 func encryptPassword(password string) string {

@@ -25,7 +25,7 @@ func (s *Server) serveReport(db *Database, w http.ResponseWriter, r *http.Reques
 			Board:     post.Board,
 			Post:      post,
 			Timestamp: time.Now().Unix(),
-			IP:        hashIP(r.RemoteAddr),
+			IP:        hashIP(r),
 		}
 		db.addReport(report)
 	}

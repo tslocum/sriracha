@@ -23,6 +23,11 @@ root: /home/sriracha/public_html
 # Address:Port to listen for HTTP connections on.
 serve: localhost:8080
 
+# Client IP address header. Must be set when running behind a reverse proxy.
+# When running behind CloudFlare, use CF-Connecting-IP. When running without
+# a reverse proxy, leave blank.
+header: X-Forwarded-For
+
 # Long random string of text used when one-way hashing data. Must not change once set.
 saltdata: CHANGEME_Random_Data_Here
 

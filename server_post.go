@@ -48,10 +48,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		Moderated: 1,
 	}
 
-	ip := r.RemoteAddr
-	if ip != "" {
-		post.IP = hashIP(ip)
-	}
+	post.IP = hashIP(r)
 
 	err := post.loadForm(r, s.config.Root)
 	if err != nil {
@@ -353,7 +350,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			Board:     b,
 			Post:      post,
 			Timestamp: time.Now().Unix(),
-			IP:        hashIP(r.RemoteAddr),
+			IP:        hashIP(r),
 		}
 		db.addReport(report)
 	}
