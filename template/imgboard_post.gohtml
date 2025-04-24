@@ -7,7 +7,7 @@
             <div id="post{{.ID}}" class="op">
                 {{if ne .File ""}}
                     {{$embed := .EmbedInfo}}
-                    <span class="filesize">{{if not .IsEmbed}}File{{else}}Embed{{end}}: <a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
+                    <span class="filesize">{{if not .IsEmbed}}{{T "File"}}{{else}}{{T "Embed"}}{{end}}: <a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
                     <div id="thumbfile{{.ID}}">
                         <a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$.Board.Path}}thumb/{{.Thumb}}" alt="{{.ID}}" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
                     </div>
@@ -22,22 +22,23 @@
                 </label>
                 <span class="reflink">
                     {{if $.Board.Reports}}
-                        <a href="/sriracha/?action=report&board={{.Board.ID}}&post={{.ID}}" title="Report">R</a>
+                        <a href="/sriracha/?action=report&board={{.Board.ID}}&post={{.ID}}" title="{{T "Report"}}">R</a>
                     {{end}}
                     <a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}">{{.ID}}</a>
                     {{if $.ModMode}}
-                        <b><a href="/sriracha/mod/delete/{{.ID}}" title="Delete">D</a>
-                        <a href="/sriracha/mod/ban/{{.ID}}" title="Ban">B</a>
-                        <a href="/sriracha/mod/{{.ID}}" title="Delete &amp; ban">D&amp;B</a></b>
+                        <b><a href="/sriracha/mod/delete/{{.ID}}" title="{{T "Delete"}}">D</a>
+                        <a href="/sriracha/mod/ban/{{.ID}}" title="{{T "Ban"}}">B</a>
+                        <a href="/sriracha/mod/{{.ID}}" title="{{T "Delete & ban"}}">D&amp;B</a></b>
                     {{end}}
                 </span>
-                {{if not $.ReplyMode}}{{if not $.ModMode}}&nbsp;[<a href="{{$.Board.Path}}res/{{.Thread}}.html">Reply</a>]{{else}}&nbsp;[<a href="/sriracha/board/mod/{{$.Board.ID}}/{{.Thread}}">View</a>]{{end}}{{end}}
+                {{if not $.ReplyMode}}{{if not $.ModMode}}&nbsp;[<a href="{{$.Board.Path}}res/{{.Thread}}.html">{{T "Reply"}}</a>]{{else}}&nbsp;[<a href="/sriracha/board/mod/{{$.Board.ID}}/{{.Thread}}">{{T "View"}}</a>]{{end}}{{end}}
                 <div class="message">
                     {{.Message | HTML}}
                 </div>
             </div>
-            {{if and (eq $.ReplyMode 0) (gt (Omitted $.Board.Replies (len $thread)) 0)}}
-                <span class="omittedposts">{{Omitted $.Board.Replies (len $thread)}} {{if eq (Omitted $.Board.Replies (len $thread)) 1}}post{{else}}posts{{end}} omitted. Click Reply to view.</span>
+            {{$omitted := Omitted $.Board.Replies (len $thread)}}
+            {{if and (eq $.ReplyMode 0) (gt $omitted 0)}}
+                <span class="omittedposts">{{TN "%d post omitted. Click Reply to view." "%d posts omitted. Click Reply to view." $omitted $omitted}}</span>
             {{end}}
         {{else if (or (ne $.ReplyMode 0) (ShowReply $.Board.Replies (len $thread) $i))}}
             <table>
@@ -55,13 +56,13 @@
                         </label>
                         <span class="reflink">
                             {{if $.Board.Reports}}
-                                <a href="/sriracha/?action=report&board={{.Board.ID}}&post={{.ID}}" title="Report">R</a>
+                                <a href="/sriracha/?action=report&board={{.Board.ID}}&post={{.ID}}" title="{{T "Report"}}">R</a>
                             {{end}}
                             <a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}">{{.ID}}</a>
                             {{if $.ModMode}}
-                                <b><a href="/sriracha/mod/delete/{{.ID}}" title="Delete">D</a>
-                                <a href="/sriracha/mod/ban/{{.ID}}" title="Ban">B</a>
-                                <a href="/sriracha/mod/{{.ID}}" title="Delete &amp; ban">D&amp;B</a></b>
+                                <b><a href="/sriracha/mod/delete/{{.ID}}" title="{{T "Delete"}}">D</a>
+                                <a href="/sriracha/mod/ban/{{.ID}}" title="{{T "Ban"}}">B</a>
+                                <a href="/sriracha/mod/{{.ID}}" title="{{T "Delete & ban"}}">D&amp;B</a></b>
                             {{end}}
                         </span>
                         <small><span id="backlinks{{.ID}}" class="backlinks"></span></small><br>

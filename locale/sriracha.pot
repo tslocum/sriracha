@@ -5,13 +5,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "%d post omitted. Click Reply to view."
+msgid_plural "%d posts omitted. Click Reply to view."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Accounts"
+msgstr ""
+
+msgid "Admin"
+msgstr ""
+
+msgid "Ban"
 msgstr ""
 
 msgid "Bans"
 msgstr ""
 
 msgid "Boards"
+msgstr ""
+
+msgid "Capcode"
 msgstr ""
 
 msgid "Catalog"
@@ -29,19 +43,39 @@ msgstr ""
 msgid "Create Thread"
 msgstr ""
 
+msgid "Currently %d unique user post."
+msgid_plural "Currently %d unique user posts."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Delete"
 msgstr ""
 
 msgid "Delete %s"
 msgstr ""
 
+msgid "Delete & ban"
+msgstr ""
+
 msgid "Delete Post"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Embed"
 msgstr ""
 
 msgid "Error: %s"
 msgstr ""
 
 msgid "Exit"
+msgstr ""
+
+msgid "File"
+msgstr ""
+
+msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
 msgstr ""
 
 msgid "Keywords"
@@ -59,16 +93,31 @@ msgstr ""
 msgid "Manage mode"
 msgstr ""
 
+msgid "Maximum file size allowed is %s."
+msgstr ""
+
+msgid "Message"
+msgstr ""
+
+msgid "Mod"
+msgstr ""
+
 msgid "Mod mode"
 msgstr ""
 
 msgid "Mod mode: View"
 msgstr ""
 
+msgid "Name"
+msgstr ""
+
 msgid "Next"
 msgstr ""
 
 msgid "No post selected."
+msgstr ""
+
+msgid "None"
 msgstr ""
 
 msgid "Password"
@@ -86,6 +135,9 @@ msgstr ""
 msgid "Reply"
 msgstr ""
 
+msgid "Report"
+msgstr ""
+
 msgid "Reported No.%d"
 msgstr ""
 
@@ -96,4 +148,22 @@ msgid "Settings"
 msgstr ""
 
 msgid "Status"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "click to refresh"
+msgstr ""
+
+msgid "for post and file deletion"
+msgstr ""
+
+msgid "paste a YouTube URL"
 msgstr ""

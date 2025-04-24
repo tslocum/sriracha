@@ -112,6 +112,9 @@ var templateFuncMap = template.FuncMap{
 	"T": func(message string, vars ...interface{}) string {
 		return gotext.Get(message, vars...)
 	},
+	"TN": func(singular string, plural string, n int, vars ...interface{}) string {
+		return gotext.GetN(singular, plural, n, vars...)
+	},
 	"Title": strings.Title,
 	"ZeroPadTo3": func(i int) string {
 		return fmt.Sprintf("%03d", i)
