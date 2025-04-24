@@ -11,13 +11,13 @@ If no configuration file path is specified, the default path
 
 [PostgreSQL](https://www.postgresql.org) is the only supported database system.
 
-Only HTTP requests are served by Sriracha. To serve HTTPS requests, you must run
-Sriracha behind a web server such as [caddy](https://caddyserver.com), which
-forwards the requests to Sriracha as plain HTTP. When running behind a web
+Only HTTP requests are served by Sriracha. To serve HTTPS requests you must run
+Sriracha behind a web server, such as [caddy](https://caddyserver.com), which
+forwards the HTTPS requests to Sriracha as plain HTTP. When running behind a web
 server, the header server option must be set appropriately. Most web servers use
 `X-Forwarded-For` to specify the client IP address.
 
-## Example config.yml
+## Example configuration (config.yml)
 
 ```yaml
 # Interface language. See locale directory for available languages.
@@ -57,4 +57,12 @@ password: hunter2
 
 # Database name.
 dbname: sriracha
+```
+
+## Example reverse proxy using caddy (Caddyfile)
+
+```yaml
+zoopz.org, www.zoopz.org {
+  reverse_proxy http://localhost:8080
+}
 ```
