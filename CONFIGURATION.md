@@ -14,6 +14,9 @@ If no configuration file path is specified, the default path
 ## Example config.yml
 
 ```yaml
+# Interface language. See locale directory for available languages.
+locale: en
+
 # Directory where board files are written to.
 root: /home/sriracha/public_html
 
