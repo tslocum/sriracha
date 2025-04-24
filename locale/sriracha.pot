@@ -60,6 +60,27 @@ msgstr ""
 msgid "Delete & ban"
 msgstr ""
 
+msgid "Delete & ban for 1 hour"
+msgstr ""
+
+msgid "Delete & ban for 1 day"
+msgstr ""
+
+msgid "Delete & ban for 2 days"
+msgstr ""
+
+msgid "Delete & ban for 1 week"
+msgstr ""
+
+msgid "Delete & ban for 2 weeks"
+msgstr ""
+
+msgid "Delete & ban for 1 month"
+msgstr ""
+
+msgid "Delete & ban permanently"
+msgstr ""
+
 msgid "Delete Post"
 msgstr ""
 
@@ -82,6 +103,9 @@ msgid "Failed to embed media."
 msgstr ""
 
 msgid "File"
+msgstr ""
+
+msgid "Hide until approved"
 msgstr ""
 
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
@@ -172,6 +196,9 @@ msgid "Subject"
 msgstr ""
 
 msgid "Submit"
+msgstr ""
+
+msgid "Unknown"
 msgstr ""
 
 msgid "View"

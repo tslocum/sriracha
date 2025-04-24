@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/leonelquinteros/gotext"
 )
 
 type Keyword struct {
@@ -67,28 +69,30 @@ func (k *Keyword) HasBoardOption(id int) bool {
 }
 
 func (k *Keyword) ActionLabel() string {
+	var label string
 	switch k.Action {
 	case "hide":
-		return "Hide until approved"
+		label = "Hide until approved"
 	case "report":
-		return "Report"
+		label = "Report"
 	case "delete":
-		return "Delete"
+		label = "Delete"
 	case "ban1h":
-		return "Delete + ban for 1 hour"
+		label = "Delete & ban for 1 hour"
 	case "ban1d":
-		return "Delete + ban for 1 day"
+		label = "Delete & ban for 1 day"
 	case "ban2d":
-		return "Delete + ban for 2 days"
+		label = "Delete & ban for 2 days"
 	case "ban1w":
-		return "Delete + ban for 1 week"
+		label = "Delete & ban for 1 week"
 	case "ban2w":
-		return "Delete + ban for 2 weeks"
+		label = "Delete & ban for 2 weeks"
 	case "ban1m":
-		return "Delete + ban for 1 month"
+		label = "Delete & ban for 1 month"
 	case "ban0":
-		return "Delete + ban permanently"
+		label = "Delete & ban permanently"
 	default:
-		return "Unknown"
+		label = "Unknown"
 	}
+	return gotext.Get(label)
 }
