@@ -1,5 +1,6 @@
 # Sriracha - Imageboard and forum
 [![GoDoc](https://codeberg.org/tslocum/godoc-static/raw/branch/main/badge.svg)](https://pkg.go.dev/codeberg.org/tslocum/sriracha#section-documentation)
+[![Translate](https://translate.codeberg.org/widget/sriracha/sriracha/svg-badge.svg)](https://translate.codeberg.org/projects/sriracha/sriracha/)
 [![Donate](https://img.shields.io/liberapay/receives/rocket9labs.com.svg?logo=liberapay)](https://liberapay.com/rocket9labs.com)
 
 This application is in pre-alpha development. Here be dragons.
@@ -18,7 +19,7 @@ Sriracha will eventually serve as a replacement for imageboards running [TinyIB]
 - [X] Report posts
 - [X] Thread catalog
 - [ ] Fetch new replies automatically
-- [ ] Support additional languages
+- [X] Support additional languages
 - [X] Management panel:
   - [X] Automatically moderate new posts using [regular expressions](https://en.wikipedia.org/wiki/Regular_expression)
   - [X] Ban offensive/abusive posters across all boards
@@ -40,6 +41,10 @@ for info on how to configure Sriracha.
 
 See [PLUGINS.md](https://codeberg.org/tslocum/sriracha/src/branch/main/PLUGINS.md)
 for info on how to build and use Sriracha plugins.
+
+## Translate
+
+Translation is handled [online](https://translate.codeberg.org/projects/sriracha/sriracha/).
 
 ## License
 
