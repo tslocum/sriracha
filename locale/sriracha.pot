@@ -23,7 +23,19 @@ msgstr ""
 msgid "Click here to go back"
 msgstr ""
 
+msgid "Confirm"
+msgstr ""
+
+msgid "Create Thread"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
 msgid "Delete %s"
+msgstr ""
+
+msgid "Delete Post"
 msgstr ""
 
 msgid "Error: %s"
@@ -47,10 +59,31 @@ msgstr ""
 msgid "Manage mode"
 msgstr ""
 
+msgid "Mod mode"
+msgstr ""
+
+msgid "Mod mode: View"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
 msgid "No post selected."
 msgstr ""
 
+msgid "Password"
+msgstr ""
+
 msgid "Plugins"
+msgstr ""
+
+msgid "Posting mode: Reply"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Reply"
 msgstr ""
 
 msgid "Reported No.%d"

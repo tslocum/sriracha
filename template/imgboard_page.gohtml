@@ -1,18 +1,18 @@
 {{template "imgboard_begin.gohtml" .}}
 {{if .ReplyMode}}
 	{{if not .ModMode}}
-		<div class="replymode">Posting mode: Reply</div>
+		<div class="replymode">{{T "Posting mode: Reply"}}</div>
 	{{else}}
-		<div class="replymode">Mod mode: View</div>
+		<div class="replymode">{{T "Mod mode: View"}}</div>
 	{{end}}
 {{else if .ModMode}}
-	<div class="replymode">Mod mode</div>
+	<div class="replymode">{{T "Mod mode"}}</div>
 {{end}}
 {{if not .ModMode}}
 	{{template "imgboard_postarea.gohtml" .}}
 {{else}}
 	<details>
-		<summary style="cursor: pointer;">{{if eq .ReplyMode 0}}Create thread{{else}}Reply{{end}}</summary>
+		<summary style="cursor: pointer;">{{if eq .ReplyMode 0}}{{T "Create Thread"}}{{else}}{{T "Reply"}}{{end}}</summary>
 		<div>
 			{{template "imgboard_postarea.gohtml" .}}
 		</div>
@@ -28,7 +28,7 @@
 <tbody>
 	<tr>
 		<td>
-			Delete Post <input type="password" name="password" id="deletepostpassword" size="8" placeholder="Password">&nbsp;<input name="deletepost" value="Delete" type="submit">
+			{{T "Delete Post"}} <input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}">&nbsp;<input type="submit" name="deletepost" value="{{T "Delete"}}">
 		</td>
 	</tr>
 </tbody>
@@ -37,16 +37,16 @@
 <table border="1" style="display: inline-block;">
 <tbody>
 	<tr>
-		<td>Previous</td>
+		<td>{{T "Previous"}}</td>
 		<td>&#91;0&#93; </td>
-		<td>Next</td>
+		<td>{{T "Next"}}</td>
 	</tr>
 </tbody>
 </table>
 <table border="1" style="display: inline-block;margin-left: 21px;">
 <tbody>
 	<tr>
-		<td><form method="get" action="{{.Board.Path}}catalog.html"><input value="Catalog" type="submit"></form></td>
+		<td><form method="get" action="{{.Board.Path}}catalog.html"><input value="{{T "Catalog"}}" type="submit"></form></td>
 	</tr>
 </tbody>
 </table>
