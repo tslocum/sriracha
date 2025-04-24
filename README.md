@@ -7,8 +7,6 @@ This application is in pre-alpha development. Here be dragons.
 
 Only Linux, FreeBSD and macOS are supported.
 
-Sriracha will eventually serve as a replacement for imageboards running [TinyIB](https://codeberg.org/tslocum/tinyib).
-
 ## Feature Parity with TinyIB
 
 - [ ] GIF, JPG, PNG, SWF, MP4 and WebM upload
@@ -41,6 +39,11 @@ for info on how to configure Sriracha.
 
 See [PLUGINS.md](https://codeberg.org/tslocum/sriracha/src/branch/main/PLUGINS.md)
 for info on how to build and use Sriracha plugins.
+
+### Migrate
+
+See [MIGRATE.md](https://codeberg.org/tslocum/sriracha/src/branch/main/MIGRATE.md)
+for info on how to migrate from [TinyIB](https://codeberg.org/tslocum/tinyib).
 
 ## Translate
 
