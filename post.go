@@ -16,7 +16,9 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -69,8 +71,13 @@ func (p *Post) setFileAndThumb(fileExt string) {
 	fileID := time.Now().UnixNano()
 	fileIDString := fmt.Sprintf("%d", fileID)
 
+	thumbExt := fileExt
+	if fileExt != "jpg" && fileExt != "png" && fileExt != "gif" {
+		thumbExt = "jpg"
+	}
+
 	p.File = fileIDString + "." + fileExt
-	p.Thumb = fileIDString + "s." + fileExt
+	p.Thumb = fileIDString + "s." + thumbExt
 }
 
 func (p *Post) setFileAttributes(buf []byte, name string) error {
@@ -80,12 +87,6 @@ func (p *Post) setFileAttributes(buf []byte, name string) error {
 	p.FileOriginal = name
 
 	p.FileSize = int64(len(buf))
-
-	imgConfig, _, err := image.DecodeConfig(bytes.NewReader(buf))
-	if err != nil {
-		return fmt.Errorf("unsupported filetype")
-	}
-	p.FileWidth, p.FileHeight = imgConfig.Width, imgConfig.Height
 	return nil
 }
 
@@ -148,14 +149,58 @@ func (p *Post) loadForm(r *http.Request, rootDir string) error {
 	srcPath := filepath.Join(rootDir, p.Board.Dir, "src", p.File)
 	thumbPath := filepath.Join(rootDir, p.Board.Dir, "thumb", p.Thumb)
 
-	err = p.createThumbnail(buf, mimeType, thumbPath)
-	if err != nil {
-		return err
-	}
-
 	err = os.WriteFile(srcPath, buf, 0600)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	isImage := mimeType == "image/jpeg" || mimeType == "image/pjpeg" || mimeType == "image/png" || mimeType == "image/gif"
+	if isImage {
+		imgConfig, _, err := image.DecodeConfig(bytes.NewReader(buf))
+		if err != nil {
+			return fmt.Errorf("unsupported filetype")
+		}
+		p.FileWidth, p.FileHeight = imgConfig.Width, imgConfig.Height
+
+		err = p.createThumbnail(buf, mimeType, thumbPath)
+		if err != nil {
+			return err
+		}
+	}
+
+	cmd := exec.Command("ffprobe", "-hide_banner", "-loglevel", "error", "-of", "csv=p=0", "-select_streams", "v", "-show_entries", "stream=width,height", srcPath)
+	out, err := cmd.Output()
+	if err != nil {
+		return fmt.Errorf("failed to create thumbnail: %s", err)
+	}
+	split := bytes.Split(bytes.TrimSpace(out), []byte(","))
+	if len(split) >= 2 {
+		p.FileWidth, p.FileHeight = parseInt(string(split[0])), parseInt(string(split[1]))
+	}
+
+	quarterDuration := "0"
+	cmd = exec.Command("ffprobe", "-hide_banner", "-loglevel", "error", "-of", "csv=p=0", "-show_entries", "format=duration", srcPath)
+	out, err = cmd.Output()
+	if err == nil {
+		v, err := strconv.ParseFloat(string(bytes.TrimSpace(out)), 64)
+		if err == nil {
+			quarterDuration = fmt.Sprintf("%f", v/4)
+		}
+	}
+
+	cmd = exec.Command("ffmpeg", "-hide_banner", "-loglevel", "error", "-ss", quarterDuration, "-i", srcPath, "-frames:v", "1", "-vf", fmt.Sprintf("scale=w=%d:h=%d:force_original_aspect_ratio=decrease", p.Board.ThumbWidth, p.Board.ThumbHeight), thumbPath)
+	_, err = cmd.Output()
+	if err != nil {
+		return fmt.Errorf("failed to create thumbnail: %s", err)
+	}
+
+	cmd = exec.Command("ffprobe", "-hide_banner", "-loglevel", "error", "-of", "csv=p=0", "-select_streams", "v", "-show_entries", "stream=width,height", thumbPath)
+	out, err = cmd.Output()
+	if err == nil {
+		split := bytes.Split(bytes.TrimSpace(out), []byte(","))
+		if len(split) >= 2 {
+			p.ThumbWidth, p.ThumbHeight = parseInt(string(split[0])), parseInt(string(split[1]))
+		}
 	}
 	return nil
 }
@@ -234,6 +279,12 @@ func (p *Post) ExpandHTML() template.HTML {
 	}
 	srcPath := fmt.Sprintf("%ssrc/%s", p.Board.Path(), p.File)
 
+	isVideo := strings.HasSuffix(p.File, ".mp4") || strings.HasSuffix(p.File, ".webm")
+	if isVideo {
+		const expandFormat = `<video width="%d" height="%d" style="position: static; pointer-events: inherit; display: inline; max-width: 85vw; height: auto; max-height: 100%%;" controls autoplay loop><source src="%s"></source></video>`
+		return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, p.FileWidth, p.FileHeight, srcPath)))
+	}
+
 	const expandFormat = `<a href="%s" onclick="return expandFile(event, '%d');"><img src="%s" width="%d" style="min-width: %dpx;min-height: %dpx;max-width: 85vw;height: auto;"></a>`
 	return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, srcPath, p.ID, srcPath, p.FileWidth, p.ThumbWidth, p.ThumbHeight)))
 }
@@ -244,7 +295,7 @@ func (p *Post) RefLink() template.HTML {
 
 func mimeToExt(mimeType string) string {
 	switch mimeType {
-	case "image/jpeg":
+	case "image/jpeg", "image/pjpeg":
 		return "jpg"
 	case "image/gif":
 		return "gif"
@@ -259,7 +310,7 @@ func resizeImage(b *Board, r io.Reader, mimeType string) (image.Image, error) {
 	var img image.Image
 	var err error
 	switch mimeType {
-	case "image/jpeg":
+	case "image/jpeg", "image/pjpeg":
 		img, err = jpeg.Decode(r)
 		if err != nil {
 			return nil, fmt.Errorf("unsupported filetype")

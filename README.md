@@ -9,7 +9,7 @@ Only Linux, FreeBSD and macOS are supported.
 
 ## Feature Parity with TinyIB
 
-- [ ] GIF, JPG, PNG, SWF, MP4 and WebM upload
+- [X] GIF, JPG, PNG, SWF, MP4 and WebM upload
 - [X] YouTube, Vimeo and SoundCloud embedding
 - [X] CAPTCHA
 - [X] Reference links `>>###`
