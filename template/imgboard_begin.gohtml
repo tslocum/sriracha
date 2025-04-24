@@ -13,6 +13,9 @@
 		<link rel="stylesheet" type="text/css" href="/css/futaba.css" title="Futaba" id="mainStylesheet">
 		<link rel="alternate stylesheet" type="text/css" href="/css/burichan.css" title="Burichan">
 		<script src="/js/sriracha.js"></script>
+		{{if and (ne .Board nil) (ne .Board.Description "")}}
+			<meta name="description" content="{{.Board.Description}}">
+		{{end}}
     </head>
     <body>
 		{{if and .Opt.BoardIndex (gt (len .Boards) 1)}}
@@ -26,16 +29,16 @@
 		{{end}}
 		<div class="adminbar">
 			{{if .ModMode}}
-				[<a href="{{.Board.Path}}" style="text-decoration: underline;">Exit</a>] &middot;
+				[<a href="{{.Board.Path}}" style="text-decoration: underline;">{{T "Exit"}}</a>] &middot;
 			{{end}}
-			[<a href="/sriracha/" style="text-decoration: underline;">Manage</a>]
+			[<a href="/sriracha/" style="text-decoration: underline;">{{T "Manage"}}</a>]
 		</div>
 		<div class="logo">{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}</div>
 		<hr width="90%">
 		{{if .ReplyMode}}
 			{{if not .ModMode}}
-				[<a href="{{.Board.Path}}">Return</a>]
+				[<a href="{{.Board.Path}}">{{T "Return"}}</a>]
 			{{else}}
-				[<a href="/sriracha/board/mod/{{.Board.ID}}">Return</a>]
+				[<a href="/sriracha/board/mod/{{.Board.ID}}">{{T "Return"}}</a>]
 			{{end}}
 		{{end}}

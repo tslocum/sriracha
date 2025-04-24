@@ -9,7 +9,6 @@ import (
 func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_mod"
 
-	var boardID int
 	var postID int
 	var action = "db"
 	modInfo := pathString(r, "/sriracha/mod/")
@@ -34,12 +33,12 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 		data.ManageError("Unknown post")
 		return
 	}
-	data.Board = db.boardByID(boardID)
 	data.Post = db.postByID(postID)
-	if data.Board == nil || data.Post == nil {
+	if data.Post == nil {
 		data.ManageError("Unknown post")
 		return
 	}
+	data.Board = data.Post.Board
 	data.Manage.Ban = db.banByIP(data.Post.IP)
 	if r.FormValue("confirmation") == "1" {
 		var oldBan Ban

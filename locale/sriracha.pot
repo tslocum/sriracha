@@ -5,8 +5,62 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "Accounts"
+msgstr ""
+
+msgid "Bans"
+msgstr ""
+
+msgid "Boards"
+msgstr ""
+
+msgid "Catalog"
+msgstr ""
+
+msgid "Change Password"
+msgstr ""
+
+msgid "Click here to go back"
+msgstr ""
+
+msgid "Delete %s"
+msgstr ""
+
+msgid "Error: %s"
+msgstr ""
+
+msgid "Exit"
+msgstr ""
+
+msgid "Keywords"
+msgstr ""
+
+msgid "Log Out"
+msgstr ""
+
+msgid "Logs"
+msgstr ""
+
+msgid "Manage"
+msgstr ""
+
+msgid "Manage mode"
+msgstr ""
+
 msgid "No post selected."
 msgstr ""
 
+msgid "Plugins"
+msgstr ""
+
 msgid "Reported No.%d"
+msgstr ""
+
+msgid "Return"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Status"
 msgstr ""

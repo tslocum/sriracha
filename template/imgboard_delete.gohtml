@@ -6,12 +6,10 @@
     <input type="hidden" name="password" value="{{.Extra}}">
     <input type="hidden" name="confirmation" value="1">
 	<fieldset>
-        <legend>Delete Post #{{.Post.ID}}</legend>
+        <legend>{{T "Delete %s" (.Post.RefLink .Board) | HTML}}</legend>
         <table border="0">
-            <tr><td class="postblock">Confirm</td><td>Delete {{.Post.RefLink .Board}}?</td></tr>
-            <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="Delete"></td></tr>
+            <tr><td class="postblock">Confirm</td><td><input type="submit" class="managebutton" style="width: 100%;" value="{{T "Delete %s" (print ">>" .Post.ID)}}"></td></tr>
         </table>
-        <legend>
 	</fieldset>
 </form>
 {{template "manage_end.gohtml" .}}

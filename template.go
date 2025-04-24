@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/leonelquinteros/gotext"
 )
 
 //go:embed template
@@ -88,7 +90,6 @@ func (data *templateData) execute(w io.Writer) {
 }
 
 var templateFuncMap = template.FuncMap{
-	"Title": strings.Title,
 	"HTML": func(text string) template.HTML {
 		return template.HTML(text)
 	},
@@ -108,6 +109,10 @@ var templateFuncMap = template.FuncMap{
 		}
 		return postIndex >= threadPosts-showReplies
 	},
+	"T": func(message string, vars ...interface{}) string {
+		return gotext.Get(message, vars...)
+	},
+	"Title": strings.Title,
 	"ZeroPadTo3": func(i int) string {
 		return fmt.Sprintf("%03d", i)
 	},

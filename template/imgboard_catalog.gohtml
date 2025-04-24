@@ -1,5 +1,5 @@
 {{template "imgboard_begin.gohtml" .}}
-<div class="replymode">Catalog</div>
+<div class="replymode">{{T "Catalog"}}</div>
 <div id="posts" style="margin-top: 5px;">
     {{range $i, $thread := .Threads}}
         {{range $i, $post := $thread}}

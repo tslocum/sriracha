@@ -1,7 +1,7 @@
 {{template "manage_begin.gohtml" .}}
-<h2 class="managetitle">Plugins</h2>
+<h2 class="managetitle">{{T "Plugins"}}</h2>
 {{if ne .Manage.Plugin nil}}
-    [<a href="/sriracha/plugin/">Return</a>]<br>
+    [<a href="/sriracha/plugin/">{{T "Return"}}</a>]<br>
     <form method="post">
         <fieldset>
         <legend>Configure {{.Manage.Plugin.Name}}</legend>
@@ -26,9 +26,7 @@
         </fieldset>
     </form>
 {{else}}
-    {{if eq (len .Manage.Plugins) 0}}
-        No plugins are loaded.
-    {{else}}
+    {{if gt (len .Manage.Plugins) 0}}
         <table class="managetable">
             <tr>
                 <th align="left">Name</th>

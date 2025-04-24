@@ -8,38 +8,40 @@
 		<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT">
 		<meta http-equiv="pragma" content="no-cache">
 		<meta name="viewport" content="width=device-width,initial-scale=1">
-		<title>{{.Opt.SiteName}} Management Panel</title>
+		<title>{{.Opt.SiteName}} - {{T "Manage mode" | Title}}</title>
 		<link rel="stylesheet" type="text/css" href="/css/global.css">
 		<link rel="stylesheet" type="text/css" href="/css/futaba.css" title="Futaba" id="mainStylesheet">
 		<link rel="alternate stylesheet" type="text/css" href="/css/burichan.css" title="Burichan">
-    </head>
+	</head>
     <body>
 		{{if ne .Account nil}}
 			{{if eq .Account.Role 1}}{{/* Super-Admin */}}
-				[<a href="/sriracha/account/" style="text-decoration: underline;">Accounts</a>]
+				[<a href="/sriracha/account/" style="text-decoration: underline;">{{T "Accounts"}}</a>]
 			{{end}}
-			[<a href="/sriracha/ban/" style="text-decoration: underline;">Bans</a>]
-			[<a href="/sriracha/board/" style="text-decoration: underline;">Boards</a>]
+			[<a href="/sriracha/ban/" style="text-decoration: underline;">{{T "Bans"}}</a>]
+			[<a href="/sriracha/board/" style="text-decoration: underline;">{{T "Boards"}}</a>]
 			{{if le .Account.Role 2}}{{/* Admin */}}
-				[<a href="/sriracha/keyword/" style="text-decoration: underline;">Keywords</a>]
+				[<a href="/sriracha/keyword/" style="text-decoration: underline;">{{T "Keywords"}}</a>]
 			{{end}}
-			[<a href="/sriracha/log/" style="text-decoration: underline;">Logs</a>]
+			[<a href="/sriracha/log/" style="text-decoration: underline;">{{T "Logs"}}</a>]
 			{{if le .Account.Role 2}}{{/* Admin */}}
-				[<a href="/sriracha/plugin/" style="text-decoration: underline;">Plugins</a>]
-				[<a href="/sriracha/setting/" style="text-decoration: underline;">Settings</a>]
+				{{if ne (len .Manage.Plugins) 0}}
+					[<a href="/sriracha/plugin/" style="text-decoration: underline;">{{T "Plugins"}}</a>]
+				{{end}}
+				[<a href="/sriracha/setting/" style="text-decoration: underline;">{{T "Settings"}}</a>]
 			{{end}}
-			[<a href="/sriracha/" style="text-decoration: underline;">Status</a>]
+			[<a href="/sriracha/" style="text-decoration: underline;">{{T "Status"}}</a>]
 		{{end}}
 		<div class="adminbar">
 			{{if ne .Account nil}}
-				[<a href="/sriracha/password/" style="text-decoration: underline;">Change Password</a>]
-				[<a href="/sriracha/logout/" style="text-decoration: underline;">Log Out</a>] &middot;
+				[<a href="/sriracha/password/" style="text-decoration: underline;">{{T "Change Password"}}</a>]
+				[<a href="/sriracha/logout/" style="text-decoration: underline;">{{T "Log Out"}}</a>] &middot;
 			{{end}}
-			[<a href="{{.Opt.SiteHome}}" style="text-decoration: underline;">Return</a>]
+			[<a href="{{.Opt.SiteHome}}" style="text-decoration: underline;">{{T "Return"}}</a>]
 		</div>
 		<div class="logo">{{.Opt.SiteName}}</div>
 		<hr width="90%">
-		<div class="replymode">Manage mode</div>
+		<div class="replymode">{{T "Manage mode"}}</div>
 		{{if and (ne .Info "") (ne .Template "manage_error")}}
 			<div class="manageinfo">{{.Info}}</div>
 		{{end}}

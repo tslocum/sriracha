@@ -375,7 +375,9 @@ func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request)
 					})
 					return &templateData{
 						Account: account,
-						Manage:  &manageData{},
+						Manage: &manageData{
+							Plugins: allPluginInfo,
+						},
 					}
 				}
 			}
@@ -384,7 +386,9 @@ func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request)
 			return &templateData{
 				Info:     "Invalid username or password.",
 				Template: "manage_error",
-				Manage:   &manageData{},
+				Manage: &manageData{
+					Plugins: allPluginInfo,
+				},
 			}
 		}
 	}
@@ -395,7 +399,9 @@ func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request)
 		if account != nil {
 			return &templateData{
 				Account: account,
-				Manage:  &manageData{},
+				Manage: &manageData{
+					Plugins: allPluginInfo,
+				},
 			}
 		}
 	}
