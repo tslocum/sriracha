@@ -11,6 +11,12 @@ If no configuration file path is specified, the default path
 
 [PostgreSQL](https://www.postgresql.org) is the only supported database system.
 
+Only HTTP requests are served by Sriracha. To serve HTTPS requests, you must run
+Sriracha behind a web server such as [caddy](https://caddyserver.com), which
+forwards the requests to Sriracha as plain HTTP. When running behind a web
+server, the header server option must be set appropriately. Most web servers use
+`X-Forwarded-For` to specify the client IP address.
+
 ## Example config.yml
 
 ```yaml
@@ -25,7 +31,7 @@ serve: localhost:8080
 
 # Client IP address header. Must be set when running behind a reverse proxy.
 # When running behind CloudFlare, use CF-Connecting-IP. When running without
-# a reverse proxy, leave blank.
+# a proxy, leave blank.
 header: X-Forwarded-For
 
 # Long random string of text used when one-way hashing data. Must not change once set.
