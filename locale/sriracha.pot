@@ -198,6 +198,9 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
+msgid "Supported file types are %s."
+msgstr ""
+
 msgid "Unknown"
 msgstr ""
 

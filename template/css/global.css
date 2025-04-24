@@ -124,6 +124,11 @@ legend {
 	margin-left: 5px;
 }
 
+.manageform input {
+	box-sizing: border-box;
+	width: 100%;
+}
+
 .managetable {
 	border-collapse: collapse;
 }

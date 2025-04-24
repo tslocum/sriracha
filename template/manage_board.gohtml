@@ -34,7 +34,7 @@
     <form method="post">
         <fieldset>
         <legend>{{if or (eq .Manage.Board nil) (eq .Manage.Board.ID 0)}}Add Board{{else}}{{if le $.Account.Role 2}}Update {{end}}{{.Manage.Board.Path}} {{.Manage.Board.Name}}{{end}}</legend>
-        <table border="0">
+        <table border="0" class="manageform">
             <tr>
                 <td class="postblock"><label for="dir">Directory</label></td>
                 <td><input type="text" name="dir" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Dir}}{{end}}"></td>
@@ -160,6 +160,19 @@
                 <td><input type="text" name="truncate" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Truncate}}{{end}}"></td>
                 <td>Number of message lines to display in post preview on board index pages. Set to 0 to show all lines.</td>
             </tr>
+            {{if ne (len .Opt.Uploads) 0}}
+                <tr>
+                    <td class="postblock"><label for="uploads">File Types</label></td>
+                    <td>
+                        <select name="uploads" style="width: 100%;" size="5" multiple>
+                            {{range $i, $info := .Opt.Uploads}}
+                                <option value="{{.MIME}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasUpload .MIME)}} selected{{end}}>{{.MIME}} - {{.Ext | ToUpper}}</option>
+                            {{end}}
+                        </select>
+                    </td>
+                    <td>Posters may upload the selected types of files.</td>
+                </tr>
+            {{end}}
             {{if ne (len .Opt.Embeds) 0}}
                 <tr>
                     <td class="postblock"><label for="embeds">Allow Embedding</label></td>

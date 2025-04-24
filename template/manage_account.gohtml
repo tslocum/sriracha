@@ -24,7 +24,7 @@
 <form method="post">
     <fieldset>
     <legend>{{if eq .Manage.Account nil}}Add Account{{else}}Update {{.Manage.Account.Username}}{{end}}</legend>
-    <table border="0">
+    <table border="0" class="manageform">
         <tr>
             <td class="postblock"><label for="dir">Username</label></td>
             <td><input type="text" name="username" value="{{if ne .Manage.Account nil}}{{.Manage.Account.Username}}{{end}}"></td>

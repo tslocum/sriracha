@@ -59,6 +59,7 @@ type ServerOptions struct {
 	SiteHome   string
 	BoardIndex bool
 	CAPTCHA    bool
+	Uploads    []*uploadType
 	Embeds     [][2]string
 }
 
@@ -87,6 +88,8 @@ func (s *Server) parseConfig(configFile string) error {
 	if err != nil {
 		return err
 	}
+
+	log.Println(config.UploadTypes())
 
 	switch {
 	case config.Root == "":
@@ -183,6 +186,8 @@ func (s *Server) setDefaultServerConfig() error {
 	s.opt.BoardIndex = boardIndex == "" || boardIndex == "1"
 
 	s.opt.CAPTCHA = db.GetBool("captcha")
+
+	s.opt.Uploads = s.config.UploadTypes()
 
 	s.opt.Embeds = nil
 	if !db.HaveConfig("embeds") {

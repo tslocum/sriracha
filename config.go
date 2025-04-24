@@ -1,5 +1,13 @@
 package sriracha
 
+import "strings"
+
+type uploadType struct {
+	MIME  string
+	Ext   string
+	Thumb string
+}
+
 // Config represents the server configuration.
 type Config struct {
 	Root     string // Directory where board files are written to.
@@ -15,4 +23,31 @@ type Config struct {
 	Username string // Database username.
 	Password string // Database password.
 	DBName   string // Database name.
+
+	Uploads []string // Supported upload file types.
+
+	cachedUploads []*uploadType
+}
+
+func (c *Config) UploadTypes() []*uploadType {
+	if c.cachedUploads != nil {
+		return c.cachedUploads
+	}
+	uploads := []*uploadType{}
+	for _, upload := range c.Uploads {
+		fields := strings.Fields(upload)
+		if len(fields) < 2 {
+			continue
+		}
+		u := &uploadType{
+			MIME: strings.ToLower(fields[0]),
+			Ext:  strings.ToLower(fields[1]),
+		}
+		if len(fields) > 2 {
+			u.Thumb = fields[2]
+		}
+		uploads = append(uploads, u)
+	}
+	c.cachedUploads = uploads
+	return uploads
 }

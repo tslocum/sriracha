@@ -55,6 +55,12 @@ CREATE TABLE board_embed (
 	PRIMARY KEY	(board, embed)
 );
 
+CREATE TABLE board_upload (
+	board smallint NOT NULL REFERENCES board (id) ON DELETE CASCADE,
+	upload varchar(64) NOT NULL,
+	PRIMARY KEY	(board, upload)
+);
+
 CREATE TABLE captcha (
 	ip varchar(64) PRIMARY KEY,
 	timestamp bigint NOT NULL,

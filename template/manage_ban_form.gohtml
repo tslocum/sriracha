@@ -4,7 +4,7 @@
     {{end}}
     <fieldset>
     <legend>{{if eq .Manage.Ban nil}}Add Ban{{else}}Update #{{.Manage.Ban.ID}}{{end}}</legend>
-    <table border="0">
+    <table border="0" class="manageform">
         {{if and (eq .Manage.Ban nil) (eq .Extra "")}}
         <tr>
             <td class="postblock"><label for="ip">IP Address</label></td>

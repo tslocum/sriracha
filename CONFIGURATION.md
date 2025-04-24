@@ -57,6 +57,30 @@ password: hunter2
 
 # Database name.
 dbname: sriracha
+
+# Supported upload file types. Specify a MIME type and a file extension to
+# enable uploading files of that type. You may specify an image to use as the
+# thumbnail for all uploads of that type, or 'none' to not create a thumbnail.
+# Otherwise, thumbnails are generated automatically based on the uploaded file.
+#
+# Format: mimeType ext thumbnail
+uploads:
+  - image/jpeg  jpg
+  - image/pjpeg jpg
+  - image/png   png
+  - image/gif   gif
+  - audio/wav   wav
+  - audio/aac   aac
+  - audio/ogg   ogg
+  - audio/flac  flac
+  - audio/opus  opus
+  - audio/mp3   mp3
+  - audio/mpeg  mp3
+  - audio/mp4   mp4
+  - video/mp4   mp4
+  - audio/webm  webm
+  - video/webm  webm
+  - application/x-shockwave-flash swf swf_thumbnail.png
 ```
 
 ## Example reverse proxy using caddy (Caddyfile)

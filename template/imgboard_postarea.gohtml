@@ -65,14 +65,16 @@
                         </td>
                     </tr>
                 {{end}}
-                <tr>
-                    <td class="postblock">
-                        {{T "File"}}
-                    </td>
-                    <td>
-                        <input type="file" name="file" size="35" accesskey="f">
-                    </td>
-                </tr>
+                {{if ne (len .Board.Uploads) 0}}
+                    <tr>
+                        <td class="postblock">
+                            {{T "File"}}
+                        </td>
+                        <td>
+                            <input type="file" name="file" size="35" accesskey="f">
+                        </td>
+                    </tr>
+                {{end}}
                 {{if ne (len .Board.Embeds) 0}}
                     <tr>
                         <td class="postblock">
@@ -94,9 +96,13 @@
                 <tr>
                     <td colspan="2" class="rules">
                         <ul>
-                            <li>Supported file types are JPG, PNG, GIF, SWF, MP4 and WEBM.</li>
-                            <li>{{T "Maximum file size allowed is %s." .Board.MaxSizeLabel}}.</li>
-                            <li>{{T "Images greater than %[1]dx%[2]d will be thumbnailed." .Board.ThumbWidth .Board.ThumbHeight}}</li>
+                            {{if ne (len .Board.Uploads) 0}}
+                                <li>{{T "Supported file types are %s." .Board.UploadTypesLabel}}</li>
+                                <li>{{T "Maximum file size allowed is %s." .Board.MaxSizeLabel}}</li>
+                            {{end}}
+                            {{if or (ne (len .Board.Uploads) 0) (ne (len .Board.Embeds) 0)}}
+                                <li>{{T "Images greater than %[1]dx%[2]d will be thumbnailed." .Board.ThumbWidth .Board.ThumbHeight}}</li>
+                            {{end}}
                             <li>{{TN "Currently %d unique user post." "Currently %d unique user posts." .Board.Unique .Board.Unique}}</li>
                         </ul>
                     </td>

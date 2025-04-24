@@ -28,7 +28,7 @@
 <form method="post">
     <fieldset>
     <legend>{{if eq .Manage.Keyword nil}}Add Keyword{{else}}Update {{.Manage.Keyword.Text}}{{end}}</legend>
-    <table border="0">
+    <table border="0" class="manageform">
         <tr>
             <td class="postblock"><label for="text">Text</label></td>
             <td><input type="text" name="text" value="{{if ne .Manage.Keyword nil}}{{.Manage.Keyword.Text}}{{end}}"></td>

@@ -44,6 +44,12 @@ func (db *Database) addBoard(b *Board) {
 	if err != nil || b.ID == 0 {
 		log.Fatalf("failed to select id of inserted board: %s", err)
 	}
+	for _, upload := range b.Uploads {
+		_, err := db.conn.Exec(context.Background(), "INSERT INTO board_upload VALUES ($1, $2)", b.ID, upload)
+		if err != nil {
+			log.Fatalf("failed to insert board uploads: %s", err)
+		}
+	}
 	for _, embed := range b.Embeds {
 		_, err := db.conn.Exec(context.Background(), "INSERT INTO board_embed VALUES ($1, $2)", b.ID, embed)
 		if err != nil {
@@ -52,8 +58,27 @@ func (db *Database) addBoard(b *Board) {
 	}
 }
 
-func (db *Database) setBoardEmbeds(b *Board) {
-	rows, err := db.conn.Query(context.Background(), "SELECT embed FROM board_embed WHERE board = $1", b.ID)
+func (db *Database) setBoardAttributes(b *Board) {
+	rows, err := db.conn.Query(context.Background(), "SELECT upload FROM board_upload WHERE board = $1", b.ID)
+	if err != nil {
+		log.Fatalf("failed to select board uploads: %s", err)
+	}
+	b.Uploads = nil
+	for rows.Next() {
+		var mimeType string
+		err := rows.Scan(&mimeType)
+		if err != nil {
+			log.Fatalf("failed to select board uploads: %s", err)
+		}
+		for _, u := range srirachaServer.config.UploadTypes() {
+			if u.MIME == mimeType {
+				b.Uploads = append(b.Uploads, u.MIME)
+				break
+			}
+		}
+	}
+
+	rows, err = db.conn.Query(context.Background(), "SELECT embed FROM board_embed WHERE board = $1", b.ID)
 	if err != nil {
 		log.Fatalf("failed to select board embeds: %s", err)
 	}
@@ -76,7 +101,7 @@ func (db *Database) boardByID(id int) *Board {
 	} else if err != nil {
 		log.Fatalf("failed to select board: %s", err)
 	}
-	db.setBoardEmbeds(b)
+	db.setBoardAttributes(b)
 	return b
 }
 
@@ -88,7 +113,7 @@ func (db *Database) boardByDir(dir string) *Board {
 	} else if err != nil {
 		log.Fatalf("failed to select board: %s", err)
 	}
-	db.setBoardEmbeds(b)
+	db.setBoardAttributes(b)
 	return b
 }
 
@@ -107,7 +132,7 @@ func (db *Database) allBoards() []*Board {
 		boards = append(boards, b)
 	}
 	for _, b := range boards {
-		db.setBoardEmbeds(b)
+		db.setBoardAttributes(b)
 	}
 	return boards
 }
@@ -148,6 +173,17 @@ func (db *Database) updateBoard(b *Board) {
 	)
 	if err != nil {
 		log.Fatalf("failed to update board: %s", err)
+	}
+
+	_, err = db.conn.Exec(context.Background(), "DELETE FROM board_upload WHERE board = $1", b.ID)
+	if err != nil {
+		log.Fatalf("failed to delete board uploads: %s", err)
+	}
+	for _, upload := range b.Uploads {
+		_, err := db.conn.Exec(context.Background(), "INSERT INTO board_upload VALUES ($1, $2)", b.ID, upload)
+		if err != nil {
+			log.Fatalf("failed to insert board uploads: %s", err)
+		}
 	}
 
 	_, err = db.conn.Exec(context.Background(), "DELETE FROM board_embed WHERE board = $1", b.ID)

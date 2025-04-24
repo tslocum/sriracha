@@ -98,8 +98,9 @@ type Board struct {
 	ThumbHeight int
 
 	// Calculated fields.
-	Embeds []string
-	Unique int
+	Uploads []string
+	Embeds  []string
+	Unique  int
 }
 
 const (
@@ -117,7 +118,7 @@ const (
 	defaultBoardThumbHeight = 250
 )
 
-func (b *Board) loadForm(r *http.Request, availableEmbeds [][2]string) {
+func (b *Board) loadForm(r *http.Request, availableUploads []*uploadType, availableEmbeds [][2]string) {
 	b.Dir = formString(r, "dir")
 	b.Name = formString(r, "name")
 	b.Description = formString(r, "description")
@@ -141,6 +142,21 @@ func (b *Board) loadForm(r *http.Request, availableEmbeds [][2]string) {
 	b.MaxSize = formInt64(r, "maxsize")
 	b.ThumbWidth = formInt(r, "thumbwidth")
 	b.ThumbHeight = formInt(r, "thumbheight")
+
+	b.Uploads = nil
+	uploads := r.Form["uploads"]
+	for _, upload := range uploads {
+		var found bool
+		for _, u := range availableUploads {
+			if u.MIME == upload {
+				found = true
+				break
+			}
+		}
+		if found {
+			b.Uploads = append(b.Uploads, upload)
+		}
+	}
 
 	b.Embeds = nil
 	embeds := r.Form["embeds"]
@@ -185,6 +201,18 @@ func (b *Board) MaxSizeLabel() string {
 	return formatFileSize(b.MaxSize)
 }
 
+func (b *Board) HasUpload(mimeType string) bool {
+	if len(b.Uploads) == 0 {
+		return false
+	}
+	for _, upload := range b.Uploads {
+		if upload == mimeType {
+			return true
+		}
+	}
+	return false
+}
+
 func (b *Board) HasEmbed(name string) bool {
 	if len(b.Embeds) == 0 {
 		return false
@@ -195,4 +223,30 @@ func (b *Board) HasEmbed(name string) bool {
 		}
 	}
 	return false
+}
+
+func (b *Board) UploadTypesLabel() string {
+	if len(b.Uploads) == 0 {
+		return ""
+	}
+	var types []string
+	found := make(map[string]bool)
+	for _, u := range srirachaServer.config.UploadTypes() {
+		if b.HasUpload(u.MIME) && !found[u.Ext] {
+			found[u.Ext] = true
+			types = append(types, strings.ToUpper(u.Ext))
+		}
+	}
+	buf := &strings.Builder{}
+	for i, t := range types {
+		if i > 0 {
+			if i == len(types)-1 {
+				buf.WriteString(" and ")
+			} else {
+				buf.WriteString(", ")
+			}
+		}
+		buf.WriteString(t)
+	}
+	return buf.String()
 }
