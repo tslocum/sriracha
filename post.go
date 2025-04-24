@@ -89,8 +89,8 @@ func (p *Post) setFileAttributes(buf []byte, name string) error {
 	return nil
 }
 
-func (p *Post) createThumbnail(b *Board, buf []byte, mimeType string, thumbPath string) error {
-	thumbImg, err := resizeImage(b, bytes.NewReader(buf), mimeType)
+func (p *Post) createThumbnail(buf []byte, mimeType string, thumbPath string) error {
+	thumbImg, err := resizeImage(p.Board, bytes.NewReader(buf), mimeType)
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func (p *Post) createThumbnail(b *Board, buf []byte, mimeType string, thumbPath 
 	return nil
 }
 
-func (p *Post) loadForm(r *http.Request, b *Board, rootDir string) error {
+func (p *Post) loadForm(r *http.Request, rootDir string) error {
 	p.Parent = formInt(r, "parent")
 
 	p.Name = formString(r, "name")
@@ -137,10 +137,10 @@ func (p *Post) loadForm(r *http.Request, b *Board, rootDir string) error {
 		return err
 	}
 
-	srcPath := filepath.Join(rootDir, b.Dir, "src", p.File)
-	thumbPath := filepath.Join(rootDir, b.Dir, "thumb", p.Thumb)
+	srcPath := filepath.Join(rootDir, p.Board.Dir, "src", p.File)
+	thumbPath := filepath.Join(rootDir, p.Board.Dir, "thumb", p.Thumb)
 
-	err = p.createThumbnail(b, buf, mimeType, thumbPath)
+	err = p.createThumbnail(buf, mimeType, thumbPath)
 	if err != nil {
 		return err
 	}
@@ -218,20 +218,20 @@ func (p *Post) EmbedInfo() []string {
 	return split
 }
 
-func (p *Post) ExpandHTML(b *Board) template.HTML {
+func (p *Post) ExpandHTML() template.HTML {
 	if p.File == "" {
 		return ""
 	} else if p.IsEmbed() {
 		return template.HTML(p.File)
 	}
-	srcPath := fmt.Sprintf("%ssrc/%s", b.Path(), p.File)
+	srcPath := fmt.Sprintf("%ssrc/%s", p.Board.Path(), p.File)
 
 	const expandFormat = `<a href="%s" onclick="return expandFile(event, '%d');"><img src="%s" width="%d" style="min-width: %dpx;min-height: %dpx;max-width: 85vw;height: auto;"></a>`
 	return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, srcPath, p.ID, srcPath, p.FileWidth, p.ThumbWidth, p.ThumbHeight)))
 }
 
-func (p *Post) RefLink(b *Board) template.HTML {
-	return template.HTML(fmt.Sprintf(`<a href="%sres/%d.html#%d">&gt;&gt;%d</a>`, b.Path(), p.Thread(), p.ID, p.ID))
+func (p *Post) RefLink() template.HTML {
+	return template.HTML(fmt.Sprintf(`<a href="%sres/%d.html#%d">&gt;&gt;%d</a>`, p.Board.Path(), p.Thread(), p.ID, p.ID))
 }
 
 func mimeToExt(mimeType string) string {

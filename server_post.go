@@ -21,7 +21,6 @@ import (
 var reflinkPattern = regexp.MustCompile(`&gt;&gt;([0-9]+)`)
 
 type embedInfo struct {
-	URL   string `json:"url"`
 	Title string `json:"title"`
 	Thumb string `json:"thumbnail_url"`
 	HTML  string `json:"html"`
@@ -54,7 +53,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		post.IP = hashIP(ip)
 	}
 
-	err := post.loadForm(r, b, s.config.Root)
+	err := post.loadForm(r, s.config.Root)
 	if err != nil {
 		s.deletePostFiles(post)
 
@@ -148,7 +147,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 				thumbName := fmt.Sprintf("%d.%s", time.Now().UnixNano(), fileExt)
 				thumbPath := filepath.Join(s.config.Root, b.Dir, "thumb", thumbName)
 
-				err = post.createThumbnail(b, buf, mimeType, thumbPath)
+				err = post.createThumbnail(buf, mimeType, thumbPath)
 				if err != nil {
 					continue
 				}

@@ -11,7 +11,7 @@
                     <div id="thumbfile{{.ID}}">
                         <a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$.Board.Path}}thumb/{{.Thumb}}" alt="{{.ID}}" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
                     </div>
-                    <div id="expand{{.ID}}" style="display: none;">{{.ExpandHTML $.Board}}</div>
+                    <div id="expand{{.ID}}" style="display: none;">{{.ExpandHTML}}</div>
                     <div id="file{{.ID}}" class="thumb" style="display: none;"></div>
                 {{end}}
                 <a id="{{.ID}}"></a>
@@ -72,7 +72,7 @@
                             <div id="thumbfile{{.ID}}">
                                 <a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$.Board.Path}}thumb/{{.Thumb}}" alt="6" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
                             </div>
-                            <div id="expand{{.ID}}" style="display: none;">{{.ExpandHTML $.Board}}</div>
+                            <div id="expand{{.ID}}" style="display: none;">{{.ExpandHTML}}</div>
                             <div id="file{{.ID}}" class="thumb" style="display: none;"></div>
                         {{end}}
                         <div class="message">
