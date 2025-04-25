@@ -24,6 +24,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/aquilax/tripcode"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/nfnt/resize"
 )
@@ -135,13 +136,29 @@ func (p *Post) addMediaOverlay(img image.Image) image.Image {
 	return target
 }
 
-func (p *Post) loadForm(r *http.Request, rootDir string) error {
+func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error {
 	p.Parent = formInt(r, "parent")
 
 	p.Name = formString(r, "name")
 	p.Email = formString(r, "email")
 	p.Subject = formString(r, "subject")
 	p.Message = html.EscapeString(formString(r, "message"))
+
+	if strings.ContainsRune(p.Name, '#') {
+		split := strings.SplitN(p.Name, "#", 3)
+
+		p.Name = split[0]
+		standardPass := split[1]
+		var securePass string
+		if len(split) == 3 {
+			securePass = split[2]
+		}
+
+		p.Tripcode = tripcode.Tripcode(standardPass)
+		if securePass != "" {
+			p.Tripcode += "!!" + tripcode.SecureTripcode(securePass, saltTrip)
+		}
+	}
 
 	formFile, formFileHeader, err := r.FormFile("file")
 	if err != nil || formFileHeader == nil {
@@ -175,7 +192,6 @@ func (p *Post) loadForm(r *http.Request, rootDir string) error {
 		}
 	}
 	if fileExt == "" {
-		log.Println(mimeType, "!")
 		return fmt.Errorf("unsupported filetype")
 	}
 
@@ -281,19 +297,22 @@ func (p *Post) setNameBlock(defaultName string, capcode string) {
 
 	emailLink := p.Email != "" && strings.ToLower(p.Email) != "noko"
 
-	name := p.Name
-	if name == "" {
-		name = defaultName
-	}
-
 	if emailLink {
 		out.WriteString(`<a href="mailto:"` + html.EscapeString(p.Email) + `">`)
 	}
-	out.WriteString(`<span class="postername">`)
-	out.WriteString(html.EscapeString(name))
-	out.WriteString(`</span>`)
+	if p.Name != "" || p.Tripcode == "" {
+		name := p.Name
+		if name == "" {
+			name = defaultName
+		}
+		out.WriteString(`<span class="postername">`)
+		out.WriteString(html.EscapeString(name))
+		out.WriteString(`</span>`)
+	}
 	if p.Tripcode != "" {
-		out.WriteString(`<span class="postertrip">!` + html.EscapeString(p.Tripcode) + `</span>`)
+		out.WriteString(`<span class="postertrip">!`)
+		out.WriteString(html.EscapeString(p.Tripcode))
+		out.WriteString(`</span>`)
 	}
 	if emailLink {
 		out.WriteString(`</a>`)

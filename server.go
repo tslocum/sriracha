@@ -91,8 +91,6 @@ func (s *Server) parseConfig(configFile string) error {
 		return err
 	}
 
-	log.Println(config.UploadTypes())
-
 	switch {
 	case config.Root == "":
 		return fmt.Errorf("root (lowercase!) must be set in %s to the root folder (where board files are written)", configFile)
@@ -102,6 +100,8 @@ func (s *Server) parseConfig(configFile string) error {
 		return fmt.Errorf("saltdata (lowercase!) must be set in %s to the one-way secure data hashing salt (a long string of random data which, once set, never changes)", configFile)
 	case config.SaltPass == "":
 		return fmt.Errorf("saltpass (lowercase!) must be set in %s to the two-way secure data hashing salt (a long string of random data which, once set, never changes)", configFile)
+	case config.SaltTrip == "":
+		return fmt.Errorf("salttrip (lowercase!) must be set in %s to the secure tripcode generation salt (a long string of random data which, once set, never changes)", configFile)
 	case config.Min <= 0:
 		return fmt.Errorf("min (lowercase!) must be set in %s to the minimum number of connections of the database connection pool (1 is a reasonable choice)", configFile)
 	case config.Max <= 0:

@@ -67,8 +67,8 @@ This database will be read and imported by Sriracha.
 
 ### 3. Configure Sriracha to run in import mode
 
-Add the following to your Sriracha `config.yml`, replacing each value with your
-database configuration and TinyIB table names.
+Add the following to your Sriracha `config.yml`, replacing the example values
+with your TinyIB PostgreSQL database connection info and table names.
 
 ```yaml
 # Note: Posting is disabled when running in import mode.

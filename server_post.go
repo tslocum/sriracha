@@ -51,7 +51,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 
 	post.IP = hashIP(r)
 
-	err := post.loadForm(r, s.config.Root)
+	err := post.loadForm(r, s.config.Root, s.config.SaltTrip)
 	if err != nil {
 		s.deletePostFiles(post)
 

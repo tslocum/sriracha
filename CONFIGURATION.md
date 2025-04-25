@@ -35,10 +35,13 @@ serve: localhost:8080
 header: X-Forwarded-For
 
 # Long random string of text used when one-way hashing data. Must not change once set.
-saltdata: CHANGEME_Random_Data_Here
+saltdata: CHANGEME_Random_Data_Here_1
 
 # Long random string of text used when two-way hashing data. Must not change once set.
-saltpass: CHANGEME_More_Random_Data
+saltpass: CHANGEME_Random_Data_Here_2
+
+# Long random string of text used when generating secure tripcodes. Must not change once set.
+salttrip: CHANGEME_Random_Data_Here_3
 
 # Minimum number of database connections to maintain in the pool.
 min: 1

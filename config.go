@@ -16,6 +16,7 @@ type Config struct {
 	Locale   string // Default locale. See locale directory for available languages.
 	SaltData string // Long random string of text used when one-way hashing data. Must not change once set.
 	SaltPass string // Long random string of text used when two-way hashing data. Must not change once set.
+	SaltTrip string // Long random string of text used when generating secure tripcodes. Must not change once set.
 
 	Min      int    // Minimum number of database connections to maintain in the pool.
 	Max      int    // Maximum number of database connections to maintain in the pool.
