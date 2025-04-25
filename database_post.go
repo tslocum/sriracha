@@ -204,6 +204,18 @@ func (db *Database) postByFileHash(hash string) *Post {
 	return p
 }
 
+func (db *Database) lastPostByIP(board *Board, ip string) *Post {
+	p := &Post{}
+	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT *, 0 as replies FROM post WHERE board = $1 AND ip = $2 ORDER BY id DESC LIMIT 1", board.ID, ip))
+	if err == pgx.ErrNoRows {
+		return nil
+	} else if err != nil || p.ID == 0 {
+		log.Fatalf("failed to select last post by IP: %s", err)
+	}
+	p.Board = db.boardByID(boardID)
+	return p
+}
+
 func (db *Database) bumpThread(threadID int, timestamp int64) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE post SET bumped = $1 WHERE id = $2 AND bumped < $1", timestamp, threadID)
 	if err != nil {

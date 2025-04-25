@@ -51,6 +51,19 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 
 	post.IP = hashIP(r)
 
+	if b.Delay != 0 {
+		lastPost := db.lastPostByIP(post.Board, post.IP)
+		if lastPost != nil {
+			nextPost := lastPost.Timestamp + int64(b.Delay)
+			if time.Now().Unix() < nextPost {
+				waitTime := time.Until(time.Unix(nextPost, 0)) // This should be rounded to the nearest second. Oh well.
+				data := s.buildData(db, w, r)
+				data.BoardError(w, gotext.Get("Please wait %s before creating a new post.", waitTime))
+				return
+			}
+		}
+	}
+
 	err := post.loadForm(r, s.config.Root, s.config.SaltTrip)
 	if err != nil {
 		s.deletePostFiles(post)
