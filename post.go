@@ -121,9 +121,17 @@ func (p *Post) loadForm(r *http.Request, rootDir string) error {
 		return nil
 	}
 
+	if formFileHeader.Size > p.Board.MaxSize {
+		return fmt.Errorf("that file exceeds the maximum file size: %s", p.Board.MaxSizeLabel())
+	}
+
 	buf, err := io.ReadAll(formFile)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if int64(len(buf)) > p.Board.MaxSize {
+		return fmt.Errorf("that file exceeds the maximum file size: %s", p.Board.MaxSizeLabel())
 	}
 
 	mimeType := mimetype.Detect(buf).String()
