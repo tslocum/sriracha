@@ -15,6 +15,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gabriel-vasile/mimetype"
 	"github.com/leonelquinteros/gotext"
 )
 
@@ -134,7 +135,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 					continue
 				}
 
-				mimeType := http.DetectContentType(buf)
+				mimeType := mimetype.Detect(buf).String()
 
 				fileExt := mimeToExt(mimeType)
 				if fileExt == "" {

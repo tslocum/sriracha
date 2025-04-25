@@ -71,6 +71,8 @@ uploads:
   - image/png   png
   - image/gif   gif
   - audio/wav   wav
+  - audio/wave  wav
+  - audio/x-wav wav
   - audio/aac   aac
   - audio/ogg   ogg
   - audio/flac  flac
@@ -81,7 +83,7 @@ uploads:
   - video/mp4   mp4
   - audio/webm  webm
   - video/webm  webm
-  - application/x-shockwave-flash swf swf_thumbnail.png
+  - application/x-shockwave-flash swf swf.png
 ```
 
 ## Example reverse proxy using caddy (Caddyfile)

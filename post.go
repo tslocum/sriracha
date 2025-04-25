@@ -23,6 +23,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gabriel-vasile/mimetype"
 	"github.com/nfnt/resize"
 )
 
@@ -64,15 +65,16 @@ type Post struct {
 
 var postUploadFileLock = &sync.Mutex{}
 
-func (p *Post) setFileAndThumb(fileExt string) {
+func (p *Post) setFileAndThumb(fileExt string, thumbExt string) {
 	postUploadFileLock.Lock()
 	defer postUploadFileLock.Unlock()
 
 	fileID := time.Now().UnixNano()
 	fileIDString := fmt.Sprintf("%d", fileID)
 
-	thumbExt := fileExt
-	if fileExt != "jpg" && fileExt != "png" && fileExt != "gif" {
+	if thumbExt != "" {
+		thumbExt = fileExt
+	} else if fileExt != "jpg" && fileExt != "png" && fileExt != "gif" {
 		thumbExt = "jpg"
 	}
 
@@ -124,22 +126,36 @@ func (p *Post) loadForm(r *http.Request, rootDir string) error {
 		log.Fatal(err)
 	}
 
-	mimeType := http.DetectContentType(buf)
+	mimeType := mimetype.Detect(buf).String()
 
 	var fileExt string
+	var fileThumb string
 	if p.Board.HasUpload(mimeType) {
 		for _, u := range srirachaServer.config.UploadTypes() {
 			if u.MIME == mimeType {
 				fileExt = u.Ext
+				fileThumb = u.Thumb
 				break
 			}
 		}
 	}
 	if fileExt == "" {
+		log.Println(mimeType, "!")
 		return fmt.Errorf("unsupported filetype")
 	}
 
-	p.setFileAndThumb(fileExt)
+	var thumbExt string
+	var thumbData []byte
+	if fileThumb != "" && fileThumb != "none" {
+		thumbData, err = templateFS.ReadFile("template/img/" + fileThumb)
+		if err != nil {
+			log.Fatalf("failed to open thumbnail file %s: %s", fileThumb, err)
+		}
+
+		thumbExt = mimeToExt(mimetype.Detect(thumbData).String())
+	}
+
+	p.setFileAndThumb(fileExt, thumbExt)
 
 	err = p.setFileAttributes(buf, formFileHeader.Filename)
 	if err != nil {
@@ -154,6 +170,13 @@ func (p *Post) loadForm(r *http.Request, rootDir string) error {
 		log.Fatal(err)
 	}
 
+	if fileThumb == "none" {
+		p.Thumb = ""
+		return nil
+	} else if fileThumb != "" {
+		return p.createThumbnail(thumbData, mimetype.Detect(thumbData).String(), thumbPath)
+	}
+
 	isImage := mimeType == "image/jpeg" || mimeType == "image/pjpeg" || mimeType == "image/png" || mimeType == "image/gif"
 	if isImage {
 		imgConfig, _, err := image.DecodeConfig(bytes.NewReader(buf))
@@ -166,6 +189,12 @@ func (p *Post) loadForm(r *http.Request, rootDir string) error {
 		if err != nil {
 			return err
 		}
+	}
+
+	isVideo := strings.HasPrefix(mimeType, "video/")
+	if !isVideo {
+		p.Thumb = ""
+		return nil
 	}
 
 	cmd := exec.Command("ffprobe", "-hide_banner", "-loglevel", "error", "-of", "csv=p=0", "-select_streams", "v", "-show_entries", "stream=width,height", srcPath)
