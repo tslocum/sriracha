@@ -32,6 +32,8 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+var SrirachaVersion = "DEV"
+
 var alphaNumericAndSymbols = regexp.MustCompile(`^[0-9A-Za-z_-]+$`)
 
 //go:embed locale
@@ -654,16 +656,27 @@ func (s *Server) listen() error {
 }
 
 func (s *Server) Run() error {
+	printInfo := func() {
+		fmt.Fprintf(os.Stderr, "\nSriracha imageboard and forum\n  https://codeberg.org/tslocum/sriracha\nGNU LESSER GENERAL PUBLIC LICENSE\n  https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE\n")
+	}
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage:\n  sriracha [OPTION...] [PLUGIN...]\n\nOptions:\n")
 		flag.PrintDefaults()
-		fmt.Fprintf(os.Stderr, "\nSriracha imageboard and forum\n  https://codeberg.org/tslocum/sriracha\nGNU LESSER GENERAL PUBLIC LICENSE\n  https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE\n")
+		printInfo()
 	}
 	var configFile string
 	var devMode bool
+	var printVersion bool
 	flag.StringVar(&configFile, "config", "", "path to configuration file (default: ~/.config/sriracha/config.yml)")
 	flag.BoolVar(&devMode, "dev", false, "run in development mode (monitor template files and apply changes)")
+	flag.BoolVar(&printVersion, "version", false, "print version information and exit")
 	flag.Parse()
+
+	if printVersion {
+		fmt.Fprintf(os.Stderr, "Sriracha %s\n", SrirachaVersion)
+		printInfo()
+		return nil
+	}
 
 	if configFile == "" {
 		homeDir, err := os.UserHomeDir()

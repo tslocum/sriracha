@@ -1,5 +1,6 @@
 {{template "manage_begin.gohtml" .}}
 <h2 class="managetitle">Settings</h2>
+{{if eq .Extra "DEV"}}<b>Warning:</b> You are running an unsupported version of Sriracha. Install an <a href="https://codeberg.org/tslocum/sriracha/releases">official version</a> to receive support.<br><br>{{end}}
 <form method="post">
     <fieldset>
     <legend>Update Settings</legend>
@@ -45,6 +46,11 @@
             </td>
             <td>Available embed services. Visit board settings to enable usage.<br>
             Format: <pre style="display: inline-block;border: 1px solid;padding: 2px;">Name https://service.com/path/to/oembed?url=SRIRACHA_EMBED</pre></td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="version">Version</label></td>
+            <td><input type="text" name="version" value="{{.Extra}}" disabled></input></td>
+            <td>Sriracha version. <a href="https://codeberg.org/tslocum/sriracha/releases">Click here</a> to check for updates.</td>
         </tr>
         <tr>
             <td>&nbsp;[<a href="/sriracha/setting/reset" onclick="return confirm('Reset all settings?');">reset</a>]</td>

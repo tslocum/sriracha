@@ -4,6 +4,8 @@ builds:
   -
     id: sriracha
     main: ./cmd/sriracha/
+    ldflags:
+      - -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
     goos:
       - darwin
       - freebsd

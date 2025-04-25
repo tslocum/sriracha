@@ -114,4 +114,5 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 		}
 	}
 	data.Template = "manage_setting"
+	data.Extra = SrirachaVersion
 }
