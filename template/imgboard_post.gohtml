@@ -38,11 +38,11 @@
                     {{.Message | HTML}}
                 </div>
             </div>
-            {{$omitted := Omitted $.Board.Replies (len $thread)}}
+            {{$omitted := Omitted .Board.Replies .Replies}}
             {{if and (eq $.ReplyMode 0) (gt $omitted 0)}}
                 <span class="omittedposts">{{TN "%d post omitted. Click Reply to view." "%d posts omitted. Click Reply to view." $omitted $omitted}}</span>
             {{end}}
-        {{else if (or (ne $.ReplyMode 0) (ShowReply $.Board.Replies (len $thread) $i))}}
+        {{else}}
             <table>
             <tbody>
                 <tr>

@@ -2,7 +2,9 @@ package sriracha
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"slices"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -114,6 +116,44 @@ func (db *Database) allPostsInThread(postID int, moderated bool) []*Post {
 	}
 	for i := range posts {
 		posts[i].Board = db.boardByID(boardIDs[i])
+	}
+	return posts
+}
+
+func (db *Database) allReplies(threadID int, limit int, moderated bool) []*Post {
+	if limit == 0 {
+		return nil
+	}
+	var sortDir = "ASC"
+	var extraLimit string
+	if limit != 0 {
+		sortDir = "DESC"
+		extraLimit = fmt.Sprintf(" LIMIT %d", limit)
+	}
+	var extraModerated string
+	if moderated {
+		extraModerated = " AND moderated > 0"
+	}
+	rows, err := db.conn.Query(context.Background(), "SELECT *, 0 as replies FROM post WHERE parent = $1"+extraModerated+" ORDER BY id "+sortDir+extraLimit, threadID)
+	if err != nil {
+		log.Fatalf("failed to select all replies: %s", err)
+	}
+	var posts []*Post
+	var boardIDs []int
+	for rows.Next() {
+		p := &Post{}
+		boardID, err := scanPost(p, rows)
+		if err != nil {
+			log.Fatal(err)
+		}
+		posts = append(posts, p)
+		boardIDs = append(boardIDs, boardID)
+	}
+	for i := range posts {
+		posts[i].Board = db.boardByID(boardIDs[i])
+	}
+	if sortDir == "DESC" {
+		slices.Reverse(posts)
 	}
 	return posts
 }

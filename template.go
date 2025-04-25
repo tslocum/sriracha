@@ -105,9 +105,10 @@ var templateFuncMap = template.FuncMap{
 	"MinusOne": func(i int) int {
 		return i - 1
 	},
-	"Omitted": func(showReplies int, threadPosts int) int {
-		numReplies := threadPosts - 1
-		if showReplies == 0 || numReplies <= showReplies {
+	"Omitted": func(showReplies int, numReplies int) int {
+		if showReplies == 0 {
+			return numReplies
+		} else if numReplies <= showReplies {
 			return 0
 		}
 		return numReplies - showReplies

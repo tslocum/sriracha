@@ -503,7 +503,9 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 
 		data.Threads = nil
 		for _, thread := range threads[start:end] {
-			data.Threads = append(data.Threads, db.allPostsInThread(thread.ID, false))
+			posts := []*Post{thread}
+			posts = append(posts, db.allReplies(thread.ID, board.Replies, true)...)
+			data.Threads = append(data.Threads, posts)
 		}
 		data.Page = page
 		data.execute(indexFile)
