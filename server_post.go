@@ -19,7 +19,10 @@ import (
 	"github.com/leonelquinteros/gotext"
 )
 
-var reflinkPattern = regexp.MustCompile(`&gt;&gt;([0-9]+)`)
+var (
+	reflinkPattern = regexp.MustCompile(`&gt;&gt;([0-9]+)`)
+	quotePattern   = regexp.MustCompile(`^&gt;(.*)$`)
+)
 
 type embedInfo struct {
 	Title string `json:"title"`
@@ -336,6 +339,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 				log.Printf("warning: plugin failed to handle post event: %s", err.Error())
 				return
 			}
+			post.Message = strings.ReplaceAll(post.Message, "<br>", "\n")
 		}
 
 		post.Message = reflinkPattern.ReplaceAllStringFunc(post.Message, func(s string) string {
@@ -353,6 +357,18 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			}
 			return fmt.Sprintf(`<a href="%sres/%d.html#%d" class="%s">%s</a>`, refPost.Board.Path(), refPost.Thread(), refPost.ID, className, s)
 		})
+
+		var quote bool
+		lines := strings.Split(post.Message, "\n")
+		for i := range lines {
+			lines[i] = quotePattern.ReplaceAllStringFunc(lines[i], func(s string) string {
+				quote = true
+				return `<span class="unkfunc">` + s + `</span>`
+			})
+		}
+		if quote {
+			post.Message = strings.Join(lines, "\n")
+		}
 	}
 
 	if strings.TrimSpace(post.Message) == "" && post.File == "" {
