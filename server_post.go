@@ -294,6 +294,25 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	}
 
 	if !rawHTML {
+		if post.Board.WordBreak != 0 {
+			pattern, err := regexp.Compile(`[^\s]{` + strconv.Itoa(post.Board.WordBreak) + `,}`)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			buf := &strings.Builder{}
+			post.Message = pattern.ReplaceAllStringFunc(post.Message, func(s string) string {
+				buf.Reset()
+				for i, r := range s {
+					if i != 0 && i%post.Board.WordBreak == 0 {
+						buf.WriteRune('\n')
+					}
+					buf.WriteRune(r)
+				}
+				return buf.String()
+			})
+		}
+
 		for _, postHandler := range allPluginPostHandlers {
 			err := postHandler(db, post)
 			if err != nil {

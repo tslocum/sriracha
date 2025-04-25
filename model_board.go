@@ -110,7 +110,7 @@ const (
 	defaultBoardMaxEmail    = 255
 	defaultBoardMaxSubject  = 75
 	defaultBoardMaxMessage  = 8000
-	defaultBoardWordBreak   = 80
+	defaultBoardWordBreak   = 200
 	defaultBoardDefaultName = "Anonymous"
 	defaultBoardTruncate    = 15
 	defaultBoardMaxSize     = 2097152
