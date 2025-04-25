@@ -185,10 +185,7 @@ func (p *Post) loadForm(r *http.Request, rootDir string) error {
 		}
 		p.FileWidth, p.FileHeight = imgConfig.Width, imgConfig.Height
 
-		err = p.createThumbnail(buf, mimeType, thumbPath)
-		if err != nil {
-			return err
-		}
+		return p.createThumbnail(buf, mimeType, thumbPath)
 	}
 
 	isVideo := strings.HasPrefix(mimeType, "video/")
@@ -312,6 +309,11 @@ func (p *Post) ExpandHTML() template.HTML {
 	if isVideo {
 		const expandFormat = `<video width="%d" height="%d" style="position: static; pointer-events: inherit; display: inline; max-width: 85vw; height: auto; max-height: 100%%;" controls autoplay loop><source src="%s"></source></video>`
 		return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, p.FileWidth, p.FileHeight, srcPath)))
+	}
+
+	isImage := strings.HasSuffix(p.File, ".jpg") || strings.HasSuffix(p.File, ".png") || strings.HasSuffix(p.File, ".gif")
+	if !isImage {
+		return ""
 	}
 
 	const expandFormat = `<a href="%s" onclick="return expandFile(event, '%d');"><img src="%s" width="%d" style="min-width: %dpx;min-height: %dpx;max-width: 85vw;height: auto;"></a>`

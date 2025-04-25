@@ -3,14 +3,19 @@ function expandFile(e, id) {
         var srcFile = document.querySelector("#file" + id);
         var thumbFile = document.querySelector("#thumbfile" + id);
         if (!srcFile || !thumbFile) {
-            return;
+            return true;
+        }
+
+        var expandHTML = document.querySelector("#expand" + id).innerHTML;
+        if (!expandHTML) {
+            return true;
         }
 
         if (thumbFile.getAttribute('expanded') != 'true') {
             thumbFile.setAttribute('expanded', 'true');
 
             srcFile.style.display = "none";
-            srcFile.innerHTML = decodeURIComponent(document.querySelector("#expand" + id).innerHTML);
+            srcFile.innerHTML = decodeURIComponent(expandHTML);
 
             setTimeout(function (id) {
                 return function () {
