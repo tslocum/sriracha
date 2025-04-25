@@ -393,8 +393,10 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			s.deletePost(db, thread)
 		}
 	} else if strings.ToLower(post.Email) != "sage" {
-		// TODO check reply limit
-		db.bumpThread(post.Parent, now)
+		bump := post.Board.MaxReplies == 0 || db.replyCount(post.Parent) <= post.Board.MaxReplies
+		if bump {
+			db.bumpThread(post.Parent, now)
+		}
 	}
 
 	s.rebuildThread(db, b, post)

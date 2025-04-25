@@ -216,6 +216,17 @@ func (db *Database) lastPostByIP(board *Board, ip string) *Post {
 	return p
 }
 
+func (db *Database) replyCount(threadID int) int {
+	var count int
+	err := db.conn.QueryRow(context.Background(), "SELECT count(*) FROM post WHERE parent = $1", threadID).Scan(&count)
+	if err == pgx.ErrNoRows {
+		return 0
+	} else if err != nil {
+		log.Fatalf("failed to select reply count: %s", err)
+	}
+	return count
+}
+
 func (db *Database) bumpThread(threadID int, timestamp int64) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE post SET bumped = $1 WHERE id = $2 AND bumped < $1", timestamp, threadID)
 	if err != nil {
