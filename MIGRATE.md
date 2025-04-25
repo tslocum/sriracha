@@ -11,13 +11,19 @@ Sriracha supports migrating one or more boards from [TinyIB](https://codeberg.or
 
 Sriracha only supports the [PostgreSQL](https://www.postgresql.org) database system.
 
+### Account roles have different capabilities
+
+See [README.md](https://codeberg.org/tslocum/sriracha/src/branch/main/README.md)
+for more info on the capabilities of each role.
+
 ### Single auto-increment post ID
 
 Sriracha uses one auto-incrementing post ID for all boards. Because of this,
 migrating two more more boards will involve changing each post's ID. Reference
 links inside posts are updated, but external links to old res pages will break.
 
-### Account roles have different capabilities
+### All keywords are regular expressions
 
-See [README.md](https://codeberg.org/tslocum/sriracha/src/branch/main/README.md)
-for more info on the capabilities of each role.
+Sriracha keywords are always regular expressions. During migration, plain text
+keywords are escaped to prevent issues when parsed as regular expressions. You
+may need to manually update some keywords for them to continue to function.
