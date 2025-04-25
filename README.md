@@ -7,26 +7,26 @@ This application is in pre-alpha development. Here be dragons.
 
 Only Linux, FreeBSD and macOS are supported.
 
-## Feature Parity with TinyIB
+## Features
 
-- [X] GIF, JPG, PNG, SWF, MP4 and WebM upload
-- [X] YouTube, Vimeo and SoundCloud embedding
-- [X] CAPTCHA
-- [X] Reference links `>>###`
-- [X] Delete posts via password
-- [X] Report posts
-- [X] Thread catalog
-- [ ] Fetch new replies automatically
-- [X] Support additional languages
-- [X] Management panel:
-  - [X] Automatically moderate new posts using [regular expressions](https://en.wikipedia.org/wiki/Regular_expression)
-  - [X] Ban offensive/abusive posters across all boards
-  - [X] Post using admin or mod capcode
-  - [X] Post using raw HTML
-  - [X] Account system:
-    - [X] Super administrators (all privileges)
-    - [X] Administrators (all privileges except managing accounts and deleting boards)
-    - [X] Moderators (may only add bans, approve/delete posts and sticky/lock threads)
+- GIF, JPG, PNG, SWF, MP4 and WebM upload
+- YouTube, Vimeo and SoundCloud embedding
+- Reference links `>>###`
+- Delete posts via password
+- CAPTCHA
+- Report posts
+- Thread catalog
+- Fetch new replies automatically
+- Translate into additional languages
+- Management panel:
+  - Automatically moderate new posts using [regular expressions](https://en.wikipedia.org/wiki/Regular_expression)
+  - Ban offensive/abusive posters across all boards
+  - Post using admin or mod capcode
+  - Post using raw HTML
+  - Account system:
+    - Super administrators (all privileges)
+    - Administrators (all privileges except managing accounts and deleting boards)
+    - Moderators (may only add bans, approve/delete posts and sticky/lock threads)
 
 ## Documentation
 

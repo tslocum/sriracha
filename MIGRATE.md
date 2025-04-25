@@ -67,11 +67,11 @@ This database will be read and imported by Sriracha.
 
 ### 3. Configure Sriracha to run in import mode
 
-Add the following to your `config.yml`, replacing each value with your database
-configuration and TinyIB table names.
+Add the following to your Sriracha `config.yml`, replacing each value with your
+database configuration and TinyIB table names.
 
 ```yaml
-# Note: Posting will be disabled while running in import mode.
+# Note: Posting is disabled when running in import mode.
 import:
   # Connection info.
   address: localhost

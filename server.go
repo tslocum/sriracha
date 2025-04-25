@@ -42,6 +42,7 @@ var srirachaServer *Server
 const (
 	defaultServerSiteName = "Sriracha"
 	defaultServerSiteHome = "/"
+	defaultServerRefresh  = 30
 )
 
 var defaultServerEmbeds = [][2]string{
@@ -59,6 +60,7 @@ type ServerOptions struct {
 	SiteHome   string
 	BoardIndex bool
 	CAPTCHA    bool
+	Refresh    int
 	Uploads    []*uploadType
 	Embeds     [][2]string
 }
@@ -185,7 +187,15 @@ func (s *Server) setDefaultServerConfig() error {
 	boardIndex := db.GetString("boardindex")
 	s.opt.BoardIndex = boardIndex == "" || boardIndex == "1"
 
+	s.opt.Refresh = db.GetInt("refresh")
+
 	s.opt.CAPTCHA = db.GetBool("captcha")
+
+	if !db.HaveConfig("refresh") {
+		s.opt.Refresh = defaultServerRefresh
+	} else {
+		s.opt.Refresh = db.GetInt("refresh")
+	}
 
 	s.opt.Uploads = s.config.UploadTypes()
 

@@ -31,6 +31,11 @@
             <td>Whether visitors must pass a CAPTCHA when posting.</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="refresh">Auto Refresh</label></td>
+            <td><input type="text" name="refresh" value="{{.Opt.Refresh}}"></input></td>
+            <td>Seconds between automatic refreshes when viewing a thread. 0 to disable.</td>
+        </tr>
+        <tr>
             <td class="postblock"><label for="captcha">Embed Services</label></td>
             <td>
                 {{range $i, $info := .Opt.Embeds}}

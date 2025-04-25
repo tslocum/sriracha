@@ -22,7 +22,9 @@
 <input type="hidden" name="action" value="delete">
 <input type="hidden" name="board" value="{{.Board.Dir}}">
 <hr>
-{{template "imgboard_post.gohtml" $}}
+<div>
+	{{template "imgboard_post.gohtml" $}}
+</div>
 <hr>
 <table class="userdelete">
 <tbody>
@@ -34,20 +36,22 @@
 </tbody>
 </table>
 </form>
-<table border="1" style="display: inline-block;">
-<tbody>
-	<tr>
-		<td>{{T "Previous"}}</td>
-		<td>&#91;0&#93; </td>
-		<td>{{T "Next"}}</td>
-	</tr>
-</tbody>
-</table>
-<table border="1" style="display: inline-block;margin-left: 21px;">
-<tbody>
-	<tr>
-		<td><form method="get" action="{{.Board.Path}}catalog.html"><input type="submit" value="{{T "Catalog"}}"></form></td>
-	</tr>
-</tbody>
-</table>
+{{if eq .ReplyMode 0}}
+	<table border="1" style="display: inline-block;">
+	<tbody>
+		<tr>
+			<td>{{T "Previous"}}</td>
+			<td>&#91;0&#93; </td>
+			<td>{{T "Next"}}</td>
+		</tr>
+	</tbody>
+	</table>
+	<table border="1" style="display: inline-block;margin-left: 21px;">
+	<tbody>
+		<tr>
+			<td><form method="get" action="{{.Board.Path}}catalog.html"><input type="submit" value="{{T "Catalog"}}"></form></td>
+		</tr>
+	</tbody>
+	</table>
+{{end}}
 {{template "imgboard_end.gohtml" .}}
