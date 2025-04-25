@@ -124,6 +124,7 @@ func (db *Database) upgrade() error {
 
 func (db *Database) loadPluginConfig() error {
 	for _, info := range allPluginInfo {
+		db.plugin = strings.ToLower(info.Name)
 		for i, c := range info.Config {
 			v := db.GetString(strings.ToLower(info.Name + "." + c.Name))
 			if v != "" {
@@ -131,6 +132,7 @@ func (db *Database) loadPluginConfig() error {
 			}
 		}
 	}
+	db.plugin = ""
 	return nil
 }
 
@@ -179,7 +181,7 @@ func (db *Database) GetInt(key string) int {
 }
 
 func (db *Database) SaveString(key string, value string) {
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO config VALUES ($1, $2) ON CONFLICT (name) DO UPDATE SET value = $3", key, value, value)
+	_, err := db.conn.Exec(context.Background(), "INSERT INTO config VALUES ($1, $2) ON CONFLICT (name) DO UPDATE SET value = $3", db.configKey(key), value, value)
 	if err != nil {
 		log.Fatalf("failed to save string: %s", err)
 	}

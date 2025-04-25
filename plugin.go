@@ -1,7 +1,6 @@
 package sriracha
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"reflect"
@@ -107,20 +106,9 @@ func RegisterPlugin(plugin any) {
 	var events []string
 	var config []PluginConfig
 
-	pUpdate, ok := plugin.(PluginWithUpdate)
+	_, ok = plugin.(PluginWithUpdate)
 	if ok {
 		events = append(events, "Update")
-	}
-
-	conn, err := srirachaServer.dbPool.Acquire(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer conn.Release()
-
-	_, err = conn.Exec(context.Background(), "BEGIN")
-	if err != nil {
-		log.Fatalf("failed to begin transaction: %s", err)
 	}
 
 	pConfig, ok := plugin.(PluginWithConfig)
@@ -140,14 +128,6 @@ func RegisterPlugin(plugin any) {
 				config[i].Default = "0"
 			}
 			config[i].Value = config[i].Default
-
-			if pUpdate != nil {
-				db := &Database{
-					conn:   conn,
-					plugin: strings.ToLower(name),
-				}
-				pUpdate.Update(db, config[i].Name)
-			}
 		}
 	}
 
@@ -172,11 +152,6 @@ func RegisterPlugin(plugin any) {
 	}
 	allPlugins = append(allPlugins, plugin)
 	allPluginInfo = append(allPluginInfo, info)
-
-	_, err = conn.Exec(context.Background(), "COMMIT")
-	if err != nil {
-		log.Fatalf("failed to commit transaction: %s", err)
-	}
 }
 
 type pluginInfo struct {

@@ -240,10 +240,22 @@ func (s *Server) setDefaultPluginConfig() error {
 		conn: conn,
 	}
 
-	for _, info := range allPluginInfo {
-		for _, config := range info.Config {
-			if db.GetString(config.Name) == "" {
-				db.SaveString(config.Name, config.Default)
+	for i, info := range allPluginInfo {
+		db.plugin = strings.ToLower(info.Name)
+
+		for i, config := range info.Config {
+			if !db.HaveConfig(config.Name) {
+				db.SaveString(config.Name, config.Value)
+			} else {
+				info.Config[i].Value = db.GetString(config.Name)
+			}
+		}
+
+		p := allPlugins[i]
+		pUpdate, ok := p.(PluginWithUpdate)
+		if ok {
+			for _, config := range info.Config {
+				pUpdate.Update(db, config.Name)
 			}
 		}
 	}
