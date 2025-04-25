@@ -4,14 +4,14 @@
         <input type="hidden" name="approve" value="{{.Post.ID}}">
         <input type="submit" value="Approve">
     </form>
-    <form method="post" action="/sriracha/mod/delete/{{.Post.Board.ID}}/{{.Post.ID}}" style="display: inline-block;" onsubmit="return confirm('Delete No.{{.Post.ID}}?');">
+    <form method="post" action="/sriracha/mod/delete/{{.Post.ID}}" style="display: inline-block;" onsubmit="return confirm('Delete No.{{.Post.ID}}?');">
         <input type="hidden" name="confirmation" value="1">
         <input type="submit" value="Delete">
     </form>
-    <form method="get" action="/sriracha/mod/ban/{{.Post.Board.ID}}/{{.Post.ID}}" style="display: inline-block;">
+    <form method="get" action="/sriracha/mod/ban/{{.Post.ID}}" style="display: inline-block;">
         <input type="submit" value="Ban">
     </form>
-    <form method="get" action="/sriracha/mod/{{.Post.Board.ID}}/{{.Post.ID}}" style="display: inline-block;">
+    <form method="get" action="/sriracha/mod/{{.Post.ID}}" style="display: inline-block;">
         <input type="submit" value="Delete &amp; Ban"> &nbsp;
     </form>
     {{if ne .Manage.Report nil}}

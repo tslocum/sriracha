@@ -8,6 +8,7 @@ import (
 	"html"
 	"html/template"
 	"image"
+	"image/draw"
 	"image/gif"
 	"image/jpeg"
 	"image/png"
@@ -92,10 +93,14 @@ func (p *Post) setFileAttributes(buf []byte, name string) error {
 	return nil
 }
 
-func (p *Post) createThumbnail(buf []byte, mimeType string, thumbPath string) error {
+func (p *Post) createThumbnail(buf []byte, mimeType string, mediaOverlay bool, thumbPath string) error {
 	thumbImg, err := resizeImage(p.Board, bytes.NewReader(buf), mimeType)
 	if err != nil {
 		return err
+	}
+
+	if mediaOverlay {
+		thumbImg = p.addMediaOverlay(thumbImg)
 	}
 
 	bounds := thumbImg.Bounds()
@@ -106,6 +111,28 @@ func (p *Post) createThumbnail(buf []byte, mimeType string, thumbPath string) er
 		return fmt.Errorf("unsupported filetype")
 	}
 	return nil
+}
+
+func (p *Post) addMediaOverlay(img image.Image) image.Image {
+	mediaBuf, err := templateFS.ReadFile("template/img/media.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	overlayImg, err := png.Decode(bytes.NewReader(mediaBuf))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	target := image.NewRGBA(img.Bounds())
+	draw.Draw(target, img.Bounds(), img, image.Point{}, draw.Src)
+
+	overlayPosition := image.Point{
+		X: img.Bounds().Dx()/2 - overlayImg.Bounds().Dx()/2,
+		Y: img.Bounds().Dy()/2 - overlayImg.Bounds().Dy()/2,
+	}
+	draw.Draw(target, overlayImg.Bounds().Add(overlayPosition), overlayImg, image.Point{}, draw.Over)
+	return target
 }
 
 func (p *Post) loadForm(r *http.Request, rootDir string) error {
@@ -182,7 +209,7 @@ func (p *Post) loadForm(r *http.Request, rootDir string) error {
 		p.Thumb = ""
 		return nil
 	} else if fileThumb != "" {
-		return p.createThumbnail(thumbData, mimetype.Detect(thumbData).String(), thumbPath)
+		return p.createThumbnail(thumbData, mimetype.Detect(thumbData).String(), false, thumbPath)
 	}
 
 	isImage := mimeType == "image/jpeg" || mimeType == "image/pjpeg" || mimeType == "image/png" || mimeType == "image/gif"
@@ -193,7 +220,7 @@ func (p *Post) loadForm(r *http.Request, rootDir string) error {
 		}
 		p.FileWidth, p.FileHeight = imgConfig.Width, imgConfig.Height
 
-		return p.createThumbnail(buf, mimeType, thumbPath)
+		return p.createThumbnail(buf, mimeType, false, thumbPath)
 	}
 
 	isVideo := strings.HasPrefix(mimeType, "video/")
@@ -234,6 +261,16 @@ func (p *Post) loadForm(r *http.Request, rootDir string) error {
 		split := bytes.Split(bytes.TrimSpace(out), []byte(","))
 		if len(split) >= 2 {
 			p.ThumbWidth, p.ThumbHeight = parseInt(string(split[0])), parseInt(string(split[1]))
+
+			thumbData, err := os.ReadFile(thumbPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			err = p.createThumbnail(thumbData, "image/jpeg", true, thumbPath)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 	}
 	return nil

@@ -145,7 +145,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 				thumbName := fmt.Sprintf("%d.%s", time.Now().UnixNano(), fileExt)
 				thumbPath := filepath.Join(s.config.Root, b.Dir, "thumb", thumbName)
 
-				err = post.createThumbnail(buf, mimeType, thumbPath)
+				err = post.createThumbnail(buf, mimeType, true, thumbPath)
 				if err != nil {
 					continue
 				}
