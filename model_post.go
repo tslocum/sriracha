@@ -140,12 +140,19 @@ func (p *Post) addMediaOverlay(img image.Image) image.Image {
 }
 
 func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error {
+	limitString := func(v string, limit int) string {
+		if len(v) > limit {
+			return v[:limit]
+		}
+		return v
+	}
+
 	p.Parent = formInt(r, "parent")
 
-	p.Name = formString(r, "name")
-	p.Email = formString(r, "email")
-	p.Subject = formString(r, "subject")
-	p.Message = html.EscapeString(formString(r, "message"))
+	p.Name = limitString(formString(r, "name"), p.Board.MaxName)
+	p.Email = limitString(formString(r, "email"), p.Board.MaxEmail)
+	p.Subject = limitString(formString(r, "subject"), p.Board.MaxSubject)
+	p.Message = html.EscapeString(limitString(formString(r, "message"), p.Board.MaxMessage))
 
 	if strings.ContainsRune(p.Name, '#') {
 		split := strings.SplitN(p.Name, "#", 3)
