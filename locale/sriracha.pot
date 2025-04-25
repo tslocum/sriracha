@@ -165,7 +165,13 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
+msgid "Please wait %s before creating a new post."
+msgstr ""
+
 msgid "Plugins"
+msgstr ""
+
+msgid "Post truncated. Click Reply to view."
 msgstr ""
 
 msgid "Posting mode: Reply"

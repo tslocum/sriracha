@@ -26,6 +26,7 @@ import (
 
 	"github.com/aquilax/tripcode"
 	"github.com/gabriel-vasile/mimetype"
+	"github.com/leonelquinteros/gotext"
 	"github.com/nfnt/resize"
 )
 
@@ -369,6 +370,43 @@ func (p *Post) EmbedInfo() []string {
 		return nil
 	}
 	return split
+}
+
+func (p *Post) MessageTruncated() template.HTML {
+	if p.Board.Truncate == 0 {
+		return template.HTML(p.Message)
+	}
+
+	count := strings.Count(p.Message, "<br>")
+	if count < p.Board.Truncate {
+		return template.HTML(p.Message)
+	}
+
+	msg := []byte(p.Message)
+	out := &bytes.Buffer{}
+	var start int
+	for i := 0; i < p.Board.Truncate; i++ {
+		index := bytes.Index(msg[start:], []byte("<br>"))
+
+		end := len(msg) - start
+		if index != -1 {
+			end = index
+		}
+
+		if i > 0 {
+			out.Write([]byte("<br>"))
+		}
+		out.Write(msg[start : start+end])
+
+		start += end + 4
+
+		if start >= len(msg) {
+			break
+		}
+	}
+
+	out.Write([]byte(`<br><span class="omittedposts">` + gotext.Get("Post truncated. Click Reply to view.") + `</span><br>`))
+	return template.HTML(out.String())
 }
 
 func (p *Post) ExpandHTML() template.HTML {
