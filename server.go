@@ -446,37 +446,68 @@ func (s *Server) writeThread(db *Database, board *Board, postID int) {
 }
 
 func (s *Server) writeIndexes(db *Database, board *Board) {
-	// Write index.
-
-	indexFile, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "index.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer indexFile.Close()
-
-	data := &templateData{
-		Board:    board,
-		Boards:   db.allBoards(),
-		Manage:   &manageData{},
-		Template: "board_page",
-	}
-	threads := db.allThreads(board, true)
-	for _, thread := range threads {
-		data.Threads = append(data.Threads, db.allPostsInThread(thread.ID, true))
-	}
-	data.execute(indexFile)
-
 	// Write catalog.
 
 	catalogFile, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "catalog.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer catalogFile.Close()
 
-	data.Template = "board_catalog"
-	data.ReplyMode = 1
+	threads := db.allThreads(board, true)
+	data := &templateData{
+		Board:     board,
+		Boards:    db.allBoards(),
+		ReplyMode: 1,
+		Manage:    &manageData{},
+		Template:  "board_catalog",
+	}
+	for _, thread := range threads {
+		data.Threads = append(data.Threads, []*Post{thread})
+	}
 	data.execute(catalogFile)
+
+	catalogFile.Close()
+
+	// Write indexes.
+
+	data.ReplyMode = 0
+	data.Template = "board_page"
+
+	pages := 1
+	if board.Threads != 0 {
+		pages = len(threads) / board.Threads
+		if len(threads)%board.Threads != 0 {
+			pages++
+		}
+	}
+	data.Pages = pages
+
+	for page := 0; page < pages; page++ {
+		fileName := "index.html"
+		if page > 0 {
+			fileName = fmt.Sprintf("%d.html", page)
+		}
+
+		indexFile, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, fileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		start := page * board.Threads
+		end := len(threads)
+		if board.Threads != 0 && end > start+board.Threads {
+			end = start + board.Threads
+		}
+
+		data.Threads = nil
+		for _, thread := range threads[start:end] {
+			data.Threads = append(data.Threads, db.allPostsInThread(thread.ID, false))
+		}
+		data.Page = page
+		data.execute(indexFile)
+
+		indexFile.Close()
+	}
 }
 
 func (s *Server) rebuildThread(db *Database, board *Board, post *Post) {
@@ -497,16 +528,11 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 		return
 	}
 	var skipExecute bool
-	defer func() {
-		w.Header().Set("Content-Type", "text/html")
-		if skipExecute {
-			return
-		}
-		data.execute(w)
-	}()
 
 	if len(data.Info) != 0 {
+		w.Header().Set("Content-Type", "text/html")
 		data.Template = "manage_error"
+		data.execute(w)
 		return
 	}
 
@@ -517,6 +543,8 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 	data.Template = "manage_login"
 
 	if data.Account == nil {
+		w.Header().Set("Content-Type", "text/html")
+		data.execute(w)
 		return
 	}
 	switch {
@@ -541,6 +569,12 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 	default:
 		s.serveStatus(data, db, w, r)
 	}
+
+	if skipExecute {
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	data.execute(w)
 }
 
 func (s *Server) serve(w http.ResponseWriter, r *http.Request) {

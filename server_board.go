@@ -16,14 +16,15 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 	boardID := pathInt(r, "/sriracha/board/rebuild/")
 	if boardID > 0 {
 		if data.forbidden(w, RoleAdmin) {
-			return
+			return false
 		}
 		b := db.boardByID(boardID)
-		if b != nil {
-			s.rebuildBoard(db, b)
-
-			data.Info = fmt.Sprintf("Rebuilt %s", b.Path())
+		if b == nil {
+			data.ManageError("Board not found")
+			return false
 		}
+		s.rebuildBoard(db, b)
+		data.Info = fmt.Sprintf("Rebuilt %s", b.Path())
 	}
 
 	modBoard := pathString(r, "/sriracha/board/mod/")
@@ -38,24 +39,25 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		}
 
 		b := db.boardByID(boardID)
-		if b != nil {
-			data.Template = "board_page"
-			data.Board = b
-			data.Boards = db.allBoards()
-			data.ModMode = true
-			if postID > 0 {
-				data.Threads = [][]*Post{db.allPostsInThread(postID, true)}
-				data.ReplyMode = postID
-			} else {
-				for _, thread := range db.allThreads(b, true) {
-					data.Threads = append(data.Threads, db.allPostsInThread(thread.ID, true))
-				}
-			}
+		if b == nil {
+			data.ManageError("Invalid or deleted board or post")
 			return false
 		}
 
-		data.ManageError("Invalid or deleted board or post")
-		return
+		data.Template = "board_page"
+		data.Board = b
+		data.Boards = db.allBoards()
+		data.Pages = 1
+		data.ModMode = true
+		if postID > 0 {
+			data.Threads = [][]*Post{db.allPostsInThread(postID, true)}
+			data.ReplyMode = postID
+		} else {
+			for _, thread := range db.allThreads(b, true) {
+				data.Threads = append(data.Threads, db.allPostsInThread(thread.ID, true))
+			}
+		}
+		return false
 	}
 
 	boardID = pathInt(r, "/sriracha/board/")
@@ -63,12 +65,12 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		data.Manage.Board = db.boardByID(boardID)
 		if data.Manage.Board == nil {
 			data.ManageError("Board not found")
-			return
+			return false
 		}
 
 		if data.Manage.Board != nil && r.Method == http.MethodPost {
 			if data.forbidden(w, RoleAdmin) {
-				return
+				return false
 			}
 			oldBoard := *data.Manage.Board
 
@@ -78,7 +80,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			err := data.Manage.Board.validate()
 			if err != nil {
 				data.ManageError(err.Error())
-				return
+				return false
 			}
 
 			if data.Manage.Board.Dir != oldDir {

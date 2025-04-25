@@ -63,6 +63,9 @@ type Post struct {
 	Moderated    PostModerated
 	Stickied     int
 	Locked       int
+
+	// Calculated fields.
+	Replies int
 }
 
 var postUploadFileLock = &sync.Mutex{}

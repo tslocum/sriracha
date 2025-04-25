@@ -48,11 +48,13 @@ func (db *Database) addPost(p *Post) {
 }
 
 func (db *Database) allThreads(board *Board, moderated bool) []*Post {
-	var extra string
+	var extraJoin string
+	var extraWhere string
 	if moderated {
-		extra = " AND moderated > 0"
+		extraJoin = " AND reply.moderated > 0"
+		extraWhere = " AND post.moderated > 0"
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT * FROM post WHERE board = $1 AND parent IS NULL"+extra+" ORDER BY bumped DESC", board.ID)
+	rows, err := db.conn.Query(context.Background(), "SELECT post.*, COUNT(reply.id) as replies FROM post LEFT OUTER JOIN post reply ON reply.parent = post.id"+extraJoin+" WHERE post.board = $1 AND post.parent IS NULL"+extraWhere+" GROUP BY post.id ORDER BY bumped DESC", board.ID)
 	if err != nil {
 		log.Fatalf("failed to select all posts: %s", err)
 	}
@@ -74,7 +76,7 @@ func (db *Database) allPostsInThread(postID int, moderated bool) []*Post {
 	if moderated {
 		extra = " AND moderated > 0"
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT * FROM post WHERE (id = $1 OR parent = $1)"+extra+" ORDER BY id ASC", postID)
+	rows, err := db.conn.Query(context.Background(), "SELECT *, 0 as replies FROM post WHERE (id = $1 OR parent = $1)"+extra+" ORDER BY id ASC", postID)
 	if err != nil {
 		log.Fatalf("failed to select all posts: %s", err)
 	}
@@ -96,7 +98,7 @@ func (db *Database) allPostsInThread(postID int, moderated bool) []*Post {
 }
 
 func (db *Database) pendingPosts() []*Post {
-	rows, err := db.conn.Query(context.Background(), "SELECT * FROM post WHERE moderated = $1 ORDER BY id ASC", ModeratedHidden)
+	rows, err := db.conn.Query(context.Background(), "SELECT *, 0 as replies FROM post WHERE moderated = $1 ORDER BY id ASC", ModeratedHidden)
 	if err != nil {
 		log.Fatalf("failed to select pending posts: %s", err)
 	}
@@ -119,7 +121,7 @@ func (db *Database) pendingPosts() []*Post {
 
 func (db *Database) postByID(postID int) *Post {
 	p := &Post{}
-	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT * FROM post WHERE id = $1", postID))
+	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT *, 0 as replies FROM post WHERE id = $1", postID))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil || p.ID == 0 {
@@ -131,7 +133,7 @@ func (db *Database) postByID(postID int) *Post {
 
 func (db *Database) postByFileHash(hash string) *Post {
 	p := &Post{}
-	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT * FROM post WHERE filehash = $1", hash))
+	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT *, 0 as replies FROM post WHERE filehash = $1", hash))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil || p.ID == 0 {
@@ -196,6 +198,7 @@ func scanPost(p *Post, row pgx.Row) (int, error) {
 		&p.Moderated,
 		&p.Stickied,
 		&p.Locked,
+		&p.Replies,
 	)
 	if err != nil {
 		return 0, err

@@ -10,10 +10,11 @@ type uploadType struct {
 
 // Config represents the server configuration.
 type Config struct {
-	Root     string // Directory where board files are written to.
-	Serve    string // Address:Port to listen for HTTP connections on.
-	Header   string // Client IP address header.
-	Locale   string // Default locale. See locale directory for available languages.
+	Locale string // Default locale. See locale directory for available languages.
+	Root   string // Directory where board files are written to.
+	Serve  string // Address:Port to listen for HTTP connections on.
+	Header string // Client IP address header.
+
 	SaltData string // Long random string of text used when one-way hashing data. Must not change once set.
 	SaltPass string // Long random string of text used when two-way hashing data. Must not change once set.
 	SaltTrip string // Long random string of text used when generating secure tripcodes. Must not change once set.

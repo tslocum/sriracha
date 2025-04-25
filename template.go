@@ -41,6 +41,8 @@ type templateData struct {
 	Message3  template.HTML
 	Board     *Board
 	Boards    []*Board
+	Page      int
+	Pages     int
 	Post      *Post
 	Threads   [][]*Post
 	ReplyMode int
@@ -92,6 +94,16 @@ func (data *templateData) execute(w io.Writer) {
 var templateFuncMap = template.FuncMap{
 	"HTML": func(text string) template.HTML {
 		return template.HTML(text)
+	},
+	"Iterate": func(i int) []int {
+		var values []int
+		for v := 0; v <= i; v++ {
+			values = append(values, v)
+		}
+		return values
+	},
+	"MinusOne": func(i int) int {
+		return i - 1
 	},
 	"Omitted": func(showReplies int, threadPosts int) int {
 		numReplies := threadPosts - 1

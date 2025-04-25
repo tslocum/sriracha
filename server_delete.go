@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"runtime/debug"
 	"strconv"
 
 	"github.com/leonelquinteros/gotext"
@@ -18,7 +17,6 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 		boardDir := formString(r, "board")
 		b := db.boardByDir(boardDir)
 		if b == nil {
-			debug.PrintStack()
 			data.BoardError(w, gotext.Get("No board specified."))
 			return
 		}

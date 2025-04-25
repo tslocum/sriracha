@@ -40,9 +40,13 @@
 	<table border="1" style="display: inline-block;">
 	<tbody>
 		<tr>
-			<td>{{T "Previous"}}</td>
-			<td>&#91;0&#93; </td>
-			<td>{{T "Next"}}</td>
+			<td>{{if gt .Page 0}}<form method="get" action="{{.Board.Path}}{{if eq .Page 1}}index{{else}}{{.Page | MinusOne}}{{end}}.html"><input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
+			<td>
+				{{range $i := Iterate (.Pages | MinusOne)}}
+					[{{if eq $i $.Page}}{{$i}}{{else}}<a href="{{$.Board.Path}}{{if eq $i 0}}index{{else}}{{$i}}{{end}}.html">{{$i}}</a>{{end}}]
+				{{end}}
+			</td>>
+			<td>{{if lt .Page (.Pages | MinusOne)}}<form method="get" action="{{.Board.Path}}{{.Page | PlusOne}}.html"><input type="submit" value="{{T "Next"}}"></form>{{else}}{{T "Next"}}{{end}}</td>
 		</tr>
 	</tbody>
 	</table>
