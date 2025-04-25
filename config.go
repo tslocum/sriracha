@@ -3,8 +3,8 @@ package sriracha
 import "strings"
 
 type uploadType struct {
-	MIME  string
 	Ext   string
+	MIME  string
 	Thumb string
 }
 
@@ -40,8 +40,8 @@ func (c *Config) UploadTypes() []*uploadType {
 			continue
 		}
 		u := &uploadType{
-			MIME: strings.ToLower(fields[0]),
-			Ext:  strings.ToLower(fields[1]),
+			Ext:  strings.ToLower(fields[0]),
+			MIME: strings.ToLower(fields[1]),
 		}
 		if len(fields) > 2 {
 			u.Thumb = fields[2]

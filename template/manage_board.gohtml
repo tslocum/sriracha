@@ -166,7 +166,7 @@
                     <td>
                         <select name="uploads" style="width: 100%;" size="5" multiple>
                             {{range $i, $info := .Opt.Uploads}}
-                                <option value="{{.MIME}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasUpload .MIME)}} selected{{end}}>{{.MIME}} - {{.Ext | ToUpper}}</option>
+                                <option value="{{.MIME}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasUpload .MIME)}} selected{{end}}>{{.Ext | ToUpper}} ({{.MIME}})</option>
                             {{end}}
                         </select>
                     </td>

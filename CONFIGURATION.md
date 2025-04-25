@@ -64,31 +64,31 @@ dbname: sriracha
 # Otherwise, thumbnails are generated automatically based on the uploaded file.
 # To generate video thumbnails, ffmpeg must be installed.
 #
-# Format: mime ext thumbnail
+# Format: ext mime thumbnail
 uploads:
-  - image/jpeg  jpg
-  - image/pjpeg jpg
-  - image/png   png
-  - image/gif   gif
-  - audio/wav   wav
-  - audio/wave  wav
-  - audio/x-wav wav
-  - audio/aac   aac
-  - audio/ogg   ogg
-  - audio/flac  flac
-  - audio/opus  opus
-  - audio/mp3   mp3
-  - audio/mpeg  mp3
-  - audio/mp4   mp4
-  - video/mp4   mp4
-  - audio/webm  webm
-  - video/webm  webm
-  - application/x-shockwave-flash swf swf.png
+  - jpg image/jpeg
+  - jpg image/pjpeg
+  - png image/png
+  - gif image/gif
+  - wav audio/wav
+  - wav audio/wave
+  - wav audio/x-wav
+  - aac audio/aac
+  - ogg audio/ogg
+  - flac audio/flac
+  - opus audio/opus
+  - mp3 audio/mp3
+  - mp3 audio/mpeg
+  - mp4 audio/mp4
+  - mp4 video/mp4
+  - webm audio/webm
+  - webm video/webm
+  - swf application/x-shockwave-flash swf.png
 ```
 
 ## Example reverse proxy using caddy (Caddyfile)
 
-```yaml
+```
 zoopz.org, www.zoopz.org {
   reverse_proxy http://localhost:8080
 }
