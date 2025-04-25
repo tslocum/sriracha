@@ -24,6 +24,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/aquilax/tripcode"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/leonelquinteros/gotext"
@@ -405,8 +406,16 @@ func (p *Post) MessageTruncated() template.HTML {
 		}
 	}
 
-	out.Write([]byte(`<br><span class="omittedposts">` + gotext.Get("Post truncated. Click Reply to view.") + `</span><br>`))
-	return template.HTML(out.String())
+	doc, err := goquery.NewDocumentFromReader(out)
+	if err != nil {
+		log.Fatal(err)
+	}
+	truncated, err := doc.Find("body").First().Html()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return template.HTML(truncated + `<br><span class="omittedposts">` + gotext.Get("Post truncated. Click Reply to view.") + `</span><br>`)
 }
 
 func (p *Post) ExpandHTML() template.HTML {

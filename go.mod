@@ -5,6 +5,7 @@ go 1.23.5
 toolchain go1.24.2
 
 require (
+	github.com/PuerkitoBio/goquery v1.10.3
 	github.com/alexedwards/argon2id v1.0.0
 	github.com/aquilax/tripcode v1.0.1
 	github.com/frustra/bbcode v0.0.0-20201127003707-6ef347fbe1c8
@@ -21,6 +22,7 @@ require (
 )
 
 require (
+	github.com/andybalholm/cascadia v1.3.3 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
