@@ -71,6 +71,27 @@ func (db *Database) allThreads(board *Board, moderated bool) []*Post {
 	return posts
 }
 
+func (db *Database) trimThreads(board *Board) []*Post {
+	if board.MaxThreads == 0 {
+		return nil
+	}
+	rows, err := db.conn.Query(context.Background(), "SELECT *, 0 as replies FROM post WHERE board = $1 AND parent IS NULL AND moderated > 0 ORDER BY bumped DESC OFFSET $2", board.ID, board.MaxThreads)
+	if err != nil {
+		log.Fatalf("failed to select trim threads: %s", err)
+	}
+	var posts []*Post
+	for rows.Next() {
+		p := &Post{}
+		_, err := scanPost(p, rows)
+		if err != nil {
+			log.Fatal(err)
+		}
+		p.Board = board
+		posts = append(posts, p)
+	}
+	return posts
+}
+
 func (db *Database) allPostsInThread(postID int, moderated bool) []*Post {
 	var extra string
 	if moderated {

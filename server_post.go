@@ -356,7 +356,11 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		db.addReport(report)
 	}
 
-	if post.Parent != 0 && strings.ToLower(post.Email) != "sage" {
+	if post.Parent == 0 {
+		for _, thread := range db.trimThreads(post.Board) {
+			s.deletePost(db, thread)
+		}
+	} else if strings.ToLower(post.Email) != "sage" {
 		// TODO check reply limit
 		db.bumpThread(post.Parent, now)
 	}
