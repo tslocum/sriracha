@@ -20,7 +20,10 @@ func (k *Keyword) validate() error {
 	switch {
 	case strings.TrimSpace(k.Text) == "":
 		return fmt.Errorf("text must be set")
-	case strings.TrimSpace(k.Action) == "":
+	case k.Action != "hide" && k.Action != "report" && k.Action != "delete" &&
+		k.Action != "ban1h" && k.Action != "ban1d" && k.Action != "ban2d" &&
+		k.Action != "ban1w" && k.Action != "ban2w" && k.Action != "ban1m" &&
+		k.Action != "ban0":
 		return fmt.Errorf("action must be set")
 	}
 	return nil
