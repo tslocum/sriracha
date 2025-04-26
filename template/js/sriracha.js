@@ -80,6 +80,16 @@ function refreshReplies() {
     });
 }
 
+function quotePost(postID) {
+    var message = document.getElementById("message");
+    if (!message) {
+        return false;
+    }
+    message.value = message.value + '>>' + postID + "\n";
+    message.focus();
+    return false;
+}
+
 function expandFile(e, id) {
     if (e == undefined || e.which == undefined || e.which == 1) {
         var srcFile = document.querySelector("#file" + id);
@@ -134,6 +144,16 @@ function onBlur(e) {
 }
 
 function onLoad(e) {
+    if (window.location.hash) {
+        var match = window.location.hash.match(/^#q[0-9]+$/i);
+        if (match !== null) {
+            var quotePostID = match[0].substr(2);
+            if (quotePostID) {
+                quotePost(quotePostID);
+            }
+        }
+    }
+
     if (typeof autoRefreshDelay === 'undefined') {
         return;
     }
