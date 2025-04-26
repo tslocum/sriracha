@@ -9,12 +9,9 @@ type ImportConfig struct {
 	Password string // Database password.
 	DBName   string // Database name.
 
-	Accounts string // Accounts table.
-	Bans     string // Bans table.
+	Posts    string // Posts table.
 	Keywords string // Keywords table.
 	Logs     string // Logs table.
-	Posts    string // Posts table.
-	Reports  string // Reports table.
 }
 
 func (c ImportConfig) Enabled() bool {

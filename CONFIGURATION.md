@@ -21,8 +21,9 @@ forwards the HTTPS requests to Sriracha as plain HTTP. When running behind a web
 server, the header server option must be set appropriately. Most web servers use
 `X-Forwarded-For` to specify the client IP address.
 
-Only requests to `/sriracha/*` need to be served by Sriracha. Because all files
-in the root directory are static, all other paths may be served statically.
+Only requests to `/sriracha/*` need to be served by Sriracha. After copying `css`
+and `js` to the root directory, you may handle all requests except `/sriracha/*`
+using a static file server.
 
 ## Example configuration (config.yml)
 

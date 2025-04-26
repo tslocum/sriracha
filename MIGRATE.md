@@ -22,6 +22,13 @@ Sriracha uses one auto-incrementing post ID for all boards. Because of this,
 migrating two more more boards will involve changing each post's ID. Reference
 links inside posts are updated, but external links to old res pages will break.
 
+### Incompatible IP address and file hashes
+
+Sriracha hashes IP addresses and files by generating a salted SHA384 checksum
+of the data. TinyIB hashes IP addresses and files using crypt. Because of this,
+bans are not imported, and posts will have their IP address field blanked. File
+hashes are recalculated and corrected during import.
+
 ### All keywords are regular expressions
 
 Sriracha keywords are always regular expressions. During migration, plain text
@@ -31,6 +38,8 @@ still need to update some keywords for them to continue to function.
 ## Instructions
 
 **Note:** Don't do this yet. These instructions won't work.
+
+Posts, keywords and logs will be imported into Sriracha.
 
 ### 1. Back everything up
 
@@ -79,12 +88,9 @@ import:
   password: hunter2
   dbname: tinyib
   # Table names.
-  accounts: accounts
-  bans: bans
+  posts: dir_posts
   keywords: keywords
   logs: logs
-  posts: dir_posts
-  reports: dir_reports
 ```
 
 ### 4. Start Sriracha and visit the management panel
