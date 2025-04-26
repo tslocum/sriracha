@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"html"
 	"html/template"
-	"log"
 	"net/http"
 	"time"
 
@@ -21,13 +20,21 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 	}
 	c := s.config.Import
 
-	var commit bool
+	commit := formBool(r, "import") && formBool(r, "confirm")
 	defer func() {
 		var command = "ROLLBACK"
 		if commit {
 			command = "COMMIT"
+			data.Message += template.HTML("<b>Committing changes...</b><br><br>")
 		}
-		db.conn.Exec(context.Background(), command)
+		_, err := db.conn.Exec(context.Background(), command)
+		if commit {
+			if err != nil {
+				data.Message += template.HTML("<b>Error:</b> Failed to commit changes: " + html.EscapeString(err.Error()))
+			} else {
+				data.Message += template.HTML("<b>Changes committed.</b> Please remove the import option from config.yml and restart Sriracha.")
+			}
+		}
 	}()
 
 	data.Template = "manage_info"
@@ -74,6 +81,30 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 	}
 	data.Message += template.HTML(fmt.Sprintf("<b>Found %d posts</b> in table %s.<br><br>", postEntries, html.EscapeString(c.Posts)))
 
+	// Validate keywords table.
+	keywordEntries, err := tableEntries(c.Keywords)
+	if err != nil {
+		data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to validate table %s: %s", html.EscapeString(c.Keywords), html.EscapeString(err.Error())))
+		return
+	}
+	data.Message += template.HTML(fmt.Sprintf("<b>Found %d keywords</b> in table %s.<br><br>", keywordEntries, html.EscapeString(c.Keywords)))
+
+	// Validate keywords table.
+	logsEntries, err := tableEntries(c.Logs)
+	if err != nil {
+		data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to validate table %s: %s", html.EscapeString(c.Logs), html.EscapeString(err.Error())))
+		return
+	}
+	data.Message += template.HTML(fmt.Sprintf("<b>Found %d logs</b> in table %s.<br><br>", logsEntries, html.EscapeString(c.Logs)))
+
+	doImport := formBool(r, "import")
+	if !doImport {
+		data.Message += template.HTML("<b>Validation complete.</b><br>")
+		data.Message += template.HTML(`<form action="post"><input type="hidden" name="import" value="1"><input type="submit" value="Start dry run"></form>`)
+		return
+	}
+
+	// Collect post IDs.
 	data.Message += template.HTML("Collecting post IDs...<br>")
 	rows, err := conn.Query(context.Background(), "SELECT id FROM "+c.Posts+" ORDER BY id ASC")
 	if err != nil {
@@ -90,7 +121,7 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 		}
 		postIDs = append(postIDs, postID)
 	}
-	data.Message += template.HTML("<b>IDs collected.</b>.<br><br>")
+	data.Message += template.HTML("<b>IDs collected.</b><br><br>")
 
 	// TODO
 	data.Message += template.HTML("Creating board...<br>")
@@ -99,7 +130,7 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 		Name: "ajsdhasd",
 	}
 	db.addBoard(b)
-	data.Message += template.HTML("<b>Board created.</b>.<br><br>")
+	data.Message += template.HTML("<b>Board created.</b><br><br>")
 
 	type importPost struct {
 		ID                int
@@ -243,9 +274,20 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 				data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to insert post: %s", err))
 				return
 			}
-
-			log.Printf("%+v", pp)
 		}
 	}
-	data.Message += template.HTML("<b>Imported posts.</b.<br><br>")
+	data.Message += template.HTML("<b>Imported posts.</b><br><br>")
+
+	if c.Keywords != "" {
+
+	}
+
+	if c.Logs != "" {
+
+	}
+
+	if !commit {
+		data.Message += template.HTML("<b>Dry run complete.</b><br>")
+		data.Message += template.HTML(`<form action="post"><input type="hidden" name="import" value="1"><input type="hidden" name="confirmation" value="1"><input type="submit" value="Start import"></form>`)
+	}
 }
