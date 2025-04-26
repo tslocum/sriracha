@@ -6,9 +6,11 @@ import (
 	"html"
 	"html/template"
 	"net/http"
-	"time"
+	"os"
+	"path/filepath"
 
 	"github.com/jackc/pgx/v5"
+	"golang.org/x/sys/unix"
 )
 
 func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
@@ -126,11 +128,27 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 	// TODO
 	data.Message += template.HTML("Creating board...<br>")
 	b := &Board{
-		Dir:  fmt.Sprintf("asdajsf%d", time.Now().Unix()),
-		Name: "ajsdhasd",
+		Dir:  "tinyib",
+		Name: "TinyIB Import",
 	}
 	db.addBoard(b)
 	data.Message += template.HTML("<b>Board created.</b><br><br>")
+
+	data.Message += template.HTML("Verifying board directories...<br>")
+	dirs := []string{b.Dir, filepath.Join(b.Dir, "src"), filepath.Join(b.Dir, "thumb"), filepath.Join(b.Dir, "res")}
+	for _, dir := range dirs {
+		dirPath := filepath.Join(s.config.Root, dir)
+		_, err := os.Stat(dirPath)
+		if os.IsNotExist(err) {
+			data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Board directory %s does not exist", html.EscapeString(dirPath)))
+			return
+		}
+		if unix.Access(dirPath, unix.W_OK) != nil {
+			data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Board directory %s is not writable", html.EscapeString(dirPath)))
+			return
+		}
+	}
+	data.Message += template.HTML("<b>Board directories exist and are writable.</b><br><br>")
 
 	type importPost struct {
 		ID                int
