@@ -1,4 +1,7 @@
 {{template "manage_begin.gohtml" .}}
-<br>
-<div style="text-align: center;">- <a href="javascript:history.go(-1)">{{T "Click here to go back"}}</a> -</div>
+{{if ne .Message ""}}
+    {{.Message}}
+{{ else }}
+    <br><div style="text-align: center;">- <a href="javascript:history.go(-1)">{{T "Click here to go back"}}</a> -</div>
+{{end}}
 {{template "manage_end.gohtml" .}}

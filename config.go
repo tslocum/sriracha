@@ -2,6 +2,25 @@ package sriracha
 
 import "strings"
 
+// ImportConfig represents a board import configuration.
+type ImportConfig struct {
+	Address  string // Address:Port to connect to the database.
+	Username string // Database username.
+	Password string // Database password.
+	DBName   string // Database name.
+
+	Accounts string // Accounts table.
+	Bans     string // Bans table.
+	Keywords string // Keywords table.
+	Logs     string // Logs table.
+	Posts    string // Posts table.
+	Reports  string // Reports table.
+}
+
+func (c ImportConfig) Enabled() bool {
+	return c != ImportConfig{}
+}
+
 type uploadType struct {
 	Ext   string
 	MIME  string
@@ -28,7 +47,10 @@ type Config struct {
 
 	Uploads []string // Supported upload file types.
 
+	Import ImportConfig // Board import configuration.
+
 	cachedUploads []*uploadType
+	importMode    bool
 }
 
 func (c *Config) UploadTypes() []*uploadType {

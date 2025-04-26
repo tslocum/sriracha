@@ -11,11 +11,18 @@ If no configuration file path is specified, the default path
 
 [PostgreSQL](https://www.postgresql.org) is the only supported database system.
 
+Sriracha serves requests at `/`, the root path. It is not currently possible to
+run Sriracha under a subdirectory. Use a domain or subdomain to separate
+Sriracha from other resources.
+
 Only HTTP requests are served by Sriracha. To serve HTTPS requests you must run
 Sriracha behind a web server, such as [caddy](https://caddyserver.com), which
 forwards the HTTPS requests to Sriracha as plain HTTP. When running behind a web
 server, the header server option must be set appropriately. Most web servers use
 `X-Forwarded-For` to specify the client IP address.
+
+Only requests to `/sriracha/*` need to be served by Sriracha. Because all files
+in the root directory are static, all other paths may be served statically.
 
 ## Example configuration (config.yml)
 

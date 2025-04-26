@@ -120,6 +120,7 @@ func (s *Server) parseConfig(configFile string) error {
 		return fmt.Errorf("dbname (lowercase!) must be set in %s to the database name", configFile)
 	default:
 		s.config = config
+		s.config.importMode = s.config.Import.Enabled()
 		return nil
 	}
 }
@@ -402,6 +403,9 @@ func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request)
 						Value: account.Session,
 						Path:  "/",
 					})
+					if s.config.importMode {
+						http.Redirect(w, r, "/sriracha/import/", http.StatusFound)
+					}
 					return &templateData{
 						Account: account,
 						Manage: &manageData{
@@ -562,7 +566,19 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 		w.Header().Set("Content-Type", "text/html")
 		data.execute(w)
 		return
+	} else if s.config.importMode {
+		if data.Account.Role != RoleSuperAdmin {
+			w.Header().Set("Content-Type", "text/html")
+			data.ManageError("Sriracha is running in import mode. Only super-administrators may log in.")
+			data.execute(w)
+			return
+		} else if !strings.HasPrefix(r.URL.Path, "/sriracha/import/") {
+			http.Redirect(w, r, "/sriracha/import/", http.StatusFound)
+			return
+		}
+		data.Info = "IMPORT MODE"
 	}
+
 	switch {
 	case strings.HasPrefix(r.URL.Path, "/sriracha/password"):
 		s.serveChangePassword(data, db, w, r)
@@ -572,6 +588,8 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 		s.serveBan(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/board"):
 		skipExecute = s.serveBoard(data, db, w, r)
+	case strings.HasPrefix(r.URL.Path, "/sriracha/import"):
+		s.serveImport(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/keyword"):
 		s.serveKeyword(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/log"):
@@ -633,17 +651,22 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !handled {
-		switch action {
-		case "post":
-			s.servePost(db, w, r)
-		case "report":
-			s.serveReport(db, w, r)
-		case "delete":
-			s.serveDelete(db, w, r)
-		case "captcha":
-			s.serveCAPTCHA(db, w, r)
-		default:
-			s.serveManage(db, w, r)
+		if s.config.importMode && action != "" {
+			data := s.buildData(db, w, r)
+			data.BoardError(w, "Sriracha is running in import mode. All boards are currently locked. Please wait and try again.")
+		} else {
+			switch action {
+			case "post":
+				s.servePost(db, w, r)
+			case "report":
+				s.serveReport(db, w, r)
+			case "delete":
+				s.serveDelete(db, w, r)
+			case "captcha":
+				s.serveCAPTCHA(db, w, r)
+			default:
+				s.serveManage(db, w, r)
+			}
 		}
 	}
 
