@@ -30,8 +30,8 @@
                     {{if .Stickied}}<img src="/static/img/sticky.png" alt="{{T "Stickied"}}" title="{{T "Stickied"}}" width="16" height="16">{{end}}
                     {{if .Locked}}<img src="/static/img/lock.png" alt="{{T "Locked"}}" title="{{T "Locked"}}" width="16" height="16">{{end}}
                     {{if $.ModMode}}
-                        <b><a href="/sriracha/mod/{{if .Stickied}}un{{end}}sticky/{{.ID}}" title="{{if not .Stickied}}{{T "Sticky"}}{{else}}{{T "Unsticky"}}{{end}}">S</a>
-                        <a href="/sriracha/mod/{{if .Locked}}un{{end}}lock/{{.ID}}" title="{{if not .Locked}}{{T "Lock"}}{{else}}{{T "Unlock"}}{{end}}">L</a>
+                        <b><a href="/sriracha/mod/{{if .Stickied}}un{{end}}sticky/{{.ID}}" title="{{if not .Stickied}}{{T "Sticky"}}{{else}}{{T "Unsticky"}}{{end}}" onclick="javascript:return confirm('{{if not .Stickied}}Sticky{{else}}Unsticky{{end}} thread?');">S</a>
+                        <a href="/sriracha/mod/{{if .Locked}}un{{end}}lock/{{.ID}}" title="{{if not .Locked}}{{T "Lock"}}{{else}}{{T "Unlock"}}{{end}}" onclick="javascript:return confirm('{{if not .Locked}}Lock{{else}}Unlock{{end}} thread?');">L</a>
                         <a href="/sriracha/mod/delete/{{.ID}}" title="{{T "Delete"}}">D</a>
                         <a href="/sriracha/mod/ban/{{.ID}}" title="{{T "Ban"}}">B</a>
                         <a href="/sriracha/mod/{{.ID}}" title="{{T "Delete & ban"}}">D&amp;B</a></b>

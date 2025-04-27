@@ -23,6 +23,11 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 
 		post := db.postByID(postID)
 		if post != nil {
+			if data.Account != nil {
+				http.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d#%d", post.Board.ID, post.Thread(), post.ID), http.StatusFound)
+				return
+			}
+
 			password := r.FormValue("password")
 			if post.Password == "" || hashData(password) != post.Password {
 				data.BoardError(w, gotext.Get("Incorrect password."))
