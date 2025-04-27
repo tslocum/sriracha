@@ -492,7 +492,7 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 	data.Template = "board_page"
 
 	pages := 1
-	if board.Threads != 0 {
+	if len(threads) != 0 && board.Threads != 0 {
 		pages = len(threads) / board.Threads
 		if len(threads)%board.Threads != 0 {
 			pages++
