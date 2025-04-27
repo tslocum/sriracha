@@ -27,6 +27,8 @@
                         <a href="/sriracha/?action=report&board={{.Board.ID}}&post={{.ID}}" title="{{T "Report"}}">R</a>
                     {{end}}
                     <a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{.ID}}');"{{end}}>{{.ID}}</a>
+                    {{if .Stickied}}<img src="/static/img/sticky.png" alt="{{T "Stickied"}}" title="{{T "Stickied"}}" width="16" height="16">{{end}}
+                    {{if .Locked}}<img src="/static/img/lock.png" alt="{{T "Locked"}}" title="{{T "Locked"}}" width="16" height="16">{{end}}
                     {{if $.ModMode}}
                         <b><a href="/sriracha/mod/delete/{{.ID}}" title="{{T "Delete"}}">D</a>
                         <a href="/sriracha/mod/ban/{{.ID}}" title="{{T "Ban"}}">B</a>
