@@ -53,6 +53,9 @@ var defaultServerEmbeds = [][2]string{
 	{"SoundCloud", "https://soundcloud.com/oembed?format=json&url=SRIRACHA_EMBED"},
 }
 
+const newDirPermission = 0755
+const newFilePermission = 0600
+
 func init() {
 	gotext.SetDomain("sriracha")
 }
@@ -782,7 +785,7 @@ func (s *Server) Run() error {
 	captchaDir := filepath.Join(s.config.Root, "captcha")
 	_, err = os.Stat(captchaDir)
 	if os.IsNotExist(err) {
-		err := os.Mkdir(captchaDir, 0755)
+		err := os.Mkdir(captchaDir, newDirPermission)
 		if err != nil {
 			log.Fatalf("failed to create captcha dir: %s", err)
 		}
@@ -791,7 +794,7 @@ func (s *Server) Run() error {
 	siteIndexFile := filepath.Join(s.config.Root, "index.html")
 	_, err = os.Stat(siteIndexFile)
 	if os.IsNotExist(err) {
-		err = os.WriteFile(siteIndexFile, siteIndexHTML, 0600)
+		err = os.WriteFile(siteIndexFile, siteIndexHTML, newFilePermission)
 		if err != nil {
 			log.Fatalf("failed to write site index at %s: %s", siteIndexFile, err)
 		}

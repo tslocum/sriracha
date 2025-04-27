@@ -228,7 +228,7 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 	srcPath := filepath.Join(rootDir, p.Board.Dir, "src", p.File)
 	thumbPath := filepath.Join(rootDir, p.Board.Dir, "thumb", p.Thumb)
 
-	err = os.WriteFile(srcPath, buf, 0600)
+	err = os.WriteFile(srcPath, buf, newFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -482,7 +482,7 @@ func resizeImage(b *Board, r io.Reader, mimeType string) (image.Image, error) {
 }
 
 func writeImage(img image.Image, mimeType string, filePath string) error {
-	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
+	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, newFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}

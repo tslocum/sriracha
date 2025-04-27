@@ -271,6 +271,13 @@ func (db *Database) lockPost(postID int, lock bool) {
 	}
 }
 
+func (db *Database) updatePostMessage(postID int, message string) {
+	_, err := db.conn.Exec(context.Background(), "UPDATE post SET message = $1 WHERE id = $2", message, postID)
+	if err != nil {
+		log.Fatalf("failed to update post message: %s", err)
+	}
+}
+
 func (db *Database) deletePost(postID int) {
 	if postID <= 0 {
 		log.Panicf("invalid post ID %d", postID)

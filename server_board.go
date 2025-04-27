@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -75,6 +76,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			oldBoard := *data.Manage.Board
 
 			oldDir := data.Manage.Board.Dir
+			oldPath := data.Manage.Board.Path()
 			data.Manage.Board.loadForm(r, s.config.UploadTypes(), s.opt.Embeds)
 
 			err := data.Manage.Board.validate()
@@ -83,7 +85,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 				return false
 			}
 
-			if data.Manage.Board.Dir != oldDir {
+			if data.Manage.Board.Dir != "" && data.Manage.Board.Dir != oldDir {
 				_, err := os.Stat(filepath.Join(s.config.Root, data.Manage.Board.Dir))
 				if err != nil {
 					if !os.IsNotExist(err) {
@@ -98,10 +100,69 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			db.updateBoard(data.Manage.Board)
 
 			if data.Manage.Board.Dir != oldDir {
-				err := os.Rename(filepath.Join(s.config.Root, oldDir), filepath.Join(s.config.Root, data.Manage.Board.Dir))
-				if err != nil {
-					data.ManageError(fmt.Sprintf("Failed to rename board directory: %s", err))
-					return false
+				subDirs := []string{"src", "thumb", "res"}
+				for _, subDir := range subDirs {
+					newPath := filepath.Join(s.config.Root, data.Manage.Board.Dir, subDir)
+					_, err := os.Stat(newPath)
+					if err == nil {
+						data.ManageError(fmt.Sprintf("New board directory %s already exists", newPath))
+						return false
+					}
+				}
+				moveSubDirs := func() error {
+					for _, subDir := range subDirs {
+						oldPath := filepath.Join(s.config.Root, oldDir, subDir)
+						newPath := filepath.Join(s.config.Root, data.Manage.Board.Dir, subDir)
+						err := os.Rename(oldPath, newPath)
+						if err != nil {
+							return fmt.Errorf("Failed to rename board directory %s to %s: %s", oldPath, newPath, err)
+						}
+					}
+					return nil
+				}
+				if data.Manage.Board.Dir == "" {
+					err = moveSubDirs()
+					if err != nil {
+						data.ManageError(err.Error())
+						return false
+					}
+				} else {
+					if oldDir == "" {
+						err := os.Mkdir(filepath.Join(s.config.Root, data.Manage.Board.Dir), newDirPermission)
+						if err != nil {
+							data.ManageError(fmt.Sprintf("Failed to create board directory: %s", err))
+							return false
+						}
+						err = moveSubDirs()
+						if err != nil {
+							data.ManageError(err.Error())
+							return false
+						}
+					} else {
+						err := os.Rename(filepath.Join(s.config.Root, oldDir), filepath.Join(s.config.Root, data.Manage.Board.Dir))
+						if err != nil {
+							data.ManageError(fmt.Sprintf("Failed to rename board directory: %s", err))
+							return false
+						}
+					}
+				}
+
+				for _, thread := range db.allThreads(data.Manage.Board, false) {
+					for _, post := range db.allPostsInThread(thread.ID, false) {
+						var modified bool
+						resPattern, err := regexp.Compile(`<a href="` + regexp.QuoteMeta(oldPath) + `res\/([0-9]+).html#([0-9]+)"`)
+						if err != nil {
+							log.Fatalf("failed to compile res pattern: %s", err)
+						}
+						post.Message = resPattern.ReplaceAllStringFunc(post.Message, func(s string) string {
+							modified = true
+							match := resPattern.FindStringSubmatch(s)
+							return fmt.Sprintf(`<a href="%sres/%s.html#%s"`, data.Manage.Board.Path(), match[1], match[2])
+						})
+						if modified {
+							db.updatePostMessage(post.ID, post.Message)
+						}
+					}
 				}
 			}
 
@@ -135,7 +196,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 				continue
 			}
 			boardPath := filepath.Join(s.config.Root, b.Dir, boardDir)
-			err = os.Mkdir(boardPath, 0755)
+			err = os.Mkdir(boardPath, newDirPermission)
 			if err != nil {
 				if os.IsExist(err) {
 					data.ManageError(fmt.Sprintf("Board directory %s already exists.", boardPath))
