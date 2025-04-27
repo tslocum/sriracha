@@ -33,9 +33,6 @@
 			{{end}}
 		{{end}}
 		<div class="adminbar">
-			{{if .ModMode}}
-				[<a href="{{.Board.Path}}" style="text-decoration: underline;">{{T "Exit"}}</a>] &middot;
-			{{end}}
 			[<a href="/sriracha/" style="text-decoration: underline;">{{T "Manage"}}</a>]
 		</div>
 		<div class="logo">{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}</div>
@@ -46,4 +43,6 @@
 			{{else}}
 				[<a href="/sriracha/board/mod/{{.Board.ID}}">{{T "Return"}}</a>]
 			{{end}}
+		{{else if .ModMode}}
+			[<a href="{{.Board.Path}}" style="text-decoration: underline;">{{T "Exit"}}</a>]
 		{{end}}
