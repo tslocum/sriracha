@@ -20,19 +20,25 @@ import (
 )
 
 func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
+	data.Template = "manage_info"
+	data.Message = `<h2 class="managetitle">Import</h2><b>Warning:</b> Backup all files and databases before importing a board.<br><br>`
+
+	const completeMessage = "<b>Import complete.</b><br>Please remove the import option from config.yml and restart Sriracha.<br>"
 	if data.forbidden(w, RoleSuperAdmin) {
 		return
 	} else if !s.config.importMode {
 		data.ManageError("Sriracha is not running in import mode.")
 		return
+	} else if s.config.importComplete {
+		data.Message += template.HTML(completeMessage)
+		return
 	}
 	c := s.config.Import
 
 	commit := formBool(r, "import") && formBool(r, "confirmation")
-	var importComplete bool
 	defer func() {
 		var command = "ROLLBACK"
-		if commit && importComplete {
+		if commit && s.config.importComplete {
 			command = "COMMIT"
 			data.Message += template.HTML("Committing changes...<br>")
 		}
@@ -41,13 +47,10 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 			if err != nil {
 				data.Message += template.HTML("<b>Error:</b> Failed to commit changes: " + html.EscapeString(err.Error()))
 			} else {
-				data.Message += template.HTML("<b>Changes committed.</b><br><br><b>Import complete.</b><br>Please remove the import option from config.yml and restart Sriracha.<br>")
+				data.Message += template.HTML("<b>Changes committed.</b><br><br>" + completeMessage)
 			}
 		}
 	}()
-
-	data.Template = "manage_info"
-	data.Message = `<h2 class="managetitle">Import</h2><b>Warning:</b> Backup all files and databases before importing a board.<br><br>`
 
 	// Connect to the database.
 	data.Message += template.HTML("Connecting to database...<br>")
@@ -414,6 +417,6 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 		return
 	}
 
-	importComplete = true
+	s.config.importComplete = true
 	s.rebuildBoard(db, b)
 }

@@ -45,8 +45,9 @@ type Config struct {
 
 	Import ImportConfig // Board import configuration.
 
-	cachedUploads []*uploadType
-	importMode    bool
+	cachedUploads  []*uploadType
+	importMode     bool
+	importComplete bool
 }
 
 func (c *Config) UploadTypes() []*uploadType {
