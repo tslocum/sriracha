@@ -198,7 +198,7 @@ func (b *Board) validate() error {
 	case strings.TrimSpace(b.Name) == "":
 		return fmt.Errorf("name must be set")
 	}
-	reservedDirs := []string{"captcha", "css", "js", "sriracha", "sriracha_all"}
+	reservedDirs := []string{"captcha", "static", "sriracha", "sriracha_all"}
 	for _, reserved := range reservedDirs {
 		if strings.EqualFold(b.Dir, reserved) {
 			return fmt.Errorf("%s is a reserved name", reserved)

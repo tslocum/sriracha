@@ -257,8 +257,8 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 			ThumbWidth:   p.ThumbWidth,
 			ThumbHeight:  p.ThumbHeight,
 			Moderated:    PostModerated(p.Moderated),
-			Stickied:     p.Stickied,
-			Locked:       p.Locked,
+			Stickied:     p.Stickied == 1,
+			Locked:       p.Locked == 1,
 		}
 		hashLen := len(p.FileHash)
 		isEmbed := hashLen != 0 && hashLen < 32

@@ -9,15 +9,15 @@
 		<meta http-equiv="pragma" content="no-cache">
 		<meta name="viewport" content="width=device-width,initial-scale=1">
 		<title>{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}</title>
-		<link rel="stylesheet" type="text/css" href="/css/global.css">
-		<link rel="stylesheet" type="text/css" href="/css/futaba.css" title="Futaba" id="mainStylesheet">
-		<link rel="alternate stylesheet" type="text/css" href="/css/burichan.css" title="Burichan">
+		<link rel="stylesheet" type="text/css" href="/static/css/global.css">
+		<link rel="stylesheet" type="text/css" href="/static/css/futaba.css" title="Futaba" id="mainStylesheet">
+		<link rel="alternate stylesheet" type="text/css" href="/static/css/burichan.css" title="Burichan">
 		{{if ne .Opt.Refresh 0}}
 			<script type="text/javascript">
 			var autoRefreshDelay = {{.Opt.Refresh}};
 			</script>
 		{{end}}
-		<script src="/js/sriracha.js"></script>
+		<script src="/static/js/sriracha.js"></script>
 		{{if and (ne .Board nil) (ne .Board.Description "")}}
 			<meta name="description" content="{{.Board.Description}}">
 		{{end}}

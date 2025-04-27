@@ -18,6 +18,14 @@ func (db *Database) addPost(p *Post) {
 	if p.FileHash != "" {
 		fileHash = &p.FileHash
 	}
+	var stickied int
+	if p.Stickied {
+		stickied = 1
+	}
+	var locked int
+	if p.Locked {
+		locked = 1
+	}
 	err := db.conn.QueryRow(context.Background(), "INSERT INTO post VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) RETURNING id",
 		parent,
 		p.Board.ID,
@@ -41,8 +49,8 @@ func (db *Database) addPost(p *Post) {
 		p.ThumbWidth,
 		p.ThumbHeight,
 		p.Moderated,
-		p.Stickied,
-		p.Locked,
+		stickied,
+		locked,
 	).Scan(&p.ID)
 	if err != nil || p.ID == 0 {
 		log.Fatalf("failed to insert post: %s", err)
@@ -56,7 +64,7 @@ func (db *Database) allThreads(board *Board, moderated bool) []*Post {
 		extraJoin = " AND reply.moderated > 0"
 		extraWhere = " AND post.moderated > 0"
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT post.*, COUNT(reply.id) as replies FROM post LEFT OUTER JOIN post reply ON reply.parent = post.id"+extraJoin+" WHERE post.board = $1 AND post.parent IS NULL"+extraWhere+" GROUP BY post.id ORDER BY bumped DESC", board.ID)
+	rows, err := db.conn.Query(context.Background(), "SELECT post.*, COUNT(reply.id) as replies FROM post LEFT OUTER JOIN post reply ON reply.parent = post.id"+extraJoin+" WHERE post.board = $1 AND post.parent IS NULL"+extraWhere+" GROUP BY post.id ORDER BY stickied DESC, bumped DESC", board.ID)
 	if err != nil {
 		log.Fatalf("failed to select all posts: %s", err)
 	}
@@ -253,9 +261,13 @@ func (db *Database) deletePost(postID int) {
 }
 
 func scanPost(p *Post, row pgx.Row) (int, error) {
-	var parentID *int
-	var boardID int
-	var fileHash *string
+	var (
+		parentID *int
+		boardID  int
+		fileHash *string
+		stickied int
+		locked   int
+	)
 	err := row.Scan(
 		&p.ID,
 		&parentID,
@@ -280,19 +292,20 @@ func scanPost(p *Post, row pgx.Row) (int, error) {
 		&p.ThumbWidth,
 		&p.ThumbHeight,
 		&p.Moderated,
-		&p.Stickied,
-		&p.Locked,
+		&stickied,
+		&locked,
 		&p.Replies,
 	)
 	if err != nil {
 		return 0, err
 	}
-
 	if parentID != nil {
 		p.Parent = *parentID
 	}
 	if fileHash != nil {
 		p.FileHash = *fileHash
 	}
+	p.Stickied = stickied == 1
+	p.Locked = locked == 1
 	return boardID, nil
 }

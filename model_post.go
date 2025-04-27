@@ -63,8 +63,8 @@ type Post struct {
 	ThumbWidth   int
 	ThumbHeight  int
 	Moderated    PostModerated
-	Stickied     int
-	Locked       int
+	Stickied     bool
+	Locked       bool
 
 	// Calculated fields.
 	Replies int

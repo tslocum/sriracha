@@ -677,14 +677,8 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) listen() error {
-	subFS, err := fs.Sub(templateFS, "template")
-	if err != nil {
-		return err
-	}
-
 	mux := http.NewServeMux()
-	mux.Handle("/css/", http.FileServerFS(subFS))
-	mux.Handle("/js/", http.FileServerFS(subFS))
+	mux.Handle("/static/", http.FileServerFS(staticFS))
 	mux.HandleFunc("/sriracha/", s.serve)
 	mux.Handle("/", http.FileServer(http.Dir(s.config.Root)))
 
