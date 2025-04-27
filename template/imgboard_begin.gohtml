@@ -23,7 +23,7 @@
 		{{end}}
     </head>
     <body>
-		{{if and .Opt.BoardIndex (gt (len .Boards) 1)}}
+		{{if and (gt (len .Boards) 1) (or .Opt.BoardIndex .ModMode)}}
 			{{range $i, $board := .Boards}}
 				{{if not $.ModMode}}
 					[<a href="{{.Path}}" title="{{.Name}}" style="text-decoration: underline;">{{.Dir}}</a>]
