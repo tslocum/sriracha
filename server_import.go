@@ -201,6 +201,7 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 	}
 
 	data.Message += template.HTML("Importing posts...<br>")
+	var lastPostID int
 	for _, postID := range postIDs {
 		var p importPost
 		err := conn.QueryRow(context.Background(), "SELECT * FROM "+c.Posts+" WHERE id = $1", postID).Scan(
@@ -329,6 +330,7 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 			data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to insert post: %s", err))
 			return
 		}
+		lastPostID = pp.ID
 	}
 	data.Message += template.HTML(fmt.Sprintf("<b>Imported %d posts.</b><br><br>", len(postIDs)))
 
@@ -377,6 +379,14 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 			imported++
 		}
 		data.Message += template.HTML(fmt.Sprintf("<b>Imported %d keywords.</b><br><br>", imported))
+	}
+
+	if lastPostID != 0 {
+		_, err := db.conn.Exec(context.Background(), "ALTER SEQUENCE post_id_seq RESTART WITH $1", lastPostID+1)
+		if err != nil {
+			data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to update post auto-increment value: %s", html.EscapeString(err.Error())))
+			return
+		}
 	}
 
 	if !commit {

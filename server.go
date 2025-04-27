@@ -648,6 +648,16 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (Ban #%d)", ban.ID))
 		data.execute(w)
 		handled = true
+	} else if strings.HasPrefix(r.URL.Path, "/sriracha/post/") {
+		postID := pathInt(r, "/sriracha/post/")
+		post := db.postByID(postID)
+		if post == nil {
+			data := s.buildData(db, w, r)
+			data.BoardError(w, "Invalid or deleted post.")
+		} else {
+			http.Redirect(w, r, fmt.Sprintf("%sres/%d.html#%d", post.Board.Path(), post.Thread(), post.ID), http.StatusFound)
+		}
+		handled = true
 	}
 
 	if !handled {

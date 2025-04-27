@@ -134,7 +134,7 @@ func RegisterPlugin(plugin any) {
 	pPost, ok := plugin.(PluginWithPost)
 	if ok {
 		events = append(events, "Post")
-		allPluginPostHandlers = append(allPluginPostHandlers, pPost.Post)
+		allPluginPostHandlers = append(allPluginPostHandlers, postHandlerInfo{strings.ToLower(name), pPost.Post})
 	}
 
 	if len(events) == 0 {
@@ -164,6 +164,11 @@ type pluginInfo struct {
 
 type postHandler func(db *Database, post *Post) error
 
+type postHandlerInfo struct {
+	Name    string
+	Handler postHandler
+}
+
 var allPlugins []any
 var allPluginInfo []*pluginInfo
-var allPluginPostHandlers []postHandler
+var allPluginPostHandlers []postHandlerInfo

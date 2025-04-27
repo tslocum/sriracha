@@ -76,9 +76,10 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	var parentPost *Post
 	if post.Parent != 0 {
-		parent := db.postByID(post.Parent)
-		if parent == nil || parent.Parent != 0 {
+		parentPost = db.postByID(post.Parent)
+		if parentPost == nil || parentPost.Parent != 0 {
 			s.deletePostFiles(post)
 
 			data := s.buildData(db, w, r)
@@ -237,6 +238,12 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 
 	var addReport bool
 	if !staffPost {
+		if parentPost != nil && parentPost.Locked {
+			data := s.buildData(db, w, r)
+			data.BoardError(w, gotext.Get("That thread is locked."))
+			return
+		}
+
 		for _, keyword := range db.allKeywords() {
 			rgxp, err := regexp.Compile(keyword.Text)
 			if err != nil {
@@ -329,8 +336,9 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			})
 		}
 
-		for _, postHandler := range allPluginPostHandlers {
-			err := postHandler(db, post)
+		for _, info := range allPluginPostHandlers {
+			db.plugin = info.Name
+			err := info.Handler(db, post)
 			if err != nil {
 				s.deletePostFiles(post)
 
@@ -341,6 +349,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			}
 			post.Message = strings.ReplaceAll(post.Message, "<br>", "\n")
 		}
+		db.plugin = ""
 
 		post.Message = reflinkPattern.ReplaceAllStringFunc(post.Message, func(s string) string {
 			postID, err := strconv.Atoi(s[8:])
