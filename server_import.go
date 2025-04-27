@@ -7,10 +7,12 @@ import (
 	"fmt"
 	"html"
 	"html/template"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/jackc/pgx/v5"
@@ -291,6 +293,15 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 			}
 		}
 
+		resPattern, err := regexp.Compile(`<a href="res\/([0-9]+).html#([0-9]+)"`)
+		if err != nil {
+			log.Fatalf("failed to compile res pattern: %s", err)
+		}
+		pp.Message = resPattern.ReplaceAllStringFunc(pp.Message, func(s string) string {
+			match := resPattern.FindStringSubmatch(s)
+			return fmt.Sprintf(`<a href="%sres/%s.html#%s"`, b.Path(), match[1], match[2])
+		})
+
 		var parent *int
 		if pp.Parent != 0 {
 			parent = &pp.Parent
@@ -298,6 +309,14 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 		var fileHash *string
 		if pp.FileHash != "" {
 			fileHash = &pp.FileHash
+		}
+		var stickied int
+		if pp.Stickied {
+			stickied = 1
+		}
+		var locked int
+		if pp.Locked {
+			locked = 1
 		}
 		err = db.conn.QueryRow(context.Background(), "INSERT INTO post VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25) RETURNING id",
 			pp.ID,
@@ -323,8 +342,8 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 			pp.ThumbWidth,
 			pp.ThumbHeight,
 			pp.Moderated,
-			pp.Stickied,
-			pp.Locked,
+			stickied,
+			locked,
 		).Scan(&pp.ID)
 		if err != nil || pp.ID == 0 {
 			data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to insert post: %s", err))
@@ -382,7 +401,7 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 	}
 
 	if lastPostID != 0 {
-		_, err := db.conn.Exec(context.Background(), "ALTER SEQUENCE post_id_seq RESTART WITH $1", lastPostID+1)
+		_, err := db.conn.Exec(context.Background(), "ALTER SEQUENCE post_id_seq RESTART WITH "+strconv.Itoa(lastPostID+1))
 		if err != nil {
 			data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to update post auto-increment value: %s", html.EscapeString(err.Error())))
 			return
