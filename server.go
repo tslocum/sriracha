@@ -530,9 +530,9 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 	}
 }
 
-func (s *Server) rebuildThread(db *Database, board *Board, post *Post) {
-	s.writeThread(db, board, post.Thread())
-	s.writeIndexes(db, board)
+func (s *Server) rebuildThread(db *Database, post *Post) {
+	s.writeThread(db, post.Board, post.Thread())
+	s.writeIndexes(db, post.Board)
 }
 
 func (s *Server) rebuildBoard(db *Database, board *Board) {

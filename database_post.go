@@ -249,6 +249,28 @@ func (db *Database) moderatePost(postID int, moderated PostModerated) {
 	}
 }
 
+func (db *Database) stickyPost(postID int, sticky bool) {
+	var stickied int
+	if sticky {
+		stickied = 1
+	}
+	_, err := db.conn.Exec(context.Background(), "UPDATE post SET stickied = $1 WHERE id = $2", stickied, postID)
+	if err != nil {
+		log.Fatalf("failed to sticky post: %s", err)
+	}
+}
+
+func (db *Database) lockPost(postID int, lock bool) {
+	var locked int
+	if lock {
+		locked = 1
+	}
+	_, err := db.conn.Exec(context.Background(), "UPDATE post SET locked = $1 WHERE id = $2", locked, postID)
+	if err != nil {
+		log.Fatalf("failed to lock post: %s", err)
+	}
+}
+
 func (db *Database) deletePost(postID int) {
 	if postID <= 0 {
 		log.Panicf("invalid post ID %d", postID)

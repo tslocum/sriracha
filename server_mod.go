@@ -20,6 +20,14 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 				action = "d"
 			case "ban":
 				action = "n"
+			case "sticky":
+				action = "s"
+			case "unsticky":
+				action = "us"
+			case "lock":
+				action = "l"
+			case "unlock":
+				action = "ul"
 			default:
 				data.ManageError("Unknown mod action")
 				return
@@ -36,6 +44,38 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 	data.Post = db.postByID(postID)
 	if data.Post == nil {
 		data.ManageError("Unknown post")
+		return
+	}
+	threadAction := action == "s" || action == "us" || action == "l" || action == "ul"
+	if threadAction {
+		if data.Post.Parent != 0 {
+			data.ManageError("Invalid post")
+			return
+		}
+
+		var skipRebuild bool
+		switch {
+		case action == "s" && !data.Post.Stickied:
+			db.stickyPost(data.Post.ID, true)
+			db.log(data.Account, nil, fmt.Sprintf("Stickied >>/post/%d", data.Post.ID), "")
+		case action == "us" && data.Post.Stickied:
+			db.stickyPost(data.Post.ID, false)
+			db.log(data.Account, nil, fmt.Sprintf("Unstickied >>/post/%d", data.Post.ID), "")
+		case action == "l" && !data.Post.Locked:
+			db.lockPost(data.Post.ID, true)
+			db.log(data.Account, nil, fmt.Sprintf("Locked >>/post/%d", data.Post.ID), "")
+		case action == "ul" && data.Post.Locked:
+			db.lockPost(data.Post.ID, false)
+			db.log(data.Account, nil, fmt.Sprintf("Unlocked >>/post/%d", data.Post.ID), "")
+		default:
+			skipRebuild = true
+		}
+		if !skipRebuild {
+			s.rebuildThread(db, data.Post)
+		}
+
+		data.Template = "manage_info"
+		http.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", data.Post.Board.ID, data.Post.ID), http.StatusFound)
 		return
 	}
 	data.Board = data.Post.Board
@@ -66,7 +106,7 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 
 			db.log(data.Account, data.Board, fmt.Sprintf("Deleted No.%d", data.Post.ID), "")
 
-			s.rebuildThread(db, data.Board, data.Post)
+			s.rebuildThread(db, data.Post)
 		}
 
 		label := "Deleted"

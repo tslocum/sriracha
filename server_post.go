@@ -415,7 +415,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		}
 	}
 
-	s.rebuildThread(db, b, post)
+	s.rebuildThread(db, post)
 
 	redir := fmt.Sprintf("%sres/%d.html#%d", b.Path(), post.Thread(), post.ID)
 	http.Redirect(w, r, redir, http.StatusFound)

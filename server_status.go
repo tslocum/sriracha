@@ -25,7 +25,7 @@ func (s *Server) serveStatus(data *templateData, db *Database, w http.ResponseWr
 
 						if rebuild {
 							db.bumpThread(post.Thread(), time.Now().Unix())
-							s.rebuildThread(db, b, post)
+							s.rebuildThread(db, post)
 						}
 					}
 				}

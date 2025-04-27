@@ -39,7 +39,7 @@ still need to update some keywords for them to continue to function.
 
 **Note:** Don't do this yet. These instructions won't work.
 
-Posts, keywords and logs will be imported into Sriracha.
+Posts and keywords will be imported into Sriracha. All other data is incompatible.
 
 ### 1. Back everything up
 
@@ -83,14 +83,13 @@ with your TinyIB PostgreSQL database connection info and table names.
 # Note: Posting is disabled when running in import mode.
 import:
   # Connection info.
-  address: localhost
-  username: tinyib
-  password: hunter2
-  dbname: tinyib
+  address: localhost # Address:Port to connect to the database.
+  username: tinyib   # Database username.
+  password: hunter2  # Database password.
+  dbname: tinyib     # Database name.
   # Table names.
-  posts: dir_posts
-  keywords: keywords
-  logs: logs
+  posts: dir_posts   # Required.
+  keywords: keywords # Optional.
 ```
 
 ### 4. Start Sriracha and visit the management panel
