@@ -2,12 +2,16 @@ package sriracha
 
 import (
 	"context"
+	"crypto/sha512"
+	"encoding/base64"
 	"fmt"
 	"html"
 	"html/template"
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strings"
 
 	"github.com/jackc/pgx/v5"
 	"golang.org/x/sys/unix"
@@ -22,19 +26,20 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 	}
 	c := s.config.Import
 
-	commit := formBool(r, "import") && formBool(r, "confirm")
+	commit := formBool(r, "import") && formBool(r, "confirmation")
+	var importComplete bool
 	defer func() {
 		var command = "ROLLBACK"
-		if commit {
+		if commit && importComplete {
 			command = "COMMIT"
-			data.Message += template.HTML("<b>Committing changes...</b><br><br>")
+			data.Message += template.HTML("Committing changes...<br>")
 		}
 		_, err := db.conn.Exec(context.Background(), command)
 		if commit {
 			if err != nil {
 				data.Message += template.HTML("<b>Error:</b> Failed to commit changes: " + html.EscapeString(err.Error()))
 			} else {
-				data.Message += template.HTML("<b>Changes committed.</b> Please remove the import option from config.yml and restart Sriracha.")
+				data.Message += template.HTML("<b>Changes committed.</b><br><br><b>Import complete.</b><br>Please remove the import option from config.yml and restart Sriracha.<br>")
 			}
 		}
 	}()
@@ -89,22 +94,48 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 		data.Message += template.HTML(fmt.Sprintf("<b>Found %d keywords</b> in table %s.<br>", keywordEntries, html.EscapeString(c.Keywords)))
 	}
 
-	if c.Logs != "" {
-		logsEntries, err := tableEntries(c.Logs)
-		if err != nil {
-			data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to validate table %s: %s", html.EscapeString(c.Logs), html.EscapeString(err.Error())))
-			return
-		}
-		data.Message += template.HTML(fmt.Sprintf("<b>Found %d logs</b> in table %s.<br>", logsEntries, html.EscapeString(c.Logs)))
-	}
-
 	data.Message += template.HTML("<b>Validation complete.</b><br><br>")
 
 	doImport := formBool(r, "import")
 	if !doImport {
-		data.Message += template.HTML(`<form method="post"><input type="hidden" name="import" value="1"><input type="submit" value="Start dry run"></form>`)
+		data.Message += template.HTML(`<form method="post"><input type="hidden" name="import" value="1">
+        <table border="0" class="manageform">
+            <tr>
+                <td class="postblock"><label for="dir">Board Directory</label></td>
+                <td><input type="text" name="dir"></td>
+                <td>The directory where the board files are located. If the board is located at the server root, leave blank.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="name">Board Name</label></td>
+                <td><input type="text" name="name"></td>
+                <td>The name of the board, which is displayed in the page title and header.</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Start dry run"></td>
+				<td></td>
+            </tr>
+		</table>
+		</form>`)
 		return
 	}
+
+	data.Message += template.HTML("Creating board...<br>")
+	b := newBoard()
+	b.Dir = formString(r, "dir")
+	b.Name = formString(r, "name")
+	err = b.validate()
+	if err != nil {
+		data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to validate board: %s", html.EscapeString(err.Error())))
+		return
+	}
+	match := db.boardByDir(b.Dir)
+	if match != nil {
+		data.Message += template.HTML("<b>Error:</b> A board with that directory already exists in Sriracha.")
+		return
+	}
+	db.addBoard(b)
+	data.Message += template.HTML("<b>Board created.</b><br><br>")
 
 	// Collect post IDs.
 	data.Message += template.HTML("Collecting post IDs...<br>")
@@ -125,26 +156,17 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 	}
 	data.Message += template.HTML("<b>Post IDs collected.</b><br><br>")
 
-	// TODO
-	data.Message += template.HTML("Creating board...<br>")
-	b := &Board{
-		Dir:  "tinyib",
-		Name: "TinyIB Import",
-	}
-	db.addBoard(b)
-	data.Message += template.HTML("<b>Board created.</b><br><br>")
-
 	data.Message += template.HTML("Verifying board directories...<br>")
 	dirs := []string{b.Dir, filepath.Join(b.Dir, "src"), filepath.Join(b.Dir, "thumb"), filepath.Join(b.Dir, "res")}
 	for _, dir := range dirs {
 		dirPath := filepath.Join(s.config.Root, dir)
 		_, err := os.Stat(dirPath)
 		if os.IsNotExist(err) {
-			data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Board directory %s does not exist", html.EscapeString(dirPath)))
+			data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Board directory %s does not exist.", html.EscapeString(dirPath)))
 			return
 		}
 		if unix.Access(dirPath, unix.W_OK) != nil {
-			data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Board directory %s is not writable", html.EscapeString(dirPath)))
+			data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Board directory %s is not writable.", html.EscapeString(dirPath)))
 			return
 		}
 	}
@@ -243,8 +265,29 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 		if isEmbed {
 			pp.FileHash = fmt.Sprintf("e %s %s", p.FileHash, p.FileOriginal)
 		} else {
-			// TODO Set updated hash.
 			pp.FileOriginal = p.FileOriginal
+			if p.File != "" {
+				srcPath := filepath.Join(s.config.Root, b.Dir, "src", p.File)
+				buf, err := os.ReadFile(srcPath)
+				if err != nil {
+					data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> File not found at %s", html.EscapeString(srcPath)))
+					return
+				}
+				checksum := sha512.Sum384(buf)
+				pp.FileHash = base64.URLEncoding.EncodeToString(checksum[:])
+				match := db.postByFileHash(pp.FileHash)
+				if match != nil {
+					pp.FileHash = ""
+				}
+				if p.Thumb != "" {
+					thumbPath := filepath.Join(s.config.Root, b.Dir, "thumb", p.Thumb)
+					_, err := os.Stat(thumbPath)
+					if os.IsNotExist(err) {
+						data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Thumbnail not found at %s", html.EscapeString(srcPath)))
+						return
+					}
+				}
+			}
 		}
 
 		var parent *int
@@ -315,6 +358,11 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 				Action: k.Action,
 				Boards: []*Board{b},
 			}
+			if strings.HasPrefix(kk.Text, "regexp:") {
+				kk.Text = strings.TrimPrefix(kk.Text, "regexp:")
+			} else {
+				kk.Text = regexp.QuoteMeta(kk.Text)
+			}
 			err = kk.validate()
 			if err != nil {
 				data.Message += template.HTML(fmt.Sprintf("<b>Warning:</b> Skipped keyword #%d: %s", k.ID, err))
@@ -331,45 +379,12 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 		data.Message += template.HTML(fmt.Sprintf("<b>Imported %d keywords.</b><br><br>", imported))
 	}
 
-	type importLog struct {
-		ID        int
-		Timestamp int64
-		Account   int
-		Message   string
-	}
-
-	if c.Logs != "" {
-		var imported int
-		data.Message += template.HTML("Importing logs...<br>")
-		rows, err := conn.Query(context.Background(), "SELECT * FROM "+c.Logs+" ORDER BY id ASC")
-		if err != nil {
-			data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to select logs in table %s: %s", html.EscapeString(c.Logs), err))
-			return
-		}
-		for rows.Next() {
-			l := &importLog{}
-			err := rows.Scan(&l.ID, &l.Timestamp, &l.Account, &l.Message)
-			if err != nil {
-				data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to select logs in table %s: %s", html.EscapeString(c.Logs), err))
-				return
-			}
-			ll := &Log{
-				Board:     b,
-				Timestamp: l.Timestamp,
-				Message:   "Staff action",
-				Changes:   l.Message,
-			}
-			db.addLog(ll)
-			imported++
-		}
-		data.Message += template.HTML(fmt.Sprintf("<b>Imported %d logs.</b><br><br>", imported))
-	}
-
 	if !commit {
 		data.Message += template.HTML("<b>Dry run successful.</b><br>Ready to import.<br><br>")
-		data.Message += template.HTML(`<form method="post"><input type="hidden" name="import" value="1"><input type="hidden" name="confirmation" value="1"><input type="submit" value="Start import"></form>`)
+		data.Message += template.HTML(`<form method="post"><input type="hidden" name="import" value="1"><input type="hidden" name="confirmation" value="1"><input type="hidden" name="dir" value="` + html.EscapeString(b.Dir) + `"><input type="hidden" name="name" value="` + html.EscapeString(b.Name) + `"><input type="submit" value="Start import"></form>`)
 		return
 	}
 
+	importComplete = true
 	s.rebuildBoard(db, b)
 }

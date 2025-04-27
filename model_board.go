@@ -118,6 +118,23 @@ const (
 	defaultBoardThumbHeight = 250
 )
 
+func newBoard() *Board {
+	return &Board{
+		Threads:     defaultBoardThreads,
+		Replies:     defaultBoardReplies,
+		MaxName:     defaultBoardMaxName,
+		MaxEmail:    defaultBoardMaxEmail,
+		MaxSubject:  defaultBoardMaxSubject,
+		MaxMessage:  defaultBoardMaxMessage,
+		DefaultName: defaultBoardDefaultName,
+		WordBreak:   defaultBoardWordBreak,
+		Truncate:    defaultBoardTruncate,
+		MaxSize:     defaultBoardMaxSize,
+		ThumbWidth:  defaultBoardThumbWidth,
+		ThumbHeight: defaultBoardThumbHeight,
+	}
+}
+
 func (b *Board) loadForm(r *http.Request, availableUploads []*uploadType, availableEmbeds [][2]string) {
 	b.Dir = formString(r, "dir")
 	b.Name = formString(r, "name")

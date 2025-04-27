@@ -22,7 +22,7 @@ Sriracha uses one auto-incrementing post ID for all boards. Because of this,
 migrating two more more boards will involve changing each post's ID. Reference
 links inside posts are updated, but external links to old res pages will break.
 
-### Incompatible IP address and file hashes
+### IP address and file hashes are incompatible
 
 Sriracha hashes IP addresses and files by generating a salted SHA384 checksum
 of the data. TinyIB hashes IP addresses and files using crypt. Because of this,
@@ -100,8 +100,8 @@ on-screen prompts to complete the board migration.
 
 ### 5. Restart Sriracha in normal mode
 
-Remove the import configuration option from `config.yml` and then restart
-Sriracha to re-enable posting.
+Remove the import configuration option from `config.yml` and restart Sriracha
+to re-enable posting.
 
 Don't forget to keep the backup handy, even if the migration appears to
 be successful.

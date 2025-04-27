@@ -11,7 +11,6 @@ type ImportConfig struct {
 
 	Posts    string // Posts table.
 	Keywords string // Keywords table.
-	Logs     string // Logs table.
 }
 
 func (c ImportConfig) Enabled() bool {

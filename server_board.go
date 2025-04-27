@@ -156,20 +156,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		return true
 	}
 
-	data.Manage.Board = &Board{
-		Threads:     defaultBoardThreads,
-		Replies:     defaultBoardReplies,
-		MaxName:     defaultBoardMaxName,
-		MaxEmail:    defaultBoardMaxEmail,
-		MaxSubject:  defaultBoardMaxSubject,
-		MaxMessage:  defaultBoardMaxMessage,
-		DefaultName: defaultBoardDefaultName,
-		WordBreak:   defaultBoardWordBreak,
-		Truncate:    defaultBoardTruncate,
-		MaxSize:     defaultBoardMaxSize,
-		ThumbWidth:  defaultBoardThumbWidth,
-		ThumbHeight: defaultBoardThumbHeight,
-	}
+	data.Manage.Board = newBoard()
 
 	data.Manage.Boards = db.allBoards()
 	return false
