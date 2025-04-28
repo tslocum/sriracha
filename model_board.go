@@ -30,21 +30,21 @@ type BoardLock int
 // Board lock types.
 const (
 	LockNone   BoardLock = 0
-	LockReply  BoardLock = 1
-	LockThread BoardLock = 2
-	LockAll    BoardLock = 3
+	LockThread BoardLock = 1
+	LockPost   BoardLock = 2
+	LockStaff  BoardLock = 3
 )
 
 func formatBoardLock(l BoardLock) string {
 	switch l {
 	case LockNone:
-		return "None"
-	case LockReply:
-		return "Reply"
+		return "Allow all"
 	case LockThread:
-		return "Thread"
-	case LockAll:
-		return "All"
+		return "No visitor threads"
+	case LockPost:
+		return "No visitor posts"
+	case LockStaff:
+		return "No posts"
 	default:
 		return "Unknown"
 	}
@@ -141,7 +141,7 @@ func (b *Board) loadForm(r *http.Request, availableUploads []*uploadType, availa
 	b.Name = formString(r, "name")
 	b.Description = formString(r, "description")
 	b.Type = formRange(r, "type", TypeImageboard, TypeForum)
-	b.Lock = formRange(r, "lock", LockNone, LockAll)
+	b.Lock = formRange(r, "lock", LockNone, LockStaff)
 	b.Approval = formRange(r, "approval", ApprovalNone, ApprovalAll)
 	b.Reports = formBool(r, "reports")
 	b.Style = formString(r, "style")

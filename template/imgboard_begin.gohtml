@@ -33,7 +33,9 @@
 			{{end}}
 		{{end}}
 		<div class="adminbar">
-			[<a href="{{.Board.Path}}catalog.html" style="text-decoration: underline;">{{T "Catalog"}}</a>]
+			{{if ne .Board nil}}
+				[<a href="{{.Board.Path}}catalog.html" style="text-decoration: underline;">{{T "Catalog"}}</a>]
+			{{end}}
 			[<a href="/sriracha/" style="text-decoration: underline;">{{T "Manage"}}</a>]
 		</div>
 		<div class="logo">{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}</div>

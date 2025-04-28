@@ -48,6 +48,43 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	var (
+		rawHTML      bool
+		staffPost    bool
+		staffCapcode string
+	)
+	data := s.buildData(db, w, r)
+	if data.Account != nil {
+		staffPost = formString(r, "capcode") != ""
+		if staffPost {
+			capcode := formInt(r, "capcode")
+			if capcode < 0 || capcode > 2 || (data.Account.Role == RoleMod && capcode == 2) {
+				capcode = 0
+			}
+			switch capcode {
+			case 1:
+				staffCapcode = "Mod"
+			case 2:
+				staffCapcode = "Admin"
+			}
+
+			rawHTML = formBool(r, "raw")
+		}
+	}
+
+	switch b.Lock {
+	case LockPost:
+		if !staffPost {
+			data := s.buildData(db, w, r)
+			data.BoardError(w, gotext.Get("Board locked. No new posts may be created."))
+			return
+		}
+	case LockStaff:
+		data := s.buildData(db, w, r)
+		data.BoardError(w, gotext.Get("Board locked. No new posts may be created."))
+		return
+	}
+
 	now := time.Now().Unix()
 	post := &Post{
 		Board:     b,
@@ -90,6 +127,13 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			data.BoardError(w, gotext.Get("No post selected."))
 			return
 		}
+	}
+	if b.Lock == LockThread && parentPost == nil && !staffPost {
+		s.deletePostFiles(post)
+
+		data := s.buildData(db, w, r)
+		data.BoardError(w, gotext.Get("You may only reply to threads."))
+		return
 	}
 
 	if s.opt.CAPTCHA {
@@ -213,31 +257,8 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		post.Password = hashData(password)
 	}
 
-	var (
-		rawHTML      bool
-		staffPost    bool
-		staffCapcode string
-	)
-	data := s.buildData(db, w, r)
-	if data.Account != nil {
-		staffPost = formString(r, "capcode") != ""
-		if staffPost {
-			capcode := formInt(r, "capcode")
-			if capcode < 0 || capcode > 2 || (data.Account.Role == RoleMod && capcode == 2) {
-				capcode = 0
-			}
-			switch capcode {
-			case 1:
-				staffCapcode = "Mod"
-			case 2:
-				staffCapcode = "Admin"
-			}
-
-			rawHTML = formBool(r, "raw")
-			if rawHTML {
-				post.Message = html.UnescapeString(post.Message)
-			}
-		}
+	if rawHTML {
+		post.Message = html.UnescapeString(post.Message)
 	}
 
 	var addReport bool
