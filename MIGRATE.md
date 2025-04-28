@@ -33,6 +33,21 @@ Sriracha keywords are always regular expressions. During migration, plain text
 keywords are escaped to allow them to be parsed as regular expressions. You may
 still need to update some keywords for them to continue to function.
 
+### Licensed under GNU LGPL
+
+Sriracha is licensed under [GNU LGPL](https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE).
+If you modify the source code of this application, you must share the full
+source code of your changes publicly for free. You may, however, link with this
+application using proprietary shared libraries, so long as the base application
+(Sriracha) remains unmodified. If your only changes are to create proprietary
+shared libraries, and these librarires would work with other installations of
+Sriracha because you did not make any modifications to Sriracha's source code,
+then you do not need to release the source code of your shared libraries.
+
+If you run an unmodified official release of this application, either by running
+an official release binary or by compiling Sriracha using only the unmodified
+source code of an official release, then you do not need to share any source code.
+
 ## Instructions
 
 Posts and keywords will be imported into Sriracha. All other data is incompatible.

@@ -46,7 +46,6 @@ for info on how to migrate from [TinyIB](https://codeberg.org/tslocum/tinyib).
 **Note:** The first release of Sriracha is coming soon. Stay tuned.
 
 Download the latest release of Sriracha [here](https://codeberg.org/tslocum/sriracha/releases).
-
 Only Linux, FreeBSD and macOS are supported.
 
 Linux release archives include all official plugins. To use plugins on FreeBSD
