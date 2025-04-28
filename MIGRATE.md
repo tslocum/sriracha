@@ -1,7 +1,7 @@
 # Sriracha Board Migration
 [![Donate](https://img.shields.io/liberapay/receives/rocket9labs.com.svg?logo=liberapay)](https://liberapay.com/rocket9labs.com)
 
-Sriracha supports migrating one or more boards from [TinyIB](https://codeberg.org/tslocum/tinyib).
+Sriracha supports migrating boards from [TinyIB](https://codeberg.org/tslocum/tinyib).
 
 ## Differences
 

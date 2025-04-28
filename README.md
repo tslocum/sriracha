@@ -3,8 +3,6 @@
 [![Translate](https://translate.codeberg.org/widget/sriracha/sriracha/svg-badge.svg)](https://translate.codeberg.org/projects/sriracha/sriracha/)
 [![Donate](https://img.shields.io/liberapay/receives/rocket9labs.com.svg?logo=liberapay)](https://liberapay.com/rocket9labs.com)
 
-Only Linux, FreeBSD and macOS are supported.
-
 ## Features
 
 - GIF, JPG, PNG, SWF, MP4 and WebM upload
@@ -43,9 +41,28 @@ for info on how to build and use Sriracha plugins.
 See [MIGRATE.md](https://codeberg.org/tslocum/sriracha/src/branch/main/MIGRATE.md)
 for info on how to migrate from [TinyIB](https://codeberg.org/tslocum/tinyib).
 
+## Download
+
+**Note:** The first release of Sriracha is coming soon. Stay tuned.
+
+Download the latest release of Sriracha [here](https://codeberg.org/tslocum/sriracha/releases).
+
+Only Linux, FreeBSD and macOS are supported.
+
+Linux release archives include all official plugins. To use plugins on FreeBSD
+or macOS, compile Sriracha and any desired plugins using the release source code.
+
 ## Translate
 
 Translation is handled [online](https://translate.codeberg.org/projects/sriracha/sriracha/).
+
+## Support
+
+**Note:** Support is only available for official Sriracha releases running without any custom templates.
+
+  1. Ensure you are running the latest version of Sriracha.
+  2. Review the [open issues](https://codeberg.org/tslocum/sriracha/issues).
+  3. Open a [new issue](https://codeberg.org/tslocum/sriracha/issues/new).
 
 ## License
 
