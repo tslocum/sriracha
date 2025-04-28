@@ -1,3 +1,5 @@
+var mouseX = 0;
+var mouseY = 0;
 var haveFocus = false;
 var originalTitle = "";
 var newRepliesCount = 0;
@@ -66,6 +68,7 @@ function refreshReplies() {
 
             container.appendChild(table);
         }
+        setPostAttributes(container);
         if (!haveFocus) {
             newRepliesCount += newReplies.length;
             if (!blinkTitle) {
@@ -129,6 +132,66 @@ function expandFile(e, id) {
     return true;
 }
 
+function setPostAttributes(element) {
+    var base_url = window.location.pathname;
+    var resIndex = base_url.indexOf('/res/');
+    if (resIndex != -1) {
+        base_url = base_url.substring(0, resIndex) + '/';
+    }
+    element.querySelectorAll('a').forEach((el, i) => {
+        var m = null;
+        if (el.getAttribute('href')) {
+            m = el.getAttribute('href').match(/.*\/[0-9]+?#([0-9]+)/i);
+        }
+        if (m == null && el.getAttribute('href')) {
+            m = el.getAttribute('href').match(/\#([0-9]+)/i);
+        }
+        if (m == null) {
+            return;
+        }
+
+        if (el.innerHTML == 'No.') {
+            if (element != document) {
+                element.setAttribute('postID', m[1]);
+                element.setAttribute('postLink', el.getAttribute('href'))
+                element.classList.add('post');
+            }
+        } else if (el.getAttribute('refID') == undefined) {
+            var m2 = el.innerHTML.match(/^\&gt\;\&gt\;[0-9]+/i);
+            if (m2 == null) {
+                return;
+            }
+            el.setAttribute('refID', m[1]);
+            el.addEventListener("mouseenter", function(e) {
+                var preview = document.getElementById('ref' + el.getAttribute('refID'));
+                if (!preview) {
+                    var refpost = document.getElementById('post' + el.getAttribute('refID'));
+                    if (refpost && refpost.innerHTML && refpost.innerHTML != undefined) {
+                        var preview = document.createElement('div');
+                        preview.id = 'ref' + el.getAttribute('refID');
+                        preview.style.position = 'absolute';
+                        preview.style.textAlign = 'left';
+                        preview.setAttribute('refID', el.getAttribute('refID'));
+                        preview.className = 'hoverpost';
+                        preview.innerHTML = refpost.innerHTML;
+                        if (refpost.tagName.toLowerCase() == 'td') {
+                            preview.classList.add('reply');
+                        }
+                    } else {
+                        return;
+                    }
+                    document.body.append(preview);
+                }
+                preview.style.left =  mouseX+14 + 'px';
+                preview.style.top = mouseY+7 + 'px';
+            });
+            el.addEventListener("mouseleave", function(e) {
+                document.getElementById('ref' + el.getAttribute('refID')).remove();
+            });
+        }
+    });
+}
+
 function onFocus(e) {
     newRepliesCount = 0;
     blinkTitle = false;
@@ -143,6 +206,11 @@ function onBlur(e) {
     haveFocus = false;
 }
 
+function onMouseMove(e) {
+    mouseX = e.pageX;
+    mouseY = e.pageY;
+}
+
 function onLoad(e) {
     if (window.location.hash) {
         var match = window.location.hash.match(/^#q[0-9]+$/i);
@@ -154,11 +222,13 @@ function onLoad(e) {
         }
     }
 
+    setPostAttributes(document);
+
     if (typeof autoRefreshDelay === 'undefined') {
         return;
     }
 
-    var result = window.location.pathname.match(/.*\/res\/([0-9]+).html$/);
+    var result = window.location.pathname.match(/.*\/res\/([0-9]+)\.html$/);
     if (!result || result.length < 2) {
         return;
     }
@@ -168,4 +238,5 @@ function onLoad(e) {
 
 window.addEventListener("focus", onFocus);
 window.addEventListener("blur", onBlur);
+window.addEventListener("mousemove", onMouseMove);
 window.addEventListener("load", onLoad);

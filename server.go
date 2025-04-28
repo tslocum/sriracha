@@ -193,8 +193,6 @@ func (s *Server) setDefaultServerConfig() error {
 	boardIndex := db.GetString("boardindex")
 	s.opt.BoardIndex = boardIndex == "" || boardIndex == "1"
 
-	s.opt.Refresh = db.GetInt("refresh")
-
 	s.opt.CAPTCHA = db.GetBool("captcha")
 
 	if !db.HaveConfig("refresh") {

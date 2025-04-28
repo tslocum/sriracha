@@ -74,8 +74,7 @@
                                 <a href="/sriracha/mod/ban/{{.ID}}" title="{{T "Ban"}}">B</a>
                                 <a href="/sriracha/mod/{{.ID}}" title="{{T "Delete & ban"}}">D&amp;B</a></b>
                             {{end}}
-                        </span>
-                        <small><span id="backlinks{{.ID}}" class="backlinks"></span></small><br>
+                        </span><br>
                         {{if ne .File ""}}
                             {{$embed := .EmbedInfo}}
                             <span class="filesize"><a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
