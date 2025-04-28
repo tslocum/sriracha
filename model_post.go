@@ -426,7 +426,7 @@ func (p *Post) ExpandHTML() template.HTML {
 	if p.File == "" {
 		return ""
 	} else if p.IsEmbed() {
-		return template.HTML(p.File)
+		return template.HTML(url.PathEscape(p.File))
 	}
 	srcPath := fmt.Sprintf("%ssrc/%s", p.Board.Path(), p.File)
 

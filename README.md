@@ -3,6 +3,8 @@
 [![Translate](https://translate.codeberg.org/widget/sriracha/sriracha/svg-badge.svg)](https://translate.codeberg.org/projects/sriracha/sriracha/)
 [![Donate](https://img.shields.io/liberapay/receives/rocket9labs.com.svg?logo=liberapay)](https://liberapay.com/rocket9labs.com)
 
+A [**read-only demo**](https://sriracha.rocket9labs.com/img/) is available.
+
 ## Features
 
 - GIF, JPG, PNG, SWF, MP4 and WebM upload
