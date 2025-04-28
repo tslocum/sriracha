@@ -75,6 +75,8 @@ func init() {
 	sriracha.RegisterPlugin(&Fortune{})
 }
 
+func main() {}
+
 // Validate plugin interfaces during compilation.
 var (
 	_ sriracha.Plugin           = &Fortune{}

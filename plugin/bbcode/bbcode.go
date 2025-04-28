@@ -163,6 +163,8 @@ func init() {
 	sriracha.RegisterPlugin(p)
 }
 
+func main() {}
+
 // Validate plugin interfaces during compilation.
 var (
 	_ sriracha.Plugin           = &BBCode{}

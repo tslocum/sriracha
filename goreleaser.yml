@@ -2,22 +2,46 @@ version: 2
 project_name: sriracha
 builds:
   -
+    id: bbcode
+    buildmode: plugin
+    main: ./plugin/bbcode/
+    binary: ./plugin/bbcode.so
+    ldflags:
+      - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
+    goos:
+      - linux
+    goarch:
+      - amd64
+  -
+    id: fortune
+    buildmode: plugin
+    main: ./plugin/fortune/
+    binary: ./plugin/fortune.so
+    ldflags:
+      - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
+    goos:
+      - linux
+    goarch:
+      - amd64
+  -
     id: sriracha
     main: ./cmd/sriracha/
     ldflags:
-      - -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
+      - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
     goos:
       - darwin
       - freebsd
       - linux
     goarch:
-      - 386
       - amd64
 archives:
   -
     ids:
       - sriracha
+      - bbcode
+      - fortune
     wrap_in_directory: sriracha
+    allow_different_binary_count: true
     name_template: >-
       {{- .ProjectName }}_
       {{- .Version }}_
@@ -26,6 +50,7 @@ archives:
       {{- tolower .Arch }}{{ end -}}
     files:
       - ./*.md
+      - CHANGELOG
       - LICENSE
 checksum:
   name_template: 'checksums.txt'
