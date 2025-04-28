@@ -1,8 +1,6 @@
 # Sriracha Board Migration
 [![Donate](https://img.shields.io/liberapay/receives/rocket9labs.com.svg?logo=liberapay)](https://liberapay.com/rocket9labs.com)
 
-This application is in pre-alpha development. Don't migrate any boards yet.
-
 Sriracha supports migrating one or more boards from [TinyIB](https://codeberg.org/tslocum/tinyib).
 
 ## Differences
@@ -36,8 +34,6 @@ keywords are escaped to allow them to be parsed as regular expressions. You may
 still need to update some keywords for them to continue to function.
 
 ## Instructions
-
-**Note:** Don't do this yet. These instructions won't work.
 
 Posts and keywords will be imported into Sriracha. All other data is incompatible.
 
@@ -95,7 +91,14 @@ import:
 ### 4. Start Sriracha and visit the management panel
 
 Log in to the management panel as a super-administrator and follow the
-on-screen prompts to complete the board migration.
+on-screen prompts. After validating the import configuration, you may initiate
+a dry run of the import. If the dry run is successful, you may then initiate
+the actual import. You will be prompted for a board directory and name. The
+`src` and `thumb` directories, containing all of the uploaded files, must exist
+in the chosen board directory.
+
+To migrate a single board, and continue running with only one board, copy `src`
+and `thumb` to the root directory and leave the board directory field blank.
 
 ### 5. Restart Sriracha in normal mode
 

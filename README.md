@@ -3,8 +3,6 @@
 [![Translate](https://translate.codeberg.org/widget/sriracha/sriracha/svg-badge.svg)](https://translate.codeberg.org/projects/sriracha/sriracha/)
 [![Donate](https://img.shields.io/liberapay/receives/rocket9labs.com.svg?logo=liberapay)](https://liberapay.com/rocket9labs.com)
 
-This application is in pre-alpha development. Here be dragons.
-
 Only Linux, FreeBSD and macOS are supported.
 
 ## Features

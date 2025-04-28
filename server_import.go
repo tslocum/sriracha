@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"html"
 	"html/template"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -100,6 +99,17 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 	}
 
 	data.Message += template.HTML("<b>Validation complete.</b><br><br>")
+
+	var rewriteIDs bool
+	for _, b := range db.allBoards() {
+		if len(db.allThreads(b, false)) != 0 {
+			rewriteIDs = true
+			break
+		}
+	}
+	if rewriteIDs {
+		data.Message += template.HTML("Found existing Sriracha posts.<br><b>Post IDs will be rewritten.</b><br><br>")
+	}
 
 	doImport := formBool(r, "import")
 	if !doImport {
@@ -206,6 +216,7 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 	}
 
 	data.Message += template.HTML("Importing posts...<br>")
+	newIDs := make(map[int]int)
 	var lastPostID int
 	for _, postID := range postIDs {
 		var p importPost
@@ -281,10 +292,6 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 				}
 				checksum := sha512.Sum384(buf)
 				pp.FileHash = base64.URLEncoding.EncodeToString(checksum[:])
-				match := db.postByFileHash(pp.FileHash)
-				if match != nil {
-					pp.FileHash = ""
-				}
 				if p.Thumb != "" {
 					thumbPath := filepath.Join(s.config.Root, b.Dir, "thumb", p.Thumb)
 					_, err := os.Stat(thumbPath)
@@ -296,63 +303,82 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 			}
 		}
 
-		resPattern, err := regexp.Compile(`<a href="res\/([0-9]+).html#([0-9]+)"`)
-		if err != nil {
-			log.Fatalf("failed to compile res pattern: %s", err)
-		}
-		pp.Message = resPattern.ReplaceAllStringFunc(pp.Message, func(s string) string {
-			match := resPattern.FindStringSubmatch(s)
-			return fmt.Sprintf(`<a href="%sres/%s.html#%s"`, b.Path(), match[1], match[2])
+		carriageReturn := regexp.MustCompile(`(?s)\r.?`)
+		pp.Message = carriageReturn.ReplaceAllStringFunc(pp.Message, func(s string) string {
+			if len(s) == 1 || s[1] == '\n' {
+				return "\n"
+			}
+			return "\n" + string(s[1])
 		})
 
-		var parent *int
+		resPattern := regexp.MustCompile(`<a href="res\/([0-9]+).html#([0-9]+)" class="([A-Aa-z]+)">&gt;&gt;([0-9]+)</a>`)
+		pp.Message = resPattern.ReplaceAllStringFunc(pp.Message, func(s string) string {
+			match := resPattern.FindStringSubmatch(s)
+			threadID := parseInt(match[1])
+			postID := parseInt(match[2])
+			return fmt.Sprintf(`<a href="%sres/%d.html#%d" class="%s">&gt;&gt;%d</a>`, b.Path(), newIDs[threadID], newIDs[postID], match[3], newIDs[postID])
+		})
+
 		if pp.Parent != 0 {
-			parent = &pp.Parent
+			pp.Parent = newIDs[pp.Parent]
 		}
-		var fileHash *string
-		if pp.FileHash != "" {
-			fileHash = &pp.FileHash
+		match := db.postByFileHash(pp.FileHash)
+		if match != nil {
+			pp.FileHash = ""
 		}
-		var stickied int
-		if pp.Stickied {
-			stickied = 1
-		}
-		var locked int
-		if pp.Locked {
-			locked = 1
-		}
-		err = db.conn.QueryRow(context.Background(), "INSERT INTO post VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25) RETURNING id",
-			pp.ID,
-			parent,
-			pp.Board.ID,
-			pp.Timestamp,
-			pp.Bumped,
-			pp.IP,
-			pp.Name,
-			pp.Tripcode,
-			pp.Email,
-			pp.NameBlock,
-			pp.Subject,
-			pp.Message,
-			pp.Password,
-			pp.File,
-			fileHash,
-			pp.FileOriginal,
-			pp.FileSize,
-			pp.FileWidth,
-			pp.FileHeight,
-			pp.Thumb,
-			pp.ThumbWidth,
-			pp.ThumbHeight,
-			pp.Moderated,
-			stickied,
-			locked,
-		).Scan(&pp.ID)
-		if err != nil || pp.ID == 0 {
-			data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to insert post: %s", err))
-			return
+		if rewriteIDs {
+			db.addPost(pp)
+		} else {
+			var parent *int
+			if pp.Parent != 0 {
+				parent = &pp.Parent
+			}
+			var fileHash *string
+			if pp.FileHash != "" {
+				fileHash = &pp.FileHash
+			}
+			var stickied int
+			if pp.Stickied {
+				stickied = 1
+			}
+			var locked int
+			if pp.Locked {
+				locked = 1
+			}
+			err = db.conn.QueryRow(context.Background(), "INSERT INTO post VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25) RETURNING id",
+				pp.ID,
+				parent,
+				pp.Board.ID,
+				pp.Timestamp,
+				pp.Bumped,
+				pp.IP,
+				pp.Name,
+				pp.Tripcode,
+				pp.Email,
+				pp.NameBlock,
+				pp.Subject,
+				pp.Message,
+				pp.Password,
+				pp.File,
+				fileHash,
+				pp.FileOriginal,
+				pp.FileSize,
+				pp.FileWidth,
+				pp.FileHeight,
+				pp.Thumb,
+				pp.ThumbWidth,
+				pp.ThumbHeight,
+				pp.Moderated,
+				stickied,
+				locked,
+			).Scan(&pp.ID)
+			if err != nil || pp.ID == 0 {
+				data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to insert post: %s", err))
+				return
+			}
 		}
 		lastPostID = pp.ID
+		newIDs[p.ID] = pp.ID
 	}
 	data.Message += template.HTML(fmt.Sprintf("<b>Imported %d posts.</b><br><br>", len(postIDs)))
 
@@ -389,12 +415,12 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 			}
 			err = kk.validate()
 			if err != nil {
-				data.Message += template.HTML(fmt.Sprintf("<b>Warning:</b> Skipped keyword #%d: %s", k.ID, err))
+				data.Message += template.HTML(fmt.Sprintf("<b>Warning:</b> Skipping keyword #%d: %s<br>", k.ID, err))
 				continue
 			}
 			match := db.keywordByText(kk.Text)
 			if match != nil {
-				data.Message += template.HTML(fmt.Sprintf("<b>Warning:</b> Skipped keyword #%d: keyword already exists in Sriracha", k.ID))
+				data.Message += template.HTML(fmt.Sprintf("<b>Warning:</b> Skipping keyword #%d: keyword already exists in Sriracha<br>", k.ID))
 				continue
 			}
 			db.addKeyword(kk)
