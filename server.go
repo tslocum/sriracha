@@ -98,7 +98,7 @@ func (s *Server) parseConfig(configFile string) error {
 
 	switch {
 	case config.Root == "":
-		return fmt.Errorf("root (lowercase!) must be set in %s to the root folder (where board files are written)", configFile)
+		return fmt.Errorf("root (lowercase!) must be set in %s to the root directory (where board files are written)", configFile)
 	case config.Serve == "":
 		return fmt.Errorf("serve (lowercase!) must be set in %s to the HTTP server listen address (hostname:port)", configFile)
 	case config.SaltData == "":
@@ -271,11 +271,9 @@ func (s *Server) setDefaultPluginConfig() error {
 	return nil
 }
 
-func (s *Server) parseTemplates(dir string) error {
-	if dir != "" {
-		s.tpl = template.New("sriracha").Funcs(templateFuncMap)
-
-		entries, err := os.ReadDir("template")
+func (s *Server) parseTemplates(standardDir string, customDir string) error {
+	parseDir := func(dir string) error {
+		entries, err := os.ReadDir(dir)
 		if err != nil {
 			return err
 		}
@@ -284,7 +282,7 @@ func (s *Server) parseTemplates(dir string) error {
 				continue
 			}
 
-			buf, err := os.ReadFile(filepath.Join("template", f.Name()))
+			buf, err := os.ReadFile(filepath.Join(dir, f.Name()))
 			if err != nil {
 				return err
 			}
@@ -296,27 +294,38 @@ func (s *Server) parseTemplates(dir string) error {
 		}
 		return nil
 	}
+	if standardDir == "" {
+		s.tpl = template.New("sriracha").Funcs(templateFuncMap)
 
-	s.tpl = template.New("sriracha").Funcs(templateFuncMap)
+		entries, err := templateFS.ReadDir("template")
+		if err != nil {
+			return err
+		}
+		for _, f := range entries {
+			if !strings.HasSuffix(f.Name(), ".gohtml") {
+				continue
+			}
 
-	entries, err := templateFS.ReadDir("template")
-	if err != nil {
-		return err
+			buf, err := templateFS.ReadFile(filepath.Join("template", f.Name()))
+			if err != nil {
+				return err
+			}
+
+			_, err = s.tpl.New(f.Name()).Parse(string(buf))
+			if err != nil {
+				return err
+			}
+		}
+	} else {
+		s.tpl = template.New("sriracha").Funcs(templateFuncMap)
+		err := parseDir(standardDir)
+		if err != nil {
+			return err
+		}
 	}
-	for _, f := range entries {
-		if !strings.HasSuffix(f.Name(), ".gohtml") {
-			continue
-		}
 
-		buf, err := templateFS.ReadFile(filepath.Join("template", f.Name()))
-		if err != nil {
-			return err
-		}
-
-		_, err = s.tpl.New(f.Name()).Parse(string(buf))
-		if err != nil {
-			return err
-		}
+	if customDir != "" {
+		return parseDir(customDir)
 	}
 	return nil
 }
@@ -333,10 +342,10 @@ func (s *Server) watchTemplates() error {
 			case event, ok := <-watcher.Events:
 				if !ok {
 					return
-				} else if !event.Has(fsnotify.Write) {
+				} else if !event.Has(fsnotify.Create) && !event.Has(fsnotify.Write) && !event.Has(fsnotify.Remove) && !event.Has(fsnotify.Rename) {
 					continue
 				}
-				err := s.parseTemplates(".")
+				err := s.parseTemplates("template", s.config.Template)
 				if err != nil {
 					log.Printf("error: failed to parse templates: %s", err)
 				}
@@ -349,7 +358,11 @@ func (s *Server) watchTemplates() error {
 		}
 	}()
 
-	return watcher.Add("template")
+	err = watcher.Add("template")
+	if err == nil && s.config.Template != "" {
+		err = watcher.Add(s.config.Template)
+	}
+	return err
 }
 
 func (s *Server) deletePostFiles(p *Post) {
@@ -729,17 +742,23 @@ func (s *Server) Run() error {
 		}
 	}
 
-	if devMode {
-		err := s.watchTemplates()
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println("Running in development mode. Template files are monitored for changes.")
-	}
-
 	err := s.parseConfig(configFile)
 	if err != nil {
 		return err
+	}
+
+	if devMode {
+		_, err := os.Stat("template")
+		if os.IsNotExist(err) {
+			log.Fatal("error: could not find standard template directory, start sriracha in the same directory as the file README.md")
+		}
+	}
+
+	if s.config.Template != "" {
+		_, err := os.Stat(s.config.Template)
+		if os.IsNotExist(err) {
+			log.Fatal("error: custom template directory %s does not exist")
+		}
 	}
 
 	if s.config.Locale != "" && s.config.Locale != "en" {
@@ -751,6 +770,14 @@ func (s *Server) Run() error {
 		po := gotext.NewPo()
 		po.Parse(buf)
 		gotext.GetStorage().AddTranslator("sriracha", po)
+	}
+
+	if devMode {
+		err := s.watchTemplates()
+		if err != nil {
+			log.Fatalf("failed to watch templates for changes: %s", err)
+		}
+		fmt.Println("Running in development mode. Template files are monitored for changes.")
 	}
 
 	s.dbPool, err = connectDatabase(s.config.Address, s.config.Username, s.config.Password, s.config.DBName, s.config.Min, s.config.Max)
@@ -773,7 +800,7 @@ func (s *Server) Run() error {
 		return err
 	}
 
-	err = s.parseTemplates("")
+	err = s.parseTemplates("", s.config.Template)
 	if err != nil {
 		return fmt.Errorf("failed to parse templates: %s", err)
 	}

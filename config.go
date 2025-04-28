@@ -41,6 +41,8 @@ type Config struct {
 	Password string // Database password.
 	DBName   string // Database name.
 
+	Template string // Custom template directory.
+
 	Uploads []string // Supported upload file types.
 
 	Import ImportConfig // Board import configuration.

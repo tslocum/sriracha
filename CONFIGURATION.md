@@ -69,6 +69,10 @@ password: hunter2
 # Database name.
 dbname: sriracha
 
+# Custom template directory. Leave blank to use standard templates. Template
+# files in this directory will override standard templates of the same name.
+template: /home/sriracha/template
+
 # Supported upload file types. Specify a MIME type and a file extension to
 # enable uploading files of that type. You may specify an image to use as the
 # thumbnail for all uploads of that type, or 'none' to not create a thumbnail.
