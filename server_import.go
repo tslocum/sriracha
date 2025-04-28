@@ -413,7 +413,13 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 
 	if !commit {
 		data.Message += template.HTML("<b>Dry run successful.</b><br>Ready to import.<br><br>")
-		data.Message += template.HTML(`<form method="post"><input type="hidden" name="import" value="1"><input type="hidden" name="confirmation" value="1"><input type="hidden" name="dir" value="` + html.EscapeString(b.Dir) + `"><input type="hidden" name="name" value="` + html.EscapeString(b.Name) + `"><input type="submit" value="Start import"></form>`)
+		data.Message += template.HTML(`<form method="post">
+		<input type="hidden" name="import" value="1">
+		<input type="hidden" name="confirmation" value="1">
+		<input type="hidden" name="dir" value="` + html.EscapeString(b.Dir) + `">
+		<input type="hidden" name="name" value="` + html.EscapeString(b.Name) + `">
+		<input type="submit" value="Start import">
+		</form>`)
 		return
 	}
 

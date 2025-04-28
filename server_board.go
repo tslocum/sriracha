@@ -31,10 +31,15 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 	modBoard := pathString(r, "/sriracha/board/mod/")
 	if modBoard != "" {
 		var postID int
+		var page int
 		split := strings.Split(modBoard, "/")
 		if len(split) == 2 {
 			boardID, _ = strconv.Atoi(split[0])
-			postID, _ = strconv.Atoi(split[1])
+			if strings.HasPrefix(split[1], "p") {
+				page = parseInt(split[1][1:])
+			} else {
+				postID = parseInt(split[1])
+			}
 		} else if len(split) == 1 {
 			boardID, _ = strconv.Atoi(split[0])
 		}
@@ -48,13 +53,29 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		data.Template = "board_page"
 		data.Board = b
 		data.Boards = db.allBoards()
-		data.Pages = 1
 		data.ModMode = true
 		if postID > 0 {
 			data.Threads = [][]*Post{db.allPostsInThread(postID, true)}
 			data.ReplyMode = postID
 		} else {
-			for _, thread := range db.allThreads(b, true) {
+			threads := db.allThreads(b, true)
+
+			pages := 1
+			if len(threads) != 0 && b.Threads != 0 {
+				pages = len(threads) / b.Threads
+				if len(threads)%b.Threads != 0 {
+					pages++
+				}
+			}
+			data.Page = page
+			data.Pages = pages
+
+			start := page * b.Threads
+			end := len(threads)
+			if b.Threads != 0 && end > start+b.Threads {
+				end = start + b.Threads
+			}
+			for _, thread := range threads[start:end] {
 				data.Threads = append(data.Threads, db.allPostsInThread(thread.ID, true))
 			}
 		}

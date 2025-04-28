@@ -40,22 +40,24 @@
 	<table border="1" style="display: inline-block;">
 	<tbody>
 		<tr>
-			<td>{{if gt .Page 0}}<form method="get" action="{{.Board.Path}}{{if eq .Page 1}}index{{else}}{{.Page | MinusOne}}{{end}}.html"><input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
+			<td>{{if gt .Page 0}}<form method="get" action="{{if not $.ModMode}}{{.Board.Path}}{{if eq .Page 1}}index{{else}}{{.Page | MinusOne}}{{end}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}{{if ne .Page 1}}p{{.Page | MinusOne}}{{end}}{{end}}"><input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
 			<td>
 				{{range $i := Iterate (.Pages | MinusOne)}}
-					[{{if eq $i $.Page}}{{$i}}{{else}}<a href="{{$.Board.Path}}{{if eq $i 0}}index{{else}}{{$i}}{{end}}.html">{{$i}}</a>{{end}}]
+					[{{if eq $i $.Page}}{{$i}}{{else}}<a href="{{if not $.ModMode}}{{$.Board.Path}}{{if eq $i 0}}index{{else}}{{$i}}{{end}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}{{if ne $i 0}}/p{{$i}}{{end}}{{end}}">{{$i}}</a>{{end}}]
 				{{end}}
-			</td>>
-			<td>{{if lt .Page (.Pages | MinusOne)}}<form method="get" action="{{.Board.Path}}{{.Page | PlusOne}}.html"><input type="submit" value="{{T "Next"}}"></form>{{else}}{{T "Next"}}{{end}}</td>
+			</td>
+			<td>{{if lt .Page (.Pages | MinusOne)}}<form method="get" action="{{if not $.ModMode}}{{.Board.Path}}{{.Page | PlusOne}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}/p{{.Page | PlusOne}}{{end}}"><input type="submit" value="{{T "Next"}}"></form>{{else}}{{T "Next"}}{{end}}</td>
 		</tr>
 	</tbody>
 	</table>
-	<table border="1" style="display: inline-block;margin-left: 21px;">
-	<tbody>
-		<tr>
-			<td><form method="get" action="{{.Board.Path}}catalog.html"><input type="submit" value="{{T "Catalog"}}"></form></td>
-		</tr>
-	</tbody>
-	</table>
+	{{if not $.ModMode}}
+		<table border="1" style="display: inline-block;margin-left: 21px;">
+		<tbody>
+			<tr>
+				<td><form method="get" action="{{.Board.Path}}catalog.html"><input type="submit" value="{{T "Catalog"}}"></form></td>
+			</tr>
+		</tbody>
+		</table>
+	{{end}}
 {{end}}
 {{template "imgboard_end.gohtml" .}}
