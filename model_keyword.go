@@ -3,6 +3,7 @@ package sriracha
 import (
 	"fmt"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -25,6 +26,10 @@ func (k *Keyword) validate() error {
 		k.Action != "ban1w" && k.Action != "ban2w" && k.Action != "ban1m" &&
 		k.Action != "ban0":
 		return fmt.Errorf("action must be set")
+	}
+	_, err := regexp.Compile(k.Text)
+	if err != nil {
+		return fmt.Errorf("keyword `%s` is invalid: %s", k.Text, err)
 	}
 	return nil
 }
