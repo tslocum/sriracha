@@ -12,7 +12,7 @@ func (db *Database) addBoard(b *Board) {
 	if b.Reports {
 		reports = 1
 	}
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO board VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)",
+	_, err := db.conn.Exec(context.Background(), "INSERT INTO board VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)",
 		b.Dir,
 		b.Name,
 		b.Description,
@@ -20,6 +20,7 @@ func (db *Database) addBoard(b *Board) {
 		b.Lock,
 		b.Approval,
 		reports,
+		b.Style,
 		b.Locale,
 		b.Delay,
 		b.Threads,
@@ -156,7 +157,7 @@ func (db *Database) updateBoard(b *Board) {
 	if b.Reports {
 		reports = 1
 	}
-	_, err := db.conn.Exec(context.Background(), "UPDATE board SET dir = $1, name = $2, description = $3, type = $4, lock = $5, approval = $6, reports = $7, locale = $8, delay = $9, threads = $10, replies = $11, maxname = $12, maxemail = $13, maxsubject = $14, maxmessage = $15, maxthreads = $16, maxreplies = $17, defaultname = $18, wordbreak = $19, truncate = $20, maxsize = $21, thumbwidth = $22, thumbheight = $23 WHERE id = $24",
+	_, err := db.conn.Exec(context.Background(), "UPDATE board SET dir = $1, name = $2, description = $3, type = $4, lock = $5, approval = $6, reports = $7, style = $8, locale = $9, delay = $10, threads = $11, replies = $12, maxname = $13, maxemail = $14, maxsubject = $15, maxmessage = $16, maxthreads = $17, maxreplies = $18, defaultname = $19, wordbreak = $20, truncate = $21, maxsize = $22, thumbwidth = $23, thumbheight = $24 WHERE id = $25",
 		b.Dir,
 		b.Name,
 		b.Description,
@@ -164,6 +165,7 @@ func (db *Database) updateBoard(b *Board) {
 		b.Lock,
 		b.Approval,
 		reports,
+		b.Style,
 		b.Locale,
 		b.Delay,
 		b.Threads,
@@ -220,6 +222,7 @@ func scanBoard(b *Board, row pgx.Row) error {
 		&b.Lock,
 		&b.Approval,
 		&reports,
+		&b.Style,
 		&b.Locale,
 		&b.Delay,
 		&b.Threads,

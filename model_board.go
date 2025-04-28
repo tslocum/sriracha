@@ -80,6 +80,7 @@ type Board struct {
 	Lock        BoardLock
 	Approval    BoardApproval
 	Reports     bool
+	Style       string
 	Locale      string
 	Delay       int
 	Threads     int
@@ -143,6 +144,7 @@ func (b *Board) loadForm(r *http.Request, availableUploads []*uploadType, availa
 	b.Lock = formRange(r, "lock", LockNone, LockAll)
 	b.Approval = formRange(r, "approval", ApprovalNone, ApprovalAll)
 	b.Reports = formBool(r, "reports")
+	b.Style = formString(r, "style")
 	b.Locale = formString(r, "locale")
 	b.Delay = formInt(r, "delay")
 	b.Threads = formInt(r, "threads")
