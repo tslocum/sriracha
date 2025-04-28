@@ -22,6 +22,10 @@ import (
 var (
 	reflinkPattern = regexp.MustCompile(`&gt;&gt;([0-9]+)`)
 	quotePattern   = regexp.MustCompile(`^&gt;(.*)$`)
+	urlPattern     = regexp.MustCompile(`(?i)(((f|ht)tp(s)?:\/\/)[-a-zA-Zа-яА-Я()0-9@%\!_+.,~#?&;:|\'\/=]+)`)
+	fixURLPattern1 = regexp.MustCompile(`(?i)\(\<a href\=\"(.*)\)"\ target\=\"\_blank\">(.*)\)\<\/a>`)
+	fixURLPattern2 = regexp.MustCompile(`(?i)\<a href\=\"(.*)\."\ target\=\"\_blank\">(.*)\.\<\/a>`)
+	fixURLPattern3 = regexp.MustCompile(`(?i)\<a href\=\"(.*)\,"\ target\=\"\_blank\">(.*)\,\<\/a>`)
 )
 
 type embedInfo struct {
@@ -350,6 +354,18 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			post.Message = strings.ReplaceAll(post.Message, "<br>", "\n")
 		}
 		db.plugin = ""
+
+		var foundURL bool
+		post.Message = urlPattern.ReplaceAllStringFunc(post.Message, func(s string) string {
+			foundURL = true
+			match := urlPattern.FindStringSubmatch(post.Message)
+			return fmt.Sprintf(`<a href="%s" target="_blank">%s</a>`, match[1], match[1])
+		})
+		if foundURL {
+			post.Message = fixURLPattern1.ReplaceAllString(post.Message, `(<a href="$1" target="_blank">$2</a>)`)
+			post.Message = fixURLPattern2.ReplaceAllString(post.Message, `<a href="$1" target="_blank">$2</a>.`)
+			post.Message = fixURLPattern3.ReplaceAllString(post.Message, `<a href="$1" target="_blank">$2</a>,`)
+		}
 
 		post.Message = reflinkPattern.ReplaceAllStringFunc(post.Message, func(s string) string {
 			postID, err := strconv.Atoi(s[8:])
