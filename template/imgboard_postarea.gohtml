@@ -71,7 +71,7 @@
                         </td>
                     </tr>
                 {{end}}
-                {{if ne (len .Board.Uploads) 0}}
+                {{if and (ne .Board.MaxSize 0) (ne (len .Board.Uploads) 0)}}
                     <tr>
                         <td class="postblock">
                             {{T "File"}}
@@ -119,7 +119,9 @@
                             {{if or (ne (len .Board.Uploads) 0) (ne (len .Board.Embeds) 0)}}
                                 <li>{{T "Images greater than %[1]dx%[2]d will be thumbnailed." .Board.ThumbWidth .Board.ThumbHeight}}</li>
                             {{end}}
-                            <li>{{TN "Currently %d unique user post." "Currently %d unique user posts." .Board.Unique .Board.Unique}}</li>
+                            {{if ne .Board.Unique 0}}
+                                <li>{{TN "Currently %d unique user post." "Currently %d unique user posts." .Board.Unique .Board.Unique}}</li>
+                            {{end}}
                         </ul>
                     </td>
                 </tr>

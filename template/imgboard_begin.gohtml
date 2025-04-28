@@ -33,7 +33,13 @@
 			{{end}}
 		{{end}}
 		<div class="adminbar">
+			[<a href="{{.Board.Path}}catalog.html" style="text-decoration: underline;">{{T "Catalog"}}</a>]
 			[<a href="/sriracha/" style="text-decoration: underline;">{{T "Manage"}}</a>]
+			<select id="switchStylesheet">
+				<option value="">Style</option>
+				<option value="futaba">Futaba</option>
+				<option value="burichan">Burichan</option>
+			</select>
 		</div>
 		<div class="logo">{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}</div>
 		<hr width="90%">

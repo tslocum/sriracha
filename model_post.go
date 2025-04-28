@@ -172,6 +172,10 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 		}
 	}
 
+	if p.Board.MaxSize == 0 {
+		return nil
+	}
+
 	formFile, formFileHeader, err := r.FormFile("file")
 	if err != nil || formFileHeader == nil {
 		return nil

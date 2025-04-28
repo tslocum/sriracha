@@ -117,6 +117,17 @@ func (db *Database) boardByDir(dir string) *Board {
 	return b
 }
 
+func (db *Database) uniqueUserPosts(b *Board) int {
+	var count int
+	err := db.conn.QueryRow(context.Background(), "SELECT COUNT(DISTINCT ip) FROM post WHERE board = $1", b.ID).Scan(&count)
+	if err == pgx.ErrNoRows {
+		return 0
+	} else if err != nil {
+		log.Fatalf("failed to select unique user posts: %s", err)
+	}
+	return count
+}
+
 func (db *Database) allBoards() []*Board {
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM board ORDER BY dir ASC")
 	if err != nil {

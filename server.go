@@ -463,6 +463,10 @@ func (s *Server) writeThread(db *Database, board *Board, postID int) {
 		return
 	}
 
+	if board.Unique == 0 {
+		board.Unique = db.uniqueUserPosts(board)
+	}
+
 	f, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "res", fmt.Sprintf("%d.html", postID)), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		log.Fatal(err)
@@ -480,6 +484,10 @@ func (s *Server) writeThread(db *Database, board *Board, postID int) {
 }
 
 func (s *Server) writeIndexes(db *Database, board *Board) {
+	if board.Unique == 0 {
+		board.Unique = db.uniqueUserPosts(board)
+	}
+
 	// Write catalog.
 
 	catalogFile, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "catalog.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
@@ -533,7 +541,7 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 			end = start + board.Threads
 		}
 
-		data.Threads = nil
+		data.Threads = data.Threads[:0]
 		for _, thread := range threads[start:end] {
 			posts := []*Post{thread}
 			posts = append(posts, db.allReplies(thread.ID, board.Replies, true)...)
