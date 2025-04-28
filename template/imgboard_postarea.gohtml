@@ -20,31 +20,37 @@
                     </select></td>
                 </tr>
                 {{end}}
-                <tr>
-                    <td class="postblock">
-                        {{T "Name"}}
-                    </td>
-                    <td>
-                        <input type="text" name="name" size="28" maxlength="75" accesskey="n">
-                    </td>
-                </tr>
-                <tr>
-                    <td class="postblock">
-                        {{T "Email"}}
-                    </td>
-                    <td>
-                        <input type="text" name="email" size="28" maxlength="320" accesskey="e">
-                    </td>
-                </tr>
-                <tr>
-                    <td class="postblock">
-                        {{T "Subject"}}
-                    </td>
-                    <td>
-                        <input type="text" name="subject" size="40" maxlength="75" accesskey="s" autocomplete="off">
-                        <input type="submit" value="{{T "Submit"}}" accesskey="z">
-                    </td>
-                </tr>
+                {{if gt .Board.MaxName 0}}
+                    <tr>
+                        <td class="postblock">
+                            {{T "Name"}}
+                        </td>
+                        <td>
+                            <input type="text" name="name" size="28" maxlength="75" accesskey="n">
+                        </td>
+                    </tr>
+                {{end}}
+                {{if gt .Board.MaxEmail 0}}
+                    <tr>
+                        <td class="postblock">
+                            {{T "Email"}}
+                        </td>
+                        <td>
+                            <input type="text" name="email" size="28" maxlength="320" accesskey="e">
+                        </td>
+                    </tr>
+                {{end}}
+                {{if gt .Board.MaxSubject 0}}
+                    <tr>
+                        <td class="postblock">
+                            {{T "Subject"}}
+                        </td>
+                        <td>
+                            <input type="text" name="subject" size="40" maxlength="75" accesskey="s" autocomplete="off">
+                            <input type="submit" value="{{T "Submit"}}" accesskey="z">
+                        </td>
+                    </tr>
+                {{end}}
                 <tr>
                     <td class="postblock">
                         {{T "Message"}}
@@ -93,6 +99,16 @@
                         <input type="password" name="password" id="newpostpassword" size="8" accesskey="p">&nbsp;&nbsp;({{T "for post and file deletion"}})
                     </td>
                 </tr>
+                {{if eq .Board.MaxSubject 0}}
+                    <tr>
+                        <td class="postblock">
+                            {{T "Submit"}}
+                        </td>
+                        <td>
+                            <input type="submit" value="{{T "Submit"}}" accesskey="z">
+                        </td>
+                    </tr>
+                {{end}}
                 <tr>
                     <td colspan="2" class="rules">
                         <ul>
