@@ -30,7 +30,9 @@
     </table><br>
 {{end}}
 {{if or (ne .Manage.Board.ID 0) (le $.Account.Role 2)}}
-    [<a href="/sriracha/board/">Return</a>]<br>
+    {{if ne .Manage.Board.ID 0}}
+        [<a href="/sriracha/board/">Return</a>]<br>
+    {{end}}
     <form method="post">
         <fieldset>
         <legend>{{if or (eq .Manage.Board nil) (eq .Manage.Board.ID 0)}}Add Board{{else}}{{if le $.Account.Role 2}}Update {{end}}{{.Manage.Board.Path}} {{.Manage.Board.Name}}{{end}}</legend>
