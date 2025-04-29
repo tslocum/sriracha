@@ -12,8 +12,7 @@
         <div>{{.Message2}}</div>
     </fieldset><br>
 {{end}}
-<fieldset>
-    <legend>Connections</legend>
-    <div>{{.Message3}}</div>
-</fieldset>
+{{if and (eq .Message "") (eq .Message2 "")}}
+    No outstanding moderation requests.<br>
+{{end}}
 {{template "manage_end.gohtml" .}}

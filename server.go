@@ -107,12 +107,6 @@ func (s *Server) parseConfig(configFile string) error {
 		return fmt.Errorf("saltpass (lowercase!) must be set in %s to the two-way secure data hashing salt (a long string of random data which, once set, never changes)", configFile)
 	case config.SaltTrip == "":
 		return fmt.Errorf("salttrip (lowercase!) must be set in %s to the secure tripcode generation salt (a long string of random data which, once set, never changes)", configFile)
-	case config.Min <= 0:
-		return fmt.Errorf("min (lowercase!) must be set in %s to the minimum number of connections of the database connection pool (1 is a reasonable choice)", configFile)
-	case config.Max <= 0:
-		return fmt.Errorf("max (lowercase!) must be set in %s to the maximum number of connections of the database connection pool (4 is a reasonable choice)", configFile)
-	case config.Max < config.Min:
-		return fmt.Errorf("max must be greater than or equal to min in %s", configFile)
 	case config.Address == "":
 		return fmt.Errorf("address (lowercase!) must be set in %s to the database address (hostname:port)", configFile)
 	case config.Username == "":
@@ -790,7 +784,7 @@ func (s *Server) Run() error {
 		fmt.Println("Running in development mode. Template files are monitored for changes.")
 	}
 
-	s.dbPool, err = connectDatabase(s.config.Address, s.config.Username, s.config.Password, s.config.DBName, s.config.Min, s.config.Max)
+	s.dbPool, err = connectDatabase(s.config.Address, s.config.Username, s.config.Password, s.config.DBName, 1, 1)
 	if err != nil {
 		return err
 	}

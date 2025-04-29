@@ -34,8 +34,6 @@ type Config struct {
 	SaltPass string // Long random string of text used when two-way hashing data. Must not change once set.
 	SaltTrip string // Long random string of text used when generating secure tripcodes. Must not change once set.
 
-	Min      int    // Minimum number of database connections to maintain in the pool.
-	Max      int    // Maximum number of database connections to maintain in the pool.
 	Address  string // Address:Port to connect to the database.
 	Username string // Database username.
 	Password string // Database password.

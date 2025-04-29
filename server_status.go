@@ -2,7 +2,6 @@ package sriracha
 
 import (
 	"bytes"
-	"fmt"
 	"html/template"
 	"net/http"
 	"time"
@@ -34,14 +33,6 @@ func (s *Server) serveStatus(data *templateData, db *Database, w http.ResponseWr
 
 		http.Redirect(w, r, "/sriracha/", http.StatusFound)
 		return
-	}
-
-	stats := s.dbPool.Stat()
-	idle := stats.IdleConns()
-	total := stats.TotalConns()
-	var idleString string
-	if idle > 0 {
-		idleString = fmt.Sprintf(" (%d idle)", idle)
 	}
 
 	buf := &bytes.Buffer{}
@@ -78,6 +69,4 @@ func (s *Server) serveStatus(data *templateData, db *Database, w http.ResponseWr
 		d.execute(buf)
 	}
 	data.Message2 = template.HTML(buf.String())
-
-	data.Message3 = template.HTML(fmt.Sprintf(`%d%s / %d`, total, idleString, s.config.Max))
 }

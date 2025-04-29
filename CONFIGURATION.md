@@ -51,12 +51,6 @@ saltpass: CHANGEME_Random_Data_Here_2
 # Long random string of text used when generating secure tripcodes. Must not change once set.
 salttrip: CHANGEME_Random_Data_Here_3
 
-# Minimum number of database connections to maintain in the pool.
-min: 1
-
-# Maximum number of database connections to maintain in the pool.
-max: 4
-
 # Address:Port to connect to the database.
 address: localhost
 
