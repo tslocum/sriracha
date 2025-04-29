@@ -7,7 +7,7 @@
 
 Create a directory where board files will be written to. A new sub directory is
 created for each board, except when a board is created with a blank directory.
-Blank directory boards are useful when your site will always only have one board.
+Blank directory boards are useful when your site will only have one board.
 
 ## 2. Install PostgreSQL
 

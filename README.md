@@ -46,7 +46,12 @@ for info on how to build and use Sriracha plugins.
 ### Migrate
 
 See [MIGRATE.md](https://codeberg.org/tslocum/sriracha/src/branch/main/MIGRATE.md)
-for info on how to migrate from [TinyIB](https://codeberg.org/tslocum/tinyib).
+for info on how to migrate boards from [TinyIB](https://codeberg.org/tslocum/tinyib).
+
+### Upgrade
+
+See [UPGRADE.md](https://codeberg.org/tslocum/sriracha/src/branch/main/UPGRADE.md)
+for info on how to upgrade Sriracha.
 
 ## Translate
 
