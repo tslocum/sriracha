@@ -123,6 +123,16 @@ func (db *Database) updateKeyword(k *Keyword) {
 	db.updateKeywordBoards(k)
 }
 
+func (db *Database) deleteKeyword(id int) {
+	if id == 0 {
+		return
+	}
+	_, err := db.conn.Exec(context.Background(), "DELETE FROM keyword WHERE id = $1", id)
+	if err != nil {
+		log.Fatalf("failed to delete keyword: %s", err)
+	}
+}
+
 func scanKeyword(k *Keyword, row pgx.Row) error {
 	return row.Scan(
 		&k.ID,

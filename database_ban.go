@@ -88,7 +88,6 @@ func (db *Database) deleteBan(id int) {
 	if id == 0 {
 		return
 	}
-
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM ban WHERE id = $1", id)
 	if err != nil {
 		log.Fatalf("failed to delete ban: %s", err)

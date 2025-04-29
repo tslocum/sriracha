@@ -40,6 +40,21 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 		return
 	}
 
+	deleteKeywordID := pathInt(r, "/sriracha/keyword/delete/")
+	if deleteKeywordID > 0 {
+		k := db.keywordByID(deleteKeywordID)
+		if k == nil {
+			data.ManageError("Invalid keyword.")
+			return
+		}
+		db.deleteKeyword(k.ID)
+
+		db.log(data.Account, nil, fmt.Sprintf("Deleted >>/keyword/%d", k.ID), "")
+
+		http.Redirect(w, r, "/sriracha/keyword/", http.StatusFound)
+		return
+	}
+
 	keywordID, err = strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/keyword/"))
 	if err == nil && keywordID > 0 {
 		data.Manage.Keyword = db.keywordByID(keywordID)

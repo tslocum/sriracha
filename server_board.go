@@ -2,6 +2,8 @@ package sriracha
 
 import (
 	"fmt"
+	"html"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -84,6 +86,50 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			}
 		}
 		return false
+	}
+
+	deleteBoardID := pathInt(r, "/sriracha/board/delete/")
+	if deleteBoardID > 0 {
+		if data.forbidden(w, RoleSuperAdmin) {
+			return
+		}
+
+		b := db.boardByID(deleteBoardID)
+		if b == nil {
+			data.ManageError("Invalid board.")
+			return
+		}
+
+		threads := db.allThreads(b, false)
+		if !formBool(r, "confirmation") {
+			data.Template = "manage_info"
+			data.Message = template.HTML(`<form method="post">
+			<input type="hidden" name="confirmation" value="1">
+			<fieldset>
+				<legend>
+					Delete ` + b.Path() + ` ` + html.EscapeString(b.Name) + `
+				</legend>
+				<div>
+					<h1>WARNING!</h1>
+					You are about to <b>PERMANENTLY DELETE</b> ` + b.Path() + ` ` + html.EscapeString(b.Name) + `!<br>
+					` + strconv.Itoa(len(threads)) + ` threads in ` + b.Path() + ` will be <b>permanently deleted</b>.<br>
+					This operation cannot be undone.<br><br>
+					<input type="submit" value="Delete ` + b.Path() + `">
+				</div>
+			</fieldset>
+			</form>`)
+			return
+		}
+		for _, thread := range threads {
+			s.deletePost(db, thread)
+		}
+		db.deleteBoard(b.ID)
+
+		db.log(data.Account, nil, fmt.Sprintf("Deleted >>/board/%d", b.ID), "")
+
+		data.Template = "manage_info"
+		http.Redirect(w, r, "/sriracha/board/", http.StatusFound)
+		return
 	}
 
 	boardID = pathInt(r, "/sriracha/board/")

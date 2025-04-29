@@ -22,7 +22,7 @@
                     {{end}}
                     [<a href="/sriracha/board/{{$board.ID}}">{{if le $.Account.Role 2}}update{{else}}details{{end}}</a>]
                     {{if eq $.Account.Role 1}}{{/* Super-Admin */}}
-                        [<a href="/sriracha/board/delete/{{$board.ID}}">delete</a>]
+                        [<a href="/sriracha/board/delete/{{$board.ID}}" onclick="javascript:return confirm('Delete {{$board.Path}} {{$board.Name}}?');">delete</a>]
                     {{end}}
                 </td>
             </tr>

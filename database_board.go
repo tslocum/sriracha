@@ -156,6 +156,16 @@ func (db *Database) allBoards() []*Board {
 	return boards
 }
 
+func (db *Database) deleteBoard(id int) {
+	if id == 0 {
+		return
+	}
+	_, err := db.conn.Exec(context.Background(), "DELETE FROM board WHERE id = $1", id)
+	if err != nil {
+		log.Fatalf("failed to delete board: %s", err)
+	}
+}
+
 func (db *Database) updateBoard(b *Board) {
 	if b.ID <= 0 {
 		log.Fatalf("invalid board ID %d", b.ID)
