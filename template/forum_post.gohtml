@@ -48,9 +48,8 @@
 						</label>
 						{{if ne .File ""}}
                             {{$embed := .EmbedInfo}}
-                            <small>
-								{{if not .IsEmbed}}File:{{else}}Embed:{{end}} <span class="filesize"><a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span>
-							</small><br>
+							<br>
+                            {{if not .IsEmbed}}File:{{else}}Embed:{{end}} <span class="filesize"><a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
 							<div style="margin-top: 1em;">
 								<div id="thumbfile{{.ID}}">
 									{{if ne .Thumb ""}}

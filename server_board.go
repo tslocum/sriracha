@@ -76,7 +76,11 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 				end = start + b.Threads
 			}
 			for _, thread := range threads[start:end] {
-				data.Threads = append(data.Threads, db.allPostsInThread(thread.ID, true))
+				if b.Type == TypeImageboard {
+					data.Threads = append(data.Threads, db.allPostsInThread(thread.ID, true))
+				} else {
+					data.Threads = append(data.Threads, []*Post{thread})
+				}
 			}
 		}
 		return false
