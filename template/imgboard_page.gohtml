@@ -19,22 +19,22 @@
 	</details>
 {{end}}
 <form method="post" action="/sriracha/">
-<input type="hidden" name="action" value="delete">
-<input type="hidden" name="board" value="{{.Board.Dir}}">
-<hr>
-<div>
-	{{template "imgboard_post.gohtml" $}}
-</div>
-<hr>
-<table class="userdelete">
-<tbody>
-	<tr>
-		<td>
-			{{T "Delete Post"}} <input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}">&nbsp;<input type="submit" name="deletepost" value="{{T "Delete"}}">
-		</td>
-	</tr>
-</tbody>
-</table>
+	<input type="hidden" name="action" value="delete">
+	<input type="hidden" name="board" value="{{.Board.Dir}}">
+	<hr>
+	<div>
+		{{template "imgboard_post.gohtml" $}}
+	</div>
+	<hr>
+	<table class="userdelete">
+	<tbody>
+		<tr>
+			<td>
+				{{T "Delete Post"}} <input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}">&nbsp;<input type="submit" name="deletepost" value="{{T "Delete"}}">
+			</td>
+		</tr>
+	</tbody>
+	</table>
 </form>
 {{if eq .ReplyMode 0}}
 	<table border="1" style="display: inline-block;">

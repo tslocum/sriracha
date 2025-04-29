@@ -128,37 +128,39 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			return
 		}
 	}
-	if b.Lock == LockThread && parentPost == nil && !staffPost {
-		s.deletePostFiles(post)
 
-		data := s.buildData(db, w, r)
-		data.BoardError(w, gotext.Get("You may only reply to threads."))
-		return
-	}
-
-	if s.opt.CAPTCHA {
-		expired := db.expiredCAPTCHAs()
-		for _, c := range expired {
-			db.deleteCAPTCHA(c.IP)
-			os.Remove(filepath.Join(s.config.Root, "captcha", c.Image+".png"))
-		}
-
-		var solved bool
-		challenge := db.getCAPTCHA(post.IP)
-		if challenge != nil {
-			solution := formString(r, "captcha")
-			if strings.ToLower(solution) == challenge.Text {
-				solved = true
-				db.deleteCAPTCHA(post.IP)
-				os.Remove(filepath.Join(s.config.Root, "captcha", challenge.Image+".png"))
-			}
-		}
-		if !solved {
+	if !staffPost {
+		if b.Lock == LockThread && parentPost == nil {
 			s.deletePostFiles(post)
 
 			data := s.buildData(db, w, r)
-			data.BoardError(w, gotext.Get("Incorrect CAPTCHA text. Please try again."))
+			data.BoardError(w, gotext.Get("You may only reply to threads."))
 			return
+		}
+		if s.opt.CAPTCHA {
+			expired := db.expiredCAPTCHAs()
+			for _, c := range expired {
+				db.deleteCAPTCHA(c.IP)
+				os.Remove(filepath.Join(s.config.Root, "captcha", c.Image+".png"))
+			}
+
+			var solved bool
+			challenge := db.getCAPTCHA(post.IP)
+			if challenge != nil {
+				solution := formString(r, "captcha")
+				if strings.ToLower(solution) == challenge.Text {
+					solved = true
+					db.deleteCAPTCHA(post.IP)
+					os.Remove(filepath.Join(s.config.Root, "captcha", challenge.Image+".png"))
+				}
+			}
+			if !solved {
+				s.deletePostFiles(post)
+
+				data := s.buildData(db, w, r)
+				data.BoardError(w, gotext.Get("Incorrect CAPTCHA text. Please try again."))
+				return
+			}
 		}
 	}
 

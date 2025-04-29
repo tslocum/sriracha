@@ -60,7 +60,7 @@
                         <textarea id="message" name="message" cols="48" rows="4" maxlength="8000" accesskey="m"></textarea>
                     </td>
                 </tr>
-                {{if .Opt.CAPTCHA}}
+                {{if and .Opt.CAPTCHA (not .ModMode)}}
                     <tr>
                         <td class="postblock">
                             CAPTCHA

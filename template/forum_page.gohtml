@@ -20,19 +20,19 @@
     <br>
 {{end}}
 <form method="post" action="/sriracha/">
-<input type="hidden" name="action" value="delete">
-<input type="hidden" name="board" value="{{.Board.Dir}}">
-{{if and (ne .ReplyMode 0) (not .ModMode)}}
-    <details style="float:right;">
-        <summary style="cursor: pointer;">
-            {{T "Delete Post"}}
-        </summary>
-        <div>
-            <input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}">&nbsp;<input type="submit" name="deletepost" value="{{T "Delete"}}">
-        </div>
-    </details>
-{{end}}
-{{template "forum_post.gohtml" .}}
+	<input type="hidden" name="action" value="delete">
+	<input type="hidden" name="board" value="{{.Board.Dir}}">
+	{{if and (ne .ReplyMode 0) (not .ModMode)}}
+		<details style="float:right;">
+			<summary style="cursor: pointer;">
+				{{T "Delete Post"}}
+			</summary>
+			<div>
+				<input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}">&nbsp;<input type="submit" name="deletepost" value="{{T "Delete"}}">
+			</div>
+		</details>
+	{{end}}
+	{{template "forum_post.gohtml" .}}
 </form>
 {{if and (not .ModMode) (ne .ReplyMode 0)}}
     <br>
