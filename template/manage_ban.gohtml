@@ -16,7 +16,7 @@
                 <td>
                     [<a href="/sriracha/ban/{{$ban.ID}}">update</a>]
                     {{if le $.Account.Role 2}}{{/* Admin */}}
-                        [<a href="/sriracha/ban/delete/{{$ban.ID}}">delete</a>]
+                        [<a href="/sriracha/ban/delete/{{$ban.ID}}" onclick="javascript:return confirm('Lift ban #{{.ID}}?')">lift</a>]
                     {{end}}
                 </td>
             </tr>

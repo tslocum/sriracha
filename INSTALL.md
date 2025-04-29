@@ -12,7 +12,7 @@ Blank directory boards are useful when your site will only have one board.
 ## 2. Install PostgreSQL
 
 Install the [PostgreSQL](https://www.postgresql.org/) database system by
-following the relevant [documentation](https://www.postgresql.org/docs/17/admin.html).
+following the relevant [documentation](https://www.postgresql.org/docs/current/admin.html).
 
 ## 3. Configure PostgreSQL
 

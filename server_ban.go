@@ -9,6 +9,21 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 	data.Template = "manage_ban"
 	data.Boards = db.allBoards()
 
+	deleteBanID := pathInt(r, "/sriracha/ban/delete/")
+	if deleteBanID > 0 {
+		b := db.banByID(deleteBanID)
+		if b == nil {
+			data.ManageError("Invalid ban.")
+			return
+		}
+		db.deleteBan(b.ID)
+
+		db.log(data.Account, nil, fmt.Sprintf("Lifted >>/ban/%d", b.ID), "")
+
+		http.Redirect(w, r, "/sriracha/ban/", http.StatusFound)
+		return
+	}
+
 	banID := pathInt(r, "/sriracha/ban/")
 	if banID > 0 {
 		data.Manage.Ban = db.banByID(banID)
