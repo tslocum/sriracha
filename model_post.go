@@ -156,6 +156,35 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 	p.Subject = limitString(formString(r, "subject"), p.Board.MaxSubject)
 	p.Message = html.EscapeString(limitString(formString(r, "message"), p.Board.MaxMessage))
 
+	if len(p.Name) < p.Board.MinName {
+		if p.Board.MinName == 1 {
+			return fmt.Errorf("please enter a name")
+		} else {
+			return fmt.Errorf("name too short: must be at least %d characters in length", p.Board.MinName)
+		}
+	}
+	if len(p.Email) < p.Board.MinEmail {
+		if p.Board.MinEmail == 1 {
+			return fmt.Errorf("please enter an email")
+		} else {
+			return fmt.Errorf("email too short: must be at least %d characters in length", p.Board.MinEmail)
+		}
+	}
+	if len(p.Subject) < p.Board.MinSubject && (p.Board.Type == TypeImageboard || p.Parent == 0) {
+		if p.Board.MinSubject == 1 {
+			return fmt.Errorf("please enter a subject")
+		} else {
+			return fmt.Errorf("subject too short: must be at least %d characters in length", p.Board.MinSubject)
+		}
+	}
+	if len(p.Message) < p.Board.MinMessage {
+		if p.Board.MinMessage == 1 {
+			return fmt.Errorf("please enter a message")
+		} else {
+			return fmt.Errorf("message too short: must be at least %d characters in length", p.Board.MinMessage)
+		}
+	}
+
 	if strings.ContainsRune(p.Name, '#') {
 		split := strings.SplitN(p.Name, "#", 3)
 
@@ -176,17 +205,31 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 		p.Subject = ""
 	}
 
-	if p.Board.MaxSize == 0 {
+	minSize := p.Board.MinSizeThread
+	maxSize := p.Board.MaxSizeThread
+	if p.Parent != 0 {
+		minSize = p.Board.MinSizeReply
+		maxSize = p.Board.MaxSizeReply
+	}
+	if maxSize == 0 {
 		return nil
 	}
 
 	formFile, formFileHeader, err := r.FormFile("file")
-	if err != nil || formFileHeader == nil {
-		return nil
-	}
-
-	if formFileHeader.Size > p.Board.MaxSize {
-		return fmt.Errorf("that file exceeds the maximum file size: %s", p.Board.MaxSizeLabel())
+	if err != nil || formFileHeader == nil || formFileHeader.Size < minSize {
+		if minSize == 1 {
+			if len(p.Board.Embeds) == 0 {
+				return fmt.Errorf("a file is required")
+			} else {
+				return fmt.Errorf("a file or embed is required")
+			}
+		} else if minSize > 0 {
+			return fmt.Errorf("a file %s or larger is required", formatFileSize(minSize))
+		} else {
+			return nil
+		}
+	} else if formFileHeader.Size > maxSize {
+		return fmt.Errorf("that file exceeds the maximum file size: %s", formatFileSize(maxSize))
 	}
 
 	buf, err := io.ReadAll(formFile)
@@ -194,8 +237,18 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 		log.Fatal(err)
 	}
 
-	if int64(len(buf)) > p.Board.MaxSize {
-		return fmt.Errorf("that file exceeds the maximum file size: %s", p.Board.MaxSizeLabel())
+	if int64(len(buf)) < minSize {
+		if minSize == 1 {
+			if len(p.Board.Embeds) == 0 {
+				return fmt.Errorf("a file is required")
+			} else {
+				return fmt.Errorf("a file or embed is required")
+			}
+		} else {
+			return fmt.Errorf("a file %s or larger is required", formatFileSize(minSize))
+		}
+	} else if int64(len(buf)) > maxSize {
+		return fmt.Errorf("that file exceeds the maximum file size: %s", formatFileSize(maxSize))
 	}
 
 	mimeType := mimetype.Detect(buf).String()
@@ -318,7 +371,7 @@ func (p *Post) setNameBlock(defaultName string, capcode string) {
 	emailLink := p.Email != "" && strings.ToLower(p.Email) != "noko"
 
 	if emailLink {
-		out.WriteString(`<a href="mailto:"` + html.EscapeString(p.Email) + `">`)
+		out.WriteString(`<a href="mailto:` + html.EscapeString(p.Email) + `">`)
 	}
 	if p.Name != "" || p.Tripcode == "" {
 		name := p.Name

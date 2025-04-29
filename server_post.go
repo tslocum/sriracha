@@ -418,8 +418,33 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	}
 
 	if strings.TrimSpace(post.Message) == "" && post.File == "" {
+		maxSize := post.Board.MaxSizeThread
+		if post.Parent != 0 {
+			maxSize = post.Board.MaxSizeReply
+		}
+		var options []string
+		if maxSize != 0 {
+			options = append(options, "upload a file")
+		}
+		if len(post.Board.Embeds) != 0 {
+			options = append(options, "enter an embed URL")
+		}
+		if post.Board.MaxMessage != 0 {
+			options = append(options, "enter a message")
+		}
+		buf := &strings.Builder{}
+		for i, o := range options {
+			if i > 0 {
+				if i == len(options)-1 {
+					buf.WriteString(" or ")
+				} else {
+					buf.WriteString(", ")
+				}
+			}
+			buf.WriteString(o)
+		}
 		data := s.buildData(db, w, r)
-		data.BoardError(w, "Please upload a file and/or enter a message.")
+		data.BoardError(w, fmt.Sprintf("Please %s.", buf.String()))
 		return
 	}
 

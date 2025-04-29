@@ -126,6 +126,36 @@
                 <td>Maximum number of replies to a thread before the thread stops being bumped to the front. 0 to disable.</td>
             </tr>
             <tr>
+                <td class="postblock"><label for="minname">Min Name Length</label></td>
+                <td><input type="text" name="minname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinName}}{{end}}"></td>
+                <td>Minimum length of the name field.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="minemail">Min Email Length</label></td>
+                <td><input type="text" name="minemail" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinEmail}}{{end}}"></td>
+                <td>Minimum length of the email field.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="minsubject">Min Subject Length</label></td>
+                <td><input type="text" name="minsubject" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinSubject}}{{end}}"></td>
+                <td>Minimum length of the subject field.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="minmessage">Min Message Length</label></td>
+                <td><input type="text" name="minmessage" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinMessage}}{{end}}"></td>
+                <td>Minimum length of the message field.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="minsizethread">Min Thread File Size</label></td>
+                <td><input type="text" name="minsizethread" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinSizeThread}}{{end}}"></td>
+                <td>Minimum file size (in bytes) when creating a thread.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="minsizereply">Min Reply File Size</label></td>
+                <td><input type="text" name="minsizereply" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinSizeReply}}{{end}}"></td>
+                <td>Minimum file size (in bytes) when replying.</td>
+            </tr>
+            <tr>
                 <td class="postblock"><label for="maxname">Max Name Length</label></td>
                 <td><input type="text" name="maxname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxName}}{{end}}"></td>
                 <td>Maximum length of the name field. Values greater than 255 are not supported when using the default database schema.</td>
@@ -146,9 +176,14 @@
                 <td>Maximum length of the message field.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="maxsize">Max File Size</label></td>
-                <td><input type="text" name="maxsize" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSize}}{{end}}"></td>
-                <td>Allow file uploads up to this size (in bytes). Set to 0 to disable file uploads.</td>
+                <td class="postblock"><label for="maxsizethread">Max Thread File Size</label></td>
+                <td><input type="text" name="maxsizethread" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSizeThread}}{{end}}"></td>
+                <td>Maximum file size (in bytes) when creating a thread. Set to 0 to disable file uploads.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="maxsizereply">Max Reply File Size</label></td>
+                <td><input type="text" name="maxsizereply" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSizeReply}}{{end}}"></td>
+                <td>Maximum file size (in bytes) when replying. Set to 0 to disable file uploads.</td>
             </tr>
             <tr>
                 <td class="postblock"><label for="thumbwidth">Thumbnail Width</label></td>

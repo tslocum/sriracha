@@ -1,6 +1,6 @@
 <div{{if eq .Board.Type 0}} class="postarea"{{end}}>
     <form name="postform" id="postform" action="/sriracha/" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="MAX_FILE_SIZE" value="{{.Board.MaxSize}}">
+        <input type="hidden" name="MAX_FILE_SIZE" value="{{if eq .ReplyMode 0}}{{.Board.MaxSizeThread}}{{else}}{{.Board.MaxSizeReply}}{{end}}">
         <input type="hidden" name="action" value="post">
         <input type="hidden" name="board" value="{{.Board.Dir}}">
         <input type="hidden" name="parent" value="{{.ReplyMode}}">
@@ -71,7 +71,7 @@
                         </td>
                     </tr>
                 {{end}}
-                {{if and (ne .Board.MaxSize 0) (ne (len .Board.Uploads) 0)}}
+                {{if and (or (and (eq .ReplyMode 0) (ne .Board.MaxSizeThread 0)) (and (ne .ReplyMode 0) (ne .Board.MaxSizeReply 0))) (ne (len .Board.Uploads) 0)}}
                     <tr>
                         <td class="postblock">
                             {{T "File"}}
@@ -112,9 +112,9 @@
                 <tr>
                     <td colspan="2" class="rules">
                         <ul>
-                            {{if ne (len .Board.Uploads) 0}}
+                            {{if and (or (and (eq .ReplyMode 0) (ne .Board.MaxSizeThread 0)) (and (ne .ReplyMode 0) (ne .Board.MaxSizeReply 0))) (ne (len .Board.Uploads) 0)}}
                                 <li>{{T "Supported file types are %s." .Board.UploadTypesLabel}}</li>
-                                <li>{{T "Maximum file size allowed is %s." .Board.MaxSizeLabel}}</li>
+                                <li>{{T "Maximum file size allowed is %s." (.Board.MaxSizeLabel (eq .ReplyMode 0))}}</li>
                             {{end}}
                             {{if or (ne (len .Board.Uploads) 0) (ne (len .Board.Embeds) 0)}}
                                 <li>{{T "Images greater than %[1]dx%[2]d will be thumbnailed." .Board.ThumbWidth .Board.ThumbHeight}}</li>
