@@ -1016,7 +1016,7 @@ func printChanges(old interface{}, new interface{}) string {
 			}
 		}
 
-		label += fmt.Sprintf(` (%s: "%v" -> "%v")`, name, formatValue(from), formatValue(to))
+		label += fmt.Sprintf(` [%s: "%v" > "%v"]`, name, formatValue(from), formatValue(to))
 	}
 	return label
 }

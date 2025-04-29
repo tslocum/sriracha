@@ -53,7 +53,7 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 			if changes != "" {
 				changes += " "
 			}
-			changes += fmt.Sprintf(`(%s: "%s" -> "%s")`, strings.Title(c.Name), oldLabel, newLabel)
+			changes += fmt.Sprintf(`[%s: "%s" > "%s"]`, strings.Title(c.Name), oldLabel, newLabel)
 		}
 
 		if changes != "" {
@@ -116,7 +116,7 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 					if changes != "" {
 						changes += " "
 					}
-					changes += fmt.Sprintf(`(%s: "%s" -> "%s")`, strings.Title(c.Name), oldLabel, newLabel)
+					changes += fmt.Sprintf(`[%s: "%s" > "%s"]`, strings.Title(c.Name), oldLabel, newLabel)
 
 					db.SaveString(strings.ToLower(info.Name+"."+c.Name), newValue)
 					info.Config[i].Value = newValue

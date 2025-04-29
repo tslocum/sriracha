@@ -25,6 +25,11 @@ Only requests to `/sriracha/*` need to be served by Sriracha. After copying
 `static` to the root directory, you may handle all requests except `/sriracha/*`
 using a static file server.
 
+When starting Sriracha for the first time, visit the management panel at
+`/sriracha/` and log in to the default super-administrator account by entering
+`admin` into both the username and password field. Once you have logged in,
+visit the accounts page and change your username and password.
+
 ## Example configuration (config.yml)
 
 ```yaml
