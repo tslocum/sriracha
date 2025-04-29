@@ -1,10 +1,10 @@
-<div class="postarea">
+<div{{if eq .Board.Type 0}} class="postarea"{{end}}>
     <form name="postform" id="postform" action="/sriracha/" method="post" enctype="multipart/form-data">
         <input type="hidden" name="MAX_FILE_SIZE" value="{{.Board.MaxSize}}">
         <input type="hidden" name="action" value="post">
         <input type="hidden" name="board" value="{{.Board.Dir}}">
         <input type="hidden" name="parent" value="{{.ReplyMode}}">
-        <table class="postform">
+        <table>
             <tbody>
                 {{if .ModMode}}
                 <tr>
@@ -40,14 +40,14 @@
                         </td>
                     </tr>
                 {{end}}
-                {{if gt .Board.MaxSubject 0}}
+                {{if and (gt .Board.MaxSubject 0) (or (eq .Board.Type 0) (eq .ReplyMode 0))}}
                     <tr>
                         <td class="postblock">
                             {{T "Subject"}}
                         </td>
                         <td>
                             <input type="text" name="subject" size="40" maxlength="75" accesskey="s" autocomplete="off">
-                            <input type="submit" value="{{T "Submit"}}" accesskey="z">
+                            {{if eq .Board.Type 0}}<input type="submit" value="{{T "Submit"}}" accesskey="z">{{end}}
                         </td>
                     </tr>
                 {{end}}
@@ -99,7 +99,7 @@
                         <input type="password" name="password" id="newpostpassword" size="8" accesskey="p">&nbsp;&nbsp;({{T "for post and file deletion"}})
                     </td>
                 </tr>
-                {{if eq .Board.MaxSubject 0}}
+                {{if or (eq .Board.MaxSubject 0) (eq .Board.Type 1)}}
                     <tr>
                         <td class="postblock">
                             {{T "Submit"}}

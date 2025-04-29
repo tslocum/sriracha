@@ -400,7 +400,7 @@ func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request)
 			Path:  "/",
 		})
 		http.Redirect(w, r, "/sriracha/", http.StatusFound)
-		return guestData
+		return newTemplateData()
 	}
 
 	if r.URL.Path == "/sriracha/" || r.URL.Path == "/sriracha" {
@@ -452,7 +452,7 @@ func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request)
 			}
 		}
 	}
-	return guestData
+	return newTemplateData()
 }
 
 func (s *Server) writeThread(db *Database, board *Board, postID int) {
@@ -486,13 +486,6 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 		board.Unique = db.uniqueUserPosts(board)
 	}
 
-	// Write catalog.
-
-	catalogFile, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "catalog.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	threads := db.allThreads(board, true)
 	data := &templateData{
 		Board:     board,
@@ -501,12 +494,21 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 		Manage:    &manageData{},
 		Template:  "board_catalog",
 	}
-	for _, thread := range threads {
-		data.Threads = append(data.Threads, []*Post{thread})
-	}
-	data.execute(catalogFile)
 
-	catalogFile.Close()
+	// Write catalog.
+	if board.Type == TypeImageboard {
+		catalogFile, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "catalog.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		for _, thread := range threads {
+			data.Threads = append(data.Threads, []*Post{thread})
+		}
+		data.execute(catalogFile)
+
+		catalogFile.Close()
+	}
 
 	// Write indexes.
 
@@ -542,7 +544,9 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 		data.Threads = data.Threads[:0]
 		for _, thread := range threads[start:end] {
 			posts := []*Post{thread}
-			posts = append(posts, db.allReplies(thread.ID, board.Replies, true)...)
+			if board.Type == TypeImageboard {
+				posts = append(posts, db.allReplies(thread.ID, board.Replies, true)...)
+			}
 			data.Threads = append(data.Threads, posts)
 		}
 		data.Page = page

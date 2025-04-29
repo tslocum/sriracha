@@ -1,0 +1,57 @@
+{{template "forum_begin.gohtml" .}}
+{{if .ReplyMode}}
+	{{if not .ModMode}}
+		<div class="replymode">{{T "Posting mode: Reply"}}</div>
+	{{else}}
+		<div class="replymode">{{T "Mod mode: View"}}</div>
+	{{end}}
+{{else if .ModMode}}
+	<div class="replymode">{{T "Mod mode"}}</div>
+{{end}}
+{{if or .ModMode (and (eq .Board.Type 1) (eq .ReplyMode 0))}}
+	<details>
+		<summary style="cursor: pointer;">{{if eq .ReplyMode 0}}{{T "Create Thread"}}{{else}}{{T "Reply"}}{{end}}</summary>
+		<div>
+			{{template "imgboard_postarea.gohtml" .}}
+		</div>
+	</details>
+{{else if eq .ReplyMode 0}}
+    {{template "imgboard_postarea.gohtml" .}}
+    <br>
+{{end}}
+<form method="post" action="/sriracha/">
+<input type="hidden" name="action" value="delete">
+<input type="hidden" name="board" value="{{.Board.Dir}}">
+{{if and (ne .ReplyMode 0) (not .ModMode)}}
+    <details style="float:right;">
+        <summary style="cursor: pointer;">
+            {{T "Delete Post"}}
+        </summary>
+        <div>
+            <input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}">&nbsp;<input type="submit" name="deletepost" value="{{T "Delete"}}">
+        </div>
+    </details>
+{{end}}
+{{template "forum_post.gohtml" .}}
+</form>
+{{if and (not .ModMode) (ne .ReplyMode 0)}}
+    <br>
+    {{template "forum_postarea.gohtml" .}}
+{{end}}
+<hr>
+{{if eq .ReplyMode 0}}
+	<table border="1" style="display: inline-block;">
+	<tbody>
+		<tr>
+			<td>{{if gt .Page 0}}<form method="get" action="{{if not $.ModMode}}{{.Board.Path}}{{if eq .Page 1}}index{{else}}{{.Page | MinusOne}}{{end}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}{{if ne .Page 1}}p{{.Page | MinusOne}}{{end}}{{end}}"><input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
+			<td>
+				{{range $i := Iterate (.Pages | MinusOne)}}
+					[{{if eq $i $.Page}}{{$i}}{{else}}<a href="{{if not $.ModMode}}{{$.Board.Path}}{{if eq $i 0}}index{{else}}{{$i}}{{end}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}{{if ne $i 0}}/p{{$i}}{{end}}{{end}}">{{$i}}</a>{{end}}]
+				{{end}}
+			</td>
+			<td>{{if lt .Page (.Pages | MinusOne)}}<form method="get" action="{{if not $.ModMode}}{{.Board.Path}}{{.Page | PlusOne}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}/p{{.Page | PlusOne}}{{end}}"><input type="submit" value="{{T "Next"}}"></form>{{else}}{{T "Next"}}{{end}}</td>
+		</tr>
+	</tbody>
+	</table>
+{{end}}
+{{template "forum_end.gohtml" .}}

@@ -141,6 +141,8 @@ var templateFuncMap = template.FuncMap{
 	},
 }
 
-var guestData = &templateData{
-	Manage: &manageData{},
+func newTemplateData() *templateData {
+	return &templateData{
+		Manage: &manageData{},
+	}
 }
