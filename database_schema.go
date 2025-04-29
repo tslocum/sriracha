@@ -98,8 +98,8 @@ CREATE TABLE keyword_board (
 
 CREATE TABLE log (
 	id serial PRIMARY KEY,
-	account smallint NULL REFERENCES account (id),
-	board smallint NULL REFERENCES board (id),
+	account smallint NULL REFERENCES account (id) ON DELETE SET NULL,
+	board smallint NULL REFERENCES board (id) ON DELETE SET NULL,
 	timestamp bigint NOT NULL,
 	message text NOT NULL,
 	changes text NOT NULL

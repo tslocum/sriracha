@@ -14,6 +14,7 @@ import (
 	"image/png"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"os"
@@ -376,7 +377,12 @@ func (p *Post) setNameBlock(defaultName string, capcode string) {
 	if p.Name != "" || p.Tripcode == "" {
 		name := p.Name
 		if name == "" {
-			name = defaultName
+			if strings.ContainsRune(defaultName, '|') {
+				split := strings.Split(defaultName, "|")
+				name = split[rand.Intn(len(split))]
+			} else {
+				name = defaultName
+			}
 		}
 		out.WriteString(`<span class="postername">`)
 		out.WriteString(html.EscapeString(name))
