@@ -13,6 +13,7 @@ import (
 	"math"
 	"net/http"
 	"os"
+	"os/signal"
 	"path"
 	"path/filepath"
 	"plugin"
@@ -20,6 +21,7 @@ import (
 	"runtime/debug"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/alexedwards/argon2id"
@@ -77,6 +79,7 @@ type Server struct {
 	dbPool *pgxpool.Pool
 	opt    ServerOptions
 	tpl    *template.Template
+	lock   sync.Mutex
 }
 
 func NewServer() *Server {
@@ -632,6 +635,9 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 }
 
 func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
 	var action string
 	if r.URL.Path == "/sriracha/" || r.URL.Path == "/sriracha" {
 		action = r.FormValue("action")
@@ -830,6 +836,17 @@ func (s *Server) Run() error {
 			log.Fatalf("failed to write site index at %s: %s", siteIndexFile, err)
 		}
 	}
+
+	sigInterrupt := make(chan os.Signal, 1)
+	signal.Notify(sigInterrupt, os.Interrupt)
+	go func() {
+		for {
+			<-sigInterrupt
+			fmt.Println("Shutting down...")
+			s.lock.Lock()
+			os.Exit(0)
+		}
+	}()
 
 	return s.listen()
 }
