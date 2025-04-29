@@ -67,7 +67,7 @@ dbname: sriracha
 # files in this directory will override standard templates of the same name.
 template: /home/sriracha/template
 
-# Supported upload file types. Specify a MIME type and a file extension to
+# Supported upload file types. Specify a file extension and a MIME type to
 # enable uploading files of that type. You may specify an image to use as the
 # thumbnail for all uploads of that type, or 'none' to not create a thumbnail.
 # Otherwise, thumbnails are generated automatically based on the uploaded file.

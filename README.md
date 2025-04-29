@@ -28,9 +28,14 @@ A [**read-only demo**](https://sriracha.rocket9labs.com/img/) is available.
 
 ## Documentation
 
-### Server
+### Install
 
-See [CONFIGURATION.md](https://codeberg.org/tslocum/sriracha/src/branch/main/CONFIGURATION.md)
+See [INSTALL.md](https://codeberg.org/tslocum/sriracha/src/branch/main/INSTALL.md)
+for info on how to install Sriracha.
+
+### Configure
+
+See [CONFIGURE.md](https://codeberg.org/tslocum/sriracha/src/branch/main/CONFIGURE.md)
 for info on how to configure Sriracha.
 
 ### Plugins
@@ -42,16 +47,6 @@ for info on how to build and use Sriracha plugins.
 
 See [MIGRATE.md](https://codeberg.org/tslocum/sriracha/src/branch/main/MIGRATE.md)
 for info on how to migrate from [TinyIB](https://codeberg.org/tslocum/tinyib).
-
-## Download
-
-**Note:** The first release of Sriracha is coming soon. Stay tuned.
-
-Download the latest release of Sriracha [here](https://codeberg.org/tslocum/sriracha/releases).
-Only Linux, FreeBSD and macOS are supported.
-
-Linux release archives include all official plugins. To use plugins on FreeBSD
-or macOS, compile Sriracha and any desired plugins using the release source code.
 
 ## Translate
 
