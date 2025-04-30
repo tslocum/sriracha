@@ -837,11 +837,11 @@ func (s *Server) Run() error {
 		}
 	}
 
-	sigInterrupt := make(chan os.Signal, 1)
-	signal.Notify(sigInterrupt, os.Interrupt)
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, unix.SIGINT, unix.SIGTERM)
 	go func() {
 		for {
-			<-sigInterrupt
+			<-signals
 			fmt.Println("Shutting down...")
 			s.lock.Lock()
 			os.Exit(0)

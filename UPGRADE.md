@@ -19,7 +19,7 @@ Sriracha for your platform.
 ## 3. Stop Sriracha
 
 Press `Ctrl+C` in the terminal window where Sriracha is running, or send the
-`SIGKILL` signal to the Sriracha server process.
+`SIGTERM` signal to the Sriracha server process.
 
 ## 3. Replace server binary
 
