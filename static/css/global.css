@@ -23,6 +23,7 @@ hr {
 
 .postarea {
 	text-align: center;
+	max-width: 100%;
 }
 
 .postarea table {
@@ -114,6 +115,29 @@ hr {
 	color: #FF0000;
 }
 
+@media all and (max-width: 600px) {
+	input, textarea, select {
+		box-sizing: border-box;
+	}
+
+	input:not([type=checkbox]), textarea, select {
+		width: 100%;
+	}
+
+	label {
+		font-size: 0.75em;
+	}
+
+	table {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	.doubledash {
+		display: none;
+	}
+}
+
 legend {
 	font-weight: bold;
 }
@@ -125,7 +149,6 @@ legend {
 }
 
 .manageform input {
-	box-sizing: border-box;
 	width: 100%;
 }
 

@@ -1,22 +1,9 @@
-<table {{if eq .ReplyMode 0}} class="managetable"{{end}}style="width: auto !important;">
+<table {{if eq .ReplyMode 0}} class="managetable"{{end}}>
 	{{if eq .ReplyMode 0}}
-		<tr>
-			<th align="left">
-				Date
-			</th>
-			<th align="left">
-				Posts
-			</th>
-			<th align="left">
-				Subject
-			</th>
-		</tr>
 		{{range $i, $thread := .Threads}}
 			{{range $i, $post := $thread}}
 				<tr>
-					<td style="white-space: nowrap;">{{.TimestampLabel}}</td>
-					<td style="white-space: nowrap;">{{.Replies | PlusOne}}</td>
-					<td><span  class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$.Board.ID}}/{{.ID}}{{else}}{{$.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}No subject{{end}}</a></span></td>
+					<td>[{{.Replies | PlusOne}}] {{.TimestampLabel}}<div  class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$.Board.ID}}/{{.ID}}{{else}}{{$.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}No subject{{end}}</a></div></td>
 				</tr>
 			{{end}}
 		{{end}}
@@ -25,7 +12,7 @@
 			{{range $i, $post := $thread}}
 				{{if eq $i 0}}
 				<tr>
-					<td style="padding-bottom: 5px;"><span class="filetitle">{{if ne .Subject ""}}{{.Subject}}{{else}}No subject{{end}}</span></td>
+					<td style="padding-bottom: 5px;"><div class="filetitle">{{if ne .Subject ""}}{{.Subject}}{{else}}No subject{{end}}</div></td>
 				</tr>
 				{{end}}
 				<tr>
@@ -49,7 +36,9 @@
 						{{if ne .File ""}}
                             {{$embed := .EmbedInfo}}
 							<br>
-                            {{if not .IsEmbed}}File:{{else}}Embed:{{end}} <span class="filesize"><a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
+							<label>
+								{{if not .IsEmbed}}File:{{else}}Embed:{{end}} <span class="filesize"><a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
+							</label>
 							<div style="margin-top: 1em;">
 								<div id="thumbfile{{.ID}}">
 									{{if ne .Thumb ""}}

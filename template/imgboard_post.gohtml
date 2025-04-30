@@ -5,9 +5,12 @@
 	{{range $i, $post := $thread}}
         {{if eq .Parent 0}}
             <div id="post{{.ID}}" class="op">
+                <a id="{{.ID}}"></a>
                 {{if ne .File ""}}
                     {{$embed := .EmbedInfo}}
-                    <span class="filesize">{{if not .IsEmbed}}{{T "File"}}{{else}}{{T "Embed"}}{{end}}: <a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
+                    <label>
+                        <span class="filesize">{{if not .IsEmbed}}{{T "File"}}{{else}}{{T "Embed"}}{{end}}: <a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
+                    </label>
                     <div id="thumbfile{{.ID}}">
                         {{if ne .Thumb ""}}
                             <a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$.Board.Path}}thumb/{{.Thumb}}" alt="{{.ID}}" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
@@ -16,27 +19,26 @@
                     <div id="expand{{.ID}}" style="display: none;">{{.ExpandHTML}}</div>
                     <div id="file{{.ID}}" class="thumb" style="display: none;"></div>
                 {{end}}
-                <a id="{{.ID}}"></a>
                 <label>
                     <input type="checkbox" name="delete[]" value="{{.ID}}">
                     {{template "imgboard_page_subject.gohtml" .}}
                     {{.NameBlock | HTML}}
+                    <span class="reflink">
+                        {{if $.Board.Reports}}
+                            <a href="/sriracha/?action=report&board={{.Board.ID}}&post={{.ID}}" title="{{T "Report"}}">R</a>
+                        {{end}}
+                        <a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{.ID}}');"{{end}}>{{.ID}}</a>
+                        {{if .Stickied}}<img src="/static/img/sticky.png" alt="{{T "Stickied"}}" title="{{T "Stickied"}}" width="16" height="16">{{end}}
+                        {{if .Locked}}<img src="/static/img/lock.png" alt="{{T "Locked"}}" title="{{T "Locked"}}" width="16" height="16">{{end}}
+                        {{if $.ModMode}}
+                            <b><a href="/sriracha/mod/{{if .Stickied}}un{{end}}sticky/{{.ID}}" title="{{if not .Stickied}}{{T "Sticky"}}{{else}}{{T "Unsticky"}}{{end}}" onclick="javascript:return confirm('{{if not .Stickied}}Sticky{{else}}Unsticky{{end}} thread?');">S</a>
+                            <a href="/sriracha/mod/{{if .Locked}}un{{end}}lock/{{.ID}}" title="{{if not .Locked}}{{T "Lock"}}{{else}}{{T "Unlock"}}{{end}}" onclick="javascript:return confirm('{{if not .Locked}}Lock{{else}}Unlock{{end}} thread?');">L</a>
+                            <a href="/sriracha/mod/delete/{{.ID}}" title="{{T "Delete"}}">D</a>
+                            <a href="/sriracha/mod/ban/{{.ID}}" title="{{T "Ban"}}">B</a>
+                            <a href="/sriracha/mod/{{.ID}}" title="{{T "Delete & ban"}}">D&amp;B</a></b>
+                        {{end}}
+                    </span>
                 </label>
-                <span class="reflink">
-                    {{if $.Board.Reports}}
-                        <a href="/sriracha/?action=report&board={{.Board.ID}}&post={{.ID}}" title="{{T "Report"}}">R</a>
-                    {{end}}
-                    <a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{.ID}}');"{{end}}>{{.ID}}</a>
-                    {{if .Stickied}}<img src="/static/img/sticky.png" alt="{{T "Stickied"}}" title="{{T "Stickied"}}" width="16" height="16">{{end}}
-                    {{if .Locked}}<img src="/static/img/lock.png" alt="{{T "Locked"}}" title="{{T "Locked"}}" width="16" height="16">{{end}}
-                    {{if $.ModMode}}
-                        <b><a href="/sriracha/mod/{{if .Stickied}}un{{end}}sticky/{{.ID}}" title="{{if not .Stickied}}{{T "Sticky"}}{{else}}{{T "Unsticky"}}{{end}}" onclick="javascript:return confirm('{{if not .Stickied}}Sticky{{else}}Unsticky{{end}} thread?');">S</a>
-                        <a href="/sriracha/mod/{{if .Locked}}un{{end}}lock/{{.ID}}" title="{{if not .Locked}}{{T "Lock"}}{{else}}{{T "Unlock"}}{{end}}" onclick="javascript:return confirm('{{if not .Locked}}Lock{{else}}Unlock{{end}} thread?');">L</a>
-                        <a href="/sriracha/mod/delete/{{.ID}}" title="{{T "Delete"}}">D</a>
-                        <a href="/sriracha/mod/ban/{{.ID}}" title="{{T "Ban"}}">B</a>
-                        <a href="/sriracha/mod/{{.ID}}" title="{{T "Delete & ban"}}">D&amp;B</a></b>
-                    {{end}}
-                </span>
                 {{if not $.ReplyMode}}{{if not $.ModMode}}&nbsp;[<a href="{{$.Board.Path}}res/{{.Thread}}.html">{{T "Reply"}}</a>]{{else}}&nbsp;[<a href="/sriracha/board/mod/{{$.Board.ID}}/{{.Thread}}">{{T "View"}}</a>]{{end}}{{end}}
                 <div class="message">
                     {{if eq $.ReplyMode 0}}
@@ -63,21 +65,23 @@
                             <input type="checkbox" name="delete[]" value="{{.ID}}">
                             {{template "imgboard_page_subject.gohtml" .}}
                             {{.NameBlock | HTML}}
+                            <span class="reflink">
+                                {{if $.Board.Reports}}
+                                    <a href="/sriracha/?action=report&board={{.Board.ID}}&post={{.ID}}" title="{{T "Report"}}">R</a>
+                                {{end}}
+                                <a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{.ID}}');"{{end}}>{{.ID}}</a>
+                                {{if $.ModMode}}
+                                    <b><a href="/sriracha/mod/delete/{{.ID}}" title="{{T "Delete"}}">D</a>
+                                    <a href="/sriracha/mod/ban/{{.ID}}" title="{{T "Ban"}}">B</a>
+                                    <a href="/sriracha/mod/{{.ID}}" title="{{T "Delete & ban"}}">D&amp;B</a></b>
+                                {{end}}
+                            </span><br>
                         </label>
-                        <span class="reflink">
-                            {{if $.Board.Reports}}
-                                <a href="/sriracha/?action=report&board={{.Board.ID}}&post={{.ID}}" title="{{T "Report"}}">R</a>
-                            {{end}}
-                            <a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{.ID}}');"{{end}}>{{.ID}}</a>
-                            {{if $.ModMode}}
-                                <b><a href="/sriracha/mod/delete/{{.ID}}" title="{{T "Delete"}}">D</a>
-                                <a href="/sriracha/mod/ban/{{.ID}}" title="{{T "Ban"}}">B</a>
-                                <a href="/sriracha/mod/{{.ID}}" title="{{T "Delete & ban"}}">D&amp;B</a></b>
-                            {{end}}
-                        </span><br>
                         {{if ne .File ""}}
                             {{$embed := .EmbedInfo}}
-                            <span class="filesize"><a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
+                            <label>
+                                <span class="filesize"><a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
+                            </label>
                             <div id="thumbfile{{.ID}}">
                                 {{if ne .Thumb ""}}
                                     <a href="{{if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$.Board.Path}}thumb/{{.Thumb}}" alt="6" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>

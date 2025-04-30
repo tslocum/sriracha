@@ -23,12 +23,12 @@
 	<input type="hidden" name="action" value="delete">
 	<input type="hidden" name="board" value="{{.Board.Dir}}">
 	{{if and (ne .ReplyMode 0) (not .ModMode)}}
-		<details style="float:right;">
+		<details style="display: inline-block;position:absolute;right: 0px;">
 			<summary style="cursor: pointer;">
 				{{T "Delete Post"}}
 			</summary>
-			<div>
-				<input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}">&nbsp;<input type="submit" name="deletepost" value="{{T "Delete"}}">
+			<div class="replyhl" style="padding: 4px;">
+				<input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}"> <input type="submit" name="deletepost" value="{{T "Delete"}}">
 			</div>
 		</details>
 	{{end}}
