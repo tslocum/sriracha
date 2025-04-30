@@ -10,7 +10,7 @@
 {{end}}
 {{if or .ModMode (and (eq .Board.Type 1) (eq .ReplyMode 0))}}
 	<details>
-		<summary style="cursor: pointer;">{{if eq .ReplyMode 0}}{{T "Create Thread"}}{{else}}{{T "Reply"}}{{end}}</summary>
+		<summary>{{if eq .ReplyMode 0}}{{T "Create Thread"}}{{else}}{{T "Reply"}}{{end}}</summary>
 		<div>
 			{{template "imgboard_postarea.gohtml" .}}
 		</div>
@@ -24,7 +24,7 @@
 	<input type="hidden" name="board" value="{{.Board.Dir}}">
 	{{if and (ne .ReplyMode 0) (not .ModMode)}}
 		<details style="display: inline-block;position:absolute;right: 0px;">
-			<summary style="cursor: pointer;">
+			<summary>
 				{{T "Delete Post"}}
 			</summary>
 			<div class="replyhl" style="padding: 4px;">

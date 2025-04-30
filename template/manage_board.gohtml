@@ -30,12 +30,18 @@
     </table><br>
 {{end}}
 {{if or (ne .Manage.Board.ID 0) (le $.Account.Role 2)}}
-    {{if ne .Manage.Board.ID 0}}
+    {{if eq .Manage.Board.ID 0}}
+        <details>
+            <summary>Add Board</summary>
+            <div>
+    {{else}}
         [<a href="/sriracha/board/">Return</a>]<br>
     {{end}}
     <form method="post">
         <fieldset>
-        <legend>{{if or (eq .Manage.Board nil) (eq .Manage.Board.ID 0)}}Add Board{{else}}{{if le $.Account.Role 2}}Update {{end}}{{.Manage.Board.Path}} {{.Manage.Board.Name}}{{end}}</legend>
+        {{if and (ne .Manage.Board nil) (ne .Manage.Board.ID 0)}}
+            <legend>{{if le $.Account.Role 2}}Update {{end}}{{.Manage.Board.Path}} {{.Manage.Board.Name}}</legend>
+        {{end}}
         <table border="0" class="manageform">
             <tr>
                 <td class="postblock"><label for="dir">Directory</label></td>
@@ -242,5 +248,9 @@
         </table>
         </fieldset>
     </form>
+    {{if eq .Manage.Board.ID 0}}
+        </div>
+    </details>
+    {{end}}
 {{end}}
 {{template "manage_end.gohtml" .}}

@@ -12,7 +12,7 @@
 	{{template "imgboard_postarea.gohtml" .}}
 {{else}}
 	<details>
-		<summary style="cursor: pointer;">{{if eq .ReplyMode 0}}{{T "Create Thread"}}{{else}}{{T "Reply"}}{{end}}</summary>
+		<summary>{{if eq .ReplyMode 0}}{{T "Create Thread"}}{{else}}{{T "Reply"}}{{end}}</summary>
 		<div>
 			{{template "imgboard_postarea.gohtml" .}}
 		</div>

@@ -138,6 +138,10 @@ hr {
 	}
 }
 
+summary {
+	cursor: pointer;
+}
+
 legend {
 	font-weight: bold;
 }
@@ -150,6 +154,7 @@ legend {
 
 .manageform input {
 	width: 100%;
+	box-sizing: border-box;
 }
 
 .managetable {
