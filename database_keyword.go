@@ -41,10 +41,6 @@ func (db *Database) fetchKeywordBoards(k *Keyword) {
 		ids = append(ids, id)
 	}
 
-	if len(ids) == 0 {
-		k.Boards = db.allBoards()
-		return
-	}
 	for _, id := range ids {
 		b := db.boardByID(id)
 		k.Boards = append(k.Boards, b)

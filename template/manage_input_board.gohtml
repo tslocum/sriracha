@@ -3,7 +3,7 @@
 {{else}}
     <select name="boards" style="width: 100%;" size="3" multiple>
         {{range $i, $board := .Boards}}
-            <option value="{{$board.ID}}"{{if and (ne $.Manage.Keyword nil) ($.Manage.Keyword.HasBoardOption $board.ID)}} selected{{end}}>{{$board.Path}} {{$board.Name}}</option>
+            <option value="{{$board.ID}}"{{if and (ne $.Manage.Keyword nil) ($.Manage.Keyword.HasBoard $board.ID)}} selected{{end}}>{{$board.Path}} {{$board.Name}}</option>
         {{end}}
     </select>
 {{end}}

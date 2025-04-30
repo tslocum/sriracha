@@ -272,6 +272,9 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		}
 
 		for _, keyword := range db.allKeywords() {
+			if !keyword.HasBoard(b.ID) {
+				continue
+			}
 			rgxp, err := regexp.Compile(keyword.Text)
 			if err != nil {
 				s.deletePostFiles(post)

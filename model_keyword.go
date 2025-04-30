@@ -14,7 +14,7 @@ type Keyword struct {
 	ID     int
 	Text   string
 	Action string
-	Boards []*Board
+	Boards []*Board `diff:"-"`
 }
 
 func (k *Keyword) validate() error {
@@ -35,9 +35,6 @@ func (k *Keyword) validate() error {
 }
 
 func (k *Keyword) HasBoard(id int) bool {
-	if len(k.Boards) == 0 {
-		return true
-	}
 	for _, b := range k.Boards {
 		if b.ID == id {
 			return true
@@ -62,18 +59,6 @@ func (k *Keyword) loadForm(db *Database, r *http.Request) {
 		}
 		k.Boards = append(k.Boards, b)
 	}
-}
-
-func (k *Keyword) HasBoardOption(id int) bool {
-	if len(k.Boards) == 0 {
-		return false
-	}
-	for _, b := range k.Boards {
-		if b.ID == id {
-			return true
-		}
-	}
-	return false
 }
 
 func (k *Keyword) ActionLabel() string {
