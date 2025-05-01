@@ -62,15 +62,8 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		} else {
 			threads := db.allThreads(b, true)
 
-			pages := 1
-			if len(threads) != 0 && b.Threads != 0 {
-				pages = len(threads) / b.Threads
-				if len(threads)%b.Threads != 0 {
-					pages++
-				}
-			}
 			data.Page = page
-			data.Pages = pages
+			data.Pages = pageCount(len(threads), b.Threads)
 
 			start := page * b.Threads
 			end := len(threads)

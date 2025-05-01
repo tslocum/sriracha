@@ -511,17 +511,8 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 
 	data.ReplyMode = 0
 	data.Template = "board_page"
-
-	pages := 1
-	if len(threads) != 0 && board.Threads != 0 {
-		pages = len(threads) / board.Threads
-		if len(threads)%board.Threads != 0 {
-			pages++
-		}
-	}
-	data.Pages = pages
-
-	for page := 0; page < pages; page++ {
+	data.Pages = pageCount(len(threads), board.Threads)
+	for page := 0; page < data.Pages; page++ {
 		fileName := "index.html"
 		if page > 0 {
 			fileName = fmt.Sprintf("%d.html", page)
@@ -1019,6 +1010,17 @@ func printChanges(old interface{}, new interface{}) string {
 		label += fmt.Sprintf(` [%s: "%v" > "%v"]`, name, formatValue(from), formatValue(to))
 	}
 	return label
+}
+
+func pageCount(items int, pageSize int) int {
+	if items == 0 || pageSize == 0 {
+		return 1
+	}
+	pages := items / pageSize
+	if items%pageSize != 0 {
+		pages++
+	}
+	return pages
 }
 
 var siteIndexHTML = []byte(`

@@ -226,7 +226,7 @@ func (db *Database) lastPostByIP(board *Board, ip string) *Post {
 
 func (db *Database) replyCount(threadID int) int {
 	var count int
-	err := db.conn.QueryRow(context.Background(), "SELECT count(*) FROM post WHERE parent = $1", threadID).Scan(&count)
+	err := db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM post WHERE parent = $1", threadID).Scan(&count)
 	if err == pgx.ErrNoRows {
 		return 0
 	} else if err != nil {

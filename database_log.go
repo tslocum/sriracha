@@ -4,6 +4,8 @@ import (
 	"context"
 	"log"
 	"time"
+
+	"github.com/jackc/pgx/v5"
 )
 
 func (db *Database) addLog(l *Log) {
@@ -40,8 +42,20 @@ func (db *Database) log(account *Account, board *Board, message string, changes 
 	})
 }
 
-func (db *Database) allLogs() []*Log {
-	rows, err := db.conn.Query(context.Background(), "SELECT * FROM log ORDER BY id DESC")
+func (db *Database) logCount() int {
+	var count int
+	err := db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM log").Scan(&count)
+	if err == pgx.ErrNoRows {
+		return 0
+	} else if err != nil {
+		log.Fatalf("failed to select log count: %s", err)
+	}
+	return count
+}
+
+func (db *Database) logsByPage(page int) []*Log {
+	offset := page * logPageSize
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM log ORDER BY id DESC LIMIT $1 OFFSET $2", logPageSize, offset)
 	if err != nil {
 		log.Fatalf("failed to select all logs: %s", err)
 	}
