@@ -1,7 +1,7 @@
 # Sriracha Installation
 [![Donate](https://img.shields.io/liberapay/receives/rocket9labs.com.svg?logo=liberapay)](https://liberapay.com/rocket9labs.com)
 
-**Note:** The first release of Sriracha is coming soon. Stay tuned.
+Only Linux, FreeBSD and macOS are supported.
 
 ## 1. Create root directory
 
@@ -22,7 +22,7 @@ and set a password.
 ## 4. Download Sriracha
 
 Download the [latest release](https://codeberg.org/tslocum/sriracha/releases) of
-Sriracha for your platform. Only Linux, FreeBSD and macOS are supported.
+Sriracha for your platform.
 
 Linux release archives include all official plugins. To use plugins on FreeBSD
 or macOS, compile Sriracha and any desired plugins using the release source code.
