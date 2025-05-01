@@ -168,18 +168,6 @@ func (db *Database) GetString(key string) string {
 	return value
 }
 
-func (db *Database) GetMultiString(key string) []string {
-	return strings.Split(db.GetString(key), "|")
-}
-
-func (db *Database) GetBool(key string) bool {
-	return db.GetString(key) == "1"
-}
-
-func (db *Database) GetInt(key string) int {
-	return parseInt(db.GetString(key))
-}
-
 func (db *Database) SaveString(key string, value string) {
 	_, err := db.conn.Exec(context.Background(), "INSERT INTO config VALUES ($1, $2) ON CONFLICT (name) DO UPDATE SET value = $3", db.configKey(key), value, value)
 	if err != nil {
@@ -187,8 +175,12 @@ func (db *Database) SaveString(key string, value string) {
 	}
 }
 
-func (db *Database) SaveMultiString(key string, value []string) {
-	db.SaveString(key, strings.Join(value, "|"))
+func (db *Database) GetMultiString(key string) []string {
+	return strings.Split(db.GetString(key), "|")
+}
+
+func (db *Database) GetBool(key string) bool {
+	return db.GetString(key) == "1"
 }
 
 func (db *Database) SaveBool(key string, value bool) {
@@ -199,8 +191,24 @@ func (db *Database) SaveBool(key string, value bool) {
 	db.SaveString(key, v)
 }
 
+func (db *Database) SaveMultiString(key string, value []string) {
+	db.SaveString(key, strings.Join(value, "|"))
+}
+
+func (db *Database) GetInt(key string) int {
+	return parseInt(db.GetString(key))
+}
+
 func (db *Database) SaveInt(key string, value int) {
 	db.SaveString(key, strconv.Itoa(value))
+}
+
+func (db *Database) GetFloat(key string) float64 {
+	return parseFloat(db.GetString(key))
+}
+
+func (db *Database) SaveFloat(key string, value float64) {
+	db.SaveString(key, fmt.Sprintf("%f", value))
 }
 
 func (db *Database) newSessionKey() string {

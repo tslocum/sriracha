@@ -133,11 +133,14 @@ var templateFuncMap = template.FuncMap{
 	},
 	"ToUpper": strings.ToUpper,
 	"Title":   strings.Title,
-	"ZeroPadTo3": func(i int) string {
-		return fmt.Sprintf("%03d", i)
+	"UnderscoreTitle": func(text string) string {
+		return strings.Title(strings.ReplaceAll(text, "_", " "))
 	},
 	"URLEscape": func(text string) string {
 		return url.PathEscape(text)
+	},
+	"ZeroPadTo3": func(i int) string {
+		return fmt.Sprintf("%03d", i)
 	},
 }
 

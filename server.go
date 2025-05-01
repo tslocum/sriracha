@@ -907,6 +907,14 @@ func parseInt(v string) int {
 	return 0
 }
 
+func parseFloat(v string) float64 {
+	i, err := strconv.ParseFloat(v, 64)
+	if err == nil && i > 0 {
+		return i
+	}
+	return 0
+}
+
 func formString(r *http.Request, key string) string {
 	return strings.TrimSpace(r.FormValue(key))
 }

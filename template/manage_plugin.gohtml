@@ -11,7 +11,7 @@
             <table border="0" class="manageform">
                 {{range $i, $option := .Manage.Plugin.Config}}
                     <tr>
-                        <td class="postblock"><label for="config_{{$option.Name}}">{{$option.Name | Title}}</label></td>
+                        <td class="postblock"><label for="config_{{$option.Name}}">{{$option.Name | UnderscoreTitle}}</label></td>
                         <td>{{template "manage_plugin_option.gohtml" $option}}</td>
                         <td>{{$option.Description}}</td>
                     </tr>

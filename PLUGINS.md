@@ -50,7 +50,6 @@ The following single-value data types are supported:
 - Boolean
 - Integer
 - Float
-- Range
 - Enum
 - String
 

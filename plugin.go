@@ -15,9 +15,8 @@ const (
 	TypeBoolean PluginConfigType = 0
 	TypeInteger PluginConfigType = 1
 	TypeFloat   PluginConfigType = 2
-	TypeRange   PluginConfigType = 3
-	TypeEnum    PluginConfigType = 4
-	TypeString  PluginConfigType = 5
+	TypeEnum    PluginConfigType = 3
+	TypeString  PluginConfigType = 4
 )
 
 // PluginConfig represents a plugin configuration option.
@@ -43,12 +42,32 @@ func (c PluginConfig) validate() error {
 	}
 }
 
-// Options returns the value of the provided option as a collection of strings.
+// Options returns the options of the provided configuration option as a collection of strings.
 func (c PluginConfig) Options() []string {
-	if !c.Multiple {
+	if c.Type != TypeEnum {
+		return nil
+	}
+	return strings.Split(c.Default, "|")
+}
+
+// Values returns the value of the provided configuration option as a collection of strings.
+func (c PluginConfig) Values() []string {
+	if c.Value == "" {
+		return nil
+	} else if !c.Multiple {
 		return []string{c.Value}
 	}
 	return strings.Split(c.Value, "|")
+}
+
+// HaveInt returns whether an integer value is selected.
+func (c PluginConfig) HaveInt(i int) bool {
+	for _, v := range c.Values() {
+		if parseInt(v) == i {
+			return true
+		}
+	}
+	return false
 }
 
 // Plugin describes the required methods for a plugin.
@@ -127,7 +146,12 @@ func RegisterPlugin(plugin any) {
 			} else if config[i].Type == TypeBoolean && config[i].Default == "" {
 				config[i].Default = "0"
 			}
-			config[i].Value = config[i].Default
+
+			if config[i].Type == TypeEnum {
+				config[i].Value = ""
+			} else {
+				config[i].Value = config[i].Default
+			}
 		}
 	}
 

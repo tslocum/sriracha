@@ -20,13 +20,18 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 		pUpdate, _ := allPlugins[pluginID-1].(PluginWithUpdate)
 		info := allPluginInfo[pluginID-1]
 		for i, c := range info.Config {
-			if info.Config[i].Value == c.Default {
+			defaultValue := c.Default
+			if c.Type == TypeEnum {
+				defaultValue = ""
+			}
+
+			if info.Config[i].Value == defaultValue {
 				continue
 			}
 			oldValue := info.Config[i].Value
 
-			db.SaveString(strings.ToLower(info.Name+"."+c.Name), c.Default)
-			info.Config[i].Value = c.Default
+			db.SaveString(strings.ToLower(info.Name+"."+c.Name), defaultValue)
+			info.Config[i].Value = defaultValue
 
 			if pUpdate != nil {
 				pluginDB := &Database{
@@ -53,7 +58,7 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 			if changes != "" {
 				changes += " "
 			}
-			changes += fmt.Sprintf(`[%s: "%s" > "%s"]`, strings.Title(c.Name), oldLabel, newLabel)
+			changes += fmt.Sprintf(`[%s: "%s" > "%s"]`, strings.Title(strings.ReplaceAll(c.Name, "_", " ")), oldLabel, newLabel)
 		}
 
 		if changes != "" {
@@ -88,13 +93,15 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 				var newValue string
 				for _, key := range formKeys {
 					values := r.Form[key]
-					if len(values) > 0 && strings.HasPrefix(key, "config_"+c.Name) {
-						if strings.TrimSpace(values[0]) == "" {
-							continue
-						} else if newValue != "" {
-							newValue += "|"
+					if strings.HasPrefix(key, "config_"+c.Name) && len(values) > 0 {
+						for _, v := range values {
+							if strings.TrimSpace(v) == "" {
+								continue
+							} else if newValue != "" {
+								newValue += "|"
+							}
+							newValue += v
 						}
-						newValue += values[0]
 					}
 				}
 
@@ -116,7 +123,7 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 					if changes != "" {
 						changes += " "
 					}
-					changes += fmt.Sprintf(`[%s: "%s" > "%s"]`, strings.Title(c.Name), oldLabel, newLabel)
+					changes += fmt.Sprintf(`[%s: "%s" > "%s"]`, strings.Title(strings.ReplaceAll(c.Name, "_", " ")), oldLabel, newLabel)
 
 					db.SaveString(strings.ToLower(info.Name+"."+c.Name), newValue)
 					info.Config[i].Value = newValue
