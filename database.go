@@ -98,10 +98,12 @@ func (db *Database) initialize() error {
 		return nil
 	}
 
+	fmt.Printf("Initializing database version 1...\n")
 	_, err = db.conn.Exec(context.Background(), dbSchema[0])
 	if err != nil {
 		return fmt.Errorf("failed to create database: %s", err)
 	}
+	fmt.Printf("Database initialized.\n")
 	return nil
 }
 
@@ -128,7 +130,7 @@ func (db *Database) upgrade() error {
 			return fmt.Errorf("failed to upgrade database to version %d: %s", v, err)
 		}
 	}
-	fmt.Printf("Upgrade complete.\n")
+	fmt.Printf("Database upgraded.\n")
 	return nil
 }
 

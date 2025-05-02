@@ -7,8 +7,8 @@ var dbSchema = []string{ // Version 1.
 	password text NOT NULL,
 	role integer NOT NULL,
 	lastactive bigint NOT NULL,
-	session varchar(64) NOT NULL,
-	style varchar(64) NOT NULL DEFAULT ''
+	session varchar(64) NOT NULL
+	-- v2: style varchar(64) NOT NULL DEFAULT ''
 );
 CREATE UNIQUE INDEX ON account (username);
 CREATE UNIQUE INDEX ON account (session);
