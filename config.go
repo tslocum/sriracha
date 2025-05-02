@@ -38,6 +38,7 @@ type Config struct {
 	Username string // Database username.
 	Password string // Database password.
 	DBName   string // Database name.
+	DBURL    string // Database connection URL.
 
 	Template string // Custom template directory.
 

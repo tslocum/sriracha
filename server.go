@@ -110,19 +110,24 @@ func (s *Server) parseConfig(configFile string) error {
 		return fmt.Errorf("saltpass (lowercase!) must be set in %s to the two-way secure data hashing salt (a long string of random data which, once set, never changes)", configFile)
 	case config.SaltTrip == "":
 		return fmt.Errorf("salttrip (lowercase!) must be set in %s to the secure tripcode generation salt (a long string of random data which, once set, never changes)", configFile)
-	case config.Address == "":
-		return fmt.Errorf("address (lowercase!) must be set in %s to the database address (hostname:port)", configFile)
-	case config.Username == "":
-		return fmt.Errorf("username (lowercase!) must be set in %s to the database username", configFile)
-	case config.Password == "":
-		return fmt.Errorf("password (lowercase!) must be set in %s to the database password", configFile)
-	case config.DBName == "":
-		return fmt.Errorf("dbname (lowercase!) must be set in %s to the database name", configFile)
-	default:
-		s.config = config
-		s.config.importMode = s.config.Import.Enabled()
-		return nil
 	}
+
+	if config.DBURL == "" {
+		switch {
+		case config.Address == "":
+			return fmt.Errorf("address (lowercase!) must be set in %s to the database address (hostname:port)", configFile)
+		case config.Username == "":
+			return fmt.Errorf("username (lowercase!) must be set in %s to the database username", configFile)
+		case config.Password == "":
+			return fmt.Errorf("password (lowercase!) must be set in %s to the database password", configFile)
+		case config.DBName == "":
+			return fmt.Errorf("dbname (lowercase!) must be set in %s to the database name", configFile)
+		}
+	}
+
+	s.config = config
+	s.config.importMode = s.config.Import.Enabled()
+	return nil
 }
 
 func (s *Server) loadPlugin(pluginPath string) error {
@@ -781,7 +786,7 @@ func (s *Server) Run() error {
 		fmt.Println("Running in development mode. Template files are monitored for changes.")
 	}
 
-	s.dbPool, err = connectDatabase(s.config.Address, s.config.Username, s.config.Password, s.config.DBName, 1, 1)
+	s.dbPool, err = connectDatabase(s.config)
 	if err != nil {
 		return err
 	}

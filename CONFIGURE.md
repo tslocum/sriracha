@@ -68,6 +68,11 @@ password: "hunter2"
 # Database name.
 dbname: "sriracha"
 
+# Database connection URL. Allows specifying additional connection options.
+# This option supercedes the address, username, password and dbname options.
+# See https://pkg.go.dev/github.com/jackc/pgx/v5@v5.7.4/pgconn#ParseConfig
+#dburl: "postgresql://sriracha:hunter2@localhost/sriracha"
+
 # Custom template directory. Leave blank to use standard templates. Template
 # files in this directory will override standard templates of the same name.
 template: "/home/sriracha/template"

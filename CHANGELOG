@@ -1,2 +1,5 @@
+1.0.1:
+- Allow database connection URL to be specified
+
 1.0.0:
 - Initial release

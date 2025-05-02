@@ -27,16 +27,19 @@ type Database struct {
 	plugin string
 }
 
-func connectDatabase(address string, username string, password string, dbName string, poolMin int, poolMax int) (*pgxpool.Pool, error) {
-	url := fmt.Sprintf("postgres://%s:%s@%s/%s", username, password, address, dbName)
+func connectDatabase(c Config) (*pgxpool.Pool, error) {
+	url := c.DBURL
+	if strings.TrimSpace(url) == "" {
+		url = fmt.Sprintf("postgres://%s:%s@%s/%s", c.Username, c.Password, c.Address, c.DBName)
+	}
 
 	config, err := pgxpool.ParseConfig(url)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to parse database configuration: %s", err)
 	}
-	config.MinConns = int32(poolMin)
-	config.MinIdleConns = int32(poolMin)
-	config.MaxConns = int32(poolMax)
+	config.MinConns = 1
+	config.MinIdleConns = 1
+	config.MaxConns = 1
 
 	pool, err := pgxpool.NewWithConfig(context.Background(), config)
 	if err != nil {
