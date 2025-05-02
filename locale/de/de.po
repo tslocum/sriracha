@@ -1,0 +1,232 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2025-05-02 16:52+0000\n"
+"Last-Translator: Dorianox <dorianox@noreply.codeberg.org>\n"
+"Language-Team: German <https://translate.codeberg.org/projects/sriracha/"
+"sriracha/de/>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.10.2\n"
+
+msgid "%d post omitted. Click Reply to view."
+msgid_plural "%d posts omitted. Click Reply to view."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Accounts"
+msgstr "Benutzerkonten"
+
+msgid "Admin"
+msgstr "Administrator"
+
+msgid "Ban"
+msgstr "Verbannen"
+
+msgid "Banned keyword detected in post."
+msgstr "Verbotenes Schlagwort in Beitrag entdeckt"
+
+msgid "Bans"
+msgstr "Verbote"
+
+msgid "Boards"
+msgstr "Foren"
+
+msgid "Capcode"
+msgstr ""
+
+msgid "Catalog"
+msgstr "Katalog"
+
+msgid "Change Password"
+msgstr "Passwort ändern"
+
+msgid "Click here to go back"
+msgstr "Hier Klicken um zurück zu gehen"
+
+msgid "Confirm"
+msgstr "Bestätigen"
+
+msgid "Create Thread"
+msgstr ""
+
+msgid "Currently %d unique user post."
+msgid_plural "Currently %d unique user posts."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Delete"
+msgstr "Löschen"
+
+msgid "Delete %s"
+msgstr "Lösche %s"
+
+msgid "Delete & ban"
+msgstr "Lösche & Verbiete"
+
+msgid "Delete & ban for 1 hour"
+msgstr "Lösche & verbiete für eine Stunde"
+
+msgid "Delete & ban for 1 day"
+msgstr "Lösche & verbiete für einen Tag"
+
+msgid "Delete & ban for 2 days"
+msgstr "Lösche & verbiete für zwei Tage"
+
+msgid "Delete & ban for 1 week"
+msgstr ""
+
+msgid "Delete & ban for 2 weeks"
+msgstr ""
+
+msgid "Delete & ban for 1 month"
+msgstr ""
+
+msgid "Delete & ban permanently"
+msgstr ""
+
+msgid "Delete Post"
+msgstr ""
+
+msgid "Detected banned keyword."
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Embed"
+msgstr ""
+
+msgid "Error: %s"
+msgstr ""
+
+msgid "Exit"
+msgstr ""
+
+msgid "Failed to embed media."
+msgstr ""
+
+msgid "File"
+msgstr ""
+
+msgid "Hide until approved"
+msgstr ""
+
+msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
+msgstr ""
+
+msgid "Incorrect CAPTCHA text. Please try again."
+msgstr ""
+
+msgid "Incorrect password."
+msgstr ""
+
+msgid "Keywords"
+msgstr ""
+
+msgid "Log Out"
+msgstr ""
+
+msgid "Logs"
+msgstr ""
+
+msgid "Manage"
+msgstr ""
+
+msgid "Manage mode"
+msgstr ""
+
+msgid "Maximum file size allowed is %s."
+msgstr ""
+
+msgid "Message"
+msgstr ""
+
+msgid "Mod"
+msgstr ""
+
+msgid "Mod mode"
+msgstr ""
+
+msgid "Mod mode: View"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "No board specified."
+msgstr ""
+
+msgid "No post selected."
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Please wait %s before creating a new post."
+msgstr ""
+
+msgid "Plugins"
+msgstr ""
+
+msgid "Post truncated. Click Reply to view."
+msgstr ""
+
+msgid "Posting mode: Reply"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Reply"
+msgstr ""
+
+msgid "Report"
+msgstr ""
+
+msgid "Reported No.%d"
+msgstr ""
+
+msgid "Return"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Supported file types are %s."
+msgstr ""
+
+msgid "Unknown"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "Your post will be shown once it has been approved."
+msgstr ""
+
+msgid "click to refresh"
+msgstr ""
+
+msgid "for post and file deletion"
+msgstr ""
+
+msgid "paste a YouTube URL"
+msgstr ""
