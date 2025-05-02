@@ -34,43 +34,43 @@ visit the accounts page and change your username and password.
 
 ```yaml
 # Interface language. See locale directory for available languages.
-locale: en
+locale: "en"
 
 # Directory where board files are written to.
-root: /home/sriracha/public_html
+root: "/home/sriracha/public_html"
 
 # Address:Port to listen for HTTP connections on.
-serve: localhost:8080
+serve: "localhost:8080"
 
 # Client IP address header. Must be set when running behind a reverse proxy.
 # When running behind CloudFlare, use CF-Connecting-IP. When running without
 # a proxy, leave blank.
-header: X-Forwarded-For
+header: "X-Forwarded-For"
 
 # Long random string of text used when one-way hashing data. Must not change once set.
-saltdata: CHANGEME_Random_Data_Here_1
+saltdata: "CHANGEME_Random_Data_Here_1"
 
 # Long random string of text used when two-way hashing data. Must not change once set.
-saltpass: CHANGEME_Random_Data_Here_2
+saltpass: "CHANGEME_Random_Data_Here_2"
 
 # Long random string of text used when generating secure tripcodes. Must not change once set.
-salttrip: CHANGEME_Random_Data_Here_3
+salttrip: "CHANGEME_Random_Data_Here_3"
 
 # Address:Port to connect to the database.
-address: localhost
+address: "localhost"
 
 # Database username.
-username: sriracha
+username: "sriracha"
 
 # Database password.
-password: hunter2
+password: "hunter2"
 
 # Database name.
-dbname: sriracha
+dbname: "sriracha"
 
 # Custom template directory. Leave blank to use standard templates. Template
 # files in this directory will override standard templates of the same name.
-template: /home/sriracha/template
+template: "/home/sriracha/template"
 
 # Supported upload file types. Specify a file extension and a MIME type to
 # enable uploading files of that type. You may specify an image to use as the
@@ -78,26 +78,26 @@ template: /home/sriracha/template
 # Otherwise, thumbnails are generated automatically based on the uploaded file.
 # To generate video thumbnails, ffmpeg must be installed.
 #
-# Format: ext mime thumbnail
+# Format: "ext mime thumbnail
 uploads:
-  - jpg image/jpeg
-  - jpg image/pjpeg
-  - png image/png
-  - gif image/gif
-  - wav audio/wav
-  - wav audio/wave
-  - wav audio/x-wav
-  - aac audio/aac
-  - ogg audio/ogg
-  - flac audio/flac
-  - opus audio/opus
-  - mp3 audio/mp3
-  - mp3 audio/mpeg
-  - mp4 audio/mp4
-  - mp4 video/mp4
-  - webm audio/webm
-  - webm video/webm
-  - swf application/x-shockwave-flash swf.png
+  - "jpg image/jpeg"
+  - "jpg image/pjpeg"
+  - "png image/png"
+  - "gif image/gif"
+  - "wav audio/wav"
+  - "wav audio/wave"
+  - "wav audio/x-wav"
+  - "aac audio/aac"
+  - "ogg audio/ogg"
+  - "flac audio/flac"
+  - "opus audio/opus"
+  - "mp3 audio/mp3"
+  - "mp3 audio/mpeg"
+  - "mp4 audio/mp4"
+  - "mp4 video/mp4"
+  - "webm audio/webm"
+  - "webm video/webm"
+  - "swf application/x-shockwave-flash swf.png"
 ```
 
 ## Example reverse proxy using caddy (Caddyfile)
