@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html"
 	"html/template"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -117,6 +118,22 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			s.deletePost(db, thread)
 		}
 		db.deleteBoard(b.ID)
+
+		if b.Dir != "" {
+			var skipDeleteDir bool
+			boardPath := filepath.Join(s.config.Root, b.Dir)
+			pattern := regexp.MustCompile(`^(index|catalog|[0-9]+).html$`)
+			filepath.WalkDir(boardPath, func(path string, d fs.DirEntry, err error) error {
+				if !d.IsDir() && !pattern.MatchString(d.Name()) && err == nil {
+					skipDeleteDir = true
+					return filepath.SkipAll
+				}
+				return nil
+			})
+			if !skipDeleteDir {
+				os.RemoveAll(boardPath)
+			}
+		}
 
 		db.log(data.Account, nil, fmt.Sprintf("Deleted >>/board/%d", b.ID), "")
 
