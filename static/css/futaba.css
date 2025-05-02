@@ -34,7 +34,6 @@ hr {
 
 .replymode {
 	background: #E04000;
-	text-align: center;
 	padding: 2px;
 	color: #FFFFFF;
 	width: 100%;
@@ -42,7 +41,6 @@ hr {
 
 .manageinfo {
 	background: #00B930;
-	text-align: center;
 	padding: 2px;
 	color: #FFFFFF;
 	width: 100%;
@@ -50,7 +48,6 @@ hr {
 
 .catalogmode {
 	background: #0040E0;
-	text-align: center;
 	padding: 2px;
 	color: #FFFFFF;
 	width: 100%;

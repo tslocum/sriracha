@@ -39,6 +39,7 @@ type Account struct {
 	Role       AccountRole
 	LastActive int64
 	Session    string
+	Style      string
 }
 
 func (a *Account) loadForm(r *http.Request) {

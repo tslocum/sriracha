@@ -116,12 +116,19 @@ func (db *Database) upgrade() error {
 		return fmt.Errorf("failed to parse database version: %s", err)
 	}
 	maxVersion := len(dbSchema)
+	if version == maxVersion {
+		return nil
+	} else if version > maxVersion {
+		return fmt.Errorf("database version %d is newer than application version %d", version, maxVersion)
+	}
+	fmt.Printf("Upgrading database from version %d to %d...\n", version, maxVersion)
 	for v := version + 1; v <= maxVersion; v++ {
 		_, err = db.conn.Exec(context.Background(), dbSchema[v-1])
 		if err != nil {
 			return fmt.Errorf("failed to upgrade database to version %d: %s", v, err)
 		}
 	}
+	fmt.Printf("Upgrade complete.\n")
 	return nil
 }
 

@@ -1,0 +1,34 @@
+{{template "manage_begin.gohtml" .}}
+<form method="post">
+    <input type="hidden" name="action" value="style">
+	<fieldset>
+        <legend>Change Style</legend>
+        <table border="0" class="manageform">
+            <tr>
+                <td class="postblock">Style</td>
+                <td>
+                    <select name="style">
+                        <option value=""{{if ne .Account.Style "burichan"}} selected{{end}}>Futaba</option>
+                        <option value="burichan"{{if eq .Account.Style "burichan"}} selected{{end}}>Burichan</option>
+                    </select>
+                </td>
+            </tr>
+            <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 100%;" value="Change Style"></td></tr>
+        </table>
+        <legend>
+	</fieldset>
+</form><br>
+<form method="post">
+    <input type="hidden" name="action" value="password">
+	<fieldset>
+        <legend>Change Password</legend>
+        <table border="0" class="manageform">
+            <tr><td class="postblock">Current</td><td><input type="password" name="old"></td></tr>
+            <tr><td class="postblock">New</td><td><input type="password" name="new"></td></tr>
+            <tr><td class="postblock">New (confirm)</td><td><input type="password" name="confirmation"></td></tr>
+            <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 100%;" value="Change Password"></td></tr>
+        </table>
+        <legend>
+	</fieldset>
+</form>
+{{template "manage_end.gohtml" .}}

@@ -146,13 +146,25 @@ legend {
 	font-weight: bold;
 }
 
+.replymode {
+	text-align: center;
+}
+
+.manageinfo {
+	text-align: center;
+}
+
+.catalogmode {
+	text-align: center;
+}
+
 .managetitle {
 	margin-top: 5px;
 	margin-bottom: 10px;
 	margin-left: 5px;
 }
 
-.manageform input {
+.manageform input, .manageform select, .manageform textarea {
 	width: 100%;
 	box-sizing: border-box;
 }

@@ -1,13 +1,14 @@
 package sriracha
 
-var dbSchema = []string{`
-CREATE TABLE account (
+var dbSchema = []string{ // Version 1.
+	`CREATE TABLE account (
 	id smallserial PRIMARY KEY,
 	username varchar(255) NOT NULL,
 	password text NOT NULL,
 	role integer NOT NULL,
 	lastactive bigint NOT NULL,
-	session varchar(64) NOT NULL
+	session varchar(64) NOT NULL,
+	style varchar(64) NOT NULL DEFAULT ''
 );
 CREATE UNIQUE INDEX ON account (username);
 CREATE UNIQUE INDEX ON account (session);
@@ -146,5 +147,8 @@ CREATE TABLE report (
 	timestamp bigint NOT NULL,
 	ip varchar(64) NOT NULL
 );
-CREATE UNIQUE INDEX ON report (board, post, ip);
-`}
+CREATE UNIQUE INDEX ON report (board, post, ip);`,
+	// Version 2.
+	`ALTER TABLE account ADD COLUMN style varchar(64) NOT NULL DEFAULT '';
+	UPDATE config SET value = '2' WHERE name = 'version';`,
+}

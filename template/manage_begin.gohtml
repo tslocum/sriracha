@@ -10,8 +10,8 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1">
 		<title>{{.Opt.SiteName}} - {{T "Manage mode" | Title}}</title>
 		<link rel="stylesheet" type="text/css" href="/static/css/global.css">
-		<link rel="stylesheet" type="text/css" href="/static/css/futaba.css" title="Futaba" id="mainStylesheet">
-		<link rel="alternate stylesheet" type="text/css" href="/static/css/burichan.css" title="Burichan">
+		<link rel="{{if and (ne .Account nil) (eq .Account.Style "burichan")}}alternate {{end}}stylesheet" type="text/css" href="/static/css/futaba.css" title="Futaba" id="mainStylesheet">
+		<link rel="{{if or (eq .Account nil) (ne .Account.Style "burichan")}}alternate {{end}}stylesheet" type="text/css" href="/static/css/burichan.css" title="Burichan">
 	</head>
     <body>
 		{{if ne .Account nil}}
@@ -34,7 +34,7 @@
 		{{end}}
 		<div class="adminbar">
 			{{if ne .Account nil}}
-				[<a href="/sriracha/password/" style="text-decoration: underline;">{{T "Change Password"}}</a>]
+				[<a href="/sriracha/preference/" style="text-decoration: underline;">{{T "Preferences"}}</a>]
 				[<a href="/sriracha/logout/" style="text-decoration: underline;">{{T "Log Out"}}</a>] &middot;
 			{{end}}
 			[<a href="{{.Opt.SiteHome}}" style="text-decoration: underline;">{{T "Return"}}</a>]

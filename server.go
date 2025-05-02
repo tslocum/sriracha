@@ -599,8 +599,8 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 	}
 
 	switch {
-	case strings.HasPrefix(r.URL.Path, "/sriracha/password"):
-		s.serveChangePassword(data, db, w, r)
+	case strings.HasPrefix(r.URL.Path, "/sriracha/preference"):
+		s.servePreference(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/account"):
 		s.serveAccount(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/ban"):

@@ -1,4 +1,5 @@
 1.0.1:
+- Add management panel style account preference
 - Allow database connection URL to be specified
 
 1.0.0:
