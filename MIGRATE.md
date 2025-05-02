@@ -106,13 +106,13 @@ with your TinyIB PostgreSQL database connection info and table names.
 # Note: Posting is disabled when running in import mode.
 import:
   # Connection info.
-  address: localhost # Address:Port to connect to the database.
-  username: tinyib   # Database username.
-  password: hunter2  # Database password.
-  dbname: tinyib     # Database name.
+  address: "localhost" # Address:Port to connect to the database.
+  username: "tinyib"   # Database username.
+  password: "hunter2"  # Database password.
+  dbname: "tinyib"     # Database name.
   # Table names.
-  posts: dir_posts   # Required.
-  keywords: keywords # Optional.
+  posts: "dir_posts"   # Required.
+  keywords: "keywords" # Optional.
 ```
 
 ### 4. Start Sriracha and visit the management panel
