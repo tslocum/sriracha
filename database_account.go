@@ -103,8 +103,7 @@ func (db *Database) allAccounts() []*Account {
 	var accounts []*Account
 	for rows.Next() {
 		a := &Account{}
-		var password string
-		err = rows.Scan(&a.ID, &a.Username, &password, &a.Role, &a.LastActive, &a.Session)
+		err = scanAccount(a, rows)
 		if err != nil {
 			log.Fatalf("failed to select accounts: %s", err)
 		}

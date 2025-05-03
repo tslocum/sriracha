@@ -1,3 +1,6 @@
+1.0.2:
+- Fix accounts page error
+
 1.0.1:
 - Add management panel style account preference
 - Allow database connection URL to be specified
