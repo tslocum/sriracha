@@ -24,6 +24,17 @@ builds:
     goarch:
       - amd64
   -
+    id: robot9000
+    buildmode: plugin
+    main: ./plugin/robot9000/
+    binary: ./plugin/robot9000.so
+    ldflags:
+      - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
+    goos:
+      - linux
+    goarch:
+      - amd64
+  -
     id: sriracha
     main: ./cmd/sriracha/
     ldflags:
@@ -40,6 +51,7 @@ archives:
       - sriracha
       - bbcode
       - fortune
+      - robot9000
     wrap_in_directory: sriracha
     allow_different_binary_count: true
     name_template: >-

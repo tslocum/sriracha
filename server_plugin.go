@@ -12,6 +12,7 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 		return
 	}
 	data.Template = "manage_plugin"
+	data.Boards = db.allBoards()
 
 	pluginID := pathInt(r, "/sriracha/plugin/reset/")
 	if pluginID > 0 && pluginID <= len(allPluginInfo) {

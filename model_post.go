@@ -71,6 +71,13 @@ type Post struct {
 	Replies int
 }
 
+func (p *Post) Copy() *Post {
+	pp := &Post{}
+	*pp = *p
+	pp.Board = p.Board
+	return pp
+}
+
 var postUploadFileLock = &sync.Mutex{}
 
 func (p *Post) setFileAndThumb(fileExt string, thumbExt string) {

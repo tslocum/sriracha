@@ -374,7 +374,6 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 
 				data := s.buildData(db, w, r)
 				data.BoardError(w, err.Error())
-				log.Printf("warning: plugin failed to handle post event: %s", err.Error())
 				return
 			}
 			post.Message = strings.ReplaceAll(post.Message, "<br>", "\n")
@@ -462,6 +461,20 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	if !staffPost && (b.Approval == ApprovalAll || (b.Approval == ApprovalFile && post.File != "")) {
 		post.Moderated = 0
 	}
+
+	postCopy := post.Copy()
+	for _, info := range allPluginInsertHandlers {
+		db.plugin = info.Name
+		err := info.Handler(db, postCopy)
+		if err != nil {
+			s.deletePostFiles(post)
+
+			data := s.buildData(db, w, r)
+			data.BoardError(w, err.Error())
+			return
+		}
+	}
+	db.plugin = ""
 
 	db.addPost(post)
 

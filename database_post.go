@@ -212,6 +212,18 @@ func (db *Database) postByFileHash(hash string) *Post {
 	return p
 }
 
+func (db *Database) PostByField(b *Board, field string, value any) *Post {
+	p := &Post{}
+	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT *, 0 as replies FROM post WHERE board = $1 AND "+field+" = $2 LIMIT 1", b.ID, value))
+	if err == pgx.ErrNoRows {
+		return nil
+	} else if err != nil || p.ID == 0 {
+		log.Fatalf("failed to select post: %s", err)
+	}
+	p.Board = b
+	return p
+}
+
 func (db *Database) lastPostByIP(board *Board, ip string) *Post {
 	p := &Post{}
 	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT *, 0 as replies FROM post WHERE board = $1 AND ip = $2 ORDER BY id DESC LIMIT 1", board.ID, ip))

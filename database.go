@@ -211,6 +211,18 @@ func (db *Database) GetInt(key string) int {
 	return parseInt(db.GetString(key))
 }
 
+func (db *Database) GetMultiInt(key string) []int {
+	s := db.GetString(key)
+	if s == "" {
+		return nil
+	}
+	var values []int
+	for _, v := range strings.Split(s, "|") {
+		values = append(values, parseInt(v))
+	}
+	return values
+}
+
 func (db *Database) SaveInt(key string, value int) {
 	db.SaveString(key, strconv.Itoa(value))
 }
