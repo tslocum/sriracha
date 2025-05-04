@@ -189,7 +189,7 @@ func (db *Database) SaveString(key string, value string) {
 }
 
 func (db *Database) GetMultiString(key string) []string {
-	return strings.Split(db.GetString(key), "|")
+	return strings.Split(db.GetString(key), "|||")
 }
 
 func (db *Database) GetBool(key string) bool {
@@ -205,7 +205,7 @@ func (db *Database) SaveBool(key string, value bool) {
 }
 
 func (db *Database) SaveMultiString(key string, value []string) {
-	db.SaveString(key, strings.Join(value, "|"))
+	db.SaveString(key, strings.Join(value, "|||"))
 }
 
 func (db *Database) GetInt(key string) int {
@@ -218,7 +218,7 @@ func (db *Database) GetMultiInt(key string) []int {
 		return nil
 	}
 	var values []int
-	for _, v := range strings.Split(s, "|") {
+	for _, v := range strings.Split(s, "|||") {
 		values = append(values, parseInt(v))
 	}
 	return values

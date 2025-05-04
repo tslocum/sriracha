@@ -35,6 +35,17 @@ builds:
     goarch:
       - amd64
   -
+    id: wordfilter
+    buildmode: plugin
+    main: ./plugin/wordfilter/
+    binary: ./plugin/wordfilter.so
+    ldflags:
+      - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
+    goos:
+      - linux
+    goarch:
+      - amd64
+  -
     id: sriracha
     main: ./cmd/sriracha/
     ldflags:
@@ -52,6 +63,7 @@ archives:
       - bbcode
       - fortune
       - robot9000
+      - wordfilter
     wrap_in_directory: sriracha
     allow_different_binary_count: true
     name_template: >-

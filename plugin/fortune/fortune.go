@@ -12,7 +12,7 @@ const (
 	configFortunes = "fortunes"
 
 	defaultTrigger  = "#fortune"
-	defaultFortunes = `<font color="#B604A2"><b>Your fortune: Godly Luck</b></font>|<font color="indigo"><b>Your fortune: Outlook good</b></font>|<font color="dodgerblue"><b>Your fortune: You will meet a dark handsome stranger</b></font>|<font color="darkorange"><b>Your fortune: Good Luck</b></font>|<font color="royalblue"><b>Your fortune: Better not tell you now</b></font>|<font color="deeppink"><b>Your fortune: Reply hazy; try again</b></font>|<font color="lime"><b>Your fortune: Very Bad Luck</b></font>|<font color="lime"><b>Your fortune: Good news will come to you by mail</b></font>|<font color="#BFC52F"><b>Your fortune: Average Luck</b></font>`
+	defaultFortunes = `<font color="#B604A2"><b>Your fortune: Godly Luck</b></font>|||<font color="indigo"><b>Your fortune: Outlook good</b></font>|||<font color="dodgerblue"><b>Your fortune: You will meet a dark handsome stranger</b></font>|||<font color="darkorange"><b>Your fortune: Good Luck</b></font>|||<font color="royalblue"><b>Your fortune: Better not tell you now</b></font>|||<font color="deeppink"><b>Your fortune: Reply hazy; try again</b></font>|||<font color="lime"><b>Your fortune: Very Bad Luck</b></font>|||<font color="lime"><b>Your fortune: Good news will come to you by mail</b></font>|||<font color="#BFC52F"><b>Your fortune: Average Luck</b></font>`
 )
 
 type Fortune struct{}

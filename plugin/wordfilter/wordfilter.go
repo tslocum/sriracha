@@ -33,7 +33,7 @@ type Wordfilter struct {
 }
 
 func (w *Wordfilter) About() string {
-	return "Replace text in post messages."
+	return "Find and replace text in post messages."
 }
 
 func (w *Wordfilter) Config() []sriracha.PluginConfig {

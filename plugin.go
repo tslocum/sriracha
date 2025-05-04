@@ -48,7 +48,7 @@ func (c PluginConfig) Options() []string {
 	if c.Type != TypeEnum {
 		return nil
 	}
-	return strings.Split(c.Default, "|")
+	return strings.Split(c.Default, "|||")
 }
 
 // Values returns the value of the provided configuration option as a collection of strings.
@@ -58,7 +58,7 @@ func (c PluginConfig) Values() []string {
 	} else if !c.Multiple {
 		return []string{c.Value}
 	}
-	return strings.Split(c.Value, "|")
+	return strings.Split(c.Value, "|||")
 }
 
 // HaveInt returns whether an integer value is selected.

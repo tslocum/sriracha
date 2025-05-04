@@ -99,7 +99,7 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 							if strings.TrimSpace(v) == "" {
 								continue
 							} else if newValue != "" {
-								newValue += "|"
+								newValue += "|||"
 							}
 							newValue += v
 						}
