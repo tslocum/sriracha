@@ -9,6 +9,12 @@ the source code. Never load a compiled plugin built by someone else.
 Official plugins are located in the [plugin](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin)
 directory. Plugin API documentation is available via [godoc](https://pkg.go.dev/codeberg.org/tslocum/sriracha#section-documentation).
 
+| Plugin | Description |
+| -- | -- |
+| BBCode | Format BBCode in post messages. |
+| Fortune | Give your posters some good luck (or bad). |
+| Robot9000 | Require post messages to be unique. |
+
 ## Instructions
 
 To build a plugin, run the following commands:
@@ -52,6 +58,7 @@ The following single-value data types are supported:
 - Float
 - Enum
 - String
+- Board
 
 All data types except booleans may also have multiple values.
 
