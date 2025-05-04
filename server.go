@@ -12,6 +12,7 @@ import (
 	"log"
 	"math"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"path"
@@ -634,6 +635,24 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
+	if r.Method == http.MethodPost {
+		const maxMemory = 32 << 20 // 32 megabytes.
+		r.ParseMultipartForm(maxMemory)
+
+		var modified bool
+		f := make(url.Values)
+		for key, values := range r.Form {
+			f[key] = make([]string, len(values))
+			for i := range values {
+				modified = true
+				f[key][i] = strings.ReplaceAll(values[i], "\r", "")
+			}
+		}
+		if modified {
+			r.Form = f
+		}
+	}
+
 	var action string
 	if r.URL.Path == "/sriracha/" || r.URL.Path == "/sriracha" {
 		action = r.FormValue("action")
@@ -763,7 +782,7 @@ func (s *Server) Run() error {
 	if s.config.Template != "" {
 		_, err := os.Stat(s.config.Template)
 		if os.IsNotExist(err) {
-			log.Fatal("error: custom template directory %s does not exist")
+			log.Fatalf("error: custom template directory %s does not exist", s.config.Template)
 		}
 	}
 

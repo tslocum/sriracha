@@ -21,9 +21,9 @@
                             {{else if or (eq .Type 1) (eq .Type 2)}}{{/* Integer or Float */}}
                                 {{if eq .Multiple true}}
                                     {{range $i, $value := .Values}}
-                                        <input name="config_{{$.Name}}{{$i}}" placeholder="Unused" value="{{$value}}"><br>
+                                        <input name="config_{{$option.Name}}{{$i}}" placeholder="Unused" value="{{$value}}"><br>
                                     {{end}}
-                                    <input name="config_{{$.Name}}{{len .Values}}" placeholder="Unused">
+                                    <input name="config_{{$option.Name}}{{len .Values}}" placeholder="Unused">
                                 {{else}}
                                     <input name="config_{{.Name}}" value="{{.Value}}">
                                 {{end}}
@@ -36,9 +36,9 @@
                             {{else if eq .Type 4}}{{/* String */}}
                                 {{if eq .Multiple true}}
                                     {{range $i, $value := .Values}}
-                                        <textarea name="config_{{$.Name}}{{$i}}" rows="4" cols="80" placeholder="Unused">{{$value}}</textarea><br>
+                                        <textarea name="config_{{$option.Name}}{{$i}}" rows="4" cols="80" placeholder="Unused">{{$value}}</textarea><br>
                                     {{end}}
-                                    <textarea name="config_{{$.Name}}{{len .Values}}" rows="4" cols="80" placeholder="Unused"></textarea>
+                                    <textarea name="config_{{$option.Name}}{{len .Values}}" rows="4" cols="80" placeholder="Unused"></textarea>
                                 {{else}}
                                     <textarea name="config_{{.Name}}" rows="4" cols="80" >{{.Value}}</textarea>
                                 {{end}}
@@ -52,7 +52,7 @@
                                 Unknown configuration option type.
                             {{end}}
                         </td>
-                        <td>{{$option.Description}}</td>
+                        <td>{{$option.Description | Format}}</td>
                     </tr>
                 {{end}}
                 <tr>

@@ -181,6 +181,7 @@ func (db *Database) GetString(key string) string {
 }
 
 func (db *Database) SaveString(key string, value string) {
+	value = strings.ReplaceAll(value, "\r", "")
 	_, err := db.conn.Exec(context.Background(), "INSERT INTO config VALUES ($1, $2) ON CONFLICT (name) DO UPDATE SET value = $3", db.configKey(key), value, value)
 	if err != nil {
 		log.Fatalf("failed to save string: %s", err)
