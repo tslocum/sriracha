@@ -1,5 +1,6 @@
 1.0.4:
 - Fix parsing blank tripcodes
+- Create thumbnails for SVG image uploads
 - Prevent super-admins from changing their role
 
 1.0.3:

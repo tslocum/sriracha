@@ -123,7 +123,7 @@ template: "/home/sriracha/template"
 # enable uploading files of that type. You may specify an image to use as the
 # thumbnail for all uploads of that type, or 'none' to not create a thumbnail.
 # Otherwise, thumbnails are generated automatically based on the uploaded file.
-# To generate video thumbnails, ffmpeg must be installed.
+# To generate thumbnails for videos or SVG images, ffmpeg must be installed.
 #
 # Format: "ext mime thumbnail
 uploads:
@@ -131,6 +131,7 @@ uploads:
   - "jpg image/pjpeg"
   - "png image/png"
   - "gif image/gif"
+  - "svg image/svg+xml"
   - "wav audio/wav"
   - "wav audio/wave"
   - "wav audio/x-wav"

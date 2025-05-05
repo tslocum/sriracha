@@ -87,10 +87,14 @@ func (p *Post) setFileAndThumb(fileExt string, thumbExt string) {
 	fileID := time.Now().UnixNano()
 	fileIDString := fmt.Sprintf("%d", fileID)
 
-	if thumbExt != "" {
-		thumbExt = fileExt
-	} else if fileExt != "jpg" && fileExt != "png" && fileExt != "gif" {
-		thumbExt = "jpg"
+	if thumbExt == "" {
+		if fileExt == "jpg" || fileExt == "png" || fileExt == "gif" {
+			thumbExt = fileExt
+		} else if fileExt == "svg" {
+			thumbExt = "png"
+		} else {
+			thumbExt = "jpg"
+		}
 	}
 
 	p.File = fileIDString + "." + fileExt
@@ -325,8 +329,8 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 		return p.createThumbnail(buf, mimeType, false, thumbPath)
 	}
 
-	isVideo := strings.HasPrefix(mimeType, "video/")
-	if !isVideo {
+	ffmpegThumbnail := strings.HasPrefix(mimeType, "image/") || strings.HasPrefix(mimeType, "video/")
+	if !ffmpegThumbnail {
 		p.Thumb = ""
 		return nil
 	}
@@ -364,14 +368,16 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 		if len(split) >= 2 {
 			p.ThumbWidth, p.ThumbHeight = parseInt(string(split[0])), parseInt(string(split[1]))
 
-			thumbData, err := os.ReadFile(thumbPath)
-			if err != nil {
-				log.Fatal(err)
-			}
+			if strings.HasPrefix(mimeType, "video/") {
+				thumbData, err := os.ReadFile(thumbPath)
+				if err != nil {
+					log.Fatal(err)
+				}
 
-			err = p.createThumbnail(thumbData, "image/jpeg", true, thumbPath)
-			if err != nil {
-				log.Fatal(err)
+				err = p.createThumbnail(thumbData, "image/jpeg", true, thumbPath)
+				if err != nil {
+					log.Fatal(err)
+				}
 			}
 		}
 	}
