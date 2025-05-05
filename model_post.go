@@ -203,9 +203,14 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 			securePass = split[2]
 		}
 
-		p.Tripcode = tripcode.Tripcode(standardPass)
+		if standardPass != "" {
+			p.Tripcode = tripcode.Tripcode(standardPass)
+		}
 		if securePass != "" {
-			p.Tripcode += "!!" + tripcode.SecureTripcode(securePass, saltTrip)
+			if standardPass != "" {
+				p.Tripcode += "!"
+			}
+			p.Tripcode += "!" + tripcode.SecureTripcode(securePass, saltTrip)
 		}
 	}
 

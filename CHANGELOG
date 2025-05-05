@@ -1,3 +1,6 @@
+1.0.4:
+- Fix parsing blank tripcodes
+
 1.0.3:
 - Add Robot9000 plugin
 - Add Wordfilter plugin
