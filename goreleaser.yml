@@ -24,6 +24,17 @@ builds:
     goarch:
       - amd64
   -
+    id: password
+    buildmode: plugin
+    main: ./plugin/password/
+    binary: ./plugin/password.so
+    ldflags:
+      - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
+    goos:
+      - linux
+    goarch:
+      - amd64
+  -
     id: robot9000
     buildmode: plugin
     main: ./plugin/robot9000/
@@ -62,16 +73,11 @@ archives:
       - sriracha
       - bbcode
       - fortune
+      - password
       - robot9000
       - wordfilter
     wrap_in_directory: sriracha
     allow_different_binary_count: true
-    name_template: >-
-      {{- .ProjectName }}_
-      {{- .Version }}_
-      {{- tolower .Os }}_
-      {{- if eq .Arch "386" }}i386{{ else }}
-      {{- tolower .Arch }}{{ end -}}
     files:
       - ./*.md
       - CHANGELOG

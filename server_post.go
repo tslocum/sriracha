@@ -254,11 +254,6 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		}
 	}
 
-	password := formString(r, "password")
-	if password != "" {
-		post.Password = hashData(password)
-	}
-
 	if rawHTML {
 		post.Message = html.UnescapeString(post.Message)
 	}
@@ -452,11 +447,15 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	post.setNameBlock(b.DefaultName, staffCapcode)
+
 	if !rawHTML {
 		post.Message = strings.ReplaceAll(post.Message, "\n", "<br>\n")
 	}
 
-	post.setNameBlock(b.DefaultName, staffCapcode)
+	if post.Password != "" {
+		post.Password = hashData(post.Password)
+	}
 
 	if !staffPost && (b.Approval == ApprovalAll || (b.Approval == ApprovalFile && post.File != "")) {
 		post.Moderated = 0

@@ -347,6 +347,7 @@ directory. Plugin API documentation is available via [godoc](https://pkg.go.dev/
 | -- | -- |
 | BBCode | Format BBCode in post messages. |
 | Fortune | Give your posters some good luck (or bad). |
+| Password | Require specific passwords to post. |
 | Robot9000 | Require post messages to be unique. |
 | Wordfilter | Find and replace text in post messages. |
 

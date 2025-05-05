@@ -7,7 +7,7 @@ A [**read-only demo**](https://sriracha.rocket9labs.com/img/) is available.
 
 ## Features
 
-- GIF, JPG, PNG, SWF, MP4 and WebM upload
+- GIF, JPG, PNG, SVG, SWF, MP4 and WebM upload
 - YouTube, Vimeo and SoundCloud embedding
 - Reference links `>>###`
 - Delete posts via password

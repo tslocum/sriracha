@@ -1,11 +1,12 @@
 1.0.4:
+- Add plugin Password
 - Fix parsing blank tripcodes
 - Create thumbnails for SVG image uploads
 - Prevent super-admins from changing their role
 
 1.0.3:
-- Add Robot9000 plugin
-- Add Wordfilter plugin
+- Add plugin Robot9000
+- Add plugin Wordfilter
 
 1.0.2:
 - Fix accounts page error

@@ -162,6 +162,7 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 	}
 
 	p.Parent = formInt(r, "parent")
+	p.Password = formString(r, "password")
 
 	p.Name = limitString(formString(r, "name"), p.Board.MaxName)
 	p.Email = limitString(formString(r, "email"), p.Board.MaxEmail)
