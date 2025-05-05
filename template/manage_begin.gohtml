@@ -15,7 +15,7 @@
 	</head>
     <body>
 		{{if ne .Account nil}}
-			{{if eq .Account.Role 1}}{{/* Super-Admin */}}
+			{{if eq .Account.Role 1}}{{/* Super-admin */}}
 				[<a href="/sriracha/account/" style="text-decoration: underline;">{{T "Accounts"}}</a>]
 			{{end}}
 			[<a href="/sriracha/ban/" style="text-decoration: underline;">{{T "Bans"}}</a>]

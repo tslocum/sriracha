@@ -20,7 +20,7 @@ const (
 func formatRole(role AccountRole) string {
 	switch role {
 	case RoleSuperAdmin:
-		return "Super-Administrator"
+		return "Super-administrator"
 	case RoleAdmin:
 		return "Administrator"
 	case RoleMod:

@@ -337,8 +337,8 @@ messages indicating Sriracha is running normally, the upgrade is complete.
 
 Sriracha supports building and loading plugins via shared library files. Plugins
 are not sandboxed in any way. Every plugin has full access to the system. For
-this reason, you should only load plugins you personally built after inspecting
-the source code. Never load a compiled plugin built by someone else.
+this reason, you should only load plugins you personally compiled after inspecting
+the source code. Never load an unofficial plugin compiled by someone else.
 
 Official plugins are located in the [plugin](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin)
 directory. Plugin API documentation is available via [godoc](https://pkg.go.dev/codeberg.org/tslocum/sriracha#section-documentation).

@@ -22,7 +22,7 @@ A [**read-only demo**](https://sriracha.rocket9labs.com/img/) is available.
   - Post using admin or mod capcode
   - Post using raw HTML
   - Account system:
-    - Super administrators (all privileges)
+    - Super-administrators (all privileges)
     - Administrators (all privileges except managing accounts and deleting boards)
     - Moderators (may only add bans, approve/delete posts and sticky/lock threads)
 
