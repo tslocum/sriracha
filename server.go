@@ -208,9 +208,7 @@ func (s *Server) setDefaultServerConfig() error {
 
 	s.opt.Embeds = nil
 	if !db.HaveConfig("embeds") {
-		for _, info := range defaultServerEmbeds {
-			s.opt.Embeds = append(s.opt.Embeds, info)
-		}
+		s.opt.Embeds = append(s.opt.Embeds, defaultServerEmbeds...)
 	} else {
 		embeds := db.GetMultiString("embeds")
 		for _, v := range embeds {

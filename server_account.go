@@ -27,6 +27,11 @@ func (s *Server) serveAccount(data *templateData, db *Database, w http.ResponseW
 				return
 			}
 
+			if data.Account.ID == data.Manage.Account.ID && data.Manage.Account.Role != RoleSuperAdmin {
+				data.ManageError("You may not change the role of your own account.")
+				return
+			}
+
 			if data.Manage.Account.Username != oldUsername {
 				match := db.accountByUsername(data.Manage.Account.Username)
 				if match != nil {
