@@ -28,30 +28,8 @@ A [**read-only demo**](https://sriracha.rocket9labs.com/img/) is available.
 
 ## Documentation
 
-### Install
-
-See [INSTALL.md](https://codeberg.org/tslocum/sriracha/src/branch/main/INSTALL.md)
-for info on how to install Sriracha.
-
-### Configure
-
-See [CONFIGURE.md](https://codeberg.org/tslocum/sriracha/src/branch/main/CONFIGURE.md)
-for info on how to configure Sriracha.
-
-### Plugins
-
-See [PLUGINS.md](https://codeberg.org/tslocum/sriracha/src/branch/main/PLUGINS.md)
-for info on how to build and use Sriracha plugins.
-
-### Migrate
-
-See [MIGRATE.md](https://codeberg.org/tslocum/sriracha/src/branch/main/MIGRATE.md)
-for info on how to migrate boards from [TinyIB](https://codeberg.org/tslocum/tinyib).
-
-### Upgrade
-
-See [UPGRADE.md](https://codeberg.org/tslocum/sriracha/src/branch/main/UPGRADE.md)
-for info on how to upgrade Sriracha.
+See [MANUAL.md](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md)
+for info on how to install and use Sriracha.
 
 ## Translate
 

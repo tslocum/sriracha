@@ -898,7 +898,7 @@ func hashIP(r *http.Request) string {
 		address = r.RemoteAddr
 	}
 	if address == "" {
-		log.Fatal("Error: No client IP address specified in HTTP request. Are you sure the header server option is correct? See CONFIGURE.md for more info.")
+		log.Fatal("Error: No client IP address specified in HTTP request. Are you sure the header server option is correct? See MANUAL.md for more info.")
 	}
 	return _hashIP(address)
 }
