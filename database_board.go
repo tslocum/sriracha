@@ -12,7 +12,11 @@ func (db *Database) addBoard(b *Board) {
 	if b.Reports {
 		reports = 1
 	}
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO board VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31)",
+	var oekaki int
+	if b.Oekaki {
+		oekaki = 1
+	}
+	_, err := db.conn.Exec(context.Background(), "INSERT INTO board VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32)",
 		b.Dir,
 		b.Name,
 		b.Description,
@@ -44,6 +48,7 @@ func (db *Database) addBoard(b *Board) {
 		b.Replies,
 		b.MaxThreads,
 		b.MaxReplies,
+		oekaki,
 	)
 	if err != nil {
 		log.Fatalf("failed to insert board: %s", err)
@@ -174,7 +179,11 @@ func (db *Database) updateBoard(b *Board) {
 	if b.Reports {
 		reports = 1
 	}
-	_, err := db.conn.Exec(context.Background(), "UPDATE board SET dir = $1, name = $2, description = $3, type = $4, lock = $5, approval = $6, reports = $7, style = $8, locale = $9, delay = $10, minname = $11, maxname = $12, minemail = $13, maxemail = $14, minsubject = $15, maxsubject = $16, minmessage = $17, maxmessage = $18, minsizethread = $19, maxsizethread = $20, minsizereply = $21, maxsizereply = $22, thumbwidth = $23, thumbheight = $24, defaultname = $25, wordbreak = $26, truncate = $27, threads = $28, replies = $29, maxthreads = $30, maxreplies = $31 WHERE id = $32",
+	var oekaki int
+	if b.Oekaki {
+		oekaki = 1
+	}
+	_, err := db.conn.Exec(context.Background(), "UPDATE board SET dir = $1, name = $2, description = $3, type = $4, lock = $5, approval = $6, reports = $7, style = $8, locale = $9, delay = $10, minname = $11, maxname = $12, minemail = $13, maxemail = $14, minsubject = $15, maxsubject = $16, minmessage = $17, maxmessage = $18, minsizethread = $19, maxsizethread = $20, minsizereply = $21, maxsizereply = $22, thumbwidth = $23, thumbheight = $24, defaultname = $25, wordbreak = $26, truncate = $27, threads = $28, replies = $29, maxthreads = $30, maxreplies = $31, oekaki = $32 WHERE id = $33",
 		b.Dir,
 		b.Name,
 		b.Description,
@@ -206,6 +215,7 @@ func (db *Database) updateBoard(b *Board) {
 		b.Replies,
 		b.MaxThreads,
 		b.MaxReplies,
+		oekaki,
 		b.ID,
 	)
 	if err != nil {
@@ -237,6 +247,7 @@ func (db *Database) updateBoard(b *Board) {
 
 func scanBoard(b *Board, row pgx.Row) error {
 	var reports int
+	var oekaki int
 	err := row.Scan(
 		&b.ID,
 		&b.Dir,
@@ -270,10 +281,12 @@ func scanBoard(b *Board, row pgx.Row) error {
 		&b.Replies,
 		&b.MaxThreads,
 		&b.MaxReplies,
+		&oekaki,
 	)
 	if err != nil {
 		return err
 	}
 	b.Reports = reports == 1
+	b.Oekaki = oekaki == 1
 	return nil
 }

@@ -45,9 +45,11 @@ var localeFS embed.FS
 var srirachaServer *Server
 
 const (
-	defaultServerSiteName = "Sriracha"
-	defaultServerSiteHome = "/"
-	defaultServerRefresh  = 30
+	defaultServerSiteName     = "Sriracha"
+	defaultServerSiteHome     = "/"
+	defaultServerOekakiWidth  = 540
+	defaultServerOekakiHeight = 540
+	defaultServerRefresh      = 30
 )
 
 var defaultServerEmbeds = [][2]string{
@@ -63,14 +65,24 @@ func init() {
 	gotext.SetDomain("sriracha")
 }
 
+type HTMLError struct {
+	Page string
+}
+
+func (e *HTMLError) Error() string {
+	return e.Page
+}
+
 type ServerOptions struct {
-	SiteName   string
-	SiteHome   string
-	BoardIndex bool
-	CAPTCHA    bool
-	Refresh    int
-	Uploads    []*uploadType
-	Embeds     [][2]string
+	SiteName     string
+	SiteHome     string
+	BoardIndex   bool
+	CAPTCHA      bool
+	Refresh      int
+	Uploads      []*uploadType
+	Embeds       [][2]string
+	OekakiWidth  int
+	OekakiHeight int
 }
 
 type Server struct {
@@ -197,6 +209,18 @@ func (s *Server) setDefaultServerConfig() error {
 	s.opt.BoardIndex = boardIndex == "" || boardIndex == "1"
 
 	s.opt.CAPTCHA = db.GetBool("captcha")
+
+	oekakiWidth := db.GetInt("oekakiwidth")
+	if oekakiWidth == 0 {
+		oekakiWidth = defaultServerOekakiWidth
+	}
+	s.opt.OekakiWidth = oekakiWidth
+
+	oekakiHeight := db.GetInt("oekakiheight")
+	if oekakiHeight == 0 {
+		oekakiHeight = defaultServerOekakiHeight
+	}
+	s.opt.OekakiHeight = oekakiHeight
 
 	if !db.HaveConfig("refresh") {
 		s.opt.Refresh = defaultServerRefresh
@@ -570,6 +594,33 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 	if len(data.Info) != 0 {
 		w.Header().Set("Content-Type", "text/html")
 		data.Template = "manage_error"
+		data.execute(w)
+		return
+	}
+
+	if strings.HasPrefix(r.URL.Path, "/sriracha/oekaki/") {
+		postID := pathInt(r, "/sriracha/oekaki/")
+		post := db.postByID(postID)
+		if post == nil || !post.IsOekaki() {
+			data.BoardError(w, "invalid or deleted post")
+			return
+		}
+
+		data := s.buildData(db, w, r)
+		data.Template = "oekaki"
+		data.Message2 = template.HTML(`
+		<script type="text/javascript">
+		Tegaki.open({
+			width: ` + strconv.Itoa(s.opt.OekakiWidth) + `,
+			height: ` + strconv.Itoa(s.opt.OekakiHeight) + `,
+			replayMode: true,
+			replayURL: '` + post.Board.Path() + `src/` + post.File + `'
+		});
+		document.getElementById('tegaki-finish-btn').addEventListener('click', function(e) {
+			window.close();
+			return false;
+		});
+		</script>`)
 		data.execute(w)
 		return
 	}

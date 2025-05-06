@@ -99,8 +99,8 @@ type PluginWithPost interface {
 	Plugin
 
 	// Post events are sent when a new post is being created. Message is the
-	// only HTML-escaped field. Newlines are conveted into line breaks after
-	// all plugins have finished processing the post.
+	// only HTML-escaped field. Newlines are conveted into line break tags
+	// after all plugins have finished processing the post.
 	Post(db *Database, post *Post) error
 }
 

@@ -238,6 +238,14 @@
                     <td>Posters may embed media from selected services instead of uploading a file.</td>
                 </tr>
             {{end}}
+            <tr>
+                <td class="postblock"><label for="oekaki">Oekaki</label></td>
+                <td><select name="oekaki" style="width: 100%;">
+                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Oekaki)}} selected{{end}}>Disable</option>
+                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Oekaki)}} selected{{end}}>Enable</option>
+                </select></td>
+                <td>Whether users may create and submit drawings.</td>
+            </tr>
             {{if le $.Account.Role 2}}
                 <tr>
                     <td>&nbsp;</td>

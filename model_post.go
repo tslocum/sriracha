@@ -271,6 +271,11 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 
 	mimeType := mimetype.Detect(buf).String()
 
+	oekakiPost := p.Board.Oekaki && mimeType == "application/octet-stream" && len(buf) >= 3 && buf[0] == 0x54 && buf[1] == 0x47 && buf[2] == 0x4B
+	if oekakiPost {
+		mimeType = "application/x-tageki"
+	}
+
 	var fileExt string
 	var fileThumb string
 	if p.Board.HasUpload(mimeType) {
@@ -283,7 +288,11 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 		}
 	}
 	if fileExt == "" {
-		return fmt.Errorf("unsupported filetype")
+		if oekakiPost {
+			fileExt = "tgkr"
+		} else {
+			return fmt.Errorf("unsupported filetype")
+		}
 	}
 
 	var thumbExt string
@@ -303,6 +312,9 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 	if err != nil {
 		return err
 	}
+	if oekakiPost && formBool(r, "oekaki") {
+		p.FileOriginal = ""
+	}
 
 	srcPath := filepath.Join(rootDir, p.Board.Dir, "src", p.File)
 	thumbPath := filepath.Join(rootDir, p.Board.Dir, "thumb", p.Thumb)
@@ -310,6 +322,20 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 	err = os.WriteFile(srcPath, buf, newFilePermission)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if oekakiPost {
+		formThumb, formThumbHeader, err := r.FormFile("thumb")
+		if err != nil || formThumbHeader == nil || formThumbHeader.Size < minSize {
+			return fmt.Errorf("a thumbnail is required")
+		}
+
+		buf, err := io.ReadAll(formThumb)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		return p.createThumbnail(buf, "image/png", false, thumbPath)
 	}
 
 	if fileThumb == "none" {
@@ -442,6 +468,10 @@ func (p *Post) FileSizeLabel() string {
 
 func (p *Post) TimestampLabel() string {
 	return formatTimestamp(p.Timestamp)
+}
+
+func (p *Post) IsOekaki() bool {
+	return strings.HasSuffix(p.File, ".tgkr")
 }
 
 func (p *Post) IsEmbed() bool {

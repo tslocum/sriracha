@@ -81,6 +81,16 @@
                         </td>
                     </tr>
                 {{end}}
+                {{if .Board.Oekaki}}
+                    <tr>
+                        <td class="postblock">
+                            Oekaki
+                        </td>
+                        <td>
+                            <button type="submit" name="oekaki" value="1">New drawing...</button> <small>Create a new drawing.</small>
+                        </td>
+                    </tr>
+                {{end}}
                 {{if ne (len .Board.Embeds) 0}}
                     <tr>
                         <td class="postblock">

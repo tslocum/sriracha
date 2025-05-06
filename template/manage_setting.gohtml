@@ -32,6 +32,16 @@
             <td>Whether visitors must pass a CAPTCHA when posting.</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="oekakiwidth">Oekaki Width</label></td>
+            <td><input type="text" name="oekakiwidth" value="{{.Opt.OekakiWidth}}"></input></td>
+            <td>Default oekaki canvas width.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="oekakiheight">Oekaki Height</label></td>
+            <td><input type="text" name="oekakiheight" value="{{.Opt.OekakiHeight}}"></input></td>
+            <td>Default oekaki canvas height.</td>
+        </tr>
+        <tr>
             <td class="postblock"><label for="refresh">Auto Refresh</label></td>
             <td><input type="text" name="refresh" value="{{.Opt.Refresh}}"></input></td>
             <td>Seconds between automatic refreshes when viewing a thread. 0 to disable.</td>

@@ -14,6 +14,7 @@ A [**read-only demo**](https://sriracha.rocket9labs.com/img/) is available.
 - CAPTCHA
 - Report posts
 - Thread catalog
+- Oekaki (drawings)
 - Fetch new replies automatically
 - Translate into additional languages
 - Management panel:

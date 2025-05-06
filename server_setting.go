@@ -26,6 +26,12 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 		db.SaveBool("captcha", false)
 		s.opt.CAPTCHA = false
 
+		db.SaveInt("oekakiwidth", defaultServerOekakiWidth)
+		s.opt.OekakiWidth = defaultServerOekakiWidth
+
+		db.SaveInt("oekakiheight", defaultServerOekakiHeight)
+		s.opt.OekakiHeight = defaultServerOekakiHeight
+
 		db.SaveInt("refresh", defaultServerRefresh)
 		s.opt.Refresh = defaultServerRefresh
 
@@ -73,6 +79,14 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 		enableCAPTCHA := formBool(r, "captcha")
 		db.SaveBool("captcha", enableCAPTCHA)
 		s.opt.CAPTCHA = enableCAPTCHA
+
+		oekakiWidth := formInt(r, "oekakiwidth")
+		db.SaveInt("oekakiwidth", oekakiWidth)
+		s.opt.OekakiWidth = oekakiWidth
+
+		oekakiHeight := formInt(r, "oekakiheight")
+		db.SaveInt("oekakiheight", oekakiHeight)
+		s.opt.OekakiHeight = oekakiHeight
 
 		refresh := formInt(r, "refresh")
 		db.SaveInt("refresh", refresh)

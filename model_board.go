@@ -104,6 +104,7 @@ type Board struct {
 	Replies       int
 	MaxThreads    int
 	MaxReplies    int
+	Oekaki        bool
 
 	// Calculated fields.
 	Uploads []string
@@ -176,6 +177,7 @@ func (b *Board) loadForm(r *http.Request, availableUploads []*uploadType, availa
 	b.Replies = formInt(r, "replies")
 	b.MaxThreads = formInt(r, "maxthreads")
 	b.MaxReplies = formInt(r, "maxreplies")
+	b.Oekaki = formBool(r, "oekaki")
 
 	b.Uploads = nil
 	uploads := r.Form["uploads"]

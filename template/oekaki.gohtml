@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,user-scalable=no">
+	<title>Oekaki</title>
+	<script src="/static/tegaki/tegaki.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/tegaki/tegaki.css">
+	<style>
+	body {
+		-webkit-user-select: none;
+	}
+	</style>
+</head>
+<body>
+	<form id="postform" method="post" enctype="multipart/form-data">
+	{{.Message}}
+	<input type="file" name="file" id="file" style="display: none;">
+	<input type="file" name="thumb" id="thumb" style="display: none;">
+	</form>
+	<script type="text/javascript">
+	function onDone() {
+		Tegaki.flatten().toBlob(function(b) {
+			// Store thumbnail.
+			var file = new File([b], "thumb.png",{type:"image/png", lastModified:new Date().getTime()});
+			var container = new DataTransfer();
+			container.items.add(file);
+			document.getElementById('thumb').files = container.files;
+
+			// Store replay.
+			var tgkr = Tegaki.replayRecorder.toBlob();
+			var file = new File([tgkr], "replay.tgkr",{type:"application/octet-stream", lastModified:new Date().getTime()});
+			var container = new DataTransfer();
+			container.items.add(file);
+			document.getElementById('file').files = container.files;
+
+			// Submit form.
+			document.getElementById('postform').submit();
+		}, 'image/png');
+	}
+	function onCancel() {
+		history.go(-1);
+	}
+	</script>
+	{{.Message2}}
+</body>
+</html>

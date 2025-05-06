@@ -129,6 +129,9 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		}
 	}
 
+	oekakiPost := b.Oekaki && formBool(r, "oekaki")
+	skipCAPTCHA := oekakiPost && strings.HasSuffix(post.File, ".tgkr")
+
 	if !staffPost {
 		if b.Lock == LockThread && parentPost == nil {
 			s.deletePostFiles(post)
@@ -137,7 +140,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			data.BoardError(w, gotext.Get("You may only reply to threads."))
 			return
 		}
-		if s.opt.CAPTCHA {
+		if s.opt.CAPTCHA && !skipCAPTCHA {
 			expired := db.expiredCAPTCHAs()
 			for _, c := range expired {
 				db.deleteCAPTCHA(c.IP)
@@ -162,6 +165,29 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 				return
 			}
 		}
+	}
+
+	if oekakiPost && post.File == "" {
+		data := s.buildData(db, w, r)
+		data.Template = "oekaki"
+		for key, values := range r.Form {
+			if len(values) == 0 {
+				continue
+			}
+			data.Message += template.HTML(fmt.Sprintf(`<input type="hidden" name="%s" value="%s">`+"\n", html.EscapeString(key), html.EscapeString(values[0])))
+		}
+		data.Message2 = template.HTML(`
+		<script type="text/javascript">
+		Tegaki.open({
+			width: ` + strconv.Itoa(s.opt.OekakiWidth) + `,
+			height: ` + strconv.Itoa(s.opt.OekakiHeight) + `,
+			saveReplay: true,
+			onDone: onDone,
+			onCancel: onCancel
+		});
+		</script>`)
+		data.execute(w)
+		return
 	}
 
 	if post.File == "" && len(b.Embeds) > 0 {
@@ -367,8 +393,12 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			if err != nil {
 				s.deletePostFiles(post)
 
-				data := s.buildData(db, w, r)
-				data.BoardError(w, err.Error())
+				if _, ok := err.(*HTMLError); ok {
+					w.Write([]byte(err.Error()))
+				} else {
+					data := s.buildData(db, w, r)
+					data.BoardError(w, err.Error())
+				}
 				return
 			}
 			post.Message = strings.ReplaceAll(post.Message, "<br>", "\n")
