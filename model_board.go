@@ -109,7 +109,7 @@ type Board struct {
 	// Calculated fields.
 	Uploads []string
 	Embeds  []string
-	Unique  int
+	Unique  int `diff:"-"`
 }
 
 const (
