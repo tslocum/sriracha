@@ -335,6 +335,12 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 			log.Fatal(err)
 		}
 
+		imgConfig, _, err := image.DecodeConfig(bytes.NewReader(buf))
+		if err != nil {
+			return fmt.Errorf("unsupported thumbnail filetype")
+		}
+		p.FileWidth, p.FileHeight = imgConfig.Width, imgConfig.Height
+
 		return p.createThumbnail(buf, "image/png", false, thumbPath)
 	}
 
