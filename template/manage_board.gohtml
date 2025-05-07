@@ -246,6 +246,16 @@
                 </select></td>
                 <td>Whether users may create and submit drawings.</td>
             </tr>
+            <tr>
+                <td class="postblock"><label for="rules">Rules</label></td>
+                <td>
+                    {{range $i, $value := .Manage.Board.Rules}}
+                        <textarea name="rules_{{$i}}" rows="4" cols="80" placeholder="Unused">{{$value}}</textarea><br>
+                    {{end}}
+                    <textarea name="rules_{{len .Manage.Board.Rules}}" rows="4" cols="80" placeholder="Unused"></textarea>
+                </td>
+                <td>HTML-formatted text shown in the new post form.</td>
+            </tr>
             {{if le $.Account.Role 2}}
                 <tr>
                     <td>&nbsp;</td>

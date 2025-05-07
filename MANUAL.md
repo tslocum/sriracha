@@ -69,8 +69,8 @@ using a static file server.
 
 When starting Sriracha for the first time, visit the management panel at
 `/sriracha/` and log in to the default super-administrator account by entering
-`admin` into both the username and password field. Once you have logged in,
-visit the accounts page and change your username and password.
+`admin` as the username and the password. Once you have logged in, visit the
+accounts page and change your username and password.
 
 ### Example configuration (config.yml)
 

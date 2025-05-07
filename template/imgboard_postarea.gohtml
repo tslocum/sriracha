@@ -132,6 +132,9 @@
                             {{if ne .Board.Unique 0}}
                                 <li>{{TN "Currently %d unique user post." "Currently %d unique user posts." .Board.Unique .Board.Unique}}</li>
                             {{end}}
+                            {{range $i, $value := .Board.Rules}}
+                                <li>{{$value | HTML}}</li>
+                            {{end}}
                         </ul>
                     </td>
                 </tr>

@@ -109,6 +109,7 @@ type Board struct {
 	// Calculated fields.
 	Uploads []string
 	Embeds  []string
+	Rules   []string
 	Unique  int `diff:"-"`
 }
 
@@ -178,6 +179,7 @@ func (b *Board) loadForm(r *http.Request, availableUploads []*uploadType, availa
 	b.MaxThreads = formInt(r, "maxthreads")
 	b.MaxReplies = formInt(r, "maxreplies")
 	b.Oekaki = formBool(r, "oekaki")
+	b.Rules = formMultiString(r, "rules")
 
 	b.Uploads = nil
 	uploads := r.Form["uploads"]

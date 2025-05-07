@@ -56,6 +56,7 @@ CREATE TABLE board (
 	maxthreads smallint NOT NULL,
 	maxreplies smallint NOT NULL
 	-- v3: oekaki smallint NOT NULL DEFAULT 0
+	-- v4: rules text NOT NULL DEFAULT ''
 );
 CREATE UNIQUE INDEX ON board (dir);
 
@@ -155,4 +156,7 @@ CREATE UNIQUE INDEX ON report (board, post, ip);`,
 	// Version 3.
 	`ALTER TABLE board ADD COLUMN oekaki smallint NOT NULL DEFAULT 0;
 	UPDATE config SET value = '3' WHERE name = 'version';`,
+	// Version 4.
+	`ALTER TABLE board ADD COLUMN rules text NOT NULL DEFAULT '';
+	UPDATE config SET value = '4' WHERE name = 'version';`,
 }

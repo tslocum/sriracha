@@ -20,6 +20,7 @@ import (
 	"plugin"
 	"regexp"
 	"runtime/debug"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -990,6 +991,31 @@ func parseFloat(v string) float64 {
 
 func formString(r *http.Request, key string) string {
 	return strings.TrimSpace(r.FormValue(key))
+}
+
+func formMultiString(r *http.Request, key string) []string {
+	formKeys := make([]string, len(r.Form))
+	var i int
+	for key := range r.Form {
+		formKeys[i] = key
+		i++
+	}
+	sort.Slice(formKeys, func(i, j int) bool {
+		return formKeys[i] < formKeys[j]
+	})
+	var values []string
+	for _, formKey := range formKeys {
+		formValues := r.Form[formKey]
+		if strings.HasPrefix(formKey, key+"_") {
+			for _, v := range formValues {
+				if strings.TrimSpace(v) == "" {
+					continue
+				}
+				values = append(values, v)
+			}
+		}
+	}
+	return values
 }
 
 func formInt(r *http.Request, key string) int {
