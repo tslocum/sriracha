@@ -67,7 +67,7 @@
                         </td>
                         <td>
                             <input type="text" name="captcha" id="newpostcaptcha" accesskey="c" style="vertical-align: middle;box-sizing: border-box;width: 70px;height: 40px;">
-                            <a href="#" onclick="javascript:document.getElementById('captchaimage').src = '/sriracha/captcha/captcha.png?new=' + new Date().getTime();"><img src="/sriracha/captcha/test.png" alt="CAPTCHA Challenge" id="captchaimage" width="225" height="40" border="0" style="vertical-align: middle;"></a>&nbsp;&nbsp;<span style="vertical-align: middle;">({{T "click to refresh"}})</span>
+                            <a href="#" onclick="javascript:document.getElementById('captchaimage').src = '/sriracha/captcha/captcha.png?new=' + new Date().getTime();"><img src="/sriracha/captcha/test.png" alt="CAPTCHA Challenge" id="captchaimage" width="225" height="40" border="0" style="vertical-align: middle;"></a> <span style="vertical-align: middle;"><small>{{T "Click to refresh."}}</small></span>
                         </td>
                     </tr>
                 {{end}}
@@ -97,7 +97,7 @@
                             {{T "Embed"}}
                         </td>
                         <td>
-                            <input type="text" name="embed" size="28" accesskey="x" autocomplete="off">&nbsp;&nbsp;({{T "paste a YouTube URL"}})
+                            <input type="text" name="embed" size="28" accesskey="x" autocomplete="off"> <small>{{T "Paste a YouTube URL."}}</small>
                         </td>
                     </tr>
                 {{end}}
@@ -106,7 +106,7 @@
                         {{T "Password"}}
                     </td>
                     <td>
-                        <input type="password" name="password" id="newpostpassword" size="8" accesskey="p">&nbsp;&nbsp;({{T "for post and file deletion"}})
+                        <input type="password" name="password" id="newpostpassword" size="8" accesskey="p"> <small>{{T "For post and file deletion."}}</small>
                     </td>
                 </tr>
                 {{if or (eq .Board.MaxSubject 0) (eq .Board.Type 1)}}
