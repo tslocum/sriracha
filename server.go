@@ -98,6 +98,8 @@ type ServerOptions struct {
 type Server struct {
 	Boards []*Board
 
+	rangeBans map[*Ban]*regexp.Regexp
+
 	config Config
 	dbPool *pgxpool.Pool
 	opt    ServerOptions
@@ -258,6 +260,8 @@ func (s *Server) setDefaultServerConfig() error {
 			s.opt.Embeds = append(s.opt.Embeds, [2]string{split[0], split[1]})
 		}
 	}
+
+	s.reloadBans(db)
 
 	_, err = conn.Exec(context.Background(), "COMMIT")
 	if err != nil {
@@ -671,6 +675,20 @@ func (s *Server) rebuildAllNews(db *Database) {
 	s.writeNewsIndexes(db)
 }
 
+func (s *Server) reloadBans(db *Database) {
+	var rangeBans = make(map[*Ban]*regexp.Regexp)
+	bans := db.allBans(true)
+	for _, ban := range bans {
+		pattern, err := regexp.Compile(ban.IP[2:])
+		if err != nil {
+			log.Printf("warning: failed to compile IP range ban `%s` as regular expression: %s", ban.IP[2:], err)
+			return
+		}
+		rangeBans[ban] = pattern
+	}
+	s.rangeBans = rangeBans
+}
+
 func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Request) {
 	data := s.buildData(db, w, r)
 	if strings.HasPrefix(r.URL.Path, "/sriracha/logout") {
@@ -818,25 +836,41 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 	var handled bool
 
-	db.deleteExpiredBans()
+	if db.deleteExpiredBans() > 0 {
+		s.reloadBans(db)
+	}
 
-	// Check IP ban.
-	ban := db.banByIP(hashIP(r))
-	if ban != nil {
-		data := s.buildData(db, w, r)
-		data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (Ban #%d)", ban.ID))
-		data.execute(w)
-		handled = true
-	} else if strings.HasPrefix(r.URL.Path, "/sriracha/post/") {
-		postID := pathInt(r, "/sriracha/post/")
-		post := db.postByID(postID)
-		if post == nil {
+	// Check IP range ban.
+	ip := requestIP(r)
+	for ban, pattern := range s.rangeBans {
+		if pattern.MatchString(ip) {
 			data := s.buildData(db, w, r)
-			data.BoardError(w, "Invalid or deleted post.")
-		} else {
-			http.Redirect(w, r, fmt.Sprintf("%sres/%d.html#%d", post.Board.Path(), post.Thread(), post.ID), http.StatusFound)
+			data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (Ban #%d)", ban.ID))
+			data.execute(w)
+			handled = true
+			break
 		}
-		handled = true
+	}
+
+	// Check static IP ban.
+	if !handled {
+		ban := db.banByIP(hashIP(r))
+		if ban != nil {
+			data := s.buildData(db, w, r)
+			data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (Ban #%d)", ban.ID))
+			data.execute(w)
+			handled = true
+		} else if strings.HasPrefix(r.URL.Path, "/sriracha/post/") {
+			postID := pathInt(r, "/sriracha/post/")
+			post := db.postByID(postID)
+			if post == nil {
+				data := s.buildData(db, w, r)
+				data.BoardError(w, "Invalid or deleted post.")
+			} else {
+				http.Redirect(w, r, fmt.Sprintf("%sres/%d.html#%d", post.Board.Path(), post.Thread(), post.ID), http.StatusFound)
+			}
+			handled = true
+		}
 	}
 
 	if !handled {
@@ -1009,7 +1043,7 @@ func hashData(data string) string {
 	return base64.URLEncoding.EncodeToString(checksum[:])
 }
 
-func _hashIP(address string) string {
+func parseAddress(address string) string {
 	if address == "" {
 		return ""
 	}
@@ -1022,10 +1056,17 @@ func _hashIP(address string) string {
 			address = address[:colon]
 		}
 	}
-	return hashData(address)
+	return address
 }
 
-func hashIP(r *http.Request) string {
+func _hashIP(address string) string {
+	if address == "" {
+		return ""
+	}
+	return hashData(parseAddress(address))
+}
+
+func requestIP(r *http.Request) string {
 	var address string
 	if srirachaServer == nil {
 		log.Panicf("sriracha server not running")
@@ -1040,7 +1081,11 @@ func hashIP(r *http.Request) string {
 	if address == "" {
 		log.Fatal("Error: No client IP address specified in HTTP request. Are you sure the header server option is correct? See MANUAL.md for more info.")
 	}
-	return _hashIP(address)
+	return parseAddress(address)
+}
+
+func hashIP(r *http.Request) string {
+	return _hashIP(requestIP(r))
 }
 
 func encryptPassword(password string) string {

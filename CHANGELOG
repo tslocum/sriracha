@@ -1,6 +1,7 @@
 1.0.6:
 - Add site news setting
 - Add board rules setting
+- Support banning IP address ranges
 
 1.0.5:
 - Support creating and posting oekaki (drawings)

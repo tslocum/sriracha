@@ -46,8 +46,12 @@ func (db *Database) banByIP(ip string) *Ban {
 	return b
 }
 
-func (db *Database) allBans() []*Ban {
-	rows, err := db.conn.Query(context.Background(), "SELECT * FROM ban ORDER BY timestamp DESC")
+func (db *Database) allBans(rangeOnly bool) []*Ban {
+	var extra string
+	if rangeOnly {
+		extra = " WHERE ip LIKE 'r %'"
+	}
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM ban"+extra+" ORDER BY timestamp DESC")
 	if err != nil {
 		log.Fatalf("failed to select all bans: %s", err)
 	}
@@ -77,11 +81,13 @@ func (db *Database) updateBan(b *Ban) {
 	}
 }
 
-func (db *Database) deleteExpiredBans() {
-	_, err := db.conn.Exec(context.Background(), "DELETE FROM ban WHERE expire != 0 AND expire <= $1", time.Now().Unix())
+func (db *Database) deleteExpiredBans() int {
+	var deleted int
+	err := db.conn.QueryRow(context.Background(), "WITH deleted AS (DELETE FROM ban WHERE expire != 0 AND expire <= $1 RETURNING *) SELECT COUNT(*) FROM deleted", time.Now().Unix()).Scan(&deleted)
 	if err != nil {
 		log.Fatal(err)
 	}
+	return deleted
 }
 
 func (db *Database) deleteBan(id int) {
