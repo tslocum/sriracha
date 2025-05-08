@@ -30,6 +30,8 @@ type manageData struct {
 	Keywords []*Keyword
 	Log      *Log
 	Logs     []*Log
+	News     *News
+	AllNews  []*News
 	Plugin   *pluginInfo
 	Plugins  []*pluginInfo
 	Report   *Report
@@ -44,6 +46,8 @@ type templateData struct {
 	Message3  template.HTML
 	Board     *Board
 	Boards    []*Board
+	News      *News
+	AllNews   []*News
 	Page      int
 	Pages     int
 	Post      *Post

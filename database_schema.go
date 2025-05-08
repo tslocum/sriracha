@@ -149,7 +149,18 @@ CREATE TABLE report (
 	timestamp bigint NOT NULL,
 	ip varchar(64) NOT NULL
 );
-CREATE UNIQUE INDEX ON report (board, post, ip);`,
+CREATE UNIQUE INDEX ON report (board, post, ip);
+
+-- v4: CREATE TABLE news (
+-- v4: 	id serial PRIMARY KEY,
+-- v4: 	account smallint NULL REFERENCES account (id) ON DELETE SET NULL,
+-- v4: 	timestamp bigint NOT NULL,
+-- v4: 	modified bigint NOT NULL,
+-- v4: 	share smallint NOT NULL,
+-- v4: 	name varchar(255) NOT NULL,
+-- v4: 	subject varchar(255) NOT NULL,
+-- v4: 	message text NOT NULL
+-- v4: );`,
 	// Version 2.
 	`ALTER TABLE account ADD COLUMN style varchar(64) NOT NULL DEFAULT '';
 	UPDATE config SET value = '2' WHERE name = 'version';`,
@@ -158,5 +169,15 @@ CREATE UNIQUE INDEX ON report (board, post, ip);`,
 	UPDATE config SET value = '3' WHERE name = 'version';`,
 	// Version 4.
 	`ALTER TABLE board ADD COLUMN rules text NOT NULL DEFAULT '';
+	CREATE TABLE news (
+		id serial PRIMARY KEY,
+		account smallint NULL REFERENCES account (id) ON DELETE SET NULL,
+		timestamp bigint NOT NULL,
+		modified bigint NOT NULL,
+		share smallint NOT NULL,
+		name varchar(255) NOT NULL,
+		subject varchar(255) NOT NULL,
+		message text NOT NULL
+	);
 	UPDATE config SET value = '4' WHERE name = 'version';`,
 }

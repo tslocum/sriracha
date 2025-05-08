@@ -16,6 +16,15 @@
             <td>Home address. May be a path or URL. Used in return links.</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="news">Site News</label></td>
+            <td><select name="news" style="width: 100%;">
+                <option value="0"{{if eq .Opt.News 0}} selected{{end}}>Disable</option>
+                <option value="1"{{if eq .Opt.News 1}} selected{{end}}>Enable - Write to news.html</option>
+                <option value="2"{{if eq .Opt.News 2}} selected{{end}}>Enable - Write to index.html</option>
+            </select></td>
+            <td>Allow moderators to post site news.</td>
+        </tr>
+        <tr>
             <td class="postblock"><label for="boardindex">Board Index</label></td>
             <td><select name="boardindex" style="width: 100%;">
                 <option value="0"{{if not .Opt.BoardIndex}} selected{{end}}>Disable</option>

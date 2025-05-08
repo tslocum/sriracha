@@ -212,6 +212,10 @@ func (db *Database) GetInt(key string) int {
 	return parseInt(db.GetString(key))
 }
 
+func (db *Database) GetInt64(key string) int64 {
+	return parseInt64(db.GetString(key))
+}
+
 func (db *Database) GetMultiInt(key string) []int {
 	s := db.GetString(key)
 	if s == "" {

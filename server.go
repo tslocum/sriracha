@@ -74,9 +74,18 @@ func (e *HTMLError) Error() string {
 	return e.Page
 }
 
+type NewsOption int
+
+const (
+	NewsDisable      NewsOption = 0
+	NewsWriteToNews  NewsOption = 1
+	NewsWriteToIndex NewsOption = 2
+)
+
 type ServerOptions struct {
 	SiteName     string
 	SiteHome     string
+	News         NewsOption
 	BoardIndex   bool
 	CAPTCHA      bool
 	Refresh      int
@@ -205,6 +214,11 @@ func (s *Server) setDefaultServerConfig() error {
 		siteHome = defaultServerSiteHome
 	}
 	s.opt.SiteHome = siteHome
+
+	news := NewsOption(db.GetInt("news"))
+	if news == NewsDisable || news == NewsWriteToNews || news == NewsWriteToIndex {
+		s.opt.News = news
+	}
 
 	boardIndex := db.GetString("boardindex")
 	s.opt.BoardIndex = boardIndex == "" || boardIndex == "1"
@@ -585,6 +599,78 @@ func (s *Server) rebuildBoard(db *Database, board *Board) {
 	s.writeIndexes(db, board)
 }
 
+func (s *Server) writeNewsItem(db *Database, n *News) {
+	if n.ID <= 0 {
+		return
+	}
+
+	data := &templateData{
+		Boards:   db.allBoards(),
+		Manage:   &manageData{},
+		Template: "news",
+		AllNews:  []*News{n},
+		Pages:    1,
+		Extra:    "view",
+	}
+
+	itemFile, err := os.OpenFile(filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", n.ID)), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	data.execute(itemFile)
+	itemFile.Close()
+}
+
+func (s *Server) writeNewsIndexes(db *Database) {
+	allNews := db.allNews(true)
+	data := &templateData{
+		Boards:   db.allBoards(),
+		Manage:   &manageData{},
+		Template: "news",
+	}
+
+	const newsCount = 10
+	data.Pages = pageCount(len(allNews), newsCount)
+	for page := 0; page < data.Pages; page++ {
+		fileName := "news.html"
+		if s.opt.News == NewsWriteToIndex {
+			fileName = "index.html"
+		}
+		if page > 0 {
+			fileName = fmt.Sprintf("news-p%d.html", page)
+		}
+
+		indexFile, err := os.OpenFile(filepath.Join(s.config.Root, fileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		start := page * newsCount
+		end := len(allNews)
+		if newsCount != 0 && end > start+newsCount {
+			end = start + newsCount
+		}
+
+		data.AllNews = allNews[start:end]
+		data.Page = page
+		data.execute(indexFile)
+
+		indexFile.Close()
+	}
+}
+
+func (s *Server) rebuildNewsItem(db *Database, n *News) {
+	s.writeNewsItem(db, n)
+	s.writeNewsIndexes(db)
+}
+
+func (s *Server) rebuildAllNews(db *Database) {
+	for _, n := range db.allNews(true) {
+		s.writeNewsItem(db, n)
+	}
+	s.writeNewsIndexes(db)
+}
+
 func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Request) {
 	data := s.buildData(db, w, r)
 	if strings.HasPrefix(r.URL.Path, "/sriracha/logout") {
@@ -666,6 +752,8 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 		s.serveLog(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/mod"):
 		s.serveMod(data, db, w, r)
+	case strings.HasPrefix(r.URL.Path, "/sriracha/news"):
+		s.serveNews(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/plugin"):
 		s.servePlugin(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/setting"):
@@ -975,6 +1063,14 @@ func comparePassword(password string, hash string) bool {
 
 func parseInt(v string) int {
 	i, err := strconv.Atoi(v)
+	if err == nil && i > 0 {
+		return i
+	}
+	return 0
+}
+
+func parseInt64(v string) int64 {
+	i, err := strconv.ParseInt(v, 10, 64)
 	if err == nil && i > 0 {
 		return i
 	}

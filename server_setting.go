@@ -20,6 +20,9 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 		db.SaveString("sitehome", defaultServerSiteHome)
 		s.opt.SiteHome = defaultServerSiteHome
 
+		db.SaveInt("news", int(NewsDisable))
+		s.opt.News = NewsDisable
+
 		db.SaveBool("boardindex", true)
 		s.opt.BoardIndex = true
 
@@ -53,6 +56,8 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 			s.rebuildBoard(db, b)
 		}
 
+		s.rebuildAllNews(db)
+
 		http.Redirect(w, r, "/sriracha/setting", http.StatusFound)
 		return
 	}
@@ -71,6 +76,10 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 			db.SaveString("sitehome", siteHome)
 			s.opt.SiteHome = siteHome
 		}
+
+		news := formInt(r, "news")
+		db.SaveInt("news", news)
+		s.opt.News = NewsOption(news)
 
 		boardIndex := formBool(r, "boardindex")
 		db.SaveBool("boardindex", boardIndex)
@@ -126,6 +135,8 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 		for _, b := range db.allBoards() {
 			s.rebuildBoard(db, b)
 		}
+
+		s.rebuildAllNews(db)
 	}
 	data.Template = "manage_setting"
 	data.Extra = SrirachaVersion

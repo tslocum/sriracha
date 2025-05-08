@@ -1,0 +1,79 @@
+{{template "manage_begin.gohtml" .}}
+<h2 class="managetitle">News</h2>
+{{if ne (len .Manage.AllNews) 0}}
+    <table class="managetable">
+        <tr>
+            <th>Author</th>
+            <th>Subject</th>
+            <th>Date</th>
+            <th>&nbsp;</th>
+        </tr>
+        {{range $i, $news := .Manage.AllNews}}
+            <tr>
+                <td>{{if ne $news.Account nil}}{{$news.Account.Username}}{{else}}None{{end}}</td>
+                <td>{{if ne $news.Subject ""}}{{$news.Subject}}{{else}}No subject{{end}}</td>
+                <td>{{$news.DateLabel}}</td>
+                <td>
+                    {{if .MayUpdate $.Account}}
+                        [<a href="/sriracha/news/{{$news.ID}}">update</a>]
+                    {{else}}
+                        [<a href="/sriracha/news/{{$news.ID}}">view</a>]
+                    {{end}}
+                    {{if .MayDelete $.Account}}
+                        [<a href="/sriracha/news/delete/{{$news.ID}}" onclick="return confirm('Delete {{if ne .Subject ""}}{{.Subject}}{{else}}news item #{{.ID}}{{end}}?');">delete</a>]
+                    {{end}}
+                </td>
+            </tr>
+        {{end}}
+    </table><br>
+{{end}}
+{{if ne .Manage.News nil}}
+    [<a href="/sriracha/news/">Return</a>]<br>
+{{end}}
+<form method="post">
+    <fieldset>
+    <legend>{{if eq .Manage.News nil}}Add News{{else}}{{if .Manage.News.MayUpdate $.Account}}Update {{end}}{{if ne .Manage.News.Subject ""}}{{.Manage.News.Subject}}{{else}}#{{.Manage.News.ID}}{{end}}{{end}}</legend>
+    <table border="0" class="manageform">
+        <tr>
+            <td class="postblock"><label for="timestamp">Publish Date</label></td>
+            <td><input type="text" name="timestamp" value="{{if ne .Manage.News nil}}{{.Manage.News.Timestamp}}{{end}}"></td>
+            <td>Unix timestamp when this news item was published, or will be published.<br>
+            News items with publish dates in the future are hidden until that date.<br>
+            Set to 0 to hide the news item.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="name">Name</label></td>
+            <td><input type="text" name="name" value="{{if ne .Manage.News nil}}{{.Manage.News.Name}}{{end}}"></td>
+            <td>May be blank.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="subject">Subject</label></td>
+            <td><input type="text" name="subject" value="{{if ne .Manage.News nil}}{{.Manage.News.Subject}}{{end}}"></td>
+            <td>May be blank.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="message">Message</label></td>
+            <td><textarea name="message" rows="4" cols="80">{{if ne .Manage.News nil}}{{.Manage.News.Message}}{{end}}</textarea>
+            <td>HTML-formatted message text.</td>
+        </tr>
+        {{if or (eq .Manage.News nil) (and (ne .Manage.News.Account nil) (eq .Manage.News.Account.ID .Account.ID))}}
+            <tr>
+                <td class="postblock"><label for="share">Share</label></td>
+                <td><select name="share" style="width: 100%;">
+                    <option value="0"{{if and (ne .Manage.News nil) (not .Manage.News.Share)}} selected{{end}}>Do not share with staff</option>
+                    <option value="1"{{if and (ne .Manage.News nil) .Manage.News.Share}} selected{{end}}>Share with staff</option>
+                </select></td>
+                <td>Shared news items may be updated by other staff members.</td>
+            </tr>
+        {{end}}
+        {{if or (eq .Manage.News nil) (.Manage.News.MayUpdate .Account)}}
+            <tr>
+                <td>&nbsp;</td>
+                <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if eq .Manage.News nil}}Add{{else}}Update{{end}}"></td>
+                <td>&nbsp;</td>
+            </tr>
+        {{end}}
+    </table>
+    </fieldset>
+</form>
+{{template "manage_end.gohtml" .}}

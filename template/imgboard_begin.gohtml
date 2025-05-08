@@ -34,7 +34,10 @@
 		{{end}}
 		<div class="adminbar">
 			{{if and (ne .Board nil) (eq .Board.Type 0)}}
-				[<a href="{{.Board.Path}}catalog.html" style="text-decoration: underline;">{{T "Catalog"}}</a>]
+				[<a href="{{.Board.Path}}catalog.html" style="text-decoration: underline;">{{T "Catalog"}}</a>] &middot;
+			{{end}}
+			{{if ne .Opt.News 0}}
+				[<a href="/{{if eq .Opt.News 1}}news.html{{else}}index.html{{end}}" style="text-decoration: underline;">{{T "News"}}</a>]
 			{{end}}
 			[<a href="/sriracha/" style="text-decoration: underline;">{{T "Manage"}}</a>]
 		</div>
