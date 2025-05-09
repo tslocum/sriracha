@@ -10,8 +10,9 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1">
 		<title>{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}</title>
 		<link rel="stylesheet" type="text/css" href="/static/css/global.css">
-		<link rel="{{if and (ne .Board nil) (eq .Board.Style "burichan")}}alternate {{end}}stylesheet" type="text/css" href="/static/css/futaba.css" title="Futaba" id="mainStylesheet">
+		<link rel="{{if and (ne .Board nil) (ne .Board.Style "")}}alternate {{end}}stylesheet" type="text/css" href="/static/css/futaba.css" title="Futaba" id="mainStylesheet">
 		<link rel="{{if or (eq .Board nil) (ne .Board.Style "burichan")}}alternate {{end}}stylesheet" type="text/css" href="/static/css/burichan.css" title="Burichan">
+		<link rel="{{if or (eq .Board nil) (ne .Board.Style "sriracha")}}alternate {{end}}stylesheet" type="text/css" href="/static/css/sriracha.css" title="Sriracha">
 		{{if ne .Opt.Refresh 0}}
 			<script type="text/javascript">
 			var autoRefreshDelay = {{.Opt.Refresh}};

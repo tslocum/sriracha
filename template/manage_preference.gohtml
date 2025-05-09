@@ -8,8 +8,9 @@
                 <td class="postblock">Style</td>
                 <td>
                     <select name="style">
-                        <option value=""{{if ne .Account.Style "burichan"}} selected{{end}}>Futaba</option>
+                        <option value=""{{if eq .Account.Style ""}} selected{{end}}>Futaba</option>
                         <option value="burichan"{{if eq .Account.Style "burichan"}} selected{{end}}>Burichan</option>
+                        <option value="sriracha"{{if eq .Account.Style "sriracha"}} selected{{end}}>Sriracha</option>
                     </select>
                 </td>
             </tr>

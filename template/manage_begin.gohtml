@@ -10,8 +10,9 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1">
 		<title>{{.Opt.SiteName}} - {{T "Manage mode" | Title}}</title>
 		<link rel="stylesheet" type="text/css" href="/static/css/global.css">
-		<link rel="{{if and (ne .Account nil) (eq .Account.Style "burichan")}}alternate {{end}}stylesheet" type="text/css" href="/static/css/futaba.css" title="Futaba" id="mainStylesheet">
+		<link rel="{{if or (eq .Account nil) (ne .Account.Style "")}}alternate {{end}}stylesheet" type="text/css" href="/static/css/futaba.css" title="Futaba" id="mainStylesheet">
 		<link rel="{{if or (eq .Account nil) (ne .Account.Style "burichan")}}alternate {{end}}stylesheet" type="text/css" href="/static/css/burichan.css" title="Burichan">
+		<link rel="{{if or (eq .Account nil) (ne .Account.Style "sriracha")}}alternate {{end}}stylesheet" type="text/css" href="/static/css/sriracha.css" title="Sriracha">
 	</head>
     <body>
 		{{if ne .Account nil}}

@@ -71,6 +71,7 @@
                 <td><select name="style" style="width: 100%;">
                     <option value=""{{if and (ne .Manage.Board nil) (eq .Manage.Board.Style "")}} selected{{end}}>Futaba</option>
                     <option value="burichan"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Style "burichan")}} selected{{end}}>Burichan</option>
+                    <option value="sriracha"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Style "sriracha")}} selected{{end}}>Sriracha</option>
                 </select></td>
                 <td>Default page style. Visitors may choose alternative styles in their browser settings.</td>
             </tr>

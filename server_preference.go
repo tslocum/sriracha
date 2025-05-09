@@ -11,8 +11,8 @@ func (s *Server) servePreference(data *templateData, db *Database, w http.Respon
 		switch formString(r, "action") {
 		case "style":
 			var style string
-			if formString(r, "style") == "burichan" {
-				style = "burichan"
+			if formString(r, "style") == "burichan" || formString(r, "style") == "sriracha" {
+				style = formString(r, "style")
 			}
 			db.updateAccountStyle(data.Account.ID, style)
 
