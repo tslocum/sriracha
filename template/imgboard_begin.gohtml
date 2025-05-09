@@ -24,10 +24,10 @@
 		{{end}}
     </head>
     <body>
-		{{if and (gt (len .Boards) 1) (or .Opt.BoardIndex .ModMode)}}
+		{{if or (and (gt (len .Boards) 1) (or .Opt.BoardIndex .ModMode)) (eq .Template "news")}}
 			{{range $i, $board := .Boards}}
 				{{if not $.ModMode}}
-					[<a href="{{.Path}}" title="{{.Name}}" style="text-decoration: underline;">{{.Dir}}</a>]
+					[<a href="{{.Path}}" title="{{.Name}}" style="text-decoration: underline;">{{if ne .Dir ""}}{{.Dir}}{{else}}{{if eq .Type 0}}Imageboard{{else}}Forum{{end}}{{end}}</a>]
 				{{else}}
 					[<a href="/sriracha/board/mod/{{.ID}}" title="{{.Name}}" style="text-decoration: underline;">{{.Dir}}</a>]
 				{{end}}
