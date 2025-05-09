@@ -82,5 +82,6 @@ archives:
       - ./*.md
       - CHANGELOG
       - LICENSE
+      - static
 checksum:
   name_template: 'checksums.txt'

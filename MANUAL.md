@@ -323,7 +323,16 @@ Press `Ctrl+C` in the terminal window where Sriracha is running, or send the
 Replace the old `sriracha` server binary with the new one. If you are using any
 plugins, replace all plugin files with updated versions.
 
-### 4. Restart Sriracha
+### 4. Copy static files
+
+This step is only required if you are running a static file server with Sriracha.
+When Sriracha handles all incoming requests, such as when running locally, the
+updated static directory is automatically served.
+
+If you are running a static file server, copy all files in the `static` directory
+to `/rootdir/static`, replacing `/rootdir` with the server root directory.
+
+### 5. Restart Sriracha
 
 Database upgrades are handled automatically, regardless of the number of releases
 between the old and new version. No extra commands need to be run when upgrading.
