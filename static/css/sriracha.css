@@ -201,7 +201,7 @@ fieldset, .managetable, .managetable th, .managetable td {
 
 input:not([type=submit]), textarea, select, option {
 	background-color: #171a1f;
-	border: 0px none;
+	border: 1px solid #005b97;
 	color: #e2ebf0;
 }
 

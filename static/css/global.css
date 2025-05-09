@@ -12,6 +12,7 @@ blockquote blockquote {
 }
 
 form {
+	display: inline-block;
 	margin-bottom: 0;
 }
 

@@ -14,9 +14,9 @@
                 <td>{{$ban.ExpireDate}}</td>
                 <td>{{if eq $ban.Reason ""}}No reason provided{{else}}{{$ban.Reason}}{{end}}</td>
                 <td>
-                    [<a href="/sriracha/ban/{{$ban.ID}}">update</a>]
+                    <form method="get" action="/sriracha/ban/{{$ban.ID}}"><input type="submit" value="Update"></form>
                     {{if le $.Account.Role 2}}{{/* Admin */}}
-                        [<a href="/sriracha/ban/delete/{{$ban.ID}}" onclick="javascript:return confirm('Lift ban #{{.ID}}?')">lift</a>]
+                        <form method="get" action="/sriracha/ban/delete/{{$ban.ID}}" onsubmit="javascript:return confirm('Lift ban #{{.ID}}?')"><input type="submit" value="Lift"></form>
                     {{end}}
                 </td>
             </tr>

@@ -15,12 +15,12 @@
                 <td>{{$news.DateLabel}}</td>
                 <td>
                     {{if .MayUpdate $.Account}}
-                        [<a href="/sriracha/news/{{$news.ID}}">update</a>]
+                        <form method="get" action="/sriracha/news/{{$news.ID}}"><input type="submit" value="Update"></form>
                     {{else}}
-                        [<a href="/sriracha/news/{{$news.ID}}">view</a>]
+                        <form method="get" action="/sriracha/news/{{$news.ID}}"><input type="submit" value="Details"></form>
                     {{end}}
                     {{if .MayDelete $.Account}}
-                        [<a href="/sriracha/news/delete/{{$news.ID}}" onclick="return confirm('Delete {{if ne .Subject ""}}{{.Subject}}{{else}}news item #{{.ID}}{{end}}?');">delete</a>]
+                        <form method="get" action="/sriracha/news/delete/{{$news.ID}}" onsubmit="return confirm('Delete {{if ne .Subject ""}}{{.Subject}}{{else}}news item #{{.ID}}{{end}}?');"><input type="submit" value="Delete"></form>
                     {{end}}
                 </td>
             </tr>

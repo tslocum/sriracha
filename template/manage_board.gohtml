@@ -16,13 +16,13 @@
                 <td>{{$board.Description}}</td>
                 <td>{{if eq $board.Type 0}}Imageboard{{else}}Forum{{end}}</td>
                 <td>
-                    [<a href="/sriracha/board/mod/{{$board.ID}}">mod</a>]
+                    <form method="get" action="/sriracha/board/mod/{{$board.ID}}"><input type="submit" value="Mod"></form>
                     {{if le $.Account.Role 2}}{{/* Admin */}}
-                        [<a href="/sriracha/board/rebuild/{{$board.ID}}">rebuild</a>]
+                        <form method="get" action="/sriracha/board/rebuild/{{$board.ID}}"><input type="submit" value="Rebuild"></form>
                     {{end}}
-                    [<a href="/sriracha/board/{{$board.ID}}">{{if le $.Account.Role 2}}update{{else}}details{{end}}</a>]
+                    <form method="get" action="/sriracha/board/{{$board.ID}}"><input type="submit" value="{{if le $.Account.Role 2}}Update{{else}}Details{{end}}"></form>
                     {{if eq $.Account.Role 1}}{{/* Super-admin */}}
-                        [<a href="/sriracha/board/delete/{{$board.ID}}" onclick="javascript:return confirm('Delete {{$board.Path}} {{$board.Name}}?');">delete</a>]
+                         <form method="get" action="/sriracha/board/delete/{{$board.ID}}" onsubmit="javascript:return confirm('Delete {{$board.Path}} {{$board.Name}}?');"><input type="submit" value="Delete"></form>
                     {{end}}
                 </td>
             </tr>

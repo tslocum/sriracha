@@ -13,7 +13,7 @@
                 <td>{{$account.Username}}</td>
                 <td>{{if eq $account.Role 1}}Super-administrator{{else if eq $account.Role 2}}Administrator{{else if eq $account.Role 3}}Moderator{{else}}Disabled{{end}}</td>
                 <td>{{$account.LastActiveDate}}</td>
-                <td>[<a href="/sriracha/account/{{$account.ID}}">update</a>]</td>
+                <td><form method="get" action="/sriracha/account/{{$account.ID}}"><input type="submit" value="Update"></form></td>
             </tr>
         {{end}}
     </table><br>
