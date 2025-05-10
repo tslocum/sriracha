@@ -51,6 +51,10 @@ specified via the `--config` option:
 If no configuration file path is specified, the default path
 `~/.config/sriracha/config.yml` is used.
 
+The timezone may be specified via the `TZ` environment variable:
+
+`TZ=America/Los_Angeles sriracha`
+
 [PostgreSQL](https://www.postgresql.org) is the only supported database system.
 
 Sriracha serves requests at `/`, the root path. It is not currently possible to
