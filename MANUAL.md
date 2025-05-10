@@ -8,6 +8,7 @@
 - [**Migrate**](#migrate)
 - [**Upgrade**](#upgrade)
 - [**Plugins**](#plugins)
+- [**Guides**](#guides)
 
 ## Install
 
@@ -429,3 +430,65 @@ type PluginWithPost interface {
 
 An example of how to implement a plugin which receives new post events is
 available in the [Fortune](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/fortune/fortune.go) plugin.
+
+## Guides
+
+[Go to top](#sections)
+
+This section contains moderator and administrator guides.
+
+### Moderator guide
+
+As a moderator, you may:
+
+- Add bans
+- Extend bans
+- Approve posts
+- Delete posts
+- Sticky threads
+- Lock threads
+- Add news
+- Update news
+
+#### Approving posts
+
+If posts require approval before being displayed, or if post reports are enabled,
+you will need to periodically review the status page in the management panel.
+The status page is the default page shown when you log in. When posts require
+moderator approval, they will appear on this status page.
+
+#### Banning IP addresses
+
+Single IP addresses and IP address ranges may be banned. To ban an IP address
+range, use a wildcard (*) at the end of the range prefix:
+
+`192.168.1.*`
+
+#### Browsing in mod mode
+
+Mod mode is a tool staff members may use to moderate one or more posts. After
+logging into the management panel, viewing any board index page or thread page
+normally. Scroll to the bottom of the page and click the delete button. You
+will be redirected to the board index page or thread page you were viewing with
+mod mode enabled. The following moderation links are shown when mod mode is enabled:
+
+`S L D B D&B`
+
+- S: Sticky thread
+- L: Lock thread
+- D: Delete post
+- B: Ban post author
+- D&B: Delete post and ban post author
+
+### Administrator guide
+
+As an administrator, in addition to the moderator capabilities, you may:
+
+- Lift bans
+- Add boards
+- Update boards
+- Add keywords
+- Update keywords
+- Delete keywords
+- Delete news
+- Update settings
