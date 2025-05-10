@@ -59,6 +59,9 @@
                 <td>The board description, which is used by search engines.</td>
             </tr>
             <tr>
+                <th><br>Appearance</td><td>&nbsp;</td>
+            </tr>
+            <tr>
                 <td class="postblock"><label for="type">Type</label></td>
                 <td><select name="type" style="width: 100%;">
                     <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Type 0)}} selected{{end}}>Imageboard</option>
@@ -74,6 +77,97 @@
                     <option value="sriracha"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Style "sriracha")}} selected{{end}}>Sriracha</option>
                 </select></td>
                 <td>Default page style. Visitors may choose alternative styles in their browser settings.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="truncate">Truncate</label></td>
+                <td><input type="text" name="truncate" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Truncate}}{{end}}"></td>
+                <td>Number of message lines to display in post preview on board index pages. Set to 0 to show all lines.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="threads">Index Threads</label></td>
+                <td><input type="text" name="threads" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Threads}}{{end}}"></td>
+                <td>Number of threads to show per board index page. Set to 0 to show all.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="replies">Index Replies</label></td>
+                <td><input type="text" name="replies" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Replies}}{{end}}"></td>
+                <td>Number of replies to show per board index thread. Set to 0 to show none.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="defaultname">Default Name</label></td>
+                <td><input type="text" name="defaultname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.DefaultName}}{{end}}"></td>
+                <td>The name shown when no name is entered. Separate multiple names with | (pipe character). May be blank.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="rules">Rules</label></td>
+                <td>
+                    {{range $i, $value := .Manage.Board.Rules}}
+                        <textarea name="rules_{{$i}}" rows="4" cols="80" placeholder="Unused">{{$value}}</textarea><br>
+                    {{end}}
+                    <textarea name="rules_{{len .Manage.Board.Rules}}" rows="4" cols="80" placeholder="Unused"></textarea>
+                </td>
+                <td>HTML-formatted text shown in the new post form.</td>
+            </tr>
+            <tr>
+                <th><br>Attachments</td><td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="maxsizethread">Max Thread File Size</label></td>
+                <td><input type="text" name="maxsizethread" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSizeThread}}{{end}}"></td>
+                <td>Maximum file size (in bytes) when creating a thread. Set to 0 to disable file uploads.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="maxsizereply">Max Reply File Size</label></td>
+                <td><input type="text" name="maxsizereply" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSizeReply}}{{end}}"></td>
+                <td>Maximum file size (in bytes) when replying. Set to 0 to disable file uploads.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="thumbwidth">Thumbnail Width</label></td>
+                <td><input type="text" name="thumbwidth" value="{{if ne .Manage.Board nil}}{{.Manage.Board.ThumbWidth}}{{end}}"></td>
+                <td>The maximum width of thumbnails.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="thumbheight">Thumbnail Height</label></td>
+                <td><input type="text" name="thumbheight" value="{{if ne .Manage.Board nil}}{{.Manage.Board.ThumbHeight}}{{end}}"></td>
+                <td>The maximum height of thumbnails.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="oekaki">Oekaki</label></td>
+                <td><select name="oekaki" style="width: 100%;">
+                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Oekaki)}} selected{{end}}>Disable</option>
+                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Oekaki)}} selected{{end}}>Enable</option>
+                </select></td>
+                <td>Whether users may create and submit drawings.</td>
+            </tr>
+            {{if ne (len .Opt.Uploads) 0}}
+                <tr>
+                    <td class="postblock"><label for="uploads">File Types</label></td>
+                    <td>
+                        <select name="uploads" style="width: 100%;" size="5" multiple>
+                            {{range $i, $info := .Opt.Uploads}}
+                                <option value="{{.MIME}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasUpload .MIME)}} selected{{end}}>{{.Ext | ToUpper}} ({{.MIME}})</option>
+                            {{end}}
+                        </select>
+                    </td>
+                    <td>Posters may upload the selected types of files.</td>
+                </tr>
+            {{end}}
+            {{if ne (len .Opt.Embeds) 0}}
+                <tr>
+                    <td class="postblock"><label for="embeds">Allow Embedding</label></td>
+                    <td>
+                        <select name="embeds" style="width: 100%;" size="3" multiple>
+                            {{range $i, $info := .Opt.Embeds}}
+                                {{$name := index $info 0}}
+                                <option value="{{$name}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasEmbed $name)}} selected{{end}}>{{$name}}</option>
+                            {{end}}
+                        </select>
+                    </td>
+                    <td>Posters may embed media from selected services instead of uploading a file.</td>
+                </tr>
+            {{end}}
+            <tr>
+                <th><br>Posts</td><td>&nbsp;</td>
             </tr>
             <tr>
                 <td class="postblock"><label for="lock">Restrict New Posts</label></td>
@@ -103,34 +197,9 @@
                 <td>Whether users may report posts.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="defaultname">Default Name</label></td>
-                <td><input type="text" name="defaultname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.DefaultName}}{{end}}"></td>
-                <td>The name shown when no name is entered. Separate multiple names with | (pipe character). May be blank.</td>
-            </tr>
-            <tr>
                 <td class="postblock"><label for="delay">Delay</label></td>
                 <td><input type="text" name="delay" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Delay}}{{end}}"></td>
                 <td>Delay (in seconds) visitors must wait before posting again. Set to 0 to disable.</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="threads">Index Threads</label></td>
-                <td><input type="text" name="threads" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Threads}}{{end}}"></td>
-                <td>Number of threads to show per board index page. Set to 0 to show all.</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="replies">Index Replies</label></td>
-                <td><input type="text" name="replies" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Replies}}{{end}}"></td>
-                <td>Number of replies to show per board index thread. Set to 0 to show none.</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="maxthreads">Max Threads</label></td>
-                <td><input type="text" name="maxthreads" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxThreads}}{{end}}"></td>
-                <td>Maximum number of threads in board. Once this limit is reached, the oldest threads are pruned. 0 to disable.</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="maxreplies">Max Replies</label></td>
-                <td><input type="text" name="maxreplies" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxReplies}}{{end}}"></td>
-                <td>Maximum number of replies to a thread before the thread stops being bumped to the front. 0 to disable.</td>
             </tr>
             <tr>
                 <td class="postblock"><label for="minname">Min Name Length</label></td>
@@ -183,79 +252,22 @@
                 <td>Maximum length of the message field.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="maxsizethread">Max Thread File Size</label></td>
-                <td><input type="text" name="maxsizethread" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSizeThread}}{{end}}"></td>
-                <td>Maximum file size (in bytes) when creating a thread. Set to 0 to disable file uploads.</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="maxsizereply">Max Reply File Size</label></td>
-                <td><input type="text" name="maxsizereply" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSizeReply}}{{end}}"></td>
-                <td>Maximum file size (in bytes) when replying. Set to 0 to disable file uploads.</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="thumbwidth">Thumbnail Width</label></td>
-                <td><input type="text" name="thumbwidth" value="{{if ne .Manage.Board nil}}{{.Manage.Board.ThumbWidth}}{{end}}"></td>
-                <td>The maximum width of thumbnails.</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="thumbheight">Thumbnail Height</label></td>
-                <td><input type="text" name="thumbheight" value="{{if ne .Manage.Board nil}}{{.Manage.Board.ThumbHeight}}{{end}}"></td>
-                <td>The maximum height of thumbnails.</td>
-            </tr>
-            <tr>
                 <td class="postblock"><label for="wordbreak">WordBreak</label></td>
                 <td><input type="text" name="wordbreak" value="{{if ne .Manage.Board nil}}{{.Manage.Board.WordBreak}}{{end}}"></td>
                 <td>Number of characters to break long words at in post messages. Set to 0 to never break long words.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="truncate">Truncate</label></td>
-                <td><input type="text" name="truncate" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Truncate}}{{end}}"></td>
-                <td>Number of message lines to display in post preview on board index pages. Set to 0 to show all lines.</td>
-            </tr>
-            {{if ne (len .Opt.Uploads) 0}}
-                <tr>
-                    <td class="postblock"><label for="uploads">File Types</label></td>
-                    <td>
-                        <select name="uploads" style="width: 100%;" size="5" multiple>
-                            {{range $i, $info := .Opt.Uploads}}
-                                <option value="{{.MIME}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasUpload .MIME)}} selected{{end}}>{{.Ext | ToUpper}} ({{.MIME}})</option>
-                            {{end}}
-                        </select>
-                    </td>
-                    <td>Posters may upload the selected types of files.</td>
-                </tr>
-            {{end}}
-            {{if ne (len .Opt.Embeds) 0}}
-                <tr>
-                    <td class="postblock"><label for="embeds">Allow Embedding</label></td>
-                    <td>
-                        <select name="embeds" style="width: 100%;" size="3" multiple>
-                            {{range $i, $info := .Opt.Embeds}}
-                                {{$name := index $info 0}}
-                                <option value="{{$name}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasEmbed $name)}} selected{{end}}>{{$name}}</option>
-                            {{end}}
-                        </select>
-                    </td>
-                    <td>Posters may embed media from selected services instead of uploading a file.</td>
-                </tr>
-            {{end}}
-            <tr>
-                <td class="postblock"><label for="oekaki">Oekaki</label></td>
-                <td><select name="oekaki" style="width: 100%;">
-                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Oekaki)}} selected{{end}}>Disable</option>
-                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Oekaki)}} selected{{end}}>Enable</option>
-                </select></td>
-                <td>Whether users may create and submit drawings.</td>
+                <th><br>Threads</td><td>&nbsp;</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="rules">Rules</label></td>
-                <td>
-                    {{range $i, $value := .Manage.Board.Rules}}
-                        <textarea name="rules_{{$i}}" rows="4" cols="80" placeholder="Unused">{{$value}}</textarea><br>
-                    {{end}}
-                    <textarea name="rules_{{len .Manage.Board.Rules}}" rows="4" cols="80" placeholder="Unused"></textarea>
-                </td>
-                <td>HTML-formatted text shown in the new post form.</td>
+                <td class="postblock"><label for="maxthreads">Max Threads</label></td>
+                <td><input type="text" name="maxthreads" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxThreads}}{{end}}"></td>
+                <td>Maximum number of threads in board. Once this limit is reached, the oldest threads are pruned. 0 to disable.</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="maxreplies">Max Replies</label></td>
+                <td><input type="text" name="maxreplies" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxReplies}}{{end}}"></td>
+                <td>Maximum number of replies to a thread before the thread stops being bumped to the front. 0 to disable.</td>
             </tr>
             {{if le $.Account.Role 2}}
                 <tr>
