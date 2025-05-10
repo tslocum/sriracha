@@ -205,6 +205,10 @@ input:not([type=submit]), textarea, select, option {
 	color: #e2ebf0;
 }
 
+option {
+	border: 0px none;
+}
+
 #captchaimage{
 	filter: invert(1);
 }
