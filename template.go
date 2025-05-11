@@ -147,6 +147,7 @@ var templateFuncMap = template.FuncMap{
 		return gotext.GetN(singular, plural, n, vars...)
 	},
 	"ToUpper": strings.ToUpper,
+	"ToLower": strings.ToLower,
 	"Title":   strings.Title,
 	"UnderscoreTitle": func(text string) string {
 		return strings.Title(strings.ReplaceAll(text, "_", " "))

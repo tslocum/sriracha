@@ -1102,6 +1102,16 @@ func comparePassword(password string, hash string) bool {
 	return match
 }
 
+func pluginByName(name string) (any, *pluginInfo) {
+	name = strings.ToLower(name)
+	for i, info := range allPluginInfo {
+		if strings.ToLower(info.Name) == name {
+			return allPlugins[i], info
+		}
+	}
+	return nil, nil
+}
+
 func parseInt(v string) int {
 	i, err := strconv.Atoi(v)
 	if err == nil && i > 0 {

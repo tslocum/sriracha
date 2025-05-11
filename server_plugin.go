@@ -15,12 +15,10 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 	data.Template = "manage_plugin"
 	data.Boards = db.AllBoards()
 
-	pluginID := pathInt(r, "/sriracha/plugin/reset/")
-	if pluginID > 0 && pluginID <= len(allPluginInfo) {
+	plugin, info := pluginByName(pathString(r, "/sriracha/plugin/reset/"))
+	if plugin != nil {
 		var changes string
-
-		pUpdate, _ := allPlugins[pluginID-1].(PluginWithUpdate)
-		info := allPluginInfo[pluginID-1]
+		pUpdate, _ := plugin.(PluginWithUpdate)
 		for i, c := range info.Config {
 			defaultValue := c.Default
 			if c.Type == TypeEnum {
@@ -67,13 +65,13 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 			db.log(data.Account, nil, fmt.Sprintf("Reset plugin %s", info.Name), changes)
 		}
 
-		http.Redirect(w, r, fmt.Sprintf("/sriracha/plugin/%d", pluginID), http.StatusFound)
+		http.Redirect(w, r, fmt.Sprintf("/sriracha/plugin/%s", strings.ToLower(info.Name)), http.StatusFound)
 		return
 	}
 
-	pluginID = pathInt(r, "/sriracha/plugin/view/")
-	if pluginID > 0 && pluginID <= len(allPluginInfo) {
-		pServe, ok := allPlugins[pluginID-1].(PluginWithServe)
+	plugin, info = pluginByName(pathString(r, "/sriracha/plugin/view/"))
+	if plugin != nil {
+		pServe, ok := plugin.(PluginWithServe)
 		if !ok {
 			http.Redirect(w, r, "/sriracha/plugin/", http.StatusFound)
 			return
@@ -84,16 +82,15 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 			return
 		} else if msg != "" {
 			data.Template = "manage_info"
-			data.Message = template.HTML(`<h2 class="managetitle">` + strings.Title(allPluginInfo[pluginID-1].Name) + `</h2>` + msg)
+			data.Message = template.HTML(`<h2 class="managetitle">` + strings.Title(info.Name) + `</h2>` + msg)
 		} else {
 			data.Template = ""
 		}
 		return
 	}
 
-	pluginID = pathInt(r, "/sriracha/plugin/")
-	if pluginID > 0 && pluginID <= len(allPluginInfo) {
-		info := allPluginInfo[pluginID-1]
+	plugin, info = pluginByName(pathString(r, "/sriracha/plugin/"))
+	if plugin != nil {
 		data.Manage.Plugin = info
 
 		if r.Method == http.MethodPost {
@@ -108,8 +105,7 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 				return formKeys[i] < formKeys[j]
 			})
 
-			pUpdate, _ := allPlugins[pluginID-1].(PluginWithUpdate)
-
+			pUpdate, _ := plugin.(PluginWithUpdate)
 			var changes string
 			for i, c := range info.Config {
 				var newValue string
