@@ -14,7 +14,7 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 	data := s.buildData(db, w, r)
 
 	boardDir := formString(r, "board")
-	b := db.boardByDir(boardDir)
+	b := db.BoardByDir(boardDir)
 	if b == nil {
 		data.BoardError(w, gotext.Get("No board specified."))
 		return
@@ -23,7 +23,7 @@ func (s *Server) serveDelete(db *Database, w http.ResponseWriter, r *http.Reques
 	var post *Post
 	postID, err := strconv.Atoi(r.FormValue("delete[]"))
 	if err == nil && postID > 0 {
-		post = db.postByID(postID)
+		post = db.PostByID(postID)
 	}
 	if data.Account != nil {
 		url := fmt.Sprintf("/sriracha/board/mod/%d", b.ID)

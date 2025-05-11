@@ -9,7 +9,7 @@ import (
 
 func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_ban"
-	data.Boards = db.allBoards()
+	data.Boards = db.AllBoards()
 
 	deleteBanID := pathInt(r, "/sriracha/ban/delete/")
 	if deleteBanID > 0 {

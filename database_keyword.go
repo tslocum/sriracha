@@ -42,7 +42,7 @@ func (db *Database) fetchKeywordBoards(k *Keyword) {
 	}
 
 	for _, id := range ids {
-		b := db.boardByID(id)
+		b := db.BoardByID(id)
 		k.Boards = append(k.Boards, b)
 	}
 }

@@ -42,7 +42,7 @@ func (b *Ban) Info() string {
 	if b.Expire == 0 {
 		info += "This ban is permanent."
 	} else {
-		info += fmt.Sprintf("This ban will expire at %s.", formatTimestamp(b.Expire))
+		info += fmt.Sprintf("This ban will expire at %s.", FormatTimestamp(b.Expire))
 	}
 	if b.Reason != "" {
 		info += " Reason: " + b.Reason

@@ -108,7 +108,7 @@ func (db *Database) setBoardAttributes(b *Board) {
 	}
 }
 
-func (db *Database) boardByID(id int) *Board {
+func (db *Database) BoardByID(id int) *Board {
 	b := &Board{}
 	err := scanBoard(b, db.conn.QueryRow(context.Background(), "SELECT * FROM board WHERE id = $1", id))
 	if err == pgx.ErrNoRows {
@@ -120,7 +120,7 @@ func (db *Database) boardByID(id int) *Board {
 	return b
 }
 
-func (db *Database) boardByDir(dir string) *Board {
+func (db *Database) BoardByDir(dir string) *Board {
 	b := &Board{}
 	err := scanBoard(b, db.conn.QueryRow(context.Background(), "SELECT * FROM board WHERE dir = $1", dir))
 	if err == pgx.ErrNoRows {
@@ -132,9 +132,14 @@ func (db *Database) boardByDir(dir string) *Board {
 	return b
 }
 
-func (db *Database) uniqueUserPosts(b *Board) int {
+func (db *Database) UniqueUserPosts(b *Board) int {
 	var count int
-	err := db.conn.QueryRow(context.Background(), "SELECT COUNT(DISTINCT ip) FROM post WHERE board = $1", b.ID).Scan(&count)
+	var err error
+	if b == nil {
+		err = db.conn.QueryRow(context.Background(), "SELECT COUNT(DISTINCT ip) FROM post").Scan(&count)
+	} else {
+		err = db.conn.QueryRow(context.Background(), "SELECT COUNT(DISTINCT ip) FROM post WHERE board = $1", b.ID).Scan(&count)
+	}
 	if err == pgx.ErrNoRows {
 		return 0
 	} else if err != nil {
@@ -143,7 +148,7 @@ func (db *Database) uniqueUserPosts(b *Board) int {
 	return count
 }
 
-func (db *Database) allBoards() []*Board {
+func (db *Database) AllBoards() []*Board {
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM board ORDER BY dir ASC")
 	if err != nil {
 		log.Fatalf("failed to select all boards: %s", err)

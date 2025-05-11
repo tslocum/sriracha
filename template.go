@@ -82,6 +82,9 @@ func (data *templateData) forbidden(w http.ResponseWriter, required AccountRole)
 }
 
 func (data *templateData) execute(w io.Writer) {
+	if data.Template == "" {
+		return
+	}
 	data.Opt = &srirachaServer.opt
 
 	if strings.HasPrefix(data.Template, "board_") {
@@ -90,6 +93,11 @@ func (data *templateData) execute(w io.Writer) {
 			prefix = "forum_"
 		}
 		data.Template = prefix + strings.TrimPrefix(data.Template, "board_")
+	}
+
+	responseWriter, ok := w.(http.ResponseWriter)
+	if ok {
+		responseWriter.Header().Set("Content-Type", "text/html")
 	}
 
 	err := srirachaServer.tpl.ExecuteTemplate(w, data.Template+".gohtml", data)

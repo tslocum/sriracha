@@ -249,9 +249,9 @@ func (b *Board) Path() string {
 
 func (b *Board) MaxSizeLabel(thread bool) string {
 	if thread {
-		return formatFileSize(b.MaxSizeThread)
+		return FormatFileSize(b.MaxSizeThread)
 	}
-	return formatFileSize(b.MaxSizeReply)
+	return FormatFileSize(b.MaxSizeReply)
 }
 
 func (b *Board) HasUpload(mimeType string) bool {

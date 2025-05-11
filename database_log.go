@@ -89,7 +89,7 @@ func (db *Database) logsByPage(page int) []*Log {
 			l.Account = db.accountByID(accountID)
 		}
 		if boardID > 0 {
-			l.Board = db.boardByID(boardID)
+			l.Board = db.BoardByID(boardID)
 		}
 	}
 	return logs

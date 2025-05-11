@@ -58,8 +58,8 @@ func (n *News) DateLabel() string {
 	case n.Timestamp == 0:
 		return "Draft"
 	case n.Timestamp > time.Now().Unix():
-		return "Hidden until " + formatTimestamp(n.Timestamp)
+		return "Hidden until " + FormatTimestamp(n.Timestamp)
 	default:
-		return formatTimestamp(n.Timestamp)
+		return FormatTimestamp(n.Timestamp)
 	}
 }

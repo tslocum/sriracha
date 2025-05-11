@@ -2,6 +2,7 @@ package sriracha
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"sort"
 	"strings"
@@ -12,7 +13,7 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 		return
 	}
 	data.Template = "manage_plugin"
-	data.Boards = db.allBoards()
+	data.Boards = db.AllBoards()
 
 	pluginID := pathInt(r, "/sriracha/plugin/reset/")
 	if pluginID > 0 && pluginID <= len(allPluginInfo) {
@@ -67,6 +68,26 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 		}
 
 		http.Redirect(w, r, fmt.Sprintf("/sriracha/plugin/%d", pluginID), http.StatusFound)
+		return
+	}
+
+	pluginID = pathInt(r, "/sriracha/plugin/view/")
+	if pluginID > 0 && pluginID <= len(allPluginInfo) {
+		pServe, ok := allPlugins[pluginID-1].(PluginWithServe)
+		if !ok {
+			http.Redirect(w, r, "/sriracha/plugin/", http.StatusFound)
+			return
+		}
+		msg, err := pServe.Serve(db, data.Account, w, r)
+		if err != nil {
+			data.ManageError(err.Error())
+			return
+		} else if msg != "" {
+			data.Template = "manage_info"
+			data.Message = template.HTML(`<h2 class="managetitle">` + strings.Title(allPluginInfo[pluginID-1].Name) + `</h2>` + msg)
+		} else {
+			data.Template = ""
+		}
 		return
 	}
 

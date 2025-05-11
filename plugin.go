@@ -3,6 +3,7 @@ package sriracha
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"reflect"
 	"strings"
 )
@@ -115,9 +116,21 @@ type PluginWithInsert interface {
 	Insert(db *Database, post *Post) error
 }
 
+// PluginWithServe describes the required methods for a plugin with a web interface.
+type PluginWithServe interface {
+	Plugin
+
+	// Serve handles plugin web requests. Only administrators and super-administrators
+	// may access this page. When serving HTML responses, return the HTML and a
+	// nil error. When serving any other content type, set the Conent-Type header,
+	// write to the http.ResponseWriter directly and return a blank string.
+	Serve(db *Database, a *Account, w http.ResponseWriter, r *http.Request) (string, error)
+}
+
 // RegisterPlugin registers a Sriracha plugin to receive any subscribed events.
 // Plugins must call this function in init(). See [PluginWithConfig],
-// [PluginWithUpdate], [PluginWithPost] and [PluginWithInsert].
+// [PluginWithUpdate], [PluginWithPost], [PluginWithInsert] and
+// [PluginWithServe].
 func RegisterPlugin(plugin any) {
 	if srirachaServer == nil {
 		panic("Sriracha server not yet started")
@@ -180,6 +193,11 @@ func RegisterPlugin(plugin any) {
 		allPluginInsertHandlers = append(allPluginInsertHandlers, insertHandlerInfo{strings.ToLower(name), pInsert.Insert})
 	}
 
+	pServe, ok := plugin.(PluginWithServe)
+	if ok {
+		allPluginServeHandlers = append(allPluginServeHandlers, serveHandlerInfo{strings.ToLower(name), pServe.Serve})
+	}
+
 	if len(events) == 0 {
 		events = append(events, "None")
 	}
@@ -193,16 +211,11 @@ func RegisterPlugin(plugin any) {
 		Config: config,
 		Events: events,
 	}
+	if pServe != nil {
+		info.Serve = pServe.Serve
+	}
 	allPlugins = append(allPlugins, plugin)
 	allPluginInfo = append(allPluginInfo, info)
-}
-
-type pluginInfo struct {
-	ID     int
-	Name   string
-	About  string
-	Config []PluginConfig
-	Events []string
 }
 
 type postHandler func(db *Database, post *Post) error
@@ -219,7 +232,24 @@ type insertHandlerInfo struct {
 	Handler insertHandler
 }
 
+type serveHandler func(db *Database, a *Account, w http.ResponseWriter, r *http.Request) (string, error)
+
+type serveHandlerInfo struct {
+	Name    string
+	Handler serveHandler
+}
+
+type pluginInfo struct {
+	ID     int
+	Name   string
+	About  string
+	Config []PluginConfig
+	Events []string
+	Serve  serveHandler
+}
+
 var allPlugins []any
 var allPluginInfo []*pluginInfo
 var allPluginPostHandlers []postHandlerInfo
 var allPluginInsertHandlers []insertHandlerInfo
+var allPluginServeHandlers []serveHandlerInfo

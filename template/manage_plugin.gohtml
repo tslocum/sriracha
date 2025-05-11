@@ -76,7 +76,10 @@
                 <tr>
                     <td>{{$plugin.Name}}</td>
                     <td>{{if eq $plugin.About ""}}No description{{else}}{{$plugin.About}}{{end}}</td>
-                    <td>{{if eq (len $plugin.Config) 0}}&nbsp;{{else}}<form method="get" action="/sriracha/plugin/{{$i | PlusOne}}"><input type="submit" value="Configure"></form>{{end}}</td>
+                    <td>
+                        {{if ne $plugin.Serve nil}}<form method="get" action="/sriracha/plugin/view/{{$i | PlusOne}}"><input type="submit" value="View"></form>{{end}}
+                        {{if ne (len $plugin.Config) 0}}<form method="get" action="/sriracha/plugin/{{$i | PlusOne}}"><input type="submit" value="Configure"></form>{{end}}
+                    </td>
                 </tr>
             {{end}}
         </table>

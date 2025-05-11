@@ -46,6 +46,17 @@ builds:
     goarch:
       - amd64
   -
+    id: statistics
+    buildmode: plugin
+    main: ./plugin/statistics/
+    binary: ./plugin/statistics.so
+    ldflags:
+      - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
+    goos:
+      - linux
+    goarch:
+      - amd64
+  -
     id: wordfilter
     buildmode: plugin
     main: ./plugin/wordfilter/
@@ -75,6 +86,7 @@ archives:
       - fortune
       - password
       - robot9000
+      - statistics
       - wordfilter
     wrap_in_directory: sriracha
     allow_different_binary_count: true

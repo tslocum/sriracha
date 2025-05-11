@@ -15,7 +15,7 @@ func (s *Server) serveKeyword(data *templateData, db *Database, w http.ResponseW
 	}
 	var err error
 	data.Template = "manage_keyword"
-	data.Boards = db.allBoards()
+	data.Boards = db.AllBoards()
 
 	keywordID := pathInt(r, "/sriracha/keyword/test/")
 	if keywordID > 0 {

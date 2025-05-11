@@ -41,7 +41,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	}
 
 	boardDir := formString(r, "board")
-	b := db.boardByDir(boardDir)
+	b := db.BoardByDir(boardDir)
 	if b == nil {
 		data := s.buildData(db, w, r)
 		data.BoardError(w, gotext.Get("No board specified."))
@@ -119,7 +119,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 
 	var parentPost *Post
 	if post.Parent != 0 {
-		parentPost = db.postByID(post.Parent)
+		parentPost = db.PostByID(post.Parent)
 		if parentPost == nil || parentPost.Parent != 0 {
 			s.deletePostFiles(post)
 
@@ -259,7 +259,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	}
 
 	if post.FileHash != "" {
-		existing := db.postByFileHash(post.FileHash)
+		existing := db.PostByFileHash(post.FileHash)
 		if existing != nil {
 			var postLink string
 			if existing.Moderated != ModeratedHidden {
@@ -422,7 +422,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 			if err != nil || postID <= 0 {
 				return s
 			}
-			refPost := db.postByID(postID)
+			refPost := db.PostByID(postID)
 			if refPost == nil {
 				return s
 			}

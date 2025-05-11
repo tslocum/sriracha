@@ -242,12 +242,12 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 				return fmt.Errorf("a file or embed is required")
 			}
 		} else if minSize > 0 {
-			return fmt.Errorf("a file %s or larger is required", formatFileSize(minSize))
+			return fmt.Errorf("a file %s or larger is required", FormatFileSize(minSize))
 		} else {
 			return nil
 		}
 	} else if formFileHeader.Size > maxSize {
-		return fmt.Errorf("that file exceeds the maximum file size: %s", formatFileSize(maxSize))
+		return fmt.Errorf("that file exceeds the maximum file size: %s", FormatFileSize(maxSize))
 	}
 
 	buf, err := io.ReadAll(formFile)
@@ -263,10 +263,10 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 				return fmt.Errorf("a file or embed is required")
 			}
 		} else {
-			return fmt.Errorf("a file %s or larger is required", formatFileSize(minSize))
+			return fmt.Errorf("a file %s or larger is required", FormatFileSize(minSize))
 		}
 	} else if int64(len(buf)) > maxSize {
-		return fmt.Errorf("that file exceeds the maximum file size: %s", formatFileSize(maxSize))
+		return fmt.Errorf("that file exceeds the maximum file size: %s", FormatFileSize(maxSize))
 	}
 
 	mimeType := mimetype.Detect(buf).String()
@@ -469,11 +469,11 @@ func (p *Post) Thread() int {
 }
 
 func (p *Post) FileSizeLabel() string {
-	return formatFileSize(p.FileSize)
+	return FormatFileSize(p.FileSize)
 }
 
 func (p *Post) TimestampLabel() string {
-	return formatTimestamp(p.Timestamp)
+	return FormatTimestamp(p.Timestamp)
 }
 
 func (p *Post) IsOekaki() bool {

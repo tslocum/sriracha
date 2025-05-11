@@ -57,7 +57,7 @@ func (db *Database) addPost(p *Post) {
 	}
 }
 
-func (db *Database) allThreads(board *Board, moderated bool) []*Post {
+func (db *Database) AllThreads(board *Board, moderated bool) []*Post {
 	var extraJoin string
 	var extraWhere string
 	if moderated {
@@ -102,7 +102,7 @@ func (db *Database) trimThreads(board *Board) []*Post {
 	return posts
 }
 
-func (db *Database) allPostsInThread(postID int, moderated bool) []*Post {
+func (db *Database) AllPostsInThread(postID int, moderated bool) []*Post {
 	var extra string
 	if moderated {
 		extra = " AND moderated > 0"
@@ -123,12 +123,12 @@ func (db *Database) allPostsInThread(postID int, moderated bool) []*Post {
 		boardIDs = append(boardIDs, boardID)
 	}
 	for i := range posts {
-		posts[i].Board = db.boardByID(boardIDs[i])
+		posts[i].Board = db.BoardByID(boardIDs[i])
 	}
 	return posts
 }
 
-func (db *Database) allReplies(threadID int, limit int, moderated bool) []*Post {
+func (db *Database) AllReplies(threadID int, limit int, moderated bool) []*Post {
 	if limit == 0 {
 		return nil
 	}
@@ -158,7 +158,7 @@ func (db *Database) allReplies(threadID int, limit int, moderated bool) []*Post 
 		boardIDs = append(boardIDs, boardID)
 	}
 	for i := range posts {
-		posts[i].Board = db.boardByID(boardIDs[i])
+		posts[i].Board = db.BoardByID(boardIDs[i])
 	}
 	if sortDir == "DESC" {
 		slices.Reverse(posts)
@@ -183,12 +183,12 @@ func (db *Database) pendingPosts() []*Post {
 		boardIDs = append(boardIDs, boardID)
 	}
 	for i := range posts {
-		posts[i].Board = db.boardByID(boardIDs[i])
+		posts[i].Board = db.BoardByID(boardIDs[i])
 	}
 	return posts
 }
 
-func (db *Database) postByID(postID int) *Post {
+func (db *Database) PostByID(postID int) *Post {
 	p := &Post{}
 	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT *, 0 as replies FROM post WHERE id = $1", postID))
 	if err == pgx.ErrNoRows {
@@ -196,11 +196,11 @@ func (db *Database) postByID(postID int) *Post {
 	} else if err != nil || p.ID == 0 {
 		log.Fatalf("failed to select post: %s", err)
 	}
-	p.Board = db.boardByID(boardID)
+	p.Board = db.BoardByID(boardID)
 	return p
 }
 
-func (db *Database) postByFileHash(hash string) *Post {
+func (db *Database) PostByFileHash(hash string) *Post {
 	p := &Post{}
 	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT *, 0 as replies FROM post WHERE filehash = $1", hash))
 	if err == pgx.ErrNoRows {
@@ -208,7 +208,7 @@ func (db *Database) postByFileHash(hash string) *Post {
 	} else if err != nil || p.ID == 0 {
 		log.Fatalf("failed to select post: %s", err)
 	}
-	p.Board = db.boardByID(boardID)
+	p.Board = db.BoardByID(boardID)
 	return p
 }
 
@@ -232,7 +232,7 @@ func (db *Database) lastPostByIP(board *Board, ip string) *Post {
 	} else if err != nil || p.ID == 0 {
 		log.Fatalf("failed to select last post by IP: %s", err)
 	}
-	p.Board = db.boardByID(boardID)
+	p.Board = db.BoardByID(boardID)
 	return p
 }
 

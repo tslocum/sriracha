@@ -13,7 +13,7 @@ import (
 func (s *Server) serveNews(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
 	var err error
 	data.Template = "manage_news"
-	data.Boards = db.allBoards()
+	data.Boards = db.AllBoards()
 
 	deleteNewsID := pathInt(r, "/sriracha/news/delete/")
 	if deleteNewsID > 0 {

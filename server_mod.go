@@ -41,7 +41,7 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 		data.ManageError("Unknown post")
 		return
 	}
-	data.Post = db.postByID(postID)
+	data.Post = db.PostByID(postID)
 	if data.Post == nil {
 		data.ManageError("Unknown post")
 		return

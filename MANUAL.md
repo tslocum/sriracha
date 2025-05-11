@@ -363,6 +363,7 @@ directory. Plugin API documentation is available via [godoc](https://pkg.go.dev/
 | Fortune | Give your posters some good luck (or bad). |
 | Password | Require specific passwords to post. |
 | Robot9000 | Require post messages to be unique. |
+| Statistics | View statistics for each board. |
 | Wordfilter | Find and replace text in post messages. |
 
 ### Instructions
@@ -482,7 +483,7 @@ mod mode enabled. The following moderation links are shown when mod mode is enab
 
 ### Administrator guide
 
-As an administrator, in addition to the moderator capabilities, you may:
+As an administrator, in addition to all moderator capabilities, you may:
 
 - Lift bans
 - Add boards

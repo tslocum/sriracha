@@ -101,8 +101,8 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 	data.Message += template.HTML("<b>Validation complete.</b><br><br>")
 
 	var rewriteIDs bool
-	for _, b := range db.allBoards() {
-		if len(db.allThreads(b, false)) != 0 {
+	for _, b := range db.AllBoards() {
+		if len(db.AllThreads(b, false)) != 0 {
 			rewriteIDs = true
 			break
 		}
@@ -144,7 +144,7 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 		data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to validate board: %s", html.EscapeString(err.Error())))
 		return
 	}
-	match := db.boardByDir(b.Dir)
+	match := db.BoardByDir(b.Dir)
 	if match != nil {
 		data.Message += template.HTML("<b>Error:</b> A board with that directory already exists in Sriracha.")
 		return
@@ -322,7 +322,7 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 		if pp.Parent != 0 {
 			pp.Parent = newIDs[pp.Parent]
 		}
-		match := db.postByFileHash(pp.FileHash)
+		match := db.PostByFileHash(pp.FileHash)
 		if match != nil {
 			pp.FileHash = ""
 		}

@@ -428,7 +428,7 @@ func (s *Server) deletePostFiles(p *Post) {
 }
 
 func (s *Server) deletePost(db *Database, p *Post) {
-	posts := db.allPostsInThread(p.ID, false)
+	posts := db.AllPostsInThread(p.ID, false)
 	for _, post := range posts {
 		s.deletePostFiles(post)
 	}
@@ -500,13 +500,13 @@ func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request)
 }
 
 func (s *Server) writeThread(db *Database, board *Board, postID int) {
-	posts := db.allPostsInThread(postID, true)
+	posts := db.AllPostsInThread(postID, true)
 	if len(posts) == 0 {
 		return
 	}
 
 	if board.Unique == 0 {
-		board.Unique = db.uniqueUserPosts(board)
+		board.Unique = db.UniqueUserPosts(board)
 	}
 
 	f, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "res", fmt.Sprintf("%d.html", postID)), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
@@ -516,7 +516,7 @@ func (s *Server) writeThread(db *Database, board *Board, postID int) {
 
 	data := &templateData{
 		Board:     board,
-		Boards:    db.allBoards(),
+		Boards:    db.AllBoards(),
 		Threads:   [][]*Post{posts},
 		ReplyMode: postID,
 		Manage:    &manageData{},
@@ -527,13 +527,13 @@ func (s *Server) writeThread(db *Database, board *Board, postID int) {
 
 func (s *Server) writeIndexes(db *Database, board *Board) {
 	if board.Unique == 0 {
-		board.Unique = db.uniqueUserPosts(board)
+		board.Unique = db.UniqueUserPosts(board)
 	}
 
-	threads := db.allThreads(board, true)
+	threads := db.AllThreads(board, true)
 	data := &templateData{
 		Board:     board,
-		Boards:    db.allBoards(),
+		Boards:    db.AllBoards(),
 		ReplyMode: 1,
 		Manage:    &manageData{},
 		Template:  "board_catalog",
@@ -580,7 +580,7 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 		for _, thread := range threads[start:end] {
 			posts := []*Post{thread}
 			if board.Type == TypeImageboard {
-				posts = append(posts, db.allReplies(thread.ID, board.Replies, true)...)
+				posts = append(posts, db.AllReplies(thread.ID, board.Replies, true)...)
 			}
 			data.Threads = append(data.Threads, posts)
 		}
@@ -597,7 +597,7 @@ func (s *Server) rebuildThread(db *Database, post *Post) {
 }
 
 func (s *Server) rebuildBoard(db *Database, board *Board) {
-	for _, post := range db.allThreads(board, true) {
+	for _, post := range db.AllThreads(board, true) {
 		s.writeThread(db, board, post.ID)
 	}
 	s.writeIndexes(db, board)
@@ -609,7 +609,7 @@ func (s *Server) writeNewsItem(db *Database, n *News) {
 	}
 
 	data := &templateData{
-		Boards:   db.allBoards(),
+		Boards:   db.AllBoards(),
 		Manage:   &manageData{},
 		Template: "news",
 		AllNews:  []*News{n},
@@ -628,7 +628,7 @@ func (s *Server) writeNewsItem(db *Database, n *News) {
 func (s *Server) writeNewsIndexes(db *Database) {
 	allNews := db.allNews(true)
 	data := &templateData{
-		Boards:   db.allBoards(),
+		Boards:   db.AllBoards(),
 		Manage:   &manageData{},
 		Template: "news",
 	}
@@ -697,7 +697,6 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 	var skipExecute bool
 
 	if len(data.Info) != 0 {
-		w.Header().Set("Content-Type", "text/html")
 		data.Template = "manage_error"
 		data.execute(w)
 		return
@@ -705,7 +704,7 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 
 	if strings.HasPrefix(r.URL.Path, "/sriracha/oekaki/") {
 		postID := pathInt(r, "/sriracha/oekaki/")
-		post := db.postByID(postID)
+		post := db.PostByID(postID)
 		if post == nil || !post.IsOekaki() {
 			data.BoardError(w, "invalid or deleted post")
 			return
@@ -737,12 +736,10 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 	data.Template = "manage_login"
 
 	if data.Account == nil {
-		w.Header().Set("Content-Type", "text/html")
 		data.execute(w)
 		return
 	} else if s.config.importMode {
 		if data.Account.Role != RoleSuperAdmin {
-			w.Header().Set("Content-Type", "text/html")
 			data.ManageError("Sriracha is running in import mode. Only super-administrators may log in.")
 			data.execute(w)
 			return
@@ -783,7 +780,6 @@ func (s *Server) serveManage(db *Database, w http.ResponseWriter, r *http.Reques
 	if skipExecute {
 		return
 	}
-	w.Header().Set("Content-Type", "text/html")
 	data.execute(w)
 }
 
@@ -862,7 +858,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 			handled = true
 		} else if strings.HasPrefix(r.URL.Path, "/sriracha/post/") {
 			postID := pathInt(r, "/sriracha/post/")
-			post := db.postByID(postID)
+			post := db.PostByID(postID)
 			if post == nil {
 				data := s.buildData(db, w, r)
 				data.BoardError(w, "Invalid or deleted post.")
@@ -1205,11 +1201,11 @@ func pathString(r *http.Request, prefix string) string {
 	return strings.TrimPrefix(r.URL.Path, prefix)
 }
 
-func formatTimestamp(timestamp int64) string {
+func FormatTimestamp(timestamp int64) string {
 	return time.Unix(timestamp, 0).Format("2006/01/02(Mon)15:04:05")
 }
 
-func formatFileSize(size int64) string {
+func FormatFileSize(size int64) string {
 	v := float64(size)
 	for _, unit := range []string{"", "K", "M", "G", "T", "P", "E", "Z"} {
 		if math.Abs(v) < 1024.0 {

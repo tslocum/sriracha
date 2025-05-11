@@ -53,7 +53,7 @@ func (k *Keyword) loadForm(db *Database, r *http.Request) {
 		if err != nil || boardID <= 0 {
 			continue
 		}
-		b := db.boardByID(boardID)
+		b := db.BoardByID(boardID)
 		if b == nil {
 			continue
 		}

@@ -52,7 +52,7 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 			db.log(data.Account, nil, "Reset settings", changes)
 		}
 
-		for _, b := range db.allBoards() {
+		for _, b := range db.AllBoards() {
 			s.rebuildBoard(db, b)
 		}
 
@@ -132,7 +132,7 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 			db.log(data.Account, nil, "Updated settings", changes)
 		}
 
-		for _, b := range db.allBoards() {
+		for _, b := range db.AllBoards() {
 			s.rebuildBoard(db, b)
 		}
 

@@ -22,7 +22,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 		if data.forbidden(w, RoleAdmin) {
 			return false
 		}
-		b := db.boardByID(boardID)
+		b := db.BoardByID(boardID)
 		if b == nil {
 			data.ManageError("Board not found")
 			return false
@@ -47,7 +47,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			boardID, _ = strconv.Atoi(split[0])
 		}
 
-		b := db.boardByID(boardID)
+		b := db.BoardByID(boardID)
 		if b == nil {
 			data.ManageError("Invalid or deleted board or post")
 			return false
@@ -55,13 +55,13 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 
 		data.Template = "board_page"
 		data.Board = b
-		data.Boards = db.allBoards()
+		data.Boards = db.AllBoards()
 		data.ModMode = true
 		if postID > 0 {
-			data.Threads = [][]*Post{db.allPostsInThread(postID, true)}
+			data.Threads = [][]*Post{db.AllPostsInThread(postID, true)}
 			data.ReplyMode = postID
 		} else {
-			threads := db.allThreads(b, true)
+			threads := db.AllThreads(b, true)
 
 			data.Page = page
 			data.Pages = pageCount(len(threads), b.Threads)
@@ -73,7 +73,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			}
 			for _, thread := range threads[start:end] {
 				if b.Type == TypeImageboard {
-					data.Threads = append(data.Threads, db.allPostsInThread(thread.ID, true))
+					data.Threads = append(data.Threads, db.AllPostsInThread(thread.ID, true))
 				} else {
 					data.Threads = append(data.Threads, []*Post{thread})
 				}
@@ -88,13 +88,13 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			return
 		}
 
-		b := db.boardByID(deleteBoardID)
+		b := db.BoardByID(deleteBoardID)
 		if b == nil {
 			data.ManageError("Invalid board.")
 			return
 		}
 
-		threads := db.allThreads(b, false)
+		threads := db.AllThreads(b, false)
 		if !formBool(r, "confirmation") {
 			data.Template = "manage_info"
 			data.Message = template.HTML(`<form method="post">
@@ -144,7 +144,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 
 	boardID = pathInt(r, "/sriracha/board/")
 	if boardID > 0 {
-		data.Manage.Board = db.boardByID(boardID)
+		data.Manage.Board = db.BoardByID(boardID)
 		if data.Manage.Board == nil {
 			data.ManageError("Board not found")
 			return false
@@ -228,8 +228,8 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 					}
 				}
 
-				for _, thread := range db.allThreads(data.Manage.Board, false) {
-					for _, post := range db.allPostsInThread(thread.ID, false) {
+				for _, thread := range db.AllThreads(data.Manage.Board, false) {
+					for _, post := range db.AllPostsInThread(thread.ID, false) {
 						var modified bool
 						resPattern, err := regexp.Compile(`<a href="` + regexp.QuoteMeta(oldPath) + `res\/([0-9]+).html#([0-9]+)"`)
 						if err != nil {
@@ -300,6 +300,6 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 
 	data.Manage.Board = newBoard()
 
-	data.Manage.Boards = db.allBoards()
+	data.Manage.Boards = db.AllBoards()
 	return false
 }

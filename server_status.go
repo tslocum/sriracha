@@ -13,9 +13,9 @@ func (s *Server) serveStatus(data *templateData, db *Database, w http.ResponseWr
 		if approve > 0 {
 			boardID := formInt(r, "board")
 			if boardID > 0 {
-				b := db.boardByID(boardID)
+				b := db.BoardByID(boardID)
 				if b != nil {
-					post := db.postByID(approve)
+					post := db.PostByID(approve)
 					if post != nil {
 						rebuild := post.Moderated == ModeratedHidden
 
