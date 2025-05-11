@@ -1,53 +1,61 @@
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2025-05-11 16:38+0000\n"
+"Last-Translator: tslocum <tslocum@noreply.codeberg.org>\n"
+"Language-Team: Russian <https://translate.codeberg.org/projects/sriracha/"
+"sriracha/ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.10.2\n"
 
 msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d сообщение не показано. Нажмите Ответить для просмотра."
+msgstr[1] "%d сообщения не показано. Нажмите Ответить для просмотра."
+msgstr[2] "%d сообщений не показано. Нажмите Ответить для просмотра."
 
 msgid "Accounts"
-msgstr ""
+msgstr "Пользователи"
 
 msgid "Admin"
-msgstr ""
+msgstr "Администрирование"
 
 msgid "Ban"
-msgstr ""
+msgstr "Блокировка"
 
 msgid "Banned keyword detected in post."
-msgstr ""
+msgstr "В сообщении обнаружены запрещенные слова."
 
 msgid "Bans"
-msgstr ""
+msgstr "Блокировки"
 
 msgid "Boards"
-msgstr ""
+msgstr "Разделы"
 
 msgid "Capcode"
 msgstr ""
 
 msgid "Catalog"
-msgstr ""
+msgstr "Каталог"
 
 msgid "Change Password"
-msgstr ""
+msgstr "Изменить пароль"
 
 msgid "Click here to go back"
-msgstr ""
+msgstr "Нажмите здесь для возвращения"
+
+msgid "Click to refresh."
+msgstr "Нажмите для обновления."
 
 msgid "Confirm"
-msgstr ""
+msgstr "Подтвердить"
 
 msgid "Create Thread"
-msgstr ""
+msgstr "Создать обсуждение"
 
 msgid "Currently %d unique user post."
 msgid_plural "Currently %d unique user posts."
@@ -56,91 +64,94 @@ msgstr[1] ""
 msgstr[2] ""
 
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 msgid "Delete %s"
-msgstr ""
+msgstr "Удалить %s"
 
 msgid "Delete & ban"
-msgstr ""
+msgstr "Удалить и заблокировать"
 
 msgid "Delete & ban for 1 hour"
-msgstr ""
+msgstr "Удалить и заблокировать на 1 час"
 
 msgid "Delete & ban for 1 day"
-msgstr ""
+msgstr "Удалить и заблокировать на 1 день"
 
 msgid "Delete & ban for 2 days"
-msgstr ""
+msgstr "Удалить и заблокировать на 2 дня"
 
 msgid "Delete & ban for 1 week"
-msgstr ""
+msgstr "Удалить и заблокировать на 1 неделю"
 
 msgid "Delete & ban for 2 weeks"
-msgstr ""
+msgstr "Удалить и заблокировать на 2 недели"
 
 msgid "Delete & ban for 1 month"
-msgstr ""
+msgstr "Удалить и заблокировать на 1 месяц"
 
 msgid "Delete & ban permanently"
-msgstr ""
+msgstr "Удалить и заблокировать навсегда"
 
 msgid "Delete Post"
-msgstr ""
+msgstr "Удалить сообщение"
 
 msgid "Detected banned keyword."
-msgstr ""
+msgstr "Обнаружено запрещенное слово."
 
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 msgid "Embed"
-msgstr ""
+msgstr "Встроить"
 
 msgid "Error: %s"
-msgstr ""
+msgstr "Ошибка: %s"
 
 msgid "Exit"
-msgstr ""
+msgstr "Выход"
 
 msgid "Failed to embed media."
-msgstr ""
+msgstr "Не удалось встроить медиа."
 
 msgid "File"
+msgstr "Файл"
+
+msgid "For post and file deletion."
 msgstr ""
 
 msgid "Hide until approved"
-msgstr ""
+msgstr "Не показывать до подтверждения"
 
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
 msgstr ""
 
 msgid "Incorrect CAPTCHA text. Please try again."
-msgstr ""
+msgstr "Неправильный текст Капчи. Пожалуйста, попробуйте еще раз."
 
 msgid "Incorrect password."
-msgstr ""
+msgstr "Неправильный пароль."
 
 msgid "Keywords"
-msgstr ""
+msgstr "Ключевые слова"
 
 msgid "Log Out"
-msgstr ""
+msgstr "Выйти"
 
 msgid "Logs"
-msgstr ""
+msgstr "Журналы"
 
 msgid "Manage"
-msgstr ""
+msgstr "Управлять"
 
 msgid "Manage mode"
-msgstr ""
+msgstr "Режим управления"
 
 msgid "Maximum file size allowed is %s."
-msgstr ""
+msgstr "Максимальный разрешенный размер файла - %s."
 
 msgid "Message"
-msgstr ""
+msgstr "Сообщение"
 
 msgid "Mod"
 msgstr ""
@@ -152,10 +163,13 @@ msgid "Mod mode: View"
 msgstr ""
 
 msgid "Name"
+msgstr "Имя"
+
+msgid "News"
 msgstr ""
 
 msgid "Next"
-msgstr ""
+msgstr "Следующий"
 
 msgid "No board specified."
 msgstr ""
@@ -167,64 +181,61 @@ msgid "None"
 msgstr ""
 
 msgid "Password"
+msgstr "Пароль"
+
+msgid "Paste a YouTube URL."
 msgstr ""
 
 msgid "Please wait %s before creating a new post."
-msgstr ""
+msgstr "Пожалуйста, подождите %s перед созданием новой темы."
 
 msgid "Plugins"
-msgstr ""
+msgstr "Плагины"
 
 msgid "Post truncated. Click Reply to view."
-msgstr ""
+msgstr "Текст сокращен. Нажмите Ответить для просмотра."
 
 msgid "Posting mode: Reply"
 msgstr ""
 
-msgid "Previous"
+msgid "Preferences"
 msgstr ""
+
+msgid "Previous"
+msgstr "Предыдущий"
 
 msgid "Reply"
-msgstr ""
+msgstr "Ответить"
 
 msgid "Report"
-msgstr ""
+msgstr "Отчет"
 
 msgid "Reported No.%d"
 msgstr ""
 
 msgid "Return"
-msgstr ""
+msgstr "Вернуться"
 
 msgid "Settings"
-msgstr ""
+msgstr "Настройки"
 
 msgid "Status"
-msgstr ""
+msgstr "Статус"
 
 msgid "Subject"
-msgstr ""
+msgstr "Тема"
 
 msgid "Submit"
-msgstr ""
+msgstr "Отправить"
 
 msgid "Supported file types are %s."
-msgstr ""
+msgstr "Поддерживаемые типы файлов: %s."
 
 msgid "Unknown"
-msgstr ""
+msgstr "Неизвестен"
 
 msgid "View"
-msgstr ""
+msgstr "Просмотр"
 
 msgid "Your post will be shown once it has been approved."
-msgstr ""
-
-msgid "click to refresh"
-msgstr ""
-
-msgid "for post and file deletion"
-msgstr ""
-
-msgid "paste a YouTube URL"
-msgstr ""
+msgstr "Ваше сообщение будет показано после подтверждения."

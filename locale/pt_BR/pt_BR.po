@@ -41,6 +41,9 @@ msgstr ""
 msgid "Click here to go back"
 msgstr ""
 
+msgid "Click to refresh."
+msgstr ""
+
 msgid "Confirm"
 msgstr ""
 
@@ -106,6 +109,9 @@ msgstr ""
 msgid "File"
 msgstr ""
 
+msgid "For post and file deletion."
+msgstr ""
+
 msgid "Hide until approved"
 msgstr ""
 
@@ -151,6 +157,9 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
+msgid "News"
+msgstr ""
+
 msgid "Next"
 msgstr ""
 
@@ -166,6 +175,9 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
+msgid "Paste a YouTube URL."
+msgstr ""
+
 msgid "Please wait %s before creating a new post."
 msgstr ""
 
@@ -176,6 +188,9 @@ msgid "Post truncated. Click Reply to view."
 msgstr ""
 
 msgid "Posting mode: Reply"
+msgstr ""
+
+msgid "Preferences"
 msgstr ""
 
 msgid "Previous"
@@ -215,13 +230,4 @@ msgid "View"
 msgstr ""
 
 msgid "Your post will be shown once it has been approved."
-msgstr ""
-
-msgid "click to refresh"
-msgstr ""
-
-msgid "for post and file deletion"
-msgstr ""
-
-msgid "paste a YouTube URL"
 msgstr ""
