@@ -2,6 +2,7 @@ package sriracha
 
 import (
 	"net/http"
+	"runtime/debug"
 	"sort"
 	"strings"
 )
@@ -140,4 +141,19 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 	}
 	data.Template = "manage_setting"
 	data.Extra = SrirachaVersion
+	if SrirachaVersion != "DEV" {
+		return
+	}
+	if info, ok := debug.ReadBuildInfo(); ok {
+		for _, setting := range info.Settings {
+			if setting.Key == "vcs.revision" {
+				revision := setting.Value
+				if len(revision) > 10 {
+					revision = revision[:10]
+				}
+				data.Extra += "-" + revision
+				return
+			}
+		}
+	}
 }
