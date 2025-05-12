@@ -69,24 +69,27 @@ func (s *Server) servePlugin(data *templateData, db *Database, w http.ResponseWr
 		return
 	}
 
-	plugin, info = pluginByName(pathString(r, "/sriracha/plugin/view/"))
-	if plugin != nil {
-		pServe, ok := plugin.(PluginWithServe)
-		if !ok {
-			http.Redirect(w, r, "/sriracha/plugin/", http.StatusFound)
+	split := strings.Split(pathString(r, "/sriracha/plugin/view/"), "/")
+	if len(split) > 0 {
+		plugin, info = pluginByName(split[0])
+		if plugin != nil {
+			pServe, ok := plugin.(PluginWithServe)
+			if !ok {
+				http.Redirect(w, r, "/sriracha/plugin/", http.StatusFound)
+				return
+			}
+			msg, err := pServe.Serve(db, data.Account, w, r)
+			if err != nil {
+				data.ManageError(err.Error())
+				return
+			} else if msg != "" {
+				data.Template = "manage_info"
+				data.Message = template.HTML(`<h2 class="managetitle">` + strings.Title(info.Name) + `</h2>` + msg)
+			} else {
+				data.Template = ""
+			}
 			return
 		}
-		msg, err := pServe.Serve(db, data.Account, w, r)
-		if err != nil {
-			data.ManageError(err.Error())
-			return
-		} else if msg != "" {
-			data.Template = "manage_info"
-			data.Message = template.HTML(`<h2 class="managetitle">` + strings.Title(info.Name) + `</h2>` + msg)
-		} else {
-			data.Template = ""
-		}
-		return
 	}
 
 	plugin, info = pluginByName(pathString(r, "/sriracha/plugin/"))
