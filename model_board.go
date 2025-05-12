@@ -117,7 +117,7 @@ const (
 	defaultBoardThreads     = 10
 	defaultBoardReplies     = 3
 	defaultBoardMaxName     = 75
-	defaultBoardMaxEmail    = 255
+	defaultBoardMaxEmail    = 75
 	defaultBoardMaxSubject  = 75
 	defaultBoardMaxMessage  = 8000
 	defaultBoardWordBreak   = 200

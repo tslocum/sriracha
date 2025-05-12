@@ -110,6 +110,8 @@ var templateFuncMap = template.FuncMap{
 	"Format": func(text string) template.HTML {
 		return template.HTML(strings.ReplaceAll(text, "\n", "<br>\n"))
 	},
+	"HasPrefix": strings.HasPrefix,
+	"HasSuffix": strings.HasSuffix,
 	"HTML": func(text string) template.HTML {
 		return template.HTML(text)
 	},

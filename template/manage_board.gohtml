@@ -234,17 +234,17 @@
             <tr>
                 <td class="postblock"><label for="maxname">Max Name Length</label></td>
                 <td><input type="text" name="maxname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxName}}{{end}}"></td>
-                <td>Maximum length of the name field. Values greater than 255 are not supported when using the default database schema.</td>
+                <td>Maximum length of the name field. Values greater than 75 are not supported when using the default database schema.</td>
             </tr>
             <tr>
                 <td class="postblock"><label for="maxemail">Max Email Length</label></td>
                 <td><input type="text" name="maxemail" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxEmail}}{{end}}"></td>
-                <td>Maximum length of the email field. Values greater than 255 are not supported when using the default database schema.</td>
+                <td>Maximum length of the email field. Values greater than 75 are not supported when using the default database schema.</td>
             </tr>
             <tr>
                 <td class="postblock"><label for="maxsubject">Max Subject Length</label></td>
                 <td><input type="text" name="maxsubject" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSubject}}{{end}}"></td>
-                <td>Maximum length of the subject field. Values greater than 255 are not supported when using the default database schema.</td>
+                <td>Maximum length of the subject field. Values greater than 75 are not supported when using the default database schema.</td>
             </tr>
             <tr>
                 <td class="postblock"><label for="maxmessage">Max Message Length</label></td>
