@@ -205,6 +205,15 @@ input:not([type=file]):not([type=submit]), textarea, select, option {
 	color: #e2ebf0;
 }
 
+input:is(:-webkit-autofill, :autofill) {
+	background-clip: #e2ebf0;
+	-webkit-background-clip: text;
+	-moz-background-clip: #e2ebf0;
+	color: #e2ebf0;
+	-webkit-text-fill-color: #e2ebf0;
+	-moz-text-fill-color: #e2ebf0;
+}
+
 option {
 	border: 0px none;
 }
