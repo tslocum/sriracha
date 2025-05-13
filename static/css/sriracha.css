@@ -133,7 +133,7 @@ hr {
 .filetitle {
 	background: inherit;
 	font-size: 1.2em;
-	color: #CC1105;
+	color: #26A8FF;
 	font-weight: 800;
 }
 
@@ -147,7 +147,7 @@ hr {
 }
 
 .oldpost {
-	color: #CC1105;
+	color: #26A8FF;
 	font-weight: 800;
 }
 
@@ -166,7 +166,7 @@ hr {
 
 .replytitle {
 	font-size: 1.2em;
-	color: #CC1105;
+	color: #26A8FF;
 	font-weight: 800;
 }
 
@@ -207,6 +207,10 @@ input:not([type=submit]), textarea, select, option {
 
 option {
 	border: 0px none;
+}
+
+option:checked {
+	background-color: #002a94;
 }
 
 #captchaimage{
