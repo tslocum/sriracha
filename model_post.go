@@ -313,7 +313,7 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 		return err
 	}
 	if oekakiPost && formBool(r, "oekaki") {
-		p.FileOriginal = ""
+		p.FileOriginal = formString(r, "title")
 	}
 
 	srcPath := filepath.Join(rootDir, p.Board.Dir, "src", p.File)

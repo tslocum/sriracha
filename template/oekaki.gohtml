@@ -17,9 +17,15 @@
 	{{.Message}}
 	<input type="file" name="file" id="file" style="display: none;">
 	<input type="file" name="thumb" id="thumb" style="display: none;">
+	<input type="hidden" name="title" id="title" style="display: none;">
 	</form>
 	<script type="text/javascript">
 	function onDone() {
+		var title = prompt('Artwork title:');
+		if (title) {
+			document.getElementById('title').value = title;
+		}
+
 		Tegaki.flatten().toBlob(function(b) {
 			// Store thumbnail.
 			var file = new File([b], "thumb.png",{type:"image/png", lastModified:new Date().getTime()});
