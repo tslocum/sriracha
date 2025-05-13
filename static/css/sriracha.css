@@ -199,7 +199,7 @@ fieldset, .managetable, .managetable th, .managetable td {
 	border-color: #005b97;
 }
 
-input:not([type=submit]), textarea, select, option {
+input:not([type=file]):not([type=submit]), textarea, select, option {
 	background-color: #171a1f;
 	border: 1px solid #005b97;
 	color: #e2ebf0;
