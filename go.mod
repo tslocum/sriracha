@@ -11,7 +11,7 @@ require (
 	github.com/frustra/bbcode v0.0.0-20201127003707-6ef347fbe1c8
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/gabriel-vasile/mimetype v1.4.9
-	github.com/jackc/pgx/v5 v5.7.4
+	github.com/jackc/pgx/v5 v5.7.5
 	github.com/leonelquinteros/gotext v1.7.1
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/r3labs/diff/v3 v3.0.1

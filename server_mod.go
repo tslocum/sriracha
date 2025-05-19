@@ -79,6 +79,7 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 		return
 	}
 	data.Board = data.Post.Board
+	data.Threads = [][]*Post{{data.Post}}
 	data.Manage.Ban = db.banByIP(data.Post.IP)
 	if r.FormValue("confirmation") == "1" {
 		var oldBan Ban

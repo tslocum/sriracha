@@ -8,4 +8,13 @@
         <input type="submit" value="Delete {{if eq .Post.Parent 0}}Thread{{else}}Reply{{end}}"></input>
     </form><br>
 {{end}}
+<br>
+{{if eq .Post.Board.Type 0}}
+    {{template "imgboard_post.gohtml" $}}
+{{else}}
+    {{template "forum_post.gohtml" $}}
+{{end}}
+{{if eq .Post.Parent 0}}
+    <br clear="both">
+{{end}}
 {{template "manage_end.gohtml" .}}
