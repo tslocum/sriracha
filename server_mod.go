@@ -19,7 +19,7 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 			case "delete":
 				action = "d"
 			case "ban":
-				action = "n"
+				action = "b"
 			case "sticky":
 				action = "s"
 			case "unsticky":

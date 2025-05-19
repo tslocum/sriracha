@@ -2,10 +2,10 @@
 <h2 class="managetitle">{{if eq .Extra "d"}}Delete{{else if eq .Extra "db"}}Delete &amp; Ban{{else}}Ban{{end}} <a href="{{.Board.Path}}res/{{.Post.Thread}}.html#{{.Post.ID}}">&gt;&gt;{{.Post.ID}}</a></h2>
 {{if or (eq .Extra "b") (eq .Extra "db") }}
     {{template "manage_ban_form.gohtml" .}}
-    <br>
+{{else}}
+    <form method="post" action="/sriracha/mod/delete/{{.Post.ID}}">
+        <input type="hidden" name="confirmation" value="1">
+        <input type="submit" value="Delete {{if eq .Post.Parent 0}}Thread{{else}}Reply{{end}}"></input>
+    </form><br>
 {{end}}
-<form method="post" action="/sriracha/mod/delete/{{.Post.ID}}">
-<input type="hidden" name="confirmation" value="1">
-<input type="submit" value="Delete {{if eq .Post.Parent 0}}Thread{{else}}Reply{{end}}"></input>
-</form>
 {{template "manage_end.gohtml" .}}
