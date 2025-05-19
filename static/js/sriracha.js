@@ -171,6 +171,7 @@ function setPostAttributes(element) {
                         preview.id = 'ref' + el.getAttribute('refID');
                         preview.style.position = 'absolute';
                         preview.style.textAlign = 'left';
+                        preview.style.pointerEvents = 'none';
                         preview.setAttribute('refID', el.getAttribute('refID'));
                         preview.className = 'hoverpost';
                         preview.innerHTML = refpost.innerHTML;
@@ -182,8 +183,23 @@ function setPostAttributes(element) {
                     }
                     document.body.append(preview);
                 }
-                preview.style.left =  mouseX+14 + 'px';
-                preview.style.top = mouseY+7 + 'px';
+                var doc = document.documentElement;
+                var vw = Math.max(doc.clientWidth || 0, window.innerWidth || 0);
+                var vh = Math.max(doc.clientHeight || 0, window.innerHeight || 0);
+                var vl = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
+                var vt = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
+
+                var rect = el.getBoundingClientRect();
+                var px = rect.right+vl+7;
+                if (px + preview.offsetWidth > vw + vl) {
+                    px = vw + vl - preview.offsetWidth
+                }
+                var py = rect.top+vt+(rect.bottom-rect.top)/2;
+                if (py + preview.offsetHeight > vh + vt) {
+                    py = vh + vt - preview.offsetHeight
+                }
+                preview.style.left = px + 'px';
+                preview.style.top = py + 'px';
             });
             el.addEventListener("mouseleave", function(e) {
                 document.getElementById('ref' + el.getAttribute('refID')).remove();
