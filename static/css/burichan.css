@@ -193,6 +193,8 @@ hr {
 	background: #D6DAF0 !important;
 	color: #000000 !important;
 	font-family: serif !important;
+	border-right: 1px solid #8c8eab;
+	border-bottom: 1px solid #8c8eab;
 }
 
 .replyhl {

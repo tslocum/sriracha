@@ -154,6 +154,8 @@ hr {
 .reply {
 	background: #F0E0D6 !important;
 	color: #800000 !important;
+	border-right: 1px solid #d9bfb7;
+	border-bottom: 1px solid #d9bfb7;
 }
 
 .replyhl {
