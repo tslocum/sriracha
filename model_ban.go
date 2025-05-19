@@ -30,6 +30,13 @@ func (b *Ban) validate() error {
 	return nil
 }
 
+func (b *Ban) TypeLabel() string {
+	if strings.HasPrefix(b.IP, "r ") {
+		return fmt.Sprintf("Range %s", strings.ReplaceAll(strings.ReplaceAll(b.IP[2:], `\.`, "."), ".*", "*"))
+	}
+	return "Address"
+}
+
 func (b *Ban) ExpireDate() string {
 	if b.Expire == 0 {
 		return "Never"

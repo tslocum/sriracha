@@ -4,6 +4,7 @@
     <table class="managetable">
         <tr>
             <th>ID</th>
+            <th>Type</th>
             <th>Expires</th>
             <th>Reason</th>
             <th>&nbsp;</th>
@@ -11,6 +12,7 @@
         {{range $i, $ban := .Manage.Bans}}
             <tr>
                 <td>{{$ban.ID}}</td>
+                <td>{{$ban.TypeLabel}}</td>
                 <td>{{$ban.ExpireDate}}</td>
                 <td>{{if eq $ban.Reason ""}}No reason provided{{else}}{{$ban.Reason}}{{end}}</td>
                 <td>
