@@ -3,7 +3,7 @@
     <input type="hidden" name="confirmation" value="1">
     {{end}}
     <fieldset>
-    <legend>{{if eq .Manage.Ban nil}}Add Ban{{else}}Update #{{.Manage.Ban.ID}}{{end}}</legend>
+    <legend>{{if eq .Manage.Ban nil}}Add Ban{{else}}Update #{{.Manage.Ban.ID}}{{if HasPrefix .Manage.Ban.IP "r "}} - {{.Manage.Ban.TypeLabel}}{{end}}{{end}}</legend>
     <table border="0" class="manageform">
         {{if and (eq .Manage.Ban nil) (eq .Extra "")}}
         <tr>
