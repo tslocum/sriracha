@@ -17,6 +17,7 @@ const (
 	configItalic        = "italic"
 	configUnderline     = "underline"
 	configStrikethrough = "strikethrough"
+	configSpoiler       = "spoiler"
 	configColor         = "color"
 	configSize          = "size"
 	configLink          = "link"
@@ -59,6 +60,11 @@ func (f *BBCode) Config() []sriracha.PluginConfig {
 			Description: "[s]Strikethrough text[/s]",
 		}, {
 			Type:        sriracha.TypeBoolean,
+			Name:        configSpoiler,
+			Default:     enable,
+			Description: "[spoiler]Spoiler text[/spoiler]",
+		}, {
+			Type:        sriracha.TypeBoolean,
 			Name:        configColor,
 			Default:     enable,
 			Description: "[color=blue]Blue text[/color]",
@@ -98,6 +104,7 @@ func (f *BBCode) rebuildCompiler() {
 		configItalic:        "i",
 		configUnderline:     "u",
 		configStrikethrough: "s",
+		configSpoiler:       "spoiler",
 		configColor:         "color",
 	}
 	for configName, tagName := range options {
@@ -122,6 +129,17 @@ func (f *BBCode) rebuildCompiler() {
 				}
 			}
 			return bbcode.NewHTMLTag(""), true
+		})
+	}
+
+	if !f.config[configSpoiler] {
+		f.compiler.SetTag("spoiler", nil)
+	} else {
+		f.compiler.SetTag("spoiler", func(node *bbcode.BBCodeNode) (*bbcode.HTMLTag, bool) {
+			span := bbcode.NewHTMLTag("")
+			span.Name = "span"
+			span.Attrs["class"] = "spoiler"
+			return span, true
 		})
 	}
 
