@@ -467,11 +467,8 @@ range, use a wildcard (*) at the end of the range prefix:
 
 #### Browsing in mod mode
 
-Mod mode is a tool staff members may use to moderate one or more posts. After
-logging into the management panel, viewing any board index page or thread page
-normally. Scroll to the bottom of the page and click the delete button. You
-will be redirected to the board index page or thread page you were viewing with
-mod mode enabled. The following moderation links are shown when mod mode is enabled:
+Mod mode is a tool staff members may use to moderate one or more posts.
+When browsing in mod mode, the following moderation links are displayed:
 
 `S L D B D&B`
 
@@ -480,6 +477,11 @@ mod mode enabled. The following moderation links are shown when mod mode is enab
 - D: Delete post
 - B: Ban post author
 - D&B: Delete post and ban post author
+
+A shortcut for accessing mod mode is available when logged in. View any index
+or thread page normally, scroll to the bottom of the page and click the delete
+button. If you are logged in to a staff account, you will be redirected to the
+page you were just viewing with mod mode enabled.
 
 ### Administrator guide
 
