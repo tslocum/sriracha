@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-05-11 16:38+0000\n"
-"Last-Translator: tslocum <tslocum@noreply.codeberg.org>\n"
+"PO-Revision-Date: 2025-06-05 07:58+0000\n"
+"Last-Translator: yurtpage <yurtpage@noreply.codeberg.org>\n"
 "Language-Team: Russian <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/ru/>\n"
 "Language: ru\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.10.2\n"
+"X-Generator: Weblate 5.11.4\n"
 
 msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
@@ -37,7 +37,7 @@ msgid "Boards"
 msgstr "Разделы"
 
 msgid "Capcode"
-msgstr ""
+msgstr "Capcode"
 
 msgid "Catalog"
 msgstr "Каталог"
@@ -59,9 +59,9 @@ msgstr "Создать обсуждение"
 
 msgid "Currently %d unique user post."
 msgid_plural "Currently %d unique user posts."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Сейчас %d уникальная запись пользователей."
+msgstr[1] "Сейчас %d уникальные записи пользователей."
+msgstr[2] "Сейчас %d уникальных записей пользователей."
 
 msgid "Delete"
 msgstr "Удалить"
@@ -118,13 +118,13 @@ msgid "File"
 msgstr "Файл"
 
 msgid "For post and file deletion."
-msgstr ""
+msgstr "Для удаления записи или файла."
 
 msgid "Hide until approved"
 msgstr "Не показывать до подтверждения"
 
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
-msgstr ""
+msgstr "Изображения больше чем %[1]dx%[2]d будут превращены в эскизы."
 
 msgid "Incorrect CAPTCHA text. Please try again."
 msgstr "Неправильный текст Капчи. Пожалуйста, попробуйте еще раз."
@@ -154,37 +154,37 @@ msgid "Message"
 msgstr "Сообщение"
 
 msgid "Mod"
-msgstr ""
+msgstr "Мод"
 
 msgid "Mod mode"
-msgstr ""
+msgstr "Режим мод"
 
 msgid "Mod mode: View"
-msgstr ""
+msgstr "Режим мод: Просмотр"
 
 msgid "Name"
 msgstr "Имя"
 
 msgid "News"
-msgstr ""
+msgstr "Новости"
 
 msgid "Next"
 msgstr "Следующий"
 
 msgid "No board specified."
-msgstr ""
+msgstr "Не указана доска."
 
 msgid "No post selected."
-msgstr ""
+msgstr "Не выбрана запись."
 
 msgid "None"
-msgstr ""
+msgstr "Нету"
 
 msgid "Password"
 msgstr "Пароль"
 
 msgid "Paste a YouTube URL."
-msgstr ""
+msgstr "Вставьте URL-адрес на YouTube."
 
 msgid "Please wait %s before creating a new post."
 msgstr "Пожалуйста, подождите %s перед созданием новой темы."
@@ -196,10 +196,10 @@ msgid "Post truncated. Click Reply to view."
 msgstr "Текст сокращен. Нажмите Ответить для просмотра."
 
 msgid "Posting mode: Reply"
-msgstr ""
+msgstr "Режим записи: Ответ"
 
 msgid "Preferences"
-msgstr ""
+msgstr "Настройки"
 
 msgid "Previous"
 msgstr "Предыдущий"
@@ -211,7 +211,7 @@ msgid "Report"
 msgstr "Отчет"
 
 msgid "Reported No.%d"
-msgstr ""
+msgstr "Отправлена жалоба № %d"
 
 msgid "Return"
 msgstr "Вернуться"
