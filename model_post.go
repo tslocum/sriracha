@@ -548,8 +548,36 @@ func (p *Post) ExpandHTML() template.HTML {
 	}
 	srcPath := fmt.Sprintf("%ssrc/%s", p.Board.Path(), p.File)
 
-	isVideo := strings.HasSuffix(p.File, ".mp4") || strings.HasSuffix(p.File, ".webm")
-	if isVideo {
+	var isAudio bool
+	var isVideo bool
+	audioExtensions := []string{".wav", ".aac", ".ogg", ".flac", ".opus", ".mp3"}
+	for _, ext := range audioExtensions {
+		if strings.HasSuffix(p.File, ext) {
+			isAudio = true
+			break
+		}
+	}
+	if !isAudio {
+		videoExtensions := []string{".mp4", ".webm"}
+		for _, ext := range videoExtensions {
+			if strings.HasSuffix(p.File, ext) {
+				isVideo = true
+				break
+			}
+		}
+	}
+	if isAudio || isVideo {
+		element := "audio"
+		loop := ""
+		if isVideo {
+			element = "video"
+			loop = " loop"
+		}
+		const expandFormat = `<%s width="%d" height="%d" style="position: static; pointer-events: inherit; display: inline; max-width: 85vw; height: auto; max-height: 100%%;" controls autoplay%s><source src="%s"></source></%s>`
+		return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, element, p.FileWidth, p.FileHeight, loop, srcPath, element)))
+	}
+
+	if isAudio {
 		const expandFormat = `<video width="%d" height="%d" style="position: static; pointer-events: inherit; display: inline; max-width: 85vw; height: auto; max-height: 100%%;" controls autoplay loop><source src="%s"></source></video>`
 		return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, p.FileWidth, p.FileHeight, srcPath)))
 	}
