@@ -1,233 +1,238 @@
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2025-06-07 17:58+0000\n"
+"Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
+"Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
+"sriracha/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.11.4\n"
 
 msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d bericht overgeslagen. Klik op beantwoorden om te bekijken."
+msgstr[1] "%d berichten overgeslagen. Klik op beantwoorden om te bekijken."
 
 msgid "Accounts"
-msgstr ""
+msgstr "Accounts"
 
 msgid "Admin"
-msgstr ""
+msgstr "Beheerder"
 
 msgid "Ban"
-msgstr ""
+msgstr "Verbannen"
 
 msgid "Banned keyword detected in post."
-msgstr ""
+msgstr "Verbannen trefwoord aangetroffen in bericht."
 
 msgid "Bans"
-msgstr ""
+msgstr "Verbanningen"
 
 msgid "Boards"
-msgstr ""
+msgstr "Fora"
 
 msgid "Capcode"
-msgstr ""
+msgstr "Capcode"
 
 msgid "Catalog"
-msgstr ""
+msgstr "Catalogus"
 
 msgid "Change Password"
-msgstr ""
+msgstr "Wachtwoord wĳzigen"
 
 msgid "Click here to go back"
-msgstr ""
+msgstr "Klik hier om terug te gaan"
 
 msgid "Click to refresh."
-msgstr ""
+msgstr "Klik om te herladen."
 
 msgid "Confirm"
-msgstr ""
+msgstr "Bevestigen"
 
 msgid "Create Thread"
-msgstr ""
+msgstr "Onderwerp toevoegen"
 
 msgid "Currently %d unique user post."
 msgid_plural "Currently %d unique user posts."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Er is momenteel %d uniek bericht."
+msgstr[1] "Er zijn momenteel %d unieke berichten."
 
 msgid "Delete"
-msgstr ""
+msgstr "Verwijderen"
 
 msgid "Delete %s"
-msgstr ""
+msgstr "%s verwijderen"
 
 msgid "Delete & ban"
-msgstr ""
+msgstr "Verwijderen en verbannen"
 
 msgid "Delete & ban for 1 hour"
-msgstr ""
+msgstr "Verwijderen en verbannen voor 1 uur"
 
 msgid "Delete & ban for 1 day"
-msgstr ""
+msgstr "Verwijderen en verbannen voor 1 dag"
 
 msgid "Delete & ban for 2 days"
-msgstr ""
+msgstr "Verwijderen en verbannen voor 2 dagen"
 
 msgid "Delete & ban for 1 week"
-msgstr ""
+msgstr "Verwijderen en verbannen voor 1 week"
 
 msgid "Delete & ban for 2 weeks"
-msgstr ""
+msgstr "Verwijderen en verbannen voor twee weken"
 
 msgid "Delete & ban for 1 month"
-msgstr ""
+msgstr "Verwijderen en verbannen voor 1 maand"
 
 msgid "Delete & ban permanently"
-msgstr ""
+msgstr "Verwijderen en permanent verbannen"
 
 msgid "Delete Post"
-msgstr ""
+msgstr "Bericht verwijderen"
 
 msgid "Detected banned keyword."
-msgstr ""
+msgstr "Verbannen trefwoord aangetroffen."
 
 msgid "Email"
-msgstr ""
+msgstr "E-mailen"
 
 msgid "Embed"
-msgstr ""
+msgstr "Invoegen"
 
 msgid "Error: %s"
-msgstr ""
+msgstr "Foutmelding: %s"
 
 msgid "Exit"
-msgstr ""
+msgstr "Afsluiten"
 
 msgid "Failed to embed media."
-msgstr ""
+msgstr "De media kan niet worden ingevoegd."
 
 msgid "File"
-msgstr ""
+msgstr "Bestand"
 
 msgid "For post and file deletion."
-msgstr ""
+msgstr "Voor bericht- en bestandsverwijdering."
 
 msgid "Hide until approved"
-msgstr ""
+msgstr "Verbergen tot aan goedkeuring"
 
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
-msgstr ""
+msgstr "Afbeeldingen groter dan %[1]dx%[2]d worden van een miniatuur voorzien."
 
 msgid "Incorrect CAPTCHA text. Please try again."
-msgstr ""
+msgstr "Ongeldige CAPTCHA-tekst - probeer het opnieuw."
 
 msgid "Incorrect password."
-msgstr ""
+msgstr "Het wachtwoord is onjuist."
 
 msgid "Keywords"
-msgstr ""
+msgstr "Trefwoorden"
 
 msgid "Log Out"
-msgstr ""
+msgstr "Uitloggen"
 
 msgid "Logs"
-msgstr ""
+msgstr "Logboeken"
 
 msgid "Manage"
-msgstr ""
+msgstr "Beheren"
 
 msgid "Manage mode"
-msgstr ""
+msgstr "Beheermodus"
 
 msgid "Maximum file size allowed is %s."
-msgstr ""
+msgstr "De maximaal toegestane bestandsgrootte is %s."
 
 msgid "Message"
-msgstr ""
+msgstr "Bericht"
 
 msgid "Mod"
-msgstr ""
+msgstr "Modereren"
 
 msgid "Mod mode"
-msgstr ""
+msgstr "Modereermodus"
 
 msgid "Mod mode: View"
-msgstr ""
+msgstr "Modereermodus: weergave"
 
 msgid "Name"
-msgstr ""
+msgstr "Naam"
 
 msgid "News"
-msgstr ""
+msgstr "Nieuws"
 
 msgid "Next"
-msgstr ""
+msgstr "Volgende"
 
 msgid "No board specified."
-msgstr ""
+msgstr "Er is geen forum gekozen."
 
 msgid "No post selected."
-msgstr ""
+msgstr "Er is geen bericht gekozen."
 
 msgid "None"
-msgstr ""
+msgstr "Geen"
 
 msgid "Password"
-msgstr ""
+msgstr "Wachtwoord"
 
 msgid "Paste a YouTube URL."
-msgstr ""
+msgstr "Plak een YouTube-url."
 
 msgid "Please wait %s before creating a new post."
-msgstr ""
+msgstr "Wacht %s alvorens een nieuw bericht op te stellen."
 
 msgid "Plugins"
-msgstr ""
+msgstr "Plug-ins"
 
 msgid "Post truncated. Click Reply to view."
-msgstr ""
+msgstr "Het bericht is ingekort. Klik op beantwoorden om te bekijken."
 
 msgid "Posting mode: Reply"
-msgstr ""
+msgstr "Berichtmodus: beantwoorden"
 
 msgid "Preferences"
-msgstr ""
+msgstr "Instellingen"
 
 msgid "Previous"
-msgstr ""
+msgstr "Vorige"
 
 msgid "Reply"
-msgstr ""
+msgstr "Beantwoorden"
 
 msgid "Report"
-msgstr ""
+msgstr "Melden"
 
 msgid "Reported No.%d"
-msgstr ""
+msgstr "%d is gemeld"
 
 msgid "Return"
-msgstr ""
+msgstr "Terug"
 
 msgid "Settings"
-msgstr ""
+msgstr "Instellingen"
 
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 msgid "Subject"
-msgstr ""
+msgstr "Onderwerp"
 
 msgid "Submit"
-msgstr ""
+msgstr "Versturen"
 
 msgid "Supported file types are %s."
-msgstr ""
+msgstr "Ondersteunde bestandstypes: %s."
 
 msgid "Unknown"
-msgstr ""
+msgstr "Onbekend"
 
 msgid "View"
-msgstr ""
+msgstr "Bekijken"
 
 msgid "Your post will be shown once it has been approved."
-msgstr ""
+msgstr "Je bericht wordt na goedkeuring getoond."
