@@ -18,7 +18,10 @@
                 <td>
                     <form method="get" action="/sriracha/ban/{{$ban.ID}}"><input type="submit" value="Update"></form>
                     {{if le $.Account.Role 2}}{{/* Admin */}}
-                        <form method="get" action="/sriracha/ban/delete/{{$ban.ID}}" onsubmit="javascript:return confirm('Lift ban #{{.ID}}?')"><input type="submit" value="Lift"></form>
+                        <form method="get" action="/sriracha/ban/delete/{{$ban.ID}}" onsubmit="javascript:return liftBan('{{$ban.ID}}')">
+                            <input type="hidden" name="reason" id="reason{{$ban.ID}}">
+                            <input type="submit" value="Lift">
+                        </form>
                     {{end}}
                 </td>
             </tr>

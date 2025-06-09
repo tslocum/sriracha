@@ -24,7 +24,13 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 			s.reloadBans(db)
 		}
 
-		db.log(data.Account, nil, fmt.Sprintf("Lifted >>/ban/%d", b.ID), "")
+		var changes string
+		liftReason := formString(r, "reason")
+		if strings.TrimSpace(liftReason) != "" {
+			changes = "Reason: " + liftReason
+		}
+
+		db.log(data.Account, nil, fmt.Sprintf("Lifted >>/ban/%d", b.ID), changes)
 
 		http.Redirect(w, r, "/sriracha/ban/", http.StatusFound)
 		return

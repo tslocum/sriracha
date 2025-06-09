@@ -1,5 +1,8 @@
 1.0.9:
 - Add spoiler tag to BBCode plugin
+- Add thumbnail image for audio files
+- Support inline expansion of audio files
+- Prompt for reason when lifting ban
 - Link to documentation in management panel
 
 1.0.8:
