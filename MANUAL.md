@@ -77,6 +77,32 @@ When starting Sriracha for the first time, visit the management panel at
 `admin` as the username and the password. Once you have logged in, visit the
 accounts page and change your username and password.
 
+### Custom templates
+
+Sriracha supports overriding official templates with custom templates. This
+section is a short guide on how to use custom templates.
+
+Sriracha template files have the extension `.gohtml` and are written in the
+[Go HTML template](https://pkg.go.dev/html/template) language. All official templates
+are included within Sriracha release archives inside the template directory.
+
+To override a template, create a directory where the custom template files will be stored.
+Custom template files should be stored somewhere outside of the root directory.
+Set the `template` option in `config.yml` to the newly created directory path.
+
+Create a custom template file in the new directory with the same name as the
+official template you wish to override. Copy the official template file contents
+into the new custom template file, then apply any desired changes.
+
+To apply custom template changes when Sriracha is running normally, restart
+Sriracha. When Sriracha is running in development mode, template changes are
+applied automatically whenever template files are modified. Pass the flag
+`--dev` when starting Sriracha to run in development mode.
+
+Support is not available for Sriracha installations using custom templates.
+
+Support is not available for creating or modifying custom template files.
+
 ### Example configuration (config.yml)
 
 ```yaml
