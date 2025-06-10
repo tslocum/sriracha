@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,user-scalable=no">
+	<script src="/static/ruffle/ruffle.js"></script>
+</head>
+<body style="margin: 0;padding: 0;">
+    <div id="container" style="width: 100%;height: 100%;"></div>
+    <script>
+    window.RufflePlayer = window.RufflePlayer || {};
+    window.addEventListener("load", (event) => {
+        const ruffle = window.RufflePlayer.newest();
+        const player = ruffle.createPlayer();
+        const container = document.getElementById("container");
+        player.style.width = "100vw";
+        player.style.height = "100vh";
+        container.appendChild(player);
+        player.ruffle().load("{{.Extra}}");
+    });
+    </script>
+</body>
+</html>

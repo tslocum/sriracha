@@ -481,6 +481,10 @@ func (p *Post) IsOekaki() bool {
 	return strings.HasSuffix(p.File, ".tgkr")
 }
 
+func (p *Post) IsSWF() bool {
+	return strings.HasSuffix(p.File, ".swf")
+}
+
 func (p *Post) IsEmbed() bool {
 	return len(p.FileHash) > 2 && p.FileHash[1] == ' ' && p.FileHash[0] == 'e'
 }
