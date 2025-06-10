@@ -26,7 +26,7 @@ func (db *Database) addPost(p *Post) {
 	if p.Locked {
 		locked = 1
 	}
-	err := db.conn.QueryRow(context.Background(), "INSERT INTO post VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) RETURNING id",
+	err := db.conn.QueryRow(context.Background(), "INSERT INTO post VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25) RETURNING id",
 		parent,
 		p.Board.ID,
 		p.Timestamp,
@@ -51,6 +51,7 @@ func (db *Database) addPost(p *Post) {
 		p.Moderated,
 		stickied,
 		locked,
+		p.FileMIME,
 	).Scan(&p.ID)
 	if err != nil || p.ID == 0 {
 		log.Fatalf("failed to insert post: %s", err)
@@ -335,6 +336,7 @@ func scanPost(p *Post, row pgx.Row) (int, error) {
 		&p.Moderated,
 		&stickied,
 		&locked,
+		&p.FileMIME,
 		&p.Replies,
 	)
 	if err != nil {

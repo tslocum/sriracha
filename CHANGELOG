@@ -1,3 +1,6 @@
+1.1.0:
+- Store upload MIME types
+
 1.0.9:
 - Add spoiler tag to BBCode plugin
 - Add thumbnail image for audio files

@@ -55,6 +55,7 @@ type Post struct {
 	Message      string
 	Password     string
 	File         string
+	FileMIME     string
 	FileHash     string
 	FileOriginal string
 	FileSize     int64
@@ -269,18 +270,18 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 		return fmt.Errorf("that file exceeds the maximum file size: %s", FormatFileSize(maxSize))
 	}
 
-	mimeType := mimetype.Detect(buf).String()
+	p.FileMIME = mimetype.Detect(buf).String()
 
-	oekakiPost := p.Board.Oekaki && mimeType == "application/octet-stream" && len(buf) >= 3 && buf[0] == 0x54 && buf[1] == 0x47 && buf[2] == 0x4B
+	oekakiPost := p.Board.Oekaki && p.FileMIME == "application/octet-stream" && len(buf) >= 3 && buf[0] == 0x54 && buf[1] == 0x47 && buf[2] == 0x4B
 	if oekakiPost {
-		mimeType = "application/x-tageki"
+		p.FileMIME = "application/x-tegaki"
 	}
 
 	var fileExt string
 	var fileThumb string
-	if p.Board.HasUpload(mimeType) {
+	if p.Board.HasUpload(p.FileMIME) {
 		for _, u := range srirachaServer.config.UploadTypes() {
-			if u.MIME == mimeType {
+			if u.MIME == p.FileMIME {
 				fileExt = u.Ext
 				fileThumb = u.Thumb
 				break
@@ -351,7 +352,7 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 		return p.createThumbnail(thumbData, mimetype.Detect(thumbData).String(), false, thumbPath)
 	}
 
-	isImage := mimeType == "image/jpeg" || mimeType == "image/pjpeg" || mimeType == "image/png" || mimeType == "image/gif"
+	isImage := p.FileMIME == "image/jpeg" || p.FileMIME == "image/pjpeg" || p.FileMIME == "image/png" || p.FileMIME == "image/gif"
 	if isImage {
 		imgConfig, _, err := image.DecodeConfig(bytes.NewReader(buf))
 		if err != nil {
@@ -359,10 +360,10 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 		}
 		p.FileWidth, p.FileHeight = imgConfig.Width, imgConfig.Height
 
-		return p.createThumbnail(buf, mimeType, false, thumbPath)
+		return p.createThumbnail(buf, p.FileMIME, false, thumbPath)
 	}
 
-	ffmpegThumbnail := strings.HasPrefix(mimeType, "image/") || strings.HasPrefix(mimeType, "video/")
+	ffmpegThumbnail := strings.HasPrefix(p.FileMIME, "image/") || strings.HasPrefix(p.FileMIME, "video/")
 	if !ffmpegThumbnail {
 		p.Thumb = ""
 		return nil
@@ -401,7 +402,7 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 		if len(split) >= 2 {
 			p.ThumbWidth, p.ThumbHeight = parseInt(string(split[0])), parseInt(string(split[1]))
 
-			if strings.HasPrefix(mimeType, "video/") {
+			if strings.HasPrefix(p.FileMIME, "video/") {
 				thumbData, err := os.ReadFile(thumbPath)
 				if err != nil {
 					log.Fatal(err)
@@ -548,24 +549,8 @@ func (p *Post) ExpandHTML() template.HTML {
 	}
 	srcPath := fmt.Sprintf("%ssrc/%s", p.Board.Path(), p.File)
 
-	var isAudio bool
-	var isVideo bool
-	audioExtensions := []string{".wav", ".aac", ".ogg", ".flac", ".opus", ".mp3"}
-	for _, ext := range audioExtensions {
-		if strings.HasSuffix(p.File, ext) {
-			isAudio = true
-			break
-		}
-	}
-	if !isAudio {
-		videoExtensions := []string{".mp4", ".webm"}
-		for _, ext := range videoExtensions {
-			if strings.HasSuffix(p.File, ext) {
-				isVideo = true
-				break
-			}
-		}
-	}
+	isAudio := strings.HasPrefix(p.FileMIME, "audio/")
+	isVideo := strings.HasPrefix(p.FileMIME, "video/")
 	if isAudio || isVideo {
 		element := "audio"
 		loop := ""
@@ -577,16 +562,10 @@ func (p *Post) ExpandHTML() template.HTML {
 		return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, element, p.FileWidth, p.FileHeight, loop, srcPath, element)))
 	}
 
-	if isAudio {
-		const expandFormat = `<video width="%d" height="%d" style="position: static; pointer-events: inherit; display: inline; max-width: 85vw; height: auto; max-height: 100%%;" controls autoplay loop><source src="%s"></source></video>`
-		return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, p.FileWidth, p.FileHeight, srcPath)))
-	}
-
-	isImage := strings.HasSuffix(p.File, ".jpg") || strings.HasSuffix(p.File, ".png") || strings.HasSuffix(p.File, ".gif")
+	isImage := strings.HasPrefix(p.FileMIME, "image/")
 	if !isImage {
 		return ""
 	}
-
 	const expandFormat = `<a href="%s" onclick="return expandFile(event, '%d');"><img src="%s" width="%d" style="min-width: %dpx;min-height: %dpx;max-width: 85vw;height: auto;"></a>`
 	return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, srcPath, p.ID, srcPath, p.FileWidth, p.ThumbWidth, p.ThumbHeight)))
 }

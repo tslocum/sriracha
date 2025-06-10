@@ -134,6 +134,7 @@ CREATE TABLE post (
 	moderated smallint NOT NULL default '1',
 	stickied smallint NOT NULL default '0',
 	locked smallint NOT NULL default '0'
+	-- v5: mime varchar(64) NOT NULL default ''
 );
 CREATE INDEX ON post (board);
 CREATE INDEX ON post (parent);
@@ -180,4 +181,7 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 		message text NOT NULL
 	);
 	UPDATE config SET value = '4' WHERE name = 'version';`,
+	// Version 5.
+	`ALTER TABLE post ADD COLUMN filemime varchar(64) NOT NULL default '';
+	UPDATE config SET value = '5' WHERE name = 'version';`,
 }

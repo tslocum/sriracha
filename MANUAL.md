@@ -83,8 +83,8 @@ Sriracha supports overriding official templates with custom templates. This
 section is a short guide on how to use custom templates.
 
 Sriracha template files have the extension `.gohtml` and are written in the
-[Go HTML template](https://pkg.go.dev/html/template) language. All official templates
-are included within Sriracha release archives inside the template directory.
+[Go HTML template](https://pkg.go.dev/html/template) language. All official
+templates are included in Sriracha release archives.
 
 To override a template, create a directory where the custom template files will be stored.
 Custom template files should be stored somewhere outside of the root directory.

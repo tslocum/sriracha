@@ -6,10 +6,12 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log"
+	"path/filepath"
 	"strconv"
 	"strings"
 
 	"github.com/alexedwards/argon2id"
+	"github.com/gabriel-vasile/mimetype"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -65,7 +67,7 @@ func connectDatabase(c Config) (*pgxpool.Pool, error) {
 		return nil, fmt.Errorf("failed to initialize database: %s", err)
 	}
 
-	err = db.upgrade()
+	err = db.upgrade(c.Root)
 	if err != nil {
 		return nil, fmt.Errorf("failed to upgrade database: %s", err)
 	}
@@ -107,7 +109,43 @@ func (db *Database) initialize() error {
 	return nil
 }
 
-func (db *Database) upgrade() error {
+func (db *Database) _upgrade(rootDir string, v int) error {
+	_, err := db.conn.Exec(context.Background(), dbSchema[v-1])
+	if err != nil {
+		return err
+	}
+	switch v {
+	case 5: // Add file MIME type to posts.
+		boards := db.AllBoards()
+		for _, b := range boards {
+			threads := db.AllThreads(b, false)
+			for _, thread := range threads {
+				posts := db.AllPostsInThread(thread.ID, false)
+				for _, post := range posts {
+					if post.File != "" && !post.IsEmbed() {
+						if strings.HasSuffix(post.File, ".tgkr") {
+							post.FileMIME = "application/x-tegaki"
+						} else {
+							mimeInfo, err := mimetype.DetectFile(filepath.Join(rootDir, b.Dir, "src", post.File))
+							if err == nil {
+								post.FileMIME = mimeInfo.String()
+							}
+						}
+						if post.FileMIME != "" {
+							_, err = db.conn.Exec(context.Background(), "UPDATE post SET filemime = $1 WHERE id = $2", post.FileMIME, post.ID)
+							if err != nil {
+								return err
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func (db *Database) upgrade(rootDir string) error {
 	var versionString string
 	err := db.conn.QueryRow(context.Background(), "SELECT value FROM config WHERE name = 'version'").Scan(&versionString)
 	if err != nil {
@@ -125,9 +163,9 @@ func (db *Database) upgrade() error {
 	}
 	fmt.Printf("Upgrading database from version %d to %d...\n", version, maxVersion)
 	for v := version + 1; v <= maxVersion; v++ {
-		_, err = db.conn.Exec(context.Background(), dbSchema[v-1])
+		err = db._upgrade(rootDir, v)
 		if err != nil {
-			return fmt.Errorf("failed to upgrade database to version %d: %s", v, err)
+			return fmt.Errorf("failed to upgrade database from version %d to version %d: %s", v-1, v, err)
 		}
 	}
 	fmt.Printf("Database upgraded.\n")
