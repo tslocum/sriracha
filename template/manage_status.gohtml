@@ -14,5 +14,14 @@
 {{end}}
 {{if and (eq .Message "") (eq .Message2 "")}}
     No outstanding moderation requests.<br>
+    <meta http-equiv="refresh" content="300; url=/sriracha/">
+{{else}}
+    <script type="text/javascript">
+    var title = document.title;
+    if (!title) {
+        title = "Sriracha";
+    }
+    document.title = "/!\ /!\ /!\ " + title;
+    </script>
 {{end}}
 {{template "manage_end.gohtml" .}}

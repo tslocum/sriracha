@@ -1,5 +1,7 @@
 1.1.0:
-- Store upload MIME types
+- Store post attachment MIME type
+- Serve SWF files using Ruffle Flash player
+- Refresh moderation requests page automatically
 
 1.0.9:
 - Add spoiler tag to BBCode plugin
