@@ -530,7 +530,7 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 		board.Unique = db.UniqueUserPosts(board)
 	}
 
-	threads := db.AllThreads(board, true)
+	threadInfo := db.AllThreads(board, true)
 	data := &templateData{
 		Board:     board,
 		Boards:    db.AllBoards(),
@@ -546,7 +546,9 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 			log.Fatal(err)
 		}
 
-		for _, thread := range threads {
+		for _, info := range threadInfo {
+			thread := db.PostByID(info[0])
+			thread.Replies = info[1]
 			data.Threads = append(data.Threads, []*Post{thread})
 		}
 		data.execute(catalogFile)
@@ -558,7 +560,7 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 
 	data.ReplyMode = 0
 	data.Template = "board_page"
-	data.Pages = pageCount(len(threads), board.Threads)
+	data.Pages = pageCount(len(threadInfo), board.Threads)
 	for page := 0; page < data.Pages; page++ {
 		fileName := "index.html"
 		if page > 0 {
@@ -571,13 +573,15 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 		}
 
 		start := page * board.Threads
-		end := len(threads)
+		end := len(threadInfo)
 		if board.Threads != 0 && end > start+board.Threads {
 			end = start + board.Threads
 		}
 
 		data.Threads = data.Threads[:0]
-		for _, thread := range threads[start:end] {
+		for _, info := range threadInfo[start:end] {
+			thread := db.PostByID(info[0])
+			thread.Replies = info[1]
 			posts := []*Post{thread}
 			if board.Type == TypeImageboard {
 				posts = append(posts, db.AllReplies(thread.ID, board.Replies, true)...)
@@ -597,8 +601,8 @@ func (s *Server) rebuildThread(db *Database, post *Post) {
 }
 
 func (s *Server) rebuildBoard(db *Database, board *Board) {
-	for _, post := range db.AllThreads(board, true) {
-		s.writeThread(db, board, post.ID)
+	for _, info := range db.AllThreads(board, true) {
+		s.writeThread(db, board, info[0])
 	}
 	s.writeIndexes(db, board)
 }

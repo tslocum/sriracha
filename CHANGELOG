@@ -1,3 +1,6 @@
+1.1.1:
+- Optimize board index page generation
+
 1.1.0:
 - Store post attachment MIME type
 - Serve SWF files using Ruffle Flash player

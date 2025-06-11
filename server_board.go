@@ -61,20 +61,22 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			data.Threads = [][]*Post{db.AllPostsInThread(postID, true)}
 			data.ReplyMode = postID
 		} else {
-			threads := db.AllThreads(b, true)
+			allThreads := db.AllThreads(b, true)
 
 			data.Page = page
-			data.Pages = pageCount(len(threads), b.Threads)
+			data.Pages = pageCount(len(allThreads), b.Threads)
 
 			start := page * b.Threads
-			end := len(threads)
+			end := len(allThreads)
 			if b.Threads != 0 && end > start+b.Threads {
 				end = start + b.Threads
 			}
-			for _, thread := range threads[start:end] {
+			for _, threadInfo := range allThreads[start:end] {
 				if b.Type == TypeImageboard {
-					data.Threads = append(data.Threads, db.AllPostsInThread(thread.ID, true))
+					data.Threads = append(data.Threads, db.AllPostsInThread(threadInfo[0], true))
 				} else {
+					thread := db.PostByID(threadInfo[0])
+					thread.Replies = threadInfo[1]
 					data.Threads = append(data.Threads, []*Post{thread})
 				}
 			}
@@ -94,7 +96,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			return
 		}
 
-		threads := db.AllThreads(b, false)
+		allThreads := db.AllThreads(b, false)
 		if !formBool(r, "confirmation") {
 			data.Template = "manage_info"
 			data.Message = template.HTML(`<form method="post">
@@ -106,7 +108,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 				<div>
 					<h1>WARNING!</h1>
 					You are about to <b>PERMANENTLY DELETE</b> ` + b.Path() + ` ` + html.EscapeString(b.Name) + `!<br>
-					` + strconv.Itoa(len(threads)) + ` threads in ` + b.Path() + ` will be <b>permanently deleted</b>.<br>
+					` + strconv.Itoa(len(allThreads)) + ` threads in ` + b.Path() + ` will be <b>permanently deleted</b>.<br>
 					This operation cannot be undone.<br><br>
 					<input type="submit" value="Delete ` + b.Path() + `">
 				</div>
@@ -114,8 +116,8 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			</form>`)
 			return
 		}
-		for _, thread := range threads {
-			s.deletePost(db, thread)
+		for _, threadInfo := range allThreads {
+			s.deletePost(db, db.PostByID(threadInfo[0]))
 		}
 		db.deleteBoard(b.ID)
 
@@ -228,8 +230,8 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 					}
 				}
 
-				for _, thread := range db.AllThreads(data.Manage.Board, false) {
-					for _, post := range db.AllPostsInThread(thread.ID, false) {
+				for _, info := range db.AllThreads(data.Manage.Board, false) {
+					for _, post := range db.AllPostsInThread(info[0], false) {
 						var modified bool
 						resPattern, err := regexp.Compile(`<a href="` + regexp.QuoteMeta(oldPath) + `res\/([0-9]+).html#([0-9]+)"`)
 						if err != nil {

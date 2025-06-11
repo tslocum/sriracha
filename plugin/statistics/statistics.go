@@ -33,9 +33,9 @@ func (s *Statistics) Serve(db *sriracha.Database, a *sriracha.Account, w http.Re
 		postStats := make(map[string]int64)
 		sizeStats := make(map[string]int64)
 		for _, b := range boards {
-			threads := db.AllThreads(b, false)
-			for _, thread := range threads {
-				for _, post := range db.AllPostsInThread(thread.ID, false) {
+			allThreads := db.AllThreads(b, false)
+			for _, threadInfo := range allThreads {
+				for _, post := range db.AllPostsInThread(threadInfo[0], false) {
 					if post.IsEmbed() {
 						postStats[post.EmbedInfo()[1]]++
 					} else if post.File != "" {
@@ -75,13 +75,13 @@ func (s *Statistics) Serve(db *sriracha.Database, a *sriracha.Account, w http.Re
             <th align="left">Attachments</th>
         </tr>`
 	for _, b := range boards {
-		threads := db.AllThreads(b, false)
-		threadCount := len(threads)
+		allThreads := db.AllThreads(b, false)
+		threadCount := len(allThreads)
 
 		var postCount int
 		var size int64
-		for _, thread := range threads {
-			for _, post := range db.AllPostsInThread(thread.ID, false) {
+		for _, threadInfo := range allThreads {
+			for _, post := range db.AllPostsInThread(threadInfo[0], false) {
 				postCount++
 				size += post.FileSize
 				totalSize += post.FileSize

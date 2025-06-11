@@ -118,9 +118,9 @@ func (db *Database) _upgrade(rootDir string, v int) error {
 	case 5: // Add file MIME type to posts.
 		boards := db.AllBoards()
 		for _, b := range boards {
-			threads := db.AllThreads(b, false)
-			for _, thread := range threads {
-				posts := db.AllPostsInThread(thread.ID, false)
+			allThreads := db.AllThreads(b, false)
+			for _, threadInfo := range allThreads {
+				posts := db.AllPostsInThread(threadInfo[0], false)
 				for _, post := range posts {
 					if post.File != "" && !post.IsEmbed() {
 						if strings.HasSuffix(post.File, ".tgkr") {

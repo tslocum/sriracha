@@ -58,28 +58,28 @@ func (db *Database) addPost(p *Post) {
 	}
 }
 
-func (db *Database) AllThreads(board *Board, moderated bool) []*Post {
+// AllThreads returns all thread IDs and reply counts.
+func (db *Database) AllThreads(board *Board, moderated bool) [][2]int {
 	var extraJoin string
 	var extraWhere string
 	if moderated {
 		extraJoin = " AND reply.moderated > 0"
 		extraWhere = " AND post.moderated > 0"
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT post.*, COUNT(reply.id) as replies FROM post LEFT OUTER JOIN post reply ON reply.parent = post.id"+extraJoin+" WHERE post.board = $1 AND post.parent IS NULL"+extraWhere+" GROUP BY post.id ORDER BY stickied DESC, bumped DESC", board.ID)
+	rows, err := db.conn.Query(context.Background(), "SELECT post.id, COUNT(reply.id) as replies FROM post LEFT OUTER JOIN post reply ON reply.parent = post.id"+extraJoin+" WHERE post.board = $1 AND post.parent IS NULL"+extraWhere+" GROUP BY post.id ORDER BY post.stickied DESC, post.bumped DESC", board.ID)
 	if err != nil {
-		log.Fatalf("failed to select all posts: %s", err)
+		log.Fatalf("failed to select all threads: %s", err)
 	}
-	var posts []*Post
+	var threads [][2]int
 	for rows.Next() {
-		p := &Post{}
-		_, err := scanPost(p, rows)
+		var thread [2]int
+		err = rows.Scan(&thread[0], &thread[1])
 		if err != nil {
 			log.Fatal(err)
 		}
-		p.Board = board
-		posts = append(posts, p)
+		threads = append(threads, thread)
 	}
-	return posts
+	return threads
 }
 
 func (db *Database) trimThreads(board *Board) []*Post {
@@ -110,7 +110,7 @@ func (db *Database) AllPostsInThread(postID int, moderated bool) []*Post {
 	}
 	rows, err := db.conn.Query(context.Background(), "SELECT *, 0 as replies FROM post WHERE (id = $1 OR parent = $1)"+extra+" ORDER BY id ASC", postID)
 	if err != nil {
-		log.Fatalf("failed to select all posts: %s", err)
+		log.Fatalf("failed to select all posts in thread %d: %s", postID, err)
 	}
 	var posts []*Post
 	var boardIDs []int
