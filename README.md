@@ -7,18 +7,18 @@ A [**read-only demo**](https://sriracha.rocket9labs.com/img/) is available.
 
 ## Features
 
-- JPG, PNG, GIF, SVG, SWF, MP4 and WebM upload
-- YouTube, Vimeo and SoundCloud embedding
+- Upload files matching MIME type whitelist
+- Embed external media (YouTube, Vimeo and SoundCloud)
 - Reference links `>>###`
-- Delete posts via password
-- CAPTCHA
 - Report posts
+- CAPTCHA
+- Overboard
 - Thread catalog
 - Oekaki (drawings)
 - Fetch new replies automatically
 - Translate into additional languages
 - Management panel:
-  - Automatically moderate new posts using [regular expressions](https://en.wikipedia.org/wiki/Regular_expression)
+  - Automatically moderate new posts using regular expressions
   - Ban offensive/abusive posters across all boards
   - Post using admin or mod capcode
   - Post using raw HTML

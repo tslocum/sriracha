@@ -9,11 +9,11 @@
                 {{if ne .File ""}}
                     {{$embed := .EmbedInfo}}
                     <label>
-                        <span class="filesize">{{if not .IsEmbed}}{{T "File"}}{{else}}{{T "Embed"}}{{end}}: <a href="{{if .IsOekaki}}/sriracha/oekaki/{{.ID}}{{else if .IsSWF}}/sriracha/swf{{$.Board.Path}}src/{{.File}}{{else if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
+                        <span class="filesize">{{if not .IsEmbed}}{{T "File"}}{{else}}{{T "Embed"}}{{end}}: <a href="{{if .IsOekaki}}/sriracha/oekaki/{{.ID}}{{else if .IsSWF}}/sriracha/swf{{$post.Board.Path}}src/{{.File}}{{else if not .IsEmbed}}{{$post.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
                     </label>
                     <div id="thumbfile{{.ID}}">
                         {{if ne .Thumb ""}}
-                            <a href="{{if .IsOekaki}}/sriracha/oekaki/{{.ID}}{{else if .IsSWF}}/sriracha/swf{{$.Board.Path}}src/{{.File}}{{else if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$.Board.Path}}thumb/{{.Thumb}}" alt="{{.ID}}" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
+                            <a href="{{if .IsOekaki}}/sriracha/oekaki/{{.ID}}{{else if .IsSWF}}/sriracha/swf{{$post.Board.Path}}src/{{.File}}{{else if not .IsEmbed}}{{$post.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$post.Board.Path}}thumb/{{.Thumb}}" alt="{{.ID}}" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
                         {{end}}
                     </div>
                     <div id="expand{{.ID}}" style="display: none;">{{.ExpandHTML}}</div>
@@ -24,10 +24,10 @@
                     {{template "imgboard_page_subject.gohtml" .}}
                     {{.NameBlock | HTML}}
                     <span class="reflink">
-                        {{if $.Board.Reports}}
+                        {{if $post.Board.Reports}}
                             <a href="/sriracha/?action=report&board={{.Board.ID}}&post={{.ID}}" title="{{T "Report"}}">R</a>
                         {{end}}
-                        <a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{.ID}}');"{{end}}>{{.ID}}</a>
+                        <a href="{{$post.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$post.Board.Path}}res/{{.Thread}}.html#q{{.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{.ID}}');"{{end}}>{{.ID}}</a>
                         {{if .Stickied}}<img src="/static/img/sticky.png" alt="{{T "Stickied"}}" title="{{T "Stickied"}}" width="16" height="16">{{end}}
                         {{if .Locked}}<img src="/static/img/lock.png" alt="{{T "Locked"}}" title="{{T "Locked"}}" width="16" height="16">{{end}}
                         {{if $.ModMode}}
@@ -39,7 +39,7 @@
                         {{end}}
                     </span>
                 </label>
-                {{if not $.ReplyMode}}{{if not $.ModMode}}&nbsp;[<a href="{{$.Board.Path}}res/{{.Thread}}.html">{{T "Reply"}}</a>]{{else}}&nbsp;[<a href="/sriracha/board/mod/{{$.Board.ID}}/{{.Thread}}">{{T "View"}}</a>]{{end}}{{end}}
+                {{if not $.ReplyMode}}{{if not $.ModMode}}&nbsp;[<a href="{{$post.Board.Path}}res/{{.Thread}}.html">{{T "Reply"}}</a>]{{else}}&nbsp;[<a href="/sriracha/board/mod/{{$post.Board.ID}}/{{.Thread}}">{{T "View"}}</a>]{{end}}{{end}}
                 <div class="message">
                     {{if eq $.ReplyMode 0}}
                         {{.MessageTruncated}}
@@ -66,10 +66,10 @@
                             {{template "imgboard_page_subject.gohtml" .}}
                             {{.NameBlock | HTML}}
                             <span class="reflink">
-                                {{if $.Board.Reports}}
+                                {{if $post.Board.Reports}}
                                     <a href="/sriracha/?action=report&board={{.Board.ID}}&post={{.ID}}" title="{{T "Report"}}">R</a>
                                 {{end}}
-                                <a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{.ID}}');"{{end}}>{{.ID}}</a>
+                                <a href="{{$post.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$post.Board.Path}}res/{{.Thread}}.html#q{{.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{.ID}}');"{{end}}>{{.ID}}</a>
                                 {{if $.ModMode}}
                                     <b><a href="/sriracha/mod/delete/{{.ID}}" title="{{T "Delete"}}">D</a>
                                     <a href="/sriracha/mod/ban/{{.ID}}" title="{{T "Ban"}}">B</a>
@@ -80,11 +80,11 @@
                         {{if ne .File ""}}
                             {{$embed := .EmbedInfo}}
                             <label>
-                                <span class="filesize"><a href="{{if .IsOekaki}}/sriracha/oekaki/{{.ID}}{{else if .IsSWF}}/sriracha/swf{{$.Board.Path}}src/{{.File}}{{else if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
+                                <span class="filesize"><a href="{{if .IsOekaki}}/sriracha/oekaki/{{.ID}}{{else if .IsSWF}}/sriracha/swf{{$post.Board.Path}}src/{{.File}}{{else if not .IsEmbed}}{{$post.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
                             </label>
                             <div id="thumbfile{{.ID}}">
                                 {{if ne .Thumb ""}}
-                                    <a href="{{if .IsOekaki}}/sriracha/oekaki/{{.ID}}{{else if .IsSWF}}/sriracha/swf{{$.Board.Path}}src/{{.File}}{{else if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$.Board.Path}}thumb/{{.Thumb}}" alt="6" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
+                                    <a href="{{if .IsOekaki}}/sriracha/oekaki/{{.ID}}{{else if .IsSWF}}/sriracha/swf{{$post.Board.Path}}src/{{.File}}{{else if not .IsEmbed}}{{$post.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$post.Board.Path}}thumb/{{.Thumb}}" alt="6" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
                                 {{end}}
                             </div>
                             <div id="expand{{.ID}}" style="display: none;">{{.ExpandHTML}}</div>

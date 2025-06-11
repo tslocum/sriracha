@@ -8,16 +8,18 @@
 {{else if .ModMode}}
 	<div class="replymode">{{T "Mod mode"}}</div>
 {{end}}
-{{if or .ModMode (and (eq .Board.Type 1) (eq .ReplyMode 0))}}
-	<details>
-		<summary>{{if eq .ReplyMode 0}}{{T "Create Thread"}}{{else}}{{T "Reply"}}{{end}}</summary>
-		<div>
-			{{template "imgboard_postarea.gohtml" .}}
-		</div>
-	</details>
-{{else if eq .ReplyMode 0}}
-    {{template "imgboard_postarea.gohtml" .}}
-    <br>
+{{if ne .Board.ID -1}}
+	{{if or .ModMode (and (eq .Board.Type 1) (eq .ReplyMode 0))}}
+		<details>
+			<summary>{{if eq .ReplyMode 0}}{{T "Create Thread"}}{{else}}{{T "Reply"}}{{end}}</summary>
+			<div>
+				{{template "imgboard_postarea.gohtml" .}}
+			</div>
+		</details>
+	{{else if eq .ReplyMode 0}}
+		{{template "imgboard_postarea.gohtml" .}}
+		<br>
+	{{end}}
 {{end}}
 <form method="post" action="/sriracha/">
 	<input type="hidden" name="action" value="delete">

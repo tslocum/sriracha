@@ -3,7 +3,7 @@
 		{{range $i, $thread := .Threads}}
 			{{range $i, $post := $thread}}
 				<tr>
-					<td>[{{.Replies | PlusOne}}] {{.TimestampLabel}}<div  class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$.Board.ID}}/{{.ID}}{{else}}{{$.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}No subject{{end}}</a></div></td>
+					<td>[{{.Replies | PlusOne}}] {{.TimestampLabel}}<div  class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}No subject{{end}}</a></div></td>
 				</tr>
 			{{end}}
 		{{end}}
@@ -22,8 +22,8 @@
                             <input type="checkbox" name="delete[]" value="{{.ID}}" style="margin-left: 0;">
 							{{.NameBlock | HTML}}
 							<span class="reflink">
-								<a href="{{$.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$.Board.Path}}res/{{.Thread}}.html#q{{.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{.ID}}');"{{end}}>{{.ID}}</a>
-								{{if $.Board.Reports}}
+								<a href="{{$post.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$post.Board.Path}}res/{{.Thread}}.html#q{{.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{.ID}}');"{{end}}>{{.ID}}</a>
+								{{if $post.Board.Reports}}
 									<a href="/sriracha/?action=report&board={{.Board.ID}}&post={{.ID}}" title="{{T "Report"}}">R</a>
 								{{end}}
 								{{if $.ModMode}}
@@ -37,12 +37,12 @@
                             {{$embed := .EmbedInfo}}
 							<br>
 							<label>
-								{{if not .IsEmbed}}File:{{else}}Embed:{{end}} <span class="filesize"><a href="{{if .IsOekaki}}/sriracha/oekaki/{{.ID}}{{else if .IsSWF}}/sriracha/swf{{$.Board.Path}}src/{{.File}}{{else if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
+								{{if not .IsEmbed}}File:{{else}}Embed:{{end}} <span class="filesize"><a href="{{if .IsOekaki}}/sriracha/oekaki/{{.ID}}{{else if .IsSWF}}/sriracha/swf{{$post.Board.Path}}src/{{.File}}{{else if not .IsEmbed}}{{$post.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}{{template "imgboard_post_fileinfo.gohtml" .}}{{else}}{{index $embed 1}}{{end}}</span><br>
 							</label>
 							<div style="margin-top: 1em;">
 								<div id="thumbfile{{.ID}}">
 									{{if ne .Thumb ""}}
-										<a href="{{if .IsOekaki}}/sriracha/oekaki/{{.ID}}{{else if .IsSWF}}/sriracha/swf{{$.Board.Path}}src/{{.File}}{{else if not .IsEmbed}}{{$.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$.Board.Path}}thumb/{{.Thumb}}" alt="6" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
+										<a href="{{if .IsOekaki}}/sriracha/oekaki/{{.ID}}{{else if .IsSWF}}/sriracha/swf{{$post.Board.Path}}src/{{.File}}{{else if not .IsEmbed}}{{$post.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{$post.Board.Path}}thumb/{{.Thumb}}" alt="6" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
 									{{end}}
 								</div>
 								<div id="expand{{.ID}}" style="display: none;">{{.ExpandHTML}}</div>

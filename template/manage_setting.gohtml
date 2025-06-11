@@ -51,6 +51,29 @@
             <td>Default oekaki canvas height.</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="overboard">Overboard Directory</label></td>
+            <td><input type="text" name="overboard" value="{{.Opt.Overboard}}"></input></td>
+            <td>Name of overboard directory. Leave blank to disable. To write the overboard at the root directory, enter "/".</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="overboardtype">Overboard Type</label></td>
+            <td><select name="overboardtype" style="width: 100%;">
+                <option value="0"{{if eq .Opt.OverboardType 0}} selected{{end}}>Imageboard</option>
+                <option value="1"{{if eq .Opt.OverboardType 1}} selected{{end}}>Forum</option>
+            </select></td>
+            <td>Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="overboardthreads">Overboard Threads</label></td>
+            <td><input type="text" name="overboardthreads" value="{{.Opt.OverboardThreads}}"></input></td>
+            <td>Number of threads to show per overboard index page. Set to 0 to show all.</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="overboardreplies">Overboard Replies</label></td>
+            <td><input type="text" name="overboardreplies" value="{{.Opt.OverboardReplies}}"></input></td>
+            <td>Number of replies to show per overboard index thread. Set to 0 to show none.</td>
+        </tr>
+        <tr>
             <td class="postblock"><label for="refresh">Auto Refresh</label></td>
             <td><input type="text" name="refresh" value="{{.Opt.Refresh}}"></input></td>
             <td>Seconds between automatic refreshes when viewing a thread. 0 to disable.</td>

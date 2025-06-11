@@ -83,16 +83,20 @@ const (
 )
 
 type ServerOptions struct {
-	SiteName     string
-	SiteHome     string
-	News         NewsOption
-	BoardIndex   bool
-	CAPTCHA      bool
-	Refresh      int
-	Uploads      []*uploadType
-	Embeds       [][2]string
-	OekakiWidth  int
-	OekakiHeight int
+	SiteName         string
+	SiteHome         string
+	News             NewsOption
+	BoardIndex       bool
+	CAPTCHA          bool
+	Refresh          int
+	Uploads          []*uploadType
+	Embeds           [][2]string
+	OekakiWidth      int
+	OekakiHeight     int
+	Overboard        string
+	OverboardType    BoardType
+	OverboardThreads int
+	OverboardReplies int
 }
 
 type Server struct {
@@ -244,6 +248,11 @@ func (s *Server) setDefaultServerConfig() error {
 	} else {
 		s.opt.Refresh = db.GetInt("refresh")
 	}
+
+	s.opt.Overboard = db.GetString("overboard")
+	s.opt.OverboardType = BoardType(db.GetInt("overboardtype"))
+	s.opt.OverboardThreads = db.GetInt("overboardthreads")
+	s.opt.OverboardReplies = db.GetInt("overboardreplies")
 
 	s.opt.Uploads = s.config.UploadTypes()
 
@@ -595,9 +604,92 @@ func (s *Server) writeIndexes(db *Database, board *Board) {
 	}
 }
 
+func (s *Server) writeOverboard(db *Database) {
+	var overboardDir string
+	if s.opt.Overboard != "/" {
+		overboardDir = s.opt.Overboard
+	}
+
+	overboard := &Board{
+		ID:      -1,
+		Type:    s.opt.OverboardType,
+		Name:    gotext.Get("Overboard"),
+		Dir:     overboardDir,
+		Threads: s.opt.OverboardThreads,
+		Replies: s.opt.OverboardReplies,
+	}
+
+	threadInfo := db.AllThreads(nil, true)
+	data := &templateData{
+		Board:     overboard,
+		Boards:    db.AllBoards(),
+		ReplyMode: 1,
+		Manage:    &manageData{},
+		Template:  "board_catalog",
+	}
+
+	// Write catalog.
+	if overboard.Type == TypeImageboard {
+		catalogFile, err := os.OpenFile(filepath.Join(s.config.Root, overboardDir, "catalog.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		for _, info := range threadInfo {
+			thread := db.PostByID(info[0])
+			thread.Replies = info[1]
+			data.Threads = append(data.Threads, []*Post{thread})
+		}
+		data.execute(catalogFile)
+
+		catalogFile.Close()
+	}
+
+	// Write indexes.
+
+	data.ReplyMode = 0
+	data.Template = "board_page"
+	data.Pages = pageCount(len(threadInfo), overboard.Threads)
+	for page := 0; page < data.Pages; page++ {
+		fileName := "index.html"
+		if page > 0 {
+			fileName = fmt.Sprintf("%d.html", page)
+		}
+
+		indexFile, err := os.OpenFile(filepath.Join(s.config.Root, overboardDir, fileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		start := page * overboard.Threads
+		end := len(threadInfo)
+		if overboard.Threads != 0 && end > start+overboard.Threads {
+			end = start + overboard.Threads
+		}
+
+		data.Threads = data.Threads[:0]
+		for _, info := range threadInfo[start:end] {
+			thread := db.PostByID(info[0])
+			thread.Replies = info[1]
+			posts := []*Post{thread}
+			if overboard.Type == TypeImageboard {
+				posts = append(posts, db.AllReplies(thread.ID, overboard.Replies, true)...)
+			}
+			data.Threads = append(data.Threads, posts)
+		}
+		data.Page = page
+		data.execute(indexFile)
+
+		indexFile.Close()
+	}
+}
+
 func (s *Server) rebuildThread(db *Database, post *Post) {
 	s.writeThread(db, post.Board, post.Thread())
 	s.writeIndexes(db, post.Board)
+	if s.opt.Overboard != "" {
+		s.writeOverboard(db)
+	}
 }
 
 func (s *Server) rebuildBoard(db *Database, board *Board) {
@@ -605,6 +697,18 @@ func (s *Server) rebuildBoard(db *Database, board *Board) {
 		s.writeThread(db, board, info[0])
 	}
 	s.writeIndexes(db, board)
+}
+
+func (s *Server) rebuildAll(db *Database) {
+	for _, b := range db.AllBoards() {
+		s.rebuildBoard(db, b)
+	}
+
+	s.rebuildNews(db)
+
+	if s.opt.Overboard != "" {
+		s.writeOverboard(db)
+	}
 }
 
 func (s *Server) writeNewsItem(db *Database, n *News) {
@@ -672,7 +776,7 @@ func (s *Server) rebuildNewsItem(db *Database, n *News) {
 	s.writeNewsIndexes(db)
 }
 
-func (s *Server) rebuildAllNews(db *Database) {
+func (s *Server) rebuildNews(db *Database) {
 	for _, n := range db.allNews(true) {
 		s.writeNewsItem(db, n)
 	}

@@ -60,13 +60,17 @@ func (db *Database) addPost(p *Post) {
 
 // AllThreads returns all thread IDs and reply counts.
 func (db *Database) AllThreads(board *Board, moderated bool) [][2]int {
+	var boardWhere string
+	if board != nil {
+		boardWhere = fmt.Sprintf("post.board = %d AND ", board.ID)
+	}
 	var extraJoin string
 	var extraWhere string
 	if moderated {
 		extraJoin = " AND reply.moderated > 0"
 		extraWhere = " AND post.moderated > 0"
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT post.id, COUNT(reply.id) as replies FROM post LEFT OUTER JOIN post reply ON reply.parent = post.id"+extraJoin+" WHERE post.board = $1 AND post.parent IS NULL"+extraWhere+" GROUP BY post.id ORDER BY post.stickied DESC, post.bumped DESC", board.ID)
+	rows, err := db.conn.Query(context.Background(), "SELECT post.id, COUNT(reply.id) as replies FROM post LEFT OUTER JOIN post reply ON reply.parent = post.id"+extraJoin+" WHERE "+boardWhere+" post.parent IS NULL"+extraWhere+" GROUP BY post.id ORDER BY post.stickied DESC, post.bumped DESC")
 	if err != nil {
 		log.Fatalf("failed to select all threads: %s", err)
 	}
