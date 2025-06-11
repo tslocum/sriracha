@@ -904,7 +904,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) listen() error {
 	mux := http.NewServeMux()
-	mux.Handle("/static/", http.FileServerFS(staticFS))
+	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	mux.HandleFunc("/sriracha/swf/", s.serveSWF)
 	mux.HandleFunc("/sriracha/", s.serve)
 	mux.Handle("/", http.FileServer(http.Dir(s.config.Root)))

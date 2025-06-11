@@ -133,7 +133,7 @@ func (p *Post) createThumbnail(buf []byte, mimeType string, mediaOverlay bool, t
 }
 
 func (p *Post) addMediaOverlay(img image.Image) image.Image {
-	mediaBuf, err := staticFS.ReadFile("static/img/media.png")
+	mediaBuf, err := os.ReadFile("static/img/media.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -299,7 +299,7 @@ func (p *Post) loadForm(r *http.Request, rootDir string, saltTrip string) error 
 	var thumbExt string
 	var thumbData []byte
 	if fileThumb != "" && fileThumb != "none" {
-		thumbData, err = staticFS.ReadFile("static/img/" + fileThumb)
+		thumbData, err = os.ReadFile("static/img/" + fileThumb)
 		if err != nil {
 			log.Fatalf("failed to open thumbnail file %s: %s", fileThumb, err)
 		}
