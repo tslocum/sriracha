@@ -1,6 +1,6 @@
 1.1.1:
 - Add overboard
-- Optimize board index page generation
+- Optimize board index generation
 
 1.1.0:
 - Store post attachment MIME type
