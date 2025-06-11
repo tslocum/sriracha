@@ -29,13 +29,14 @@ hr {
         {{end}}
         {{if ne .Pages 1}}
             <div style="text-align: center;">
+                <br>
                 <table class="managetable" style="margin: 0 auto;">
                 <tbody>
                     <tr>
                         <td>{{if gt .Page 0}}<form method="get" action="/{{if gt .Page 1}}news-p{{.Page | MinusOne}}.html{{else if eq .Opt.News 1}}news.html{{end}}"><input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
                         <td>
                             {{range $i := Iterate (.Pages | MinusOne)}}
-                                [{{if eq $i $.Page}}{{$i}}{{else}}<a href="/{{if gt $i 0}}news-p{{$i}}.html{{else if eq .Opt.News 1}}news.html{{end}}">{{$i}}</a>{{end}}]
+                                [{{if eq $i $.Page}}{{$i}}{{else}}<a href="/{{if gt $i 0}}news-p{{$i}}.html{{else if eq $.Opt.News 1}}news.html{{end}}">{{$i}}</a>{{end}}]
                             {{end}}
                         </td>
                         <td>{{if lt .Page (.Pages | MinusOne)}}<form method="get" action="/news-p{{.Page | PlusOne}}.html"><input type="submit" value="{{T "Next"}}"></form>{{else}}{{T "Next"}}{{end}}</td>
@@ -43,7 +44,6 @@ hr {
                 </tbody>
                 </table>
             </div>
-            <br>
         {{else if eq .Extra "view"}}
             <br>
             <div style="text-align: center;">- <a href="/{{if eq .Opt.News 1}}news.html{{end}}">{{T "Click here to go back"}}</a> -</div>
