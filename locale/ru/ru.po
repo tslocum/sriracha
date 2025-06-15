@@ -27,9 +27,6 @@ msgstr "Администрирование"
 msgid "Ban"
 msgstr "Блокировка"
 
-msgid "Banned keyword detected in post."
-msgstr "В сообщении обнаружены запрещенные слова."
-
 msgid "Bans"
 msgstr "Блокировки"
 
@@ -179,6 +176,9 @@ msgstr "Не выбрана запись."
 
 msgid "None"
 msgstr "Нету"
+
+msgid "Overboard"
+msgstr ""
 
 msgid "Password"
 msgstr "Пароль"

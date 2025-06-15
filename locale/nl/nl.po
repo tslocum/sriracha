@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-06-07 17:58+0000\n"
+"PO-Revision-Date: 2025-06-13 09:58+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -24,9 +24,6 @@ msgstr "Beheerder"
 
 msgid "Ban"
 msgstr "Verbannen"
-
-msgid "Banned keyword detected in post."
-msgstr "Verbannen trefwoord aangetroffen in bericht."
 
 msgid "Bans"
 msgstr "Verbanningen"
@@ -176,6 +173,9 @@ msgstr "Er is geen bericht gekozen."
 
 msgid "None"
 msgstr "Geen"
+
+msgid "Overboard"
+msgstr "Overboard"
 
 msgid "Password"
 msgstr "Wachtwoord"

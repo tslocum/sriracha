@@ -20,9 +20,6 @@ msgstr ""
 msgid "Ban"
 msgstr ""
 
-msgid "Banned keyword detected in post."
-msgstr ""
-
 msgid "Bans"
 msgstr ""
 
@@ -170,6 +167,9 @@ msgid "No post selected."
 msgstr ""
 
 msgid "None"
+msgstr ""
+
+msgid "Overboard"
 msgstr ""
 
 msgid "Password"

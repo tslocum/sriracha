@@ -19,9 +19,6 @@ msgstr ""
 msgid "Ban"
 msgstr ""
 
-msgid "Banned keyword detected in post."
-msgstr ""
-
 msgid "Bans"
 msgstr ""
 

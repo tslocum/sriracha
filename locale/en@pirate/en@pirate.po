@@ -1,0 +1,240 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2025-06-15 16:27+0000\n"
+"Last-Translator: tslocum <tslocum@noreply.codeberg.org>\n"
+"Language-Team: English (Pirate) <https://translate.codeberg.org/projects/"
+"sriracha/sriracha/en@pirate/>\n"
+"Language: en@pirate\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.11.4\n"
+
+msgid "%d post omitted. Click Reply to view."
+msgid_plural "%d posts omitted. Click Reply to view."
+msgstr[0] "%d post below deck. Swab Reply to view."
+msgstr[1] "%d posts below deck. Swab Reply to view."
+
+msgid "Accounts"
+msgstr "Sailors"
+
+msgid "Admin"
+msgstr "Captain"
+
+msgid "Ban"
+msgstr "Maroon"
+
+msgid "Bans"
+msgstr "Scallywags"
+
+msgid "Boards"
+msgstr "Ships"
+
+msgid "Capcode"
+msgstr "Flag"
+
+msgid "Catalog"
+msgstr "Map"
+
+msgid "Change Password"
+msgstr "Davy Jone's Locker"
+
+msgid "Click here to go back"
+msgstr "Swab here to head aft"
+
+msgid "Click to refresh."
+msgstr "Swab to refresh."
+
+msgid "Confirm"
+msgstr "Set Sail"
+
+msgid "Create Thread"
+msgstr "Set Sail"
+
+msgid "Currently %d unique user post."
+msgid_plural "Currently %d unique user posts."
+msgstr[0] "Thar be %d one-of-a-kind treasure on the map."
+msgstr[1] "Thar be %d one-of-a-kind treasures on the map."
+
+msgid "Delete"
+msgstr "Shoot"
+
+msgid "Delete %s"
+msgstr "Shoot %s"
+
+msgid "Delete & ban"
+msgstr "Shoot & maroon"
+
+msgid "Delete & ban for 1 hour"
+msgstr "Shoot & maroon for 1 hour"
+
+msgid "Delete & ban for 1 day"
+msgstr "Shoot & maroon for 1 day"
+
+msgid "Delete & ban for 2 days"
+msgstr "Shoot & maroon for 2 days"
+
+msgid "Delete & ban for 1 week"
+msgstr "Shoot & maroon for 1 week"
+
+msgid "Delete & ban for 2 weeks"
+msgstr "Shoot & maroon for 2 weeks"
+
+msgid "Delete & ban for 1 month"
+msgstr "Shoot & maroon for 1 month"
+
+msgid "Delete & ban permanently"
+msgstr "Shoot & maroon to the bitter end"
+
+msgid "Delete Post"
+msgstr "Shoot Post"
+
+msgid "Detected banned keyword."
+msgstr "Avast! Ye speak blasphemous words punishable BY DEATH!"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Embed"
+msgstr "Stow"
+
+msgid "Error: %s"
+msgstr "Avast! %s"
+
+msgid "Exit"
+msgstr "Come About"
+
+msgid "Failed to embed media."
+msgstr "Avast! Ye stowage was lost at sea."
+
+msgid "File"
+msgstr "Booty"
+
+msgid "For post and file deletion."
+msgstr "Ter shoot with."
+
+msgid "Hide until approved"
+msgstr "Stow until inspected"
+
+msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
+msgstr "Treasures larger than %[1]dx%[2]d shall be apportioned."
+
+msgid "Incorrect CAPTCHA text. Please try again."
+msgstr "Avast! Ye be enterin' the wrong secret. Read the scroll again."
+
+msgid "Incorrect password."
+msgstr ""
+"Avast! That name and password is known to no man. Return whence ye came or "
+"walk the plank!"
+
+msgid "Keywords"
+msgstr "Blasphemy"
+
+msgid "Log Out"
+msgstr "Weigh Anchor"
+
+msgid "Logs"
+msgstr "Captain's Log"
+
+msgid "Manage"
+msgstr "Great Cabin"
+
+msgid "Manage mode"
+msgstr "Sailor mode"
+
+msgid "Maximum file size allowed is %s."
+msgstr "Largest cargo we takin' is %s."
+
+msgid "Message"
+msgstr "Parley"
+
+msgid "Mod"
+msgstr "Mate"
+
+msgid "Mod mode"
+msgstr "Mate mode"
+
+msgid "Mod mode: View"
+msgstr "Mate mode: Sail"
+
+msgid "Name"
+msgstr "Jack"
+
+msgid "News"
+msgstr "Ship's Log"
+
+msgid "Next"
+msgstr "Fore"
+
+msgid "No board specified."
+msgstr "Avast! Pick a board or walk the plank!"
+
+msgid "No post selected."
+msgstr "Avast! Select a post or walk the plank!"
+
+msgid "None"
+msgstr "Nothin'"
+
+msgid "Overboard"
+msgstr "Overboard"
+
+msgid "Password"
+msgstr "Secret"
+
+msgid "Paste a YouTube URL."
+msgstr "Stow a YouTube video."
+
+msgid "Please wait %s before creating a new post."
+msgstr "Avast! Raise sails for %s before setting sail again."
+
+msgid "Plugins"
+msgstr "Rigging"
+
+msgid "Post truncated. Click Reply to view."
+msgstr "Post apportioned. Swab Reply to view."
+
+msgid "Posting mode: Reply"
+msgstr "Posting mode: Yap"
+
+msgid "Preferences"
+msgstr "Quarters"
+
+msgid "Previous"
+msgstr "Aft"
+
+msgid "Reply"
+msgstr "Yap"
+
+msgid "Report"
+msgstr "Heave"
+
+msgid "Reported No.%d"
+msgstr "Heaved No.%d"
+
+msgid "Return"
+msgstr "Come About"
+
+msgid "Settings"
+msgstr "Provisions"
+
+msgid "Status"
+msgstr "Helm"
+
+msgid "Subject"
+msgstr "Yer Point"
+
+msgid "Submit"
+msgstr "Set Sail"
+
+msgid "Supported file types are %s."
+msgstr "Accepted cargo is %s."
+
+msgid "Unknown"
+msgstr "Dunno"
+
+msgid "View"
+msgstr "Sail"
+
+msgid "Your post will be shown once it has been approved."
+msgstr "Avast! Yer post will be shown after the captain inspects it."

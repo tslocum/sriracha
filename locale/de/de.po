@@ -25,9 +25,6 @@ msgstr "Administrator"
 msgid "Ban"
 msgstr "Verbannen"
 
-msgid "Banned keyword detected in post."
-msgstr "Verbotenes Schlagwort in Beitrag entdeckt"
-
 msgid "Bans"
 msgstr "Verbote"
 
@@ -175,6 +172,9 @@ msgid "No post selected."
 msgstr ""
 
 msgid "None"
+msgstr ""
+
+msgid "Overboard"
 msgstr ""
 
 msgid "Password"
