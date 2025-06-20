@@ -44,6 +44,8 @@ Translation is handled [online](https://translate.codeberg.org/projects/sriracha
   2. Review the [open issues](https://codeberg.org/tslocum/sriracha/issues).
   3. Open a [new issue](https://codeberg.org/tslocum/sriracha/issues/new).
 
+Unofficial support is also available via [#sriracha @ irc.libera.chat](https://web.libera.chat/?channel=#sriracha).
+
 ## License
 
 This application is licensed under [LGPLv3](https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE).
