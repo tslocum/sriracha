@@ -16,8 +16,8 @@ require (
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/r3labs/diff/v3 v3.0.1
 	github.com/steambap/captcha v1.4.1
-	golang.org/x/exp v0.0.0-20250606033433-dcc06ee1d476
-	golang.org/x/sys v0.33.0
+	golang.org/x/exp v0.0.0-20250718183923-645b1fa84792
+	golang.org/x/sys v0.34.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -32,9 +32,9 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	gitlab.com/nyarla/go-crypt v0.0.0-20160106005555-d9a5dc2b789b // indirect
-	golang.org/x/crypto v0.39.0 // indirect
-	golang.org/x/image v0.28.0 // indirect
-	golang.org/x/net v0.41.0 // indirect
-	golang.org/x/sync v0.15.0 // indirect
-	golang.org/x/text v0.26.0 // indirect
+	golang.org/x/crypto v0.40.0 // indirect
+	golang.org/x/image v0.29.0 // indirect
+	golang.org/x/net v0.42.0 // indirect
+	golang.org/x/sync v0.16.0 // indirect
+	golang.org/x/text v0.27.0 // indirect
 )

@@ -134,7 +134,7 @@ CREATE TABLE post (
 	moderated smallint NOT NULL default '1',
 	stickied smallint NOT NULL default '0',
 	locked smallint NOT NULL default '0'
-	-- v5: mime varchar(64) NOT NULL default ''
+	-- v5: filemime varchar(64) NOT NULL default ''
 );
 CREATE INDEX ON post (board);
 CREATE INDEX ON post (parent);

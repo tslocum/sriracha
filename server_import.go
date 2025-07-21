@@ -14,6 +14,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/gabriel-vasile/mimetype"
 	"github.com/jackc/pgx/v5"
 	"golang.org/x/sys/unix"
 )
@@ -285,13 +286,18 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 			pp.FileOriginal = p.FileOriginal
 			if p.File != "" {
 				srcPath := filepath.Join(s.config.Root, b.Dir, "src", p.File)
+
 				buf, err := os.ReadFile(srcPath)
 				if err != nil {
 					data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> File not found at %s", html.EscapeString(srcPath)))
 					return
 				}
+
+				pp.FileMIME = mimetype.Detect(buf).String()
+
 				checksum := sha512.Sum384(buf)
 				pp.FileHash = base64.URLEncoding.EncodeToString(checksum[:])
+
 				if p.Thumb != "" {
 					thumbPath := filepath.Join(s.config.Root, b.Dir, "thumb", p.Thumb)
 					_, err := os.Stat(thumbPath)
@@ -345,7 +351,7 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 			if pp.Locked {
 				locked = 1
 			}
-			err = db.conn.QueryRow(context.Background(), "INSERT INTO post VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25) RETURNING id",
+			err = db.conn.QueryRow(context.Background(), "INSERT INTO post VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26) RETURNING id",
 				pp.ID,
 				parent,
 				pp.Board.ID,
@@ -371,6 +377,7 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 				pp.Moderated,
 				stickied,
 				locked,
+				pp.FileMIME,
 			).Scan(&pp.ID)
 			if err != nil || pp.ID == 0 {
 				data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to insert post: %s", err))
