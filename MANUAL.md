@@ -223,13 +223,6 @@ Sriracha keywords are always regular expressions. During migration, plain text
 keywords are escaped to allow them to be parsed as regular expressions. You may
 still need to update some keywords for them to continue to function.
 
-#### Previews only work for displayed posts
-
-When hovering over a reference link, post previews are only shown for posts
-already displayed on the page. Reference links to replies which not displayed
-on the page, such as omitted replies when browsing board index pages, will not
-show a preview. Open thread pages to show previews for all referenced replies.
-
 #### No backlinks
 
 Backlinks are links to each post referencing another post, which are displayed

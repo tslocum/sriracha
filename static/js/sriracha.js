@@ -3,6 +3,7 @@ var mouseY = 0;
 var haveFocus = false;
 var originalTitle = "";
 var newRepliesCount = 0;
+var postCache = {};
 
 function updateTitle() {
     if (originalTitle == "") {
@@ -23,8 +24,8 @@ function updateTitle() {
     setTimeout(updateTitle, 2000);
 }
 
-function refreshReplies() {
-    fetch(window.location.href).then(function(resp) {
+function fetchPosts(url, append) {
+    return fetch(url).then(function(resp) {
         return resp.text();
     }).then(function(body) {
         var container;
@@ -66,7 +67,10 @@ function refreshReplies() {
             tr.appendChild(td);
             tr.appendChild(reply);
 
-            container.appendChild(table);
+            postCache[reply.id] = reply;
+            if (append) {
+                container.appendChild(table);
+            }
         }
         setPostAttributes(container);
         if (!haveFocus) {
@@ -77,9 +81,11 @@ function refreshReplies() {
             }
         }
     }).catch(function(err) {
-        console.log('Failed to refresh thread:', err);
+        console.log('Failed to fetch thread (' + url + '):', err);
     }).finally(function() {
-        setTimeout(refreshReplies, autoRefreshDelay*1000);
+        if (append) {
+            setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
+        }
     });
 }
 
@@ -125,11 +131,83 @@ function expandFile(e, id) {
             thumbFile.style.display = "block";
             thumbFile.setAttribute('expanded', 'false');
         }
-
         return false;
     }
-
     return true;
+}
+
+function previewPost(el) {
+    var preview = document.getElementById('ref' + el.getAttribute('refID'));
+    if (!preview) {
+        var refpost = document.getElementById('post' + el.getAttribute('refID'));
+        if (!refpost || !refpost.innerHTML || refpost.innerHTML == undefined) {
+            var m = el.getAttribute('href').match(/([0-9]+)\.html\#([0-9]+)/i);
+            if (m == null) {
+                return;
+            }
+            var threadID = m[1];
+            var postID = m[2];
+            var post = postCache['post' + postID];
+            if (post) {
+                refpost = post;
+            } else {
+                // Check if thread res page is already cached.
+                var thread = postCache['post' + threadID];
+                if (thread) {
+                    return;
+                }
+                // Fetch thread res page.
+                var url = el.getAttribute('href');
+                var hash = url.indexOf('#');
+                if (hash != -1) {
+                    url = url.substring(0, hash);
+                }
+                fetchPosts(url, false).then(function() {
+                    post = postCache['post' + postID];
+                    if (post && post.innerHTML) {
+                        // Preview fetched post.
+                        previewPost(el);
+                    }
+                });
+                return;
+            }
+        }
+        if (refpost && refpost.innerHTML && refpost.innerHTML != undefined) {
+            var preview = document.createElement('div');
+            preview.id = 'ref' + el.getAttribute('refID');
+            preview.style.position = 'absolute';
+            preview.style.textAlign = 'left';
+            preview.style.pointerEvents = 'none';
+            preview.setAttribute('refID', el.getAttribute('refID'));
+            preview.className = 'hoverpost';
+            preview.innerHTML = refpost.innerHTML;
+            if (refpost.tagName.toLowerCase() == 'td') {
+                preview.classList.add('reply');
+            }
+            postCache[el.getAttribute('refID')] = refpost;
+        } else {
+            // Post no longer exists.
+            return;
+        }
+        document.body.append(preview);
+    }
+    var doc = document.documentElement;
+    var vw = Math.max(doc.clientWidth || 0, window.innerWidth || 0);
+    var vh = Math.max(doc.clientHeight || 0, window.innerHeight || 0);
+    var vl = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
+    var vt = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
+
+    var rect = el.getBoundingClientRect();
+    var px = rect.right+vl+7;
+    if (px + preview.offsetWidth > vw + vl) {
+        px = vw + vl - preview.offsetWidth
+    }
+    var py = rect.top+vt+(rect.bottom-rect.top)/2;
+    if (py + preview.offsetHeight > vh + vt) {
+        py = vh + vt - preview.offsetHeight
+    }
+    preview.style.left = px + 'px';
+    preview.style.top = py + 'px';
 }
 
 function setPostAttributes(element) {
@@ -163,46 +241,13 @@ function setPostAttributes(element) {
             }
             el.setAttribute('refID', m[1]);
             el.addEventListener("mouseenter", function(e) {
-                var preview = document.getElementById('ref' + el.getAttribute('refID'));
-                if (!preview) {
-                    var refpost = document.getElementById('post' + el.getAttribute('refID'));
-                    if (refpost && refpost.innerHTML && refpost.innerHTML != undefined) {
-                        var preview = document.createElement('div');
-                        preview.id = 'ref' + el.getAttribute('refID');
-                        preview.style.position = 'absolute';
-                        preview.style.textAlign = 'left';
-                        preview.style.pointerEvents = 'none';
-                        preview.setAttribute('refID', el.getAttribute('refID'));
-                        preview.className = 'hoverpost';
-                        preview.innerHTML = refpost.innerHTML;
-                        if (refpost.tagName.toLowerCase() == 'td') {
-                            preview.classList.add('reply');
-                        }
-                    } else {
-                        return;
-                    }
-                    document.body.append(preview);
-                }
-                var doc = document.documentElement;
-                var vw = Math.max(doc.clientWidth || 0, window.innerWidth || 0);
-                var vh = Math.max(doc.clientHeight || 0, window.innerHeight || 0);
-                var vl = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
-                var vt = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-
-                var rect = el.getBoundingClientRect();
-                var px = rect.right+vl+7;
-                if (px + preview.offsetWidth > vw + vl) {
-                    px = vw + vl - preview.offsetWidth
-                }
-                var py = rect.top+vt+(rect.bottom-rect.top)/2;
-                if (py + preview.offsetHeight > vh + vt) {
-                    py = vh + vt - preview.offsetHeight
-                }
-                preview.style.left = px + 'px';
-                preview.style.top = py + 'px';
+                previewPost(el);
             });
             el.addEventListener("mouseleave", function(e) {
-                document.getElementById('ref' + el.getAttribute('refID')).remove();
+                var preview = document.getElementById('ref' + el.getAttribute('refID'));
+                if (preview) {
+                    preview.remove();
+                }
             });
         }
     });
@@ -249,7 +294,7 @@ function onLoad(e) {
         return;
     }
 
-    setTimeout(refreshReplies, autoRefreshDelay*1000);
+    setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
 }
 
 window.addEventListener("focus", onFocus);
