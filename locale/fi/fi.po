@@ -1,146 +1,152 @@
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2025-10-01 13:09+0000\n"
+"Last-Translator: Ricky-Tigg <ricky-tigg@noreply.codeberg.org>\n"
+"Language-Team: Finnish <https://translate.codeberg.org/projects/sriracha/"
+"sriracha/fi/>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.13.2\n"
 
 msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d viesti pois jätetty. Napsauta Vastaa nähdäksesi."
+msgstr[1] "%d viestiä pois jätetty. Napsauta Vastaa nähdäksesi."
 
 msgid "Accounts"
-msgstr ""
+msgstr "Tilit"
 
 msgid "Admin"
-msgstr ""
+msgstr "Järjestelmänvalvoja"
 
 msgid "Ban"
-msgstr ""
+msgstr "Kiellä"
 
 msgid "Bans"
-msgstr ""
+msgstr "Kiellot"
 
 msgid "Boards"
-msgstr ""
+msgstr "Laudat"
 
 msgid "Capcode"
-msgstr ""
+msgstr "Cap-koodi"
 
 msgid "Catalog"
-msgstr ""
+msgstr "Luettelo"
 
 msgid "Change Password"
-msgstr ""
+msgstr "Vaihda salasana"
 
 msgid "Click here to go back"
-msgstr ""
+msgstr "Klikkaa tästä palataksesi takaisin"
 
 msgid "Click to refresh."
-msgstr ""
+msgstr "Virkistä napsauttamalla."
 
 msgid "Confirm"
-msgstr ""
+msgstr "Vahvista"
 
 msgid "Create Thread"
-msgstr ""
+msgstr "Luo viestiketju"
 
 msgid "Currently %d unique user post."
 msgid_plural "Currently %d unique user posts."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tällä hetkellä %d ainutlaatuinen käyttäjän viesti."
+msgstr[1] "Tällä hetkellä %d ainutlaatuista käyttäjän viestiä."
 
 msgid "Delete"
-msgstr ""
+msgstr "Poista"
 
 msgid "Delete %s"
-msgstr ""
+msgstr "Poista %s"
 
 msgid "Delete & ban"
-msgstr ""
+msgstr "Poista ja kiellä"
 
 msgid "Delete & ban for 1 hour"
-msgstr ""
+msgstr "Poista ja kiellä yhdeksi tunniksi"
 
 msgid "Delete & ban for 1 day"
-msgstr ""
+msgstr "Poista ja kiellä yhdeksi päiväksi"
 
 msgid "Delete & ban for 2 days"
-msgstr ""
+msgstr "Poista ja kiellä kahdeksi päiväksi"
 
 msgid "Delete & ban for 1 week"
-msgstr ""
+msgstr "Poista ja kiellä yhdeksi viikoksi"
 
 msgid "Delete & ban for 2 weeks"
-msgstr ""
+msgstr "Poista ja kiellä kahdeksi viikoksi"
 
 msgid "Delete & ban for 1 month"
-msgstr ""
+msgstr "Poista ja kiellä yhdeksi kuukaudeksi"
 
 msgid "Delete & ban permanently"
-msgstr ""
+msgstr "Poista ja kiellä pysyvästi"
 
 msgid "Delete Post"
-msgstr ""
+msgstr "Poista viesti"
 
 msgid "Detected banned keyword."
-msgstr ""
+msgstr "Kielletty avainsana havaittu."
 
 msgid "Email"
-msgstr ""
+msgstr "Sähköposti"
 
 msgid "Embed"
-msgstr ""
+msgstr "Upota"
 
 msgid "Error: %s"
-msgstr ""
+msgstr "Virhe: %s"
 
 msgid "Exit"
-msgstr ""
+msgstr "Poistu"
 
 msgid "Failed to embed media."
-msgstr ""
+msgstr "Median upottaminen epäonnistui."
 
 msgid "File"
-msgstr ""
+msgstr "Tiedosto"
 
 msgid "For post and file deletion."
-msgstr ""
+msgstr "Viestien ja tiedostojen poistamista varten."
 
 msgid "Hide until approved"
-msgstr ""
+msgstr "Piilota, kunnes hyväksytty"
 
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
 msgstr ""
+"Kuvat, joiden koko on suurempi kuin %[1]dx%[2]d, näytetään pienoiskuvina."
 
 msgid "Incorrect CAPTCHA text. Please try again."
-msgstr ""
+msgstr "Virheellinen CAPTCHA-teksti. Yritä uudelleen."
 
 msgid "Incorrect password."
-msgstr ""
+msgstr "Väärä salasana."
 
 msgid "Keywords"
-msgstr ""
+msgstr "Avainsanat"
 
 msgid "Log Out"
-msgstr ""
+msgstr "Kirjaudu ulos"
 
 msgid "Logs"
-msgstr ""
+msgstr "Lokit"
 
 msgid "Manage"
-msgstr ""
+msgstr "Hallinnoi"
 
 msgid "Manage mode"
-msgstr ""
+msgstr "Hallinnoi tila"
 
 msgid "Maximum file size allowed is %s."
-msgstr ""
+msgstr "Tiedoston enimmäiskoko on %s."
 
 msgid "Message"
-msgstr ""
+msgstr "Viesti"
 
 msgid "Mod"
 msgstr ""
@@ -152,82 +158,82 @@ msgid "Mod mode: View"
 msgstr ""
 
 msgid "Name"
-msgstr ""
+msgstr "Nimi"
 
 msgid "News"
-msgstr ""
+msgstr "Uutiset"
 
 msgid "Next"
-msgstr ""
+msgstr "Seuraava"
 
 msgid "No board specified."
-msgstr ""
+msgstr "Ei määriteltyä lautaa."
 
 msgid "No post selected."
-msgstr ""
+msgstr "Ei valittua viestiä."
 
 msgid "None"
-msgstr ""
+msgstr "Ei mitään"
 
 msgid "Overboard"
-msgstr ""
+msgstr "Yli laidan"
 
 msgid "Password"
-msgstr ""
+msgstr "Salasana"
 
 msgid "Paste a YouTube URL."
-msgstr ""
+msgstr "Liitä YouTuben URL-osoite."
 
 msgid "Please wait %s before creating a new post."
-msgstr ""
+msgstr "Odota %s ennen uuden viestin luomista."
 
 msgid "Plugins"
-msgstr ""
+msgstr "Liitännäiset"
 
 msgid "Post truncated. Click Reply to view."
-msgstr ""
+msgstr "Viesti katkaistu. Napsauta Vastaa nähdäksesi."
 
 msgid "Posting mode: Reply"
-msgstr ""
+msgstr "Lähetystila: Vastaus"
 
 msgid "Preferences"
-msgstr ""
+msgstr "Asetukset"
 
 msgid "Previous"
-msgstr ""
+msgstr "Edellinen"
 
 msgid "Reply"
-msgstr ""
+msgstr "Vastaa"
 
 msgid "Report"
-msgstr ""
+msgstr "Raportoi"
 
 msgid "Reported No.%d"
-msgstr ""
+msgstr "Raportoitu nro %d"
 
 msgid "Return"
-msgstr ""
+msgstr "Palaa"
 
 msgid "Settings"
-msgstr ""
+msgstr "Asetukset"
 
 msgid "Status"
-msgstr ""
+msgstr "Tila"
 
 msgid "Subject"
-msgstr ""
+msgstr "Aihe"
 
 msgid "Submit"
-msgstr ""
+msgstr "Lähetä"
 
 msgid "Supported file types are %s."
-msgstr ""
+msgstr "Tuetut tiedostotyypit ovat %s."
 
 msgid "Unknown"
-msgstr ""
+msgstr "Tuntematon"
 
 msgid "View"
-msgstr ""
+msgstr "Katso"
 
 msgid "Your post will be shown once it has been approved."
-msgstr ""
+msgstr "Julkaisusi näytetään, kun se on hyväksytty."

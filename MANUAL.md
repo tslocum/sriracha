@@ -156,7 +156,7 @@ template: "/home/sriracha/template"
 # Otherwise, thumbnails are generated automatically based on the uploaded file.
 # To generate thumbnails for videos or SVG images, ffmpeg must be installed.
 #
-# Format: "ext mime thumbnail
+# Format: ext mime thumbnail
 uploads:
   - "jpg image/jpeg"
   - "jpg image/pjpeg"
