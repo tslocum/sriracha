@@ -480,7 +480,9 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 	post.setNameBlock(b.DefaultName, staffCapcode)
 
 	if !rawHTML {
+		newLineSentinel := "\x85" // Next line (NEL) character
 		post.Message = strings.ReplaceAll(post.Message, "\n", "<br>\n")
+		post.Message = strings.ReplaceAll(post.Message, newLineSentinel, "\n")
 	}
 
 	if post.Password != "" {

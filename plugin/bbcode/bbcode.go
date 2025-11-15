@@ -152,11 +152,23 @@ func (f *BBCode) rebuildCompiler() {
 		})
 	}
 
+	newLineSentinel := "\x85" // Next line (NEL) character
+	var replaceNewLines func(*bbcode.BBCodeNode)
+	replaceNewLines = func(node *bbcode.BBCodeNode) {
+		for _, child := range node.Children {
+			replaceNewLines(child)
+		}
+		valueStr, ok := node.Value.(string)
+		if ok {
+			node.Value = strings.ReplaceAll(valueStr, "\n", newLineSentinel)
+		}
+	}
 	codeFunc := func(node *bbcode.BBCodeNode) (*bbcode.HTMLTag, bool) {
 		out := bbcode.NewHTMLTag("")
 		out.Name = "span"
-		out.Attrs["style"] = "font-family: monospace;"
+		out.Attrs["class"] = "code"
 		for _, child := range node.Children {
+			replaceNewLines(child)
 			out.AppendChild(bbcode.CompileRaw(child))
 		}
 		return out, false
@@ -175,8 +187,9 @@ func (f *BBCode) rebuildCompiler() {
 		f.compiler.SetTag("sjis", func(node *bbcode.BBCodeNode) (*bbcode.HTMLTag, bool) {
 			out := bbcode.NewHTMLTag("")
 			out.Name = "span"
-			out.Attrs["style"] = "font-family: IPAMonaPGothic, 'IPA モナー Pゴシック', Monapo, Mona, submona;"
+			out.Attrs["class"] = "sjis"
 			for _, child := range node.Children {
+				replaceNewLines(child)
 				out.AppendChild(bbcode.CompileRaw(child))
 			}
 			return out, false

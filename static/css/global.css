@@ -243,7 +243,17 @@ legend {
 	font-weight: bold;
 }
 
+.code {
+	white-space: pre;
+	font-family: monospace;
+}
+
 @font-face {
 	font-family: 'submona';
 	src: url('../font/submona.woff') format('woff');
+}
+
+.sjis {
+	white-space: pre;
+	font-family: IPAMonaPGothic, 'IPA モナー Pゴシック', Monapo, Mona, submona;
 }
