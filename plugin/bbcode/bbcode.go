@@ -21,6 +21,8 @@ const (
 	configColor         = "color"
 	configSize          = "size"
 	configLink          = "link"
+	configCode          = "code"
+	configSJIS          = "SJIS"
 )
 
 const enable = "1"
@@ -76,6 +78,14 @@ func (f *BBCode) Config() []sriracha.PluginConfig {
 			Type:        sriracha.TypeBoolean,
 			Name:        configLink,
 			Description: "[url=https://zoopz.org]Link text[/url]",
+		}, {
+			Type:        sriracha.TypeBoolean,
+			Name:        configCode,
+			Description: "[code]$str = \"Hello, world!\";[/code]",
+		}, {
+			Type:        sriracha.TypeBoolean,
+			Name:        configSJIS,
+			Description: "[sjis]Shift JIS text art[/sjis]",
 		},
 	}
 }
@@ -91,7 +101,6 @@ func (f *BBCode) rebuildCompiler() {
 
 	var disableTags = []string{
 		"center",
-		"code",
 		"img",
 		"quote",
 	}
@@ -140,6 +149,37 @@ func (f *BBCode) rebuildCompiler() {
 			span.Name = "span"
 			span.Attrs["class"] = "spoiler"
 			return span, true
+		})
+	}
+
+	codeFunc := func(node *bbcode.BBCodeNode) (*bbcode.HTMLTag, bool) {
+		out := bbcode.NewHTMLTag("")
+		out.Name = "span"
+		out.Attrs["style"] = "font-family: monospace;"
+		for _, child := range node.Children {
+			out.AppendChild(bbcode.CompileRaw(child))
+		}
+		return out, false
+	}
+	for _, tag := range []string{"code", "pre"} {
+		if !f.config[configCode] {
+			f.compiler.SetTag(tag, nil)
+		} else {
+			f.compiler.SetTag(tag, codeFunc)
+		}
+	}
+
+	if !f.config[configSJIS] {
+		f.compiler.SetTag("sjis", nil)
+	} else {
+		f.compiler.SetTag("sjis", func(node *bbcode.BBCodeNode) (*bbcode.HTMLTag, bool) {
+			out := bbcode.NewHTMLTag("")
+			out.Name = "span"
+			out.Attrs["style"] = "font-family: IPAMonaPGothic, 'IPA モナー Pゴシック', Monapo, Mona, submona;"
+			for _, child := range node.Children {
+				out.AppendChild(bbcode.CompileRaw(child))
+			}
+			return out, false
 		})
 	}
 

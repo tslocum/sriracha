@@ -242,3 +242,8 @@ legend {
 	margin: 5px 0 0 2px;
 	font-weight: bold;
 }
+
+@font-face {
+	font-family: 'submona';
+	src: url('../font/submona.woff') format('woff');
+}
