@@ -17,6 +17,8 @@ A [**read-only demo**](https://sriracha.rocket9labs.com/img/) is available.
 - Oekaki (drawings)
 - Fetch new replies automatically
 - Translate into additional languages
+- Play SWF files with the included [ruffle emulator](https://ruffle.rs)
+- View Shift JIS text art with the included [submona web font](https://github.com/pera/submona-web-font)
 - Management panel:
   - Automatically moderate new posts using regular expressions
   - Ban offensive/abusive posters across all boards
@@ -44,7 +46,7 @@ Translation is handled [online](https://translate.codeberg.org/projects/sriracha
   2. Review the [open issues](https://codeberg.org/tslocum/sriracha/issues).
   3. Open a [new issue](https://codeberg.org/tslocum/sriracha/issues/new).
 
-Unofficial support is also available via [#sriracha @ irc.libera.chat](https://web.libera.chat/?channel=#sriracha).
+Unofficial support is also available via [Discord](https://discord.gg/rQfQ7dEXEk) and [#sriracha @ irc.libera.chat](https://web.libera.chat/?channel=#sriracha).
 
 ## License
 
