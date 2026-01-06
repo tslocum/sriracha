@@ -84,12 +84,14 @@ func (data *templateData) execute(w io.Writer) {
 	}
 	data.Opt = &srirachaServer.opt
 
+	var boardTemplate bool
 	if strings.HasPrefix(data.Template, "board_") {
 		prefix := "imgboard_"
 		if data.Board != nil && data.Board.Type == TypeForum {
 			prefix = "forum_"
 		}
 		data.Template = prefix + strings.TrimPrefix(data.Template, "board_")
+		boardTemplate = true
 	}
 
 	responseWriter, ok := w.(http.ResponseWriter)
@@ -97,19 +99,23 @@ func (data *templateData) execute(w io.Writer) {
 		responseWriter.Header().Set("Content-Type", "text/html")
 	}
 
-	tpl := srirachaServer.tpl
-	var m template.FuncMap
+	var funcMap template.FuncMap
 	if strings.HasPrefix(data.Template, "manage_") && data.Account != nil && data.Account.Locale != "" {
-		funcMap := templateFuncMaps[data.Account.Locale]
-		if funcMap != nil {
-			m = funcMap
+		funcMap = templateFuncMaps[data.Account.Locale]
+	} else if boardTemplate {
+		var locale string
+		if data.Account != nil {
+			locale = data.Account.Locale
+		} else if data.Board != nil {
+			locale = data.Board.Locale
 		}
-	} else {
-		m = templateFuncMaps[""]
+		funcMap = templateFuncMaps[locale]
 	}
-	tpl = tpl.Funcs(m)
+	if funcMap == nil {
+		funcMap = templateFuncMaps[""]
+	}
 
-	err := tpl.ExecuteTemplate(w, data.Template+".gohtml", data)
+	err := srirachaServer.tpl.Funcs(funcMap).ExecuteTemplate(w, data.Template+".gohtml", data)
 	if err != nil {
 		log.Fatal(err)
 	}

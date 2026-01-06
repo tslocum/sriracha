@@ -3,6 +3,7 @@ package sriracha
 import (
 	"fmt"
 	"net/http"
+	"slices"
 	"strings"
 )
 
@@ -180,6 +181,10 @@ func (b *Board) loadForm(r *http.Request, availableUploads []*uploadType, availa
 	b.MaxReplies = formInt(r, "maxreplies")
 	b.Oekaki = formBool(r, "oekaki")
 	b.Rules = formMultiString(r, "rules")
+
+	if b.Locale != "" && !slices.Contains(srirachaServer.opt.LocalesSorted, b.Locale) {
+		b.Locale = ""
+	}
 
 	b.Uploads = nil
 	uploads := r.Form["uploads"]

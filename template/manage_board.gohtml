@@ -70,6 +70,16 @@
                 <td>Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages.</td>
             </tr>
             <tr>
+                <td class="postblock"><label for="locale">Locale</label></td>
+                <td><select name="locale" style="width: 100%;">
+                    <option value=""{{if and (ne .Manage.Board nil) (eq .Manage.Board.Locale "")}} selected{{end}}>Default ({{.Opt.DefaultLocaleName}})</option>
+                    {{range $i, $localeID := .Opt.LocalesSorted}}
+                        <option value="{{$localeID}}"{{if and (ne $.Manage.Board nil) (eq $.Manage.Board.Locale $localeID)}} selected{{end}}>{{index $.Opt.Locales $localeID}}</option>
+                    {{end}}
+                </select></td>
+                <td>The locale used when writing board pages.</td>
+            </tr>
+            <tr>
                 <td class="postblock"><label for="style">Style</label></td>
                 <td><select name="style" style="width: 100%;">
                     <option value=""{{if and (ne .Manage.Board nil) (eq .Manage.Board.Style "")}} selected{{end}}>Futaba</option>
