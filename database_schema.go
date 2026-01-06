@@ -9,6 +9,7 @@ var dbSchema = []string{ // Version 1.
 	lastactive bigint NOT NULL,
 	session varchar(64) NOT NULL
 	-- v2: style varchar(64) NOT NULL DEFAULT ''
+	-- v6: locale varchar(64) NOT NULL DEFAULT ''
 );
 CREATE UNIQUE INDEX ON account (username);
 CREATE UNIQUE INDEX ON account (session);
@@ -184,4 +185,7 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 	// Version 5.
 	`ALTER TABLE post ADD COLUMN filemime varchar(64) NOT NULL default '';
 	UPDATE config SET value = '5' WHERE name = 'version';`,
+	// Version 6.
+	`ALTER TABLE account ADD COLUMN locale varchar(64) NOT NULL default '';
+	UPDATE config SET value = '6' WHERE name = 'version';`,
 }

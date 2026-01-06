@@ -97,7 +97,19 @@ func (data *templateData) execute(w io.Writer) {
 		responseWriter.Header().Set("Content-Type", "text/html")
 	}
 
-	err := srirachaServer.tpl.ExecuteTemplate(w, data.Template+".gohtml", data)
+	tpl := srirachaServer.tpl
+	var m template.FuncMap
+	if strings.HasPrefix(data.Template, "manage_") && data.Account != nil && data.Account.Locale != "" {
+		funcMap := templateFuncMaps[data.Account.Locale]
+		if funcMap != nil {
+			m = funcMap
+		}
+	} else {
+		m = templateFuncMaps[""]
+	}
+	tpl = tpl.Funcs(m)
+
+	err := tpl.ExecuteTemplate(w, data.Template+".gohtml", data)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -139,12 +151,6 @@ var templateFuncMap = template.FuncMap{
 		}
 		return postIndex >= threadPosts-showReplies
 	},
-	"T": func(message string, vars ...interface{}) string {
-		return gotext.Get(message, vars...)
-	},
-	"TN": func(singular string, plural string, n int, vars ...interface{}) string {
-		return gotext.GetN(singular, plural, n, vars...)
-	},
 	"ToUpper": strings.ToUpper,
 	"ToLower": strings.ToLower,
 	"Title":   strings.Title,
@@ -157,6 +163,27 @@ var templateFuncMap = template.FuncMap{
 	"ZeroPadTo3": func(i int) string {
 		return fmt.Sprintf("%03d", i)
 	},
+}
+
+var templateFuncMaps map[string]template.FuncMap
+
+func newTemplateFuncMap(locale string) template.FuncMap {
+	f := make(template.FuncMap)
+	for name, v := range templateFuncMap {
+		f[name] = v
+	}
+
+	domain := "sriracha"
+	if locale != "" {
+		domain += "-" + locale
+	}
+	f["T"] = func(message string, vars ...interface{}) string {
+		return gotext.GetD(domain, message, vars...)
+	}
+	f["TN"] = func(singular string, plural string, n int, vars ...interface{}) string {
+		return gotext.GetND(domain, singular, plural, n, vars...)
+	}
+	return f
 }
 
 func newTemplateData() *templateData {

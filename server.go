@@ -10,6 +10,7 @@ import (
 	"html/template"
 	"io/fs"
 	"log"
+	"maps"
 	"math"
 	"net/http"
 	"net/url"
@@ -20,6 +21,7 @@ import (
 	"plugin"
 	"regexp"
 	"runtime/debug"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -33,6 +35,8 @@ import (
 	"github.com/r3labs/diff/v3"
 	"golang.org/x/exp/constraints"
 	"golang.org/x/sys/unix"
+	"golang.org/x/text/language"
+	"golang.org/x/text/language/display"
 	"gopkg.in/yaml.v3"
 )
 
@@ -97,6 +101,21 @@ type ServerOptions struct {
 	OverboardType    BoardType
 	OverboardThreads int
 	OverboardReplies int
+	Locale           string
+	Locales          map[string]string
+	LocalesSorted    []string
+	FuncMaps         map[string]template.FuncMap
+}
+
+func (opt *ServerOptions) DefaultLocaleName() string {
+	if opt.Locale == "" || opt.Locale == "en" {
+		return "English"
+	}
+	name := opt.Locales[opt.Locale]
+	if name != "" {
+		return name
+	}
+	return opt.Locale
 }
 
 type Server struct {
@@ -276,6 +295,44 @@ func (s *Server) setDefaultServerConfig() error {
 	if err != nil {
 		return fmt.Errorf("failed to commit transaction: %s", err)
 	}
+
+	s.opt.Locale = s.config.Locale
+
+	s.opt.Locales = make(map[string]string)
+	english := display.English.Languages()
+	fs.WalkDir(localeFS, "locale", func(p string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		} else if d.IsDir() || !strings.HasSuffix(p, ".po") {
+			return nil
+		}
+		id := filepath.Base(strings.TrimSuffix(p, ".po"))
+
+		name := id
+		tag, err := language.Parse(id)
+		if err == nil {
+			tagName := english.Name(tag)
+			if tagName != "" {
+				name = tagName
+			}
+		}
+
+		s.opt.Locales[id] = name
+		return nil
+	})
+	s.opt.Locales["en@pirate"] = "Pirate English"
+	if s.opt.Locale != "" && s.opt.Locale != "en" {
+		s.opt.Locales["en"] = "English"
+	}
+	s.opt.LocalesSorted = slices.SortedFunc(maps.Keys(s.opt.Locales), func(s1, s2 string) int {
+		return strings.Compare(s.opt.Locales[s1], s.opt.Locales[s2])
+	})
+
+	templateFuncMaps = make(map[string]template.FuncMap)
+	templateFuncMaps[""] = newTemplateFuncMap(s.opt.Locale)
+	for id := range s.opt.Locales {
+		templateFuncMaps[id] = newTemplateFuncMap(id)
+	}
 	return nil
 }
 
@@ -346,7 +403,7 @@ func (s *Server) parseTemplates(standardDir string, customDir string) error {
 		return nil
 	}
 	if standardDir == "" {
-		s.tpl = template.New("sriracha").Funcs(templateFuncMap)
+		s.tpl = template.New("sriracha").Funcs(templateFuncMaps[""])
 
 		entries, err := templateFS.ReadDir("template")
 		if err != nil {
@@ -368,7 +425,7 @@ func (s *Server) parseTemplates(standardDir string, customDir string) error {
 			}
 		}
 	} else {
-		s.tpl = template.New("sriracha").Funcs(templateFuncMap)
+		s.tpl = template.New("sriracha").Funcs(templateFuncMaps[""])
 		err := parseDir(standardDir)
 		if err != nil {
 			return err
@@ -1061,6 +1118,29 @@ func (s *Server) Run() error {
 		return err
 	}
 
+	// Parse locale files.
+	err = fs.WalkDir(localeFS, "locale", func(p string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		} else if d.IsDir() || !strings.HasSuffix(p, ".po") {
+			return nil
+		}
+		id := filepath.Base(strings.TrimSuffix(p, ".po"))
+
+		buf, err := localeFS.ReadFile(fmt.Sprintf("locale/%s/%s.po", id, id))
+		if err != nil {
+			log.Fatalf("failed to load locale %s: %s", id, err)
+		}
+
+		po := gotext.NewPo()
+		po.Parse(buf)
+		gotext.GetStorage().AddTranslator(fmt.Sprintf("sriracha-%s", id), po)
+		return nil
+	})
+	if err != nil {
+		log.Fatalf("failed to parse locale files: %s", err)
+	}
+
 	if devMode {
 		_, err := os.Stat("template")
 		if os.IsNotExist(err) {
@@ -1073,17 +1153,6 @@ func (s *Server) Run() error {
 		if os.IsNotExist(err) {
 			log.Fatalf("error: custom template directory %s does not exist", s.config.Template)
 		}
-	}
-
-	if s.config.Locale != "" && s.config.Locale != "en" {
-		buf, err := localeFS.ReadFile(fmt.Sprintf("locale/%s/%s.po", s.config.Locale, s.config.Locale))
-		if err != nil {
-			log.Fatalf("failed to load locale %s: %s", s.config.Locale, err)
-		}
-
-		po := gotext.NewPo()
-		po.Parse(buf)
-		gotext.GetStorage().AddTranslator("sriracha", po)
 	}
 
 	if devMode {

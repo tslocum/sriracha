@@ -2,6 +2,7 @@ package sriracha
 
 import (
 	"net/http"
+	"slices"
 	"strings"
 )
 
@@ -15,6 +16,15 @@ func (s *Server) servePreference(data *templateData, db *Database, w http.Respon
 				style = formString(r, "style")
 			}
 			db.updateAccountStyle(data.Account.ID, style)
+
+			http.Redirect(w, r, "/sriracha/preference/", http.StatusFound)
+			return
+		case "locale":
+			locale := formString(r, "locale")
+			if locale != "" && !slices.Contains(s.opt.LocalesSorted, locale) {
+				locale = ""
+			}
+			db.updateAccountLocale(data.Account.ID, locale)
 
 			http.Redirect(w, r, "/sriracha/preference/", http.StatusFound)
 			return

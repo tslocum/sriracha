@@ -40,6 +40,7 @@ type Account struct {
 	LastActive int64
 	Session    string
 	Style      string
+	Locale     string
 }
 
 func (a *Account) loadForm(r *http.Request) {

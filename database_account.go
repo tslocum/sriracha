@@ -11,12 +11,13 @@ import (
 
 func (db *Database) addAccount(a *Account, password string) {
 	sessionKey := db.newSessionKey()
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4, $5)",
+	_, err := db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4, $5, $6)",
 		a.Username,
 		encryptPassword(password),
 		a.Role,
 		sessionKey,
 		a.Style,
+		a.Locale,
 	)
 	if err != nil {
 		log.Fatalf("failed to insert account: %s", err)
@@ -164,6 +165,16 @@ func (db *Database) updateAccountStyle(id int, style string) {
 	}
 }
 
+func (db *Database) updateAccountLocale(id int, locale string) {
+	if id <= 0 {
+		log.Fatalf("invalid account ID %d", id)
+	}
+	_, err := db.conn.Exec(context.Background(), "UPDATE account SET locale = $1 WHERE id = $2", locale, id)
+	if err != nil {
+		log.Fatalf("failed to update account: %s", err)
+	}
+}
+
 func (db *Database) loginAccount(username string, password string) *Account {
 	a := &Account{}
 	err := scanAccount(a, db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE username = $1 AND role != $2", username, RoleDisabled))
@@ -191,5 +202,6 @@ func scanAccount(a *Account, row pgx.Row) error {
 		&a.LastActive,
 		&a.Session,
 		&a.Style,
+		&a.Locale,
 	)
 }
