@@ -2,6 +2,7 @@
 - Add account locale preference
 - Add board locale setting
 - Add code and sjis (Shift JIS) tags to BBCode plugin
+- Allow group read access to uploaded files
 - Verify static directory is accessible on startup
 
 1.1.2:
