@@ -64,7 +64,7 @@ var defaultServerEmbeds = [][2]string{
 }
 
 const newDirPermission = 0755
-const newFilePermission = 0600
+const newFilePermission = 0640
 
 func init() {
 	gotext.SetDomain("sriracha")
