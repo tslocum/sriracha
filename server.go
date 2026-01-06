@@ -1011,6 +1011,11 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) listen() error {
+	info, err := os.Stat("static/css/futaba.css")
+	if err != nil || info.IsDir() {
+		return fmt.Errorf("failed to locate static directory, unable to serve CSS and JS files: run sriracha from the directory that contains static as a subdirectory")
+	}
+
 	mux := http.NewServeMux()
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	mux.HandleFunc("/sriracha/swf/", s.serveSWF)
