@@ -385,7 +385,7 @@ directory. Plugin API documentation is available via [godoc](https://pkg.go.dev/
 | Statistics | View statistics for each board. |
 | Wordfilter | Find and replace text in post messages. |
 
-### Instructions
+### Using plugins
 
 To build a plugin, run the following commands:
 
@@ -405,7 +405,7 @@ sriracha --config=/path/to/config.yml /path/to/fortune.so
 Multiple plugin paths may be provided. When a directory is provided, all plugins
 in the directory are loaded.
 
-### Compatibility
+### Plugin compatibility
 
 Only plugins built using the same version of Sriracha may be used.
 
@@ -417,9 +417,31 @@ failed to load plugin ./plugin/fortune/fortune.so: plugin.Open("./plugin/fortune
 
 The solution is to rebuild all plugins and Sriracha itself.
 
-### Configuration
+### Plugin interface
 
-Plugins may provide configuration options for users to set in the management panel.
+All plugins must implement the Plugin interface:
+
+```go
+// Plugin describes the required methods for a plugin.
+type Plugin interface {
+	// About returns the plugin description.
+	About() string
+}
+```
+
+### Plugin configuration
+
+Plugins may optionally specify any number of configuration options:
+
+```go
+// PluginWithConfig describes the required methods for a plugin with configuration options.
+type PluginWithConfig interface {
+	Plugin
+	Config() []PluginConfig
+}
+```
+
+These options may be viewed and modified in the management panel.
 
 The following configuration option types are available:
 
@@ -435,21 +457,74 @@ Boolean options may only have one value. Options of any other type may have one 
 An example how to implement a plugin with configuration options is available in
 the [Fortune](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/fortune/fortune.go) plugin.
 
-### Events
+### Plugin events
 
 Plugins may subscribe to receive one or more types of events by implementing
 the associated event handlers. For instance, a plugin that subscribes to [Post](https://pkg.go.dev/codeberg.org/tslocum/sriracha#Post)
-events would implement [PluginWithPost](https://pkg.go.dev/codeberg.org/tslocum/sriracha#PluginWithPost):
+events would implement [PluginWithPost](https://pkg.go.dev/codeberg.org/tslocum/sriracha#PluginWithPost).
+
+An example of how to implement a plugin which receives new post events is
+available in the [Fortune](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/fortune/fortune.go) plugin.
+
+When a plugin handles an event, a reference to the database is provided. This reference
+must not be maintained after the event call has finished, or race conditions will occur. 
+
+#### Update event
+
+Update events are sent when a configuration option is modified. Update events
+are also sent for each configuration option when the server initializes.
 
 ```go
+// PluginWithUpdate describes the required methods for a plugin subscribing to configuration updates.
+type PluginWithUpdate interface {
+	Plugin
+	Update(db *Database, key string) error
+}
+```
+
+#### Post event
+
+Post events are sent when a new post is being created. Message is the only
+HTML-escaped field. Newlines are conveted into line break tags after all
+plugins have finished processing the post.
+
+```go
+// PluginWithPost describes the required methods for a plugin subscribing to post events.
 type PluginWithPost interface {
 	Plugin
 	Post(db *Database, post *Post) error
 }
 ```
 
-An example of how to implement a plugin which receives new post events is
-available in the [Fortune](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/fortune/fortune.go) plugin.
+#### Insert event
+
+Insert events are sent after Post events have been processed, before a new post
+is inserted. The post may not be modified during this event. Modify new posts
+during a Post event instead. Return an error to cancel the post, or nil to
+continue processing.
+
+```go
+// PluginWithInsert describes the required methods for a plugin subscribing to insert events.
+type PluginWithInsert interface {
+	Plugin
+	Insert(db *Database, post *Post) error
+}
+```
+
+#### Serve event
+
+Serve handles plugin web requests. Only administrators and super-administrators
+may access this page. When serving HTML responses, return the HTML and a nil
+error. When serving any other content type, set the Conent-Type header, write
+to the `http.ResponseWriter` directly and return a blank string.
+
+```go
+// PluginWithServe describes the required methods for a plugin with a web interface.
+type PluginWithServe interface {
+	Plugin
+	Serve(db *Database, a *Account, w http.ResponseWriter, r *http.Request) (string, error)
+}
+```
 
 ## Guides
 
