@@ -25,8 +25,8 @@
 	<input type="hidden" name="action" value="delete">
 	<input type="hidden" name="board" value="{{.Board.Dir}}">
 	{{if and (ne .ReplyMode 0) (not .ModMode)}}
-		<details style="display: inline-block;position:absolute;right: 0px;">
-			<summary>
+		<details style="float: right;">
+			<summary style="margin-right: 2px;">
 				{{T "Delete Post"}}
 			</summary>
 			<div class="replyhl" style="padding: 4px;">
