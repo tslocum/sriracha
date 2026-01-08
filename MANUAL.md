@@ -192,6 +192,9 @@ zoopz.org, www.zoopz.org {
 To run Sriracha inside a container using [Docker](https://www.docker.com), use an [official image](https://hub.docker.com/r/tslocum/sriracha/tags)
 or build an image locally using the included [Dockerfile](https://codeberg.org/tslocum/sriracha/src/branch/main/Dockerfile).
 
+To deploy Sriracha using [Docker Compose](https://docs.docker.com/compose/), use the included
+[docker-compose.yml](https://codeberg.org/tslocum/sriracha/src/branch/main/docker-compose.yml).
+
 ## Migrate
 
 [Go to top](#sections)
