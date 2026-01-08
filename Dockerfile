@@ -1,5 +1,8 @@
 FROM alpine:3.23.2 AS build
 
+# Support specifying Sriracha version.
+ARG version
+
 # Install timezone data and Go compiler.
 RUN apk add --no-cache tzdata go
 
@@ -7,10 +10,10 @@ RUN apk add --no-cache tzdata go
 COPY . /usr/src/sriracha
 
 # Compile sriracha.
-RUN cd /usr/src/sriracha/cmd/sriracha && go build -x
+RUN cd /usr/src/sriracha/cmd/sriracha && go build -x -ldflags "-s -w -X 'codeberg.org/tslocum/sriracha.SrirachaVersion=${version:-DEV}'"
 
 # Compile plugins.
-RUN for dir in /usr/src/sriracha/plugin/*; do (cd "$dir" && go build -x -buildmode=plugin); done
+RUN for dir in /usr/src/sriracha/plugin/*; do (cd "$dir" && go build -x -ldflags "-s -w" -buildmode=plugin); done
 
 FROM alpine:3.23.2
 
