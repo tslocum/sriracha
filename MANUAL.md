@@ -187,6 +187,11 @@ zoopz.org, www.zoopz.org {
 }
 ```
 
+### Docker support
+
+To run Sriracha inside a container using [Docker](https://www.docker.com), use an [official image](https://hub.docker.com/r/tslocum/sriracha/tags)
+or build an image locally using the included [Dockerfile](https://codeberg.org/tslocum/sriracha/src/branch/main/Dockerfile).
+
 ## Migrate
 
 [Go to top](#sections)
