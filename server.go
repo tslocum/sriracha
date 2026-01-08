@@ -1101,7 +1101,7 @@ func (s *Server) Run() error {
 	flag.Parse()
 
 	if printVersion {
-		fmt.Fprintf(os.Stderr, "Sriracha %s\n", SrirachaVersion)
+		fmt.Fprintf(os.Stderr, "Sriracha version %s\n", SrirachaVersion)
 		printInfo()
 		return nil
 	}
