@@ -11,29 +11,27 @@ services:
     container_name: sriracha
     restart: always
     user: 1000:1000
-    environment:
-      - USER_UID=1000
-      - USER_GID=1000
     networks:
       - sriracha
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - /home/sriracha/etc:/etc/sriracha # Configuration drectory containing config.yml
       - /home/sriracha/public:/public # Root directory containing board files.
     command: --config /etc/sriracha/config.yml /usr/share/sriracha/plugin # Load all plugins.
+
   sriracha_db:
     image: postgres:18.1-alpine # https://hub.docker.com/_/postgres/tags
     container_name: sriracha_db
     restart: always
     user: 70:70
-    environment:
-      - POSTGRES_USER=sriracha
-      - POSTGRES_PASSWORD=hunter42
-      - POSTGRES_DB=sriracha
     networks:
       - sriracha
     volumes:
       - /home/sriracha/db:/var/lib/postgresql/data # Database directory containing PostgreSQL data.
+    environment:
+      - POSTGRES_USER=sriracha
+      - POSTGRES_PASSWORD=hunter42
+      - POSTGRES_DB=sriracha
+
   httpd:
     image: caddy:2.10.2-alpine # https://hub.docker.com/_/caddy/tags
     container_name: httpd
@@ -49,7 +47,7 @@ services:
         published: 443
         mode: host
     volumes:
-      - /home/sriracha/public:/mnt/sriracha # Root directory containing board files.
       - /home/httpd/etc:/config/caddy # Caddy configuration directory containing Caddyfile.
+      - /home/sriracha/public:/mnt/sriracha # Root directory containing board files.
     command:
       caddy run --config=/config/caddy/Caddyfile
