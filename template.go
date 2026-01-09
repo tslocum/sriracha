@@ -57,6 +57,17 @@ type templateData struct {
 	Template  string
 }
 
+func (data *templateData) Style() string {
+	switch {
+	case data.Account != nil:
+		return data.Account.Style
+	case data.Board != nil:
+		return data.Board.Style
+	default:
+		return ""
+	}
+}
+
 func (data *templateData) BoardError(w http.ResponseWriter, message string) {
 	data.Template = "board_error"
 	data.Info = message
