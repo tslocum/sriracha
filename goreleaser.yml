@@ -6,6 +6,8 @@ builds:
     buildmode: plugin
     main: ./plugin/bbcode/
     binary: ./plugin/bbcode.so
+    flags:
+      - -trimpath
     ldflags:
       - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
     goos:
@@ -17,6 +19,8 @@ builds:
     buildmode: plugin
     main: ./plugin/fortune/
     binary: ./plugin/fortune.so
+    flags:
+      - -trimpath
     ldflags:
       - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
     goos:
@@ -28,6 +32,8 @@ builds:
     buildmode: plugin
     main: ./plugin/password/
     binary: ./plugin/password.so
+    flags:
+      - -trimpath
     ldflags:
       - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
     goos:
@@ -50,6 +56,8 @@ builds:
     buildmode: plugin
     main: ./plugin/statistics/
     binary: ./plugin/statistics.so
+    flags:
+      - -trimpath
     ldflags:
       - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
     goos:
@@ -61,6 +69,8 @@ builds:
     buildmode: plugin
     main: ./plugin/wordfilter/
     binary: ./plugin/wordfilter.so
+    flags:
+      - -trimpath
     ldflags:
       - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
     goos:
@@ -70,6 +80,8 @@ builds:
   -
     id: sriracha
     main: ./cmd/sriracha/
+    flags:
+      - -trimpath
     ldflags:
       - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
     goos:

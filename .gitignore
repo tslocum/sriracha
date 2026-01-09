@@ -1,3 +1,4 @@
-*.so
+__debug*
 cmd/sriracha/sriracha
 dist
+*.so

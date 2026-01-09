@@ -1,4 +1,5 @@
 .git
 .vscode
+**__debug**
 dist
-*.so
+**.so
