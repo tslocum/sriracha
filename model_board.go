@@ -26,6 +26,30 @@ func formatBoardType(t BoardType) string {
 	}
 }
 
+type BoardHide int
+
+const (
+	HideNowhere    BoardHide = 0
+	HideIndex      BoardHide = 1
+	HideOverboard  BoardHide = 2
+	HideEverywhere BoardHide = 3
+)
+
+func formatBoardHide(a BoardHide) string {
+	switch a {
+	case HideNowhere:
+		return "Show everywhere"
+	case HideIndex:
+		return "Hide from index"
+	case HideOverboard:
+		return "Hide from overboard"
+	case HideEverywhere:
+		return "Hide everywhere"
+	default:
+		return "Unknown"
+	}
+}
+
 type BoardLock int
 
 // Board lock types.
@@ -78,6 +102,7 @@ type Board struct {
 	Name          string
 	Description   string
 	Type          BoardType
+	Hide          BoardHide
 	Lock          BoardLock
 	Approval      BoardApproval
 	Reports       bool
@@ -152,6 +177,7 @@ func (b *Board) loadForm(r *http.Request, availableUploads []*uploadType, availa
 	b.Name = formString(r, "name")
 	b.Description = formString(r, "description")
 	b.Type = formRange(r, "type", TypeImageboard, TypeForum)
+	b.Hide = formRange(r, "hide", HideNowhere, HideEverywhere)
 	b.Lock = formRange(r, "lock", LockNone, LockStaff)
 	b.Approval = formRange(r, "approval", ApprovalNone, ApprovalAll)
 	b.Reports = formBool(r, "reports")

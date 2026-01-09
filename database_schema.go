@@ -58,6 +58,7 @@ CREATE TABLE board (
 	maxreplies smallint NOT NULL
 	-- v3: oekaki smallint NOT NULL DEFAULT 0
 	-- v4: rules text NOT NULL DEFAULT ''
+	-- v7: hide smallint NOT NULL DEFAULT 0
 );
 CREATE UNIQUE INDEX ON board (dir);
 
@@ -188,4 +189,7 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 	// Version 6.
 	`ALTER TABLE account ADD COLUMN locale varchar(64) NOT NULL default '';
 	UPDATE config SET value = '6' WHERE name = 'version';`,
+	// Version 7.
+	`ALTER TABLE board ADD COLUMN hide smallint NOT NULL DEFAULT 0;
+	UPDATE config SET value = '7' WHERE name = 'version';`,
 }

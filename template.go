@@ -55,6 +55,9 @@ type templateData struct {
 	Opt       *ServerOptions
 	Manage    *manageData
 	Template  string
+
+	// Calculated fields.
+	IndexBoards []*Board
 }
 
 func (data *templateData) Style() string {
@@ -94,6 +97,18 @@ func (data *templateData) execute(w io.Writer) {
 		return
 	}
 	data.Opt = &srirachaServer.opt
+
+	if data.Account != nil {
+		data.IndexBoards = data.Boards
+	} else {
+		data.IndexBoards = data.IndexBoards[:0]
+		for _, b := range data.Boards {
+			if b.Hide == HideIndex || b.Hide == HideEverywhere {
+				continue
+			}
+			data.IndexBoards = append(data.IndexBoards, b)
+		}
+	}
 
 	var boardTemplate bool
 	if strings.HasPrefix(data.Template, "board_") {

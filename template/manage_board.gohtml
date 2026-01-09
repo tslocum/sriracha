@@ -70,6 +70,16 @@
                 <td>Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages.</td>
             </tr>
             <tr>
+                <td class="postblock"><label for="hide">Visibility</label></td>
+                <td><select name="hide" style="width: 100%;">
+                    <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Hide 0)}} selected{{end}}>Show everywhere</option>
+                    <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Hide 1)}} selected{{end}}>Hide from index</option>
+                    <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Hide 2)}} selected{{end}}>Hide from overboard</option>
+                    <option value="3"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Hide 3)}} selected{{end}}>Hide everywhere</option>
+                </select></td>
+                <td>Whether the board is included in the navigation index and overboard.</td>
+            </tr>
+            <tr>
                 <td class="postblock"><label for="locale">Locale</label></td>
                 <td><select name="locale" style="width: 100%;">
                     <option value=""{{if and (ne .Manage.Board nil) (eq .Manage.Board.Locale "")}} selected{{end}}>Default ({{.Opt.DefaultLocaleName}})</option>

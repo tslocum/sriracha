@@ -24,14 +24,14 @@
 		{{end}}
     </head>
     <body>
-		{{if or (and (gt (len .Boards) 1) (or .Opt.BoardIndex .ModMode)) (eq .Template "news")}}
+		{{if or (and (gt (len .IndexBoards) 1) (or .Opt.BoardIndex .ModMode)) (eq .Template "news")}}
 			{{if ne .Opt.Overboard ""}}
 				[<a href="/{{if ne .Opt.Overboard "/"}}{{.Opt.Overboard}}/{{end}}" style="text-decoration: underline;">{{T "Overboard"}}</a>]
-				{{if gt (len .Boards) 0}}
+				{{if gt (len .IndexBoards) 0}}
 					&middot;
 				{{end}}
 			{{end}}
-			{{range $i, $board := .Boards}}
+			{{range $i, $board := .IndexBoards}}
 				{{if not $.ModMode}}
 					[<a href="{{.Path}}" title="{{.Name}}" style="text-decoration: underline;">{{if ne .Dir ""}}{{.Dir}}{{else}}{{if eq .Type 0}}Imageboard{{else}}Forum{{end}}{{end}}</a>]
 				{{else}}

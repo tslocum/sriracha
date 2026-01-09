@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"slices"
+	"strconv"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -58,11 +59,26 @@ func (db *Database) addPost(p *Post) {
 	}
 }
 
-// AllThreads returns all thread IDs and reply counts.
+// AllThreads returns all thread IDs and reply counts. When board is nil, only
+// threads belonging to boards included in the overboard are returned.
 func (db *Database) AllThreads(board *Board, moderated bool) [][2]int {
 	var boardWhere string
 	if board != nil {
 		boardWhere = fmt.Sprintf("post.board = %d AND ", board.ID)
+	} else {
+		var ids []byte
+		for _, b := range db.AllBoards() {
+			if b.Hide == HideOverboard || b.Hide == HideEverywhere {
+				continue
+			} else if ids != nil {
+				ids = append(ids, ',')
+			}
+			ids = append(ids, []byte(strconv.Itoa(b.ID))...)
+		}
+		if len(ids) == 0 {
+			return nil
+		}
+		boardWhere = fmt.Sprintf("post.board IN (%s) AND ", ids)
 	}
 	var extraJoin string
 	var extraWhere string

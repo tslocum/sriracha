@@ -1421,6 +1421,8 @@ func formatValue(v interface{}) interface{} {
 		return formatRole(role)
 	} else if t, ok := v.(BoardType); ok {
 		return formatBoardType(t)
+	} else if t, ok := v.(BoardHide); ok {
+		return formatBoardHide(t)
 	} else if t, ok := v.(BoardLock); ok {
 		return formatBoardLock(t)
 	} else if t, ok := v.(BoardApproval); ok {
