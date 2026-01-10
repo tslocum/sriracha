@@ -118,7 +118,7 @@ serve: "localhost:8080"
 # Client IP address header. Must be set when running behind a reverse proxy.
 # When running behind CloudFlare, use CF-Connecting-IP. When running without
 # a proxy, leave blank.
-header: "X-Forwarded-For"
+#header: "X-Forwarded-For"
 
 # Long random string of text used when one-way hashing data. Must not change once set.
 saltdata: "CHANGEME_Random_Data_Here_1"
@@ -148,7 +148,7 @@ dbname: "sriracha"
 
 # Custom template directory. Leave blank to use standard templates. Template
 # files in this directory will override standard templates of the same name.
-template: "/home/sriracha/template"
+#template: "/home/sriracha/template"
 
 # Supported upload file types. Specify a file extension and a MIME type to
 # enable uploading files of that type. You may specify an image to use as the
@@ -209,27 +209,29 @@ Sriracha only supports the [PostgreSQL](https://www.postgresql.org) database sys
 
 #### Account roles have different capabilities
 
-See [README.md](https://codeberg.org/tslocum/sriracha/src/branch/main/README.md)
-for more info on the capabilities of each role.
+See the administrator and moderator [guides](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#guides)
+for a list of role capabilities.
 
 #### Single auto-increment post ID
 
-Sriracha uses one auto-incrementing post ID for all boards. Because of this,
-migrating two more more boards will involve changing each post's ID. Reference
-links inside posts are updated, but external links to old res pages will break.
+Sriracha uses one auto-incrementing post ID for all boards. When only one board
+is migrated, post IDs will remain unchanged. Migrating more than one board will
+cause post IDs to be renumbered. Reference links inside post messages will be
+updated, but external links to old res pages will break.
 
 #### IP address and file hashes are incompatible
 
-Sriracha hashes IP addresses and files by generating a salted SHA384 checksum
-of the data. TinyIB hashes IP addresses and files using crypt. Because of this,
-bans are not imported, and posts will have their IP address field blanked. File
-hashes are recalculated and corrected during import.
+Sriracha hashes IP addresses and files by generating a salted [SHA384](https://en.wikipedia.org/wiki/SHA-2)
+checksum of the data. TinyIB hashes IP addresses and files using [crypt](https://www.php.net/manual/en/function.crypt.php).
+Because of this, bans are not imported, and posts will have their IP address
+field blanked. File hashes are recalculated and corrected during import.
 
 #### All keywords are regular expressions
 
-Sriracha keywords are always regular expressions. During migration, plain text
-keywords are escaped to allow them to be parsed as regular expressions. You may
-still need to update some keywords for them to continue to function.
+Sriracha keywords are always [regular expressions](https://en.wikipedia.org/wiki/Regular_expression).
+During migration, plain text keywords are escaped to allow them to be parsed as
+regular expressions. You may still need to update some keywords for them to
+continue to function.
 
 #### No backlinks
 
@@ -247,9 +249,10 @@ shared libraries, and these librarires would work with other installations of
 Sriracha because you did not make any modifications to Sriracha's source code,
 then you do not need to release the source code of your shared libraries.
 
-If you run an unmodified official release of this application, either by running
-an official release binary or by compiling Sriracha using only the unmodified
-source code of an official release, then you do not need to share any source code.
+If you run an unmodified official release [archive](https://codeberg.org/tslocum/sriracha/releases) or
+[image](https://hub.docker.com/r/tslocum/sriracha), or if you compile Sriracha
+using only the unmodified source code of an official release, then you do not
+need to share any source code.
 
 ### Instructions
 

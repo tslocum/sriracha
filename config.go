@@ -46,6 +46,7 @@ type Config struct {
 
 	Import ImportConfig // Board import configuration.
 
+	// Calculated fields.
 	cachedUploads  []*uploadType
 	importMode     bool
 	importComplete bool
