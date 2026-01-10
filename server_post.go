@@ -408,7 +408,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		var foundURL bool
 		post.Message = urlPattern.ReplaceAllStringFunc(post.Message, func(s string) string {
 			foundURL = true
-			match := urlPattern.FindStringSubmatch(post.Message)
+			match := urlPattern.FindStringSubmatch(s)
 			return fmt.Sprintf(`<a href="%s" target="_blank">%s</a>`, match[1], match[1])
 		})
 		if foundURL {
