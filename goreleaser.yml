@@ -45,6 +45,8 @@ builds:
     buildmode: plugin
     main: ./plugin/robot9000/
     binary: ./plugin/robot9000.so
+    flags:
+      - -trimpath
     ldflags:
       - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
     goos:
