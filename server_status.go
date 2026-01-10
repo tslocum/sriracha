@@ -38,6 +38,14 @@ func (s *Server) serveStatus(data *templateData, db *Database, w http.ResponseWr
 	buf := &bytes.Buffer{}
 	data.Template = "manage_status"
 
+	// Allow super-administrators to verify remote address resolution.
+	if r.URL.Query().Has("remoteAddress") {
+		if data.forbidden(w, RoleSuperAdmin) {
+			return
+		}
+		data.Info = "Remote address: " + requestIP(r)
+	}
+
 	reports := db.allReports()
 	for i, report := range reports {
 		if i > 0 {
