@@ -457,7 +457,7 @@ func (p *Post) setNameBlock(defaultName string, capcode string) {
 		out.WriteString(` <span style="color: ` + spanColor + `;">## ` + capcode + `</span>`)
 	}
 
-	out.WriteString(" " + p.TimestampLabel())
+	out.WriteString(" " + string(p.TimestampLabel()))
 
 	p.NameBlock = out.String()
 }
@@ -473,8 +473,8 @@ func (p *Post) FileSizeLabel() string {
 	return FormatFileSize(p.FileSize)
 }
 
-func (p *Post) TimestampLabel() string {
-	return FormatTimestamp(p.Timestamp)
+func (p *Post) TimestampLabel() template.HTML {
+	return template.HTML(FormatTimestamp(p.Timestamp))
 }
 
 func (p *Post) IsOekaki() bool {

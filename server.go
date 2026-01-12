@@ -1402,7 +1402,7 @@ func pathString(r *http.Request, prefix string) string {
 }
 
 func FormatTimestamp(timestamp int64) string {
-	return time.Unix(timestamp, 0).Format("2006/01/02(Mon)15:04:05")
+	return time.Unix(timestamp, 0).Format("2006/01/02<wbr>(Mon)<wbr>15:04:05")
 }
 
 func FormatFileSize(size int64) string {
