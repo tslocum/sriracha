@@ -3,7 +3,7 @@
 		{{range $i, $thread := .Threads}}
 			{{range $i, $post := $thread}}
 				<tr>
-					<td>[{{.Replies | PlusOne}}] {{.TimestampLabel}}<div  class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}No subject{{end}}</a></div></td>
+					<td style="vertical-align: middle;">{{.TimestampLabel}}</td><td style="vertical-align: middle;">{{.Replies | PlusOne}}</td><td><span  class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}No subject{{end}}</a></span></td></td>
 				</tr>
 			{{end}}
 		{{end}}
