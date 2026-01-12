@@ -1,9 +1,9 @@
-<table {{if eq .ReplyMode 0}} class="managetable"{{end}}>
+<table {{if eq .ReplyMode 0}} class="managetable forumindex"{{end}}>
 	{{if eq .ReplyMode 0}}
 		{{range $i, $thread := .Threads}}
 			{{range $i, $post := $thread}}
 				<tr>
-					<td style="vertical-align: middle;">{{.TimestampLabel}}</td><td style="vertical-align: middle;">{{.Replies | PlusOne}}</td><td><span  class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}No subject{{end}}</a></span></td></td>
+					<td>{{.TimestampLabel}}</td><td>{{.Replies | PlusOne}}</td><td><span class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}No subject{{end}}</a></span></td></td>
 				</tr>
 			{{end}}
 		{{end}}
