@@ -1,6 +1,7 @@
 1.1.7:
 - Add board setting for displaying backlinks
-- Allow rebuilding everything on startup via flag --rebuild
+- Add board settting for limiting number of attachment instances
+- Add flag --rebuild to allow rebuilding everything on startup
 - Require CAPTCHA when logging in to management panel
 
 1.1.6:

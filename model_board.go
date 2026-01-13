@@ -132,6 +132,7 @@ type Board struct {
 	MaxReplies    int
 	Oekaki        bool
 	Backlinks     bool
+	Instances     int
 
 	// Calculated fields.
 	Uploads []string
@@ -153,6 +154,7 @@ const (
 	defaultBoardMaxSize     = 2097152
 	defaultBoardThumbWidth  = 250
 	defaultBoardThumbHeight = 250
+	defaultBoardInstances   = 1
 )
 
 func newBoard() *Board {
@@ -170,6 +172,7 @@ func newBoard() *Board {
 		MaxSizeReply:  defaultBoardMaxSize,
 		ThumbWidth:    defaultBoardThumbWidth,
 		ThumbHeight:   defaultBoardThumbHeight,
+		Instances:     defaultBoardInstances,
 	}
 }
 
@@ -207,8 +210,9 @@ func (b *Board) loadForm(r *http.Request, availableUploads []*uploadType, availa
 	b.MaxThreads = formInt(r, "maxthreads")
 	b.MaxReplies = formInt(r, "maxreplies")
 	b.Oekaki = formBool(r, "oekaki")
-	b.Backlinks = formBool(r, "backlinks")
 	b.Rules = formMultiString(r, "rules")
+	b.Backlinks = formBool(r, "backlinks")
+	b.Instances = formNegInt(r, "instances")
 
 	if b.Locale != "" && !slices.Contains(srirachaServer.opt.LocalesSorted, b.Locale) {
 		b.Locale = ""

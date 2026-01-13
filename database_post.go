@@ -221,16 +221,30 @@ func (db *Database) PostByID(postID int) *Post {
 	return p
 }
 
-func (db *Database) PostByFileHash(hash string) *Post {
-	p := &Post{}
-	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT *, 0 as replies FROM post WHERE filehash = $1", hash))
-	if err == pgx.ErrNoRows {
-		return nil
-	} else if err != nil || p.ID == 0 {
+func (db *Database) PostsByFileHash(hash string, filterBoard *Board) []*Post {
+	var extra string
+	if filterBoard != nil {
+		extra = " AND board = " + strconv.Itoa(filterBoard.ID)
+	}
+	rows, err := db.conn.Query(context.Background(), "SELECT *, 0 as replies FROM post WHERE filehash = $1"+extra, hash)
+	if err != nil {
 		log.Fatalf("failed to select post: %s", err)
 	}
-	p.Board = db.BoardByID(boardID)
-	return p
+	var posts []*Post
+	var boardIDs []int
+	for rows.Next() {
+		p := &Post{}
+		boardID, err := scanPost(p, rows)
+		if err != nil {
+			log.Fatalf("failed to scan post: %s", err)
+		}
+		posts = append(posts, p)
+		boardIDs = append(boardIDs, boardID)
+	}
+	for i, p := range posts {
+		p.Board = db.BoardByID(boardIDs[i])
+	}
+	return posts
 }
 
 func (db *Database) PostByField(b *Board, field string, value any) *Post {

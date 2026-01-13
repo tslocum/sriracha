@@ -1419,6 +1419,14 @@ func formInt64(r *http.Request, key string) int64 {
 	return 0
 }
 
+func formNegInt(r *http.Request, key string) int {
+	v, err := strconv.Atoi(formString(r, key))
+	if err == nil {
+		return v
+	}
+	return 0
+}
+
 func formBool(r *http.Request, key string) bool {
 	return formInt(r, key) == 1
 }

@@ -60,6 +60,7 @@ CREATE TABLE board (
 	-- v4: rules text NOT NULL DEFAULT ''
 	-- v7: hide smallint NOT NULL DEFAULT 0
 	-- v8: backlinks smallint NOT NULL DEFAULT 0
+	-- v8: instances smallint NOT NULL DEFAULT 1
 );
 CREATE UNIQUE INDEX ON board (dir);
 
@@ -145,6 +146,7 @@ CREATE INDEX ON post (moderated);
 CREATE INDEX ON post (stickied);
 CREATE INDEX ON post (bumped);
 CREATE UNIQUE INDEX ON post (filehash);
+-- v8: CREATE INDEX ON post (filehash);
 
 CREATE TABLE report (
 	id serial PRIMARY KEY,
@@ -195,5 +197,8 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 	UPDATE config SET value = '7' WHERE name = 'version';`,
 	// Version 8.
 	`ALTER TABLE board ADD COLUMN backlinks smallint NOT NULL DEFAULT 0;
+	ALTER TABLE board ADD COLUMN instances smallint NOT NULL DEFAULT 1;
+	DROP INDEX post_filehash_idx;
+	CREATE INDEX ON post (filehash);
 	UPDATE config SET value = '8' WHERE name = 'version';`,
 }

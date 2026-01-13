@@ -258,9 +258,19 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 		}
 	}
 
-	if post.FileHash != "" {
-		existing := db.PostByFileHash(post.FileHash)
-		if existing != nil {
+	if post.FileHash != "" && post.Board.Instances != 0 {
+		var allowed int
+		var filterBoard *Board
+		if post.Board.Instances > 0 {
+			allowed = post.Board.Instances
+		} else {
+			allowed = -post.Board.Instances
+			filterBoard = post.Board
+		}
+		matches := db.PostsByFileHash(post.FileHash, filterBoard)
+		if len(matches) >= allowed {
+			existing := matches[0]
+
 			var postLink string
 			if existing.Moderated != ModeratedHidden {
 				postLink = fmt.Sprintf(` <a href="%sres/%d.html#%d">here</a>`, existing.Board.Path(), existing.Thread(), existing.ID)

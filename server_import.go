@@ -328,10 +328,6 @@ func (s *Server) serveImport(data *templateData, db *Database, w http.ResponseWr
 		if pp.Parent != 0 {
 			pp.Parent = newIDs[pp.Parent]
 		}
-		match := db.PostByFileHash(pp.FileHash)
-		if match != nil {
-			pp.FileHash = ""
-		}
 		if rewriteIDs {
 			db.addPost(pp)
 		} else {
