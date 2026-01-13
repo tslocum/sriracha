@@ -2,6 +2,7 @@ package sriracha
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"strings"
 	"time"
@@ -53,7 +54,7 @@ func (n *News) MayDelete(a *Account) bool {
 	return a.Role == RoleSuperAdmin || a.Role == RoleAdmin || n.MayUpdate(a)
 }
 
-func (n *News) DateLabel() string {
+func (n *News) DateLabel() template.HTML {
 	switch {
 	case n.Timestamp == 0:
 		return "Draft"

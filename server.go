@@ -1457,8 +1457,12 @@ func pathString(r *http.Request, prefix string) string {
 	return strings.TrimPrefix(r.URL.Path, prefix)
 }
 
-func FormatTimestamp(timestamp int64) string {
-	return time.Unix(timestamp, 0).Format("2006/01/02<wbr>(Mon)<wbr>15:04:05")
+func FormatTimestamp(timestamp int64) template.HTML {
+	return template.HTML(time.Unix(timestamp, 0).Format("2006/01/02<wbr>(Mon)<wbr>15:04:05"))
+}
+
+func FormatRawTimestamp(timestamp int64) string {
+	return time.Unix(timestamp, 0).Format("2006/01/02(Mon)15:04:05")
 }
 
 func FormatFileSize(size int64) string {

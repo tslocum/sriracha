@@ -474,7 +474,7 @@ func (p *Post) FileSizeLabel() string {
 }
 
 func (p *Post) TimestampLabel() template.HTML {
-	return template.HTML(FormatTimestamp(p.Timestamp))
+	return FormatTimestamp(p.Timestamp)
 }
 
 func (p *Post) IsOekaki() bool {
