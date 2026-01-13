@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"html/template"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -44,6 +45,29 @@ func (s *Server) serveStatus(data *templateData, db *Database, w http.ResponseWr
 			return
 		}
 		data.Info = "Remote address: " + requestIP(r)
+	}
+
+	// Allow super-administrators to rebuild post nameblocks.
+	if r.URL.Query().Has("rebuildNameblocks") {
+		if data.forbidden(w, RoleSuperAdmin) {
+			return
+		}
+		for _, b := range db.AllBoards() {
+			for _, threadInfo := range db.AllThreads(b, false) {
+				for _, p := range db.AllPostsInThread(threadInfo[0], false) {
+					var capcode string
+					if strings.Contains(p.NameBlock, `<span style="color: red`) {
+						capcode = "Mod"
+					} else if strings.Contains(p.NameBlock, `<span style="color: purple`) {
+						capcode = "Admin"
+					}
+					p.setNameBlock(p.Board.DefaultName, capcode)
+
+					db.updatePostNameblock(p.ID, p.NameBlock)
+				}
+			}
+		}
+		data.Info = "Rebuilt nameblocks"
 	}
 
 	reports := db.allReports()

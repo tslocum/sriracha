@@ -1,6 +1,6 @@
 1.1.7:
 - Add board setting for displaying backlinks
-- Add board settting for limiting number of attachment instances
+- Add board setting for limiting number of attachment instances
 - Add flag --rebuild to allow rebuilding everything on startup
 - Require CAPTCHA when logging in to management panel
 

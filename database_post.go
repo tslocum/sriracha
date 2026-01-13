@@ -318,6 +318,13 @@ func (db *Database) lockPost(postID int, lock bool) {
 	}
 }
 
+func (db *Database) updatePostNameblock(postID int, nameblock string) {
+	_, err := db.conn.Exec(context.Background(), "UPDATE post SET nameblock = $1 WHERE id = $2", nameblock, postID)
+	if err != nil {
+		log.Fatalf("failed to update post nameblock: %s", err)
+	}
+}
+
 func (db *Database) updatePostMessage(postID int, message string) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE post SET message = $1 WHERE id = $2", message, postID)
 	if err != nil {
