@@ -72,13 +72,13 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 				end = start + b.Threads
 			}
 			for _, threadInfo := range allThreads[start:end] {
+				thread := db.PostByID(threadInfo[0])
+				thread.Replies = threadInfo[1]
+				posts := []*Post{thread}
 				if b.Type == TypeImageboard {
-					data.Threads = append(data.Threads, db.AllPostsInThread(threadInfo[0], true))
-				} else {
-					thread := db.PostByID(threadInfo[0])
-					thread.Replies = threadInfo[1]
-					data.Threads = append(data.Threads, []*Post{thread})
+					posts = append(posts, db.AllReplies(threadInfo[0], b.Replies, true)...)
 				}
+				data.Threads = append(data.Threads, posts)
 			}
 		}
 		return false
