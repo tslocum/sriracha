@@ -1116,9 +1116,11 @@ func (s *Server) Run() error {
 		printInfo()
 	}
 	var configFile string
+	var rebuild bool
 	var devMode bool
 	var printVersion bool
 	flag.StringVar(&configFile, "config", "", "path to configuration file (default: ~/.config/sriracha/config.yml)")
+	flag.BoolVar(&rebuild, "rebuild", false, "rebuild everything on startup (only recommended when running for the first time after upgrading)")
 	flag.BoolVar(&devMode, "dev", false, "run in development mode (monitor template files and apply changes)")
 	flag.BoolVar(&printVersion, "version", false, "print version information and exit")
 	flag.Parse()
@@ -1243,6 +1245,29 @@ func (s *Server) Run() error {
 			os.Exit(0)
 		}
 	}()
+
+	if rebuild {
+		fmt.Println("Rebuilding news, overboard and all boards...")
+
+		conn, err := s.dbPool.Acquire(context.Background())
+		if err != nil {
+			return err
+		}
+
+		_, err = conn.Exec(context.Background(), "BEGIN")
+		if err != nil {
+			conn.Release()
+			return fmt.Errorf("failed to begin transaction: %s", err)
+		}
+
+		db := &Database{
+			conn: conn,
+		}
+		s.rebuildAll(db)
+		conn.Release()
+
+		fmt.Println("Finished rebuilding.")
+	}
 
 	return s.listen()
 }
