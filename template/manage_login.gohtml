@@ -6,7 +6,7 @@
         <div class="login">
             <input type="text" id="manage_username" name="username" placeholder="Username"><br>
             <input type="password" name="password" placeholder="Password"><br>
-            <input type="text" name="captcha" placeholder="CAPTCHA"><br>
+            <input type="text" name="captcha" placeholder="CAPTCHA" autocomplete="off"><br>
             <a href="#" onclick="javascript:document.getElementById('captchaimage').src = '/sriracha/captcha/captcha.png?new=' + new Date().getTime();"><img src="/sriracha/captcha/captcha.png" alt="CAPTCHA Challenge" title="{{T "Click to refresh."}}" id="captchaimage" width="225" height="40" border="0" style="vertical-align: middle;"></a><br>
             <input type="submit" value="Log In" class="managebutton" style="margin-top: 7px;">
             <script type="text/javascript">
