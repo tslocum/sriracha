@@ -53,6 +53,7 @@ type templateData struct {
 	ModMode   bool
 	Extra     string
 	Extra2    string
+	Extra3    string
 	Opt       *ServerOptions
 	Manage    *manageData
 	Template  string

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime"
 	"runtime/debug"
 	"sort"
 	"strings"
@@ -180,7 +181,13 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 	}
 	data.Template = "manage_setting"
 	data.Extra = SrirachaVersion
-	data.Extra2 = fmt.Sprintf("%s", time.Since(s.config.startTime).Round(time.Second))
+
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	data.Extra2 = FormatFileSize(int64(m.Sys))
+
+	data.Extra3 = fmt.Sprintf("%s", time.Since(s.config.startTime).Round(time.Second))
+
 	if SrirachaVersion != "DEV" {
 		return
 	}
