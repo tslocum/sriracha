@@ -52,6 +52,7 @@ type templateData struct {
 	ReplyMode int
 	ModMode   bool
 	Extra     string
+	Extra2    string
 	Opt       *ServerOptions
 	Manage    *manageData
 	Template  string

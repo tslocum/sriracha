@@ -1,6 +1,9 @@
 package sriracha
 
-import "strings"
+import (
+	"strings"
+	"time"
+)
 
 // ImportConfig represents a board import configuration.
 type ImportConfig struct {
@@ -50,6 +53,7 @@ type Config struct {
 	cachedUploads  []*uploadType
 	importMode     bool
 	importComplete bool
+	startTime      time.Time
 }
 
 func (c *Config) UploadTypes() []*uploadType {

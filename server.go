@@ -1143,6 +1143,8 @@ func (s *Server) Run() error {
 		return err
 	}
 
+	s.config.startTime = time.Now()
+
 	// Parse locale files.
 	err = fs.WalkDir(localeFS, "locale", func(p string, d fs.DirEntry, err error) error {
 		if err != nil {

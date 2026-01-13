@@ -1,12 +1,14 @@
 package sriracha
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
 	"runtime/debug"
 	"sort"
 	"strings"
+	"time"
 )
 
 func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseWriter, r *http.Request) {
@@ -178,6 +180,7 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 	}
 	data.Template = "manage_setting"
 	data.Extra = SrirachaVersion
+	data.Extra2 = fmt.Sprintf("%s", time.Since(s.config.startTime).Round(time.Second))
 	if SrirachaVersion != "DEV" {
 		return
 	}
