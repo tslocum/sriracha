@@ -179,7 +179,7 @@ legend {
 	padding: 5px;
 }
 
-.forumindex td {
+.forumindex td, .forumindex img {
 	vertical-align: middle;
 }
 

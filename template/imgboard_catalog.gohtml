@@ -1,27 +1,22 @@
 {{template "imgboard_begin.gohtml" .}}
 <div class="replymode">{{T "Catalog"}}</div>
-<div id="posts" style="margin-top: 5px;">
+<table class="managetable forumindex" style="margin-top: 5px;">
     {{range $i, $thread := .Threads}}
         {{range $i, $post := $thread}}
-            {{if eq .Parent 0}}
-                <div class="catalogpost" style="max-width: 250px;">
-                    <a href="{{.Board.Path}}res/{{.ID}}.html">
-                        {{if ne .File ""}}
-                            <img src="{{.Board.Path}}thumb/{{.Thumb}}" alt="1" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}" border="0">
-                        {{else}}
-                            No.{{.ID}}
-                        {{end}}
-                    </a><br>
-                    <b>{{.Replies}}</b><br>
-                    {{if ne .Subject ""}}
-                        {{.Subject}}
+            <tr style="height: 100px;">
+                <td>{{.TimestampLabel}}</td>
+                <td style="text-align: center;">
+                    {{if ne .Thumb ""}}
+                        <a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}"><img src="{{$post.Board.Path}}thumb/{{.Thumb}}" alt="{{.ID}}" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}" style="max-width: 100px;height: auto;"></a>
                     {{else}}
-                        {{.Message | HTML}}
+                        &mdash;
                     {{end}}
-                </div>
-            {{end}}
+                </td>
+                <td>{{.Replies | PlusOne}}</td>
+                <td><span class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}No subject{{end}}</a></span></td>
+            </tr>
         {{end}}
     {{end}}
-</div>
+</table>
 <hr>
 {{template "imgboard_end.gohtml" .}}
