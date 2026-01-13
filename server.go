@@ -520,6 +520,29 @@ func (s *Server) buildData(db *Database, w http.ResponseWriter, r *http.Request)
 			failedLogin = true
 			password := r.FormValue("password")
 			if len(password) != 0 {
+				// Verify CAPTCHA.
+				var solved bool
+				ipHash := hashIP(r)
+				challenge := db.getCAPTCHA(ipHash)
+				if challenge != nil {
+					solution := formString(r, "captcha")
+					if strings.ToLower(solution) == challenge.Text {
+						solved = true
+						db.deleteCAPTCHA(ipHash)
+						os.Remove(filepath.Join(s.config.Root, "captcha", challenge.Image+".png"))
+					}
+				}
+				if !solved {
+					return &templateData{
+						Info:     "Invalid CAPTCHA.",
+						Template: "manage_error",
+						Manage: &manageData{
+							Plugins: allPluginInfo,
+						},
+					}
+				}
+
+				// Verify username and password.
 				account := db.loginAccount(username, password)
 				if account != nil {
 					http.SetCookie(w, &http.Cookie{

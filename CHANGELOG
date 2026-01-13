@@ -1,3 +1,6 @@
+1.1.7:
+- Require CAPTCHA when logging in to management panel
+
 1.1.6:
 - Fix building Robot9000 plugin
 
