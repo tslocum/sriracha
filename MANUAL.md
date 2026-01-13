@@ -369,8 +369,16 @@ to `/rootdir/static`, replacing `/rootdir` with the server root directory.
 
 ### 5. Restart Sriracha
 
+Static HTML files (news, overboard, board indexes and threads) are not rebuilt
+automatically when upgrading. These files will be rebuilt incrementally as users
+interact with the site, which is typically best. However, any style or template
+changes will be deferred, which can result in an inconsistent appearance. To
+apply style and template changes immediately to all static HTML files, start
+Sriracha with the `--rebuild` flag when running for the first time after upgrading.
+You may also rebuild all static HTML files by clicking Update in the Settings page.
+
 Database upgrades are handled automatically, regardless of the number of releases
-between the old and new version. No extra commands need to be run when upgrading.
+between the old and new version. No extra queries need to be run when upgrading.
 
 Verify no error messages are printed when Sriracha starts. If you see the usual
 messages indicating Sriracha is running normally, the upgrade is complete.
