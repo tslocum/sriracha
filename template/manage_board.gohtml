@@ -99,6 +99,14 @@
                 <td>Default page style. Visitors may choose alternative styles in their browser settings.</td>
             </tr>
             <tr>
+                <td class="postblock"><label for="backlinks">Backlinks</label></td>
+                <td><select name="backlinks" style="width: 100%;">
+                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Backlinks)}} selected{{end}}>Disable</option>
+                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Backlinks)}} selected{{end}}>Enable</option>
+                </select></td>
+                <td>Whether reference links are displayed next to No.## pointing to all visible replies mentioning a post.</td>
+            </tr>
+            <tr>
                 <td class="postblock"><label for="truncate">Truncate</label></td>
                 <td><input type="text" name="truncate" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Truncate}}{{end}}"></td>
                 <td>Number of message lines to display in post preview on board index pages. Set to 0 to show all lines.</td>

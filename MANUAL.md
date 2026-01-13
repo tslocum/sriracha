@@ -233,11 +233,6 @@ During migration, plain text keywords are escaped to allow them to be parsed as
 regular expressions. You may still need to update some keywords for them to
 continue to function.
 
-#### No backlinks
-
-Backlinks are links to each post referencing another post, which are displayed
-alongside post IDs. Sriracha does not support displaying backlinks.
-
 #### Licensed under GNU LGPL
 
 Sriracha is licensed under [GNU LGPL](https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE).

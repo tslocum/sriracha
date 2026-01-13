@@ -131,6 +131,7 @@ type Board struct {
 	MaxThreads    int
 	MaxReplies    int
 	Oekaki        bool
+	Backlinks     bool
 
 	// Calculated fields.
 	Uploads []string
@@ -206,6 +207,7 @@ func (b *Board) loadForm(r *http.Request, availableUploads []*uploadType, availa
 	b.MaxThreads = formInt(r, "maxthreads")
 	b.MaxReplies = formInt(r, "maxreplies")
 	b.Oekaki = formBool(r, "oekaki")
+	b.Backlinks = formBool(r, "backlinks")
 	b.Rules = formMultiString(r, "rules")
 
 	if b.Locale != "" && !slices.Contains(srirachaServer.opt.LocalesSorted, b.Locale) {

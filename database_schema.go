@@ -59,6 +59,7 @@ CREATE TABLE board (
 	-- v3: oekaki smallint NOT NULL DEFAULT 0
 	-- v4: rules text NOT NULL DEFAULT ''
 	-- v7: hide smallint NOT NULL DEFAULT 0
+	-- v8: backlinks smallint NOT NULL DEFAULT 0
 );
 CREATE UNIQUE INDEX ON board (dir);
 
@@ -192,4 +193,7 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 	// Version 7.
 	`ALTER TABLE board ADD COLUMN hide smallint NOT NULL DEFAULT 0;
 	UPDATE config SET value = '7' WHERE name = 'version';`,
+	// Version 8.
+	`ALTER TABLE board ADD COLUMN backlinks smallint NOT NULL DEFAULT 0;
+	UPDATE config SET value = '8' WHERE name = 'version';`,
 }

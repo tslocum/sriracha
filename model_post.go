@@ -574,8 +574,34 @@ func (p *Post) ExpandHTML() template.HTML {
 	return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, srcPath, p.ID, srcPath, p.FileWidth, p.ThumbWidth, p.ThumbHeight)))
 }
 
+func (p *Post) Backlinks(posts []*Post) template.HTML {
+	if !p.Board.Backlinks {
+		return ""
+	}
+	var out []byte
+BACKLINKS:
+	for _, reply := range posts {
+		matches := reflinkPattern.FindAll([]byte(reply.Message), -1)
+		for _, match := range matches {
+			id, err := strconv.Atoi(string(match)[8:])
+			if err != nil || id != p.ID {
+				continue
+			} else if out != nil {
+				out = append(out, []byte("<wbr>")...)
+			}
+			out = append(out, formatRefLink(p.Board.Path(), p.Thread(), reply.ID)...)
+			continue BACKLINKS
+		}
+	}
+	return template.HTML(string(out))
+}
+
+func formatRefLink(boardPath string, threadID int, postID int) []byte {
+	return fmt.Appendf(nil, `<a href="%sres/%d.html#%d">&gt;&gt;%d</a>`, boardPath, threadID, postID, postID)
+}
+
 func (p *Post) RefLink() template.HTML {
-	return template.HTML(fmt.Sprintf(`<a href="%sres/%d.html#%d">&gt;&gt;%d</a>`, p.Board.Path(), p.Thread(), p.ID, p.ID))
+	return template.HTML(formatRefLink(p.Board.Path(), p.Thread(), p.ID))
 }
 
 func mimeToExt(mimeType string) string {

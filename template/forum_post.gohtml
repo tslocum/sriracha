@@ -31,6 +31,7 @@
 									<a href="/sriracha/mod/ban/{{.ID}}" title="{{T "Ban"}}">B</a>
 									<a href="/sriracha/mod/{{.ID}}" title="{{T "Delete & ban"}}">D&amp;B</a></b>
 								{{end}}
+								{{.Backlinks $thread}}
 							</span>
 						</label>
 						{{if ne .File ""}}

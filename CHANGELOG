@@ -1,4 +1,5 @@
 1.1.7:
+- Add board setting for displaying backlinks
 - Allow rebuilding everything on startup via flag --rebuild
 - Require CAPTCHA when logging in to management panel
 
