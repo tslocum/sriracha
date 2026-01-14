@@ -50,9 +50,7 @@ const (
 
 	configDebug            = "debug"
 	configDebugDescription = "Print connection info and events to console."
-)
 
-const (
 	nameShort = "sriracha"
 	nameFull  = "Sriracha Imageboard and Forum"
 
@@ -61,17 +59,14 @@ const (
 	portPlain  = "6667"
 	portSecure = "6697"
 
-	rebuildDelay = 5 * time.Second
+	quitDelay      = 2 * time.Second
+	rebuildDelay   = 5 * time.Second
+	reconnectDelay = 30 * time.Second
 )
 
 var help = template.HTML(`Channel format: <span style="border: 1px solid;padding: 3px;">#channel key</span>`)
 
 type IRC struct {
-	client *girc.Client
-
-	rebuild   chan struct{}
-	rebuildAt time.Time
-
 	secure   bool
 	address  string
 	password string
@@ -88,10 +83,15 @@ type IRC struct {
 
 	debug bool
 
+	client    *girc.Client
+	rebuild   chan struct{}
+	rebuildAt time.Time
+
 	started bool
 }
 
-func (i *IRC) connectBot() {
+// connect dials the server.
+func (i *IRC) connect() {
 	if i.debug {
 		var extra string
 		if !i.secure {
@@ -102,11 +102,12 @@ func (i *IRC) connectBot() {
 	err := i.client.Connect()
 	if err != nil {
 		log.Printf("Warning: IRC plugin failed to connect to server %s: %s", i.address, err)
-		go i.scheduleRebuild(30 * time.Second)
+		go i.scheduleRebuild(reconnectDelay)
 		return
 	}
 }
 
+// appendUnique parses channel names and keys from a slice of strings.
 func (i *IRC) appendUnique(channels []string, chs []string) []string {
 	for _, ch := range chs {
 		if ch == "" {
@@ -127,6 +128,7 @@ func (i *IRC) appendUnique(channels []string, chs []string) []string {
 	return channels
 }
 
+// joinChannels parses any channel keys from settings and then joins all channels.
 func (i *IRC) joinChannels() {
 	clear(i.keys)
 
@@ -145,11 +147,13 @@ func (i *IRC) joinChannels() {
 	}
 }
 
-func (i *IRC) rebuildBot() {
+// rebuildClient disconnects the existing client (when connected) then builds
+// and connects a new client.
+func (i *IRC) rebuildClient() {
 	// Disconnect existing client.
 	if i.client != nil {
 		i.client.Quit(nameFull)
-		time.Sleep(2 * time.Second)
+		time.Sleep(quitDelay)
 	}
 
 	if i.address == "" {
@@ -201,9 +205,10 @@ func (i *IRC) rebuildBot() {
 	})
 
 	// Connect client.
-	go i.connectBot()
+	go i.connect()
 }
 
+// handleRebuild handles requests to rebuild the client.
 func (i *IRC) handleRebuild() {
 	for {
 		<-i.rebuild
@@ -220,10 +225,11 @@ func (i *IRC) handleRebuild() {
 			}
 		}
 
-		i.rebuildBot()
+		i.rebuildClient()
 	}
 }
 
+// scheduleRebuild schedules the client to be rebuilt.
 func (i *IRC) scheduleRebuild(delay time.Duration) {
 	if delay == 0 {
 		delay = rebuildDelay
@@ -234,6 +240,15 @@ func (i *IRC) scheduleRebuild(delay time.Duration) {
 	}
 	i.rebuildAt = rebuildAt
 	i.rebuild <- struct{}{}
+}
+
+// postMessage formats a message referencing a post.
+func (i *IRC) postMessage(post *sriracha.Post, info string) string {
+	message := info + ": " + post.URL()
+	if post.Subject != "" {
+		message += " " + post.Subject
+	}
+	return message
 }
 
 func (i *IRC) About() string {
@@ -362,14 +377,6 @@ func (i *IRC) Update(db *sriracha.Database, key string) error {
 	}
 	go i.scheduleRebuild(0)
 	return nil
-}
-
-func (i *IRC) postMessage(post *sriracha.Post, info string) string {
-	message := info + ": " + post.URL()
-	if post.Subject != "" {
-		message += " " + post.Subject
-	}
-	return message
 }
 
 func (i *IRC) Create(db *sriracha.Database, post *sriracha.Post) error {
