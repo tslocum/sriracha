@@ -15,41 +15,32 @@ import (
 )
 
 const (
-	configSecure            = "secure"
-	configSecureDescription = "Enable SSL."
-
-	configAddress            = "address"
-	configAddressDescription = "Server address. (Hostname:Port)\nBlank to disable plugin."
-
+	configSecure              = "secure"
+	configSecureDescription   = "Enable SSL."
+	configAddress             = "address"
+	configAddressDescription  = "Server address. (Hostname:Port)\nBlank to disable plugin."
 	configPassword            = "password"
 	configPasswordDescription = "Server password."
-
-	configNick            = "nick"
-	configNickDescription = "Nickname."
-
-	configUser            = "user"
-	configUserDescription = "Username."
-
-	configName            = "name"
-	configNameDescription = "Full name."
-
-	configCreate            = "create"
-	configCreateDescription = "Channels to notify when a new post is created."
-
-	configApprove            = "approve"
-	configApproveDescription = "Channels to notify when a post requires approval."
-
-	configReport            = "report"
-	configReportDescription = "Channels to notify when a post is reported."
-
-	configMod            = "mod"
-	configModDescription = "Channels to notify when a moderator takes action."
-
-	configAdmin            = "admin"
-	configAdminDescription = "Channels to notify when an administrator takes action."
-
-	configDebug            = "debug"
-	configDebugDescription = "Print connection info and events to console."
+	configNick                = "nick"
+	configNickDescription     = "Nickname."
+	configUser                = "user"
+	configUserDescription     = "Username."
+	configName                = "name"
+	configNameDescription     = "Full name."
+	configCreate              = "create"
+	configCreateDescription   = "Channels to notify when a new post is created."
+	configApprove             = "approve"
+	configApproveDescription  = "Channels to notify when a post requires approval."
+	configReport              = "report"
+	configReportDescription   = "Channels to notify when a post is reported."
+	configMod                 = "mod"
+	configModDescription      = "Channels to notify when a moderator takes action."
+	configAdmin               = "admin"
+	configAdminDescription    = "Channels to notify when an administrator takes action."
+	configCommand             = "command"
+	configCommandDescription  = "Sent before joining channels."
+	configDebug               = "debug"
+	configDebugDescription    = "Print connection info and events to console."
 
 	nameShort = "sriracha"
 	nameFull  = "Sriracha Imageboard and Forum"
@@ -60,6 +51,7 @@ const (
 	portSecure = "6697"
 
 	quitDelay      = 2 * time.Second
+	commandDelay   = 2 * time.Second
 	rebuildDelay   = 5 * time.Second
 	reconnectDelay = 30 * time.Second
 )
@@ -81,7 +73,8 @@ type IRC struct {
 	admin   []string
 	keys    map[string]string
 
-	debug bool
+	command string
+	debug   bool
 
 	client    *girc.Client
 	rebuild   chan struct{}
@@ -201,6 +194,17 @@ func (i *IRC) rebuildClient() {
 
 	// Set handlers.
 	i.client.Handlers.Add(girc.CONNECTED, func(c *girc.Client, _ girc.Event) {
+		// Send user-defined commands.
+		for _, cmd := range strings.Split(i.command, "\n") {
+			cmd = strings.TrimPrefix(cmd, "/")
+			if cmd == "" {
+				continue
+			}
+			i.client.Cmd.SendRawNoSplit(cmd)
+			time.Sleep(commandDelay)
+		}
+
+		// Join channels.
 		i.joinChannels()
 	})
 
@@ -272,66 +276,59 @@ func (i *IRC) Config() []sriracha.PluginConfig {
 			Name:        configSecure,
 			Description: configSecureDescription,
 			Default:     "1",
-		},
-		{
+		}, {
 			Type:        sriracha.TypeString,
 			Name:        configAddress,
 			Description: configAddressDescription,
-		},
-		{
+		}, {
 			Type:        sriracha.TypeString,
 			Name:        configPassword,
 			Description: configPasswordDescription,
-		},
-		{
+		}, {
 			Type:        sriracha.TypeString,
 			Name:        configNick,
 			Description: configNickDescription,
 			Default:     nameShort,
-		},
-		{
+		}, {
 			Type:        sriracha.TypeString,
 			Name:        configUser,
 			Description: configUserDescription,
 			Default:     nameShort,
-		},
-		{
+		}, {
 			Type:        sriracha.TypeString,
 			Name:        configName,
 			Description: configNameDescription,
 			Default:     nameFull,
-		},
-		{
+		}, {
 			Type:        sriracha.TypeString,
 			Multiple:    true,
 			Name:        configCreate,
 			Description: configCreateDescription,
-		},
-		{
+		}, {
 			Type:        sriracha.TypeString,
 			Multiple:    true,
 			Name:        configApprove,
 			Description: configApproveDescription,
-		},
-		{
+		}, {
 			Type:        sriracha.TypeString,
 			Multiple:    true,
 			Name:        configReport,
 			Description: configReportDescription,
-		},
-		{
+		}, {
 			Type:        sriracha.TypeString,
 			Multiple:    true,
 			Name:        configMod,
 			Description: configModDescription,
-		},
-		{
+		}, {
 			Type:        sriracha.TypeString,
 			Multiple:    true,
 			Name:        configAdmin,
 			Description: configAdminDescription,
-		},
-		{
+		}, {
+			Type:        sriracha.TypeString,
+			Name:        configCommand,
+			Description: configCommandDescription,
+		}, {
 			Type:        sriracha.TypeBoolean,
 			Name:        configDebug,
 			Description: configDebugDescription,
@@ -372,6 +369,8 @@ func (i *IRC) Update(db *sriracha.Database, key string) error {
 		i.mod = db.GetMultiString(key)
 	case configAdmin:
 		i.admin = db.GetMultiString(key)
+	case configCommand:
+		i.command = db.GetString(key)
 	case configDebug:
 		i.debug = db.GetBool(key)
 	}
@@ -435,6 +434,10 @@ func (i *IRC) Audit(db *sriracha.Database, user string, action string, info stri
 		client.Cmd.Message(ch, message)
 	}
 	return nil
+}
+
+func Plugin() any {
+	return &IRC{}
 }
 
 func main() {}

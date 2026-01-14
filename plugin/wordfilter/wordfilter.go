@@ -11,8 +11,7 @@ import (
 )
 
 const (
-	configWordfilters = "wordfilters"
-
+	configWordfilters            = "wordfilters"
 	configWordfiltersDescription = `Line 1 of each wordfilter is the regular expression to search for.
 Line 2 is the replacement text. Capture groups may be referenced as $1, $2, etc.
 Line 3 is optional, and may be set to a list of board IDs separated by commas.

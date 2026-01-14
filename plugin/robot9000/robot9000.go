@@ -27,8 +27,7 @@ func (r *Robot9000) Config() []sriracha.PluginConfig {
 			Name:        configMessage,
 			Description: "Error message shown when a post is denied.",
 			Default:     "This board only allows unique posts to be created. Please enter a unique message and try again.",
-		},
-		{
+		}, {
 			Type:        sriracha.TypeBoard,
 			Multiple:    true,
 			Name:        configBoards,
