@@ -4,6 +4,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -96,6 +97,28 @@ func (i *IRC) connectBot() {
 	}
 }
 
+func (i *IRC) _appendChannels(channels []string, chs []string) []string {
+	for _, ch := range chs {
+		if ch == "" || slices.Contains(channels, ch) {
+			continue
+		}
+		channels = append(channels, ch)
+	}
+	return channels
+}
+
+func (i *IRC) joinChannels() {
+	// TODO Key support
+	channels := i._appendChannels(nil, i.create)
+	channels = i._appendChannels(channels, i.approve)
+	channels = i._appendChannels(channels, i.report)
+	channels = i._appendChannels(channels, i.mod)
+	channels = i._appendChannels(channels, i.admin)
+	for _, ch := range channels {
+		i.client.Cmd.Join(ch)
+	}
+}
+
 func (i *IRC) rebuildBot() {
 	// Disconnect existing client.
 	if i.client != nil {
@@ -148,14 +171,7 @@ func (i *IRC) rebuildBot() {
 
 	// Set handlers.
 	i.client.Handlers.Add(girc.CONNECTED, func(c *girc.Client, _ girc.Event) {
-		// Join channels.
-		// TODO Key support
-		for _, ch := range i.create {
-			if ch == "" {
-				continue
-			}
-			i.client.Cmd.Join(ch)
-		}
+		i.joinChannels()
 	})
 
 	// Connect client.
