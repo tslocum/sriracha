@@ -180,8 +180,8 @@ func (s *Server) parseConfig(configFile string) error {
 
 func (s *Server) loadPlugin(pluginPath string) error {
 	info, err := os.Stat(pluginPath)
-	if os.IsNotExist(err) {
-		return fmt.Errorf("failed to load plugin %s: file or directory not found", pluginPath)
+	if err != nil {
+		return fmt.Errorf("failed to load plugin %s: %s", pluginPath, err)
 	} else if info.IsDir() {
 		return filepath.WalkDir(pluginPath, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {

@@ -1,3 +1,6 @@
+1.1.8:
+- Add IRC plugin
+
 1.1.7:
 - Add board setting for displaying backlinks
 - Add board setting for limiting number of attachment instances

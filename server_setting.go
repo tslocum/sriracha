@@ -99,6 +99,9 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 
 		siteHome := formString(r, "sitehome")
 		if siteHome != "" {
+			if !strings.HasSuffix(siteHome, "/") {
+				siteHome += "/"
+			}
 			db.SaveString("sitehome", siteHome)
 			s.opt.SiteHome = siteHome
 		}

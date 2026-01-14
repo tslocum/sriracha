@@ -519,6 +519,18 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 
 	db.addPost(post)
 
+	postCopy = post.Copy()
+	for _, info := range allPluginCreateHandlers {
+		db.plugin = info.Name
+		err := info.Handler(db, postCopy)
+		if err != nil {
+			s.deletePostFiles(post)
+
+			log.Fatalf("plugin %s failed to process create event: %s", info.Name, err)
+		}
+	}
+	db.plugin = ""
+
 	if post.Moderated == ModeratedHidden {
 		data.Template = "board_info"
 		data.Info = gotext.Get("Your post will be shown once it has been approved.")

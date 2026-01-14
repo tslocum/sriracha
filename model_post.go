@@ -604,6 +604,23 @@ func (p *Post) RefLink() template.HTML {
 	return template.HTML(formatRefLink(p.Board.Path(), p.Thread(), p.ID))
 }
 
+func (p *Post) URL() template.HTML {
+	var host string
+	var path string
+	u, err := url.Parse(srirachaServer.opt.SiteHome)
+	if err == nil {
+		host = "https://" + u.Host
+		path = u.Path
+	}
+
+	path = filepath.Join(path, p.Board.Path())
+	if !strings.HasSuffix(path, "/") {
+		path += "/"
+	}
+
+	return template.HTML(fmt.Sprintf(`%s%sres/%d.html#%d`, host, path, p.Thread(), p.ID))
+}
+
 func mimeToExt(mimeType string) string {
 	switch mimeType {
 	case "image/jpeg", "image/pjpeg":

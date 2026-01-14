@@ -13,6 +13,7 @@ require (
 	github.com/gabriel-vasile/mimetype v1.4.12
 	github.com/jackc/pgx/v5 v5.8.0
 	github.com/leonelquinteros/gotext v1.7.2
+	github.com/lrstanley/girc v1.1.1
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/r3labs/diff/v3 v3.0.2
 	github.com/steambap/captcha v1.4.1

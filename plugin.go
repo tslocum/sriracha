@@ -116,6 +116,16 @@ type PluginWithInsert interface {
 	Insert(db *Database, post *Post) error
 }
 
+// PluginWithCreate describes the required methods for a plugin subscribing to create events.
+type PluginWithCreate interface {
+	Plugin
+
+	// Create events are sent when a new post is created and inserted into the
+	// database, after Post and Insert events have been processed. The post may
+	// not be modified during this event. Modify posts during a Post event instead.
+	Create(db *Database, post *Post) error
+}
+
 // PluginWithServe describes the required methods for a plugin with a web interface.
 type PluginWithServe interface {
 	Plugin
@@ -193,6 +203,12 @@ func RegisterPlugin(plugin any) {
 		allPluginInsertHandlers = append(allPluginInsertHandlers, insertHandlerInfo{strings.ToLower(name), pInsert.Insert})
 	}
 
+	pCreate, ok := plugin.(PluginWithCreate)
+	if ok {
+		events = append(events, "Create")
+		allPluginCreateHandlers = append(allPluginCreateHandlers, createHandlerInfo{strings.ToLower(name), pCreate.Create})
+	}
+
 	pServe, ok := plugin.(PluginWithServe)
 	if ok {
 		allPluginServeHandlers = append(allPluginServeHandlers, serveHandlerInfo{strings.ToLower(name), pServe.Serve})
@@ -232,6 +248,13 @@ type insertHandlerInfo struct {
 	Handler insertHandler
 }
 
+type createHandler func(db *Database, post *Post) error
+
+type createHandlerInfo struct {
+	Name    string
+	Handler insertHandler
+}
+
 type serveHandler func(db *Database, a *Account, w http.ResponseWriter, r *http.Request) (string, error)
 
 type serveHandlerInfo struct {
@@ -248,8 +271,11 @@ type pluginInfo struct {
 	Serve  serveHandler
 }
 
-var allPlugins []any
-var allPluginInfo []*pluginInfo
-var allPluginPostHandlers []postHandlerInfo
-var allPluginInsertHandlers []insertHandlerInfo
-var allPluginServeHandlers []serveHandlerInfo
+var (
+	allPlugins              []any
+	allPluginInfo           []*pluginInfo
+	allPluginPostHandlers   []postHandlerInfo
+	allPluginInsertHandlers []insertHandlerInfo
+	allPluginCreateHandlers []createHandlerInfo
+	allPluginServeHandlers  []serveHandlerInfo
+)

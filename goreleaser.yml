@@ -28,6 +28,19 @@ builds:
     goarch:
       - amd64
   -
+    id: irc
+    buildmode: plugin
+    main: ./plugin/irc/
+    binary: ./plugin/irc.so
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
+    goos:
+      - linux
+    goarch:
+      - amd64
+  -
     id: password
     buildmode: plugin
     main: ./plugin/password/
@@ -98,6 +111,7 @@ archives:
       - sriracha
       - bbcode
       - fortune
+      - irc
       - password
       - robot9000
       - statistics

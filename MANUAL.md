@@ -394,6 +394,7 @@ directory. Plugin API documentation is available via [godoc](https://pkg.go.dev/
 | -- | -- |
 | BBCode | Format BBCode in post messages. |
 | Fortune | Give your posters some good luck (or bad). |
+| IRC | Send server event notifications. |
 | Password | Require specific passwords to post. |
 | Robot9000 | Require post messages to be unique. |
 | Statistics | View statistics for each board. |
@@ -522,6 +523,20 @@ continue processing.
 type PluginWithInsert interface {
 	Plugin
 	Insert(db *Database, post *Post) error
+}
+```
+
+#### Create event
+
+Create events are sent when a new post is created and inserted into the database,
+after Post and Insert events have been processed. The post may not be modified
+during this event. Modify posts during a Post event instead.
+
+```go
+// PluginWithCreate describes the required methods for a plugin subscribing to create events.
+type PluginWithCreate interface {
+	Plugin
+	Create(db *Database, post *Post) error
 }
 ```
 
