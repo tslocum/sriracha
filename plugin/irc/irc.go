@@ -75,6 +75,7 @@ type IRC struct {
 	report  []string
 	mod     []string
 	admin   []string
+	keys    map[string]string
 
 	debug bool
 
@@ -97,25 +98,41 @@ func (i *IRC) connectBot() {
 	}
 }
 
-func (i *IRC) _appendChannels(channels []string, chs []string) []string {
+func (i *IRC) appendUnique(channels []string, chs []string) []string {
 	for _, ch := range chs {
-		if ch == "" || slices.Contains(channels, ch) {
+		if ch == "" {
 			continue
 		}
+		split := strings.SplitN(ch, " ", 2)
+		ch = split[0]
+		if slices.Contains(channels, ch) {
+			continue
+		}
+
 		channels = append(channels, ch)
+
+		if len(split) == 2 && split[1] != "" {
+			i.keys[ch] = split[1]
+		}
 	}
 	return channels
 }
 
 func (i *IRC) joinChannels() {
-	// TODO Key support
-	channels := i._appendChannels(nil, i.create)
-	channels = i._appendChannels(channels, i.approve)
-	channels = i._appendChannels(channels, i.report)
-	channels = i._appendChannels(channels, i.mod)
-	channels = i._appendChannels(channels, i.admin)
+	clear(i.keys)
+
+	channels := i.appendUnique(nil, i.create)
+	channels = i.appendUnique(channels, i.approve)
+	channels = i.appendUnique(channels, i.report)
+	channels = i.appendUnique(channels, i.mod)
+	channels = i.appendUnique(channels, i.admin)
 	for _, ch := range channels {
-		i.client.Cmd.Join(ch)
+		key := i.keys[ch]
+		if key == "" {
+			i.client.Cmd.Join(ch)
+		} else {
+			i.client.Cmd.JoinKey(ch, key)
+		}
 	}
 }
 
@@ -213,6 +230,7 @@ func (i *IRC) scheduleRebuild(delay time.Duration) {
 func (i *IRC) About() string {
 	if !i.started {
 		i.rebuild = make(chan struct{})
+		i.keys = make(map[string]string)
 		go i.handleRebuild()
 		i.started = true
 	}
