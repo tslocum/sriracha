@@ -72,6 +72,8 @@ type IRC struct {
 	create  []string
 	approve []string
 	report  []string
+	mod     []string
+	admin   []string
 
 	started bool
 }
@@ -287,6 +289,10 @@ func (i *IRC) Update(db *sriracha.Database, key string) error {
 		i.approve = db.GetMultiString(key)
 	case configReport:
 		i.report = db.GetMultiString(key)
+	case configMod:
+		i.mod = db.GetMultiString(key)
+	case configAdmin:
+		i.admin = db.GetMultiString(key)
 	}
 	go i.scheduleRebuild(0)
 	return nil
@@ -337,6 +343,27 @@ func (i *IRC) Report(db *sriracha.Database, post *sriracha.Post) error {
 	return nil
 }
 
+func (i *IRC) Audit(db *sriracha.Database, user string, action string, info string) error {
+	client := i.client
+	if client == nil {
+		return nil
+	}
+	message := strings.Title(user) + ": " + action
+	var channels []string
+	if user == "system" || user == "admin" {
+		channels = i.admin
+	} else {
+		channels = i.mod
+	}
+	for _, ch := range channels {
+		if ch == "" {
+			continue
+		}
+		client.Cmd.Message(ch, message)
+	}
+	return nil
+}
+
 func init() {
 	sriracha.RegisterPlugin(&IRC{})
 }
@@ -350,4 +377,5 @@ var (
 	_ sriracha.PluginWithUpdate = &IRC{}
 	_ sriracha.PluginWithCreate = &IRC{}
 	_ sriracha.PluginWithReport = &IRC{}
+	_ sriracha.PluginWithAudit  = &IRC{}
 )

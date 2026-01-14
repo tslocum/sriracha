@@ -57,16 +57,16 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 		switch {
 		case action == "s" && !data.Post.Stickied:
 			db.stickyPost(data.Post.ID, true)
-			db.log(data.Account, nil, fmt.Sprintf("Stickied >>/post/%d", data.Post.ID), "")
+			s.log(db, data.Account, nil, fmt.Sprintf("Stickied >>/post/%d", data.Post.ID), "")
 		case action == "us" && data.Post.Stickied:
 			db.stickyPost(data.Post.ID, false)
-			db.log(data.Account, nil, fmt.Sprintf("Unstickied >>/post/%d", data.Post.ID), "")
+			s.log(db, data.Account, nil, fmt.Sprintf("Unstickied >>/post/%d", data.Post.ID), "")
 		case action == "l" && !data.Post.Locked:
 			db.lockPost(data.Post.ID, true)
-			db.log(data.Account, nil, fmt.Sprintf("Locked >>/post/%d", data.Post.ID), "")
+			s.log(db, data.Account, nil, fmt.Sprintf("Locked >>/post/%d", data.Post.ID), "")
 		case action == "ul" && data.Post.Locked:
 			db.lockPost(data.Post.ID, false)
-			db.log(data.Account, nil, fmt.Sprintf("Unlocked >>/post/%d", data.Post.ID), "")
+			s.log(db, data.Account, nil, fmt.Sprintf("Unlocked >>/post/%d", data.Post.ID), "")
 		default:
 			skipRebuild = true
 		}
@@ -92,20 +92,20 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 				db.updateBan(data.Manage.Ban)
 
 				changes := printChanges(oldBan, *data.Manage.Ban)
-				db.log(data.Account, nil, fmt.Sprintf("Updated >>/ban/%d", data.Manage.Ban.ID), changes)
+				s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/ban/%d", data.Manage.Ban.ID), changes)
 			} else {
 				ban := &Ban{}
 				ban.loadForm(r)
 				ban.IP = data.Post.IP
 				db.addBan(ban)
 
-				db.log(data.Account, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info())
+				s.log(db, data.Account, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info())
 			}
 		}
 		if action == "d" || action == "db" {
 			s.deletePost(db, data.Post)
 
-			db.log(data.Account, data.Board, fmt.Sprintf("Deleted No.%d", data.Post.ID), "")
+			s.log(db, data.Account, data.Board, fmt.Sprintf("Deleted No.%d", data.Post.ID), "")
 
 			s.rebuildThread(db, data.Post)
 		}

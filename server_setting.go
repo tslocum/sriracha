@@ -67,7 +67,7 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 
 		changes := printChanges(oldOpt, s.opt)
 		if changes != "" {
-			db.log(data.Account, nil, "Reset settings", changes)
+			s.log(db, data.Account, nil, "Reset settings", changes)
 		}
 
 		for _, b := range db.AllBoards() {
@@ -177,7 +177,7 @@ func (s *Server) serveSetting(data *templateData, db *Database, w http.ResponseW
 
 		changes := printChanges(oldOpt, s.opt)
 		if changes != "" {
-			db.log(data.Account, nil, "Updated settings", changes)
+			s.log(db, data.Account, nil, "Updated settings", changes)
 		}
 
 		s.rebuildAll(db)

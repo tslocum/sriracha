@@ -552,6 +552,19 @@ type PluginWithReport interface {
 }
 ```
 
+#### Audit event
+
+Audit events are sent when a new message is added to the audit log.
+Based on the source of the event, user is "system", "admin" or "mod".
+
+```go
+// PluginWithAudit describes the required methods for a plugin subscribing to audit events.
+type PluginWithAudit interface {
+	Plugin
+	Audit(db *Database, user string, action string, info string) error
+}
+```
+
 #### Serve event
 
 Serve handles plugin web requests. Only administrators and super-administrators

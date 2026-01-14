@@ -134,6 +134,15 @@ type PluginWithReport interface {
 	Report(db *Database, post *Post) error
 }
 
+// PluginWithAudit describes the required methods for a plugin subscribing to audit events.
+type PluginWithAudit interface {
+	Plugin
+
+	// Audit events are sent when a new message is added to the audit log.
+	// Based on the source of the event, user is "system", "admin" or "mod".
+	Audit(db *Database, user string, action string, info string) error
+}
+
 // PluginWithServe describes the required methods for a plugin with a web interface.
 type PluginWithServe interface {
 	Plugin
@@ -147,8 +156,7 @@ type PluginWithServe interface {
 
 // RegisterPlugin registers a Sriracha plugin to receive any subscribed events.
 // Plugins must call this function in init(). See [PluginWithConfig],
-// [PluginWithUpdate], [PluginWithPost], [PluginWithInsert] and
-// [PluginWithServe].
+// [PluginWithUpdate], [PluginWithInsert], etc. for available events.
 func RegisterPlugin(plugin any) {
 	if srirachaServer == nil {
 		panic("Sriracha server not yet started")
@@ -219,7 +227,13 @@ func RegisterPlugin(plugin any) {
 		allPluginReportHandlers = append(allPluginReportHandlers, reportHandlerInfo{strings.ToLower(info.Name), pReport.Report})
 	}
 
+	if pAudit, ok := plugin.(PluginWithAudit); ok {
+		info.Events = append(info.Events, "Audit")
+		allPluginAuditHandlers = append(allPluginAuditHandlers, auditHandlerInfo{strings.ToLower(info.Name), pAudit.Audit})
+	}
+
 	if pServe, ok := plugin.(PluginWithServe); ok {
+		info.Events = append(info.Events, "Serve")
 		info.Serve = pServe.Serve
 		allPluginServeHandlers = append(allPluginServeHandlers, serveHandlerInfo{strings.ToLower(info.Name), pServe.Serve})
 	}
@@ -262,6 +276,13 @@ type reportHandlerInfo struct {
 	Handler reportHandler
 }
 
+type auditHandler func(db *Database, user string, action string, info string) error
+
+type auditHandlerInfo struct {
+	Name    string
+	Handler auditHandler
+}
+
 type serveHandler func(db *Database, a *Account, w http.ResponseWriter, r *http.Request) (string, error)
 
 type serveHandlerInfo struct {
@@ -285,5 +306,6 @@ var (
 	allPluginInsertHandlers []insertHandlerInfo
 	allPluginCreateHandlers []createHandlerInfo
 	allPluginReportHandlers []reportHandlerInfo
+	allPluginAuditHandlers  []auditHandlerInfo
 	allPluginServeHandlers  []serveHandlerInfo
 )

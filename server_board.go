@@ -137,7 +137,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			}
 		}
 
-		db.log(data.Account, nil, fmt.Sprintf("Deleted >>/board/%d", b.ID), "")
+		s.log(db, data.Account, nil, fmt.Sprintf("Deleted >>/board/%d", b.ID), "")
 
 		data.Template = "manage_info"
 		http.Redirect(w, r, "/sriracha/board/", http.StatusFound)
@@ -252,7 +252,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 			s.rebuildBoard(db, data.Manage.Board)
 
 			changes := printChanges(oldBoard, *data.Manage.Board)
-			db.log(data.Account, nil, fmt.Sprintf("Updated >>/board/%d", data.Manage.Board.ID), changes)
+			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/board/%d", data.Manage.Board.ID), changes)
 
 			http.Redirect(w, r, "/sriracha/board/", http.StatusFound)
 			return true
@@ -294,7 +294,7 @@ func (s *Server) serveBoard(data *templateData, db *Database, w http.ResponseWri
 
 		s.rebuildBoard(db, b)
 
-		db.log(data.Account, nil, fmt.Sprintf("Added >>/board/%d", b.ID), "")
+		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/board/%d", b.ID), "")
 
 		http.Redirect(w, r, "/sriracha/board/", http.StatusFound)
 		return true

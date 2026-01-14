@@ -362,7 +362,7 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 						}
 						db.addBan(ban)
 
-						db.log(nil, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info()+fmt.Sprintf(" Detected >>/keyword/%d", keyword.ID))
+						s.log(db, nil, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info()+fmt.Sprintf(" Detected >>/keyword/%d", keyword.ID))
 					}
 				}
 

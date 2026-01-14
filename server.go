@@ -473,6 +473,32 @@ func (s *Server) watchTemplates() error {
 	return err
 }
 
+func (s *Server) log(db *Database, account *Account, board *Board, action string, info string) {
+	user := "system"
+	if account != nil && account.ID != 0 {
+		if account.Role == RoleSuperAdmin || account.Role == RoleAdmin {
+			user = "admin"
+		} else {
+			user = "mod"
+		}
+	}
+	for _, handlerInfo := range allPluginAuditHandlers {
+		db.plugin = handlerInfo.Name
+		err := handlerInfo.Handler(db, user, action, info)
+		if err != nil {
+			log.Fatalf("plugin %s failed to process audit event: %s", handlerInfo.Name, err)
+		}
+	}
+	db.plugin = ""
+
+	db.addLog(&Log{
+		Account: account,
+		Board:   board,
+		Message: action,
+		Changes: info,
+	})
+}
+
 func (s *Server) deletePostFiles(p *Post) {
 	if p.Board == nil {
 		return

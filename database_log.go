@@ -33,15 +33,6 @@ func (db *Database) addLog(l *Log) {
 	}
 }
 
-func (db *Database) log(account *Account, board *Board, message string, changes string) {
-	db.addLog(&Log{
-		Account: account,
-		Board:   board,
-		Message: message,
-		Changes: changes,
-	})
-}
-
 func (db *Database) logCount() int {
 	var count int
 	err := db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM log").Scan(&count)
