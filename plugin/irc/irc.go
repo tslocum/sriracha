@@ -1,6 +1,7 @@
 package main
 
 import (
+	"html/template"
 	"log"
 	"net"
 	"os"
@@ -52,10 +53,18 @@ const (
 )
 
 const (
+	nameShort = "sriracha"
+	nameFull  = "Sriracha Imageboard and Forum"
+
+	about = "Send server event notifications."
+
+	portPlain  = "6667"
+	portSecure = "6697"
+
 	rebuildDelay = 5 * time.Second
-	nameShort    = "sriracha"
-	nameFull     = "Sriracha Imageboard and Forum"
 )
+
+var help = template.HTML(`Channel format: <span style="border: 1px solid;padding: 3px;">#channel key</span>`)
 
 type IRC struct {
 	client *girc.Client
@@ -153,9 +162,9 @@ func (i *IRC) rebuildBot() {
 		if strings.Contains(err.Error(), "missing port in address") {
 			hostname = i.address
 			if i.secure {
-				port = "6697"
+				port = portSecure
 			} else {
-				port = "6667"
+				port = portPlain
 			}
 		} else {
 			log.Printf("Warning: IRC plugin failed to parse server address %s: %s", i.address, err)
@@ -234,7 +243,11 @@ func (i *IRC) About() string {
 		go i.handleRebuild()
 		i.started = true
 	}
-	return "Send server event notifications."
+	return about
+}
+
+func (i *IRC) Help() template.HTML {
+	return help
 }
 
 func (i *IRC) Config() []sriracha.PluginConfig {
@@ -426,6 +439,7 @@ func main() {}
 // Validate plugin interfaces during compilation.
 var (
 	_ sriracha.Plugin           = &IRC{}
+	_ sriracha.PluginWithHelp   = &IRC{}
 	_ sriracha.PluginWithConfig = &IRC{}
 	_ sriracha.PluginWithUpdate = &IRC{}
 	_ sriracha.PluginWithCreate = &IRC{}

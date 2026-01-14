@@ -2,6 +2,7 @@ package sriracha
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"reflect"
@@ -76,6 +77,12 @@ func (c PluginConfig) HaveInt(i int) bool {
 type Plugin interface {
 	// About returns the plugin description.
 	About() string
+}
+
+// PluginWithHelp describes the required methods for a plugin with help text.
+type PluginWithHelp interface {
+	// Help returns the text displayed above the available configuration options.
+	Help() template.HTML
 }
 
 // PluginWithConfig describes the required methods for a plugin with configuration options.
@@ -176,6 +183,10 @@ func RegisterPlugin(plugin any) {
 		info.About = pAbout.About()
 	} else {
 		log.Fatalf("%s does not implement required methods", info.Name)
+	}
+
+	if pHelp, ok := plugin.(PluginWithHelp); ok {
+		info.Help = pHelp.Help()
 	}
 
 	if pConfig, ok := plugin.(PluginWithConfig); ok {
@@ -294,6 +305,7 @@ type pluginInfo struct {
 	ID     int
 	Name   string
 	About  string
+	Help   template.HTML
 	Config []PluginConfig
 	Events []string
 	Serve  serveHandler

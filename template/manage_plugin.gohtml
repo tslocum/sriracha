@@ -5,6 +5,9 @@
     <form method="post">
         <fieldset>
         <legend>Configure {{.Manage.Plugin.Name}}</legend>
+        {{if ne .Manage.Plugin.Help ""}}
+            <div style="margin-bottom: 5px;">{{.Manage.Plugin.Help}}</div>
+        {{end}}
         {{if eq (len .Manage.Plugin.Config) 0}}
             No configuration options.
         {{else}}
