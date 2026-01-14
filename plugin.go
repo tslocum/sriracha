@@ -126,6 +126,14 @@ type PluginWithCreate interface {
 	Create(db *Database, post *Post) error
 }
 
+// PluginWithReport describes the required methods for a plugin subscribing to report events.
+type PluginWithReport interface {
+	Plugin
+
+	// Report events are sent when a post is reported.
+	Report(db *Database, post *Post) error
+}
+
 // PluginWithServe describes the required methods for a plugin with a web interface.
 type PluginWithServe interface {
 	Plugin
@@ -146,29 +154,24 @@ func RegisterPlugin(plugin any) {
 		panic("Sriracha server not yet started")
 	}
 
+	info := &pluginInfo{
+		ID: len(allPlugins) + 1,
+	}
+
 	v := reflect.ValueOf(plugin)
 	if v.Kind() == reflect.Interface || v.Kind() == reflect.Pointer {
 		v = v.Elem()
 	}
-	name := v.Type().Name()
+	info.Name = v.Type().Name()
 
-	pAbout, ok := plugin.(Plugin)
-	if !ok {
-		log.Fatalf("%s does not implement required methods", name)
-	}
-	about := pAbout.About()
-
-	var events []string
-	var config []PluginConfig
-
-	_, ok = plugin.(PluginWithUpdate)
-	if ok {
-		events = append(events, "Update")
+	if pAbout, ok := plugin.(Plugin); ok {
+		info.About = pAbout.About()
+	} else {
+		log.Fatalf("%s does not implement required methods", info.Name)
 	}
 
-	pConfig, ok := plugin.(PluginWithConfig)
-	if ok {
-		config = pConfig.Config()
+	if pConfig, ok := plugin.(PluginWithConfig); ok {
+		config := pConfig.Config()
 		for i := range config {
 			err := config[i].validate()
 			if err != nil {
@@ -178,7 +181,7 @@ func RegisterPlugin(plugin any) {
 				} else {
 					optionName = fmt.Sprintf(`"%s"`, optionName)
 				}
-				log.Fatalf("%s configuration option %s is invalid: %s", name, optionName, err)
+				log.Fatalf("%s configuration option %s is invalid: %s", info.Name, optionName, err)
 			} else if config[i].Type == TypeBoolean && config[i].Default == "" {
 				config[i].Default = "0"
 			}
@@ -189,47 +192,44 @@ func RegisterPlugin(plugin any) {
 				config[i].Value = config[i].Default
 			}
 		}
+		info.Config = config
 	}
 
-	pPost, ok := plugin.(PluginWithPost)
-	if ok {
-		events = append(events, "Post")
-		allPluginPostHandlers = append(allPluginPostHandlers, postHandlerInfo{strings.ToLower(name), pPost.Post})
+	if _, ok := plugin.(PluginWithUpdate); ok {
+		info.Events = append(info.Events, "Update")
 	}
 
-	pInsert, ok := plugin.(PluginWithInsert)
-	if ok {
-		events = append(events, "Insert")
-		allPluginInsertHandlers = append(allPluginInsertHandlers, insertHandlerInfo{strings.ToLower(name), pInsert.Insert})
+	if pPost, ok := plugin.(PluginWithPost); ok {
+		info.Events = append(info.Events, "Post")
+		allPluginPostHandlers = append(allPluginPostHandlers, postHandlerInfo{strings.ToLower(info.Name), pPost.Post})
 	}
 
-	pCreate, ok := plugin.(PluginWithCreate)
-	if ok {
-		events = append(events, "Create")
-		allPluginCreateHandlers = append(allPluginCreateHandlers, createHandlerInfo{strings.ToLower(name), pCreate.Create})
+	if pInsert, ok := plugin.(PluginWithInsert); ok {
+		info.Events = append(info.Events, "Insert")
+		allPluginInsertHandlers = append(allPluginInsertHandlers, insertHandlerInfo{strings.ToLower(info.Name), pInsert.Insert})
 	}
 
-	pServe, ok := plugin.(PluginWithServe)
-	if ok {
-		allPluginServeHandlers = append(allPluginServeHandlers, serveHandlerInfo{strings.ToLower(name), pServe.Serve})
+	if pCreate, ok := plugin.(PluginWithCreate); ok {
+		info.Events = append(info.Events, "Create")
+		allPluginCreateHandlers = append(allPluginCreateHandlers, createHandlerInfo{strings.ToLower(info.Name), pCreate.Create})
 	}
 
-	if len(events) == 0 {
-		events = append(events, "None")
+	if pReport, ok := plugin.(PluginWithReport); ok {
+		info.Events = append(info.Events, "Report")
+		allPluginReportHandlers = append(allPluginReportHandlers, reportHandlerInfo{strings.ToLower(info.Name), pReport.Report})
 	}
 
-	fmt.Printf("%s loaded. Events: %s\n", name, strings.Join(events, ", "))
-
-	info := &pluginInfo{
-		ID:     len(allPlugins) + 1,
-		Name:   name,
-		About:  about,
-		Config: config,
-		Events: events,
-	}
-	if pServe != nil {
+	if pServe, ok := plugin.(PluginWithServe); ok {
 		info.Serve = pServe.Serve
+		allPluginServeHandlers = append(allPluginServeHandlers, serveHandlerInfo{strings.ToLower(info.Name), pServe.Serve})
 	}
+
+	if len(info.Events) == 0 {
+		info.Events = append(info.Events, "None")
+	}
+
+	fmt.Printf("%s loaded. Events: %s\n", info.Name, strings.Join(info.Events, ", "))
+
 	allPlugins = append(allPlugins, plugin)
 	allPluginInfo = append(allPluginInfo, info)
 }
@@ -252,7 +252,14 @@ type createHandler func(db *Database, post *Post) error
 
 type createHandlerInfo struct {
 	Name    string
-	Handler insertHandler
+	Handler createHandler
+}
+
+type reportHandler func(db *Database, post *Post) error
+
+type reportHandlerInfo struct {
+	Name    string
+	Handler reportHandler
 }
 
 type serveHandler func(db *Database, a *Account, w http.ResponseWriter, r *http.Request) (string, error)
@@ -277,5 +284,6 @@ var (
 	allPluginPostHandlers   []postHandlerInfo
 	allPluginInsertHandlers []insertHandlerInfo
 	allPluginCreateHandlers []createHandlerInfo
+	allPluginReportHandlers []reportHandlerInfo
 	allPluginServeHandlers  []serveHandlerInfo
 )

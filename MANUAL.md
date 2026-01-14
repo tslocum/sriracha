@@ -540,6 +540,18 @@ type PluginWithCreate interface {
 }
 ```
 
+#### Report event
+
+Report events are sent when a post is reported.
+
+```go
+// PluginWithReport describes the required methods for a plugin subscribing to report events.
+type PluginWithReport interface {
+	Plugin
+	Report(db *Database, post *Post) error
+}
+```
+
 #### Serve event
 
 Serve handles plugin web requests. Only administrators and super-administrators

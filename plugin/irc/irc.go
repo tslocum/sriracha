@@ -51,7 +51,7 @@ const (
 )
 
 const (
-	rebuildDelay = 2 * time.Second
+	rebuildDelay = 5 * time.Second
 	nameShort    = "sriracha"
 	nameFull     = "Sriracha Imageboard and Forum"
 )
@@ -71,6 +71,7 @@ type IRC struct {
 
 	create  []string
 	approve []string
+	report  []string
 
 	started bool
 }
@@ -284,6 +285,8 @@ func (i *IRC) Update(db *sriracha.Database, key string) error {
 		i.create = db.GetMultiString(key)
 	case configApprove:
 		i.approve = db.GetMultiString(key)
+	case configReport:
+		i.report = db.GetMultiString(key)
 	}
 	go i.scheduleRebuild(0)
 	return nil
@@ -320,6 +323,20 @@ func (i *IRC) Create(db *sriracha.Database, post *sriracha.Post) error {
 	return nil
 }
 
+func (i *IRC) Report(db *sriracha.Database, post *sriracha.Post) error {
+	client := i.client
+	if client == nil {
+		return nil
+	}
+	for _, ch := range i.report {
+		if ch == "" {
+			continue
+		}
+		client.Cmd.Message(ch, i.postMessage(post, "Post reported"))
+	}
+	return nil
+}
+
 func init() {
 	sriracha.RegisterPlugin(&IRC{})
 }
@@ -332,4 +349,5 @@ var (
 	_ sriracha.PluginWithConfig = &IRC{}
 	_ sriracha.PluginWithUpdate = &IRC{}
 	_ sriracha.PluginWithCreate = &IRC{}
+	_ sriracha.PluginWithReport = &IRC{}
 )
