@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net"
 	"os"
@@ -70,7 +69,8 @@ type IRC struct {
 	user     string
 	name     string
 
-	create []string
+	create  []string
+	approve []string
 
 	started bool
 }
@@ -79,8 +79,7 @@ func (i *IRC) connectBot() {
 	err := i.client.Connect()
 	if err != nil {
 		log.Printf("Warning: IRC plugin failed to connect to server %s: %s", i.address, err)
-		i.scheduleRebuild()
-		i.rebuildAt = time.Now().Add(30 * time.Second)
+		go i.scheduleRebuild(30 * time.Second)
 		return
 	}
 }
@@ -168,8 +167,11 @@ func (i *IRC) handleRebuild() {
 	}
 }
 
-func (i *IRC) scheduleRebuild() {
-	rebuildAt := time.Now().Add(rebuildDelay)
+func (i *IRC) scheduleRebuild(delay time.Duration) {
+	if delay == 0 {
+		delay = rebuildDelay
+	}
+	rebuildAt := time.Now().Add(delay)
 	if i.rebuildAt.After(rebuildAt) {
 		return
 	}
@@ -280,9 +282,19 @@ func (i *IRC) Update(db *sriracha.Database, key string) error {
 		}
 	case configCreate:
 		i.create = db.GetMultiString(key)
+	case configApprove:
+		i.approve = db.GetMultiString(key)
 	}
-	go i.scheduleRebuild()
+	go i.scheduleRebuild(0)
 	return nil
+}
+
+func (i *IRC) postMessage(post *sriracha.Post, info string) string {
+	message := info + ": " + post.URL()
+	if post.Subject != "" {
+		message += " " + post.Subject
+	}
+	return message
 }
 
 func (i *IRC) Create(db *sriracha.Database, post *sriracha.Post) error {
@@ -290,15 +302,20 @@ func (i *IRC) Create(db *sriracha.Database, post *sriracha.Post) error {
 	if client == nil {
 		return nil
 	}
-	for _, ch := range i.create {
-		if ch == "" {
-			continue
+	if post.Moderated == sriracha.ModeratedHidden {
+		for _, ch := range i.approve {
+			if ch == "" {
+				continue
+			}
+			client.Cmd.Message(ch, i.postMessage(post, "Post pending"))
 		}
-		message := fmt.Sprintf("Post created: %s", post.URL())
-		if post.Subject != "" {
-			message += " " + post.Subject
+	} else {
+		for _, ch := range i.create {
+			if ch == "" {
+				continue
+			}
+			client.Cmd.Message(ch, i.postMessage(post, "Post created"))
 		}
-		client.Cmd.Message(ch, message)
 	}
 	return nil
 }

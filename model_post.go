@@ -604,7 +604,7 @@ func (p *Post) RefLink() template.HTML {
 	return template.HTML(formatRefLink(p.Board.Path(), p.Thread(), p.ID))
 }
 
-func (p *Post) URL() template.HTML {
+func (p *Post) URL() string {
 	var host string
 	var path string
 	u, err := url.Parse(srirachaServer.opt.SiteHome)
@@ -618,7 +618,7 @@ func (p *Post) URL() template.HTML {
 		path += "/"
 	}
 
-	return template.HTML(fmt.Sprintf(`%s%sres/%d.html#%d`, host, path, p.Thread(), p.ID))
+	return fmt.Sprintf(`%s%sres/%d.html#%d`, host, path, p.Thread(), p.ID)
 }
 
 func mimeToExt(mimeType string) string {
