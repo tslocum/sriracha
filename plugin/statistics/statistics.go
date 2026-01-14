@@ -97,8 +97,8 @@ func (s *Statistics) Serve(db *sriracha.Database, a *sriracha.Account, w http.Re
 	return text, nil
 }
 
-func init() {
-	sriracha.RegisterPlugin(&Statistics{})
+func Plugin() any {
+	return &Statistics{}
 }
 
 func main() {}

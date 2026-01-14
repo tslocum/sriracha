@@ -70,8 +70,8 @@ func (r *Robot9000) Insert(db *sriracha.Database, post *sriracha.Post) error {
 	return nil
 }
 
-func init() {
-	sriracha.RegisterPlugin(&Robot9000{})
+func Plugin() any {
+	return &Robot9000{}
 }
 
 func main() {}

@@ -71,8 +71,8 @@ func (f *Fortune) Post(db *sriracha.Database, post *sriracha.Post) error {
 	return nil
 }
 
-func init() {
-	sriracha.RegisterPlugin(&Fortune{})
+func Plugin() any {
+	return &Fortune{}
 }
 
 func main() {}

@@ -102,8 +102,8 @@ func (v *Password) Post(db *sriracha.Database, post *sriracha.Post) error {
 	return nil
 }
 
-func init() {
-	sriracha.RegisterPlugin(&Password{})
+func Plugin() any {
+	return &Password{}
 }
 
 func main() {}

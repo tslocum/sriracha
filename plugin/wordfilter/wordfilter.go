@@ -93,8 +93,8 @@ func (w *Wordfilter) Post(db *sriracha.Database, post *sriracha.Post) error {
 	return nil
 }
 
-func init() {
-	sriracha.RegisterPlugin(&Wordfilter{})
+func Plugin() any {
+	return &Wordfilter{}
 }
 
 func main() {}

@@ -195,10 +195,19 @@ func (s *Server) loadPlugin(pluginPath string) error {
 		return nil
 	}
 
-	_, err = plugin.Open(pluginPath)
+	plugin, err := plugin.Open(pluginPath)
 	if err != nil {
 		return fmt.Errorf("failed to load plugin %s: %s", pluginPath, err)
 	}
+	pluginSymbol, err := plugin.Lookup("Plugin")
+	if err != nil {
+		return fmt.Errorf("failed to locate plugin instance: %s\nexample of declaring a plugin instance:\nfunc Plugin() any {\n  return &MyPlugin{}\n}", err)
+	}
+	pluginFunc, ok := pluginSymbol.(func() any)
+	if !ok {
+		return fmt.Errorf("failed to locate plugin instance")
+	}
+	RegisterPlugin(pluginFunc())
 	return err
 }
 

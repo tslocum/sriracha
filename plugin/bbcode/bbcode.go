@@ -226,12 +226,11 @@ func (f *BBCode) Post(db *sriracha.Database, post *sriracha.Post) error {
 	return nil
 }
 
-func init() {
-	p := &BBCode{
+func Plugin() any {
+	return &BBCode{
 		config:  make(map[string]bool),
 		updated: true,
 	}
-	sriracha.RegisterPlugin(p)
 }
 
 func main() {}

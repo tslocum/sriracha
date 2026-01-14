@@ -162,8 +162,6 @@ type PluginWithServe interface {
 }
 
 // RegisterPlugin registers a Sriracha plugin to receive any subscribed events.
-// Plugins must call this function in init(). See [PluginWithConfig],
-// [PluginWithUpdate], [PluginWithInsert], etc. for available events.
 func RegisterPlugin(plugin any) {
 	if srirachaServer == nil {
 		panic("Sriracha server not yet started")

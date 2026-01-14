@@ -437,10 +437,6 @@ func (i *IRC) Audit(db *sriracha.Database, user string, action string, info stri
 	return nil
 }
 
-func init() {
-	sriracha.RegisterPlugin(&IRC{})
-}
-
 func main() {}
 
 // Validate plugin interfaces during compilation.
