@@ -12,9 +12,6 @@ import (
 	"github.com/lrstanley/girc"
 )
 
-// Enable debug to print IRC connection information and events.
-const debug = true
-
 const (
 	configSecure            = "secure"
 	configSecureDescription = "Enable SSL."
@@ -48,6 +45,9 @@ const (
 
 	configAdmin            = "admin"
 	configAdminDescription = "Channels to notify when an administrator takes action."
+
+	configDebug            = "debug"
+	configDebugDescription = "Print connection info and events to console."
 )
 
 const (
@@ -75,10 +75,19 @@ type IRC struct {
 	mod     []string
 	admin   []string
 
+	debug bool
+
 	started bool
 }
 
 func (i *IRC) connectBot() {
+	if i.debug {
+		var extra string
+		if !i.secure {
+			extra = " without"
+		}
+		log.Printf("Connecting to %s%s using SSL...", i.address, extra)
+	}
 	err := i.client.Connect()
 	if err != nil {
 		log.Printf("Warning: IRC plugin failed to connect to server %s: %s", i.address, err)
@@ -91,6 +100,7 @@ func (i *IRC) rebuildBot() {
 	// Disconnect existing client.
 	if i.client != nil {
 		i.client.Quit(nameFull)
+		time.Sleep(2 * time.Second)
 	}
 
 	if i.address == "" {
@@ -118,8 +128,8 @@ func (i *IRC) rebuildBot() {
 		return
 	}
 
-	// Create new client.
-	i.client = girc.New(girc.Config{
+	// Initialize client configuration.
+	config := girc.Config{
 		SSL:        i.secure,
 		Server:     hostname,
 		Port:       portNum,
@@ -128,11 +138,13 @@ func (i *IRC) rebuildBot() {
 		User:       i.user,
 		Name:       i.name,
 		Version:    nameFull,
-	})
-
-	if debug {
-		i.client.Config.Debug = os.Stdout
 	}
+	if i.debug {
+		config.Debug = os.Stderr
+	}
+
+	// Create client.
+	i.client = girc.New(config)
 
 	// Set handlers.
 	i.client.Handlers.Add(girc.CONNECTED, func(c *girc.Client, _ girc.Event) {
@@ -257,6 +269,11 @@ func (i *IRC) Config() []sriracha.PluginConfig {
 			Name:        configAdmin,
 			Description: configAdminDescription,
 		},
+		{
+			Type:        sriracha.TypeBoolean,
+			Name:        configDebug,
+			Description: configDebugDescription,
+		},
 	}
 }
 
@@ -293,6 +310,8 @@ func (i *IRC) Update(db *sriracha.Database, key string) error {
 		i.mod = db.GetMultiString(key)
 	case configAdmin:
 		i.admin = db.GetMultiString(key)
+	case configDebug:
+		i.debug = db.GetBool(key)
 	}
 	go i.scheduleRebuild(0)
 	return nil
