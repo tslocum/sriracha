@@ -82,6 +82,12 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 	data.Threads = [][]*Post{{data.Post}}
 	data.Manage.Ban = db.banByIP(data.Post.IP)
 	if r.FormValue("confirmation") == "1" {
+		banFile := formString(r, "banfile")
+		if banFile != "" && !db.fileBanned(banFile) {
+			db.addFileBan(banFile)
+			s.log(db, data.Account, nil, "Banned file", "")
+		}
+
 		var oldBan Ban
 		if data.Manage.Ban != nil {
 			oldBan = *data.Manage.Ban
@@ -124,4 +130,7 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 	}
 
 	data.Extra = action
+	if data.Post != nil {
+		data.Extra2 = data.Post.FileHash
+	}
 }

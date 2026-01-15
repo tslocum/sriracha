@@ -111,7 +111,7 @@ func scanBan(b *Ban, row pgx.Row) error {
 }
 
 func (db *Database) addFileBan(fileHash string) {
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO fileban VALUES ($1) ON CONFLICT DO NOTHING", fileHash)
+	_, err := db.conn.Exec(context.Background(), "INSERT INTO banfile VALUES ($1) ON CONFLICT DO NOTHING", fileHash)
 	if err != nil {
 		log.Fatalf("failed to ban file: %s", err)
 	}
@@ -129,7 +129,7 @@ func (db *Database) fileBanned(fileHash string) bool {
 }
 
 func (db *Database) liftFileBan(fileHash string) {
-	_, err := db.conn.Exec(context.Background(), "DELETE FROM fileban WHERE hash = $1", fileHash)
+	_, err := db.conn.Exec(context.Background(), "DELETE FROM banfile WHERE hash = $1", fileHash)
 	if err != nil {
 		log.Fatalf("failed to lift file ban: %s", err)
 	}

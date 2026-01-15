@@ -1,5 +1,6 @@
 1.1.8:
 - Add IRC plugin
+- Support banning file hashes
 - Support displaying identifiers based on IP addresses
 
 1.1.7:

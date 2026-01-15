@@ -74,20 +74,24 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 
 	if r.Method == http.MethodPost {
 		r.ParseForm()
-		f, _, err := r.FormFile("file")
+		f, _, err := r.FormFile("liftfile")
 		if err == nil && f != nil {
+			if data.forbidden(w, RoleAdmin) {
+				return
+			}
 			buf, err := io.ReadAll(f)
 			if err != nil {
 				log.Fatal(err)
 			}
 			hash := calculateFIleHash(buf)
 			if db.fileBanned(hash) {
+				db.liftFileBan(hash)
 				data.Info = "Lifted file ban."
 				s.log(db, data.Account, nil, "Lifted file ban", "")
 			} else {
 				data.ManageError("File is not banned.")
-				return
 			}
+			return
 		}
 
 		b := &Ban{}

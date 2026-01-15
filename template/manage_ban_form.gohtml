@@ -6,11 +6,11 @@
     <legend>{{if eq .Manage.Ban nil}}Add Ban{{else}}Update #{{.Manage.Ban.ID}}{{if HasPrefix .Manage.Ban.IP "r "}} - {{.Manage.Ban.TypeLabel}}{{end}}{{end}}</legend>
     <table border="0" class="manageform">
         {{if and (eq .Manage.Ban nil) (eq .Extra "")}}
-        <tr>
-            <td class="postblock"><label for="ip">IP Address</label></td>
-            <td><input type="text" name="ip"></td>
-            <td>The IP address to ban. Wildcards (*) may be used to ban a range of addresses.</td>
-        </tr>
+            <tr>
+                <td class="postblock"><label for="ip">IP Address</label></td>
+                <td><input type="text" name="ip"></td>
+                <td>The IP address to ban. Wildcards (*) may be used to ban a range of addresses.</td>
+            </tr>
         {{end}}
         <tr>
             <td class="postblock"><label for="expire">Expire</label></td>
@@ -22,6 +22,13 @@
             <td><input type="text" name="reason" value="{{if ne .Manage.Ban nil}}{{.Manage.Ban.Reason}}{{end}}"></td>
             <td>Optional.</td>
         </tr>
+        {{if and (and (eq .Manage.Ban nil) (ne .Extra "") (ne .Extra2 ""))}}
+            <tr>
+                <td class="postblock"><label for="banfile">File</label></td>
+                <td><label><input type="checkbox" name="banfile" value="{{.Extra2}}"> Ban file</label></td>
+                <td>Permanently ban uploaded file.</td>
+            </tr>
+        {{end}}
         <tr>
             <td>&nbsp;</td>
             <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if eq .Manage.Ban nil}}Add{{else}}Update{{end}}"></td>
@@ -30,15 +37,15 @@
     </table>
     </fieldset>
 </form>
-{{if and (eq .Manage.Ban nil) (eq .Extra "")}}
+{{if and (le .Account.Role 2) (and (eq .Manage.Ban nil) (eq .Extra ""))}}{{/* Admin */}}
 <br>
 <form method="post" enctype="multipart/form-data">
     <fieldset>
     <legend>Lift File Ban</legend>
     <table border="0" class="manageform">
         <tr>
-            <td class="postblock"><label for="file">File</label></td>
-            <td><input type="file" name="file"></td>
+            <td class="postblock"><label for="liftfile">File</label></td>
+            <td><input type="file" name="liftfile"></td>
             <td>&nbsp;</td>
         </tr>
         <tr>
