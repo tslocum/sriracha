@@ -103,8 +103,7 @@ func (p *Post) setFileAndThumb(fileExt string, thumbExt string) {
 }
 
 func (p *Post) setFileAttributes(buf []byte, name string) error {
-	checksum := sha512.Sum384(buf)
-	p.FileHash = base64.URLEncoding.EncodeToString(checksum[:])
+	p.FileHash = calculateFIleHash(buf)
 
 	p.FileOriginal = name
 
@@ -640,6 +639,11 @@ func (p *Post) URL() string {
 	}
 
 	return fmt.Sprintf(`%s%sres/%d.html#%d`, host, path, p.Thread(), p.ID)
+}
+
+func calculateFIleHash(buf []byte) string {
+	checksum := sha512.Sum384(buf)
+	return base64.URLEncoding.EncodeToString(checksum[:])
 }
 
 func mimeToExt(mimeType string) string {

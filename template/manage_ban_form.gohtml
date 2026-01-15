@@ -30,6 +30,26 @@
     </table>
     </fieldset>
 </form>
+{{if and (eq .Manage.Ban nil) (eq .Extra "")}}
+<br>
+<form method="post" enctype="multipart/form-data">
+    <fieldset>
+    <legend>Lift File Ban</legend>
+    <table border="0" class="manageform">
+        <tr>
+            <td class="postblock"><label for="file">File</label></td>
+            <td><input type="file" name="file"></td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="Lift"></td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+    </fieldset>
+</form>
+{{end}}
 <script type="text/javascript">
 {{if eq .Manage.Ban nil}}
     document.sriracha.ip.focus();

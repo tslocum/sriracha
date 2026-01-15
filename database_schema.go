@@ -23,6 +23,10 @@ CREATE TABLE ban (
 );
 CREATE UNIQUE INDEX ON ban (ip);
 
+--v9: CREATE TABLE banfile (
+--v9: 	hash char(64) PRIMARY KEY
+--v9: );
+
 CREATE TABLE board (
 	id smallserial PRIMARY KEY,
 	dir varchar(255) NOT NULL,
@@ -204,5 +208,8 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 	UPDATE config SET value = '8' WHERE name = 'version';`,
 	// Version 9.
 	`ALTER TABLE board ADD COLUMN identifiers smallint NOT NULL DEFAULT 0;
+	CREATE TABLE banfile (
+		hash char(64) PRIMARY KEY
+	);
 	UPDATE config SET value = '9' WHERE name = 'version';`,
 }

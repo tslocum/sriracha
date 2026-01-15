@@ -109,3 +109,28 @@ func scanBan(b *Ban, row pgx.Row) error {
 		&b.Reason,
 	)
 }
+
+func (db *Database) addFileBan(fileHash string) {
+	_, err := db.conn.Exec(context.Background(), "INSERT INTO fileban VALUES ($1) ON CONFLICT DO NOTHING", fileHash)
+	if err != nil {
+		log.Fatalf("failed to ban file: %s", err)
+	}
+}
+
+func (db *Database) fileBanned(fileHash string) bool {
+	var banned bool
+	err := db.conn.QueryRow(context.Background(), "SELECT true FROM banfile WHERE hash = $1", fileHash).Scan(&banned)
+	if err == pgx.ErrNoRows {
+		return false
+	} else if err != nil {
+		log.Fatalf("failed to check if file is banned: %s", err)
+	}
+	return banned
+}
+
+func (db *Database) liftFileBan(fileHash string) {
+	_, err := db.conn.Exec(context.Background(), "DELETE FROM fileban WHERE hash = $1", fileHash)
+	if err != nil {
+		log.Fatalf("failed to lift file ban: %s", err)
+	}
+}

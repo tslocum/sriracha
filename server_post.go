@@ -375,6 +375,22 @@ func (s *Server) servePost(db *Database, w http.ResponseWriter, r *http.Request)
 				}
 			}
 		}
+
+		if post.FileHash != "" && db.fileBanned(post.FileHash) {
+			ban := &Ban{
+				IP:        post.IP,
+				Timestamp: time.Now().Unix(),
+				Reason:    gotext.Get("Detected banned file."),
+			}
+			db.addBan(ban)
+
+			s.log(db, nil, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info())
+			s.deletePostFiles(post)
+
+			data := s.buildData(db, w, r)
+			data.BoardError(w, gotext.Get("Detected banned file."))
+			return
+		}
 	}
 
 	if !rawHTML {

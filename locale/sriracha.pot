@@ -84,6 +84,9 @@ msgstr ""
 msgid "Delete Post"
 msgstr ""
 
+msgid "Detected banned file."
+msgstr ""
+
 msgid "Detected banned keyword."
 msgstr ""
 

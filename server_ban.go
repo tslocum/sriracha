@@ -2,6 +2,8 @@ package sriracha
 
 import (
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -71,6 +73,23 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 	}
 
 	if r.Method == http.MethodPost {
+		r.ParseForm()
+		f, _, err := r.FormFile("file")
+		if err == nil && f != nil {
+			buf, err := io.ReadAll(f)
+			if err != nil {
+				log.Fatal(err)
+			}
+			hash := calculateFIleHash(buf)
+			if db.fileBanned(hash) {
+				data.Info = "Lifted file ban."
+				s.log(db, data.Account, nil, "Lifted file ban", "")
+			} else {
+				data.ManageError("File is not banned.")
+				return
+			}
+		}
+
 		b := &Ban{}
 		b.loadForm(r)
 
@@ -87,7 +106,7 @@ func (s *Server) serveBan(data *templateData, db *Database, w http.ResponseWrite
 			b.IP = _hashIP(ip)
 		}
 
-		err := b.validate()
+		err = b.validate()
 		if err != nil {
 			data.ManageError(err.Error())
 			return
