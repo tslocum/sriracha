@@ -96,6 +96,27 @@ func formatBoardApproval(a BoardApproval) string {
 	}
 }
 
+type BoardIdentifiers int
+
+const (
+	IdentifiersDisable BoardIdentifiers = 0
+	IdentifiersBoard   BoardIdentifiers = 1
+	IdentifiersGlobal  BoardIdentifiers = 2
+)
+
+func formatBoardIdentifiers(i BoardIdentifiers) string {
+	switch i {
+	case IdentifiersDisable:
+		return "Disable"
+	case IdentifiersBoard:
+		return "Board"
+	case IdentifiersGlobal:
+		return "Global"
+	default:
+		return "Unknown"
+	}
+}
+
 type Board struct {
 	ID            int
 	Dir           string
@@ -133,6 +154,7 @@ type Board struct {
 	Oekaki        bool
 	Backlinks     bool
 	Instances     int
+	Identifiers   BoardIdentifiers
 
 	// Calculated fields.
 	Uploads []string
@@ -213,6 +235,7 @@ func (b *Board) loadForm(r *http.Request, availableUploads []*uploadType, availa
 	b.Rules = formMultiString(r, "rules")
 	b.Backlinks = formBool(r, "backlinks")
 	b.Instances = formNegInt(r, "instances")
+	b.Identifiers = formRange(r, "identifiers", IdentifiersDisable, IdentifiersGlobal)
 
 	if b.Locale != "" && !slices.Contains(srirachaServer.opt.LocalesSorted, b.Locale) {
 		b.Locale = ""

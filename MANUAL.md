@@ -146,6 +146,11 @@ dbname: "sriracha"
 # See https://pkg.go.dev/github.com/jackc/pgx/v5@v5.7.4/pgconn#ParseConfig
 #dburl: "postgresql://sriracha:hunter2@localhost/sriracha"
 
+# Whether identifier hashes are enabled. Identifier hashes are generated based
+# on IP hashes. When enabled, staff may browse posts by IP hashes, and boards
+# may enable the display of identifier hashes for each post.
+#identifiers: false
+
 # Custom template directory. Leave blank to use standard templates. Template
 # files in this directory will override standard templates of the same name.
 #template: "/home/sriracha/template"

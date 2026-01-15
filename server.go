@@ -101,6 +101,7 @@ type ServerOptions struct {
 	OverboardType    BoardType
 	OverboardThreads int
 	OverboardReplies int
+	Identifiers      bool
 	Locale           string
 	Locales          map[string]string
 	LocalesSorted    []string
@@ -304,6 +305,8 @@ func (s *Server) setDefaultServerConfig() error {
 	if err != nil {
 		return fmt.Errorf("failed to commit transaction: %s", err)
 	}
+
+	s.opt.Identifiers = s.config.Identifiers
 
 	s.opt.Locale = s.config.Locale
 
@@ -1524,6 +1527,8 @@ func formatValue(v interface{}) interface{} {
 		return formatBoardLock(t)
 	} else if t, ok := v.(BoardApproval); ok {
 		return formatBoardApproval(t)
+	} else if t, ok := v.(BoardIdentifiers); ok {
+		return formatBoardIdentifiers(t)
 	}
 	return v
 }

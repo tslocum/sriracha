@@ -98,6 +98,17 @@
                 </select></td>
                 <td>Default page style. Visitors may choose alternative styles in their browser settings.</td>
             </tr>
+            {{if .Opt.Identifiers}}
+                <tr>
+                    <td class="postblock"><label for="identifiers">Identifiers</label></td>
+                    <td><select name="identifiers" style="width: 100%;">
+                        <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 0)}} selected{{end}}>Disable</option>
+                        <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 1)}} selected{{end}}>Board</option>
+                        <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 2)}} selected{{end}}>Global</option>
+                    </select></td>
+                    <td>Whether identifiers are displayed for each post. Identifiers are generated based on IP address hashes.</td>
+                </tr>
+            {{end}}
             <tr>
                 <td class="postblock"><label for="backlinks">Backlinks</label></td>
                 <td><select name="backlinks" style="width: 100%;">
