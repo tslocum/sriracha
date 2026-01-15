@@ -56,7 +56,7 @@ const (
 	reconnectDelay = 30 * time.Second
 )
 
-var help = template.HTML(`Channel format: <span style="border: 1px solid;padding: 3px;">#channel key</span>`)
+var help = template.HTML(`Channel format: <span style="border: 1px solid;padding: 2px;">#channel key</span>`)
 
 type IRC struct {
 	secure   bool
