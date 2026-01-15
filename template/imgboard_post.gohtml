@@ -23,6 +23,9 @@
                     <input type="checkbox" name="delete[]" value="{{.ID}}">
                     {{template "imgboard_page_subject.gohtml" .}}
                     {{.NameBlock | HTML}}
+                    {{if and $.Opt.Identifiers (and (eq .Board.Identifiers 0) $.ModMode)}}
+                        {{.Identifier true}}
+                    {{end}}
                     <span class="reflink">
                         {{if $post.Board.Reports}}
                             <a href="/sriracha/?action=report&board={{.Board.ID}}&post={{.ID}}" title="{{T "Report"}}">R</a>
@@ -66,6 +69,9 @@
                             <input type="checkbox" name="delete[]" value="{{.ID}}">
                             {{template "imgboard_page_subject.gohtml" .}}
                             {{.NameBlock | HTML}}
+                            {{if and $.Opt.Identifiers (and (eq .Board.Identifiers 0) $.ModMode)}}
+                                {{.Identifier true}}
+                            {{end}}
                             <span class="reflink">
                                 {{if $post.Board.Reports}}
                                     <a href="/sriracha/?action=report&board={{.Board.ID}}&post={{.ID}}" title="{{T "Report"}}">R</a>

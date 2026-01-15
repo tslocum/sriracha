@@ -23,6 +23,9 @@
 							<a id="{{.ID}}"></a>
                             <input type="checkbox" name="delete[]" value="{{.ID}}" style="margin-left: 0;">
 							{{.NameBlock | HTML}}
+							{{if and $.Opt.Identifiers (and (eq .Board.Identifiers 0) $.ModMode)}}
+								{{.Identifier true}}
+							{{end}}
 							<span class="reflink">
 								<a href="{{$post.Board.Path}}res/{{.Thread}}.html#{{.ID}}">No.</a><a href="{{$post.Board.Path}}res/{{.Thread}}.html#q{{.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{.ID}}');"{{end}}>{{.ID}}</a>
 								{{if $post.Board.Reports}}

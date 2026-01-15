@@ -457,6 +457,11 @@ func (p *Post) setNameBlock(defaultName string, capcode string) {
 		out.WriteString(` <span style="color: ` + spanColor + `;">## ` + capcode + `</span>`)
 	}
 
+	identifier := p.Identifier(false)
+	if identifier != "" {
+		out.WriteString(" " + identifier)
+	}
+
 	out.WriteString(" " + string(p.TimestampLabel()))
 
 	p.NameBlock = out.String()
@@ -572,6 +577,22 @@ func (p *Post) ExpandHTML() template.HTML {
 	}
 	const expandFormat = `<a href="%s" onclick="return expandFile(event, '%d');"><img src="%s" width="%d" style="min-width: %dpx;min-height: %dpx;max-width: 85vw;height: auto;"></a>`
 	return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, srcPath, p.ID, srcPath, p.FileWidth, p.ThumbWidth, p.ThumbHeight)))
+}
+
+func (p *Post) Identifier(force bool) string {
+	if p.IP == "" || !srirachaServer.opt.Identifiers || (p.Board.Identifiers == IdentifiersDisable && !force) {
+		return ""
+	}
+	srirachaServer.adler.Reset()
+	if p.Board.Identifiers == IdentifiersBoard {
+		srirachaServer.adler.Write([]byte(strconv.Itoa(p.Board.ID)))
+	}
+	srirachaServer.adler.Write([]byte(p.IP))
+
+	srirachaServer.adlerSum = srirachaServer.adler.Sum(srirachaServer.adlerSum[:0])
+
+	base64.RawURLEncoding.Encode(srirachaServer.adlerBuf, srirachaServer.adlerSum)
+	return string(srirachaServer.adlerBuf[:5])
 }
 
 func (p *Post) Backlinks(posts []*Post) template.HTML {

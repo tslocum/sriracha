@@ -66,6 +66,7 @@ func (s *Server) serveStatus(data *templateData, db *Database, w http.ResponseWr
 					db.updatePostNameblock(p.ID, p.NameBlock)
 				}
 			}
+			s.rebuildBoard(db, b)
 		}
 		data.Info = "Rebuilt nameblocks"
 	}

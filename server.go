@@ -7,6 +7,8 @@ import (
 	"encoding/base64"
 	"flag"
 	"fmt"
+	"hash"
+	"hash/adler32"
 	"html/template"
 	"io/fs"
 	"log"
@@ -123,6 +125,10 @@ type Server struct {
 	Boards []*Board
 
 	rangeBans map[*Ban]*regexp.Regexp
+
+	adler    hash.Hash32
+	adlerSum []byte
+	adlerBuf []byte
 
 	config Config
 	dbPool *pgxpool.Pool
@@ -1182,6 +1188,9 @@ func (s *Server) Run() error {
 	}
 
 	s.config.startTime = time.Now()
+
+	s.adler = adler32.New()
+	s.adlerBuf = make([]byte, 8)
 
 	// Parse locale files.
 	err = fs.WalkDir(localeFS, "locale", func(p string, d fs.DirEntry, err error) error {

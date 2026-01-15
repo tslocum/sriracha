@@ -1,5 +1,6 @@
 1.1.8:
 - Add IRC plugin
+- Support displaying identifiers based on IP addresses
 
 1.1.7:
 - Add board setting for displaying backlinks
