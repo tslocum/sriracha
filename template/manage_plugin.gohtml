@@ -31,11 +31,20 @@
                                     <input name="config_{{.Name}}" value="{{.Value}}">
                                 {{end}}
                             {{else if eq .Type 3}}{{/* Enum */}}
-                                <select name="config_{{.Name}}" style="width: 100%;"{{if eq .Multiple true}} multiple{{end}}>
+                                {{if eq .Multiple true}}
                                     {{range $i, $value := .Options}}
-                                        <option value="{{$i}}"{{if $.HaveInt $i}} selected{{end}}>{{$value}}</option>
+                                        {{if ne $i 0}}
+                                            <br>
+                                        {{end}}
+                                        <label><input type="checkbox" name="config_{{$option.Name}}" value="{{$i}}"{{if $.HaveInt $i}} checked{{end}}> {{$value}}</label>
                                     {{end}}
-                                </select>
+                                {{else}}
+                                    <select name="config_{{.Name}}" style="width: 100%;">
+                                        {{range $i, $value := .Options}}
+                                            <option value="{{$i}}"{{if $.HaveInt $i}} selected{{end}}>{{$value}}</option>
+                                        {{end}}
+                                    </select>
+                                {{end}}
                             {{else if eq .Type 4}}{{/* String */}}
                                 {{if eq .Multiple true}}
                                     {{range $i, $value := .Values}}
@@ -46,11 +55,20 @@
                                     <textarea name="config_{{.Name}}" rows="4" cols="80" >{{.Value}}</textarea>
                                 {{end}}
                             {{else if eq .Type 5}}{{/* Board */}}
-                                <select name="config_{{.Name}}" style="width: 100%;"{{if eq .Multiple true}} multiple{{end}}>
+                                {{if eq .Multiple true}}
                                     {{range $i, $board := $.Boards}}
-                                        <option value="{{$board.ID}}"{{if $option.HaveInt $board.ID}} selected{{end}}>{{$board.Path}} {{$board.Name}}</option>
+                                        {{if ne $i 0}}
+                                            <br>
+                                        {{end}}
+                                        <label><input type="checkbox" name="config_{{$option.Name}}" value="{{$board.ID}}"{{if $option.HaveInt $board.ID}} checked{{end}}> {{$board.Path}} {{$board.Name}}</label>
                                     {{end}}
-                                </select>
+                                {{else}}
+                                    <select name="config_{{.Name}}" style="width: 100%;">
+                                        {{range $i, $board := $.Boards}}
+                                            <option value="{{$board.ID}}"{{if $option.HaveInt $board.ID}} selected{{end}}>{{$board.Path}} {{$board.Name}}</option>
+                                        {{end}}
+                                    </select>
+                                {{end}}
                             {{else}}{{/* Unknown */}}
                                 Unknown configuration option type.
                             {{end}}

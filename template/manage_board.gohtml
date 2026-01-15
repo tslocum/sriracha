@@ -187,11 +187,12 @@
                 <tr>
                     <td class="postblock"><label for="uploads">File Types</label></td>
                     <td>
-                        <select name="uploads" style="width: 100%;" size="5" multiple>
-                            {{range $i, $info := .Opt.Uploads}}
-                                <option value="{{.MIME}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasUpload .MIME)}} selected{{end}}>{{.Ext | ToUpper}} ({{.MIME}})</option>
+                        {{range $i, $info := .Opt.Uploads}}
+                            {{if ne $i 0}}
+                                <br>
                             {{end}}
-                        </select>
+                            <label><input type="checkbox" name="uploads" value="{{.MIME}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasUpload .MIME)}} checked{{end}}> {{.Ext | ToUpper}} ({{.MIME}})</label>
+                        {{end}}
                     </td>
                     <td>Posters may upload the selected types of files.</td>
                 </tr>
@@ -200,12 +201,13 @@
                 <tr>
                     <td class="postblock"><label for="embeds">Allow Embedding</label></td>
                     <td>
-                        <select name="embeds" style="width: 100%;" size="3" multiple>
-                            {{range $i, $info := .Opt.Embeds}}
-                                {{$name := index $info 0}}
-                                <option value="{{$name}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasEmbed $name)}} selected{{end}}>{{$name}}</option>
+                        {{range $i, $info := .Opt.Embeds}}
+                            {{if ne $i 0}}
+                                <br>
                             {{end}}
-                        </select>
+                            {{$name := index $info 0}}
+                            <label><input type="checkbox" name="embeds" value="{{$name}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasEmbed $name)}} checked{{end}}> {{$name}}</label>
+                        {{end}}
                     </td>
                     <td>Posters may embed media from selected services instead of uploading a file.</td>
                 </tr>

@@ -1,9 +1,10 @@
 {{if eq (len .Boards) 0}}
     No Boards available
 {{else}}
-    <select name="boards" style="width: 100%;" size="3" multiple>
-        {{range $i, $board := .Boards}}
-            <option value="{{$board.ID}}"{{if and (ne $.Manage.Keyword nil) ($.Manage.Keyword.HasBoard $board.ID)}} selected{{end}}>{{$board.Path}} {{$board.Name}}</option>
+    {{range $i, $board := .Boards}}
+        {{if ne $i 0}}
+            <br>
         {{end}}
-    </select>
+        <label><input type="checkbox" name="boards" value="{{$board.ID}}"{{if and (ne $.Manage.Keyword nil) ($.Manage.Keyword.HasBoard $board.ID)}} checked{{end}}> {{$board.Path}} {{$board.Name}}</label>
+    {{end}}
 {{end}}

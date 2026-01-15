@@ -165,7 +165,7 @@ legend {
 	margin-left: 5px;
 }
 
-.manageform input, .manageform select, .manageform textarea {
+.manageform input:not([type=checkbox]), .manageform select, .manageform textarea {
 	width: 100%;
 	box-sizing: border-box;
 }
