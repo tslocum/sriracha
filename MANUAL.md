@@ -147,8 +147,8 @@ dbname: "sriracha"
 #dburl: "postgresql://sriracha:hunter2@localhost/sriracha"
 
 # Whether identifier hashes are enabled. Identifier hashes are generated based
-# on IP hashes. When enabled, staff may browse posts by IP hashes, and boards
-# may enable the display of identifier hashes for each post.
+# on IP hashes. When enabled, staff may view and delete all posts created by an
+# IP address, and boards may optionally display identifier hashes to visitors.
 #identifiers: false
 
 # Custom template directory. Leave blank to use standard templates. Template
