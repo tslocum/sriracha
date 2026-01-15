@@ -28,6 +28,8 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 				action = "l"
 			case "unlock":
 				action = "ul"
+			case "view":
+				action = "v"
 			default:
 				data.ManageError("Unknown mod action")
 				return
@@ -44,6 +46,16 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 	data.Post = db.PostByID(postID)
 	if data.Post == nil {
 		data.ManageError("Unknown post")
+		return
+	}
+	if action == "v" && s.opt.Identifiers {
+		data.Template = "board_page"
+		data.ModMode = true
+		data.ReplyMode = 1
+		data.Board = data.Post.Board
+		for _, post := range db.PostsByIP(data.Post.IP) {
+			data.Threads = append(data.Threads, []*Post{post})
+		}
 		return
 	}
 	threadAction := action == "s" || action == "us" || action == "l" || action == "ul"
@@ -129,6 +141,8 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 		return
 	}
 
+	data.ModMode = true
+	data.ReplyMode = 1
 	data.Extra = action
 	if data.Post != nil {
 		data.Extra2 = data.Post.FileHash

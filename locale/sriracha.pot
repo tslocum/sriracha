@@ -231,5 +231,8 @@ msgstr ""
 msgid "View"
 msgstr ""
 
+msgid "View posts by author"
+msgstr ""
+
 msgid "Your post will be shown once it has been approved."
 msgstr ""

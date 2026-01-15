@@ -221,6 +221,31 @@ func (db *Database) PostByID(postID int) *Post {
 	return p
 }
 
+func (db *Database) PostsByIP(hash string) []*Post {
+	if hash == "" {
+		return nil
+	}
+	rows, err := db.conn.Query(context.Background(), "SELECT *, 0 as replies FROM post WHERE ip = $1", hash)
+	if err != nil {
+		log.Fatalf("failed to select post: %s", err)
+	}
+	var posts []*Post
+	var boardIDs []int
+	for rows.Next() {
+		p := &Post{}
+		boardID, err := scanPost(p, rows)
+		if err != nil {
+			log.Fatalf("failed to scan post: %s", err)
+		}
+		posts = append(posts, p)
+		boardIDs = append(boardIDs, boardID)
+	}
+	for i, p := range posts {
+		p.Board = db.BoardByID(boardIDs[i])
+	}
+	return posts
+}
+
 func (db *Database) PostsByFileHash(hash string, filterBoard *Board) []*Post {
 	var extra string
 	if filterBoard != nil {
