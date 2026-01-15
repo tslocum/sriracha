@@ -48,14 +48,29 @@ func (s *Server) serveMod(data *templateData, db *Database, w http.ResponseWrite
 		data.ManageError("Unknown post")
 		return
 	}
-	if action == "v" && s.opt.Identifiers {
+	if action == "v" {
+		if !s.opt.Identifiers {
+			data.ManageError("Identifiers are not enabled")
+			return
+		}
 		data.Template = "board_page"
 		data.ModMode = true
 		data.ReplyMode = 1
 		data.Board = data.Post.Board
-		for _, post := range db.PostsByIP(data.Post.IP) {
+		posts := db.PostsByIP(data.Post.IP)
+		if r.FormValue("confirmation") == "1" {
+			for _, post := range posts {
+				s.deletePost(db, post)
+				s.log(db, data.Account, post.Board, fmt.Sprintf("Deleted No.%d", post.ID), "")
+				s.rebuildThread(db, post)
+			}
+			data.Message = "Deleted all posts by author."
+			return
+		}
+		for _, post := range posts {
 			data.Threads = append(data.Threads, []*Post{post})
 		}
+		data.Message = `<form method="post" onsubmit="javascript:return confirm('Delete all posts by author?');"><input type="hidden" name="confirmation" value="1"><input type="submit" value="Delete all posts by author"></form><br>`
 		return
 	}
 	threadAction := action == "s" || action == "us" || action == "l" || action == "ul"

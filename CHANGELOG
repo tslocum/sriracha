@@ -1,7 +1,8 @@
 1.1.8:
 - Add IRC plugin
 - Support banning file hashes
-- Support displaying identifiers based on IP addresses
+- Support displaying author identifiers
+- Support viewing and deleting all posts by author
 
 1.1.7:
 - Add board setting for displaying backlinks

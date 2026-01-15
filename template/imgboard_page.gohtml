@@ -11,6 +11,8 @@
 {{if ne .Board.ID -1}}
 	{{if not .ModMode}}
 		{{template "imgboard_postarea.gohtml" .}}
+	{{else if ne .Message ""}}
+		{{.Message}}
 	{{else}}
 		<details>
 			<summary>{{if eq .ReplyMode 0}}{{T "Create Thread"}}{{else}}{{T "Reply"}}{{end}}</summary>
