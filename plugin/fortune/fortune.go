@@ -24,17 +24,17 @@ func (f *Fortune) About() string {
 func (f *Fortune) Config() []sriracha.PluginConfig {
 	return []sriracha.PluginConfig{
 		{
-			Type:        sriracha.TypeString,
-			Multiple:    true,
-			Name:        configTriggers,
-			Default:     defaultTrigger,
-			Description: "The text users may input in the name or email field to receive a fortune.",
+			Type:     sriracha.TypeString,
+			Multiple: true,
+			Name:     configTriggers,
+			Default:  defaultTrigger,
+			Info:     "The text users may input in the name or email field to receive a fortune.",
 		}, {
-			Type:        sriracha.TypeString,
-			Multiple:    true,
-			Name:        configFortunes,
-			Default:     defaultFortunes,
-			Description: "The fortunes users may receive.",
+			Type:     sriracha.TypeString,
+			Multiple: true,
+			Name:     configFortunes,
+			Default:  defaultFortunes,
+			Info:     "The fortunes users may receive.",
 		},
 	}
 }

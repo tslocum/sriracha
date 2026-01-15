@@ -15,32 +15,32 @@ import (
 )
 
 const (
-	configSecure              = "secure"
-	configSecureDescription   = "Enable SSL."
-	configAddress             = "address"
-	configAddressDescription  = "Server address. (Hostname:Port)\nBlank to disable plugin."
-	configPassword            = "password"
-	configPasswordDescription = "Server password."
-	configNick                = "nick"
-	configNickDescription     = "Nickname."
-	configUser                = "user"
-	configUserDescription     = "Username."
-	configName                = "name"
-	configNameDescription     = "Full name."
-	configCreate              = "create"
-	configCreateDescription   = "Channels to notify when a new post is created."
-	configApprove             = "approve"
-	configApproveDescription  = "Channels to notify when a post requires approval."
-	configReport              = "report"
-	configReportDescription   = "Channels to notify when a post is reported."
-	configMod                 = "mod"
-	configModDescription      = "Channels to notify when a moderator takes action."
-	configAdmin               = "admin"
-	configAdminDescription    = "Channels to notify when an administrator takes action."
-	configCommand             = "command"
-	configCommandDescription  = "Sent before joining channels."
-	configDebug               = "debug"
-	configDebugDescription    = "Print connection info and events to console."
+	configSecure       = "secure"
+	configSecureInfo   = "Enable SSL."
+	configAddress      = "address"
+	configAddressInfo  = "Server address. (Hostname:Port)\nBlank to disable plugin."
+	configPassword     = "password"
+	configPasswordInfo = "Server password."
+	configNick         = "nick"
+	configNickInfo     = "Nickname."
+	configUser         = "user"
+	configUserInfo     = "Username."
+	configName         = "name"
+	configNameInfo     = "Full name."
+	configCreate       = "create"
+	configCreateInfo   = "Channels to notify when a new post is created."
+	configApprove      = "approve"
+	configApproveInfo  = "Channels to notify when a post requires approval."
+	configReport       = "report"
+	configReportInfo   = "Channels to notify when a post is reported."
+	configMod          = "mod"
+	configModInfo      = "Channels to notify when a moderator takes action."
+	configAdmin        = "admin"
+	configAdminInfo    = "Channels to notify when an administrator takes action."
+	configCommand      = "command"
+	configCommandInfo  = "Sent before joining channels."
+	configDebug        = "debug"
+	configDebugInfo    = "Print connection info and events to console."
 
 	nameShort = "sriracha"
 	nameFull  = "Sriracha Imageboard and Forum"
@@ -272,66 +272,66 @@ func (i *IRC) Help() template.HTML {
 func (i *IRC) Config() []sriracha.PluginConfig {
 	return []sriracha.PluginConfig{
 		{
-			Type:        sriracha.TypeBoolean,
-			Name:        configSecure,
-			Description: configSecureDescription,
-			Default:     "1",
+			Type:    sriracha.TypeBoolean,
+			Name:    configSecure,
+			Info:    configSecureInfo,
+			Default: "1",
 		}, {
-			Type:        sriracha.TypeString,
-			Name:        configAddress,
-			Description: configAddressDescription,
+			Type: sriracha.TypeString,
+			Name: configAddress,
+			Info: configAddressInfo,
 		}, {
-			Type:        sriracha.TypeString,
-			Name:        configPassword,
-			Description: configPasswordDescription,
+			Type: sriracha.TypeString,
+			Name: configPassword,
+			Info: configPasswordInfo,
 		}, {
-			Type:        sriracha.TypeString,
-			Name:        configNick,
-			Description: configNickDescription,
-			Default:     nameShort,
+			Type:    sriracha.TypeString,
+			Name:    configNick,
+			Info:    configNickInfo,
+			Default: nameShort,
 		}, {
-			Type:        sriracha.TypeString,
-			Name:        configUser,
-			Description: configUserDescription,
-			Default:     nameShort,
+			Type:    sriracha.TypeString,
+			Name:    configUser,
+			Info:    configUserInfo,
+			Default: nameShort,
 		}, {
-			Type:        sriracha.TypeString,
-			Name:        configName,
-			Description: configNameDescription,
-			Default:     nameFull,
+			Type:    sriracha.TypeString,
+			Name:    configName,
+			Info:    configNameInfo,
+			Default: nameFull,
 		}, {
-			Type:        sriracha.TypeString,
-			Multiple:    true,
-			Name:        configCreate,
-			Description: configCreateDescription,
+			Type:     sriracha.TypeString,
+			Multiple: true,
+			Name:     configCreate,
+			Info:     configCreateInfo,
 		}, {
-			Type:        sriracha.TypeString,
-			Multiple:    true,
-			Name:        configApprove,
-			Description: configApproveDescription,
+			Type:     sriracha.TypeString,
+			Multiple: true,
+			Name:     configApprove,
+			Info:     configApproveInfo,
 		}, {
-			Type:        sriracha.TypeString,
-			Multiple:    true,
-			Name:        configReport,
-			Description: configReportDescription,
+			Type:     sriracha.TypeString,
+			Multiple: true,
+			Name:     configReport,
+			Info:     configReportInfo,
 		}, {
-			Type:        sriracha.TypeString,
-			Multiple:    true,
-			Name:        configMod,
-			Description: configModDescription,
+			Type:     sriracha.TypeString,
+			Multiple: true,
+			Name:     configMod,
+			Info:     configModInfo,
 		}, {
-			Type:        sriracha.TypeString,
-			Multiple:    true,
-			Name:        configAdmin,
-			Description: configAdminDescription,
+			Type:     sriracha.TypeString,
+			Multiple: true,
+			Name:     configAdmin,
+			Info:     configAdminInfo,
 		}, {
-			Type:        sriracha.TypeString,
-			Name:        configCommand,
-			Description: configCommandDescription,
+			Type: sriracha.TypeString,
+			Name: configCommand,
+			Info: configCommandInfo,
 		}, {
-			Type:        sriracha.TypeBoolean,
-			Name:        configDebug,
-			Description: configDebugDescription,
+			Type: sriracha.TypeBoolean,
+			Name: configDebug,
+			Info: configDebugInfo,
 		},
 	}
 }

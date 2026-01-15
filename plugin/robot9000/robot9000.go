@@ -23,15 +23,15 @@ func (r *Robot9000) About() string {
 func (r *Robot9000) Config() []sriracha.PluginConfig {
 	return []sriracha.PluginConfig{
 		{
-			Type:        sriracha.TypeString,
-			Name:        configMessage,
-			Description: "Error message shown when a post is denied.",
-			Default:     "This board only allows unique posts to be created. Please enter a unique message and try again.",
+			Type:    sriracha.TypeString,
+			Name:    configMessage,
+			Info:    "Error message shown when a post is denied.",
+			Default: "This board only allows unique posts to be created. Please enter a unique message and try again.",
 		}, {
-			Type:        sriracha.TypeBoard,
-			Multiple:    true,
-			Name:        configBoards,
-			Description: "Only allow unique posts to be created in the selected boards.",
+			Type:     sriracha.TypeBoard,
+			Multiple: true,
+			Name:     configBoards,
+			Info:     "Only allow unique posts to be created in the selected boards.",
 		},
 	}
 }

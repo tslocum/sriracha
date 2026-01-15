@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	configWordfilters            = "wordfilters"
-	configWordfiltersDescription = `Line 1 of each wordfilter is the regular expression to search for.
+	configWordfilters     = "wordfilters"
+	configWordfiltersInfo = `Line 1 of each wordfilter is the regular expression to search for.
 Line 2 is the replacement text. Capture groups may be referenced as $1, $2, etc.
 Line 3 is optional, and may be set to a list of board IDs separated by commas.
 When line 3 is set, the wordfilter only applies to the specified boards.
@@ -38,11 +38,11 @@ func (w *Wordfilter) About() string {
 func (w *Wordfilter) Config() []sriracha.PluginConfig {
 	return []sriracha.PluginConfig{
 		{
-			Type:        sriracha.TypeString,
-			Multiple:    true,
-			Name:        configWordfilters,
-			Default:     "wordfilter\ncheesegrater",
-			Description: configWordfiltersDescription,
+			Type:     sriracha.TypeString,
+			Multiple: true,
+			Name:     configWordfilters,
+			Default:  "wordfilter\ncheesegrater",
+			Info:     configWordfiltersInfo,
 		},
 	}
 }

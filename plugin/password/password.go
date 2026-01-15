@@ -10,10 +10,10 @@ import (
 )
 
 const (
-	configMessage              = "message"
-	configMessageDescription   = "Error message shown when a post is denied."
-	configPasswords            = "passwords"
-	configPasswordsDescription = `Line 1 is the text visitors must enter in the password field.
+	configMessage       = "message"
+	configMessageInfo   = "Error message shown when a post is denied."
+	configPasswords     = "passwords"
+	configPasswordsInfo = `Line 1 is the text visitors must enter in the password field.
 Line 2 is optional, and may be set to a list of board IDs separated by commas.
 When line 2 is set, the password only applies to the specified boards.
 When line 2 is blank, the password applies to all boards.
@@ -38,15 +38,15 @@ func (v *Password) About() string {
 func (v *Password) Config() []sriracha.PluginConfig {
 	return []sriracha.PluginConfig{
 		{
-			Type:        sriracha.TypeString,
-			Name:        configMessage,
-			Description: configMessageDescription,
-			Default:     "Sorry, this board is locked. You must supply the correct password to submit a post.",
+			Type:    sriracha.TypeString,
+			Name:    configMessage,
+			Info:    configMessageInfo,
+			Default: "Sorry, this board is locked. You must supply the correct password to submit a post.",
 		}, {
-			Type:        sriracha.TypeString,
-			Multiple:    true,
-			Name:        configPasswords,
-			Description: configPasswordsDescription,
+			Type:     sriracha.TypeString,
+			Multiple: true,
+			Name:     configPasswords,
+			Info:     configPasswordsInfo,
 		},
 	}
 }

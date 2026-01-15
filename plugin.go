@@ -24,12 +24,12 @@ const (
 
 // PluginConfig represents a plugin configuration option.
 type PluginConfig struct {
-	Type        PluginConfigType
-	Multiple    bool
-	Name        string
-	Default     string
-	Description string
-	Value       string
+	Type     PluginConfigType
+	Multiple bool
+	Name     string
+	Info     string
+	Value    string
+	Default  string
 }
 
 func (c PluginConfig) validate() error {
