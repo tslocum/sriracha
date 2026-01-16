@@ -247,6 +247,10 @@ legend {
 	font-family: monospace;
 }
 
+.navtable {
+	display: inline-block;
+}
+
 @font-face {
 	font-family: 'submona';
 	src: url('../font/submona.woff') format('woff');
@@ -270,7 +274,7 @@ legend {
 		font-size: 0.75em;
 	}
 
-	table {
+	table:not(.navtable):not(.userdelete) {
 		width: 100%;
 		table-layout: fixed;
 	}

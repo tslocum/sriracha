@@ -43,7 +43,7 @@
 	</table>
 </form>
 {{if eq .ReplyMode 0}}
-	<table border="1" style="display: inline-block;">
+	<table border="1" class="navtable">
 	<tbody>
 		<tr>
 			<td>{{if gt .Page 0}}<form method="get" action="{{if not $.ModMode}}{{.Board.Path}}{{if eq .Page 1}}index{{else}}{{.Page | MinusOne}}{{end}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}{{if ne .Page 1}}p{{.Page | MinusOne}}{{end}}{{end}}"><input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
@@ -57,7 +57,7 @@
 	</tbody>
 	</table>
 	{{if not $.ModMode}}
-		<table border="1" style="display: inline-block;margin-left: 21px;">
+		<table border="1" class="navtable" style="margin-left: 21px;">
 		<tbody>
 			<tr>
 				<td><form method="get" action="{{.Board.Path}}catalog.html"><input type="submit" value="{{T "Catalog"}}"></form></td>
