@@ -1,3 +1,6 @@
+1.1.9:
+- Improve layout on mobile devices
+
 1.1.8:
 - Add IRC plugin
 - Support banning file hashes
