@@ -193,7 +193,7 @@ func (s *Server) loadPlugin(pluginPath string) error {
 		return filepath.WalkDir(pluginPath, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
 				return err
-			} else if path == pluginPath {
+			} else if d.IsDir() || path == pluginPath {
 				return nil
 			}
 			return s.loadPlugin(path)
