@@ -1,19 +1,27 @@
 {{template "imgboard_begin.gohtml" .}}
 <div class="replymode">{{T "Catalog"}}</div>
-<table class="managetable forumindex" style="margin-top: 5px;">
+<table class="managetable catalogindex">
     {{range $i, $thread := .Threads}}
         {{range $i, $post := $thread}}
             <tr style="height: 100px;">
-                <td>{{.TimestampLabel}}</td>
-                <td style="text-align: center;">
+                <td class="catalogdate">{{.TimestampLabel}}</td>
+                <td class="catalogthumb">
                     {{if ne .Thumb ""}}
-                        <a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}"><img src="{{$post.Board.Path}}thumb/{{.Thumb}}" alt="{{.ID}}" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}" style="max-width: 100px;height: auto;"></a>
+                        <a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}"><img src="{{$post.Board.Path}}thumb/{{.Thumb}}" alt="{{.ID}}" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
                     {{else}}
-                        &mdash;
+                        &mldr;
                     {{end}}
                 </td>
-                <td>{{.Replies | PlusOne}}</td>
-                <td><span class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}No subject{{end}}</a></span></td>
+                <td>
+                    <span class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}No subject{{end}}</a></span>
+                    {{if ne .Replies 0}}
+                        [{{.Replies}}]
+                    {{end}}
+                    {{if ne .Message ""}}
+                        <br>
+                        {{.MessageTruncated 1}}
+                    {{end}}
+                </td>
             </tr>
         {{end}}
     {{end}}

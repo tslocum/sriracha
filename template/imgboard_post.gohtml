@@ -51,7 +51,7 @@
                 {{if not $.ReplyMode}}{{if not $.ModMode}}&nbsp;[<a href="{{$post.Board.Path}}res/{{.Thread}}.html">{{T "Reply"}}</a>]{{else}}&nbsp;[<a href="/sriracha/board/mod/{{$post.Board.ID}}/{{.Thread}}">{{T "View"}}</a>]{{end}}{{end}}
                 <div class="message">
                     {{if eq $.ReplyMode 0}}
-                        {{.MessageTruncated}}
+                        {{.MessageTruncated 0}}
                     {{else}}
                         {{.Message | HTML}}
                     {{end}}
@@ -110,7 +110,7 @@
                         {{end}}
                         <div class="message">
                             {{if eq $.ReplyMode 0}}
-                                {{.MessageTruncated}}
+                                {{.MessageTruncated 0}}
                             {{else}}
                                 {{.Message | HTML}}
                             {{end}}

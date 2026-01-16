@@ -504,20 +504,25 @@ func (p *Post) EmbedInfo() []string {
 	return split
 }
 
-func (p *Post) MessageTruncated() template.HTML {
-	if p.Board.Truncate == 0 {
+func (p *Post) MessageTruncated(lines int) template.HTML {
+	var showOmitted bool
+	if lines == 0 {
+		lines = p.Board.Truncate
+		showOmitted = true
+	}
+	if lines == 0 {
 		return template.HTML(p.Message)
 	}
 
 	count := strings.Count(p.Message, "<br>")
-	if count < p.Board.Truncate {
+	if count < lines {
 		return template.HTML(p.Message)
 	}
 
 	msg := []byte(p.Message)
 	out := &bytes.Buffer{}
 	var start int
-	for i := 0; i < p.Board.Truncate; i++ {
+	for i := 0; i < lines; i++ {
 		index := bytes.Index(msg[start:], []byte("<br>"))
 
 		end := len(msg) - start
@@ -546,7 +551,10 @@ func (p *Post) MessageTruncated() template.HTML {
 		log.Fatal(err)
 	}
 
-	return template.HTML(truncated + `<br><span class="omittedposts">` + gotext.Get("Post truncated. Click Reply to view.") + `</span><br>`)
+	if showOmitted {
+		truncated += `<br><span class="omittedposts">` + gotext.Get("Post truncated. Click Reply to view.") + `</span><br>`
+	}
+	return template.HTML(truncated)
 }
 
 func (p *Post) ExpandHTML() template.HTML {
