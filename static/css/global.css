@@ -247,6 +247,18 @@ legend {
 	font-family: monospace;
 }
 
+details {
+	display: inline-block;
+}
+
+.fadedetails {
+	opacity: 0.25;
+}
+
+.fadedetails[open] {
+	opacity: 1.0;
+}
+
 .navtable {
 	display: inline-block;
 }

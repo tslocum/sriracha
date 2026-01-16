@@ -24,20 +24,19 @@
 <form method="post" action="/sriracha/">
 	<input type="hidden" name="action" value="delete">
 	<input type="hidden" name="board" value="{{.Board.Dir}}">
+	{{template "forum_post.gohtml" .}}
 	{{if and (ne .ReplyMode 0) (not .ModMode)}}
-		<details style="float: right;">
+		<details class="fadedetails">
 			<summary style="margin-right: 2px;">
 				{{T "Delete Post"}}
 			</summary>
-			<div class="replyhl" style="padding: 4px;">
+			<div class="replyhl" style="display: inline-block;padding: 4px;">
 				<input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}"> <input type="submit" name="deletepost" value="{{T "Delete"}}">
 			</div>
 		</details>
 	{{end}}
-	{{template "forum_post.gohtml" .}}
 </form>
-{{if and (not .ModMode) (ne .ReplyMode 0)}}
-    <br>
+{{if and (ne .ReplyMode 0) (not .ModMode)}}
     {{template "forum_postarea.gohtml" .}}
 {{end}}
 <hr>
