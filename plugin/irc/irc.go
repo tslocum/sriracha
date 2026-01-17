@@ -248,11 +248,7 @@ func (i *IRC) scheduleRebuild(delay time.Duration) {
 
 // postMessage formats a message referencing a post.
 func (i *IRC) postMessage(post *sriracha.Post, info string) string {
-	message := info + ": " + post.URL()
-	if post.Subject != "" {
-		message += " " + post.Subject
-	}
-	return message
+	return info + ": " + post.URL()
 }
 
 func (i *IRC) About() string {
