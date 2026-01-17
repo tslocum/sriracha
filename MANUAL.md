@@ -187,8 +187,23 @@ uploads:
 ### Example reverse proxy using caddy (Caddyfile)
 
 ```
+# Serve https://zoopz.org and https://www.zoopz.org
 zoopz.org, www.zoopz.org {
-  reverse_proxy http://localhost:8080
+  # Enable zstd and gzip compression.
+  encode zstd gzip
+
+  # Cache static files.
+  @cachedFiles {
+    path *.aac *.avi *.css *.flac *.gif *.ico *.jpg *.js *.mp3 *.mp4 *.ogg *.opus *.png *.svg *.swf *.wasm *.wav *.webm *.webp *.woff
+  }
+  header @cachedFiles Cache-Control "public, max-age=1209600, immutable"
+
+  # Forward /sriracha requests to Sriracha.
+  reverse_proxy /sriracha* http://localhost:8080
+
+  # Serve root directory.
+  root * /home/sriracha/public_html
+  file_server
 }
 ```
 
