@@ -1295,28 +1295,43 @@ func (s *Server) Run() error {
 		}
 	}()
 
-	if rebuild {
-		fmt.Println("Rebuilding news, overboard and all boards...")
-
-		conn, err := s.dbPool.Acquire(context.Background())
-		if err != nil {
-			return err
-		}
-
-		_, err = conn.Exec(context.Background(), "BEGIN")
-		if err != nil {
-			conn.Release()
-			return fmt.Errorf("failed to begin transaction: %s", err)
-		}
-
-		db := &Database{
-			conn: conn,
-		}
-		s.rebuildAll(db)
-		conn.Release()
-
-		fmt.Println("Finished rebuilding.")
+	// Rebuild everything on startup when explicitly requested and after upgrading.
+	conn, err := s.dbPool.Acquire(context.Background())
+	if err != nil {
+		return err
 	}
+	_, err = conn.Exec(context.Background(), "BEGIN")
+	if err != nil {
+		conn.Release()
+		return fmt.Errorf("failed to begin transaction: %s", err)
+	}
+	db := &Database{
+		conn: conn,
+	}
+	sv := db.GetString("sv") // Sriracha version.
+	if sv != SrirachaVersion {
+		if sv != "" {
+			fmt.Printf("Upgraded from Sriracha version %s to %s\n", sv, SrirachaVersion)
+			rebuild = true
+		}
+		db.SaveString("sv", SrirachaVersion)
+	}
+	if rebuild {
+		published := len(db.allNews(true))
+		if published > 0 {
+			fmt.Println("Rebuilding news...")
+			s.rebuildNews(db)
+		}
+		if s.opt.Overboard != "" {
+			fmt.Println("Rebuilding overboard...")
+			s.writeOverboard(db)
+		}
+		for _, b := range db.AllBoards() {
+			fmt.Printf("Rebuilding %s...\n", b.Path())
+			s.rebuildBoard(db, b)
+		}
+	}
+	conn.Release()
 
 	return s.listen()
 }
