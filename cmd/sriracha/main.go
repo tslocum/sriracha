@@ -3,11 +3,11 @@ package main
 import (
 	"log"
 
-	"codeberg.org/tslocum/sriracha"
+	"codeberg.org/tslocum/sriracha/server"
 )
 
 func main() {
-	s := sriracha.NewServer()
+	s := server.NewServer()
 
 	err := s.Run()
 	if err != nil {

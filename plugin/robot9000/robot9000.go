@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"codeberg.org/tslocum/sriracha"
+	. "codeberg.org/tslocum/sriracha/model"
 )
 
 const (
@@ -36,7 +37,7 @@ func (r *Robot9000) Config() []sriracha.PluginConfig {
 	}
 }
 
-func (r *Robot9000) Update(db *sriracha.Database, key string) error {
+func (r *Robot9000) Update(db sriracha.DB, key string) error {
 	switch key {
 	case configMessage:
 		r.message = fmt.Errorf("%s", db.GetString(configMessage))
@@ -46,7 +47,7 @@ func (r *Robot9000) Update(db *sriracha.Database, key string) error {
 	return nil
 }
 
-func (r *Robot9000) Insert(db *sriracha.Database, post *sriracha.Post) error {
+func (r *Robot9000) Insert(db sriracha.DB, post *Post) error {
 	if post.Message == "" {
 		return nil
 	}

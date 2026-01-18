@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"codeberg.org/tslocum/sriracha"
+	. "codeberg.org/tslocum/sriracha/model"
+	. "codeberg.org/tslocum/sriracha/util"
 )
 
 type Statistics struct{}
@@ -16,7 +18,7 @@ func (s *Statistics) About() string {
 	return "View statistics for each board."
 }
 
-func (s *Statistics) Serve(db *sriracha.Database, a *sriracha.Account, w http.ResponseWriter, r *http.Request) (string, error) {
+func (s *Statistics) Serve(db sriracha.DB, a *Account, w http.ResponseWriter, r *http.Request) (string, error) {
 	boards := db.AllBoards()
 	if len(boards) == 0 {
 		return "No boards.", nil
@@ -57,7 +59,7 @@ func (s *Statistics) Serve(db *sriracha.Database, a *sriracha.Account, w http.Re
 		}
 		sort.Strings(extensions)
 		for _, ext := range extensions {
-			text += fmt.Sprintf("<tr><td>%s</td><td>%d</td><td>%s</td>", ext, postStats[ext], sriracha.FormatFileSize(sizeStats[ext]))
+			text += fmt.Sprintf("<tr><td>%s</td><td>%d</td><td>%s</td>", ext, postStats[ext], FormatFileSize(sizeStats[ext]))
 		}
 		text += "</table>"
 		return text, nil
@@ -90,9 +92,9 @@ func (s *Statistics) Serve(db *sriracha.Database, a *sriracha.Account, w http.Re
 		totalPosts += postCount
 		totalThreads += threadCount
 		b.Unique = db.UniqueUserPosts(b)
-		text += fmt.Sprintf("<tr><td>%s %s</td><td>%d</td><td>%d</td><td>%d</td><td>%s</td>", b.Path(), b.Name, postCount, threadCount, b.Unique, sriracha.FormatFileSize(size))
+		text += fmt.Sprintf("<tr><td>%s %s</td><td>%d</td><td>%d</td><td>%d</td><td>%s</td>", b.Path(), b.Name, postCount, threadCount, b.Unique, FormatFileSize(size))
 	}
-	text += fmt.Sprintf(`<tr><td>Total</td><td>%d</td><td>%d</td><td>%d</td><td>%s</td>`, totalPosts, totalThreads, db.UniqueUserPosts(nil), sriracha.FormatFileSize(totalSize))
+	text += fmt.Sprintf(`<tr><td>Total</td><td>%d</td><td>%d</td><td>%d</td><td>%s</td>`, totalPosts, totalThreads, db.UniqueUserPosts(nil), FormatFileSize(totalSize))
 	text += `</table><br><form method="get" action="statistics/attachment"><input type="submit" value="View Attachment Statistics"></form><br>`
 	return text, nil
 }

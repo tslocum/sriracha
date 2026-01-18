@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"codeberg.org/tslocum/sriracha"
+	. "codeberg.org/tslocum/sriracha/model"
 )
 
 const (
@@ -39,7 +40,7 @@ func (f *Fortune) Config() []sriracha.PluginConfig {
 	}
 }
 
-func (f *Fortune) Post(db *sriracha.Database, post *sriracha.Post) error {
+func (f *Fortune) Post(db sriracha.DB, post *Post) error {
 	var showFortune bool
 	for _, trigger := range db.GetMultiString(configTriggers) {
 		if strings.EqualFold(post.Name, trigger) {

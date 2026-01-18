@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"codeberg.org/tslocum/sriracha"
+	. "codeberg.org/tslocum/sriracha/model"
 )
 
 const (
@@ -51,7 +52,7 @@ func (v *Password) Config() []sriracha.PluginConfig {
 	}
 }
 
-func (v *Password) Update(db *sriracha.Database, key string) error {
+func (v *Password) Update(db sriracha.DB, key string) error {
 	switch key {
 	case configMessage:
 		v.message = fmt.Errorf("%s", db.GetString(configMessage))
@@ -80,7 +81,7 @@ func (v *Password) Update(db *sriracha.Database, key string) error {
 	return nil
 }
 
-func (v *Password) Post(db *sriracha.Database, post *sriracha.Post) error {
+func (v *Password) Post(db sriracha.DB, post *Post) error {
 	var passwordRequired bool
 	var passwordSubmitted bool
 	for _, p := range v.passwords {

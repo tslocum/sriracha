@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"codeberg.org/tslocum/sriracha"
+	. "codeberg.org/tslocum/sriracha/model"
 )
 
 const (
@@ -47,7 +48,7 @@ func (w *Wordfilter) Config() []sriracha.PluginConfig {
 	}
 }
 
-func (w *Wordfilter) Update(db *sriracha.Database, key string) error {
+func (w *Wordfilter) Update(db sriracha.DB, key string) error {
 	if key == configWordfilters {
 		var filters []*filter
 		for _, v := range db.GetMultiString(configWordfilters) {
@@ -82,7 +83,7 @@ func (w *Wordfilter) Update(db *sriracha.Database, key string) error {
 	return nil
 }
 
-func (w *Wordfilter) Post(db *sriracha.Database, post *sriracha.Post) error {
+func (w *Wordfilter) Post(db sriracha.DB, post *Post) error {
 	for _, f := range w.filters {
 		if len(f.Boards) != 0 && !slices.Contains(f.Boards, post.Board.ID) {
 			continue

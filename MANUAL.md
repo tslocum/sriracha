@@ -508,7 +508,7 @@ are also sent for each configuration option when the server initializes.
 // PluginWithUpdate describes the required methods for a plugin subscribing to configuration updates.
 type PluginWithUpdate interface {
 	Plugin
-	Update(db *Database, key string) error
+	Update(db sriracha.DB, key string) error
 }
 ```
 
@@ -522,7 +522,7 @@ plugins have finished processing the post.
 // PluginWithPost describes the required methods for a plugin subscribing to post events.
 type PluginWithPost interface {
 	Plugin
-	Post(db *Database, post *Post) error
+	Post(db sriracha.DB, post *Post) error
 }
 ```
 
@@ -537,7 +537,7 @@ continue processing.
 // PluginWithInsert describes the required methods for a plugin subscribing to insert events.
 type PluginWithInsert interface {
 	Plugin
-	Insert(db *Database, post *Post) error
+	Insert(db sriracha.DB, post *Post) error
 }
 ```
 
@@ -551,7 +551,7 @@ during this event. Modify posts during a Post event instead.
 // PluginWithCreate describes the required methods for a plugin subscribing to create events.
 type PluginWithCreate interface {
 	Plugin
-	Create(db *Database, post *Post) error
+	Create(db sriracha.DB, post *Post) error
 }
 ```
 
@@ -563,7 +563,7 @@ Report events are sent when a post is reported.
 // PluginWithReport describes the required methods for a plugin subscribing to report events.
 type PluginWithReport interface {
 	Plugin
-	Report(db *Database, post *Post) error
+	Report(db sriracha.DB, post *Post) error
 }
 ```
 
@@ -576,7 +576,7 @@ Based on the source of the event, user is "system", "admin" or "mod".
 // PluginWithAudit describes the required methods for a plugin subscribing to audit events.
 type PluginWithAudit interface {
 	Plugin
-	Audit(db *Database, user string, action string, info string) error
+	Audit(db sriracha.DB, user string, action string, info string) error
 }
 ```
 
@@ -591,7 +591,7 @@ to the `http.ResponseWriter` directly and return a blank string.
 // PluginWithServe describes the required methods for a plugin with a web interface.
 type PluginWithServe interface {
 	Plugin
-	Serve(db *Database, a *Account, w http.ResponseWriter, r *http.Request) (string, error)
+	Serve(db sriracha.DB, a *Account, w http.ResponseWriter, r *http.Request) (string, error)
 }
 ```
 

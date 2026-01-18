@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"codeberg.org/tslocum/sriracha"
+	. "codeberg.org/tslocum/sriracha/model"
 	"github.com/frustra/bbcode"
 )
 
@@ -90,7 +91,7 @@ func (f *BBCode) Config() []sriracha.PluginConfig {
 	}
 }
 
-func (f *BBCode) Update(db *sriracha.Database, key string) error {
+func (f *BBCode) Update(db sriracha.DB, key string) error {
 	f.config[key] = db.GetBool(key)
 	f.updated = true
 	return nil
@@ -216,7 +217,7 @@ func (f *BBCode) rebuildCompiler() {
 	})
 }
 
-func (f *BBCode) Post(db *sriracha.Database, post *sriracha.Post) error {
+func (f *BBCode) Post(db sriracha.DB, post *Post) error {
 	if f.updated {
 		f.rebuildCompiler()
 		f.updated = false

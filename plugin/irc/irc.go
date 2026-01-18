@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"codeberg.org/tslocum/sriracha"
+	. "codeberg.org/tslocum/sriracha/model"
 	"github.com/lrstanley/girc"
 )
 
@@ -247,8 +248,8 @@ func (i *IRC) scheduleRebuild(delay time.Duration) {
 }
 
 // postMessage formats a message referencing a post.
-func (i *IRC) postMessage(post *sriracha.Post, info string) string {
-	return info + ": " + post.URL()
+func (i *IRC) postMessage(post *Post, info string) string {
+	return info + ": " + post.URL("")
 }
 
 func (i *IRC) About() string {
@@ -332,7 +333,7 @@ func (i *IRC) Config() []sriracha.PluginConfig {
 	}
 }
 
-func (i *IRC) Update(db *sriracha.Database, key string) error {
+func (i *IRC) Update(db sriracha.DB, key string) error {
 	switch key {
 	case configSecure:
 		i.secure = db.GetBool(key)
@@ -374,12 +375,12 @@ func (i *IRC) Update(db *sriracha.Database, key string) error {
 	return nil
 }
 
-func (i *IRC) Create(db *sriracha.Database, post *sriracha.Post) error {
+func (i *IRC) Create(db sriracha.DB, post *Post) error {
 	client := i.client
 	if client == nil {
 		return nil
 	}
-	if post.Moderated == sriracha.ModeratedHidden {
+	if post.Moderated == ModeratedHidden {
 		for _, ch := range i.approve {
 			if ch == "" {
 				continue
@@ -397,7 +398,7 @@ func (i *IRC) Create(db *sriracha.Database, post *sriracha.Post) error {
 	return nil
 }
 
-func (i *IRC) Report(db *sriracha.Database, post *sriracha.Post) error {
+func (i *IRC) Report(db sriracha.DB, post *Post) error {
 	client := i.client
 	if client == nil {
 		return nil
@@ -411,7 +412,7 @@ func (i *IRC) Report(db *sriracha.Database, post *sriracha.Post) error {
 	return nil
 }
 
-func (i *IRC) Audit(db *sriracha.Database, user string, action string, info string) error {
+func (i *IRC) Audit(db sriracha.DB, user string, action string, info string) error {
 	client := i.client
 	if client == nil {
 		return nil
