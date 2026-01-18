@@ -85,6 +85,9 @@ msgstr ""
 msgid "Delete Post"
 msgstr ""
 
+msgid "Detected banned file."
+msgstr ""
+
 msgid "Detected banned keyword."
 msgstr ""
 
@@ -227,6 +230,9 @@ msgid "Unknown"
 msgstr ""
 
 msgid "View"
+msgstr ""
+
+msgid "View posts by author"
 msgstr ""
 
 msgid "Your post will be shown once it has been approved."

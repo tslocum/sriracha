@@ -93,6 +93,9 @@ msgstr "Удалить и заблокировать навсегда"
 msgid "Delete Post"
 msgstr "Удалить сообщение"
 
+msgid "Detected banned file."
+msgstr ""
+
 msgid "Detected banned keyword."
 msgstr "Обнаружено запрещенное слово."
 
@@ -236,6 +239,9 @@ msgstr "Неизвестен"
 
 msgid "View"
 msgstr "Просмотр"
+
+msgid "View posts by author"
+msgstr ""
 
 msgid "Your post will be shown once it has been approved."
 msgstr "Ваше сообщение будет показано после подтверждения."

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-06-13 09:58+0000\n"
+"PO-Revision-Date: 2026-01-17 10:21+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11.4\n"
+"X-Generator: Weblate 5.15.1\n"
 
 msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
@@ -89,6 +89,9 @@ msgstr "Verwijderen en permanent verbannen"
 
 msgid "Delete Post"
 msgstr "Bericht verwijderen"
+
+msgid "Detected banned file."
+msgstr "Er is een verbannen bestand aangetroffen."
 
 msgid "Detected banned keyword."
 msgstr "Verbannen trefwoord aangetroffen."
@@ -233,6 +236,9 @@ msgstr "Onbekend"
 
 msgid "View"
 msgstr "Bekijken"
+
+msgid "View posts by author"
+msgstr "Berichten van auteur bekijken"
 
 msgid "Your post will be shown once it has been approved."
 msgstr "Je bericht wordt na goedkeuring getoond."

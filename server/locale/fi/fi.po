@@ -90,6 +90,9 @@ msgstr "Poista ja kiellä pysyvästi"
 msgid "Delete Post"
 msgstr "Poista viesti"
 
+msgid "Detected banned file."
+msgstr ""
+
 msgid "Detected banned keyword."
 msgstr "Kielletty avainsana havaittu."
 
@@ -234,6 +237,9 @@ msgstr "Tuntematon"
 
 msgid "View"
 msgstr "Katso"
+
+msgid "View posts by author"
+msgstr ""
 
 msgid "Your post will be shown once it has been approved."
 msgstr "Julkaisusi näytetään, kun se on hyväksytty."

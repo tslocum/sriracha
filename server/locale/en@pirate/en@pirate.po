@@ -90,6 +90,9 @@ msgstr "Shoot & maroon to the bitter end"
 msgid "Delete Post"
 msgstr "Shoot Post"
 
+msgid "Detected banned file."
+msgstr ""
+
 msgid "Detected banned keyword."
 msgstr "Avast! Ye speak blasphemous words punishable BY DEATH!"
 
@@ -235,6 +238,9 @@ msgstr "Dunno"
 
 msgid "View"
 msgstr "Sail"
+
+msgid "View posts by author"
+msgstr ""
 
 msgid "Your post will be shown once it has been approved."
 msgstr "Avast! Yer post will be shown after the captain inspects it."
