@@ -36,10 +36,9 @@
     <table border="0" class="manageform">
         <tr>
             <td class="postblock"><label for="timestamp">Publish Date</label></td>
-            <td><input type="text" name="timestamp" value="{{if ne .Manage.News nil}}{{.Manage.News.Timestamp}}{{end}}"></td>
-            <td>Unix timestamp when this news item was published, or will be published.<br>
-            News items with publish dates in the future are hidden until that date.<br>
-            Set to 0 to hide the news item.</td>
+            <td><input type="text" name="timestamp" value="{{if ne .Manage.News nil}}{{.Manage.News.DateInput}}{{end}}"></td>
+            <td>Date and time when this news item was published, or will be published. Format: <span style="border: 1px solid;padding: 2px;">YYYY/MM/DD HH:MM</span><br>
+            Leave blank to hide until a date is set. News items with publish dates in the future are hidden until that date.</td>
         </tr>
         <tr>
             <td class="postblock"><label for="name">Name</label></td>

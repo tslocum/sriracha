@@ -1,3 +1,8 @@
+1.2.0:
+- Reduce file size of compiled plugins by 50%
+- Specify news item publish dates as YYYY/MM/DD HH:MM
+- Rebuild static HTML files when Sriracha is upgraded
+
 1.1.9:
 - Improve layout on mobile devices
 

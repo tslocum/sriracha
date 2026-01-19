@@ -2,7 +2,7 @@ package sriracha
 
 import . "codeberg.org/tslocum/sriracha/model"
 
-// DB is an interface for plugins to query and interact with the database.
+// DB is an interface used by plugins to query and interact with the database.
 type DB interface {
 	// Config.
 	HaveConfig(key string) bool

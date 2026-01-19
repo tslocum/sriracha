@@ -14,14 +14,24 @@ import (
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-func (s *Server) loadNewsForm(db *database.DB, r *http.Request, n *News, a *Account) {
-	n.Timestamp = FormInt64(r, "timestamp")
+func (s *Server) loadNewsForm(db *database.DB, r *http.Request, n *News, a *Account) error {
+	ts := FormString(r, "timestamp")
+	if ts == "" {
+		n.Timestamp = 0
+	} else {
+		timestamp, err := time.Parse("2006/01/02 15:04", ts)
+		if err != nil {
+			return fmt.Errorf("failed to parse publish date and time (format: YYYY/MM/DD HH:MM)")
+		}
+		n.Timestamp = timestamp.Unix()
+	}
 	if n.Account != nil && n.Account.ID == a.ID {
 		n.Share = FormBool(r, "share")
 	}
 	n.Name = FormString(r, "name")
 	n.Subject = FormString(r, "subject")
 	n.Message = FormString(r, "message")
+	return nil
 }
 
 func (s *Server) serveNews(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
@@ -61,7 +71,11 @@ func (s *Server) serveNews(data *templateData, db *database.DB, w http.ResponseW
 				return
 			}
 			oldNews := *data.Manage.News
-			s.loadNewsForm(db, r, data.Manage.News, data.Account)
+			err = s.loadNewsForm(db, r, data.Manage.News, data.Account)
+			if err != nil {
+				data.ManageError(err.Error())
+				return
+			}
 
 			err := data.Manage.News.Validate()
 			if err != nil {
@@ -90,7 +104,11 @@ func (s *Server) serveNews(data *templateData, db *database.DB, w http.ResponseW
 	if r.Method == http.MethodPost {
 		n := &News{}
 		n.Account = data.Account
-		s.loadNewsForm(db, r, n, data.Account)
+		err = s.loadNewsForm(db, r, n, data.Account)
+		if err != nil {
+			data.ManageError(err.Error())
+			return
+		}
 
 		err := n.Validate()
 		if err != nil {
