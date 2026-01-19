@@ -1,6 +1,7 @@
 body {
 	margin: 0;
 	padding: 8px;
+	font-family: system-ui, Roboto, Helvetica, Arial, sans-serif,
 }
 
 td {
@@ -42,12 +43,6 @@ img {
 	padding: 3px;
 }
 
-.aa {
-	white-space: pre;
-	text-align: left;
-	font-family: IPAMonaPGothic, Mona, 'MS PGothic', YOzFontAA97 !important;
-}
-
 .thumb {
 	border: none;
 	float: left;
@@ -63,12 +58,13 @@ img {
 	padding: 1em 0.5em 1em 0.5em;
 }
 
-.message {
-	margin: 1em 25px;
+.op input[type=checkbox] {
+	margin-left: 0;
 }
 
-.reply .message {
-	margin-bottom: 5px;
+.message {
+	margin: 0.5em 1em;
+	margin-top: 0.25em;
 }
 
 .reflink a {
@@ -192,6 +188,11 @@ legend {
 .banmessage {
 	color: red;
 	font-weight: bold;
+}
+
+.rules {
+	max-width: 468px;
+	font-size: 0.75rem;
 }
 
 .footer {

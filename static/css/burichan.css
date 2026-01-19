@@ -7,20 +7,17 @@ a {
 	background: inherit;
 	color: #34345C;
 	text-decoration: none;
-	font-family: sans-serif;
 }
 
 a:visited {
 	background: inherit;
 	color: #34345C;
 	text-decoration: none;
-	font-family: sans-serif;
 }
 
 a:hover {
 	color: #DD0000;
 	background: inherit;
-	font-family: sans-serif;
 }
 
 hr {
@@ -72,13 +69,6 @@ hr {
 	background: inherit;
 }
 
-.rules {
-	/*font-size:0.7em;*/
-	width: 468px;
-	font-size: 10px;
-	font-family: sans-serif;
-}
-
 .rules li {
 	margin-left: 1em;
 	/*text-indent: 0em;*/
@@ -92,7 +82,6 @@ hr {
 
 .footer {
 	font-size: 10px;
-	font-family: sans-serif;
 }
 
 .passvalid {
@@ -116,7 +105,6 @@ hr {
 .managehead {
 	background: #0F8FE1;
 	color: #000000;
-	font-family: sans-serif;
 	font-size: 14px;
 	padding: 0;
 }
@@ -130,14 +118,12 @@ hr {
 
 .row1 {
 	background: #9AD2F6;
-	font-family: sans-serif;
 	font-size: 12px;
 	color: #000000;
 }
 
 .row2 {
 	background: #FFFFFF;
-	font-family: sans-serif;
 	font-size: 12px;
 	color: #000000;
 }
@@ -148,7 +134,6 @@ hr {
 
 .filesize {
 	font-size: 12px;
-	font-family: sans-serif;
 	text-decoration: underline;
 	/*padding-left:3em;*/
 }
@@ -156,7 +141,6 @@ hr {
 .filetitle {
 	background: inherit;
 	font-size: 18px;
-	font-family: serif;
 	color: #0F0C5D;
 	font-weight: 800;
 }
@@ -164,7 +148,6 @@ hr {
 .postername {
 	background: inherit;
 	font-size: 12px;
-	font-family: serif;
 	color: #117743;
 	font-weight: 800;
 }
@@ -172,7 +155,6 @@ hr {
 .oldpost {
 	background: inherit;
 	font-size: 18px;
-	font-family: serif;
 	color: #0F0C5D;
 	font-weight: 800;
 }
@@ -180,7 +162,6 @@ hr {
 .omittedposts {
 	background: inherit;
 	font-size: 18px;
-	font-family: serif;
 	color: #070707;
 	font-weight: 800;
 }
@@ -188,7 +169,6 @@ hr {
 .reply {
 	background: #D6DAF0 !important;
 	color: #000000 !important;
-	font-family: serif !important;
 	border-right: 1px solid #8c8eab;
 	border-bottom: 1px solid #8c8eab;
 }
@@ -201,7 +181,6 @@ hr {
 .replytitle {
 	background: inherit;
 	font-size: 18px;
-	font-family: serif;
 	color: #0F0C5D;
 	font-weight: 800;
 }
@@ -214,7 +193,6 @@ hr {
 .commentpostername {
 	background: inherit;
 	font-size: 12px;
-	font-family: serif;
 	color: #117743;
 	font-weight: 800;
 }
@@ -222,6 +200,5 @@ hr {
 .thumbnailmsg {
 	background: inherit;
 	font-size: 9px;
-	font-family: sans-serif;
 	color: #000000;
 }

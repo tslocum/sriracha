@@ -1,8 +1,9 @@
 1.2.1:
 - Add style switcher
+- Use default system font
 
 1.2.0:
-- Reduce file size of compiled plugins by 50%
+- Reduce size of compiled plugin files by 50%
 - Specify news item publish dates as YYYY/MM/DD HH:MM
 - Rebuild static HTML files when Sriracha is upgraded
 

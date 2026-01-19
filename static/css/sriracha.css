@@ -55,13 +55,6 @@ hr {
 	color: #e2ebf0;
 }
 
-.rules {
-	/*font-size:0.7em;*/
-	width: 468px;
-	font-size: 10px;
-	font-family: sans-serif;
-}
-
 .rules li {
 	margin-left: 1em;
 	/*text-indent: 0em;*/
@@ -75,7 +68,6 @@ hr {
 
 .footer {
 	font-size: 12px;
-	font-family: serif;
 }
 
 .passvalid {
