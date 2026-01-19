@@ -179,7 +179,7 @@ func (s *Server) registerPlugin(plugin any) {
 func (s *Server) loadPlugin(pluginPath string) error {
 	info, err := os.Stat(pluginPath)
 	if err != nil {
-		return fmt.Errorf("failed to load plugin %s: %s", pluginPath, err)
+		return err
 	} else if info.IsDir() {
 		return filepath.WalkDir(pluginPath, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
@@ -193,17 +193,18 @@ func (s *Server) loadPlugin(pluginPath string) error {
 		return nil
 	}
 
+	const pluginExample = "plugins must declare a function named \"Plugin\" which returns a new instance:\n  func Plugin() any {\n    return &MyPlugin{}\n  }"
 	plugin, err := plugin.Open(pluginPath)
 	if err != nil {
-		return fmt.Errorf("failed to load plugin %s: %s", pluginPath, err)
+		return err
 	}
 	pluginSymbol, err := plugin.Lookup("Plugin")
 	if err != nil {
-		return fmt.Errorf("failed to locate plugin instance: %s\nexample of declaring a plugin instance:\nfunc Plugin() any {\n  return &MyPlugin{}\n}", err)
+		return fmt.Errorf("expected function \"Plugin\" was not found: " + pluginExample)
 	}
 	pluginFunc, ok := pluginSymbol.(func() any)
 	if !ok {
-		return fmt.Errorf("failed to locate plugin instance")
+		return fmt.Errorf("symbol \"Plugin\" was found but does not match the expected function signature: " + pluginExample)
 	}
 	s.registerPlugin(pluginFunc())
 	return err
@@ -213,7 +214,7 @@ func (s *Server) loadPlugins() error {
 	for _, pluginPath := range flag.Args() {
 		err := s.loadPlugin(pluginPath)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to load plugin %s: %s", pluginPath, err)
 		}
 	}
 	return nil
