@@ -1,3 +1,6 @@
+1.2.1:
+- Add style switcher
+
 1.2.0:
 - Reduce file size of compiled plugins by 50%
 - Specify news item publish dates as YYYY/MM/DD HH:MM

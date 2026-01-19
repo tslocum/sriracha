@@ -10,9 +10,9 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1">
 		<title>{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}</title>
 		<link rel="stylesheet" type="text/css" href="/static/css/global.css">
-		<link rel="{{if ne .Style ""}}alternate {{end}}stylesheet" type="text/css" href="/static/css/futaba.css" title="Futaba" id="mainStylesheet">
-		<link rel="{{if ne .Style "burichan"}}alternate {{end}}stylesheet" type="text/css" href="/static/css/burichan.css" title="Burichan">
-		<link rel="{{if ne .Style "sriracha"}}alternate {{end}}stylesheet" type="text/css" href="/static/css/sriracha.css" title="Sriracha">
+		<link rel="{{if ne .Style ""}}alternate {{end}}stylesheet" type="text/css" href="/static/css/futaba.css" title="Futaba"{{if eq .Style ""}} id="mainStylesheet"{{end}}>
+		<link rel="{{if ne .Style "burichan"}}alternate {{end}}stylesheet" type="text/css" href="/static/css/burichan.css" title="Burichan"{{if eq .Style "burichan"}} id="mainStylesheet"{{end}}>
+		<link rel="{{if ne .Style "sriracha"}}alternate {{end}}stylesheet" type="text/css" href="/static/css/sriracha.css" title="Sriracha"{{if eq .Style "sriracha"}} id="mainStylesheet"{{end}}>
 		{{if ne .Opt.Refresh 0}}
 			<script type="text/javascript">
 			var autoRefreshDelay = {{.Opt.Refresh}};
@@ -40,6 +40,12 @@
 			{{end}}
 		{{end}}
 		<div class="adminbar">
+			<select id="switchStyle">
+				<option value="">Style</option>
+				<option value="futaba">Futaba</option>
+				<option value="burichan">Burichan</option>
+				<option value="sriracha">Sriracha</option>
+			</select>
 			{{if and (ne .Board nil) (eq .Board.Type 0)}}
 				[<a href="{{.Board.Path}}catalog.html" style="text-decoration: underline;">{{T "Catalog"}}</a>] &middot;
 			{{end}}
