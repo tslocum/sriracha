@@ -16,7 +16,6 @@ import (
 	"os/signal"
 	"path"
 	"path/filepath"
-	"plugin"
 	"regexp"
 	"slices"
 	"strconv"
@@ -174,49 +173,6 @@ func (s *Server) parseConfig(configFile string) error {
 
 func (s *Server) begin() *database.DB {
 	return database.Begin(s.dbPool, s.config)
-}
-
-func (s *Server) loadPlugin(pluginPath string) error {
-	info, err := os.Stat(pluginPath)
-	if err != nil {
-		return fmt.Errorf("failed to load plugin %s: %s", pluginPath, err)
-	} else if info.IsDir() {
-		return filepath.WalkDir(pluginPath, func(path string, d fs.DirEntry, err error) error {
-			if err != nil {
-				return err
-			} else if d.IsDir() || path == pluginPath {
-				return nil
-			}
-			return s.loadPlugin(path)
-		})
-	} else if !strings.HasSuffix(pluginPath, ".so") {
-		return nil
-	}
-
-	plugin, err := plugin.Open(pluginPath)
-	if err != nil {
-		return fmt.Errorf("failed to load plugin %s: %s", pluginPath, err)
-	}
-	pluginSymbol, err := plugin.Lookup("Plugin")
-	if err != nil {
-		return fmt.Errorf("failed to locate plugin instance: %s\nexample of declaring a plugin instance:\nfunc Plugin() any {\n  return &MyPlugin{}\n}", err)
-	}
-	pluginFunc, ok := pluginSymbol.(func() any)
-	if !ok {
-		return fmt.Errorf("failed to locate plugin instance")
-	}
-	RegisterPlugin(pluginFunc())
-	return err
-}
-
-func (s *Server) loadPlugins() error {
-	for _, pluginPath := range flag.Args() {
-		err := s.loadPlugin(pluginPath)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 func (s *Server) setDefaultServerConfig() error {

@@ -1,10 +1,15 @@
 package server
 
 import (
+	"flag"
 	"fmt"
 	"html/template"
+	"io/fs"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"plugin"
 	"reflect"
 	"strings"
 
@@ -12,8 +17,71 @@ import (
 	. "codeberg.org/tslocum/sriracha/model"
 )
 
-// RegisterPlugin registers a Sriracha plugin to receive any subscribed events.
-func RegisterPlugin(plugin any) {
+type postHandler func(db sriracha.DB, post *Post) error
+
+type postHandlerInfo struct {
+	Name    string
+	Handler postHandler
+}
+
+type insertHandler func(db sriracha.DB, post *Post) error
+
+type insertHandlerInfo struct {
+	Name    string
+	Handler insertHandler
+}
+
+type createHandler func(db sriracha.DB, post *Post) error
+
+type createHandlerInfo struct {
+	Name    string
+	Handler createHandler
+}
+
+type reportHandler func(db sriracha.DB, post *Post) error
+
+type reportHandlerInfo struct {
+	Name    string
+	Handler reportHandler
+}
+
+type auditHandler func(db sriracha.DB, user string, action string, info string) error
+
+type auditHandlerInfo struct {
+	Name    string
+	Handler auditHandler
+}
+
+type serveHandler func(db sriracha.DB, a *Account, w http.ResponseWriter, r *http.Request) (string, error)
+
+type serveHandlerInfo struct {
+	Name    string
+	Handler serveHandler
+}
+
+type pluginInfo struct {
+	ID     int
+	Name   string
+	About  string
+	Help   template.HTML
+	Config []sriracha.PluginConfig
+	Events []string
+	Serve  serveHandler
+}
+
+var (
+	allPlugins              []any
+	allPluginInfo           []*pluginInfo
+	allPluginPostHandlers   []postHandlerInfo
+	allPluginInsertHandlers []insertHandlerInfo
+	allPluginCreateHandlers []createHandlerInfo
+	allPluginReportHandlers []reportHandlerInfo
+	allPluginAuditHandlers  []auditHandlerInfo
+	allPluginServeHandlers  []serveHandlerInfo
+)
+
+// registerPlugin registers a Sriracha plugin to start receiving events.
+func (s *Server) registerPlugin(plugin any) {
 	if srirachaServer == nil {
 		panic("Sriracha server not yet started")
 	}
@@ -108,65 +176,45 @@ func RegisterPlugin(plugin any) {
 	allPluginInfo = append(allPluginInfo, info)
 }
 
-type postHandler func(db sriracha.DB, post *Post) error
+func (s *Server) loadPlugin(pluginPath string) error {
+	info, err := os.Stat(pluginPath)
+	if err != nil {
+		return fmt.Errorf("failed to load plugin %s: %s", pluginPath, err)
+	} else if info.IsDir() {
+		return filepath.WalkDir(pluginPath, func(path string, d fs.DirEntry, err error) error {
+			if err != nil {
+				return err
+			} else if d.IsDir() || path == pluginPath {
+				return nil
+			}
+			return s.loadPlugin(path)
+		})
+	} else if !strings.HasSuffix(pluginPath, ".so") {
+		return nil
+	}
 
-type postHandlerInfo struct {
-	Name    string
-	Handler postHandler
+	plugin, err := plugin.Open(pluginPath)
+	if err != nil {
+		return fmt.Errorf("failed to load plugin %s: %s", pluginPath, err)
+	}
+	pluginSymbol, err := plugin.Lookup("Plugin")
+	if err != nil {
+		return fmt.Errorf("failed to locate plugin instance: %s\nexample of declaring a plugin instance:\nfunc Plugin() any {\n  return &MyPlugin{}\n}", err)
+	}
+	pluginFunc, ok := pluginSymbol.(func() any)
+	if !ok {
+		return fmt.Errorf("failed to locate plugin instance")
+	}
+	s.registerPlugin(pluginFunc())
+	return err
 }
 
-type insertHandler func(db sriracha.DB, post *Post) error
-
-type insertHandlerInfo struct {
-	Name    string
-	Handler insertHandler
+func (s *Server) loadPlugins() error {
+	for _, pluginPath := range flag.Args() {
+		err := s.loadPlugin(pluginPath)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
-
-type createHandler func(db sriracha.DB, post *Post) error
-
-type createHandlerInfo struct {
-	Name    string
-	Handler createHandler
-}
-
-type reportHandler func(db sriracha.DB, post *Post) error
-
-type reportHandlerInfo struct {
-	Name    string
-	Handler reportHandler
-}
-
-type auditHandler func(db sriracha.DB, user string, action string, info string) error
-
-type auditHandlerInfo struct {
-	Name    string
-	Handler auditHandler
-}
-
-type serveHandler func(db sriracha.DB, a *Account, w http.ResponseWriter, r *http.Request) (string, error)
-
-type serveHandlerInfo struct {
-	Name    string
-	Handler serveHandler
-}
-
-type pluginInfo struct {
-	ID     int
-	Name   string
-	About  string
-	Help   template.HTML
-	Config []sriracha.PluginConfig
-	Events []string
-	Serve  serveHandler
-}
-
-var (
-	allPlugins              []any
-	allPluginInfo           []*pluginInfo
-	allPluginPostHandlers   []postHandlerInfo
-	allPluginInsertHandlers []insertHandlerInfo
-	allPluginCreateHandlers []createHandlerInfo
-	allPluginReportHandlers []reportHandlerInfo
-	allPluginAuditHandlers  []auditHandlerInfo
-	allPluginServeHandlers  []serveHandlerInfo
-)
