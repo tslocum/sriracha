@@ -407,13 +407,13 @@ directory. Plugin API documentation is available via [godoc](https://pkg.go.dev/
 
 | Plugin | Description |
 | -- | -- |
-| BBCode | Format BBCode in post messages. |
-| Fortune | Give your posters some good luck (or bad). |
-| IRC | Send server event notifications. |
-| Password | Require specific passwords to post. |
-| Robot9000 | Require post messages to be unique. |
-| Statistics | View statistics for each board. |
-| Wordfilter | Find and replace text in post messages. |
+| [BBCode](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/bbcode/bbcode.go) | Format BBCode in post messages. |
+| [Fortune](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/fortune/fortune.go) | Give your posters some good luck (or bad). |
+| [IRC](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/irc/irc.go) | Send server event notifications. |
+| [Password](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/password/password.go) | Require specific passwords to post. |
+| [Robot9000](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/robot9000/robot9000.go) | Require post messages to be unique. |
+| [Statistics](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/statistics/statistics.go) | View statistics for each board. |
+| [Wordfilter](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/wordfilter/wordfilter.go) | Find and replace text in post messages. |
 
 ### Using plugins
 
