@@ -27,6 +27,7 @@ var argon2idParameters = &argon2id.Params{
 	KeyLength:   64,
 }
 
+// DB represents a database connection.
 type DB struct {
 	conn   *pgxpool.Conn
 	Plugin string
