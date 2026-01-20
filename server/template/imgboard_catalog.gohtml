@@ -13,7 +13,7 @@
                     {{end}}
                 </td>
                 <td>
-                    <span class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}No subject{{end}}</a></span>
+                    <span class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}{{T "No subject"}}{{end}}</a></span>
                     {{if ne .Replies 0}}
                         [{{.Replies}}]
                     {{end}}

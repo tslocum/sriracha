@@ -82,6 +82,9 @@ msgstr ""
 msgid "Create Thread"
 msgstr ""
 
+msgid "Create a new drawing."
+msgstr ""
+
 msgid "Current"
 msgstr ""
 
@@ -340,6 +343,9 @@ msgid "No post selected."
 msgstr ""
 
 msgid "No reason provided."
+msgstr ""
+
+msgid "No subject"
 msgstr ""
 
 msgid "None"

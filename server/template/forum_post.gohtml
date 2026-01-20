@@ -5,7 +5,7 @@
 				<tr>
 					<td>{{.TimestampLabel}}</td>
 					<td>{{.Replies | PlusOne}}</td>
-					<td><span class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}No subject{{end}}</a></span></td>
+					<td><span class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}{{T "No subject"}}{{end}}</a></span></td>
 				</tr>
 			{{end}}
 		{{end}}
@@ -14,7 +14,7 @@
 			{{range $i, $post := $thread}}
 				{{if eq $i 0}}
 				<tr>
-					<td style="padding-bottom: 5px;"><div class="filetitle">{{if ne .Subject ""}}{{.Subject}}{{else}}No subject{{end}}</div></td>
+					<td style="padding-bottom: 5px;"><div class="filetitle">{{if ne .Subject ""}}{{.Subject}}{{else}}{{T "No subject"}}{{end}}</div></td>
 				</tr>
 				{{end}}
 				<tr>
