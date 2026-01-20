@@ -9,8 +9,8 @@ RUN apk add --no-cache tzdata go
 # Copy sriracha source.
 COPY . /usr/src/sriracha
 
-# Compile sriracha and all plugins.
-RUN cd /usr/src/sriracha/cmd/sriracha && go build -trimpath -x -ldflags "-s -w -X 'codeberg.org/tslocum/sriracha.SrirachaVersion=${version:-DEV}'" && for dir in /usr/src/sriracha/plugin/*; do (cd "$dir" && go build -trimpath -x -ldflags "-s -w" -buildmode=plugin); done
+# Build sriracha and plugins.
+RUN cd /usr/src/sriracha/cmd/sriracha && echo "Fetching dependencies..." && go mod download && echo "Building sriracha..." && go build -trimpath -ldflags "-s -w -X 'codeberg.org/tslocum/sriracha.SrirachaVersion=${version:-DEV}'" && for dir in /usr/src/sriracha/plugin/*; do (echo "Building plugin $(basename $dir)..." && cd "$dir" && go build -trimpath -ldflags "-s -w" -buildmode=plugin); done
 
 FROM alpine:3.23.2
 
