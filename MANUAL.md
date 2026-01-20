@@ -14,8 +14,6 @@
 
 [Go to top](#sections)
 
-Only Linux, FreeBSD and macOS are supported.
-
 ### 1. Create root directory
 
 Create a directory where board files will be written to. A new sub directory is
@@ -34,11 +32,21 @@ and set a password.
 
 ### 4. Download Sriracha
 
+#### Native
+
 Download the [latest release](https://codeberg.org/tslocum/sriracha/releases) of
-Sriracha for your platform.
+Sriracha for your platform. Only Linux, FreeBSD and macOS are supported.
 
 Linux release archives include all official plugins. To use plugins on FreeBSD
-or macOS, compile Sriracha and any desired plugins using the release source code.
+or macOS, compile Sriracha and its plugins using the release source code.
+
+#### Docker
+
+To run Sriracha inside a container using [Docker](https://www.docker.com), use an [official image](https://hub.docker.com/r/tslocum/sriracha/tags)
+or build an image locally using the included [Dockerfile](https://codeberg.org/tslocum/sriracha/src/branch/main/Dockerfile).
+
+To deploy Sriracha using [Docker Compose](https://docs.docker.com/compose/), use the included
+[docker-compose.yml](https://codeberg.org/tslocum/sriracha/src/branch/main/docker-compose.yml).
 
 ## Configure
 
@@ -206,14 +214,6 @@ zoopz.org, www.zoopz.org {
   file_server
 }
 ```
-
-### Docker support
-
-To run Sriracha inside a container using [Docker](https://www.docker.com), use an [official image](https://hub.docker.com/r/tslocum/sriracha/tags)
-or build an image locally using the included [Dockerfile](https://codeberg.org/tslocum/sriracha/src/branch/main/Dockerfile).
-
-To deploy Sriracha using [Docker Compose](https://docs.docker.com/compose/), use the included
-[docker-compose.yml](https://codeberg.org/tslocum/sriracha/src/branch/main/docker-compose.yml).
 
 ## Migrate
 
