@@ -42,7 +42,7 @@ func (s *Server) serveReport(db *database.DB, w http.ResponseWriter, r *http.Req
 			Board:     post.Board,
 			Post:      post,
 			Timestamp: time.Now().Unix(),
-			IP:        hashIP(r),
+			IP:        s.hashIP(r),
 		}
 		db.AddReport(report)
 	}

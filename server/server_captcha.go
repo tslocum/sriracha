@@ -27,7 +27,7 @@ func (s *Server) serveCAPTCHA(db *database.DB, w http.ResponseWriter, r *http.Re
 		refreshLimit  = 3
 	)
 
-	ipHash := hashIP(r)
+	ipHash := s.hashIP(r)
 
 	c := db.GetCAPTCHA(ipHash)
 	if c != nil {

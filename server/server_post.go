@@ -265,7 +265,7 @@ func (s *Server) loadPostForm(db *database.DB, r *http.Request, p *Post) error {
 	var fileExt string
 	var fileThumb string
 	if p.Board.HasUpload(p.FileMIME) {
-		for _, u := range srirachaServer.config.UploadTypes() {
+		for _, u := range s.config.UploadTypes() {
 			if u.MIME == p.FileMIME {
 				fileExt = u.Ext
 				fileThumb = u.Thumb
@@ -462,7 +462,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 		Moderated: 1,
 	}
 
-	post.IP = hashIP(r)
+	post.IP = s.hashIP(r)
 
 	if b.Delay != 0 {
 		lastPost := db.LastPostByIP(post.Board, post.IP)
@@ -881,7 +881,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 	}
 
 	if post.Password != "" {
-		post.Password = hashData(post.Password)
+		post.Password = s.hashData(post.Password)
 	}
 
 	if !staffPost && (b.Approval == ApprovalAll || (b.Approval == ApprovalFile && post.File != "")) {
@@ -926,7 +926,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			Board:     b,
 			Post:      post,
 			Timestamp: time.Now().Unix(),
-			IP:        hashIP(r),
+			IP:        s.hashIP(r),
 		}
 		db.AddReport(report)
 	}

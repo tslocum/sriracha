@@ -61,6 +61,7 @@ type templateData struct {
 
 	// Calculated fields.
 	IndexBoards []*Board
+	tpl         *template.Template
 }
 
 func (data *templateData) Style() string {
@@ -99,7 +100,6 @@ func (data *templateData) execute(w io.Writer) {
 	if data.Template == "" {
 		return
 	}
-	data.Opt = &srirachaServer.opt
 
 	if data.Account != nil {
 		data.IndexBoards = data.Boards
@@ -144,7 +144,7 @@ func (data *templateData) execute(w io.Writer) {
 		funcMap = templateFuncMaps[""]
 	}
 
-	err := srirachaServer.tpl.Funcs(funcMap).ExecuteTemplate(w, data.Template+".gohtml", data)
+	err := data.tpl.Funcs(funcMap).ExecuteTemplate(w, data.Template+".gohtml", data)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -221,8 +221,12 @@ func newTemplateFuncMap(locale string) template.FuncMap {
 	return f
 }
 
-func newTemplateData() *templateData {
+func (s *Server) newTemplateData() *templateData {
 	return &templateData{
-		Manage: &manageData{},
+		Manage: &manageData{
+			Plugins: allPluginInfo,
+		},
+		Opt: &s.opt,
+		tpl: s.tpl,
 	}
 }

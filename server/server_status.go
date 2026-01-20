@@ -48,7 +48,7 @@ func (s *Server) serveStatus(data *templateData, db *database.DB, w http.Respons
 		if data.forbidden(w, RoleSuperAdmin) {
 			return
 		}
-		data.Info = "Remote address: " + requestIP(r)
+		data.Info = "Remote address: " + s.requestIP(r)
 	}
 
 	// Allow super-administrators to rebuild post nameblocks.

@@ -82,10 +82,6 @@ var (
 
 // registerPlugin registers a Sriracha plugin to start receiving events.
 func (s *Server) registerPlugin(plugin any) {
-	if srirachaServer == nil {
-		panic("Sriracha server not yet started")
-	}
-
 	info := &pluginInfo{
 		ID: len(allPlugins) + 1,
 	}

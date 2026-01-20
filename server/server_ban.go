@@ -116,7 +116,7 @@ func (s *Server) serveBan(data *templateData, db *database.DB, w http.ResponseWr
 			}
 			b.IP = "r " + pattern
 		} else if ip != "" {
-			b.IP = _hashIP(ip)
+			b.IP = s._hashIP(ip)
 		}
 
 		err = b.Validate()

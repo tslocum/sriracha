@@ -42,8 +42,6 @@ var SrirachaVersion = "DEV"
 //go:embed locale
 var localeFS embed.FS
 
-var srirachaServer *Server
-
 const (
 	defaultServerSiteName     = "Sriracha"
 	defaultServerSiteHome     = "/"
@@ -124,8 +122,7 @@ type Server struct {
 }
 
 func NewServer() *Server {
-	srirachaServer = &Server{}
-	return srirachaServer
+	return &Server{}
 }
 
 func (s *Server) parseConfig(configFile string) error {
@@ -484,7 +481,7 @@ func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Reque
 			Path:  "/",
 		})
 		http.Redirect(w, r, "/sriracha/", http.StatusFound)
-		return newTemplateData()
+		return s.newTemplateData()
 	}
 
 	if r.URL.Path == "/sriracha/" || r.URL.Path == "/sriracha" {
@@ -496,7 +493,7 @@ func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Reque
 			if len(password) != 0 {
 				// Verify CAPTCHA.
 				var solved bool
-				ipHash := hashIP(r)
+				ipHash := s.hashIP(r)
 				challenge := db.GetCAPTCHA(ipHash)
 				if challenge != nil {
 					solution := FormString(r, "captcha")
@@ -507,13 +504,10 @@ func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Reque
 					}
 				}
 				if !solved {
-					return &templateData{
-						Info:     "Invalid CAPTCHA.",
-						Template: "manage_error",
-						Manage: &manageData{
-							Plugins: allPluginInfo,
-						},
-					}
+					data := s.newTemplateData()
+					data.Info = "Invalid CAPTCHA."
+					data.Template = "manage_error"
+					return data
 				}
 
 				// Verify username and password.
@@ -527,23 +521,17 @@ func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Reque
 					if s.config.ImportMode {
 						http.Redirect(w, r, "/sriracha/import/", http.StatusFound)
 					}
-					return &templateData{
-						Account: account,
-						Manage: &manageData{
-							Plugins: allPluginInfo,
-						},
-					}
+					data := s.newTemplateData()
+					data.Account = account
+					return data
 				}
 			}
 		}
 		if failedLogin {
-			return &templateData{
-				Info:     "Invalid username or password.",
-				Template: "manage_error",
-				Manage: &manageData{
-					Plugins: allPluginInfo,
-				},
-			}
+			data := s.newTemplateData()
+			data.Info = "Invalid username or password."
+			data.Template = "manage_error"
+			return data
 		}
 	}
 
@@ -551,15 +539,12 @@ func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Reque
 	if len(cookies) > 0 {
 		account := db.AccountBySessionKey(cookies[0].Value)
 		if account != nil {
-			return &templateData{
-				Account: account,
-				Manage: &manageData{
-					Plugins: allPluginInfo,
-				},
-			}
+			data := s.newTemplateData()
+			data.Account = account
+			return data
 		}
 	}
-	return newTemplateData()
+	return s.newTemplateData()
 }
 
 func (s *Server) writeThread(db *database.DB, board *Board, postID int) {
@@ -577,14 +562,12 @@ func (s *Server) writeThread(db *database.DB, board *Board, postID int) {
 		log.Fatal(err)
 	}
 
-	data := &templateData{
-		Board:     board,
-		Boards:    db.AllBoards(),
-		Threads:   [][]*Post{posts},
-		ReplyMode: postID,
-		Manage:    &manageData{},
-		Template:  "board_page",
-	}
+	data := s.newTemplateData()
+	data.Board = board
+	data.Boards = db.AllBoards()
+	data.Threads = [][]*Post{posts}
+	data.ReplyMode = postID
+	data.Template = "board_page"
 	data.execute(f)
 }
 
@@ -593,14 +576,13 @@ func (s *Server) writeIndexes(db *database.DB, board *Board) {
 		board.Unique = db.UniqueUserPosts(board)
 	}
 
+	data := s.newTemplateData()
+	data.Board = board
+	data.Boards = db.AllBoards()
+	data.ReplyMode = 1
+	data.Template = "board_catalog"
+
 	threadInfo := db.AllThreads(board, true)
-	data := &templateData{
-		Board:     board,
-		Boards:    db.AllBoards(),
-		ReplyMode: 1,
-		Manage:    &manageData{},
-		Template:  "board_catalog",
-	}
 
 	// Write catalog.
 	if board.Type == TypeImageboard {
@@ -673,14 +655,13 @@ func (s *Server) writeOverboard(db *database.DB) {
 		Replies: s.opt.OverboardReplies,
 	}
 
+	data := s.newTemplateData()
+	data.Board = overboard
+	data.Boards = db.AllBoards()
+	data.ReplyMode = 1
+	data.Template = "board_catalog"
+
 	threadInfo := db.AllThreads(nil, true)
-	data := &templateData{
-		Board:     overboard,
-		Boards:    db.AllBoards(),
-		ReplyMode: 1,
-		Manage:    &manageData{},
-		Template:  "board_catalog",
-	}
 
 	// Write catalog.
 	if overboard.Type == TypeImageboard {
@@ -770,14 +751,12 @@ func (s *Server) writeNewsItem(db *database.DB, n *News) {
 		return
 	}
 
-	data := &templateData{
-		Boards:   db.AllBoards(),
-		Manage:   &manageData{},
-		Template: "news",
-		AllNews:  []*News{n},
-		Pages:    1,
-		Extra:    "view",
-	}
+	data := s.newTemplateData()
+	data.Boards = db.AllBoards()
+	data.Template = "news"
+	data.AllNews = []*News{n}
+	data.Pages = 1
+	data.Extra = "view"
 
 	itemFile, err := os.OpenFile(filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", n.ID)), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
@@ -789,11 +768,9 @@ func (s *Server) writeNewsItem(db *database.DB, n *News) {
 
 func (s *Server) writeNewsIndexes(db *database.DB) {
 	allNews := db.AllNews(true)
-	data := &templateData{
-		Boards:   db.AllBoards(),
-		Manage:   &manageData{},
-		Template: "news",
-	}
+	data := s.newTemplateData()
+	data.Boards = db.AllBoards()
+	data.Template = "news"
 
 	const newsCount = 10
 	data.Pages = pageCount(len(allNews), newsCount)
@@ -852,7 +829,7 @@ func (s *Server) reloadBans(db *database.DB) {
 }
 
 func (s *Server) serveSWF(w http.ResponseWriter, r *http.Request) {
-	data := newTemplateData()
+	data := s.newTemplateData()
 	data.Template = "swf"
 	data.Extra = strings.TrimPrefix(r.URL.Path, "/sriracha/swf")
 	data.execute(w)
@@ -994,7 +971,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check IP range ban.
-	ip := requestIP(r)
+	ip := s.requestIP(r)
 	for ban, pattern := range s.rangeBans {
 		if pattern.MatchString(ip) {
 			data := s.buildData(db, w, r)
@@ -1007,7 +984,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 
 	// Check static IP ban.
 	if !handled {
-		ban := db.BanByIP(hashIP(r))
+		ban := db.BanByIP(s.hashIP(r))
 		if ban != nil {
 			data := s.buildData(db, w, r)
 			data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (Ban #%d)", ban.ID))
@@ -1240,8 +1217,8 @@ func (s *Server) Run() error {
 	return s.listen()
 }
 
-func hashData(data string) string {
-	checksum := sha512.Sum384([]byte(data + srirachaServer.config.SaltData))
+func (s *Server) hashData(data string) string {
+	checksum := sha512.Sum384([]byte(data + s.config.SaltData))
 	return base64.URLEncoding.EncodeToString(checksum[:])
 }
 
@@ -1261,19 +1238,17 @@ func parseAddress(address string) string {
 	return address
 }
 
-func _hashIP(address string) string {
+func (s *Server) _hashIP(address string) string {
 	if address == "" {
 		return ""
 	}
-	return hashData(parseAddress(address))
+	return s.hashData(parseAddress(address))
 }
 
-func requestIP(r *http.Request) string {
+func (s *Server) requestIP(r *http.Request) string {
 	var address string
-	if srirachaServer == nil {
-		log.Panicf("sriracha server not running")
-	} else if srirachaServer.config.Header != "" {
-		values := r.Header[srirachaServer.config.Header]
+	if s.config.Header != "" {
+		values := r.Header[s.config.Header]
 		if len(values) > 0 {
 			address = values[0]
 		}
@@ -1286,8 +1261,8 @@ func requestIP(r *http.Request) string {
 	return parseAddress(address)
 }
 
-func hashIP(r *http.Request) string {
-	return _hashIP(requestIP(r))
+func (s *Server) hashIP(r *http.Request) string {
+	return s._hashIP(s.requestIP(r))
 }
 
 func pluginByName(name string) (any, *pluginInfo) {
