@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net"
 	"os"
+	"runtime"
 	"slices"
 	"strconv"
 	"strings"
@@ -12,6 +14,7 @@ import (
 
 	"codeberg.org/tslocum/sriracha"
 	. "codeberg.org/tslocum/sriracha/model"
+	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/lrstanley/girc"
 )
 
@@ -81,7 +84,8 @@ type IRC struct {
 	rebuild   chan struct{}
 	rebuildAt time.Time
 
-	started bool
+	started   bool
+	startedAt time.Time
 }
 
 // connect dials the server.
@@ -141,6 +145,34 @@ func (i *IRC) joinChannels() {
 	}
 }
 
+func (i *IRC) onConnect(_ *girc.Client, _ girc.Event) {
+	// Send user-defined commands.
+	for _, cmd := range strings.Split(i.command, "\n") {
+		cmd = strings.TrimPrefix(cmd, "/")
+		if cmd == "" {
+			continue
+		}
+		i.client.Cmd.SendRawNoSplit(cmd)
+		time.Sleep(commandDelay)
+	}
+
+	// Join channels.
+	i.joinChannels()
+}
+
+func (i *IRC) onPrivMsg(_ *girc.Client, e girc.Event) {
+	msg := strings.ToLower(strings.TrimSpace(e.Last()))
+	if msg != ".status" && msg != ".s" {
+		return
+	}
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	memoryUsage := FormatFileSize(int64(m.Sys))
+
+	status := fmt.Sprintf("Goroutines: %d - Memory: %s - Uptime: %s", runtime.NumGoroutine(), memoryUsage, time.Since(i.startedAt).Round(time.Second))
+	i.client.Cmd.Reply(e, girc.Fmt(status))
+}
+
 // rebuildClient disconnects the existing client (when connected) then builds
 // and connects a new client.
 func (i *IRC) rebuildClient() {
@@ -194,20 +226,8 @@ func (i *IRC) rebuildClient() {
 	i.client = girc.New(config)
 
 	// Set handlers.
-	i.client.Handlers.Add(girc.CONNECTED, func(c *girc.Client, _ girc.Event) {
-		// Send user-defined commands.
-		for _, cmd := range strings.Split(i.command, "\n") {
-			cmd = strings.TrimPrefix(cmd, "/")
-			if cmd == "" {
-				continue
-			}
-			i.client.Cmd.SendRawNoSplit(cmd)
-			time.Sleep(commandDelay)
-		}
-
-		// Join channels.
-		i.joinChannels()
-	})
+	i.client.Handlers.Add(girc.CONNECTED, i.onConnect)
+	i.client.Handlers.Add(girc.PRIVMSG, i.onPrivMsg)
 
 	// Connect client.
 	go i.connect()
@@ -258,6 +278,7 @@ func (i *IRC) About() string {
 		i.keys = make(map[string]string)
 		go i.handleRebuild()
 		i.started = true
+		i.startedAt = time.Now()
 	}
 	return about
 }
