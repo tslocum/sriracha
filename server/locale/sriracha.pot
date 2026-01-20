@@ -16,10 +16,19 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
+msgid "Add Board"
+msgstr ""
+
 msgid "Admin"
 msgstr ""
 
+msgid "Appearance"
+msgstr ""
+
 msgid "Artwork title:"
+msgstr ""
+
+msgid "Attachments"
 msgstr ""
 
 msgid "Author"
@@ -28,7 +37,13 @@ msgstr ""
 msgid "Auto Refresh"
 msgstr ""
 
+msgid "Backlinks"
+msgstr ""
+
 msgid "Ban"
+msgstr ""
+
+msgid "Ban file"
 msgstr ""
 
 msgid "Bans"
@@ -81,6 +96,12 @@ msgstr ""
 msgid "Default"
 msgstr ""
 
+msgid "Default Name"
+msgstr ""
+
+msgid "Delay"
+msgstr ""
+
 msgid "Delete"
 msgstr ""
 
@@ -114,10 +135,16 @@ msgstr ""
 msgid "Delete Post"
 msgstr ""
 
+msgid "Description"
+msgstr ""
+
 msgid "Detected banned file."
 msgstr ""
 
 msgid "Detected banned keyword."
+msgstr ""
+
+msgid "Dir"
 msgstr ""
 
 msgid "Directory"
@@ -141,19 +168,46 @@ msgstr ""
 msgid "Exit"
 msgstr ""
 
+msgid "Expires"
+msgstr ""
+
 msgid "Failed to embed media."
 msgstr ""
 
 msgid "File"
 msgstr ""
 
+msgid "File Types"
+msgstr ""
+
 msgid "For post and file deletion."
+msgstr ""
+
+msgid "Forum"
 msgstr ""
 
 msgid "Hide until approved"
 msgstr ""
 
+msgid "ID"
+msgstr ""
+
+msgid "IP Address"
+msgstr ""
+
+msgid "Idenifiers"
+msgstr ""
+
+msgid "Imageboard"
+msgstr ""
+
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
+msgstr ""
+
+msgid "Index Replies"
+msgstr ""
+
+msgid "Index Threads"
 msgstr ""
 
 msgid "Incorrect CAPTCHA text. Please try again."
@@ -162,7 +216,25 @@ msgstr ""
 msgid "Incorrect password."
 msgstr ""
 
+msgid "Instance Limit"
+msgstr ""
+
 msgid "Keywords"
+msgstr ""
+
+msgid "Last Active"
+msgstr ""
+
+msgid "Lift"
+msgstr ""
+
+msgid "Lift File Ban"
+msgstr ""
+
+msgid "Locale"
+msgstr ""
+
+msgid "Log In"
 msgstr ""
 
 msgid "Log Out"
@@ -177,6 +249,30 @@ msgstr ""
 msgid "Manage mode"
 msgstr ""
 
+msgid "Max Email Length"
+msgstr ""
+
+msgid "Max Message Length"
+msgstr ""
+
+msgid "Max Name Length"
+msgstr ""
+
+msgid "Max Reply File Size"
+msgstr ""
+
+msgid "Max Replies"
+msgstr ""
+
+msgid "Max Subject Length"
+msgstr ""
+
+msgid "Max Thread File Size"
+msgstr ""
+
+msgid "Max Threads"
+msgstr ""
+
 msgid "Maximum file size allowed is %s."
 msgstr ""
 
@@ -184,6 +280,24 @@ msgid "Memory"
 msgstr ""
 
 msgid "Message"
+msgstr ""
+
+msgid "Min Email Length"
+msgstr ""
+
+msgid "Min Message Length"
+msgstr ""
+
+msgid "Min Name Length"
+msgstr ""
+
+msgid "Min Subject Length"
+msgstr ""
+
+msgid "Min Reply File Size"
+msgstr ""
+
+msgid "Min Thread File Size"
 msgstr ""
 
 msgid "Mod"
@@ -196,6 +310,9 @@ msgid "Mod mode: View"
 msgstr ""
 
 msgid "Name"
+msgstr ""
+
+msgid "Never"
 msgstr ""
 
 msgid "New"
@@ -220,6 +337,9 @@ msgid "No pending moderation requests."
 msgstr ""
 
 msgid "No post selected."
+msgstr ""
+
+msgid "No reason provided."
 msgstr ""
 
 msgid "None"
@@ -261,6 +381,9 @@ msgstr ""
 msgid "Previous"
 msgstr ""
 
+msgid "Reason"
+msgstr ""
+
 msgid "Replies"
 msgstr ""
 
@@ -279,13 +402,25 @@ msgstr ""
 msgid "Reset all settings?"
 msgstr ""
 
+msgid "Restrict New Posts"
+msgstr ""
+
 msgid "Reports"
 msgstr ""
 
 msgid "Reported No.%d"
 msgstr ""
 
+msgid "Require Approval"
+msgstr ""
+
 msgid "Return"
+msgstr ""
+
+msgid "Role"
+msgstr ""
+
+msgid "Rules"
 msgstr ""
 
 msgid "Settings"
@@ -321,6 +456,15 @@ msgstr ""
 msgid "Threads"
 msgstr ""
 
+msgid "Thumbnail Height"
+msgstr ""
+
+msgid "Thumbnail Width"
+msgstr ""
+
+msgid "Truncate"
+msgstr ""
+
 msgid "Type"
 msgstr ""
 
@@ -333,6 +477,9 @@ msgstr ""
 msgid "Uptime"
 msgstr ""
 
+msgid "Username"
+msgstr ""
+
 msgid "Version"
 msgstr ""
 
@@ -340,6 +487,12 @@ msgid "View"
 msgstr ""
 
 msgid "View posts by author"
+msgstr ""
+
+msgid "Visibility"
+msgstr ""
+
+msgid "Word Break"
 msgstr ""
 
 msgid "Your post will be shown once it has been approved."

@@ -1,11 +1,11 @@
 {{template "manage_begin.gohtml" .}}
-<h2 class="managetitle">Accounts</h2>
+<h2 class="managetitle">{{T "Accounts"}}</h2>
 {{if ne (len .Manage.Accounts) 0}}
     <table class="managetable">
         <tr>
-            <th>Username</th>
-            <th>Role</th>
-            <th>Last Active</th>
+            <th>{{T "Username"}}</th>
+            <th>{{T "Role"}}</th>
+            <th>{{T "Last Active"}}</th>
             <th>&nbsp;</th>
         </tr>
         {{range $i, $account := .Manage.Accounts}}
@@ -13,7 +13,7 @@
                 <td>{{$account.Username}}</td>
                 <td>{{if eq $account.Role 1}}Super-administrator{{else if eq $account.Role 2}}Administrator{{else if eq $account.Role 3}}Moderator{{else}}Disabled{{end}}</td>
                 <td>{{$account.LastActiveDate}}</td>
-                <td><form method="get" action="/sriracha/account/{{$account.ID}}"><input type="submit" value="Update"></form></td>
+                <td><form method="get" action="/sriracha/account/{{$account.ID}}"><input type="submit" value="{{T "Update"}}"></form></td>
             </tr>
         {{end}}
     </table><br>
@@ -26,17 +26,17 @@
     <legend>{{if eq .Manage.Account nil}}Add Account{{else}}Update {{.Manage.Account.Username}}{{end}}</legend>
     <table border="0" class="manageform">
         <tr>
-            <td class="postblock"><label for="dir">Username</label></td>
+            <td class="postblock"><label for="dir">{{T "Username"}}</label></td>
             <td><input type="text" name="username" value="{{if ne .Manage.Account nil}}{{.Manage.Account.Username}}{{end}}"></td>
             <td>Used when logging in and when logging actions.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="name">Password</label></td>
+            <td class="postblock"><label for="name">{{T "Password"}}</label></td>
             <td><input type="password" name="password"></td>
             <td>{{if eq .Manage.Account nil}}A password is required.{{else}}Leave blank to keep current password.{{end}}</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="role">Role</label></td>
+            <td class="postblock"><label for="role">{{T "Role"}}</label></td>
             <td><select name="role" style="width: 100%;">
                 <option value="1"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 1)}} selected{{end}}>Super-administrator</option>
                 <option value="2"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 2)}} selected{{end}}>Administrator</option>
@@ -47,7 +47,7 @@
         </tr>
         <tr>
             <td>&nbsp;</td>
-            <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if eq .Manage.Account nil}}Add{{else}}Update{{end}}"></td>
+            <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if eq .Manage.Account nil}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
             <td>&nbsp;</td>
         </tr>
     </table>

@@ -1,12 +1,12 @@
 {{template "manage_begin.gohtml" .}}
-<h2 class="managetitle">Bans</h2>
+<h2 class="managetitle">{{T "Bans"}}</h2>
 {{if ne (len .Manage.Bans) 0}}
     <table class="managetable">
         <tr>
-            <th>ID</th>
-            <th>Type</th>
-            <th>Expires</th>
-            <th>Reason</th>
+            <th>{{T "ID"}}</th>
+            <th>{{T "Type"}}</th>
+            <th>{{T "Expires"}}</th>
+            <th>{{T "Reason"}}</th>
             <th>&nbsp;</th>
         </tr>
         {{range $i, $ban := .Manage.Bans}}
@@ -14,13 +14,13 @@
                 <td>{{$ban.ID}}</td>
                 <td>{{$ban.TypeLabel}}</td>
                 <td>{{$ban.ExpireDate}}</td>
-                <td>{{if eq $ban.Reason ""}}No reason provided{{else}}{{$ban.Reason}}{{end}}</td>
+                <td>{{if eq $ban.Reason ""}}{{T "No reason provided."}}{{else}}{{$ban.Reason}}{{end}}</td>
                 <td>
-                    <form method="get" action="/sriracha/ban/{{$ban.ID}}"><input type="submit" value="Update"></form>
+                    <form method="get" action="/sriracha/ban/{{$ban.ID}}"><input type="submit" value="{{T "Update"}}"></form>
                     {{if le $.Account.Role 2}}{{/* Admin */}}
                         <form method="get" action="/sriracha/ban/delete/{{$ban.ID}}" onsubmit="javascript:return liftBan('{{$ban.ID}}')">
                             <input type="hidden" name="reason" id="reason{{$ban.ID}}">
-                            <input type="submit" value="Lift">
+                            <input type="submit" value="{{T "Lift"}}">
                         </form>
                     {{end}}
                 </td>

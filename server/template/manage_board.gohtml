@@ -1,12 +1,12 @@
 {{template "manage_begin.gohtml" .}}
-<h2 class="managetitle">Boards</h2>
+<h2 class="managetitle">{{T "Boards"}}</h2>
 {{if ne (len .Manage.Boards) 0}}
     <table class="managetable">
         <tr>
-            <th>Dir</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Type</th>
+            <th>{{T "Dir"}}</th>
+            <th>{{T "Name"}}</th>
+            <th>{{T "Description"}}</th>
+            <th>{{T "Type"}}</th>
             <th>&nbsp;</th>
         </tr>
         {{range $i, $board := .Manage.Boards}}
@@ -14,7 +14,7 @@
                 <td><a href="{{$board.Path}}">{{$board.Path}}</a></td>
                 <td>{{$board.Name}}</td>
                 <td>{{$board.Description}}</td>
-                <td>{{if eq $board.Type 0}}Imageboard{{else}}Forum{{end}}</td>
+                <td>{{if eq $board.Type 0}}{{T "Imageboard"}}{{else}}{{T "Forum"}}{{end}}</td>
                 <td>
                     <form method="get" action="/sriracha/board/mod/{{$board.ID}}"><input type="submit" value="Mod"></form>
                     {{if le $.Account.Role 2}}{{/* Admin */}}
@@ -32,7 +32,7 @@
 {{if or (ne .Manage.Board.ID 0) (le $.Account.Role 2)}}
     {{if eq .Manage.Board.ID 0}}
         <details>
-            <summary>Add Board</summary>
+            <summary>{{T "Add Board"}}</summary>
             <div>
     {{else}}
         [<a href="/sriracha/board/">{{T "Return"}}</a>]<br>
@@ -44,33 +44,33 @@
         {{end}}
         <table border="0" class="manageform">
             <tr>
-                <td class="postblock"><label for="dir">Directory</label></td>
+                <td class="postblock"><label for="dir">{{T "Directory"}}</label></td>
                 <td><input type="text" name="dir" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Dir}}{{end}}"></td>
                 <td>The directory where the board files are located. Leave blank to place the board at the server root.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="name">Name</label></td>
+                <td class="postblock"><label for="name">{{T "Name"}}</label></td>
                 <td><input type="text" name="name" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Name}}{{end}}"></td>
                 <td>The name of the board, which is displayed in the page title and header.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="description">Description</label></td>
+                <td class="postblock"><label for="description">{{T "Description"}}</label></td>
                 <td><input type="text" name="description" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Description}}{{end}}"></td>
                 <td>The board description, which is used by search engines.</td>
             </tr>
             <tr>
-                <th><br>Appearance</td><td>&nbsp;</td>
+                <th><br>{{T "Appearance"}}</td><td>&nbsp;</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="type">Type</label></td>
+                <td class="postblock"><label for="type">{{T "Type"}}</label></td>
                 <td><select name="type" style="width: 100%;">
-                    <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Type 0)}} selected{{end}}>Imageboard</option>
-                    <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Type 1)}} selected{{end}}>Forum</option>
+                    <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Type 0)}} selected{{end}}>{{T "Imageboard"}}</option>
+                    <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Type 1)}} selected{{end}}>{{T "Forum"}}</option>
                 </select></td>
                 <td>Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="hide">Visibility</label></td>
+                <td class="postblock"><label for="hide">{{T "Visibility"}}</label></td>
                 <td><select name="hide" style="width: 100%;">
                     <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Hide 0)}} selected{{end}}>Show everywhere</option>
                     <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Hide 1)}} selected{{end}}>Hide from index</option>
@@ -80,7 +80,7 @@
                 <td>This setting is purely cosmetic. To actually prevent access, configure your HTTPS server to require password authorization.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="locale">Locale</label></td>
+                <td class="postblock"><label for="locale">{{T "Locale"}}</label></td>
                 <td><select name="locale" style="width: 100%;">
                     <option value=""{{if and (ne .Manage.Board nil) (eq .Manage.Board.Locale "")}} selected{{end}}>Default ({{.Opt.DefaultLocaleName}})</option>
                     {{range $i, $localeID := .Opt.LocalesSorted}}
@@ -90,7 +90,7 @@
                 <td>The locale used when writing board pages.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="style">Style</label></td>
+                <td class="postblock"><label for="style">{{T "Style"}}</label></td>
                 <td><select name="style" style="width: 100%;">
                     <option value=""{{if and (ne .Manage.Board nil) (eq .Manage.Board.Style "")}} selected{{end}}>Futaba</option>
                     <option value="burichan"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Style "burichan")}} selected{{end}}>Burichan</option>
@@ -100,7 +100,7 @@
             </tr>
             {{if .Opt.Identifiers}}
                 <tr>
-                    <td class="postblock"><label for="identifiers">Identifiers</label></td>
+                    <td class="postblock"><label for="identifiers">{{T "Identifiers"}}</label></td>
                     <td><select name="identifiers" style="width: 100%;">
                         <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 0)}} selected{{end}}>Disable</option>
                         <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 1)}} selected{{end}}>Board</option>
@@ -110,7 +110,7 @@
                 </tr>
             {{end}}
             <tr>
-                <td class="postblock"><label for="backlinks">Backlinks</label></td>
+                <td class="postblock"><label for="backlinks">{{T "Backlinks"}}</label></td>
                 <td><select name="backlinks" style="width: 100%;">
                     <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Backlinks)}} selected{{end}}>Disable</option>
                     <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Backlinks)}} selected{{end}}>Enable</option>
@@ -118,27 +118,27 @@
                 <td>Whether reference links are displayed next to No.## pointing to all visible replies mentioning a post.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="truncate">Truncate</label></td>
+                <td class="postblock"><label for="truncate">{{T "Truncate"}}</label></td>
                 <td><input type="text" name="truncate" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Truncate}}{{end}}"></td>
                 <td>Number of message lines to display in post preview on board index pages. Set to 0 to show all lines.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="threads">Index Threads</label></td>
+                <td class="postblock"><label for="threads">{{T "Index Threads"}}</label></td>
                 <td><input type="text" name="threads" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Threads}}{{end}}"></td>
                 <td>Number of threads to show per board index page. Set to 0 to show all.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="replies">Index Replies</label></td>
+                <td class="postblock"><label for="replies">{{T "Index Replies"}}</label></td>
                 <td><input type="text" name="replies" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Replies}}{{end}}"></td>
                 <td>Number of replies to show per board index thread. Set to 0 to show none.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="defaultname">Default Name</label></td>
+                <td class="postblock"><label for="defaultname">{{T "Default Name"}}</label></td>
                 <td><input type="text" name="defaultname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.DefaultName}}{{end}}"></td>
                 <td>The name shown when no name is entered. Separate multiple names with | (pipe character). May be blank.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="rules">Rules</label></td>
+                <td class="postblock"><label for="rules">{{T "Rules"}}</label></td>
                 <td>
                     {{range $i, $value := .Manage.Board.Rules}}
                         <textarea name="rules_{{$i}}" rows="4" cols="80" placeholder="Unused">{{$value}}</textarea><br>
@@ -148,30 +148,30 @@
                 <td>HTML-formatted text shown in the new post form.</td>
             </tr>
             <tr>
-                <th><br>Attachments</td><td>&nbsp;</td>
+                <th><br>{{T "Attachments"}}</td><td>&nbsp;</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="maxsizethread">Max Thread File Size</label></td>
+                <td class="postblock"><label for="maxsizethread">{{T "Max Thread File Size"}}</label></td>
                 <td><input type="text" name="maxsizethread" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSizeThread}}{{end}}"></td>
                 <td>Maximum file size (in bytes) when creating a thread. Set to 0 to disable file uploads.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="maxsizereply">Max Reply File Size</label></td>
+                <td class="postblock"><label for="maxsizereply">{{T "Max Reply File Size"}}</label></td>
                 <td><input type="text" name="maxsizereply" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSizeReply}}{{end}}"></td>
                 <td>Maximum file size (in bytes) when replying. Set to 0 to disable file uploads.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="thumbwidth">Thumbnail Width</label></td>
+                <td class="postblock"><label for="thumbwidth">{{T "Thumbnail Width"}}</label></td>
                 <td><input type="text" name="thumbwidth" value="{{if ne .Manage.Board nil}}{{.Manage.Board.ThumbWidth}}{{end}}"></td>
                 <td>The maximum width of thumbnails.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="thumbheight">Thumbnail Height</label></td>
+                <td class="postblock"><label for="thumbheight">{{T "Thumbnail Height"}}</label></td>
                 <td><input type="text" name="thumbheight" value="{{if ne .Manage.Board nil}}{{.Manage.Board.ThumbHeight}}{{end}}"></td>
                 <td>The maximum height of thumbnails.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="instances">Instance Limit</label></td>
+                <td class="postblock"><label for="instances">{{T "Instance Limit"}}</label></td>
                 <td><input type="text" name="instances" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Instances}}{{else}}1{{end}}"></td>
                 <td>Positive values specify global instances allowed. Negative values specify board-specific instances allowed. Zero allows unlimited instances.</td>
             </tr>
@@ -185,7 +185,7 @@
             </tr>
             {{if ne (len .Opt.Uploads) 0}}
                 <tr>
-                    <td class="postblock"><label for="uploads">File Types</label></td>
+                    <td class="postblock"><label for="uploads">{{T "File Types"}}</label></td>
                     <td>
                         {{range $i, $info := .Opt.Uploads}}
                             {{if ne $i 0}}
@@ -199,7 +199,7 @@
             {{end}}
             {{if ne (len .Opt.Embeds) 0}}
                 <tr>
-                    <td class="postblock"><label for="embeds">Allow Embedding</label></td>
+                    <td class="postblock"><label for="embeds">{{T "Embed Services"}}</label></td>
                     <td>
                         {{range $i, $info := .Opt.Embeds}}
                             {{if ne $i 0}}
@@ -213,10 +213,10 @@
                 </tr>
             {{end}}
             <tr>
-                <th><br>Posts</td><td>&nbsp;</td>
+                <th><br>{{T "Posts"}}</td><td>&nbsp;</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="lock">Restrict New Posts</label></td>
+                <td class="postblock"><label for="lock">{{T "Restrict New Posts"}}</label></td>
                 <td><select name="lock" style="width: 100%;">
                     <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 0)}} selected{{end}}>Allow all</option>
                     <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 1)}} selected{{end}}>No visitor threads</option>
@@ -226,7 +226,7 @@
                 <td>New post restrictions. 'No visitor threads' allows visitors to post replies. 'No posts' prevents even staff members from posting.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="approval">Require Approval</label></td>
+                <td class="postblock"><label for="approval">{{T "Require Approval"}}</label></td>
                 <td><select name="approval" style="width: 100%;">
                     <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Approval 0)}} selected{{end}}>Never</option>
                     <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Approval 1)}} selected{{end}}>For posts with files</option>
@@ -235,7 +235,7 @@
                 <td>Whether moderator approval is required before displaying newly created posts.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="reports">User Reports</label></td>
+                <td class="postblock"><label for="reports">{{T "Reports"}}</label></td>
                 <td><select name="reports" style="width: 100%;">
                     <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Reports)}} selected{{end}}>Disable</option>
                     <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Reports)}} selected{{end}}>Enable</option>
@@ -243,82 +243,82 @@
                 <td>Whether users may report posts.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="delay">Delay</label></td>
+                <td class="postblock"><label for="delay">{{T "Delay"}}</label></td>
                 <td><input type="text" name="delay" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Delay}}{{end}}"></td>
                 <td>Delay (in seconds) visitors must wait before posting again. Set to 0 to disable.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="minname">Min Name Length</label></td>
+                <td class="postblock"><label for="minname">{{T "Min Name Length"}}</label></td>
                 <td><input type="text" name="minname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinName}}{{end}}"></td>
                 <td>Minimum length of the name field.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="minemail">Min Email Length</label></td>
+                <td class="postblock"><label for="minemail">{{T "Min Email Length"}}</label></td>
                 <td><input type="text" name="minemail" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinEmail}}{{end}}"></td>
                 <td>Minimum length of the email field.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="minsubject">Min Subject Length</label></td>
+                <td class="postblock"><label for="minsubject">{{T "Min Subject Length"}}</label></td>
                 <td><input type="text" name="minsubject" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinSubject}}{{end}}"></td>
                 <td>Minimum length of the subject field.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="minmessage">Min Message Length</label></td>
+                <td class="postblock"><label for="minmessage">{{T "Min Message Length"}}</label></td>
                 <td><input type="text" name="minmessage" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinMessage}}{{end}}"></td>
                 <td>Minimum length of the message field.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="minsizethread">Min Thread File Size</label></td>
+                <td class="postblock"><label for="minsizethread">{{T "Min Thread File Size"}}</label></td>
                 <td><input type="text" name="minsizethread" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinSizeThread}}{{end}}"></td>
                 <td>Minimum file size (in bytes) when creating a thread.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="minsizereply">Min Reply File Size</label></td>
+                <td class="postblock"><label for="minsizereply">{{T "Min Reply File Size"}}</label></td>
                 <td><input type="text" name="minsizereply" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinSizeReply}}{{end}}"></td>
                 <td>Minimum file size (in bytes) when replying.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="maxname">Max Name Length</label></td>
+                <td class="postblock"><label for="maxname">{{T "Max Name Length"}}</label></td>
                 <td><input type="text" name="maxname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxName}}{{end}}"></td>
                 <td>Maximum length of the name field. Values greater than 75 are not supported when using the default database schema.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="maxemail">Max Email Length</label></td>
+                <td class="postblock"><label for="maxemail">{{T "Max Email Length"}}</label></td>
                 <td><input type="text" name="maxemail" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxEmail}}{{end}}"></td>
                 <td>Maximum length of the email field. Values greater than 75 are not supported when using the default database schema.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="maxsubject">Max Subject Length</label></td>
+                <td class="postblock"><label for="maxsubject">{{T "Max Subject Length"}}</label></td>
                 <td><input type="text" name="maxsubject" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSubject}}{{end}}"></td>
                 <td>Maximum length of the subject field. Values greater than 75 are not supported when using the default database schema.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="maxmessage">Max Message Length</label></td>
+                <td class="postblock"><label for="maxmessage">{{T "Max Message Length"}}</label></td>
                 <td><input type="text" name="maxmessage" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxMessage}}{{end}}"></td>
                 <td>Maximum length of the message field.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="wordbreak">WordBreak</label></td>
+                <td class="postblock"><label for="wordbreak">{{T "Word Break"}}</label></td>
                 <td><input type="text" name="wordbreak" value="{{if ne .Manage.Board nil}}{{.Manage.Board.WordBreak}}{{end}}"></td>
                 <td>Number of characters to break long words at in post messages. Set to 0 to never break long words.</td>
             </tr>
             <tr>
-                <th><br>Threads</td><td>&nbsp;</td>
+                <th><br>{{T "Threads"}}</td><td>&nbsp;</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="maxthreads">Max Threads</label></td>
+                <td class="postblock"><label for="maxthreads">{{T "Max Threads"}}</label></td>
                 <td><input type="text" name="maxthreads" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxThreads}}{{end}}"></td>
                 <td>Maximum number of threads in board. Once this limit is reached, the oldest threads are pruned. 0 to disable.</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="maxreplies">Max Replies</label></td>
+                <td class="postblock"><label for="maxreplies">{{T "Max Replies"}}</label></td>
                 <td><input type="text" name="maxreplies" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxReplies}}{{end}}"></td>
                 <td>Maximum number of replies to a thread before the thread stops being bumped to the front. 0 to disable.</td>
             </tr>
             {{if le $.Account.Role 2}}
                 <tr>
                     <td>&nbsp;</td>
-                    <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if or (eq .Manage.Board nil) (eq .Manage.Board.ID 0)}}Add{{else}}Update{{end}}"></td>
+                    <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if or (eq .Manage.Board nil) (eq .Manage.Board.ID 0)}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
                     <td>&nbsp;</td>
                 </tr>
             {{end}}
