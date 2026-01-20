@@ -77,8 +77,8 @@
                     </tr>
                 {{end}}
                 <tr>
-                    <td>&nbsp;[<a href="/sriracha/plugin/reset/{{.Manage.Plugin.Name | ToLower}}" onclick="return confirm('Reset all configuration options?');">reset</a>]</td>
-                    <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="Save"></td>
+                    <td style="vertical-align: middle;">&nbsp;[<a href="/sriracha/plugin/reset/{{.Manage.Plugin.Name | ToLower}}" onclick="return confirm('{{T "Reset all configuration options?"}}');">{{T "Reset"}}</a>]</td>
+                    <td align="right" style="vertical-align: middle;"><input type="submit" class="managebutton" style="width: 50%;" value="{{T "Update"}}"></td>
                     <td>&nbsp;</td>
                 </tr>
             </table>

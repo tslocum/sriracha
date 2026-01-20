@@ -8,7 +8,7 @@ hr {
     {{if eq (len .AllNews) 0}}
         <br>
         <div style="text-align: center;">
-            No news is good news.
+            {{T "No news is good news."}}
         </div>
     {{else}}
         {{range $i, $news := .AllNews}}

@@ -2,10 +2,10 @@
 <form method="post">
     <input type="hidden" name="action" value="style">
 	<fieldset>
-        <legend>Change Style</legend>
+        <legend>{{T "Change Style"}}</legend>
         <table border="0" class="manageform">
             <tr>
-                <td class="postblock">Style</td>
+                <td class="postblock">{{T "Style"}}</td>
                 <td>
                     <select name="style">
                         <option value=""{{if eq .Account.Style ""}} selected{{end}}>Futaba</option>
@@ -14,7 +14,7 @@
                     </select>
                 </td>
             </tr>
-            <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 100%;" value="Change Style"></td></tr>
+            <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 100%;" value="{{T "Change Style"}}"></td></tr>
         </table>
         <legend>
 	</fieldset>
@@ -22,20 +22,20 @@
 <form method="post">
     <input type="hidden" name="action" value="locale">
 	<fieldset>
-        <legend>Change Locale</legend>
+        <legend>{{T "Change Locale"}}</legend>
         <table border="0" class="manageform">
             <tr>
                 <td class="postblock">Locale</td>
                 <td>
                     <select name="locale">
-                        <option value=""{{if eq .Account.Locale ""}} selected{{end}}>Default ({{.Opt.DefaultLocaleName}})</option>
+                        <option value=""{{if eq .Account.Locale ""}} selected{{end}}>{{T "Default"}} ({{.Opt.DefaultLocaleName}})</option>
                         {{range $i, $localeID := .Opt.LocalesSorted}}
                             <option value="{{$localeID}}"{{if eq $.Account.Locale $localeID}} selected{{end}}>{{index $.Opt.Locales $localeID}}</option>
                         {{end}}
                     </select>
                 </td>
             </tr>
-            <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 100%;" value="Change Locale"></td></tr>
+            <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 100%;" value="{{T "Change Locale"}}"></td></tr>
         </table>
         <legend>
 	</fieldset>
@@ -43,18 +43,18 @@
 <form method="post">
     <input type="hidden" name="action" value="password">
 	<fieldset>
-        <legend>Change Password</legend>
+        <legend>{{T "Change Password"}}</legend>
         <table border="0" class="manageform">
-            <tr><td class="postblock">Current</td><td><input type="password" name="old"></td></tr>
-            <tr><td class="postblock">New</td><td><input type="password" name="new"></td></tr>
-            <tr><td class="postblock">New (confirm)</td><td><input type="password" name="confirmation"></td></tr>
-            <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 100%;" value="Change Password"></td></tr>
+            <tr><td class="postblock">{{T "Current"}}</td><td><input type="password" name="old"></td></tr>
+            <tr><td class="postblock">{{T "New"}}</td><td><input type="password" name="new"></td></tr>
+            <tr><td class="postblock">{{T "New (confirm)"}}</td><td><input type="password" name="confirmation"></td></tr>
+            <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 100%;" value="{{T "Change Password"}}"></td></tr>
         </table>
         <legend>
 	</fieldset>
 </form><br>
 <fieldset>
-    <legend>Documentation</legend>
+    <legend>{{T "Documentation"}}</legend>
     <div>
         <ul style="margin: 0;">
             <li><a href="https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#moderator-guide">Moderator</a></li>

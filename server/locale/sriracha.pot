@@ -13,13 +13,28 @@ msgstr[1] ""
 msgid "Accounts"
 msgstr ""
 
+msgid "Add"
+msgstr ""
+
 msgid "Admin"
+msgstr ""
+
+msgid "Artwork title:"
+msgstr ""
+
+msgid "Author"
+msgstr ""
+
+msgid "Auto Refresh"
 msgstr ""
 
 msgid "Ban"
 msgstr ""
 
 msgid "Bans"
+msgstr ""
+
+msgid "Board Index"
 msgstr ""
 
 msgid "Boards"
@@ -31,7 +46,13 @@ msgstr ""
 msgid "Catalog"
 msgstr ""
 
+msgid "Change Locale"
+msgstr ""
+
 msgid "Change Password"
+msgstr ""
+
+msgid "Change Style"
 msgstr ""
 
 msgid "Click here to go back"
@@ -46,10 +67,19 @@ msgstr ""
 msgid "Create Thread"
 msgstr ""
 
+msgid "Current"
+msgstr ""
+
 msgid "Currently %d unique user post."
 msgid_plural "Currently %d unique user posts."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Default"
+msgstr ""
 
 msgid "Delete"
 msgstr ""
@@ -90,10 +120,19 @@ msgstr ""
 msgid "Detected banned keyword."
 msgstr ""
 
+msgid "Directory"
+msgstr ""
+
+msgid "Documentation"
+msgstr ""
+
 msgid "Email"
 msgstr ""
 
 msgid "Embed"
+msgstr ""
+
+msgid "Embed Services"
 msgstr ""
 
 msgid "Error: %s"
@@ -141,6 +180,9 @@ msgstr ""
 msgid "Maximum file size allowed is %s."
 msgstr ""
 
+msgid "Memory"
+msgstr ""
+
 msgid "Message"
 msgstr ""
 
@@ -156,6 +198,12 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
+msgid "New"
+msgstr ""
+
+msgid "New (confirm)"
+msgstr ""
+
 msgid "News"
 msgstr ""
 
@@ -165,10 +213,22 @@ msgstr ""
 msgid "No board specified."
 msgstr ""
 
+msgid "No news is good news."
+msgstr ""
+
+msgid "No pending moderation requests."
+msgstr ""
+
 msgid "No post selected."
 msgstr ""
 
 msgid "None"
+msgstr ""
+
+msgid "Oekaki Height"
+msgstr ""
+
+msgid "Oekaki Width"
 msgstr ""
 
 msgid "Overboard"
@@ -192,16 +252,34 @@ msgstr ""
 msgid "Posting mode: Reply"
 msgstr ""
 
+msgid "Posts"
+msgstr ""
+
 msgid "Preferences"
 msgstr ""
 
 msgid "Previous"
 msgstr ""
 
+msgid "Replies"
+msgstr ""
+
 msgid "Reply"
 msgstr ""
 
 msgid "Report"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Reset all configuration options?"
+msgstr ""
+
+msgid "Reset all settings?"
+msgstr ""
+
+msgid "Reports"
 msgstr ""
 
 msgid "Reported No.%d"
@@ -213,7 +291,22 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
+msgid "Share"
+msgstr ""
+
+msgid "Site Home"
+msgstr ""
+
+msgid "Site Name"
+msgstr ""
+
+msgid "Site News"
+msgstr ""
+
 msgid "Status"
+msgstr ""
+
+msgid "Style"
 msgstr ""
 
 msgid "Subject"
@@ -225,7 +318,22 @@ msgstr ""
 msgid "Supported file types are %s."
 msgstr ""
 
+msgid "Threads"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
 msgid "Unknown"
+msgstr ""
+
+msgid "Update"
+msgstr ""
+
+msgid "Uptime"
+msgstr ""
+
+msgid "Version"
 msgstr ""
 
 msgid "View"

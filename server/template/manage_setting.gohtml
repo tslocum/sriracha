@@ -6,17 +6,17 @@
     <legend>Update Settings</legend>
     <table border="0" class="manageform">
         <tr>
-            <td class="postblock"><label for="sitename">Site Name</label></td>
+            <td class="postblock"><label for="sitename">{{T "Site Name"}}</label></td>
             <td><input type="text" name="sitename" value="{{.Opt.SiteName}}"></input></td>
             <td>Appears in page title and header.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="sitehome">Site Home</label></td>
+            <td class="postblock"><label for="sitehome">{{T "Site Home"}}</label></td>
             <td><input type="text" name="sitehome" value="{{.Opt.SiteHome}}"></input></td>
             <td>Home address. May be a path or URL. Used in return links.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="news">Site News</label></td>
+            <td class="postblock"><label for="news">{{T "Site News"}}</label></td>
             <td><select name="news" style="width: 100%;">
                 <option value="0"{{if eq .Opt.News 0}} selected{{end}}>Disable</option>
                 <option value="1"{{if eq .Opt.News 1}} selected{{end}}>Enable - Write to news.html</option>
@@ -25,7 +25,7 @@
             <td>Allow moderators to post site news.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="boardindex">Board Index</label></td>
+            <td class="postblock"><label for="boardindex">{{T "Board Index"}}</label></td>
             <td><select name="boardindex" style="width: 100%;">
                 <option value="0"{{if not .Opt.BoardIndex}} selected{{end}}>Disable</option>
                 <option value="1"{{if .Opt.BoardIndex}} selected{{end}}>Enable</option>
@@ -41,22 +41,22 @@
             <td>Whether visitors must pass a CAPTCHA when posting.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="oekakiwidth">Oekaki Width</label></td>
+            <td class="postblock"><label for="oekakiwidth">{{T "Oekaki Width"}}</label></td>
             <td><input type="text" name="oekakiwidth" value="{{.Opt.OekakiWidth}}"></input></td>
             <td>Default oekaki canvas width.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="oekakiheight">Oekaki Height</label></td>
+            <td class="postblock"><label for="oekakiheight">{{T "Oekaki Height"}}</label></td>
             <td><input type="text" name="oekakiheight" value="{{.Opt.OekakiHeight}}"></input></td>
             <td>Default oekaki canvas height.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="refresh">Auto Refresh</label></td>
+            <td class="postblock"><label for="refresh">{{T "Auto Refresh"}}</label></td>
             <td><input type="text" name="refresh" value="{{.Opt.Refresh}}"></input></td>
             <td>Seconds between automatic refreshes when viewing a thread. 0 to disable.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="captcha">Embed Services</label></td>
+            <td class="postblock"><label for="captcha">{{T "Embed Services"}}</label></td>
             <td>
                 {{range $i, $info := .Opt.Embeds}}
                     <textarea name="embeds{{$i | ZeroPadTo3}}" rows="4" cols="80" placeholder="Unused">{{index $info 0}} {{index $info 1}}</textarea><br>
@@ -67,15 +67,15 @@
             Format: <pre style="display: inline-block;border: 1px solid;padding: 2px;">Name https://service.com/path/to/oembed?url=SRIRACHA_EMBED</pre></td>
         </tr>
         <tr>
-            <th><br>Overboard</td><td>&nbsp;</td>
+            <th><br>{{T "Overboard"}}</td><td>&nbsp;</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="overboard">Directory</label></td>
+            <td class="postblock"><label for="overboard">{{T "Directory"}}</label></td>
             <td><input type="text" name="overboard" value="{{.Opt.Overboard}}"></input></td>
             <td>The directory where the overboard files are located. Leave blank to disable. To write the overboard at the root directory, enter "/".</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="overboardtype">Type</label></td>
+            <td class="postblock"><label for="overboardtype">{{T "Type"}}</label></td>
             <td><select name="overboardtype" style="width: 100%;">
                 <option value="0"{{if eq .Opt.OverboardType 0}} selected{{end}}>Imageboard</option>
                 <option value="1"{{if eq .Opt.OverboardType 1}} selected{{end}}>Forum</option>
@@ -83,36 +83,36 @@
             <td>Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="overboardthreads">Threads</label></td>
+            <td class="postblock"><label for="overboardthreads">{{T "Threads"}}</label></td>
             <td><input type="text" name="overboardthreads" value="{{.Opt.OverboardThreads}}"></input></td>
             <td>Number of threads to show per overboard index page. Set to 0 to show all.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="overboardreplies">Replies</label></td>
+            <td class="postblock"><label for="overboardreplies">{{T "Replies"}}</label></td>
             <td><input type="text" name="overboardreplies" value="{{.Opt.OverboardReplies}}"></input></td>
             <td>Number of replies to show per overboard index thread. Set to 0 to show none.</td>
         </tr>
         <tr>
-            <th><br>Status</td><td>&nbsp;</td>
+            <th><br>{{T "Status"}}</td><td>&nbsp;</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="version">Version</label></td>
+            <td class="postblock"><label for="version">{{T "Version"}}</label></td>
             <td><input type="text" name="version" value="{{.Extra}}" disabled></input></td>
             <td>Sriracha version. <a href="https://codeberg.org/tslocum/sriracha/releases">Click here</a> to check for updates.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="memory">Memory</label></td>
+            <td class="postblock"><label for="memory">{{T "Memory"}}</label></td>
             <td><input type="text" name="memory" value="{{.Extra2}}" disabled></input></td>
             <td>Sriracha memory usage.</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="uptime">Uptime</label></td>
+            <td class="postblock"><label for="uptime">{{T "Uptime"}}</label></td>
             <td><input type="text" name="uptime" value="{{.Extra3}}" disabled></input></td>
             <td>Sriracha uptime.</td>
         </tr>
         <tr>
-            <td>&nbsp;[<a href="/sriracha/setting/reset" onclick="return confirm('Reset all settings?');">reset</a>]</td>
-            <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="Update"></td>
+            <td style="vertical-align: middle;">&nbsp;[<a href="/sriracha/setting/reset" onclick="return confirm('{{T "Reset all settings?"}}');">{{T "Reset"}}</a>]</td>
+            <td align="right" style="vertical-align: middle;"><input type="submit" class="managebutton" style="width: 50%;" value="{{T "Update"}}"></td>
             <td>&nbsp;</td>
         </tr>
     </table>
