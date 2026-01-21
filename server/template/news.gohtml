@@ -16,6 +16,7 @@ hr {
         <div style="text-align: center;">
             {{T "No news is good news."}}
         </div>
+        <hr>
     {{else}}
         {{range $i, $news := .AllNews}}
             <div class="reply">
@@ -34,26 +35,29 @@ hr {
                 </div>
             </div>
         {{end}}
-        {{if ne .Pages 1}}
-            <div style="text-align: center;margin-bottom: 1rem;">
-                <table class="managetable" style="margin: 0 auto;">
-                <tbody>
-                    <tr>
-                        <td>{{if gt .Page 0}}<form method="get" action="/{{if gt .Page 1}}news-p{{.Page | MinusOne}}.html{{else if eq .Opt.News 1}}news.html{{end}}"><input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
-                        <td>
-                            {{range $i := Iterate (.Pages | MinusOne)}}
-                                [{{if eq $i $.Page}}{{$i}}{{else}}<a href="/{{if gt $i 0}}news-p{{$i}}.html{{else if eq $.Opt.News 1}}news.html{{end}}">{{$i}}</a>{{end}}]
-                            {{end}}
-                        </td>
-                        <td>{{if lt .Page (.Pages | MinusOne)}}<form method="get" action="/news-p{{.Page | PlusOne}}.html"><input type="submit" value="{{T "Next"}}"></form>{{else}}{{T "Next"}}{{end}}</td>
-                    </tr>
-                </tbody>
-                </table>
-            </div>
-        {{else if eq .Extra "view"}}
+        {{if eq .Extra "view"}}
             <div style="text-align: center;margin-bottom: 1.5rem;">- <a href="/{{if eq .Opt.News 1}}news.html{{end}}">{{T "Click here to go back"}}</a> -</div>
+            <hr>
+        {{else}}
+            <hr>
+            {{if ne .Pages 1}}
+                <div style="text-align: center;margin-top: 1rem;margin-bottom: 0.5rem;">
+                    <table class="navtable" style="margin: 0 auto;">
+                    <tbody>
+                        <tr>
+                            <td>{{if gt .Page 0}}<form method="get" action="/{{if gt .Page 1}}news-p{{.Page | MinusOne}}.html{{else if eq .Opt.News 1}}news.html{{end}}"><input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
+                            <td>
+                                {{range $i := Iterate (.Pages | MinusOne)}}
+                                    [{{if eq $i $.Page}}{{$i}}{{else}}<a href="/{{if gt $i 0}}news-p{{$i}}.html{{else if eq $.Opt.News 1}}news.html{{end}}">{{$i}}</a>{{end}}]
+                                {{end}}
+                            </td>
+                            <td>{{if lt .Page (.Pages | MinusOne)}}<form method="get" action="/news-p{{.Page | PlusOne}}.html"><input type="submit" value="{{T "Next"}}"></form>{{else}}{{T "Next"}}{{end}}</td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div>
+            {{end}}
         {{end}}
     {{end}}
 </div>
-<hr>
 {{template "imgboard_end.gohtml" .}}

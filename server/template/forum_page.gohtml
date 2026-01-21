@@ -31,7 +31,7 @@
 				{{T "Delete Post"}}
 			</summary>
 			<div class="replyhl" style="display: inline-block;padding: 4px;">
-				<input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}"> <input type="submit" name="deletepost" value="{{T "Delete"}}">
+				<input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}"> <input type="submit" id="deletepost" name="deletepost" value="{{T "Delete"}}">
 			</div>
 		</details>
 	{{end}}
@@ -41,7 +41,7 @@
 {{end}}
 <hr>
 {{if eq .ReplyMode 0}}
-	<table border="1" style="display: inline-block;">
+	<table class="navtable">
 	<tbody>
 		<tr>
 			<td>{{if gt .Page 0}}<form method="get" action="{{if not $.ModMode}}{{.Board.Path}}{{if eq .Page 1}}index{{else}}{{.Page | MinusOne}}{{end}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}{{if ne .Page 1}}p{{.Page | MinusOne}}{{end}}{{end}}"><input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>

@@ -148,11 +148,11 @@ legend {
 	box-sizing: border-box;
 }
 
-.managetable {
+.navtable, .managetable {
 	border-collapse: collapse;
 }
 
-.managetable th, .managetable td {
+.navtable th, .navtable td, .managetable th, .managetable td {
 	border: 1px solid;
 	padding: 5px;
 }
@@ -292,7 +292,7 @@ details {
 		box-sizing: border-box;
 	}
 
-	input:not([type=checkbox]), textarea, select {
+	input:not([type=checkbox]):not(#deletepost):not(#deletepostpassword), textarea, select:not(#switchStyle) {
 		width: 100%;
 	}
 
@@ -300,7 +300,21 @@ details {
 		font-size: 0.75em;
 	}
 
-	table:not(.navtable):not(.userdelete) {
+	.userdelete {
+		float: none;
+		margin-bottom: 0.5rem;
+	}
+
+	.navtable {
+		display: table;
+	}
+
+	.navtable td {
+		text-align: center;
+	}
+
+
+	table:not(.userdelete) {
 		width: 100%;
 		table-layout: fixed;
 	}
