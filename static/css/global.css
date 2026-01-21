@@ -190,6 +190,11 @@ legend {
 	font-weight: bold;
 }
 
+.news {
+	max-width: 900px;
+	margin: 0 auto;
+}
+
 .rules {
 	max-width: 468px;
 	font-size: 0.75rem;

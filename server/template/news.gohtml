@@ -1,19 +1,24 @@
 {{template "imgboard_begin.gohtml" .}}
 <style type="text/css">
 hr {
-    margin-bottom: 0;
+    max-width: 930px;
+}
+.reply {
+    border: 1px solid;
+    box-shadow: 2px 2px;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+	padding: 0.5rem;
 }
 </style>
-<div style="max-width: 900px;width: 50%;margin: 0 auto;">
+<div class="news">
     {{if eq (len .AllNews) 0}}
-        <br>
         <div style="text-align: center;">
             {{T "No news is good news."}}
         </div>
     {{else}}
         {{range $i, $news := .AllNews}}
-            <br>
-            <div class="reply" style="border: 1px solid;padding: 5px;">
+            <div class="reply">
                 <a href="/news-{{.ID}}.html" style="text-decoration: none;color: inherit;">
                     <label style="cursor: pointer;">
                         {{if ne .Subject ""}}<span class="filetitle">{{.Subject}}</span>{{end}}
@@ -24,12 +29,13 @@ hr {
                         </span>
                     </label>
                 </a><br>
-                {{.Message | HTML}}
+                <div class="newsmessage">
+                    {{.Message | HTML}}
+                </div>
             </div>
         {{end}}
         {{if ne .Pages 1}}
-            <div style="text-align: center;">
-                <br>
+            <div style="text-align: center;margin-bottom: 1rem;">
                 <table class="managetable" style="margin: 0 auto;">
                 <tbody>
                     <tr>
@@ -45,10 +51,9 @@ hr {
                 </table>
             </div>
         {{else if eq .Extra "view"}}
-            <br>
-            <div style="text-align: center;">- <a href="/{{if eq .Opt.News 1}}news.html{{end}}">{{T "Click here to go back"}}</a> -</div>
+            <div style="text-align: center;margin-bottom: 1.5rem;">- <a href="/{{if eq .Opt.News 1}}news.html{{end}}">{{T "Click here to go back"}}</a> -</div>
         {{end}}
     {{end}}
 </div>
-<br>
+<hr>
 {{template "imgboard_end.gohtml" .}}
