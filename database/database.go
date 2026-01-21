@@ -174,6 +174,13 @@ func (db *DB) upgrade(rootDir string) error {
 }
 
 func Begin(pool *pgxpool.Pool, config *Config) *DB {
+	if pool == nil {
+		// Return mock database.
+		return &DB{
+			config: config,
+		}
+	}
+
 	conn, err := pool.Acquire(context.Background())
 	if err != nil {
 		log.Fatalf("failed to acquire connection from pool: %s", err)
@@ -192,6 +199,9 @@ func Begin(pool *pgxpool.Pool, config *Config) *DB {
 }
 
 func (db *DB) RollBack() {
+	if db.conn == nil {
+		return
+	}
 	_, err := db.conn.Exec(context.Background(), "ROLLBACK")
 	if err != nil {
 		log.Fatalf("failed to rollback transaction: %s", err)
@@ -200,6 +210,9 @@ func (db *DB) RollBack() {
 }
 
 func (db *DB) Commit() {
+	if db.conn == nil {
+		return
+	}
 	_, err := db.conn.Exec(context.Background(), "COMMIT")
 	if err != nil {
 		log.Fatalf("failed to commit transaction: %s", err)
@@ -208,6 +221,9 @@ func (db *DB) Commit() {
 }
 
 func (db *DB) CommitWithErr() error {
+	if db.conn == nil {
+		return nil
+	}
 	_, err := db.conn.Exec(context.Background(), "COMMIT")
 	if err != nil {
 		return fmt.Errorf("failed to commit transaction: %s", err)
@@ -225,6 +241,9 @@ func (db *DB) configKey(key string) string {
 }
 
 func (db *DB) HaveConfig(key string) bool {
+	if db.conn == nil {
+		return false
+	}
 	key = db.configKey(key)
 	var count int
 	err := db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM config WHERE name = $1", key).Scan(&count)
@@ -237,6 +256,9 @@ func (db *DB) HaveConfig(key string) bool {
 }
 
 func (db *DB) GetString(key string) string {
+	if db.conn == nil {
+		return ""
+	}
 	key = db.configKey(key)
 	var value string
 	err := db.conn.QueryRow(context.Background(), "SELECT value FROM config WHERE name = $1", key).Scan(&value)
@@ -249,6 +271,9 @@ func (db *DB) GetString(key string) string {
 }
 
 func (db *DB) SaveString(key string, value string) {
+	if db.conn == nil {
+		return
+	}
 	value = strings.ReplaceAll(value, "\r", "")
 	_, err := db.conn.Exec(context.Background(), "INSERT INTO config VALUES ($1, $2) ON CONFLICT (name) DO UPDATE SET value = $3", db.configKey(key), value, value)
 	if err != nil {

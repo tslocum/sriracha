@@ -48,6 +48,9 @@ func (db *DB) BanByIP(ip string) *Ban {
 }
 
 func (db *DB) AllBans(rangeOnly bool) []*Ban {
+	if db.conn == nil {
+		return nil
+	}
 	var extra string
 	if rangeOnly {
 		extra = " WHERE ip LIKE 'r %'"
