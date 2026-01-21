@@ -21,14 +21,44 @@ msgstr[2] "%d сообщений не показано. Нажмите Отве�
 msgid "Accounts"
 msgstr "Пользователи"
 
+msgid "Add"
+msgstr ""
+
+msgid "Add Board"
+msgstr ""
+
 msgid "Admin"
 msgstr "Администрирование"
+
+msgid "Appearance"
+msgstr ""
+
+msgid "Artwork title:"
+msgstr ""
+
+msgid "Attachments"
+msgstr ""
+
+msgid "Author"
+msgstr ""
+
+msgid "Auto Refresh"
+msgstr ""
+
+msgid "Backlinks"
+msgstr ""
 
 msgid "Ban"
 msgstr "Блокировка"
 
+msgid "Ban file"
+msgstr ""
+
 msgid "Bans"
 msgstr "Блокировки"
+
+msgid "Board Index"
+msgstr ""
 
 msgid "Boards"
 msgstr "Разделы"
@@ -39,8 +69,14 @@ msgstr "Capcode"
 msgid "Catalog"
 msgstr "Каталог"
 
+msgid "Change Locale"
+msgstr ""
+
 msgid "Change Password"
 msgstr "Изменить пароль"
+
+msgid "Change Style"
+msgstr ""
 
 msgid "Click here to go back"
 msgstr "Нажмите здесь для возвращения"
@@ -54,11 +90,29 @@ msgstr "Подтвердить"
 msgid "Create Thread"
 msgstr "Создать обсуждение"
 
+msgid "Create a new drawing."
+msgstr ""
+
+msgid "Current"
+msgstr ""
+
 msgid "Currently %d unique user post."
 msgid_plural "Currently %d unique user posts."
 msgstr[0] "Сейчас %d уникальная запись пользователей."
 msgstr[1] "Сейчас %d уникальные записи пользователей."
 msgstr[2] "Сейчас %d уникальных записей пользователей."
+
+msgid "Date"
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Default Name"
+msgstr ""
+
+msgid "Delay"
+msgstr ""
 
 msgid "Delete"
 msgstr "Удалить"
@@ -93,11 +147,23 @@ msgstr "Удалить и заблокировать навсегда"
 msgid "Delete Post"
 msgstr "Удалить сообщение"
 
+msgid "Description"
+msgstr ""
+
 msgid "Detected banned file."
 msgstr ""
 
 msgid "Detected banned keyword."
 msgstr "Обнаружено запрещенное слово."
+
+msgid "Dir"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
+msgid "Documentation"
+msgstr ""
 
 msgid "Email"
 msgstr "Email"
@@ -105,11 +171,17 @@ msgstr "Email"
 msgid "Embed"
 msgstr "Встроить"
 
+msgid "Embed Services"
+msgstr ""
+
 msgid "Error: %s"
 msgstr "Ошибка: %s"
 
 msgid "Exit"
 msgstr "Выход"
+
+msgid "Expires"
+msgstr ""
 
 msgid "Failed to embed media."
 msgstr "Не удалось встроить медиа."
@@ -117,14 +189,38 @@ msgstr "Не удалось встроить медиа."
 msgid "File"
 msgstr "Файл"
 
+msgid "File Types"
+msgstr ""
+
 msgid "For post and file deletion."
 msgstr "Для удаления записи или файла."
+
+msgid "Forum"
+msgstr ""
 
 msgid "Hide until approved"
 msgstr "Не показывать до подтверждения"
 
+msgid "ID"
+msgstr ""
+
+msgid "IP Address"
+msgstr ""
+
+msgid "Idenifiers"
+msgstr ""
+
+msgid "Imageboard"
+msgstr ""
+
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
 msgstr "Изображения больше чем %[1]dx%[2]d будут превращены в эскизы."
+
+msgid "Index Replies"
+msgstr ""
+
+msgid "Index Threads"
+msgstr ""
 
 msgid "Incorrect CAPTCHA text. Please try again."
 msgstr "Неправильный текст Капчи. Пожалуйста, попробуйте еще раз."
@@ -132,8 +228,26 @@ msgstr "Неправильный текст Капчи. Пожалуйста, п
 msgid "Incorrect password."
 msgstr "Неправильный пароль."
 
+msgid "Instance Limit"
+msgstr ""
+
 msgid "Keywords"
 msgstr "Ключевые слова"
+
+msgid "Last Active"
+msgstr ""
+
+msgid "Lift"
+msgstr ""
+
+msgid "Lift File Ban"
+msgstr ""
+
+msgid "Locale"
+msgstr ""
+
+msgid "Log In"
+msgstr ""
 
 msgid "Log Out"
 msgstr "Выйти"
@@ -147,11 +261,56 @@ msgstr "Управлять"
 msgid "Manage mode"
 msgstr "Режим управления"
 
+msgid "Max Email Length"
+msgstr ""
+
+msgid "Max Message Length"
+msgstr ""
+
+msgid "Max Name Length"
+msgstr ""
+
+msgid "Max Reply File Size"
+msgstr ""
+
+msgid "Max Replies"
+msgstr ""
+
+msgid "Max Subject Length"
+msgstr ""
+
+msgid "Max Thread File Size"
+msgstr ""
+
+msgid "Max Threads"
+msgstr ""
+
 msgid "Maximum file size allowed is %s."
 msgstr "Максимальный разрешенный размер файла - %s."
 
+msgid "Memory"
+msgstr ""
+
 msgid "Message"
 msgstr "Сообщение"
+
+msgid "Min Email Length"
+msgstr ""
+
+msgid "Min Message Length"
+msgstr ""
+
+msgid "Min Name Length"
+msgstr ""
+
+msgid "Min Subject Length"
+msgstr ""
+
+msgid "Min Reply File Size"
+msgstr ""
+
+msgid "Min Thread File Size"
+msgstr ""
 
 msgid "Mod"
 msgstr "Мод"
@@ -165,6 +324,15 @@ msgstr "Режим мод: Просмотр"
 msgid "Name"
 msgstr "Имя"
 
+msgid "Never"
+msgstr ""
+
+msgid "New"
+msgstr ""
+
+msgid "New (confirm)"
+msgstr ""
+
 msgid "News"
 msgstr "Новости"
 
@@ -174,11 +342,29 @@ msgstr "Следующий"
 msgid "No board specified."
 msgstr "Не указана доска."
 
+msgid "No news is good news."
+msgstr ""
+
+msgid "No pending moderation requests."
+msgstr ""
+
 msgid "No post selected."
 msgstr "Не выбрана запись."
 
+msgid "No reason provided."
+msgstr ""
+
+msgid "No subject"
+msgstr ""
+
 msgid "None"
 msgstr "Нету"
+
+msgid "Oekaki Height"
+msgstr ""
+
+msgid "Oekaki Width"
+msgstr ""
 
 msgid "Overboard"
 msgstr ""
@@ -201,11 +387,20 @@ msgstr "Текст сокращен. Нажмите Ответить для пр
 msgid "Posting mode: Reply"
 msgstr "Режим записи: Ответ"
 
+msgid "Posts"
+msgstr ""
+
 msgid "Preferences"
 msgstr "Настройки"
 
 msgid "Previous"
 msgstr "Предыдущий"
+
+msgid "Reason"
+msgstr ""
+
+msgid "Replies"
+msgstr ""
 
 msgid "Reply"
 msgstr "Ответить"
@@ -213,17 +408,56 @@ msgstr "Ответить"
 msgid "Report"
 msgstr "Отчет"
 
+msgid "Reset"
+msgstr ""
+
+msgid "Reset all configuration options?"
+msgstr ""
+
+msgid "Reset all settings?"
+msgstr ""
+
+msgid "Restrict New Posts"
+msgstr ""
+
+msgid "Reports"
+msgstr ""
+
 msgid "Reported No.%d"
 msgstr "Отправлена жалоба № %d"
+
+msgid "Require Approval"
+msgstr ""
 
 msgid "Return"
 msgstr "Вернуться"
 
+msgid "Role"
+msgstr ""
+
+msgid "Rules"
+msgstr ""
+
 msgid "Settings"
 msgstr "Настройки"
 
+msgid "Share"
+msgstr ""
+
+msgid "Site Home"
+msgstr ""
+
+msgid "Site Name"
+msgstr ""
+
+msgid "Site News"
+msgstr ""
+
 msgid "Status"
 msgstr "Статус"
+
+msgid "Style"
+msgstr ""
 
 msgid "Subject"
 msgstr "Тема"
@@ -234,13 +468,46 @@ msgstr "Отправить"
 msgid "Supported file types are %s."
 msgstr "Поддерживаемые типы файлов: %s."
 
+msgid "Threads"
+msgstr ""
+
+msgid "Thumbnail Height"
+msgstr ""
+
+msgid "Thumbnail Width"
+msgstr ""
+
+msgid "Truncate"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
 msgid "Unknown"
 msgstr "Неизвестен"
+
+msgid "Update"
+msgstr ""
+
+msgid "Uptime"
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "Version"
+msgstr ""
 
 msgid "View"
 msgstr "Просмотр"
 
 msgid "View posts by author"
+msgstr ""
+
+msgid "Visibility"
+msgstr ""
+
+msgid "Word Break"
 msgstr ""
 
 msgid "Your post will be shown once it has been approved."

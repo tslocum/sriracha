@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-01-17 10:21+0000\n"
+"PO-Revision-Date: 2026-01-21 16:21+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 5.15.2\n"
 
 msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
@@ -19,14 +19,44 @@ msgstr[1] "%d berichten overgeslagen. Klik op beantwoorden om te bekijken."
 msgid "Accounts"
 msgstr "Accounts"
 
+msgid "Add"
+msgstr "Toevoegen"
+
+msgid "Add Board"
+msgstr "Forum toevoegen"
+
 msgid "Admin"
 msgstr "Beheerder"
+
+msgid "Appearance"
+msgstr "Vormgeving"
+
+msgid "Artwork title:"
+msgstr "Naam van illustraties:"
+
+msgid "Attachments"
+msgstr "Bijlagen"
+
+msgid "Author"
+msgstr "Auteur"
+
+msgid "Auto Refresh"
+msgstr "Automatisch herladen"
+
+msgid "Backlinks"
+msgstr "Links"
 
 msgid "Ban"
 msgstr "Verbannen"
 
+msgid "Ban file"
+msgstr "Bestand verbannen"
+
 msgid "Bans"
 msgstr "Verbanningen"
+
+msgid "Board Index"
+msgstr "Forumoverzicht"
 
 msgid "Boards"
 msgstr "Fora"
@@ -37,8 +67,14 @@ msgstr "Capcode"
 msgid "Catalog"
 msgstr "Catalogus"
 
+msgid "Change Locale"
+msgstr "Taal wijzigen"
+
 msgid "Change Password"
 msgstr "Wachtwoord wĳzigen"
+
+msgid "Change Style"
+msgstr "Stijl aanpassen"
 
 msgid "Click here to go back"
 msgstr "Klik hier om terug te gaan"
@@ -52,10 +88,28 @@ msgstr "Bevestigen"
 msgid "Create Thread"
 msgstr "Onderwerp toevoegen"
 
+msgid "Create a new drawing."
+msgstr "Maak een nieuwe tekening."
+
+msgid "Current"
+msgstr "Huidige"
+
 msgid "Currently %d unique user post."
 msgid_plural "Currently %d unique user posts."
 msgstr[0] "Er is momenteel %d uniek bericht."
 msgstr[1] "Er zijn momenteel %d unieke berichten."
+
+msgid "Date"
+msgstr "Datum"
+
+msgid "Default"
+msgstr "Standaard"
+
+msgid "Default Name"
+msgstr "Standaardnaam"
+
+msgid "Delay"
+msgstr "Vertraging"
 
 msgid "Delete"
 msgstr "Verwijderen"
@@ -90,11 +144,23 @@ msgstr "Verwijderen en permanent verbannen"
 msgid "Delete Post"
 msgstr "Bericht verwijderen"
 
+msgid "Description"
+msgstr "Beschrijving"
+
 msgid "Detected banned file."
 msgstr "Er is een verbannen bestand aangetroffen."
 
 msgid "Detected banned keyword."
 msgstr "Verbannen trefwoord aangetroffen."
+
+msgid "Dir"
+msgstr "Map"
+
+msgid "Directory"
+msgstr "Map"
+
+msgid "Documentation"
+msgstr "Documentatie"
 
 msgid "Email"
 msgstr "E-mailen"
@@ -102,11 +168,17 @@ msgstr "E-mailen"
 msgid "Embed"
 msgstr "Invoegen"
 
+msgid "Embed Services"
+msgstr "Diensten insluiten"
+
 msgid "Error: %s"
 msgstr "Foutmelding: %s"
 
 msgid "Exit"
 msgstr "Afsluiten"
+
+msgid "Expires"
+msgstr "Vervalt op"
 
 msgid "Failed to embed media."
 msgstr "De media kan niet worden ingevoegd."
@@ -114,14 +186,38 @@ msgstr "De media kan niet worden ingevoegd."
 msgid "File"
 msgstr "Bestand"
 
+msgid "File Types"
+msgstr "Bestandstypen"
+
 msgid "For post and file deletion."
 msgstr "Voor bericht- en bestandsverwijdering."
+
+msgid "Forum"
+msgstr "Forum"
 
 msgid "Hide until approved"
 msgstr "Verbergen tot aan goedkeuring"
 
+msgid "ID"
+msgstr "Id"
+
+msgid "IP Address"
+msgstr "Ip-adres"
+
+msgid "Idenifiers"
+msgstr "Identificaties"
+
+msgid "Imageboard"
+msgstr "Afbeeldingsforum"
+
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
 msgstr "Afbeeldingen groter dan %[1]dx%[2]d worden van een miniatuur voorzien."
+
+msgid "Index Replies"
+msgstr "Antwoordoverzicht"
+
+msgid "Index Threads"
+msgstr "Onderwerpoverzicht"
 
 msgid "Incorrect CAPTCHA text. Please try again."
 msgstr "Ongeldige CAPTCHA-tekst - probeer het opnieuw."
@@ -129,8 +225,26 @@ msgstr "Ongeldige CAPTCHA-tekst - probeer het opnieuw."
 msgid "Incorrect password."
 msgstr "Het wachtwoord is onjuist."
 
+msgid "Instance Limit"
+msgstr "Instantielimiet"
+
 msgid "Keywords"
 msgstr "Trefwoorden"
+
+msgid "Last Active"
+msgstr "Laatst gezien"
+
+msgid "Lift"
+msgstr "Opheffen"
+
+msgid "Lift File Ban"
+msgstr "Bestandsverbanning opheffen"
+
+msgid "Locale"
+msgstr "Taal"
+
+msgid "Log In"
+msgstr "Inloggen"
 
 msgid "Log Out"
 msgstr "Uitloggen"
@@ -144,11 +258,56 @@ msgstr "Beheren"
 msgid "Manage mode"
 msgstr "Beheermodus"
 
+msgid "Max Email Length"
+msgstr "Maximale e-maillengte"
+
+msgid "Max Message Length"
+msgstr "Maximale berichtlengte"
+
+msgid "Max Name Length"
+msgstr "Maximale naamlengte"
+
+msgid "Max Reply File Size"
+msgstr "Maximale bestandsgrootte in antwoord"
+
+msgid "Max Replies"
+msgstr "Maximaal aantal antwoorden"
+
+msgid "Max Subject Length"
+msgstr "Maximale onderwerplengte"
+
+msgid "Max Thread File Size"
+msgstr "Maximale bestandsgrootte in onderwerp"
+
+msgid "Max Threads"
+msgstr "Maximaal aantal onderwerpen"
+
 msgid "Maximum file size allowed is %s."
 msgstr "De maximaal toegestane bestandsgrootte is %s."
 
+msgid "Memory"
+msgstr "Geheugen"
+
 msgid "Message"
 msgstr "Bericht"
+
+msgid "Min Email Length"
+msgstr "Minimale e-maillengte"
+
+msgid "Min Message Length"
+msgstr "Minimale berichtlengte"
+
+msgid "Min Name Length"
+msgstr "Minimale naamlengte"
+
+msgid "Min Subject Length"
+msgstr "Minimale onderwerplengte"
+
+msgid "Min Reply File Size"
+msgstr "Minimale bestandsgrootte in antwoord"
+
+msgid "Min Thread File Size"
+msgstr "Minimale bestandsgrootte in onderwerp"
 
 msgid "Mod"
 msgstr "Modereren"
@@ -162,6 +321,15 @@ msgstr "Modereermodus: weergave"
 msgid "Name"
 msgstr "Naam"
 
+msgid "Never"
+msgstr "Nooit"
+
+msgid "New"
+msgstr "Nieuw"
+
+msgid "New (confirm)"
+msgstr "Nieuw (bevestigen)"
+
 msgid "News"
 msgstr "Nieuws"
 
@@ -171,11 +339,29 @@ msgstr "Volgende"
 msgid "No board specified."
 msgstr "Er is geen forum gekozen."
 
+msgid "No news is good news."
+msgstr "Geen bericht is goed bericht."
+
+msgid "No pending moderation requests."
+msgstr "Er zijn geen openstaande moderatieverzoeken."
+
 msgid "No post selected."
 msgstr "Er is geen bericht gekozen."
 
+msgid "No reason provided."
+msgstr "Er is geen reden opgegeven."
+
+msgid "No subject"
+msgstr "Geen onderwerp"
+
 msgid "None"
 msgstr "Geen"
+
+msgid "Oekaki Height"
+msgstr "Oekaki-hoogte"
+
+msgid "Oekaki Width"
+msgstr "Oekaki-breedte"
 
 msgid "Overboard"
 msgstr "Overboard"
@@ -198,11 +384,20 @@ msgstr "Het bericht is ingekort. Klik op beantwoorden om te bekijken."
 msgid "Posting mode: Reply"
 msgstr "Berichtmodus: beantwoorden"
 
+msgid "Posts"
+msgstr "Berichten"
+
 msgid "Preferences"
 msgstr "Instellingen"
 
 msgid "Previous"
 msgstr "Vorige"
+
+msgid "Reason"
+msgstr "Reden"
+
+msgid "Replies"
+msgstr "Antwoorden"
 
 msgid "Reply"
 msgstr "Beantwoorden"
@@ -210,17 +405,56 @@ msgstr "Beantwoorden"
 msgid "Report"
 msgstr "Melden"
 
+msgid "Reset"
+msgstr "Standaardwaarden"
+
+msgid "Reset all configuration options?"
+msgstr "Weet je zeker dat je alle instellingen wilt terugzetten?"
+
+msgid "Reset all settings?"
+msgstr "Alle instellingen herstellen?"
+
+msgid "Restrict New Posts"
+msgstr "Nieuwe berichten beperken"
+
+msgid "Reports"
+msgstr "Meldingen"
+
 msgid "Reported No.%d"
 msgstr "%d is gemeld"
+
+msgid "Require Approval"
+msgstr "Goedkeuring vereisen"
 
 msgid "Return"
 msgstr "Terug"
 
+msgid "Role"
+msgstr "Rol"
+
+msgid "Rules"
+msgstr "Regels"
+
 msgid "Settings"
 msgstr "Instellingen"
 
+msgid "Share"
+msgstr "Delen"
+
+msgid "Site Home"
+msgstr "Startpagina"
+
+msgid "Site Name"
+msgstr "Sitenaam"
+
+msgid "Site News"
+msgstr "Sitenieuws"
+
 msgid "Status"
 msgstr "Status"
+
+msgid "Style"
+msgstr "Stijl"
 
 msgid "Subject"
 msgstr "Onderwerp"
@@ -231,14 +465,47 @@ msgstr "Versturen"
 msgid "Supported file types are %s."
 msgstr "Ondersteunde bestandstypes: %s."
 
+msgid "Threads"
+msgstr "Onderwerpen"
+
+msgid "Thumbnail Height"
+msgstr "Miniatuurhoogte"
+
+msgid "Thumbnail Width"
+msgstr "Miniatuurbreedte"
+
+msgid "Truncate"
+msgstr "Inkorten"
+
+msgid "Type"
+msgstr "Type"
+
 msgid "Unknown"
 msgstr "Onbekend"
+
+msgid "Update"
+msgstr "Bijwerken"
+
+msgid "Uptime"
+msgstr "Uptime"
+
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+msgid "Version"
+msgstr "Versie"
 
 msgid "View"
 msgstr "Bekijken"
 
 msgid "View posts by author"
 msgstr "Berichten van auteur bekijken"
+
+msgid "Visibility"
+msgstr "Zichtbaarheid"
+
+msgid "Word Break"
+msgstr "Woorden afbreken"
 
 msgid "Your post will be shown once it has been approved."
 msgstr "Je bericht wordt na goedkeuring getoond."

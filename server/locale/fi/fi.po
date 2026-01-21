@@ -19,14 +19,44 @@ msgstr[1] "%d viestiä pois jätetty. Napsauta Vastaa nähdäksesi."
 msgid "Accounts"
 msgstr "Tilit"
 
+msgid "Add"
+msgstr ""
+
+msgid "Add Board"
+msgstr ""
+
 msgid "Admin"
 msgstr "Järjestelmänvalvoja"
+
+msgid "Appearance"
+msgstr ""
+
+msgid "Artwork title:"
+msgstr ""
+
+msgid "Attachments"
+msgstr ""
+
+msgid "Author"
+msgstr ""
+
+msgid "Auto Refresh"
+msgstr ""
+
+msgid "Backlinks"
+msgstr ""
 
 msgid "Ban"
 msgstr "Kiellä"
 
+msgid "Ban file"
+msgstr ""
+
 msgid "Bans"
 msgstr "Kiellot"
+
+msgid "Board Index"
+msgstr ""
 
 msgid "Boards"
 msgstr "Laudat"
@@ -37,8 +67,14 @@ msgstr "Cap-koodi"
 msgid "Catalog"
 msgstr "Luettelo"
 
+msgid "Change Locale"
+msgstr ""
+
 msgid "Change Password"
 msgstr "Vaihda salasana"
+
+msgid "Change Style"
+msgstr ""
 
 msgid "Click here to go back"
 msgstr "Klikkaa tästä palataksesi takaisin"
@@ -52,10 +88,28 @@ msgstr "Vahvista"
 msgid "Create Thread"
 msgstr "Luo viestiketju"
 
+msgid "Create a new drawing."
+msgstr ""
+
+msgid "Current"
+msgstr ""
+
 msgid "Currently %d unique user post."
 msgid_plural "Currently %d unique user posts."
 msgstr[0] "Tällä hetkellä %d ainutlaatuinen käyttäjän viesti."
 msgstr[1] "Tällä hetkellä %d ainutlaatuista käyttäjän viestiä."
+
+msgid "Date"
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Default Name"
+msgstr ""
+
+msgid "Delay"
+msgstr ""
 
 msgid "Delete"
 msgstr "Poista"
@@ -90,11 +144,23 @@ msgstr "Poista ja kiellä pysyvästi"
 msgid "Delete Post"
 msgstr "Poista viesti"
 
+msgid "Description"
+msgstr ""
+
 msgid "Detected banned file."
 msgstr ""
 
 msgid "Detected banned keyword."
 msgstr "Kielletty avainsana havaittu."
+
+msgid "Dir"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
+msgid "Documentation"
+msgstr ""
 
 msgid "Email"
 msgstr "Sähköposti"
@@ -102,11 +168,17 @@ msgstr "Sähköposti"
 msgid "Embed"
 msgstr "Upota"
 
+msgid "Embed Services"
+msgstr ""
+
 msgid "Error: %s"
 msgstr "Virhe: %s"
 
 msgid "Exit"
 msgstr "Poistu"
+
+msgid "Expires"
+msgstr ""
 
 msgid "Failed to embed media."
 msgstr "Median upottaminen epäonnistui."
@@ -114,15 +186,39 @@ msgstr "Median upottaminen epäonnistui."
 msgid "File"
 msgstr "Tiedosto"
 
+msgid "File Types"
+msgstr ""
+
 msgid "For post and file deletion."
 msgstr "Viestien ja tiedostojen poistamista varten."
+
+msgid "Forum"
+msgstr ""
 
 msgid "Hide until approved"
 msgstr "Piilota, kunnes hyväksytty"
 
+msgid "ID"
+msgstr ""
+
+msgid "IP Address"
+msgstr ""
+
+msgid "Idenifiers"
+msgstr ""
+
+msgid "Imageboard"
+msgstr ""
+
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
 msgstr ""
 "Kuvat, joiden koko on suurempi kuin %[1]dx%[2]d, näytetään pienoiskuvina."
+
+msgid "Index Replies"
+msgstr ""
+
+msgid "Index Threads"
+msgstr ""
 
 msgid "Incorrect CAPTCHA text. Please try again."
 msgstr "Virheellinen CAPTCHA-teksti. Yritä uudelleen."
@@ -130,8 +226,26 @@ msgstr "Virheellinen CAPTCHA-teksti. Yritä uudelleen."
 msgid "Incorrect password."
 msgstr "Väärä salasana."
 
+msgid "Instance Limit"
+msgstr ""
+
 msgid "Keywords"
 msgstr "Avainsanat"
+
+msgid "Last Active"
+msgstr ""
+
+msgid "Lift"
+msgstr ""
+
+msgid "Lift File Ban"
+msgstr ""
+
+msgid "Locale"
+msgstr ""
+
+msgid "Log In"
+msgstr ""
 
 msgid "Log Out"
 msgstr "Kirjaudu ulos"
@@ -145,11 +259,56 @@ msgstr "Hallinnoi"
 msgid "Manage mode"
 msgstr "Hallinnoi tila"
 
+msgid "Max Email Length"
+msgstr ""
+
+msgid "Max Message Length"
+msgstr ""
+
+msgid "Max Name Length"
+msgstr ""
+
+msgid "Max Reply File Size"
+msgstr ""
+
+msgid "Max Replies"
+msgstr ""
+
+msgid "Max Subject Length"
+msgstr ""
+
+msgid "Max Thread File Size"
+msgstr ""
+
+msgid "Max Threads"
+msgstr ""
+
 msgid "Maximum file size allowed is %s."
 msgstr "Tiedoston enimmäiskoko on %s."
 
+msgid "Memory"
+msgstr ""
+
 msgid "Message"
 msgstr "Viesti"
+
+msgid "Min Email Length"
+msgstr ""
+
+msgid "Min Message Length"
+msgstr ""
+
+msgid "Min Name Length"
+msgstr ""
+
+msgid "Min Subject Length"
+msgstr ""
+
+msgid "Min Reply File Size"
+msgstr ""
+
+msgid "Min Thread File Size"
+msgstr ""
 
 msgid "Mod"
 msgstr ""
@@ -163,6 +322,15 @@ msgstr ""
 msgid "Name"
 msgstr "Nimi"
 
+msgid "Never"
+msgstr ""
+
+msgid "New"
+msgstr ""
+
+msgid "New (confirm)"
+msgstr ""
+
 msgid "News"
 msgstr "Uutiset"
 
@@ -172,11 +340,29 @@ msgstr "Seuraava"
 msgid "No board specified."
 msgstr "Ei määriteltyä lautaa."
 
+msgid "No news is good news."
+msgstr ""
+
+msgid "No pending moderation requests."
+msgstr ""
+
 msgid "No post selected."
 msgstr "Ei valittua viestiä."
 
+msgid "No reason provided."
+msgstr ""
+
+msgid "No subject"
+msgstr ""
+
 msgid "None"
 msgstr "Ei mitään"
+
+msgid "Oekaki Height"
+msgstr ""
+
+msgid "Oekaki Width"
+msgstr ""
 
 msgid "Overboard"
 msgstr "Yli laidan"
@@ -199,11 +385,20 @@ msgstr "Viesti katkaistu. Napsauta Vastaa nähdäksesi."
 msgid "Posting mode: Reply"
 msgstr "Lähetystila: Vastaus"
 
+msgid "Posts"
+msgstr ""
+
 msgid "Preferences"
 msgstr "Asetukset"
 
 msgid "Previous"
 msgstr "Edellinen"
+
+msgid "Reason"
+msgstr ""
+
+msgid "Replies"
+msgstr ""
 
 msgid "Reply"
 msgstr "Vastaa"
@@ -211,17 +406,56 @@ msgstr "Vastaa"
 msgid "Report"
 msgstr "Raportoi"
 
+msgid "Reset"
+msgstr ""
+
+msgid "Reset all configuration options?"
+msgstr ""
+
+msgid "Reset all settings?"
+msgstr ""
+
+msgid "Restrict New Posts"
+msgstr ""
+
+msgid "Reports"
+msgstr ""
+
 msgid "Reported No.%d"
 msgstr "Raportoitu nro %d"
+
+msgid "Require Approval"
+msgstr ""
 
 msgid "Return"
 msgstr "Palaa"
 
+msgid "Role"
+msgstr ""
+
+msgid "Rules"
+msgstr ""
+
 msgid "Settings"
 msgstr "Asetukset"
 
+msgid "Share"
+msgstr ""
+
+msgid "Site Home"
+msgstr ""
+
+msgid "Site Name"
+msgstr ""
+
+msgid "Site News"
+msgstr ""
+
 msgid "Status"
 msgstr "Tila"
+
+msgid "Style"
+msgstr ""
 
 msgid "Subject"
 msgstr "Aihe"
@@ -232,13 +466,46 @@ msgstr "Lähetä"
 msgid "Supported file types are %s."
 msgstr "Tuetut tiedostotyypit ovat %s."
 
+msgid "Threads"
+msgstr ""
+
+msgid "Thumbnail Height"
+msgstr ""
+
+msgid "Thumbnail Width"
+msgstr ""
+
+msgid "Truncate"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
 msgid "Unknown"
 msgstr "Tuntematon"
+
+msgid "Update"
+msgstr ""
+
+msgid "Uptime"
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "Version"
+msgstr ""
 
 msgid "View"
 msgstr "Katso"
 
 msgid "View posts by author"
+msgstr ""
+
+msgid "Visibility"
+msgstr ""
+
+msgid "Word Break"
 msgstr ""
 
 msgid "Your post will be shown once it has been approved."

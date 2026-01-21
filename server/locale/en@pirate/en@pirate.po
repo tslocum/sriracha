@@ -19,14 +19,44 @@ msgstr[1] "%d posts below deck. Swab Reply to view."
 msgid "Accounts"
 msgstr "Sailors"
 
+msgid "Add"
+msgstr ""
+
+msgid "Add Board"
+msgstr ""
+
 msgid "Admin"
 msgstr "Captain"
+
+msgid "Appearance"
+msgstr ""
+
+msgid "Artwork title:"
+msgstr ""
+
+msgid "Attachments"
+msgstr ""
+
+msgid "Author"
+msgstr ""
+
+msgid "Auto Refresh"
+msgstr ""
+
+msgid "Backlinks"
+msgstr ""
 
 msgid "Ban"
 msgstr "Maroon"
 
+msgid "Ban file"
+msgstr ""
+
 msgid "Bans"
 msgstr "Scallywags"
+
+msgid "Board Index"
+msgstr ""
 
 msgid "Boards"
 msgstr "Ships"
@@ -37,8 +67,14 @@ msgstr "Flag"
 msgid "Catalog"
 msgstr "Map"
 
+msgid "Change Locale"
+msgstr ""
+
 msgid "Change Password"
 msgstr "Davy Jone's Locker"
+
+msgid "Change Style"
+msgstr ""
 
 msgid "Click here to go back"
 msgstr "Swab here to head aft"
@@ -52,10 +88,28 @@ msgstr "Set Sail"
 msgid "Create Thread"
 msgstr "Set Sail"
 
+msgid "Create a new drawing."
+msgstr ""
+
+msgid "Current"
+msgstr ""
+
 msgid "Currently %d unique user post."
 msgid_plural "Currently %d unique user posts."
 msgstr[0] "Thar be %d one-of-a-kind treasure on the map."
 msgstr[1] "Thar be %d one-of-a-kind treasures on the map."
+
+msgid "Date"
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Default Name"
+msgstr ""
+
+msgid "Delay"
+msgstr ""
 
 msgid "Delete"
 msgstr "Shoot"
@@ -90,11 +144,23 @@ msgstr "Shoot & maroon to the bitter end"
 msgid "Delete Post"
 msgstr "Shoot Post"
 
+msgid "Description"
+msgstr ""
+
 msgid "Detected banned file."
 msgstr ""
 
 msgid "Detected banned keyword."
 msgstr "Avast! Ye speak blasphemous words punishable BY DEATH!"
+
+msgid "Dir"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
+msgid "Documentation"
+msgstr ""
 
 msgid "Email"
 msgstr "Email"
@@ -102,11 +168,17 @@ msgstr "Email"
 msgid "Embed"
 msgstr "Stow"
 
+msgid "Embed Services"
+msgstr ""
+
 msgid "Error: %s"
 msgstr "Avast! %s"
 
 msgid "Exit"
 msgstr "Come About"
+
+msgid "Expires"
+msgstr ""
 
 msgid "Failed to embed media."
 msgstr "Avast! Ye stowage was lost at sea."
@@ -114,14 +186,38 @@ msgstr "Avast! Ye stowage was lost at sea."
 msgid "File"
 msgstr "Booty"
 
+msgid "File Types"
+msgstr ""
+
 msgid "For post and file deletion."
 msgstr "Ter shoot with."
+
+msgid "Forum"
+msgstr ""
 
 msgid "Hide until approved"
 msgstr "Stow until inspected"
 
+msgid "ID"
+msgstr ""
+
+msgid "IP Address"
+msgstr ""
+
+msgid "Idenifiers"
+msgstr ""
+
+msgid "Imageboard"
+msgstr ""
+
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
 msgstr "Treasures larger than %[1]dx%[2]d shall be apportioned."
+
+msgid "Index Replies"
+msgstr ""
+
+msgid "Index Threads"
+msgstr ""
 
 msgid "Incorrect CAPTCHA text. Please try again."
 msgstr "Avast! Ye be enterin' the wrong secret. Read the scroll again."
@@ -131,8 +227,26 @@ msgstr ""
 "Avast! That name and password is known to no man. Return whence ye came or "
 "walk the plank!"
 
+msgid "Instance Limit"
+msgstr ""
+
 msgid "Keywords"
 msgstr "Blasphemy"
+
+msgid "Last Active"
+msgstr ""
+
+msgid "Lift"
+msgstr ""
+
+msgid "Lift File Ban"
+msgstr ""
+
+msgid "Locale"
+msgstr ""
+
+msgid "Log In"
+msgstr ""
 
 msgid "Log Out"
 msgstr "Weigh Anchor"
@@ -146,11 +260,56 @@ msgstr "Great Cabin"
 msgid "Manage mode"
 msgstr "Sailor mode"
 
+msgid "Max Email Length"
+msgstr ""
+
+msgid "Max Message Length"
+msgstr ""
+
+msgid "Max Name Length"
+msgstr ""
+
+msgid "Max Reply File Size"
+msgstr ""
+
+msgid "Max Replies"
+msgstr ""
+
+msgid "Max Subject Length"
+msgstr ""
+
+msgid "Max Thread File Size"
+msgstr ""
+
+msgid "Max Threads"
+msgstr ""
+
 msgid "Maximum file size allowed is %s."
 msgstr "Largest cargo we takin' is %s."
 
+msgid "Memory"
+msgstr ""
+
 msgid "Message"
 msgstr "Parley"
+
+msgid "Min Email Length"
+msgstr ""
+
+msgid "Min Message Length"
+msgstr ""
+
+msgid "Min Name Length"
+msgstr ""
+
+msgid "Min Subject Length"
+msgstr ""
+
+msgid "Min Reply File Size"
+msgstr ""
+
+msgid "Min Thread File Size"
+msgstr ""
 
 msgid "Mod"
 msgstr "Mate"
@@ -164,6 +323,15 @@ msgstr "Mate mode: Sail"
 msgid "Name"
 msgstr "Jack"
 
+msgid "Never"
+msgstr ""
+
+msgid "New"
+msgstr ""
+
+msgid "New (confirm)"
+msgstr ""
+
 msgid "News"
 msgstr "Ship's Log"
 
@@ -173,11 +341,29 @@ msgstr "Fore"
 msgid "No board specified."
 msgstr "Avast! Pick a board or walk the plank!"
 
+msgid "No news is good news."
+msgstr ""
+
+msgid "No pending moderation requests."
+msgstr ""
+
 msgid "No post selected."
 msgstr "Avast! Select a post or walk the plank!"
 
+msgid "No reason provided."
+msgstr ""
+
+msgid "No subject"
+msgstr ""
+
 msgid "None"
 msgstr "Nothin'"
+
+msgid "Oekaki Height"
+msgstr ""
+
+msgid "Oekaki Width"
+msgstr ""
 
 msgid "Overboard"
 msgstr "Overboard"
@@ -200,11 +386,20 @@ msgstr "Post apportioned. Swab Reply to view."
 msgid "Posting mode: Reply"
 msgstr "Posting mode: Yap"
 
+msgid "Posts"
+msgstr ""
+
 msgid "Preferences"
 msgstr "Quarters"
 
 msgid "Previous"
 msgstr "Aft"
+
+msgid "Reason"
+msgstr ""
+
+msgid "Replies"
+msgstr ""
 
 msgid "Reply"
 msgstr "Yap"
@@ -212,17 +407,56 @@ msgstr "Yap"
 msgid "Report"
 msgstr "Heave"
 
+msgid "Reset"
+msgstr ""
+
+msgid "Reset all configuration options?"
+msgstr ""
+
+msgid "Reset all settings?"
+msgstr ""
+
+msgid "Restrict New Posts"
+msgstr ""
+
+msgid "Reports"
+msgstr ""
+
 msgid "Reported No.%d"
 msgstr "Heaved No.%d"
+
+msgid "Require Approval"
+msgstr ""
 
 msgid "Return"
 msgstr "Come About"
 
+msgid "Role"
+msgstr ""
+
+msgid "Rules"
+msgstr ""
+
 msgid "Settings"
 msgstr "Provisions"
 
+msgid "Share"
+msgstr ""
+
+msgid "Site Home"
+msgstr ""
+
+msgid "Site Name"
+msgstr ""
+
+msgid "Site News"
+msgstr ""
+
 msgid "Status"
 msgstr "Helm"
+
+msgid "Style"
+msgstr ""
 
 msgid "Subject"
 msgstr "Yer Point"
@@ -233,13 +467,46 @@ msgstr "Set Sail"
 msgid "Supported file types are %s."
 msgstr "Accepted cargo is %s."
 
+msgid "Threads"
+msgstr ""
+
+msgid "Thumbnail Height"
+msgstr ""
+
+msgid "Thumbnail Width"
+msgstr ""
+
+msgid "Truncate"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
 msgid "Unknown"
 msgstr "Dunno"
+
+msgid "Update"
+msgstr ""
+
+msgid "Uptime"
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "Version"
+msgstr ""
 
 msgid "View"
 msgstr "Sail"
 
 msgid "View posts by author"
+msgstr ""
+
+msgid "Visibility"
+msgstr ""
+
+msgid "Word Break"
 msgstr ""
 
 msgid "Your post will be shown once it has been approved."
