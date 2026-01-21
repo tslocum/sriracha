@@ -286,7 +286,7 @@ func (s *Server) setDefaultPluginConfig() error {
 	defer db.Commit()
 
 	for i, info := range allPluginInfo {
-		db.Plugin = strings.ToLower(info.Name)
+		db.Plugin = info.Name
 
 		for i, config := range info.Config {
 			if !db.HaveConfig(config.Name) {
@@ -312,7 +312,7 @@ func (s *Server) loadPluginConfig() error {
 	defer db.Commit()
 
 	for _, info := range allPluginInfo {
-		db.Plugin = strings.ToLower(info.Name)
+		db.Plugin = info.Name
 		for i, c := range info.Config {
 			v := db.GetString(strings.ToLower(info.Name + "." + c.Name))
 			if v != "" {

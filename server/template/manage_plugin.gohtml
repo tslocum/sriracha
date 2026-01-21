@@ -4,7 +4,7 @@
     [<a href="/sriracha/plugin/">{{T "Return"}}</a>]<br>
     <form method="post">
         <fieldset>
-        <legend>Configure {{.Manage.Plugin.Name}}</legend>
+        <legend>Configure {{.Manage.Plugin.FullName}}</legend>
         {{if ne .Manage.Plugin.Help ""}}
             <div style="margin-bottom: 5px;">{{.Manage.Plugin.Help}}</div>
         {{end}}
@@ -95,7 +95,7 @@
             </tr>
             {{range $i, $plugin := .Manage.Plugins}}
                 <tr>
-                    <td>{{$plugin.Name}}</td>
+                    <td>{{$plugin.FullName}}</td>
                     <td>{{if eq $plugin.About ""}}No description{{else}}{{$plugin.About}}{{end}}</td>
                     <td>
                         {{if ne $plugin.Serve nil}}<form method="get" action="/sriracha/plugin/view/{{$plugin.Name | ToLower}}"><input type="submit" value="View"></form>{{end}}

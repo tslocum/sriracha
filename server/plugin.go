@@ -17,6 +17,13 @@ import (
 	. "codeberg.org/tslocum/sriracha/model"
 )
 
+type attachHandler func(db sriracha.DB, post *Post, file []byte) (handled bool, err error)
+
+type attachHandlerInfo struct {
+	Name    string
+	Handler attachHandler
+}
+
 type postHandler func(db sriracha.DB, post *Post) error
 
 type postHandlerInfo struct {
@@ -60,18 +67,20 @@ type serveHandlerInfo struct {
 }
 
 type pluginInfo struct {
-	ID     int
-	Name   string
-	About  string
-	Help   template.HTML
-	Config []sriracha.PluginConfig
-	Events []string
-	Serve  serveHandler
+	ID       int
+	Name     string
+	FullName string
+	About    string
+	Help     template.HTML
+	Config   []sriracha.PluginConfig
+	Events   []string
+	Serve    serveHandler
 }
 
 var (
 	allPlugins              []any
 	allPluginInfo           []*pluginInfo
+	allPluginAttachHandlers []attachHandlerInfo
 	allPluginPostHandlers   []postHandlerInfo
 	allPluginInsertHandlers []insertHandlerInfo
 	allPluginCreateHandlers []createHandlerInfo
@@ -90,7 +99,8 @@ func (s *Server) registerPlugin(plugin any) {
 	if v.Kind() == reflect.Interface || v.Kind() == reflect.Pointer {
 		v = v.Elem()
 	}
-	info.Name = v.Type().Name()
+	info.FullName = v.Type().Name()
+	info.Name = strings.ToLower(info.FullName)
 
 	if pAbout, ok := plugin.(sriracha.Plugin); ok {
 		info.About = pAbout.About()
@@ -131,6 +141,11 @@ func (s *Server) registerPlugin(plugin any) {
 		info.Events = append(info.Events, "Update")
 	}
 
+	if pAttach, ok := plugin.(sriracha.PluginWithAttach); ok {
+		info.Events = append(info.Events, "Attach")
+		allPluginAttachHandlers = append(allPluginAttachHandlers, attachHandlerInfo{strings.ToLower(info.Name), pAttach.Attach})
+	}
+
 	if pPost, ok := plugin.(sriracha.PluginWithPost); ok {
 		info.Events = append(info.Events, "Post")
 		allPluginPostHandlers = append(allPluginPostHandlers, postHandlerInfo{strings.ToLower(info.Name), pPost.Post})
@@ -166,7 +181,7 @@ func (s *Server) registerPlugin(plugin any) {
 		info.Events = append(info.Events, "None")
 	}
 
-	fmt.Printf("%s loaded. Events: %s\n", info.Name, strings.Join(info.Events, ", "))
+	fmt.Printf("%s loaded. Events: %s\n", info.FullName, strings.Join(info.Events, ", "))
 
 	allPlugins = append(allPlugins, plugin)
 	allPluginInfo = append(allPluginInfo, info)

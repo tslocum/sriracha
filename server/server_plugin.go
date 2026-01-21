@@ -39,7 +39,7 @@ func (s *Server) servePlugin(data *templateData, db *database.DB, w http.Respons
 			info.Config[i].Value = defaultValue
 
 			if pUpdate != nil {
-				db.Plugin = strings.ToLower(info.Name)
+				db.Plugin = info.Name
 				pUpdate.Update(db, c.Name)
 				db.Plugin = ""
 			}
@@ -153,7 +153,7 @@ func (s *Server) servePlugin(data *templateData, db *database.DB, w http.Respons
 					info.Config[i].Value = newValue
 
 					if pUpdate != nil {
-						db.Plugin = strings.ToLower(info.Name)
+						db.Plugin = info.Name
 						pUpdate.Update(db, c.Name)
 						db.Plugin = ""
 					}

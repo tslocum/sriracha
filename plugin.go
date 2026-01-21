@@ -103,6 +103,16 @@ type PluginWithUpdate interface {
 	Update(db DB, key string) error
 }
 
+// PluginWithAttach describes the required methods for a plugin subscribing to attach events.
+type PluginWithAttach interface {
+	Plugin
+
+	// Attach events are sent when a file is attached to a post. FileOriginal contains
+	// the original file name and FileMIME contains the detected MIME type. When a
+	// file attachment is handled, return true to stop propagating events.
+	Attach(db DB, post *Post, file []byte) (handled bool, err error)
+}
+
 // PluginWithPost describes the required methods for a plugin subscribing to post events.
 type PluginWithPost interface {
 	Plugin

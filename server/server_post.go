@@ -130,10 +130,8 @@ func setFileAndThumb(p *Post, fileExt string, thumbExt string) {
 	p.Thumb = fileIDString + "s." + thumbExt
 }
 
-func setPostFileAttributes(p *Post, buf []byte, name string) error {
+func setPostFileAttributes(p *Post, buf []byte) error {
 	p.FileHash = calculateFileHash(buf)
-
-	p.FileOriginal = name
 
 	p.FileSize = int64(len(buf))
 	return nil
@@ -256,6 +254,7 @@ func (s *Server) loadPostForm(db *database.DB, r *http.Request, p *Post) error {
 	}
 
 	p.FileMIME = mimetype.Detect(buf).String()
+	p.FileOriginal = formFileHeader.Filename
 
 	oekakiPost := p.Board.Oekaki && p.FileMIME == "application/octet-stream" && len(buf) >= 3 && buf[0] == 0x54 && buf[1] == 0x47 && buf[2] == 0x4B
 	if oekakiPost {
@@ -277,6 +276,18 @@ func (s *Server) loadPostForm(db *database.DB, r *http.Request, p *Post) error {
 		if oekakiPost {
 			fileExt = "tgkr"
 		} else {
+			for _, info := range allPluginAttachHandlers {
+				db.Plugin = info.Name
+				handled, err := info.Handler(db, p, buf)
+				if err != nil {
+					db.Plugin = ""
+					return err
+				} else if handled {
+					db.Plugin = ""
+					return nil
+				}
+			}
+			db.Plugin = ""
 			return fmt.Errorf("unsupported filetype")
 		}
 	}
@@ -294,7 +305,7 @@ func (s *Server) loadPostForm(db *database.DB, r *http.Request, p *Post) error {
 
 	setFileAndThumb(p, fileExt, thumbExt)
 
-	err = setPostFileAttributes(p, buf, formFileHeader.Filename)
+	err = setPostFileAttributes(p, buf)
 	if err != nil {
 		return err
 	}

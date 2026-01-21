@@ -512,6 +512,20 @@ type PluginWithUpdate interface {
 }
 ```
 
+#### Attach event
+
+Attach events are sent when a file is attached to a post. FileOriginal contains
+the original file name and FileMIME contains the detected MIME type. When a file
+attachment is handled, return true to stop propagating events to other plugins.
+
+```go
+// PluginWithAttach describes the required methods for a plugin subscribing to attach events.
+type PluginWithAttach interface {
+	Plugin
+	Attach(db DB, post *Post, file []byte) (handled bool, err error)
+}
+```
+
 #### Post event
 
 Post events are sent when a new post is being created. Message is the only
