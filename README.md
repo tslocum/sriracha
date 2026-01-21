@@ -16,7 +16,7 @@ A [**read-only demo**](https://sriracha.rocket9labs.com/img/) is available.
 - Thread catalog
 - Oekaki (drawings)
 - Fetch new replies automatically
-- Translate into additional languages
+- Translate into [additional languages](https://translate.codeberg.org/projects/sriracha/sriracha/)
 - Play SWF files with the included [ruffle emulator](https://ruffle.rs)
 - View Shift JIS text art with the included [submona web font](https://github.com/pera/submona-web-font)
 - Management panel:
