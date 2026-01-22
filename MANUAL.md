@@ -492,14 +492,11 @@ the [Fortune](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/fortu
 ### Plugin events
 
 Plugins may subscribe to receive one or more types of events by implementing
-the associated event handlers. For instance, a plugin which subscribes to [Post](https://pkg.go.dev/codeberg.org/tslocum/sriracha#Post)
+the associated event handlers. For example, a plugin subscribing to [Post](https://pkg.go.dev/codeberg.org/tslocum/sriracha#Post)
 events would implement [PluginWithPost](https://pkg.go.dev/codeberg.org/tslocum/sriracha#PluginWithPost).
 
-An example of how to implement a plugin which receives new post events is
-available in the [Fortune](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/fortune/fortune.go) plugin.
-
 When a plugin handles an event, a reference to the database is provided. This reference
-must not be maintained after the event call has finished, or race conditions will occur. 
+is only valid during the event handler call.
 
 #### Update event
 
