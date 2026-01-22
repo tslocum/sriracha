@@ -185,7 +185,11 @@
             </tr>
             {{if ne (len .Opt.Uploads) 0}}
                 <tr>
-                    <td class="postblock"><label for="uploads">{{T "File Types"}}</label></td>
+                    <td class="postblock">
+                        <label for="uploads">{{T "File Types"}}</label><br>
+                        &nbsp;&nbsp;<a href="#" onclick="return setAllUploads(true);">{{T "Enable All"}}</a><br>
+                        &nbsp;&nbsp;<a href="#" onclick="return setAllUploads(false);">{{T "Disable All"}}</a>
+                    </td>
                     <td>
                         {{range $i, $info := .Opt.Uploads}}
                             {{if ne $i 0}}

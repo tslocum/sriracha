@@ -153,6 +153,9 @@ msgstr ""
 msgid "Directory"
 msgstr ""
 
+msgid "Disable All"
+msgstr ""
+
 msgid "Documentation"
 msgstr ""
 
@@ -163,6 +166,9 @@ msgid "Embed"
 msgstr ""
 
 msgid "Embed Services"
+msgstr ""
+
+msgid "Enable All"
 msgstr ""
 
 msgid "Error: %s"
