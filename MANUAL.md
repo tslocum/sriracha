@@ -92,7 +92,7 @@ section is a short guide on how to use custom templates.
 
 Sriracha template files have the extension `.gohtml` and are written in the
 [Go HTML template](https://pkg.go.dev/html/template) language. All official
-templates are included in Sriracha release archives.
+templates are included in release archives.
 
 To override a template, create a directory where the custom template files will be stored.
 Custom template files should be stored somewhere outside of the root directory.
@@ -101,6 +101,9 @@ Set the `template` option in `config.yml` to the newly created directory path.
 Create a custom template file in the new directory with the same name as the
 official template you wish to override. Copy the official template file contents
 into the new custom template file, then apply any desired changes.
+
+The templates `imgboard_begin_extra.gohtml` and `imgboard_end_extra.gohtml` are
+normally blank and may be overridden to add to the page header and footer.
 
 To apply custom template changes when Sriracha is running normally, restart
 Sriracha. When Sriracha is running in development mode, template changes are
@@ -378,17 +381,16 @@ plugins, replace all plugin files with updated versions.
 
 ### 4. Copy static files
 
-This step is only required if you are running a static file server with Sriracha.
-When Sriracha handles all incoming requests, such as when running locally, the
-updated static directory is automatically served.
-
-If you are running a static file server, copy all files in the `static` directory
+When running a static file server, copy all files in the `static` directory
 to `/rootdir/static`, replacing `/rootdir` with the server root directory.
+
+When Sriracha handles all incoming requests, such as when running locally, the
+updated static directory is served automatically.
 
 ### 5. Restart Sriracha
 
 Database upgrades are handled automatically, regardless of the number of releases
-between the old and new version. No extra queries need to be run when upgrading.
+between the old and new version.
 
 Static HTML files (news, overboard, board indexes and threads) are rebuilt
 automatically when Sriracha is upgraded.
@@ -492,7 +494,9 @@ the [Fortune](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/fortu
 ### Plugin events
 
 Plugins may subscribe to receive one or more types of events by implementing
-the associated event handlers. For example, a plugin subscribing to [Post](https://pkg.go.dev/codeberg.org/tslocum/sriracha#Post)
+the associated event handlers.
+
+For example, a plugin subscribing to [Post](https://pkg.go.dev/codeberg.org/tslocum/sriracha#Post)
 events would implement [PluginWithPost](https://pkg.go.dev/codeberg.org/tslocum/sriracha#PluginWithPost).
 
 When a plugin handles an event, a reference to the database is provided. This reference
