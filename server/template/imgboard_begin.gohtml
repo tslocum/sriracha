@@ -57,7 +57,7 @@
 				<option value="sriracha">Sriracha</option>
 			</select>
 		</div>
-		<div class="logo">{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}</div>
+		<div class="logo">{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}{{template "imgboard_begin_extra.gohtml" .}}</div>
 		<hr width="90%">
 		{{if .ReplyMode}}
 			{{if not .ModMode}}
