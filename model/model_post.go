@@ -317,10 +317,14 @@ func (p *Post) RefLink() template.HTML {
 func (p *Post) URL(siteHome string) string {
 	var host string
 	var path string
-	u, err := url.Parse(siteHome)
-	if err == nil {
-		host = "https://" + u.Host
-		path = u.Path
+	if siteHome != "" {
+		u, err := url.Parse(siteHome)
+		if err == nil {
+			if u.Host != "" {
+				host = "https://" + u.Host
+			}
+			path = u.Path
+		}
 	}
 
 	path = filepath.Join(path, p.Board.Path())
