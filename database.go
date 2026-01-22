@@ -9,13 +9,15 @@ type DB interface {
 	GetString(key string) string
 	SaveString(key string, value string)
 	GetMultiString(key string) []string
+	SaveMultiString(key string, value []string)
 	GetBool(key string) bool
 	SaveBool(key string, value bool)
-	SaveMultiString(key string, value []string)
 	GetInt(key string) int
-	GetInt64(key string) int64
-	GetMultiInt(key string) []int
 	SaveInt(key string, value int)
+	GetMultiInt(key string) []int
+	SaveMultiInt(key string, values []int)
+	GetInt64(key string) int64
+	SaveInt64(key string, value int64)
 	GetFloat(key string) float64
 	SaveFloat(key string, value float64)
 

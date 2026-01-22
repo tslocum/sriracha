@@ -305,8 +305,16 @@ func (db *DB) GetInt(key string) int {
 	return ParseInt(db.GetString(key))
 }
 
+func (db *DB) SaveInt(key string, value int) {
+	db.SaveString(key, strconv.Itoa(value))
+}
+
 func (db *DB) GetInt64(key string) int64 {
 	return ParseInt64(db.GetString(key))
+}
+
+func (db *DB) SaveInt64(key string, value int64) {
+	db.SaveString(key, fmt.Sprintf("%d", value))
 }
 
 func (db *DB) GetMultiInt(key string) []int {
@@ -321,8 +329,15 @@ func (db *DB) GetMultiInt(key string) []int {
 	return values
 }
 
-func (db *DB) SaveInt(key string, value int) {
-	db.SaveString(key, strconv.Itoa(value))
+func (db *DB) SaveMultiInt(key string, values []int) {
+	var out string
+	for i, v := range values {
+		if i != 0 {
+			out += "|||"
+		}
+		out += strconv.Itoa(v)
+	}
+	db.SaveString(key, out)
 }
 
 func (db *DB) GetFloat(key string) float64 {
