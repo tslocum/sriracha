@@ -1,3 +1,6 @@
+1.2.3:
+- Add shortcuts for enabling and disabling all file upload types
+
 1.2.2:
 - Allow plugins to handle file uploads
 - Style page navigation tables consistently
