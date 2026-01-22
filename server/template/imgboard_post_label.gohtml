@@ -1,0 +1,36 @@
+{{$ := index . 0}}
+{{$thread := index . 1}}
+{{$post := index . 2}}
+<label>
+    <input type="checkbox" name="delete[]" value="{{$post.ID}}">
+    {{if ne $post.Subject ""}}<span class="filetitle">{{$post.Subject}}</span>{{end}}
+    {{$post.NameBlock | HTML}}
+    {{if and $.Opt.Identifiers (and (eq $post.Board.Identifiers 0) $.ModMode)}}
+        {{.Identifier $.Opt.Identifiers true}}
+    {{end}}
+    <span class="reflink">
+        {{if and $post.Board.Reports (not $.ModMode)}}
+            <a href="/sriracha/?action=report&board={{$post.Board.ID}}&post={{$post.ID}}" title="{{T "Report"}}">R</a>
+        {{end}}
+        <a href="{{$post.Board.Path}}res/{{$post.Thread}}.html#{{$post.ID}}">No.</a><a href="{{$post.Board.Path}}res/{{$post.Thread}}.html#q{{$post.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{$post.ID}}');"{{end}}>{{$post.ID}}</a>
+        {{if and (eq $post.Parent 0) (or $post.Stickied $post.Locked)}}
+            {{if $post.Stickied}}<img src="/static/img/sticky.png" alt="{{T "Stickied"}}" title="{{T "Stickied"}}" width="16" height="16">{{end}}
+            {{if $post.Locked}}<img src="/static/img/lock.png" alt="{{T "Locked"}}" title="{{T "Locked"}}" width="16" height="16">{{end}}
+        {{end}}
+        {{if $.ModMode}}
+            <b>
+                {{if $.Opt.Identifiers}}
+                    <a href="/sriracha/mod/view/{{$post.ID}}" title="{{T "View posts by author"}}">V</a>
+                {{end}}
+                {{if eq $post.Parent 0}}
+                    <a href="/sriracha/mod/{{if $post.Stickied}}un{{end}}sticky/{{$post.ID}}" title="{{if not $post.Stickied}}{{T "Sticky"}}{{else}}{{T "Unsticky"}}{{end}}" onclick="javascript:return confirm('{{if not $post.Stickied}}Sticky{{else}}Unsticky{{end}} thread?');">S</a>
+                    <a href="/sriracha/mod/{{if $post.Locked}}un{{end}}lock/{{$post.ID}}" title="{{if not $post.Locked}}{{T "Lock"}}{{else}}{{T "Unlock"}}{{end}}" onclick="javascript:return confirm('{{if not $post.Locked}}Lock{{else}}Unlock{{end}} thread?');">L</a>
+                {{end}}
+                <a href="/sriracha/mod/delete/{{$post.ID}}" title="{{T "Delete"}}">D</a>
+                <a href="/sriracha/mod/ban/{{$post.ID}}" title="{{T "Ban"}}">B</a>
+                <a href="/sriracha/mod/{{$post.ID}}" title="{{T "Delete & ban"}}">D&amp;B</a>
+            </b>
+        {{end}}
+        {{$post.Backlinks $thread}}
+    </span>
+</label>

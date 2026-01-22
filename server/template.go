@@ -186,6 +186,9 @@ var templateFuncMap = template.FuncMap{
 		}
 		return postIndex >= threadPosts-showReplies
 	},
+	"Slice": func(elements ...any) []any {
+		return elements
+	},
 	"ToUpper": strings.ToUpper,
 	"ToLower": strings.ToLower,
 	"Title":   strings.Title,
