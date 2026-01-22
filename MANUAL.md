@@ -200,6 +200,9 @@ zoopz.org, www.zoopz.org {
   # Enable zstd and gzip compression.
   encode zstd gzip
 
+  # Revalidate HTML files.
+  header * ?Cache-Control "public, no-cache"
+
   # Cache static files.
   @cachedFiles {
     path *.aac *.avi *.css *.flac *.gif *.ico *.jpg *.js *.mp3 *.mp4 *.ogg *.opus *.png *.svg *.swf *.wasm *.wav *.webm *.webp *.woff
