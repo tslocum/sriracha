@@ -17,11 +17,13 @@ import (
 const NewDirPermission = 0755
 const NewFilePermission = 0640
 
-var AlphaNumericAndSymbols = regexp.MustCompile(`^[0-9A-Za-z_-]+$`)
-
 var (
+	AlphaNumericAndSymbols = regexp.MustCompile(`^[0-9A-Za-z_-]+$`)
+
+	QuotePattern = regexp.MustCompile(`^&gt;(.*)$`)
+
 	ReflinkPattern = regexp.MustCompile(`&gt;&gt;([0-9]+)`)
-	QuotePattern   = regexp.MustCompile(`^&gt;(.*)$`)
+
 	URLPattern     = regexp.MustCompile(`(?i)(((f|ht)tp(s)?:\/\/)[-a-zA-Zа-яА-Я()0-9@%\!_+.,~#?&;:|\'\/=]+)`)
 	FixURLPattern1 = regexp.MustCompile(`(?i)\(\<a href\=\"(.*)\)"\ target\=\"\_blank\">(.*)\)\<\/a>`)
 	FixURLPattern2 = regexp.MustCompile(`(?i)\<a href\=\"(.*)\."\ target\=\"\_blank\">(.*)\.\<\/a>`)

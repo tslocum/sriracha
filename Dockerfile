@@ -1,10 +1,10 @@
 FROM alpine:3.23.2 AS build
 
-# Support specifying Sriracha version.
-ARG version
-
 # Install timezone data and Go compiler.
 RUN apk add --no-cache tzdata go
+
+# Support specifying Sriracha version.
+ARG version
 
 # Copy sriracha source.
 COPY . /usr/src/sriracha
