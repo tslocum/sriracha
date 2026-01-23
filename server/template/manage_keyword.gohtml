@@ -3,9 +3,9 @@
 {{if ne (len .Manage.Keywords) 0}}
     <table class="managetable">
         <tr>
-            <th>Text</th>
-            <th>Action</th>
-            <th>Boards</th>
+            <th>{{T "Text"}}</th>
+            <th>{{T "Action"}}</th>
+            <th>{{T "Boards"}}</th>
             <th>&nbsp;</th>
         </tr>
         {{range $i, $keyword := .Manage.Keywords}}
@@ -14,9 +14,9 @@
                 <td>{{$keyword.ActionLabel $.Account}}</td>
                 <td>{{template "manage_print_board.gohtml" $keyword.Boards}}</td>
                 <td>
-                    <form method="get" action="/sriracha/keyword/test/{{$keyword.ID}}"><input type="submit" value="Test"></form>
-                    <form method="get" action="/sriracha/keyword/{{$keyword.ID}}"><input type="submit" value="Update"></form>
-                    <form method="get" action="/sriracha/keyword/delete/{{$keyword.ID}}" onsubmit="javascript:return confirm('Delete {{$keyword.Text}}?');"><input type="submit" value="Delete"></form>
+                    <form method="get" action="/sriracha/keyword/test/{{$keyword.ID}}"><input type="submit" value="{{T "Test"}}"></form>
+                    <form method="get" action="/sriracha/keyword/{{$keyword.ID}}"><input type="submit" value="{{T "Update"}}"></form>
+                    <form method="get" action="/sriracha/keyword/delete/{{$keyword.ID}}" onsubmit="javascript:return confirm('Delete {{$keyword.Text}}?');"><input type="submit" value="{{T "Delete"}}"></form>
                 </td>
             </tr>
         {{end}}
@@ -27,15 +27,15 @@
 {{end}}
 <form method="post">
     <fieldset>
-    <legend>{{if eq .Manage.Keyword nil}}Add Keyword{{else}}Update {{.Manage.Keyword.Text}}{{end}}</legend>
+    <legend>{{if eq .Manage.Keyword nil}}{{T "Add Keyword"}}{{else}}{{T "Update"}} {{.Manage.Keyword.Text}}{{end}}</legend>
     <table border="0" class="manageform">
         <tr>
-            <td class="postblock"><label for="text">Text</label></td>
+            <td class="postblock"><label for="text">{{T "Text"}}</label></td>
             <td><input type="text" name="text" value="{{if ne .Manage.Keyword nil}}{{.Manage.Keyword.Text}}{{end}}"></td>
-            <td>Regular expression to search for when a new post is created.</td>
+            <td>{{T "Regular expression to search for when a new post is created."}}</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="action">Action</label></td>
+            <td class="postblock"><label for="action">{{T "Action"}}</label></td>
             <td><select name="action" style="width: 100%;">
                 <option value="hide"{{if and (ne .Manage.Keyword nil) (eq .Manage.Keyword.Action "hide")}} selected{{end}}>{{T "Hide until approved"}}</option>
                 <option value="report"{{if and (ne .Manage.Keyword nil) (eq .Manage.Keyword.Action "report")}} selected{{end}}>{{T "Report"}}</option>
@@ -48,16 +48,16 @@
                 <option value="ban1m"{{if and (ne .Manage.Keyword nil) (eq .Manage.Keyword.Action "ban1m")}} selected{{end}}>{{T "Delete & ban for 1 month"}}</option>
                 <option value="ban0"{{if and (ne .Manage.Keyword nil) (eq .Manage.Keyword.Action "ban0")}} selected{{end}}>{{T "Delete & ban permanently"}}</option>
             </select></td>
-            <td>What should be done when the keyword is detected.</td>
+            <td>{{T "Action taken when the keyword is detected."}}</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="boards">Boards</label></td>
+            <td class="postblock"><label for="boards">{{T "Boards"}}</label></td>
             <td>{{template "manage_input_board.gohtml" .}}</td>
-            <td>The keyword will only apply to the selected boards.</td>
+            <td>{{T "Boards where the keyword applies."}}</td>
         </tr>   
         <tr>
             <td>&nbsp;</td>
-            <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if eq .Manage.Keyword nil}}Add{{else}}Update{{end}}"></td>
+            <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if eq .Manage.Keyword nil}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
             <td>&nbsp;</td>
         </tr>
     </table>

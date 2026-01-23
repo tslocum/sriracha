@@ -31,6 +31,12 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
+msgid "Action"
+msgstr ""
+
+msgid "Action taken when the keyword is detected."
+msgstr ""
+
 msgid "Add"
 msgstr ""
 
@@ -41,6 +47,9 @@ msgid "Add Ban"
 msgstr ""
 
 msgid "Add Board"
+msgstr ""
+
+msgid "Add Keyword"
 msgstr ""
 
 msgid "Admin"
@@ -92,6 +101,9 @@ msgid "Board description, which is used by search engines."
 msgstr ""
 
 msgid "Boards"
+msgstr ""
+
+msgid "Boards where the keyword applies."
 msgstr ""
 
 msgid "Capcode"
@@ -316,6 +328,9 @@ msgid "Incorrect password."
 msgstr ""
 
 msgid "Instance Limit"
+msgstr ""
+
+msgid "Keyword"
 msgstr ""
 
 msgid "Keywords"
@@ -583,6 +598,9 @@ msgstr ""
 msgid "Rebuild"
 msgstr ""
 
+msgid "Regular expression to search for when a new post is created."
+msgstr ""
+
 msgid "Replies"
 msgstr ""
 
@@ -660,6 +678,15 @@ msgid "Super-administrator"
 msgstr ""
 
 msgid "Supported file types are %s."
+msgstr ""
+
+msgid "Test"
+msgstr ""
+
+msgid "Text"
+msgstr ""
+
+msgid "Text to test for a keyword match."
 msgstr ""
 
 msgid "This setting is purely cosmetic. To actually prevent access, configure your HTTPS server to require password authorization."
