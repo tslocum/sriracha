@@ -130,6 +130,9 @@ msgstr ""
 msgid "Click to refresh."
 msgstr ""
 
+msgid "Configure"
+msgstr ""
+
 msgid "Confirm"
 msgstr ""
 
@@ -532,6 +535,9 @@ msgid "Next"
 msgstr ""
 
 msgid "No board specified."
+msgstr ""
+
+msgid "No configuration options."
 msgstr ""
 
 msgid "No news is good news."

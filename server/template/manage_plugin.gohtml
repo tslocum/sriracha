@@ -4,12 +4,12 @@
     [<a href="/sriracha/plugin/">{{T "Return"}}</a>]<br>
     <form method="post">
         <fieldset>
-        <legend>Configure {{.Manage.Plugin.FullName}}</legend>
+        <legend>{{T "Configure"}} {{.Manage.Plugin.FullName}}</legend>
         {{if ne .Manage.Plugin.Help ""}}
             <div style="margin-bottom: 5px;">{{.Manage.Plugin.Help}}</div>
         {{end}}
         {{if eq (len .Manage.Plugin.Config) 0}}
-            No configuration options.
+            {{T "No configuration options."}}
         {{else}}
             <table border="0" class="manageform">
                 {{range $i, $option := .Manage.Plugin.Config}}
@@ -70,7 +70,7 @@
                                     </select>
                                 {{end}}
                             {{else}}{{/* Unknown */}}
-                                Unknown configuration option type.
+                                {{T "Unknown"}}
                             {{end}}
                         </td>
                         <td>{{$option.Info | Format}}</td>
@@ -89,17 +89,17 @@
     {{if gt (len .Manage.Plugins) 0}}
         <table class="managetable">
             <tr>
-                <th align="left">Name</th>
-                <th align="left">Description</th>
+                <th align="left">{{T "Name"}}</th>
+                <th align="left">{{T "Description"}}</th>
                 <th align="left">&nbsp;</th>
             </tr>
             {{range $i, $plugin := .Manage.Plugins}}
                 <tr>
                     <td>{{$plugin.FullName}}</td>
-                    <td>{{if eq $plugin.About ""}}No description{{else}}{{$plugin.About}}{{end}}</td>
+                    <td>{{if eq $plugin.About ""}}{{T "None"}}{{else}}{{$plugin.About}}{{end}}</td>
                     <td>
-                        {{if ne $plugin.Serve nil}}<form method="get" action="/sriracha/plugin/view/{{$plugin.Name | ToLower}}"><input type="submit" value="View"></form>{{end}}
-                        {{if ne (len $plugin.Config) 0}}<form method="get" action="/sriracha/plugin/{{$plugin.Name | ToLower}}"><input type="submit" value="Configure"></form>{{end}}
+                        {{if ne $plugin.Serve nil}}<form method="get" action="/sriracha/plugin/view/{{$plugin.Name | ToLower}}"><input type="submit" value="{{T "View"}}"></form>{{end}}
+                        {{if ne (len $plugin.Config) 0}}<form method="get" action="/sriracha/plugin/{{$plugin.Name | ToLower}}"><input type="submit" value="{{T "Configure"}}"></form>{{end}}
                     </td>
                 </tr>
             {{end}}
