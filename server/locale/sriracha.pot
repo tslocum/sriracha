@@ -10,6 +10,24 @@ msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1 Day"
+msgstr ""
+
+msgid "1 Hour"
+msgstr ""
+
+msgid "1 Month"
+msgstr ""
+
+msgid "1 Week"
+msgstr ""
+
+msgid "2 Days"
+msgstr ""
+
+msgid "2 Weeks"
+msgstr ""
+
 msgid "Accounts"
 msgstr ""
 
@@ -17,6 +35,9 @@ msgid "Add"
 msgstr ""
 
 msgid "Add Account"
+msgstr ""
+
+msgid "Add Ban"
 msgstr ""
 
 msgid "Add Board"
@@ -378,6 +399,9 @@ msgstr ""
 msgid "Oekaki Width"
 msgstr ""
 
+msgid "Optional."
+msgstr ""
+
 msgid "Overboard"
 msgstr ""
 
@@ -385,6 +409,9 @@ msgid "Password"
 msgstr ""
 
 msgid "Paste a YouTube URL."
+msgstr ""
+
+msgid "Permanently ban uploaded file."
 msgstr ""
 
 msgid "Please wait %s before creating a new post."
@@ -484,6 +511,9 @@ msgid "Super-administrator"
 msgstr ""
 
 msgid "Supported file types are %s."
+msgstr ""
+
+msgid "The IP address to ban. Wildcards (*) may be used to ban a range of addresses."
 msgstr ""
 
 msgid "Threads"

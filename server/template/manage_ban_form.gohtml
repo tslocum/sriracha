@@ -3,30 +3,30 @@
     <input type="hidden" name="confirmation" value="1">
     {{end}}
     <fieldset>
-    <legend>{{if eq .Manage.Ban nil}}Add Ban{{else}}Update #{{.Manage.Ban.ID}}{{if HasPrefix .Manage.Ban.IP "r "}} - {{.Manage.Ban.TypeLabel}}{{end}}{{end}}</legend>
+    <legend>{{if eq .Manage.Ban nil}}{{T "Add Ban"}}{{else}}{{T "Update"}} #{{.Manage.Ban.ID}}{{if HasPrefix .Manage.Ban.IP "r "}} - {{.Manage.Ban.TypeLabel}}{{end}}{{end}}</legend>
     <table border="0" class="manageform">
         {{if and (eq .Manage.Ban nil) (eq .Extra "")}}
             <tr>
                 <td class="postblock"><label for="ip">{{T "IP Address"}}</label></td>
                 <td><input type="text" name="ip"></td>
-                <td>The IP address to ban. Wildcards (*) may be used to ban a range of addresses.</td>
+                <td>{{T "The IP address to ban. Wildcards (*) may be used to ban a range of addresses."}}</td>
             </tr>
         {{end}}
         <tr>
             <td class="postblock"><label for="expire">{{T "Expires"}}</label></td>
             <td><input type="text" name="expire" value="{{if and (ne .Manage.Ban nil) (ne .Manage.Ban.Expire 0)}}{{.Manage.Ban.Expire}}{{end}}"></td>
-            <td><small><button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+3600;document.sriracha.reason.focus();return false;">1 hour</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+86400;document.sriracha.reason.focus();return false;">1 day</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+172800;document.sriracha.reason.focus();return false;">2 days</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+604800;document.sriracha.reason.focus();return false;">1 week</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+1209600;document.sriracha.reason.focus();return false;">2 weeks</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+2592000;document.sriracha.reason.focus();return false;">1 month</button>&nbsp;<button onclick="document.sriracha.expire.value='';document.sriracha.reason.focus();return false;">{{T "Never"}}</button></small></td>
+            <td><small><button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+3600;document.sriracha.reason.focus();return false;">{{T "1 Hour"}}</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+86400;document.sriracha.reason.focus();return false;">{{T "1 Day"}}</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+172800;document.sriracha.reason.focus();return false;">{{T "2 Days"}}</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+604800;document.sriracha.reason.focus();return false;">{{T "1 Week"}}</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+1209600;document.sriracha.reason.focus();return false;">{{T "2 Weeks"}}</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+2592000;document.sriracha.reason.focus();return false;">{{T "1 Month"}}</button>&nbsp;<button onclick="document.sriracha.expire.value='';document.sriracha.reason.focus();return false;">{{T "Never"}}</button></small></td>
         </tr>
         <tr>
             <td class="postblock"><label for="reason">{{T "Reason"}}</label></td>
             <td><input type="text" name="reason" value="{{if ne .Manage.Ban nil}}{{.Manage.Ban.Reason}}{{end}}"></td>
-            <td>Optional.</td>
+            <td>{{T "Optional."}}</td>
         </tr>
         {{if and (and (eq .Manage.Ban nil) (ne .Extra "") (ne .Extra2 ""))}}
             <tr>
                 <td class="postblock"><label for="banfile">{{T "File"}}</label></td>
                 <td><label><input type="checkbox" name="banfile" value="{{.Extra2}}"> {{T "Ban file"}}</label></td>
-                <td>Permanently ban uploaded file.</td>
+                <td>{{T "Permanently ban uploaded file."}}</td>
             </tr>
         {{end}}
         <tr>
