@@ -413,7 +413,7 @@ directory. Plugin API documentation is available via [godoc](https://pkg.go.dev/
 | Plugin | Description |
 | -- | -- |
 | [BBCode](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/bbcode/bbcode.go) | Format BBCode in post messages. |
-| [Fortune](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/fortune/fortune.go) | Give your posters some good luck (or bad). |
+| [Fortune](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/fortune/fortune.go) | Give your visitors some good luck (or bad). |
 | [IRC](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/irc/irc.go) | Send server event notifications. |
 | [Password](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/password/password.go) | Require specific passwords to post. |
 | [Robot9000](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/robot9000/robot9000.go) | Require post messages to be unique. |

@@ -49,6 +49,12 @@ msgstr ""
 msgid "Administrator"
 msgstr ""
 
+msgid "All posts"
+msgstr ""
+
+msgid "Allow all"
+msgstr ""
+
 msgid "Appearance"
 msgstr ""
 
@@ -76,7 +82,13 @@ msgstr ""
 msgid "Bans"
 msgstr ""
 
+msgid "Board"
+msgstr ""
+
 msgid "Board Index"
+msgstr ""
+
+msgid "Board description, which is used by search engines."
 msgstr ""
 
 msgid "Boards"
@@ -129,7 +141,13 @@ msgstr ""
 msgid "Default Name"
 msgstr ""
 
+msgid "Default page style. Visitors may choose alternative styles in their browser settings."
+msgstr ""
+
 msgid "Delay"
+msgstr ""
+
+msgid "Delay (in seconds) visitors must wait before posting again. Set to 0 to disable."
 msgstr ""
 
 msgid "Delete"
@@ -168,6 +186,9 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
+msgid "Details"
+msgstr ""
+
 msgid "Detected banned file."
 msgstr ""
 
@@ -180,10 +201,25 @@ msgstr ""
 msgid "Directory"
 msgstr ""
 
+msgid "Directory where the board files are located. Leave blank to place the board at the server root."
+msgstr ""
+
+msgid "Disable"
+msgstr ""
+
 msgid "Disable All"
 msgstr ""
 
 msgid "Disabled"
+msgstr ""
+
+msgid "Disallow visitor and staff posts"
+msgstr ""
+
+msgid "Disallow visitor posts"
+msgstr ""
+
+msgid "Disallow visitor threads"
 msgstr ""
 
 msgid "Documentation"
@@ -196,6 +232,9 @@ msgid "Embed"
 msgstr ""
 
 msgid "Embed Services"
+msgstr ""
+
+msgid "Enable"
 msgstr ""
 
 msgid "Enable All"
@@ -225,6 +264,21 @@ msgstr ""
 msgid "Forum"
 msgstr ""
 
+msgid "Global"
+msgstr ""
+
+msgid "HTML-formatted text shown in the new post form."
+msgstr ""
+
+msgid "Hide everywhere"
+msgstr ""
+
+msgid "Hide from index"
+msgstr ""
+
+msgid "Hide from overboard"
+msgstr ""
+
 msgid "Hide until approved"
 msgstr ""
 
@@ -234,10 +288,16 @@ msgstr ""
 msgid "IP Address"
 msgstr ""
 
+msgid "IP address to ban. Wildcards (*) may be used to ban a range of addresses."
+msgstr ""
+
 msgid "Idenifiers"
 msgstr ""
 
 msgid "Imageboard"
+msgstr ""
+
+msgid "Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages."
 msgstr ""
 
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
@@ -274,6 +334,9 @@ msgid "Lift File Ban"
 msgstr ""
 
 msgid "Locale"
+msgstr ""
+
+msgid "Locale used when writing board pages."
 msgstr ""
 
 msgid "Log In"
@@ -315,7 +378,40 @@ msgstr ""
 msgid "Max Threads"
 msgstr ""
 
+msgid "Maximum file size (in bytes) when creating a thread. Set to 0 to disable file uploads."
+msgstr ""
+
+msgid "Maximum file size (in bytes) when replying. Set to 0 to disable file uploads."
+msgstr ""
+
 msgid "Maximum file size allowed is %s."
+msgstr ""
+
+msgid "Maximum height of thumbnails."
+msgstr ""
+
+msgid "Maximum length of the email field."
+msgstr ""
+
+msgid "Maximum length of the message field."
+msgstr ""
+
+msgid "Maximum length of the name field."
+msgstr ""
+
+msgid "Maximum length of the subject field."
+msgstr ""
+
+msgid "Maximum number of replies to a thread before the thread stops being bumped to the front. Set to 0 to disable."
+msgstr ""
+
+msgid "Maximum number of threads in board. Once this limit is reached, the oldest threads are pruned. Set to 0 to disable."
+msgstr ""
+
+msgid "Maximum width of thumbnails."
+msgstr ""
+
+msgid "Maximum word length. Set to 0 to never break long words."
 msgstr ""
 
 msgid "Memory"
@@ -342,6 +438,24 @@ msgstr ""
 msgid "Min Thread File Size"
 msgstr ""
 
+msgid "Minimum file size (in bytes) when creating a thread."
+msgstr ""
+
+msgid "Minimum file size (in bytes) when replying."
+msgstr ""
+
+msgid "Minimum length of the email field."
+msgstr ""
+
+msgid "Minimum length of the message field."
+msgstr ""
+
+msgid "Minimum length of the name field."
+msgstr ""
+
+msgid "Minimum length of the subject field."
+msgstr ""
+
 msgid "Mod"
 msgstr ""
 
@@ -351,7 +465,19 @@ msgstr ""
 msgid "Mod mode: View"
 msgstr ""
 
+msgid "Moderate"
+msgstr ""
+
+msgid "Moderator"
+msgstr ""
+
 msgid "Name"
+msgstr ""
+
+msgid "Name of the board, which is displayed in the page title and header."
+msgstr ""
+
+msgid "Name shown when no name is entered. Separate multiple names with | (pipe character). May be blank."
 msgstr ""
 
 msgid "Never"
@@ -393,6 +519,15 @@ msgstr ""
 msgid "None"
 msgstr ""
 
+msgid "Number of message lines to display in post preview on board index pages. Set to 0 to show all lines."
+msgstr ""
+
+msgid "Number of replies to show per board index thread. Set to 0 to show none."
+msgstr ""
+
+msgid "Number of threads to show per board index page. Set to 0 to show all."
+msgstr ""
+
 msgid "Oekaki Height"
 msgstr ""
 
@@ -420,6 +555,9 @@ msgstr ""
 msgid "Plugins"
 msgstr ""
 
+msgid "Positive values specify global instances allowed. Negative values specify board-specific instances allowed. Zero allows unlimited instances."
+msgstr ""
+
 msgid "Post truncated. Click Reply to view."
 msgstr ""
 
@@ -427,6 +565,9 @@ msgid "Posting mode: Reply"
 msgstr ""
 
 msgid "Posts"
+msgstr ""
+
+msgid "Posts with attachments"
 msgstr ""
 
 #. TRANSLATORS: The word 'Preferences' is used in reference to user-specific preferences.
@@ -437,6 +578,9 @@ msgid "Previous"
 msgstr ""
 
 msgid "Reason"
+msgstr ""
+
+msgid "Rebuild"
 msgstr ""
 
 msgid "Replies"
@@ -488,6 +632,9 @@ msgstr ""
 msgid "Share"
 msgstr ""
 
+msgid "Show everywhere"
+msgstr ""
+
 msgid "Site Home"
 msgstr ""
 
@@ -515,7 +662,7 @@ msgstr ""
 msgid "Supported file types are %s."
 msgstr ""
 
-msgid "The IP address to ban. Wildcards (*) may be used to ban a range of addresses."
+msgid "This setting is purely cosmetic. To actually prevent access, configure your HTTPS server to require password authorization."
 msgstr ""
 
 msgid "Threads"
@@ -536,6 +683,9 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
+msgid "Unused"
+msgstr ""
+
 msgid "Update"
 msgstr ""
 
@@ -551,6 +701,9 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
+msgid "Values greater than 75 are not supported when using the default database schema."
+msgstr ""
+
 msgid "Version"
 msgstr ""
 
@@ -561,6 +714,30 @@ msgid "View posts by author"
 msgstr ""
 
 msgid "Visibility"
+msgstr ""
+
+msgid "Visitors may embed media from selected services instead of uploading a file."
+msgstr ""
+
+msgid "Visitors may upload the selected types of files."
+msgstr ""
+
+msgid "Whether identifiers are displayed for each post. Identifiers are generated based on IP address hashes."
+msgstr ""
+
+msgid "Whether moderator approval is required before displaying newly created posts."
+msgstr ""
+
+msgid "Whether new posts may be created."
+msgstr ""
+
+msgid "Whether reference links are displayed next to No.## pointing to all visible replies mentioning a post."
+msgstr ""
+
+msgid "Whether visitors may create and submit drawings."
+msgstr ""
+
+msgid "Whether visitors may report posts."
 msgstr ""
 
 msgid "Word Break"

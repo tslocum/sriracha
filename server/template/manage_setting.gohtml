@@ -18,7 +18,7 @@
         <tr>
             <td class="postblock"><label for="news">{{T "Site News"}}</label></td>
             <td><select name="news" style="width: 100%;">
-                <option value="0"{{if eq .Opt.News 0}} selected{{end}}>Disable</option>
+                <option value="0"{{if eq .Opt.News 0}} selected{{end}}>{{T "Disable"}}</option>
                 <option value="1"{{if eq .Opt.News 1}} selected{{end}}>Enable - Write to news.html</option>
                 <option value="2"{{if eq .Opt.News 2}} selected{{end}}>Enable - Write to index.html</option>
             </select></td>
@@ -27,16 +27,16 @@
         <tr>
             <td class="postblock"><label for="boardindex">{{T "Board Index"}}</label></td>
             <td><select name="boardindex" style="width: 100%;">
-                <option value="0"{{if not .Opt.BoardIndex}} selected{{end}}>Disable</option>
-                <option value="1"{{if .Opt.BoardIndex}} selected{{end}}>Enable</option>
+                <option value="0"{{if not .Opt.BoardIndex}} selected{{end}}>{{T "Disable"}}</option>
+                <option value="1"{{if .Opt.BoardIndex}} selected{{end}}>{{T "Enable"}}</option>
             </select></td>
             <td>Link to boards in page header.</td>
         </tr>
         <tr>
             <td class="postblock"><label for="captcha">CAPTCHA</label></td>
             <td><select name="captcha" style="width: 100%;">
-                <option value="0"{{if not .Opt.CAPTCHA}} selected{{end}}>Disable</option>
-                <option value="1"{{if .Opt.CAPTCHA}} selected{{end}}>Enable</option>
+                <option value="0"{{if not .Opt.CAPTCHA}} selected{{end}}>{{T "Disable"}}</option>
+                <option value="1"{{if .Opt.CAPTCHA}} selected{{end}}>{{T "Enable"}}</option>
             </select></td>
             <td>Whether visitors must pass a CAPTCHA when posting.</td>
         </tr>
@@ -53,7 +53,7 @@
         <tr>
             <td class="postblock"><label for="refresh">{{T "Auto Refresh"}}</label></td>
             <td><input type="text" name="refresh" value="{{.Opt.Refresh}}"></input></td>
-            <td>Seconds between automatic refreshes when viewing a thread. 0 to disable.</td>
+            <td>Seconds between automatic refreshes when viewing a thread. Set to 0 to disable.</td>
         </tr>
         <tr>
             <td class="postblock"><label for="captcha">{{T "Embed Services"}}</label></td>

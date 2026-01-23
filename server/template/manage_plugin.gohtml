@@ -18,8 +18,8 @@
                         <td>
                             {{if eq .Type 0}}{{/* Boolean */}}
                                 <select name="config_{{.Name}}" style="width: 100%;">
-                                    <option value="0"{{if ne .Value "1"}} selected{{end}}>Disable</option>
-                                    <option value="1"{{if eq .Value "1"}} selected{{end}}>Enable</option>
+                                    <option value="0"{{if ne .Value "1"}} selected{{end}}>{{T "Disable"}}</option>
+                                    <option value="1"{{if eq .Value "1"}} selected{{end}}>{{T "Enable"}}</option>
                                 </select>
                             {{else if or (eq .Type 1) (eq .Type 2)}}{{/* Integer or Float */}}
                                 {{if eq .Multiple true}}

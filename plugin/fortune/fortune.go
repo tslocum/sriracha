@@ -19,7 +19,7 @@ const (
 type Fortune struct{}
 
 func (f *Fortune) About() string {
-	return "Give your posters some good luck (or bad)."
+	return "Give your visitors some good luck (or bad)."
 }
 
 func (f *Fortune) Config() []sriracha.PluginConfig {

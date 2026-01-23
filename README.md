@@ -21,7 +21,7 @@ A [**read-only demo**](https://sriracha.rocket9labs.com/img/) is available.
 - View Shift JIS text art with the included [submona web font](https://github.com/pera/submona-web-font)
 - Management panel:
   - Automatically moderate new posts using regular expressions
-  - Ban offensive/abusive posters across all boards
+  - Ban offensive/abusive visitors across all boards
   - Post using admin or mod capcode
   - Post using raw HTML
   - Account system:
