@@ -429,6 +429,7 @@ msgstr ""
 msgid "Posts"
 msgstr ""
 
+#. TRANSLATORS: The word 'Preferences' is used in reference to user-specific preferences.
 msgid "Preferences"
 msgstr ""
 
@@ -480,6 +481,7 @@ msgstr ""
 msgid "Rules"
 msgstr ""
 
+#. TRANSLATORS: The word 'Settings' is used in reference to system-wide settings.
 msgid "Settings"
 msgstr ""
 
