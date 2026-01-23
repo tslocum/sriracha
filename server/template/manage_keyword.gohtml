@@ -11,7 +11,7 @@
         {{range $i, $keyword := .Manage.Keywords}}
             <tr>
                 <td>{{$keyword.Text}}</td>
-                <td>{{$keyword.ActionLabel}}</td>
+                <td>{{$keyword.ActionLabel $.Account}}</td>
                 <td>{{template "manage_print_board.gohtml" $keyword.Boards}}</td>
                 <td>
                     <form method="get" action="/sriracha/keyword/test/{{$keyword.ID}}"><input type="submit" value="Test"></form>

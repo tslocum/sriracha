@@ -19,7 +19,6 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/leonelquinteros/gotext"
 
 	. "codeberg.org/tslocum/sriracha/util"
 )
@@ -186,7 +185,7 @@ func (p *Post) EmbedInfo() []string {
 	return split
 }
 
-func (p *Post) MessageTruncated(lines int) template.HTML {
+func (p *Post) MessageTruncated(lines int, account *Account) template.HTML {
 	var showOmitted bool
 	if lines == 0 {
 		lines = p.Board.Truncate
@@ -234,7 +233,7 @@ func (p *Post) MessageTruncated(lines int) template.HTML {
 	}
 
 	if showOmitted {
-		truncated += `<br><span class="omittedposts">` + gotext.Get("Post truncated. Click Reply to view.") + `</span><br>`
+		truncated += `<br><span class="omittedposts">` + Get(p.Board, account, "Post truncated. Click Reply to view.") + `</span><br>`
 	}
 	return template.HTML(truncated)
 }

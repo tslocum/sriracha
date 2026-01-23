@@ -8,7 +8,6 @@ import (
 	"codeberg.org/tslocum/sriracha/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
-	"github.com/leonelquinteros/gotext"
 )
 
 func (s *Server) serveReport(db *database.DB, w http.ResponseWriter, r *http.Request) {
@@ -16,13 +15,13 @@ func (s *Server) serveReport(db *database.DB, w http.ResponseWriter, r *http.Req
 
 	postID := FormInt(r, "post")
 	if postID <= 0 {
-		data.BoardError(w, gotext.Get("No post selected."))
+		data.BoardError(w, Get(nil, data.Account, "No post selected."))
 		return
 	}
 
 	post := db.PostByID(postID)
 	if post == nil {
-		data.BoardError(w, gotext.Get("No post selected."))
+		data.BoardError(w, Get(nil, data.Account, "No post selected."))
 		return
 	} else if post.Moderated == ModeratedVisible {
 		numReports := db.NumReports(post)
@@ -48,6 +47,6 @@ func (s *Server) serveReport(db *database.DB, w http.ResponseWriter, r *http.Req
 	}
 
 	data.Template = "board_info"
-	data.Info = gotext.Get("Reported No.%d", post.ID)
+	data.Info = Get(post.Board, data.Account, "Reported No.%d", post.ID)
 	data.execute(w)
 }

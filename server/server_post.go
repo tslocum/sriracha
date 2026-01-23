@@ -27,7 +27,6 @@ import (
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/aquilax/tripcode"
 	"github.com/gabriel-vasile/mimetype"
-	"github.com/leonelquinteros/gotext"
 	"github.com/nfnt/resize"
 )
 
@@ -424,7 +423,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 	b := db.BoardByDir(boardDir)
 	if b == nil {
 		data := s.buildData(db, w, r)
-		data.BoardError(w, gotext.Get("No board specified."))
+		data.BoardError(w, Get(b, data.Account, "No board specified."))
 		return
 	}
 
@@ -456,12 +455,12 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 	case LockPost:
 		if !staffPost {
 			data := s.buildData(db, w, r)
-			data.BoardError(w, gotext.Get("Board locked. No new posts may be created."))
+			data.BoardError(w, Get(b, data.Account, "Board locked. No new posts may be created."))
 			return
 		}
 	case LockStaff:
 		data := s.buildData(db, w, r)
-		data.BoardError(w, gotext.Get("Board locked. No new posts may be created."))
+		data.BoardError(w, Get(b, data.Account, "Board locked. No new posts may be created."))
 		return
 	}
 
@@ -482,7 +481,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			if time.Now().Unix() < nextPost {
 				waitTime := time.Until(time.Unix(nextPost, 0)) // This should be rounded to the nearest second. Oh well.
 				data := s.buildData(db, w, r)
-				data.BoardError(w, gotext.Get("Please wait %s before creating a new post.", waitTime))
+				data.BoardError(w, Get(b, data.Account, "Please wait %s before creating a new post.", waitTime))
 				return
 			}
 		}
@@ -504,7 +503,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			s.deletePostFiles(post)
 
 			data := s.buildData(db, w, r)
-			data.BoardError(w, gotext.Get("No post selected."))
+			data.BoardError(w, Get(b, data.Account, "No post selected."))
 			return
 		}
 	}
@@ -517,7 +516,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			s.deletePostFiles(post)
 
 			data := s.buildData(db, w, r)
-			data.BoardError(w, gotext.Get("You may only reply to threads."))
+			data.BoardError(w, Get(b, data.Account, "You may only reply to threads."))
 			return
 		}
 		if s.opt.CAPTCHA && !skipCAPTCHA {
@@ -541,7 +540,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 				s.deletePostFiles(post)
 
 				data := s.buildData(db, w, r)
-				data.BoardError(w, gotext.Get("Incorrect CAPTCHA text. Please try again."))
+				data.BoardError(w, Get(b, data.Account, "Incorrect CAPTCHA text. Please try again."))
 				return
 			}
 		}
@@ -632,7 +631,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 
 			if post.File == "" {
 				data := s.buildData(db, w, r)
-				data.BoardError(w, gotext.Get("Failed to embed media."))
+				data.BoardError(w, Get(b, data.Account, "Failed to embed media."))
 				return
 			}
 		}
@@ -678,7 +677,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 	if !staffPost {
 		if parentPost != nil && parentPost.Locked {
 			data := s.buildData(db, w, r)
-			data.BoardError(w, gotext.Get("That thread is locked."))
+			data.BoardError(w, Get(b, data.Account, "That thread is locked."))
 			return
 		}
 
@@ -738,7 +737,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 							IP:        post.IP,
 							Timestamp: time.Now().Unix(),
 							Expire:    banExpire,
-							Reason:    gotext.Get("Detected banned keyword."),
+							Reason:    Get(b, data.Account, "Detected banned keyword."),
 						}
 						db.AddBan(ban)
 
@@ -750,7 +749,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 					s.deletePostFiles(post)
 
 					data := s.buildData(db, w, r)
-					data.BoardError(w, gotext.Get("Detected banned keyword."))
+					data.BoardError(w, Get(b, data.Account, "Detected banned keyword."))
 					return
 				}
 			}
@@ -760,7 +759,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			ban := &Ban{
 				IP:        post.IP,
 				Timestamp: time.Now().Unix(),
-				Reason:    gotext.Get("Detected banned file."),
+				Reason:    Get(b, data.Account, "Detected banned file."),
 			}
 			db.AddBan(ban)
 
@@ -768,7 +767,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			s.deletePostFiles(post)
 
 			data := s.buildData(db, w, r)
-			data.BoardError(w, gotext.Get("Detected banned file."))
+			data.BoardError(w, Get(b, data.Account, "Detected banned file."))
 			return
 		}
 	}
@@ -929,7 +928,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 
 	if post.Moderated == ModeratedHidden {
 		data.Template = "board_info"
-		data.Info = gotext.Get("Your post will be shown once it has been approved.")
+		data.Info = Get(b, data.Account, "Your post will be shown once it has been approved.")
 		data.execute(w)
 		return
 	} else if addReport {

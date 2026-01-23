@@ -19,7 +19,7 @@
                     {{end}}
                     {{if ne .Message ""}}
                         <br>
-                        {{.MessageTruncated 1}}
+                        {{.MessageTruncated 1 $.Account}}
                     {{end}}
                 </td>
             </tr>

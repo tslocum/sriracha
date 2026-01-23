@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-
-	"github.com/leonelquinteros/gotext"
 )
 
 type Keyword struct {
@@ -41,7 +39,7 @@ func (k *Keyword) HasBoard(id int) bool {
 	return false
 }
 
-func (k *Keyword) ActionLabel() string {
+func (k *Keyword) ActionLabel(account *Account) string {
 	var label string
 	switch k.Action {
 	case "hide":
@@ -67,5 +65,5 @@ func (k *Keyword) ActionLabel() string {
 	default:
 		label = "Unknown"
 	}
-	return gotext.Get(label)
+	return Get(nil, account, label)
 }

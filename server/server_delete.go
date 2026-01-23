@@ -10,7 +10,6 @@ import (
 	"codeberg.org/tslocum/sriracha/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
-	"github.com/leonelquinteros/gotext"
 )
 
 func (s *Server) serveDelete(db *database.DB, w http.ResponseWriter, r *http.Request) {
@@ -19,7 +18,7 @@ func (s *Server) serveDelete(db *database.DB, w http.ResponseWriter, r *http.Req
 	boardDir := FormString(r, "board")
 	b := db.BoardByDir(boardDir)
 	if b == nil {
-		data.BoardError(w, gotext.Get("No board specified."))
+		data.BoardError(w, Get(b, data.Account, "No board specified."))
 		return
 	}
 
@@ -38,7 +37,7 @@ func (s *Server) serveDelete(db *database.DB, w http.ResponseWriter, r *http.Req
 	} else if post != nil {
 		password := r.FormValue("password")
 		if post.Password == "" || s.hashData(password) != post.Password {
-			data.BoardError(w, gotext.Get("Incorrect password."))
+			data.BoardError(w, Get(b, data.Account, "Incorrect password."))
 			return
 		}
 
@@ -66,5 +65,5 @@ func (s *Server) serveDelete(db *database.DB, w http.ResponseWriter, r *http.Req
 		data.execute(w)
 		return
 	}
-	data.BoardError(w, gotext.Get("No post selected."))
+	data.BoardError(w, Get(b, data.Account, "No post selected."))
 }

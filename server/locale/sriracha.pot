@@ -330,6 +330,9 @@ msgstr ""
 msgid "New (confirm)"
 msgstr ""
 
+msgid "New drawing..."
+msgstr ""
+
 msgid "News"
 msgstr ""
 
