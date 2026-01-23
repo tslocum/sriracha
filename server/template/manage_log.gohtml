@@ -5,11 +5,11 @@
 {{else}}
     <table class="managetable">
         <tr>
-            <th align="left">Date</th>
-            <th align="left">User</th>
-            <th align="left">Board</th>
-            <th align="left">Action</th>
-            <th align="left" width="60%">Info</th>
+            <th align="left">{{T "Date"}}</th>
+            <th align="left">{{T "User"}}</th>
+            <th align="left">{{T "Board"}}</th>
+            <th align="left">{{T "Action"}}</th>
+            <th align="left" width="60%">{{T "Info"}}</th>
         </tr>
         {{range $i, $log := .Manage.Logs}}
             <tr>

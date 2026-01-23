@@ -327,6 +327,9 @@ msgstr ""
 msgid "Incorrect password."
 msgstr ""
 
+msgid "Info"
+msgstr ""
+
 msgid "Instance Limit"
 msgstr ""
 
@@ -723,6 +726,9 @@ msgid "Uptime"
 msgstr ""
 
 msgid "Used to log in and audit actions."
+msgstr ""
+
+msgid "User"
 msgstr ""
 
 msgid "Username"
