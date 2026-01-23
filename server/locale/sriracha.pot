@@ -67,7 +67,13 @@ msgstr ""
 msgid "Allow all"
 msgstr ""
 
+msgid "Allow moderators to post site news."
+msgstr ""
+
 msgid "Appearance"
+msgstr ""
+
+msgid "Appears in page title and header."
 msgstr ""
 
 msgid "Artwork title:"
@@ -80,6 +86,9 @@ msgid "Author"
 msgstr ""
 
 msgid "Auto Refresh"
+msgstr ""
+
+msgid "Available embed services. Visit board settings to enable usage."
 msgstr ""
 
 msgid "Backlinks"
@@ -162,6 +171,12 @@ msgstr ""
 msgid "Default Name"
 msgstr ""
 
+msgid "Default oekaki canvas height."
+msgstr ""
+
+msgid "Default oekaki canvas width."
+msgstr ""
+
 msgid "Default page style. Visitors may choose alternative styles in their browser settings."
 msgstr ""
 
@@ -225,6 +240,9 @@ msgstr ""
 msgid "Directory where the board files are located. Leave blank to place the board at the server root."
 msgstr ""
 
+msgid "Directory where the overboard files are located. Leave blank to disable. To write the overboard at the root directory, enter \"/\"."
+msgstr ""
+
 msgid "Disable"
 msgstr ""
 
@@ -259,6 +277,9 @@ msgid "Embed Services"
 msgstr ""
 
 msgid "Enable"
+msgstr ""
+
+msgid "Enable - Write to %s"
 msgstr ""
 
 msgid "Enable All"
@@ -309,6 +330,9 @@ msgstr ""
 msgid "Hide until approved"
 msgstr ""
 
+msgid "Home address. May be a path or URL. Used in return links."
+msgstr ""
+
 msgid "ID"
 msgstr ""
 
@@ -357,7 +381,7 @@ msgstr ""
 msgid "Last Active"
 msgstr ""
 
-msgid Leave blank to hide until a date is set. News items with publish dates in the future are hidden until that date."
+msgid "Leave blank to hide until a date is set. News items with publish dates in the future are hidden until that date."
 msgstr ""
 
 msgid "Leave blank to keep current password."
@@ -367,6 +391,9 @@ msgid "Lift"
 msgstr ""
 
 msgid "Lift File Ban"
+msgstr ""
+
+msgid "Link to boards in page header."
 msgstr ""
 
 msgid "Locale"
@@ -558,13 +585,19 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-msgid "Number of message lines to display in post preview on board index pages. Set to 0 to show all lines."
+msgid "Number of message lines to display in post preview on board index pages. Set to 0 to show all."
 msgstr ""
 
 msgid "Number of replies to show per board index thread. Set to 0 to show none."
 msgstr ""
 
+msgid "Number of replies to show per overboard index page. Set to 0 to show all."
+msgstr ""
+
 msgid "Number of threads to show per board index page. Set to 0 to show all."
+msgstr ""
+
+msgid "Number of threads to show per overboard index page. Set to 0 to show all."
 msgstr ""
 
 msgid "Oekaki Height"
@@ -667,6 +700,9 @@ msgstr ""
 msgid "Rules"
 msgstr ""
 
+msgid "Seconds between automatic refreshes when viewing a thread. Set to 0 to disable."
+msgstr ""
+
 #. TRANSLATORS: The word 'Settings' is used in reference to system-wide settings.
 msgid "Settings"
 msgstr ""
@@ -749,6 +785,9 @@ msgstr ""
 msgid "Update %s"
 msgstr ""
 
+msgid "Update Settings"
+msgstr ""
+
 msgid "Uptime"
 msgstr ""
 
@@ -798,6 +837,9 @@ msgid "Whether visitors may create and submit drawings."
 msgstr ""
 
 msgid "Whether visitors may report posts."
+msgstr ""
+
+msgid "Whether visitors must pass a CAPTCHA when posting."
 msgstr ""
 
 msgid "Word Break"
