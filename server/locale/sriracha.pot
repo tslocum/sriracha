@@ -16,10 +16,16 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
+msgid "Add Account"
+msgstr ""
+
 msgid "Add Board"
 msgstr ""
 
 msgid "Admin"
+msgstr ""
+
+msgid "Administrator"
 msgstr ""
 
 msgid "Appearance"
@@ -156,6 +162,9 @@ msgstr ""
 msgid "Disable All"
 msgstr ""
 
+msgid "Disabled"
+msgstr ""
+
 msgid "Documentation"
 msgstr ""
 
@@ -232,6 +241,9 @@ msgid "Keywords"
 msgstr ""
 
 msgid "Last Active"
+msgstr ""
+
+msgid "Leave blank to keep current password."
 msgstr ""
 
 msgid "Lift"
@@ -429,6 +441,9 @@ msgstr ""
 msgid "Require Approval"
 msgstr ""
 
+msgid "Required."
+msgstr ""
+
 msgid "Return"
 msgstr ""
 
@@ -465,6 +480,9 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
+msgid "Super-administrator"
+msgstr ""
+
 msgid "Supported file types are %s."
 msgstr ""
 
@@ -489,7 +507,13 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
+msgid "Update %s"
+msgstr ""
+
 msgid "Uptime"
+msgstr ""
+
+msgid "Used to log in and audit actions."
 msgstr ""
 
 msgid "Username"

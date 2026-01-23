@@ -11,7 +11,7 @@
         {{range $i, $account := .Manage.Accounts}}
             <tr>
                 <td>{{$account.Username}}</td>
-                <td>{{if eq $account.Role 1}}Super-administrator{{else if eq $account.Role 2}}Administrator{{else if eq $account.Role 3}}Moderator{{else}}Disabled{{end}}</td>
+                <td>{{if eq $account.Role 1}}{{T "Super-administrator"}}{{else if eq $account.Role 2}}{{T "Administrator"}}{{else if eq $account.Role 3}}{{T "Moderator"}}{{else}}{{T "Disabled"}}{{end}}</td>
                 <td>{{$account.LastActiveDate}}</td>
                 <td><form method="get" action="/sriracha/account/{{$account.ID}}"><input type="submit" value="{{T "Update"}}"></form></td>
             </tr>
@@ -23,27 +23,31 @@
 {{end}}
 <form method="post">
     <fieldset>
-    <legend>{{if eq .Manage.Account nil}}Add Account{{else}}Update {{.Manage.Account.Username}}{{end}}</legend>
+    <legend>{{if eq .Manage.Account nil}}{{T "Add Account"}}{{else}}{{T "Update %s" .Manage.Account.Username}}{{end}}</legend>
     <table border="0" class="manageform">
         <tr>
             <td class="postblock"><label for="dir">{{T "Username"}}</label></td>
             <td><input type="text" name="username" value="{{if ne .Manage.Account nil}}{{.Manage.Account.Username}}{{end}}"></td>
-            <td>Used when logging in and when logging actions.</td>
+            <td>{{T "Used to log in and audit actions."}}</td>
         </tr>
         <tr>
             <td class="postblock"><label for="name">{{T "Password"}}</label></td>
             <td><input type="password" name="password"></td>
-            <td>{{if eq .Manage.Account nil}}A password is required.{{else}}Leave blank to keep current password.{{end}}</td>
+            <td>{{if eq .Manage.Account nil}}{{T "Required."}}{{else}}{{T "Leave blank to keep current password."}}{{end}}</td>
         </tr>
         <tr>
             <td class="postblock"><label for="role">{{T "Role"}}</label></td>
             <td><select name="role" style="width: 100%;">
-                <option value="1"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 1)}} selected{{end}}>Super-administrator</option>
-                <option value="2"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 2)}} selected{{end}}>Administrator</option>
-                <option value="3"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 3)}} selected{{end}}>Moderator</option>
-                <option value="99"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 99)}} selected{{end}}>Disabled</option>
+                <option value="1"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 1)}} selected{{end}}>{{T "Super-administrator"}}</option>
+                <option value="2"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 2)}} selected{{end}}>{{T "Administrator"}}</option>
+                <option value="3"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 3)}} selected{{end}}>{{T "Moderator"}}</option>
+                <option value="99"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 99)}} selected{{end}}>{{T "Disabled"}}</option>
             </select></td>
-            <td>Super-administrators have full access. Administrators may do anything except manage accounts. Moderators may only sticky/lock threads, approve/delete posts and ban visitors.</td>
+            <td>
+                {{T "Super-administrators have full access."}}<br>
+                {{T "Administrators have full access except managing accounts."}}<br>
+                {{T "Moderators may only sticky/lock threads, approve/delete posts and ban visitors."}}
+            </td>
         </tr>
         <tr>
             <td>&nbsp;</td>
