@@ -52,6 +52,9 @@ msgstr ""
 msgid "Add Keyword"
 msgstr ""
 
+msgid "Add News"
+msgstr ""
+
 msgid "Admin"
 msgstr ""
 
@@ -147,6 +150,9 @@ msgstr[1] ""
 msgid "Date"
 msgstr ""
 
+msgid "Date and time when the news item was published, or will be published."
+msgstr ""
+
 msgid "Default"
 msgstr ""
 
@@ -234,6 +240,9 @@ msgstr ""
 msgid "Disallow visitor threads"
 msgstr ""
 
+msgid "Do not share with staff"
+msgstr ""
+
 msgid "Documentation"
 msgstr ""
 
@@ -277,6 +286,9 @@ msgid "Forum"
 msgstr ""
 
 msgid "Global"
+msgstr ""
+
+msgid "HTML-formatted text."
 msgstr ""
 
 msgid "HTML-formatted text shown in the new post form."
@@ -340,6 +352,9 @@ msgid "Keywords"
 msgstr ""
 
 msgid "Last Active"
+msgstr ""
+
+msgid Leave blank to hide until a date is set. News items with publish dates in the future are hidden until that date."
 msgstr ""
 
 msgid "Leave blank to keep current password."
@@ -651,6 +666,12 @@ msgid "Settings"
 msgstr ""
 
 msgid "Share"
+msgstr ""
+
+msgid "Share with staff"
+msgstr ""
+
+msgid "Shared news items may be updated by other staff members."
 msgstr ""
 
 msgid "Show everywhere"

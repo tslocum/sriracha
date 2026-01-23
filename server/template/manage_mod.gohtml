@@ -1,5 +1,5 @@
 {{template "manage_begin.gohtml" .}}
-<h2 class="managetitle">{{if eq .Extra "d"}}Delete{{else if eq .Extra "db"}}Delete &amp; Ban{{else}}Ban{{end}} <a href="{{.Board.Path}}res/{{.Post.Thread}}.html#{{.Post.ID}}">&gt;&gt;{{.Post.ID}}</a></h2>
+<h2 class="managetitle">{{if eq .Extra "d"}}{{T "Delete"}}{{else if eq .Extra "db"}}{{T "Delete & Ban"}}{{else}}{{T "Ban"}}{{end}} <a href="{{.Board.Path}}res/{{.Post.Thread}}.html#{{.Post.ID}}">&gt;&gt;{{.Post.ID}}</a></h2>
 {{if or (eq .Extra "b") (eq .Extra "db") }}
     {{template "manage_ban_form.gohtml" .}}
 {{else}}
