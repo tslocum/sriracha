@@ -290,7 +290,7 @@ func (p *Post) Backlinks(posts []*Post) template.HTML {
 	var out []byte
 BACKLINKS:
 	for _, reply := range posts {
-		matches := ReflinkPattern.FindAll([]byte(reply.Message), -1)
+		matches := RefLinkPattern.FindAll([]byte(reply.Message), -1)
 		for _, match := range matches {
 			id, err := strconv.Atoi(string(match)[8:])
 			if err != nil || id != p.ID {

@@ -22,7 +22,8 @@ var (
 
 	QuotePattern = regexp.MustCompile(`^&gt;(.*)$`)
 
-	ReflinkPattern = regexp.MustCompile(`&gt;&gt;([0-9]+)`)
+	RefLinkPattern   = regexp.MustCompile(`&gt;&gt;([0-9]+)`)
+	BoardLinkPattern = regexp.MustCompile(`&gt;&gt;&gt;\/([0-9A-Za-z_-]+)?\/?`)
 
 	URLPattern     = regexp.MustCompile(`(?i)(((f|ht)tp(s)?:\/\/)[-a-zA-Zа-яА-Я()0-9@%\!_+.,~#?&;:|\'\/=]+)`)
 	FixURLPattern1 = regexp.MustCompile(`(?i)\(\<a href\=\"(.*)\)"\ target\=\"\_blank\">(.*)\)\<\/a>`)

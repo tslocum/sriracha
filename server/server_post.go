@@ -822,7 +822,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			post.Message = FixURLPattern3.ReplaceAllString(post.Message, `<a href="$1" target="_blank">$2</a>,`)
 		}
 
-		post.Message = ReflinkPattern.ReplaceAllStringFunc(post.Message, func(s string) string {
+		post.Message = RefLinkPattern.ReplaceAllStringFunc(post.Message, func(s string) string {
 			postID, err := strconv.Atoi(s[8:])
 			if err != nil || postID <= 0 {
 				return s
@@ -836,6 +836,20 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 				className = "refreply"
 			}
 			return fmt.Sprintf(`<a href="%sres/%d.html#%d" class="%s">%s</a>`, refPost.Board.Path(), refPost.Thread(), refPost.ID, className, s)
+		})
+
+		var allBoards []*Board
+		post.Message = BoardLinkPattern.ReplaceAllStringFunc(post.Message, func(s string) string {
+			if allBoards == nil {
+				allBoards = db.AllBoards()
+			}
+			path := strings.TrimSuffix(strings.TrimPrefix(s[12:], "/"), "/")
+			for _, b := range allBoards {
+				if b.Dir == path {
+					return fmt.Sprintf(`<a href="%s">&gt;&gt;&gt;%s</a>`, b.Path(), b.Path())
+				}
+			}
+			return s
 		})
 
 		var quote bool
