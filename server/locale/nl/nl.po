@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-01-21 16:21+0000\n"
+"PO-Revision-Date: 2026-01-24 19:14+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -16,20 +16,72 @@ msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] "%d bericht overgeslagen. Klik op beantwoorden om te bekijken."
 msgstr[1] "%d berichten overgeslagen. Klik op beantwoorden om te bekijken."
 
+msgid "1 Day"
+msgstr "1 dag"
+
+msgid "1 Hour"
+msgstr "1 uur"
+
+msgid "1 Month"
+msgstr "1 maand"
+
+msgid "1 Week"
+msgstr "1 week"
+
+msgid "2 Days"
+msgstr "2 dagen"
+
+msgid "2 Weeks"
+msgstr "2 weken"
+
 msgid "Accounts"
 msgstr "Accounts"
+
+msgid "Action"
+msgstr "Actie"
+
+msgid "Action taken when the keyword is detected."
+msgstr ""
+"De actie die moet worden uitgevoerd na het detecteren van een trefwoord."
 
 msgid "Add"
 msgstr "Toevoegen"
 
+msgid "Add Account"
+msgstr "Account toevoegen"
+
+msgid "Add Ban"
+msgstr "Verbanning toevoegen"
+
 msgid "Add Board"
 msgstr "Forum toevoegen"
+
+msgid "Add Keyword"
+msgstr "Trefwoord toevoegen"
+
+msgid "Add News"
+msgstr "Nieuws toevoegen"
 
 msgid "Admin"
 msgstr "Beheerder"
 
+msgid "Administrator"
+msgstr "Beheerder"
+
+msgid "All posts"
+msgstr "Alle berichten"
+
+msgid "Allow all"
+msgstr "Alles toestaan"
+
+msgid "Allow moderators to post site news."
+msgstr ""
+
 msgid "Appearance"
 msgstr "Vormgeving"
+
+msgid "Appears in page title and header."
+msgstr ""
 
 msgid "Artwork title:"
 msgstr "Naam van illustraties:"
@@ -43,6 +95,9 @@ msgstr "Auteur"
 msgid "Auto Refresh"
 msgstr "Automatisch herladen"
 
+msgid "Available embed services. Visit board settings to enable usage."
+msgstr ""
+
 msgid "Backlinks"
 msgstr "Links"
 
@@ -55,11 +110,20 @@ msgstr "Bestand verbannen"
 msgid "Bans"
 msgstr "Verbanningen"
 
+msgid "Board"
+msgstr ""
+
 msgid "Board Index"
 msgstr "Forumoverzicht"
 
+msgid "Board description, which is used by search engines."
+msgstr ""
+
 msgid "Boards"
 msgstr "Fora"
+
+msgid "Boards where the keyword applies."
+msgstr ""
 
 msgid "Capcode"
 msgstr "Capcode"
@@ -82,6 +146,9 @@ msgstr "Klik hier om terug te gaan"
 msgid "Click to refresh."
 msgstr "Klik om te herladen."
 
+msgid "Configure"
+msgstr ""
+
 msgid "Confirm"
 msgstr "Bevestigen"
 
@@ -102,14 +169,33 @@ msgstr[1] "Er zijn momenteel %d unieke berichten."
 msgid "Date"
 msgstr "Datum"
 
+msgid "Date and time when the news item was published, or will be published."
+msgstr ""
+
 msgid "Default"
 msgstr "Standaard"
 
 msgid "Default Name"
 msgstr "Standaardnaam"
 
+msgid "Default oekaki canvas height."
+msgstr ""
+
+msgid "Default oekaki canvas width."
+msgstr ""
+
+msgid ""
+"Default page style. Visitors may choose alternative styles in their browser "
+"settings."
+msgstr ""
+
 msgid "Delay"
 msgstr "Vertraging"
+
+msgid ""
+"Delay (in seconds) visitors must wait before posting again. Set to 0 to "
+"disable."
+msgstr ""
 
 msgid "Delete"
 msgstr "Verwijderen"
@@ -147,6 +233,9 @@ msgstr "Bericht verwijderen"
 msgid "Description"
 msgstr "Beschrijving"
 
+msgid "Details"
+msgstr ""
+
 msgid "Detected banned file."
 msgstr "Er is een verbannen bestand aangetroffen."
 
@@ -159,6 +248,37 @@ msgstr "Map"
 msgid "Directory"
 msgstr "Map"
 
+msgid ""
+"Directory where the board files are located. Leave blank to place the board "
+"at the server root."
+msgstr ""
+
+msgid ""
+"Directory where the overboard files are located. Leave blank to disable. To "
+"write the overboard at the root directory, enter \"/\"."
+msgstr ""
+
+msgid "Disable"
+msgstr "Uitschakelen"
+
+msgid "Disable All"
+msgstr "Alles uitschakelen"
+
+msgid "Disabled"
+msgstr "Uitgeschakeld"
+
+msgid "Disallow visitor and staff posts"
+msgstr "Geen berichten toestaan van bezoekers en staf"
+
+msgid "Disallow visitor posts"
+msgstr "Geen berichten toestaan van bezoekers"
+
+msgid "Disallow visitor threads"
+msgstr "Geen onderwerpen toestaan van bezoekers"
+
+msgid "Do not share with staff"
+msgstr "Niet delen met staf"
+
 msgid "Documentation"
 msgstr "Documentatie"
 
@@ -170,6 +290,15 @@ msgstr "Invoegen"
 
 msgid "Embed Services"
 msgstr "Diensten insluiten"
+
+msgid "Enable"
+msgstr "Inschakelen"
+
+msgid "Enable - Write to %s"
+msgstr "Inschakelen — schrijven aan %s"
+
+msgid "Enable All"
+msgstr "Alles inschakelen"
 
 msgid "Error: %s"
 msgstr "Foutmelding: %s"
@@ -195,8 +324,34 @@ msgstr "Voor bericht- en bestandsverwijdering."
 msgid "Forum"
 msgstr "Forum"
 
+msgid "Global"
+msgstr "Globaal"
+
+msgid "HTML-formatted text."
+msgstr "Opgemaakte tekst (html)."
+
+msgid "HTML-formatted text shown in the new post form."
+msgstr "De opgemaakte tekst die dient te worden getoond op berichtformulieren."
+
+msgid "Help translate Sriracha"
+msgstr ""
+
+msgid "Hide everywhere"
+msgstr "Overal verbergen"
+
+msgid "Hide from index"
+msgstr "Verbergen van startpagina"
+
+msgid "Hide from overboard"
+msgstr "Verbergen van overzicht"
+
 msgid "Hide until approved"
 msgstr "Verbergen tot aan goedkeuring"
+
+msgid "Home address. May be a path or URL. Used in return links."
+msgstr ""
+"De url of locatie van de startpagina. Wordt gebruikt in links waarmee "
+"terugverwezen wordt."
 
 msgid "ID"
 msgstr "Id"
@@ -204,11 +359,20 @@ msgstr "Id"
 msgid "IP Address"
 msgstr "Ip-adres"
 
+msgid ""
+"IP address to ban. Wildcards (*) may be used to ban a range of addresses."
+msgstr ""
+
 msgid "Idenifiers"
 msgstr "Identificaties"
 
 msgid "Imageboard"
 msgstr "Afbeeldingsforum"
+
+msgid ""
+"Imageboards show threads and recent replies on index pages. Forums only show "
+"thread information on index pages."
+msgstr ""
 
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
 msgstr "Afbeeldingen groter dan %[1]dx%[2]d worden van een miniatuur voorzien."
@@ -225,8 +389,14 @@ msgstr "Ongeldige CAPTCHA-tekst - probeer het opnieuw."
 msgid "Incorrect password."
 msgstr "Het wachtwoord is onjuist."
 
+msgid "Info"
+msgstr ""
+
 msgid "Instance Limit"
 msgstr "Instantielimiet"
+
+msgid "Keyword"
+msgstr ""
 
 msgid "Keywords"
 msgstr "Trefwoorden"
@@ -234,14 +404,28 @@ msgstr "Trefwoorden"
 msgid "Last Active"
 msgstr "Laatst gezien"
 
+msgid ""
+"Leave blank to hide until a date is set. News items with publish dates in "
+"the future are hidden until that date."
+msgstr ""
+
+msgid "Leave blank to keep current password."
+msgstr ""
+
 msgid "Lift"
 msgstr "Opheffen"
 
 msgid "Lift File Ban"
 msgstr "Bestandsverbanning opheffen"
 
+msgid "Link to boards in page header."
+msgstr ""
+
 msgid "Locale"
 msgstr "Taal"
+
+msgid "Locale used when writing board pages."
+msgstr ""
 
 msgid "Log In"
 msgstr "Inloggen"
@@ -282,8 +466,48 @@ msgstr "Maximale bestandsgrootte in onderwerp"
 msgid "Max Threads"
 msgstr "Maximaal aantal onderwerpen"
 
+msgid ""
+"Maximum file size (in bytes) when creating a thread. Set to 0 to disable "
+"file uploads."
+msgstr ""
+
+msgid ""
+"Maximum file size (in bytes) when replying. Set to 0 to disable file uploads."
+msgstr ""
+
 msgid "Maximum file size allowed is %s."
 msgstr "De maximaal toegestane bestandsgrootte is %s."
+
+msgid "Maximum height of thumbnails."
+msgstr ""
+
+msgid "Maximum length of the email field."
+msgstr ""
+
+msgid "Maximum length of the message field."
+msgstr ""
+
+msgid "Maximum length of the name field."
+msgstr ""
+
+msgid "Maximum length of the subject field."
+msgstr ""
+
+msgid ""
+"Maximum number of replies to a thread before the thread stops being bumped "
+"to the front. Set to 0 to disable."
+msgstr ""
+
+msgid ""
+"Maximum number of threads in board. Once this limit is reached, the oldest "
+"threads are pruned. Set to 0 to disable."
+msgstr ""
+
+msgid "Maximum width of thumbnails."
+msgstr ""
+
+msgid "Maximum word length. Set to 0 to never break long words."
+msgstr ""
 
 msgid "Memory"
 msgstr "Geheugen"
@@ -309,6 +533,24 @@ msgstr "Minimale bestandsgrootte in antwoord"
 msgid "Min Thread File Size"
 msgstr "Minimale bestandsgrootte in onderwerp"
 
+msgid "Minimum file size (in bytes) when creating a thread."
+msgstr ""
+
+msgid "Minimum file size (in bytes) when replying."
+msgstr ""
+
+msgid "Minimum length of the email field."
+msgstr ""
+
+msgid "Minimum length of the message field."
+msgstr ""
+
+msgid "Minimum length of the name field."
+msgstr ""
+
+msgid "Minimum length of the subject field."
+msgstr ""
+
 msgid "Mod"
 msgstr "Modereren"
 
@@ -318,8 +560,22 @@ msgstr "Modereermodus"
 msgid "Mod mode: View"
 msgstr "Modereermodus: weergave"
 
+msgid "Moderate"
+msgstr ""
+
+msgid "Moderator"
+msgstr ""
+
 msgid "Name"
 msgstr "Naam"
+
+msgid "Name of the board, which is displayed in the page title and header."
+msgstr ""
+
+msgid ""
+"Name shown when no name is entered. Separate multiple names with | (pipe "
+"character). May be blank."
+msgstr ""
 
 msgid "Never"
 msgstr "Nooit"
@@ -330,6 +586,9 @@ msgstr "Nieuw"
 msgid "New (confirm)"
 msgstr "Nieuw (bevestigen)"
 
+msgid "New drawing..."
+msgstr ""
+
 msgid "News"
 msgstr "Nieuws"
 
@@ -338,6 +597,9 @@ msgstr "Volgende"
 
 msgid "No board specified."
 msgstr "Er is geen forum gekozen."
+
+msgid "No configuration options."
+msgstr ""
 
 msgid "No news is good news."
 msgstr "Geen bericht is goed bericht."
@@ -357,11 +619,34 @@ msgstr "Geen onderwerp"
 msgid "None"
 msgstr "Geen"
 
+msgid ""
+"Number of message lines to display in post preview on board index pages. Set "
+"to 0 to show all."
+msgstr ""
+
+msgid ""
+"Number of replies to show per board index thread. Set to 0 to show none."
+msgstr ""
+
+msgid ""
+"Number of replies to show per overboard index page. Set to 0 to show all."
+msgstr ""
+
+msgid "Number of threads to show per board index page. Set to 0 to show all."
+msgstr ""
+
+msgid ""
+"Number of threads to show per overboard index page. Set to 0 to show all."
+msgstr ""
+
 msgid "Oekaki Height"
 msgstr "Oekaki-hoogte"
 
 msgid "Oekaki Width"
 msgstr "Oekaki-breedte"
+
+msgid "Optional."
+msgstr ""
 
 msgid "Overboard"
 msgstr "Overboard"
@@ -372,11 +657,19 @@ msgstr "Wachtwoord"
 msgid "Paste a YouTube URL."
 msgstr "Plak een YouTube-url."
 
+msgid "Permanently ban uploaded file."
+msgstr ""
+
 msgid "Please wait %s before creating a new post."
 msgstr "Wacht %s alvorens een nieuw bericht op te stellen."
 
 msgid "Plugins"
 msgstr "Plug-ins"
+
+msgid ""
+"Positive values specify global instances allowed. Negative values specify "
+"board-specific instances allowed. Zero allows unlimited instances."
+msgstr ""
 
 msgid "Post truncated. Click Reply to view."
 msgstr "Het bericht is ingekort. Klik op beantwoorden om te bekijken."
@@ -387,6 +680,10 @@ msgstr "Berichtmodus: beantwoorden"
 msgid "Posts"
 msgstr "Berichten"
 
+msgid "Posts with attachments"
+msgstr ""
+
+#. TRANSLATORS: The word 'Preferences' is used in reference to user-specific preferences.
 msgid "Preferences"
 msgstr "Instellingen"
 
@@ -395,6 +692,12 @@ msgstr "Vorige"
 
 msgid "Reason"
 msgstr "Reden"
+
+msgid "Rebuild"
+msgstr ""
+
+msgid "Regular expression to search for when a new post is created."
+msgstr ""
 
 msgid "Replies"
 msgstr "Antwoorden"
@@ -426,6 +729,9 @@ msgstr "%d is gemeld"
 msgid "Require Approval"
 msgstr "Goedkeuring vereisen"
 
+msgid "Required."
+msgstr ""
+
 msgid "Return"
 msgstr "Terug"
 
@@ -435,11 +741,26 @@ msgstr "Rol"
 msgid "Rules"
 msgstr "Regels"
 
+msgid ""
+"Seconds between automatic refreshes when viewing a thread. Set to 0 to "
+"disable."
+msgstr ""
+
+#. TRANSLATORS: The word 'Settings' is used in reference to system-wide settings.
 msgid "Settings"
 msgstr "Instellingen"
 
 msgid "Share"
 msgstr "Delen"
+
+msgid "Share with staff"
+msgstr ""
+
+msgid "Shared news items may be updated by other staff members."
+msgstr ""
+
+msgid "Show everywhere"
+msgstr ""
 
 msgid "Site Home"
 msgstr "Startpagina"
@@ -462,8 +783,25 @@ msgstr "Onderwerp"
 msgid "Submit"
 msgstr "Versturen"
 
+msgid "Super-administrator"
+msgstr ""
+
 msgid "Supported file types are %s."
 msgstr "Ondersteunde bestandstypes: %s."
+
+msgid "Test"
+msgstr ""
+
+msgid "Text"
+msgstr ""
+
+msgid "Text to test for a keyword match."
+msgstr ""
+
+msgid ""
+"This setting is purely cosmetic. To actually prevent access, configure your "
+"HTTPS server to require password authorization."
+msgstr ""
 
 msgid "Threads"
 msgstr "Onderwerpen"
@@ -483,14 +821,34 @@ msgstr "Type"
 msgid "Unknown"
 msgstr "Onbekend"
 
+msgid "Unused"
+msgstr ""
+
 msgid "Update"
 msgstr "Bijwerken"
+
+msgid "Update %s"
+msgstr ""
+
+msgid "Update Settings"
+msgstr ""
 
 msgid "Uptime"
 msgstr "Uptime"
 
+msgid "Used to log in and audit actions."
+msgstr ""
+
+msgid "User"
+msgstr ""
+
 msgid "Username"
 msgstr "Gebruikersnaam"
+
+msgid ""
+"Values greater than 75 are not supported when using the default database "
+"schema."
+msgstr ""
 
 msgid "Version"
 msgstr "Versie"
@@ -503,6 +861,39 @@ msgstr "Berichten van auteur bekijken"
 
 msgid "Visibility"
 msgstr "Zichtbaarheid"
+
+msgid ""
+"Visitors may embed media from selected services instead of uploading a file."
+msgstr ""
+
+msgid "Visitors may upload the selected types of files."
+msgstr ""
+
+msgid ""
+"Whether identifiers are displayed for each post. Identifiers are generated "
+"based on IP address hashes."
+msgstr ""
+
+msgid ""
+"Whether moderator approval is required before displaying newly created posts."
+msgstr ""
+
+msgid "Whether new posts may be created."
+msgstr ""
+
+msgid ""
+"Whether reference links are displayed next to No.## pointing to all visible "
+"replies mentioning a post."
+msgstr ""
+
+msgid "Whether visitors may create and submit drawings."
+msgstr ""
+
+msgid "Whether visitors may report posts."
+msgstr ""
+
+msgid "Whether visitors must pass a CAPTCHA when posting."
+msgstr ""
 
 msgid "Word Break"
 msgstr "Woorden afbreken"
