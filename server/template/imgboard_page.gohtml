@@ -25,6 +25,9 @@
 <form method="post" action="/sriracha/">
 	<input type="hidden" name="action" value="delete">
 	<input type="hidden" name="board" value="{{.Board.Dir}}">
+	{{if ne .ReplyMode 0}}
+		<input type="hidden" name="thread" value="{{.ReplyMode}}">
+	{{end}}
 	{{if ne .Board.ID -1}}
 		<hr>
 	{{end}}

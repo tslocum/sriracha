@@ -1,5 +1,6 @@
 1.2.4:
 - Support >>>/board/ links
+- Fix thread page mod mode shortcut
 
 1.2.3:
 - Add shortcuts for enabling and disabling all file upload types

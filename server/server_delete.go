@@ -28,6 +28,12 @@ func (s *Server) serveDelete(db *database.DB, w http.ResponseWriter, r *http.Req
 		post = db.PostByID(postID)
 	}
 	if data.Account != nil {
+		if post == nil {
+			threadID := FormInt(r, "thread")
+			if threadID > 0 {
+				post = db.PostByID(threadID)
+			}
+		}
 		url := fmt.Sprintf("/sriracha/board/mod/%d", b.ID)
 		if post != nil {
 			url += fmt.Sprintf("/%d#%d", post.Thread(), post.ID)
