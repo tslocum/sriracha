@@ -163,6 +163,10 @@ func (s *Server) parseConfig(configFile string) error {
 		}
 	}
 
+	if config.Locale == "" {
+		config.Locale = "en"
+	}
+
 	s.config = &config
 	s.config.ImportMode = s.config.Import.Enabled()
 	return nil
