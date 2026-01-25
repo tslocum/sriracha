@@ -35,6 +35,11 @@
                         {{end}}
                     </select>
                 </td>
+                {{if or (and (ne .Account.Locale "") (ne .Account.Locale "en")) (and (ne .Opt.Locale "en") (eq .Account.Locale ""))}}
+                    <td>
+                        <a href="https://translate.codeberg.org/projects/sriracha/sriracha/" target="_blank">{{T "Help translate Sriracha"}}</a>
+                    </td>
+                {{end}}
             </tr>
             <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 100%;" value="{{T "Change Locale"}}"></td></tr>
         </table>

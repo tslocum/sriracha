@@ -318,6 +318,9 @@ msgstr ""
 msgid "HTML-formatted text shown in the new post form."
 msgstr ""
 
+msgid "Help translate Sriracha"
+msgstr ""
+
 msgid "Hide everywhere"
 msgstr ""
 
