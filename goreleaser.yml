@@ -123,7 +123,7 @@ archives:
       - CHANGELOG
       - LICENSE
       - static
-      - src: server/template
+      - src: internal/server/template
         dst: template
 checksum:
   name_template: 'checksums.txt'

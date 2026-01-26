@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"codeberg.org/tslocum/sriracha/server"
+	"codeberg.org/tslocum/sriracha/internal/server"
 )
 
 func main() {

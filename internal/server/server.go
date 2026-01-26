@@ -403,7 +403,7 @@ func (s *Server) watchTemplates() error {
 				} else if !event.Has(fsnotify.Create) && !event.Has(fsnotify.Write) && !event.Has(fsnotify.Remove) && !event.Has(fsnotify.Rename) {
 					continue
 				}
-				err := s.parseTemplates("server/template", s.config.Template)
+				err := s.parseTemplates("internal/server/template", s.config.Template)
 				if err != nil {
 					log.Printf("error: failed to parse templates: %s", err)
 				}
@@ -416,7 +416,7 @@ func (s *Server) watchTemplates() error {
 		}
 	}()
 
-	err = watcher.Add("server/template")
+	err = watcher.Add("internal/server/template")
 	if err == nil && s.config.Template != "" {
 		err = watcher.Add(s.config.Template)
 	}
@@ -1110,7 +1110,7 @@ func (s *Server) Run() error {
 	}
 
 	if devMode {
-		_, err := os.Stat("server/template")
+		_, err := os.Stat("internal/server/template")
 		if os.IsNotExist(err) {
 			log.Fatal("error: could not find standard template directory, start sriracha in the same directory as the file README.md")
 		}
