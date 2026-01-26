@@ -24,7 +24,7 @@ import (
 	"time"
 
 	"codeberg.org/tslocum/sriracha"
-	"codeberg.org/tslocum/sriracha/database"
+	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/fsnotify/fsnotify"

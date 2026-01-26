@@ -3,7 +3,7 @@ package server
 import (
 	"net/http"
 
-	"codeberg.org/tslocum/sriracha/database"
+	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
