@@ -95,6 +95,7 @@ type ServerOptions struct {
 	Locale           string
 	Locales          map[string]string
 	LocalesSorted    []string
+	DevMode          bool
 	FuncMaps         map[string]template.FuncMap
 }
 
@@ -495,23 +496,25 @@ func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Reque
 			failedLogin = true
 			password := r.FormValue("password")
 			if len(password) != 0 {
-				// Verify CAPTCHA.
-				var solved bool
-				ipHash := s.hashIP(r)
-				challenge := db.GetCAPTCHA(ipHash)
-				if challenge != nil {
-					solution := FormString(r, "captcha")
-					if strings.ToLower(solution) == challenge.Text {
-						solved = true
-						db.DeleteCAPTCHA(ipHash)
-						os.Remove(filepath.Join(s.config.Root, "captcha", challenge.Image+".png"))
+				if !s.opt.DevMode {
+					// Verify CAPTCHA.
+					var solved bool
+					ipHash := s.hashIP(r)
+					challenge := db.GetCAPTCHA(ipHash)
+					if challenge != nil {
+						solution := FormString(r, "captcha")
+						if strings.ToLower(solution) == challenge.Text {
+							solved = true
+							db.DeleteCAPTCHA(ipHash)
+							os.Remove(filepath.Join(s.config.Root, "captcha", challenge.Image+".png"))
+						}
 					}
-				}
-				if !solved {
-					data := s.newTemplateData()
-					data.Info = "Invalid CAPTCHA."
-					data.Template = "manage_error"
-					return data
+					if !solved {
+						data := s.newTemplateData()
+						data.Info = "Invalid CAPTCHA."
+						data.Template = "manage_error"
+						return data
+					}
 				}
 
 				// Verify username and password.
@@ -1121,6 +1124,7 @@ func (s *Server) Run() error {
 	}
 
 	if devMode {
+		s.opt.DevMode = true
 		err := s.watchTemplates()
 		if err != nil {
 			log.Fatalf("failed to watch templates for changes: %s", err)
