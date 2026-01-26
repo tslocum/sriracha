@@ -255,7 +255,7 @@ func (p *Post) ExpandHTML() template.HTML {
 			element = "video"
 			loop = " loop"
 		}
-		const expandFormat = `<%s width="%d" height="%d" style="position: static; pointer-events: inherit; display: inline; max-width: 85vw; height: auto; max-height: 100%%;" controls autoplay%s><source src="%s"></source></%s>`
+		const expandFormat = `<%s width="%d" height="%d" class="thumb" style="pointer-events: inherit;" controls autoplay%s><source src="%s"></source></%s>`
 		return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, element, p.FileWidth, p.FileHeight, loop, srcPath, element)))
 	}
 
@@ -263,8 +263,8 @@ func (p *Post) ExpandHTML() template.HTML {
 	if !isImage {
 		return ""
 	}
-	const expandFormat = `<a href="%s" onclick="return expandFile(event, '%d');"><img src="%s" width="%d" style="min-width: %dpx;min-height: %dpx;max-width: 85vw;height: auto;"></a>`
-	return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, srcPath, p.ID, srcPath, p.FileWidth, p.ThumbWidth, p.ThumbHeight)))
+	const expandFormat = `<a href="%s" onclick="return expandFile(event, '%d');"><img src="%s" width="%d" height="%d" class="thumb" style="pointer-events: inherit;"></a>`
+	return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, srcPath, p.ID, srcPath, p.FileWidth, p.FileHeight)))
 }
 
 func (p *Post) Identifier(identifiers bool, force bool) string {
