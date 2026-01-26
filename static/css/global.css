@@ -295,6 +295,15 @@ details {
 		width: 100%;
 	}
 
+	.thumb {
+		margin-left: 10px;
+		margin-right: 10px;
+	}
+
+	.reply .filesize {
+		margin-left: 10px;
+	}
+
 	label {
 		font-size: 0.75em;
 	}
@@ -311,7 +320,6 @@ details {
 	.navtable td {
 		text-align: center;
 	}
-
 
 	table:not(.userdelete) {
 		width: 100%;
