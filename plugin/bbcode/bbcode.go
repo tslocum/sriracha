@@ -24,9 +24,11 @@ const (
 	configLink          = "link"
 	configCode          = "code"
 	configSJIS          = "SJIS"
-)
 
-const enable = "1"
+	enable = "1"
+
+	maxSize = 100
+)
 
 type BBCode struct {
 	config  map[string]bool
@@ -132,6 +134,9 @@ func (f *BBCode) rebuildCompiler() {
 			if strings.HasPrefix(sizeClass, "size") {
 				size, err := strconv.Atoi(strings.TrimPrefix(sizeClass, "size"))
 				if err == nil && size >= 1 {
+					if size > maxSize {
+						size = maxSize
+					}
 					span := bbcode.NewHTMLTag("")
 					span.Name = "span"
 					span.Attrs["style"] = fmt.Sprintf("font-size: %dpt;", size)
