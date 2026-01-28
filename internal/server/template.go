@@ -151,6 +151,7 @@ func (data *templateData) execute(w io.Writer) {
 }
 
 var templateFuncMap = template.FuncMap{
+	"Contains": strings.Contains,
 	"Format": func(text string) template.HTML {
 		return template.HTML(strings.ReplaceAll(text, "\n", "<br>\n"))
 	},

@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"runtime/debug"
 	"sort"
 	"strings"
 	"time"
@@ -194,20 +193,4 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 	data.Extra2 = FormatFileSize(int64(m.Sys))
 
 	data.Extra3 = fmt.Sprintf("%s", time.Since(s.config.StartTime).Round(time.Second))
-
-	if SrirachaVersion != "DEV" {
-		return
-	}
-	if info, ok := debug.ReadBuildInfo(); ok {
-		for _, setting := range info.Settings {
-			if setting.Key == "vcs.revision" {
-				revision := setting.Value
-				if len(revision) > 10 {
-					revision = revision[:10]
-				}
-				data.Extra += "-" + revision
-				return
-			}
-		}
-	}
 }

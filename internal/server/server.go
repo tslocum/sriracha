@@ -17,6 +17,7 @@ import (
 	"path"
 	"path/filepath"
 	"regexp"
+	"runtime/debug"
 	"slices"
 	"strconv"
 	"strings"
@@ -124,6 +125,45 @@ type Server struct {
 
 func NewServer() *Server {
 	return &Server{}
+}
+
+func (s *Server) parseBuildInfo() {
+	if SrirachaVersion == "" {
+		SrirachaVersion = "DEV"
+	} else if SrirachaVersion != "DEV" {
+		return
+	}
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return
+	}
+	buildTag := info.Main.Version
+	if buildTag != "" && buildTag[0] == 'v' {
+		SrirachaVersion = buildTag[1:]
+		firstHyphen := strings.IndexRune(SrirachaVersion, '-')
+		firstPlus := strings.IndexRune(SrirachaVersion, '+')
+		if firstHyphen == -1 && firstPlus == -1 {
+			return
+		}
+		if firstHyphen != -1 {
+			SrirachaVersion = SrirachaVersion[:firstHyphen]
+			firstPlus = strings.IndexRune(SrirachaVersion, '+')
+		}
+		if firstPlus != -1 {
+			SrirachaVersion = SrirachaVersion[:firstPlus]
+		}
+		SrirachaVersion += "-DEV"
+	}
+	for _, setting := range info.Settings {
+		if setting.Key == "vcs.revision" {
+			revision := setting.Value
+			if len(revision) > 10 {
+				revision = revision[:10]
+			}
+			SrirachaVersion += "-" + revision
+			return
+		}
+	}
 }
 
 func (s *Server) parseConfig(configFile string) error {
@@ -1048,6 +1088,8 @@ func (s *Server) listen() error {
 }
 
 func (s *Server) Run() error {
+	s.parseBuildInfo()
+
 	printInfo := func() {
 		fmt.Fprintf(os.Stderr, "\nSriracha imageboard and forum\n  https://codeberg.org/tslocum/sriracha\nGNU LESSER GENERAL PUBLIC LICENSE\n  https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE\n")
 	}
