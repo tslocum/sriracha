@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"path/filepath"
 	"sort"
@@ -18,7 +19,7 @@ func (s *Statistics) About() string {
 	return "View statistics for each board."
 }
 
-func (s *Statistics) Serve(db sriracha.DB, a *Account, w http.ResponseWriter, r *http.Request) (string, error) {
+func (s *Statistics) Serve(db sriracha.DB, a *Account, w http.ResponseWriter, r *http.Request) (template.HTML, error) {
 	boards := db.AllBoards()
 	if len(boards) == 0 {
 		return "No boards.", nil
@@ -62,7 +63,7 @@ func (s *Statistics) Serve(db sriracha.DB, a *Account, w http.ResponseWriter, r 
 			text += fmt.Sprintf("<tr><td>%s</td><td>%d</td><td>%s</td>", ext, postStats[ext], FormatFileSize(sizeStats[ext]))
 		}
 		text += "</table>"
-		return text, nil
+		return template.HTML(text), nil
 	}
 
 	var totalPosts int
@@ -96,7 +97,7 @@ func (s *Statistics) Serve(db sriracha.DB, a *Account, w http.ResponseWriter, r 
 	}
 	text += fmt.Sprintf(`<tr><td>Total</td><td>%d</td><td>%d</td><td>%d</td><td>%s</td>`, totalPosts, totalThreads, db.UniqueUserPosts(nil), FormatFileSize(totalSize))
 	text += `</table><br><form method="get" action="statistics/attachment"><input type="submit" value="View Attachment Statistics"></form><br>`
-	return text, nil
+	return template.HTML(text), nil
 }
 
 func Plugin() any {

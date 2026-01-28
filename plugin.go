@@ -169,5 +169,5 @@ type PluginWithServe interface {
 	// may access this page. When serving HTML responses, return the HTML and a
 	// nil error. When serving any other content type, set the Conent-Type header,
 	// write to the http.ResponseWriter directly and return a blank string.
-	Serve(db DB, a *Account, w http.ResponseWriter, r *http.Request) (string, error)
+	Serve(db DB, a *Account, w http.ResponseWriter, r *http.Request) (template.HTML, error)
 }

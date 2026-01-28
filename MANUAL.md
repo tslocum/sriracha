@@ -601,7 +601,7 @@ to the `http.ResponseWriter` directly and return a blank string.
 ```go
 // PluginWithServe describes the required methods for a plugin with a web interface.
 type PluginWithServe interface {
-	Serve(db sriracha.DB, a *Account, w http.ResponseWriter, r *http.Request) (string, error)
+	Serve(db sriracha.DB, a *Account, w http.ResponseWriter, r *http.Request) (template.HTML, error)
 }
 ```
 

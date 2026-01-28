@@ -59,7 +59,7 @@ type auditHandlerInfo struct {
 	Handler auditHandler
 }
 
-type serveHandler func(db sriracha.DB, a *Account, w http.ResponseWriter, r *http.Request) (string, error)
+type serveHandler func(db sriracha.DB, a *Account, w http.ResponseWriter, r *http.Request) (template.HTML, error)
 
 type serveHandlerInfo struct {
 	Name    string

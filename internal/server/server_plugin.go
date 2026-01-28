@@ -87,7 +87,7 @@ func (s *Server) servePlugin(data *templateData, db *database.DB, w http.Respons
 				return
 			} else if msg != "" {
 				data.Template = "manage_info"
-				data.Message = template.HTML(`<h2 class="managetitle">` + strings.Title(info.Name) + `</h2>` + msg)
+				data.Message = template.HTML(`<h2 class="managetitle">`+strings.Title(info.Name)+`</h2>`) + msg
 			} else {
 				data.Template = ""
 			}
