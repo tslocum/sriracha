@@ -1,3 +1,4 @@
+// Package model provides models for sriracha data.
 package model
 
 import "github.com/leonelquinteros/gotext"

@@ -1,3 +1,4 @@
+// Package util provides constants, variables and functions related to sriracha.
 package util
 
 import (
