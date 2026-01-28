@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,user-scalable=no">
+	<script src="/static/ruffle/ruffle.js"></script>
+</head>
+<body style="margin: 0;padding: 0;background-color: rgb(55, 82, 140);">
+    <div id="container" style="width: 100%;height: 100%;"></div>
+    <script>
+        function playSWF() {
+            var path = "";
+            if (window.location && window.location.hash) {
+                path = window.location.hash;
+            }
+            path = path.trim();
+            if (!path) {
+                alert("Failed to load SWF: No file path was specified in window hash. Expected file path after hash: swf.html#/board/src/file.swf");
+                return;
+            }
+            if (path.substring(0, 1) == "#") {
+                path = path.substring(1);
+            }
+            if (path.substring(0, 1) == "%") {
+                path = decodeURIComponent(path);
+            }
+            var externalMessage = " If you want to play external SWF files, use the https://ruffle.rs browser extension.";
+            if (path.substring(0, 1) != "/") {
+                alert("Failed to load SWF: File path must start with '/'." + externalMessage);
+                return;
+            } else if (path.includes(":")) {
+                alert("Failed to load SWF: File path must not include ':'." + externalMessage);
+                return;
+            }
+            document.title = path;
+            window.RufflePlayer = window.RufflePlayer || {};
+            window.addEventListener("load", (event) => {
+                const ruffle = window.RufflePlayer.newest();
+                const player = ruffle.createPlayer();
+                const container = document.getElementById("container");
+                player.style.width = "100vw";
+                player.style.height = "100vh";
+                container.appendChild(player);
+                player.ruffle().load({
+                    url: path,
+                    autoplay: "on",
+                    quality: "high",
+                    allowFullscreen: true,
+                    polyfills: false
+                });
+            });
+        }
+        playSWF();
+    </script>
+</body>
+</html>

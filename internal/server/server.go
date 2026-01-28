@@ -875,13 +875,6 @@ func (s *Server) reloadBans(db *database.DB) {
 	s.rangeBans = rangeBans
 }
 
-func (s *Server) serveSWF(w http.ResponseWriter, r *http.Request) {
-	data := s.newTemplateData()
-	data.Template = "swf"
-	data.Extra = strings.TrimPrefix(r.URL.Path, "/sriracha/swf")
-	data.execute(w)
-}
-
 func (s *Server) serveManage(db *database.DB, w http.ResponseWriter, r *http.Request) {
 	data := s.buildData(db, w, r)
 	if strings.HasPrefix(r.URL.Path, "/sriracha/logout") {
@@ -1079,7 +1072,6 @@ func (s *Server) listen() error {
 
 	mux := http.NewServeMux()
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	mux.HandleFunc("/sriracha/swf/", s.serveSWF)
 	mux.HandleFunc("/sriracha/", s.serve)
 	mux.Handle("/", http.FileServer(http.Dir(s.config.Root)))
 
