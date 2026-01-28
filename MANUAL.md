@@ -668,3 +668,19 @@ As an administrator, in addition to all moderator capabilities, you may:
 - Delete keywords
 - Delete news
 - Update settings
+
+### Super-administrator guide
+
+As a super-administrator, you have unrestricted access.
+
+#### Rebuild name blocks
+
+Each post has a `nameblock` field containing the poster's name, tripcode and
+identifier, as well as the date/time the post was created. Super-administrators
+may rebuild all `nameblock` fields by visiting `/sriracha/?rebuildNameblocks`.
+
+#### Verify IP address resolution
+
+To support banning visitors, Sriracha must be able to resolve remote IP addresses,
+which is only possible when the header server option is configured correctly.
+Super-administrators may verify remote IP address resolution by visiting `/sriracha/?remoteAddress`.
