@@ -1,3 +1,7 @@
+1.2.5:
+- Limit maximum BBCode text size
+- Reduce margin around thumbnails on mobile devices
+
 1.2.4:
 - Support >>>/board/ links
 - Fix thread page mod mode shortcut

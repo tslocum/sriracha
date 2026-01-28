@@ -104,7 +104,9 @@ builds:
       - freebsd
       - linux
     goarch:
+      - 386
       - amd64
+      - arm64
 archives:
   -
     ids:
@@ -116,6 +118,12 @@ archives:
       - robot9000
       - statistics
       - wordfilter
+    name_template: >-
+      {{- .ProjectName }}_
+      {{- .Version }}_
+      {{- tolower .Os }}_
+      {{- if eq .Arch "386" }}i386{{ else }}
+      {{- tolower .Arch }}{{ end -}}
     wrap_in_directory: sriracha
     allow_different_binary_count: true
     files:
