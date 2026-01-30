@@ -1,6 +1,26 @@
 {{template "manage_begin.gohtml" .}}
 <h2 class="managetitle">{{T "Settings"}}</h2>
-{{if Contains .Extra "DEV"}}<b>Warning:</b> You are running an unsupported version of Sriracha. Install an <a href="https://codeberg.org/tslocum/sriracha/releases">official version</a> to receive support.<br><br>{{end}}
+{{if Contains .Extra "DEV"}}<b>Warning:</b> You are running an unsupported version of Sriracha. Install an <a href="https://codeberg.org/tslocum/sriracha/releases">official version</a> to receive support.<br>{{end}}
+<fieldset>
+<legend>{{T "Status"}}</legend>
+<table border="0" class="manageform">
+    <tr>
+        <td class="postblock"><label for="version">{{T "Version"}}</label></td>
+        <td><input type="text" name="version" value="{{.Extra}}" disabled></input></td>
+        <td>Sriracha version. <a href="https://codeberg.org/tslocum/sriracha/releases">Click here</a> to check for updates.</td>
+    </tr>
+    <tr>
+        <td class="postblock"><label for="memory">{{T "Memory"}}</label></td>
+        <td><input type="text" name="memory" value="{{.Extra2}}" disabled></input></td>
+        <td>Sriracha memory usage.</td>
+    </tr>
+    <tr>
+        <td class="postblock"><label for="uptime">{{T "Uptime"}}</label></td>
+        <td><input type="text" name="uptime" value="{{.Extra3}}" disabled></input></td>
+        <td>Sriracha uptime.</td>
+    </tr>
+</table>
+</fieldset><br>
 <form method="post">
     <fieldset>
     <legend>{{T "Update Settings"}}</legend>
@@ -41,30 +61,9 @@
             <td>{{T "Whether visitors must pass a CAPTCHA when posting."}}</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="oekakiwidth">{{T "Oekaki Width"}}</label></td>
-            <td><input type="text" name="oekakiwidth" value="{{.Opt.OekakiWidth}}"></input></td>
-            <td>{{T "Default oekaki canvas width."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="oekakiheight">{{T "Oekaki Height"}}</label></td>
-            <td><input type="text" name="oekakiheight" value="{{.Opt.OekakiHeight}}"></input></td>
-            <td>{{T "Default oekaki canvas height."}}</td>
-        </tr>
-        <tr>
             <td class="postblock"><label for="refresh">{{T "Auto Refresh"}}</label></td>
             <td><input type="text" name="refresh" value="{{.Opt.Refresh}}"></input></td>
             <td>{{T "Seconds between automatic refreshes when viewing a thread. Set to 0 to disable."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="captcha">{{T "Embed Services"}}</label></td>
-            <td>
-                {{range $i, $info := .Opt.Embeds}}
-                    <textarea name="embeds{{$i | ZeroPadTo3}}" rows="4" cols="80" placeholder="Unused">{{index $info 0}} {{index $info 1}}</textarea><br>
-                {{end}}
-                <textarea name="embeds{{len .Opt.Embeds | ZeroPadTo3}}" rows="4" cols="80" placeholder="{{T "Unused"}}"></textarea>
-            </td>
-            <td>{{T "Available embed services. Visit board settings to enable usage."}}<br>
-            Format: <pre style="display: inline-block;border: 1px solid;padding: 2px;">Name https://service.com/path/to/oembed?url=SRIRACHA_EMBED</pre></td>
         </tr>
         <tr>
             <th><br>{{T "Overboard"}}</td><td>&nbsp;</td>
@@ -93,22 +92,28 @@
             <td>{{T "Number of replies to show per overboard index thread. Set to 0 to show none."}}</td>
         </tr>
         <tr>
-            <th><br>{{T "Status"}}</td><td>&nbsp;</td>
+            <th><br>{{T "Attachments"}}</td><td>&nbsp;</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="version">{{T "Version"}}</label></td>
-            <td><input type="text" name="version" value="{{.Extra}}" disabled></input></td>
-            <td>Sriracha version. <a href="https://codeberg.org/tslocum/sriracha/releases">Click here</a> to check for updates.</td>
+            <td class="postblock"><label for="oekakiwidth">{{T "Oekaki Width"}}</label></td>
+            <td><input type="text" name="oekakiwidth" value="{{.Opt.OekakiWidth}}"></input></td>
+            <td>{{T "Default oekaki canvas width."}}</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="memory">{{T "Memory"}}</label></td>
-            <td><input type="text" name="memory" value="{{.Extra2}}" disabled></input></td>
-            <td>Sriracha memory usage.</td>
+            <td class="postblock"><label for="oekakiheight">{{T "Oekaki Height"}}</label></td>
+            <td><input type="text" name="oekakiheight" value="{{.Opt.OekakiHeight}}"></input></td>
+            <td>{{T "Default oekaki canvas height."}}</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="uptime">{{T "Uptime"}}</label></td>
-            <td><input type="text" name="uptime" value="{{.Extra3}}" disabled></input></td>
-            <td>Sriracha uptime.</td>
+            <td class="postblock"><label for="captcha">{{T "Embed Services"}}</label></td>
+            <td>
+                {{range $i, $info := .Opt.Embeds}}
+                    <textarea name="embeds{{$i | ZeroPadTo3}}" rows="4" cols="80" placeholder="Unused">{{index $info 0}} {{index $info 1}}</textarea><br>
+                {{end}}
+                <textarea name="embeds{{len .Opt.Embeds | ZeroPadTo3}}" rows="4" cols="80" placeholder="{{T "Unused"}}"></textarea>
+            </td>
+            <td>{{T "Available embed services. Visit board settings to enable usage."}}<br>
+            Format: <pre style="display: inline-block;border: 1px solid;padding: 2px;">Name https://service.com/path/to/oembed?url=SRIRACHA_EMBED</pre></td>
         </tr>
         <tr>
             <td style="vertical-align: middle;">&nbsp;[<a href="/sriracha/setting/reset" onclick="return confirm('{{T "Reset all settings?"}}');">{{T "Reset"}}</a>]</td>

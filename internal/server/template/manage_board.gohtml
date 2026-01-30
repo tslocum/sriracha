@@ -118,9 +118,9 @@
                 <td>{{T "Whether reference links are displayed next to No.## pointing to all visible replies mentioning a post."}}</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="truncate">{{T "Truncate"}}</label></td>
-                <td><input type="text" name="truncate" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Truncate}}{{end}}"></td>
-                <td>{{T "Number of message lines to display in post preview on board index pages. Set to 0 to show all."}}</td>
+                <td class="postblock"><label for="defaultname">{{T "Default Name"}}</label></td>
+                <td><input type="text" name="defaultname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.DefaultName}}{{end}}"></td>
+                <td>{{T "Name shown when no name is entered. Separate multiple names with | (pipe character). May be blank."}}</td>
             </tr>
             <tr>
                 <td class="postblock"><label for="threads">{{T "Index Threads"}}</label></td>
@@ -133,9 +133,9 @@
                 <td>{{T "Number of replies to show per board index thread. Set to 0 to show none."}}</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="defaultname">{{T "Default Name"}}</label></td>
-                <td><input type="text" name="defaultname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.DefaultName}}{{end}}"></td>
-                <td>{{T "Name shown when no name is entered. Separate multiple names with | (pipe character). May be blank."}}</td>
+                <td class="postblock"><label for="truncate">{{T "Truncate"}}</label></td>
+                <td><input type="text" name="truncate" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Truncate}}{{end}}"></td>
+                <td>{{T "Number of message lines to display in post preview on board index pages. Set to 0 to show all."}}</td>
             </tr>
             <tr>
                 <td class="postblock"><label for="rules">{{T "Rules"}}</label></td>
