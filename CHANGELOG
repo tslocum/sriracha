@@ -1,3 +1,7 @@
+1.2.6:
+- Use default system font
+- Serve SWF player via static page
+
 1.2.5:
 - Limit maximum BBCode text size
 - Reduce margin around thumbnails on mobile devices
@@ -17,7 +21,6 @@
 
 1.2.1:
 - Add style switcher
-- Use default system font
 
 1.2.0:
 - Reduce size of compiled plugin files by 50%
