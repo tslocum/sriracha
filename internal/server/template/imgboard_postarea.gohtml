@@ -71,13 +71,13 @@
                         </td>
                     </tr>
                 {{end}}
-                {{if and (or (and (eq .ReplyMode 0) (ne .Board.MaxSizeThread 0)) (and (ne .ReplyMode 0) (ne .Board.MaxSizeReply 0))) (ne (len .Board.Uploads) 0)}}
+                {{if and (and (or (and (eq .ReplyMode 0) (ne .Board.MaxSizeThread 0)) (and (ne .ReplyMode 0) (ne .Board.MaxSizeReply 0))) (ne (len .Board.Uploads) 0)) (ne .Board.Files 0)}}
                     <tr>
                         <td class="postblock">
                             {{T "File"}}
                         </td>
                         <td colspan="2">
-                            <input type="file" name="file" size="35" accesskey="f">
+                            <input type="file" name="file" size="35" accesskey="f"{{if gt .Board.Files 1}} multiple{{end}}>
                         </td>
                     </tr>
                 {{end}}

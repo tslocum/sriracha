@@ -153,6 +153,7 @@ type Board struct {
 	MaxReplies    int
 	Oekaki        bool
 	Backlinks     bool
+	Files         int
 	Instances     int
 	Identifiers   BoardIdentifiers
 
@@ -176,6 +177,7 @@ const (
 	DefaultBoardMaxSize     = 2097152
 	DefaultBoardThumbWidth  = 250
 	DefaultBoardThumbHeight = 250
+	DefaultBoardFiles       = 1
 	DefaultBoardInstances   = 1
 )
 
@@ -194,6 +196,7 @@ func NewBoard() *Board {
 		MaxSizeReply:  DefaultBoardMaxSize,
 		ThumbWidth:    DefaultBoardThumbWidth,
 		ThumbHeight:   DefaultBoardThumbHeight,
+		Files:         DefaultBoardFiles,
 		Instances:     DefaultBoardInstances,
 	}
 }

@@ -12,6 +12,7 @@ import (
 	"image/png"
 	"io"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"os/exec"
@@ -205,37 +206,61 @@ func (s *Server) loadPostForm(db *database.DB, r *http.Request, p *Post) error {
 	if p.Parent != 0 && p.Board.Type == TypeForum {
 		p.Subject = ""
 	}
+	return nil
+}
 
+func (s *Server) loadPostFiles(r *http.Request, p *Post) ([]*multipart.FileHeader, error) {
+	if r.PostForm == nil {
+		const maxMemory = 32 << 20 // 32 MB
+		err := r.ParseMultipartForm(maxMemory)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if r.MultipartForm == nil || r.MultipartForm.File == nil {
+		return nil, nil
+	}
+	files := r.MultipartForm.File["file"]
+	if len(files) > p.Board.Files {
+		if p.Board.Files == 0 {
+			return nil, fmt.Errorf("file attachments are not allowed")
+		}
+		return nil, fmt.Errorf("too many files: only %d files may be uploaded at once", p.Board.Files)
+	}
+	return files, nil
+}
+
+func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHeader *multipart.FileHeader) error {
 	minSize := p.Board.MinSizeThread
 	maxSize := p.Board.MaxSizeThread
 	if p.Parent != 0 {
 		minSize = p.Board.MinSizeReply
 		maxSize = p.Board.MaxSizeReply
 	}
+
 	if maxSize == 0 {
 		return nil
-	}
-
-	formFile, formFileHeader, err := r.FormFile("file")
-	if err != nil || formFileHeader == nil || formFileHeader.Size < minSize {
+	} else if minSize > 0 && fileHeader.Size < minSize {
 		if minSize == 1 {
 			if len(p.Board.Embeds) == 0 {
 				return fmt.Errorf("a file is required")
-			} else {
-				return fmt.Errorf("a file or embed is required")
 			}
-		} else if minSize > 0 {
-			return fmt.Errorf("a file %s or larger is required", FormatFileSize(minSize))
-		} else {
-			return nil
+			return fmt.Errorf("a file or embed is required")
 		}
-	} else if formFileHeader.Size > maxSize {
-		return fmt.Errorf("that file exceeds the maximum file size: %s", FormatFileSize(maxSize))
+		return fmt.Errorf("a file %s or larger is required", FormatFileSize(minSize))
+	} else if fileHeader.Size > maxSize {
+		return fmt.Errorf("file too large: maximum file size allowed is %s", FormatFileSize(maxSize))
 	}
+
+	formFile, err := fileHeader.Open()
+	if err != nil {
+		return err
+	}
+	defer formFile.Close()
 
 	buf, err := io.ReadAll(formFile)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	if int64(len(buf)) < minSize {
@@ -253,7 +278,7 @@ func (s *Server) loadPostForm(db *database.DB, r *http.Request, p *Post) error {
 	}
 
 	p.FileMIME = mimetype.Detect(buf).String()
-	p.FileOriginal = formFileHeader.Filename
+	p.FileOriginal = fileHeader.Filename
 
 	oekakiPost := p.Board.Oekaki && p.FileMIME == "application/octet-stream" && len(buf) >= 3 && buf[0] == 0x54 && buf[1] == 0x47 && buf[2] == 0x4B
 	if oekakiPost {
@@ -409,6 +434,25 @@ func (s *Server) loadPostForm(db *database.DB, r *http.Request, p *Post) error {
 				}
 			}
 		}
+	}
+	return nil
+}
+
+func (s *Server) checkDuplicateFileHash(db *database.DB, post *Post) *Post {
+	if post.FileHash == "" || post.Board.Instances == 0 {
+		return nil
+	}
+	var allowed int
+	var filterBoard *Board
+	if post.Board.Instances > 0 {
+		allowed = post.Board.Instances
+	} else {
+		allowed = -post.Board.Instances
+		filterBoard = post.Board
+	}
+	matches := db.PostsByFileHash(post.FileHash, filterBoard)
+	if len(matches) >= allowed {
+		return matches[0]
 	}
 	return nil
 }
@@ -637,36 +681,43 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 		}
 	}
 
-	if post.FileHash != "" && post.Board.Instances != 0 {
-		var allowed int
-		var filterBoard *Board
-		if post.Board.Instances > 0 {
-			allowed = post.Board.Instances
-		} else {
-			allowed = -post.Board.Instances
-			filterBoard = post.Board
-		}
-		matches := db.PostsByFileHash(post.FileHash, filterBoard)
-		if len(matches) >= allowed {
-			existing := matches[0]
-
-			var postLink string
-			if existing.Moderated != ModeratedHidden {
-				postLink = fmt.Sprintf(` <a href="%sres/%d.html#%d">here</a>`, existing.Board.Path(), existing.Thread(), existing.ID)
-			}
-
-			var uploadType = "file"
-			if post.IsEmbed() {
-				uploadType = "embed"
-			}
-
+	var remainingFiles []*multipart.FileHeader
+	if post.File == "" {
+		files, err := s.loadPostFiles(r, post)
+		if err != nil {
 			data := s.buildData(db, w, r)
-			data.Template = "board_error"
-			data.Info = fmt.Sprintf("Duplicate %s uploaded.", uploadType)
-			data.Message = template.HTML(fmt.Sprintf(`<div style="text-align: center;">That %s has already been posted%s.</div><br>`, uploadType, postLink))
-			data.execute(w)
+			data.BoardError(w, err.Error())
 			return
+		} else if len(files) > 0 {
+			err = s.loadPostFile(db, r, post, files[0])
+			if err != nil {
+				data := s.buildData(db, w, r)
+				data.BoardError(w, err.Error())
+				return
+			} else if len(files) > 1 {
+				remainingFiles = files[1:]
+			}
 		}
+	}
+
+	duplicate := s.checkDuplicateFileHash(db, post)
+	if duplicate != nil {
+		var postLink string
+		if duplicate.Moderated != ModeratedHidden {
+			postLink = fmt.Sprintf(` <a href="%sres/%d.html#%d">here</a>`, duplicate.Board.Path(), duplicate.Thread(), duplicate.ID)
+		}
+
+		var uploadType = "file"
+		if post.IsEmbed() {
+			uploadType = "embed"
+		}
+
+		data := s.buildData(db, w, r)
+		data.Template = "board_error"
+		data.Info = fmt.Sprintf("Duplicate %s uploaded.", uploadType)
+		data.Message = template.HTML(fmt.Sprintf(`<div style="text-align: center;">That %s has already been posted%s.</div><br>`, uploadType, postLink))
+		data.execute(w)
+		return
 	}
 
 	if rawHTML {
@@ -928,12 +979,64 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 
 	db.AddPost(post)
 
+	posts := []*Post{post}
+	cancel := func() {
+		for _, p := range posts {
+			s.deletePostFiles(p)
+		}
+		db.SoftRollBack()
+	}
+	for _, fileHeader := range remainingFiles {
+		p := post.Copy()
+		p.ID = 0
+		if post.Parent == 0 {
+			p.Parent = post.ID
+		}
+		p.Subject = ""
+		p.Message = ""
+		p.ResetAttachment()
+
+		err = s.loadPostFile(db, r, p, fileHeader)
+		if err != nil {
+			cancel()
+
+			data := s.buildData(db, w, r)
+			data.BoardError(w, err.Error())
+			return
+		}
+
+		duplicate := s.checkDuplicateFileHash(db, p)
+		if duplicate != nil {
+			cancel()
+
+			var postLink string
+			if duplicate.Moderated != ModeratedHidden {
+				postLink = fmt.Sprintf(` <a href="%sres/%d.html#%d">here</a>`, duplicate.Board.Path(), duplicate.Thread(), duplicate.ID)
+			}
+
+			var uploadType = "file"
+			if p.IsEmbed() {
+				uploadType = "embed"
+			}
+
+			data := s.buildData(db, w, r)
+			data.Template = "board_error"
+			data.Info = fmt.Sprintf("Duplicate %s uploaded.", uploadType)
+			data.Message = template.HTML(fmt.Sprintf(`<div style="text-align: center;">That %s has already been posted%s.</div><br>`, uploadType, postLink))
+			data.execute(w)
+			return
+		}
+
+		db.AddPost(p)
+		posts = append(posts, p)
+	}
+
 	postCopy = post.Copy()
 	for _, info := range allPluginCreateHandlers {
 		db.Plugin = info.Name
 		err := info.Handler(db, postCopy)
 		if err != nil {
-			s.deletePostFiles(post)
+			cancel()
 
 			log.Fatalf("plugin %s failed to process create event: %s", info.Name, err)
 		}

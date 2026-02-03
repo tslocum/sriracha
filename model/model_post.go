@@ -76,6 +76,19 @@ func (p *Post) Copy() *Post {
 	return pp
 }
 
+func (p *Post) ResetAttachment() {
+	p.File = ""
+	p.FileMIME = ""
+	p.FileHash = ""
+	p.FileOriginal = ""
+	p.FileSize = 0
+	p.FileWidth = 0
+	p.FileHeight = 0
+	p.Thumb = ""
+	p.ThumbWidth = 0
+	p.ThumbHeight = 0
+}
+
 func (p *Post) AddMediaOverlay(img image.Image) image.Image {
 	mediaBuf, err := os.ReadFile("static/img/media.png")
 	if err != nil {

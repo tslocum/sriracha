@@ -1,3 +1,6 @@
+1.2.7:
+- Support uploading multiple files
+
 1.2.6:
 - Use default system font
 - Serve SWF player via static page

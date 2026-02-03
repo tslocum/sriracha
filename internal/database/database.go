@@ -198,6 +198,16 @@ func Begin(pool *pgxpool.Pool, config *Config) *DB {
 	}
 }
 
+func (db *DB) SoftRollBack() {
+	if db.conn == nil {
+		return
+	}
+	_, err := db.conn.Exec(context.Background(), "ROLLBACK")
+	if err != nil {
+		log.Fatalf("failed to rollback transaction: %s", err)
+	}
+}
+
 func (db *DB) RollBack() {
 	if db.conn == nil {
 		return

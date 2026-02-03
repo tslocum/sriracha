@@ -57,9 +57,14 @@ func (s *Server) loadBoardForm(db *database.DB, r *http.Request, b *Board) {
 	b.Backlinks = FormBool(r, "backlinks")
 	b.Instances = FormNegInt(r, "instances")
 	b.Identifiers = FormRange(r, "identifiers", IdentifiersDisable, IdentifiersGlobal)
+	b.Files = FormInt(r, "files")
 
 	if b.Locale != "" && !slices.Contains(s.opt.LocalesSorted, b.Locale) {
 		b.Locale = ""
+	}
+
+	if b.Files < 0 {
+		b.Files = 0
 	}
 
 	b.Uploads = nil

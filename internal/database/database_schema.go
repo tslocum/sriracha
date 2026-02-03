@@ -66,6 +66,7 @@ CREATE TABLE board (
 	-- v8: backlinks smallint NOT NULL DEFAULT 0
 	-- v8: instances smallint NOT NULL DEFAULT 1
 	-- v9: identifiers smallint NOT NULL DEFAULT 0
+	-- v10: files smallint NOT NULL DEFAULT 1
 );
 CREATE UNIQUE INDEX ON board (dir);
 
@@ -212,4 +213,7 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 		hash char(64) PRIMARY KEY
 	);
 	UPDATE config SET value = '9' WHERE name = 'version';`,
+	// Version 10.
+	`ALTER TABLE board ADD COLUMN files smallint NOT NULL DEFAULT 1;
+	UPDATE config SET value = '10' WHERE name = 'version';`,
 }
