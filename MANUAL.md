@@ -163,8 +163,8 @@ dbname: "sriracha"
 # IP address, and boards may optionally display identifier hashes to visitors.
 #identifiers: false
 
-# Custom template directory. Leave blank to use standard templates. Template
-# files in this directory will override standard templates of the same name.
+# Custom template directory. Leave blank to use official templates. Template
+# files in this directory will override official templates of the same name.
 #template: "/home/sriracha/template"
 
 # Supported upload file types. Specify a file extension and a MIME type to

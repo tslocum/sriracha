@@ -369,7 +369,7 @@ func (s *Server) loadPluginConfig() error {
 	return nil
 }
 
-func (s *Server) parseTemplates(standardDir string, customDir string) error {
+func (s *Server) parseTemplates(officialDir string, customDir string) error {
 	parseDir := func(dir string) error {
 		entries, err := os.ReadDir(dir)
 		if err != nil {
@@ -392,7 +392,7 @@ func (s *Server) parseTemplates(standardDir string, customDir string) error {
 		}
 		return nil
 	}
-	if standardDir == "" {
+	if officialDir == "" {
 		s.tpl = template.New("sriracha").Funcs(templateFuncMaps[""])
 
 		entries, err := templateFS.ReadDir("template")
@@ -416,7 +416,7 @@ func (s *Server) parseTemplates(standardDir string, customDir string) error {
 		}
 	} else {
 		s.tpl = template.New("sriracha").Funcs(templateFuncMaps[""])
-		err := parseDir(standardDir)
+		err := parseDir(officialDir)
 		if err != nil {
 			return err
 		}
@@ -428,7 +428,7 @@ func (s *Server) parseTemplates(standardDir string, customDir string) error {
 	return nil
 }
 
-func (s *Server) watchTemplates() error {
+func (s *Server) watchTemplates(officialDir string) error {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Fatal(err)
@@ -443,7 +443,7 @@ func (s *Server) watchTemplates() error {
 				} else if !event.Has(fsnotify.Create) && !event.Has(fsnotify.Write) && !event.Has(fsnotify.Remove) && !event.Has(fsnotify.Rename) {
 					continue
 				}
-				err := s.parseTemplates("internal/server/template", s.config.Template)
+				err := s.parseTemplates(officialDir, s.config.Template)
 				if err != nil {
 					log.Printf("error: failed to parse templates: %s", err)
 				}
@@ -456,7 +456,7 @@ func (s *Server) watchTemplates() error {
 		}
 	}()
 
-	err = watcher.Add("internal/server/template")
+	err = watcher.Add(officialDir)
 	if err == nil && s.config.Template != "" {
 		err = watcher.Add(s.config.Template)
 	}
@@ -1143,10 +1143,15 @@ func (s *Server) Run() error {
 		log.Fatalf("failed to parse locale files: %s", err)
 	}
 
+	officialDir := "internal/server/template"
 	if devMode {
-		_, err := os.Stat("internal/server/template")
+		_, err := os.Stat(officialDir)
 		if os.IsNotExist(err) {
-			log.Fatal("error: could not find standard template directory, start sriracha in the same directory as the file README.md")
+			officialDir = "template"
+			_, err := os.Stat(officialDir)
+			if os.IsNotExist(err) {
+				log.Fatal("error: could not find official template directory, start sriracha in the same directory as the file README.md")
+			}
 		}
 	}
 
@@ -1155,11 +1160,22 @@ func (s *Server) Run() error {
 		if os.IsNotExist(err) {
 			log.Fatalf("error: custom template directory %s does not exist", s.config.Template)
 		}
+		officialTemplate, err := os.Stat(officialDir)
+		if err != nil {
+			log.Fatal("error: could not find official template directory, start sriracha in the same directory as the file README.md")
+		}
+		customTemplate, err := os.Stat(s.config.Template)
+		if err != nil {
+			log.Fatalf("error: custom template directory %s is inaccessible", s.config.Template)
+		}
+		if os.SameFile(officialTemplate, customTemplate) {
+			log.Fatalf("error: official templates and custom templates must be located in separate directories")
+		}
 	}
 
 	if devMode {
 		s.opt.DevMode = true
-		err := s.watchTemplates()
+		err := s.watchTemplates(officialDir)
 		if err != nil {
 			log.Fatalf("failed to watch templates for changes: %s", err)
 		}
