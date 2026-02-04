@@ -553,8 +553,8 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 	}
 
 	oekakiPost := b.Oekaki && FormBool(r, "oekaki")
-	skipCAPTCHA := oekakiPost && strings.HasSuffix(post.File, ".tgkr")
 
+	var solvedCAPTCHA *CAPTCHA
 	if !staffPost {
 		if b.Lock == LockThread && parentPost == nil {
 			s.deletePostFiles(post)
@@ -563,24 +563,21 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			data.BoardError(w, Get(b, data.Account, "You may only reply to threads."))
 			return
 		}
-		if s.opt.CAPTCHA && !skipCAPTCHA {
+		if s.opt.CAPTCHA {
 			expired := db.ExpiredCAPTCHAs()
 			for _, c := range expired {
 				db.DeleteCAPTCHA(c.IP)
 				os.Remove(filepath.Join(s.config.Root, "captcha", c.Image+".png"))
 			}
 
-			var solved bool
 			challenge := db.GetCAPTCHA(post.IP)
 			if challenge != nil {
 				solution := FormString(r, "captcha")
 				if strings.ToLower(solution) == challenge.Text {
-					solved = true
-					db.DeleteCAPTCHA(post.IP)
-					os.Remove(filepath.Join(s.config.Root, "captcha", challenge.Image+".png"))
+					solvedCAPTCHA = challenge
 				}
 			}
-			if !solved {
+			if solvedCAPTCHA == nil {
 				s.deletePostFiles(post)
 
 				data := s.buildData(db, w, r)
@@ -590,7 +587,14 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 		}
 	}
 
-	if oekakiPost && post.File == "" {
+	files, err := s.loadPostFiles(r, post)
+	if err != nil {
+		data := s.buildData(db, w, r)
+		data.BoardError(w, err.Error())
+		return
+	}
+
+	if oekakiPost && len(files) == 0 {
 		data := s.buildData(db, w, r)
 		data.Template = "oekaki"
 		for key, values := range r.Form {
@@ -611,6 +615,10 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 		</script>`)
 		data.execute(w)
 		return
+	}
+	if solvedCAPTCHA != nil {
+		db.DeleteCAPTCHA(post.IP)
+		os.Remove(filepath.Join(s.config.Root, "captcha", solvedCAPTCHA.Image+".png"))
 	}
 
 	if post.File == "" && len(b.Embeds) > 0 {
@@ -682,22 +690,16 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 	}
 
 	var remainingFiles []*multipart.FileHeader
-	if post.File == "" {
-		files, err := s.loadPostFiles(r, post)
+	if post.File == "" && len(files) > 0 {
+		err = s.loadPostFile(db, r, post, files[0])
 		if err != nil {
 			data := s.buildData(db, w, r)
 			data.BoardError(w, err.Error())
 			return
-		} else if len(files) > 0 {
-			err = s.loadPostFile(db, r, post, files[0])
-			if err != nil {
-				data := s.buildData(db, w, r)
-				data.BoardError(w, err.Error())
-				return
-			} else if len(files) > 1 {
-				remainingFiles = files[1:]
-			}
+		} else if len(files) > 1 {
+			remainingFiles = files[1:]
 		}
+
 	}
 
 	duplicate := s.checkDuplicateFileHash(db, post)
