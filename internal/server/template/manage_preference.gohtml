@@ -1,6 +1,19 @@
 {{template "manage_begin.gohtml" .}}
 <h2 class="managetitle">{{T "Preferences"}}</h2>
 <form method="post">
+    <input type="hidden" name="action" value="password">
+	<fieldset>
+        <legend>{{T "Change Password"}}</legend>
+        <table border="0" class="manageform">
+            <tr><td class="postblock">{{T "Current"}}</td><td><input type="password" name="old"></td></tr>
+            <tr><td class="postblock">{{T "New"}}</td><td><input type="password" name="new"></td></tr>
+            <tr><td class="postblock">{{T "New (confirm)"}}</td><td><input type="password" name="confirmation"></td></tr>
+            <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 100%;" value="{{T "Change Password"}}"></td></tr>
+        </table>
+        <legend>
+	</fieldset>
+</form><br>
+<form method="post">
     <input type="hidden" name="action" value="style">
 	<fieldset>
         <legend>{{T "Change Style"}}</legend>
@@ -42,19 +55,6 @@
                 {{end}}
             </tr>
             <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 100%;" value="{{T "Change Locale"}}"></td></tr>
-        </table>
-        <legend>
-	</fieldset>
-</form><br>
-<form method="post">
-    <input type="hidden" name="action" value="password">
-	<fieldset>
-        <legend>{{T "Change Password"}}</legend>
-        <table border="0" class="manageform">
-            <tr><td class="postblock">{{T "Current"}}</td><td><input type="password" name="old"></td></tr>
-            <tr><td class="postblock">{{T "New"}}</td><td><input type="password" name="new"></td></tr>
-            <tr><td class="postblock">{{T "New (confirm)"}}</td><td><input type="password" name="confirmation"></td></tr>
-            <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 100%;" value="{{T "Change Password"}}"></td></tr>
         </table>
         <legend>
 	</fieldset>

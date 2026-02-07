@@ -5,8 +5,8 @@
 
 [**Browse a read-only demo**](https://sriracha.rocket9labs.com/img/)
 
-- Host imageboards and forums on the Internet or on localhost
-- Organize files and photos via boards and threads
+- Host imageboards and forums online or offline
+- Organize files via boards and threads
 - Organize notes via news entries
 
 ## Features
