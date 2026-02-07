@@ -312,6 +312,9 @@ msgstr ""
 msgid "File Types"
 msgstr ""
 
+msgid "Files"
+msgstr ""
+
 msgid "For post and file deletion."
 msgstr ""
 
@@ -609,6 +612,11 @@ msgid "No subject"
 msgstr ""
 
 msgid "None"
+msgstr ""
+
+msgid ""
+"Number of files visitors may upload at once. A new post is created for each "
+"uploaded file."
 msgstr ""
 
 msgid ""

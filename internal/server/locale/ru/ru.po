@@ -320,6 +320,9 @@ msgstr "Файл"
 msgid "File Types"
 msgstr ""
 
+msgid "Files"
+msgstr ""
+
 msgid "For post and file deletion."
 msgstr "Для удаления записи или файла."
 
@@ -618,6 +621,11 @@ msgstr ""
 
 msgid "None"
 msgstr "Нету"
+
+msgid ""
+"Number of files visitors may upload at once. A new post is created for each "
+"uploaded file."
+msgstr ""
 
 msgid ""
 "Number of message lines to display in post preview on board index pages. Set "

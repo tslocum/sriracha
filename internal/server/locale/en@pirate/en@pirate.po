@@ -317,6 +317,9 @@ msgstr "Booty"
 msgid "File Types"
 msgstr ""
 
+msgid "Files"
+msgstr ""
+
 msgid "For post and file deletion."
 msgstr "Ter shoot with."
 
@@ -617,6 +620,11 @@ msgstr ""
 
 msgid "None"
 msgstr "Nothin'"
+
+msgid ""
+"Number of files visitors may upload at once. A new post is created for each "
+"uploaded file."
+msgstr ""
 
 msgid ""
 "Number of message lines to display in post preview on board index pages. Set "

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-01-25 21:59+0000\n"
+"PO-Revision-Date: 2026-02-05 10:29+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -328,6 +328,9 @@ msgstr "Bestand"
 msgid "File Types"
 msgstr "Bestandstypen"
 
+msgid "Files"
+msgstr "Bestanden"
+
 msgid "For post and file deletion."
 msgstr "Voor bericht- en bestandsverwijdering."
 
@@ -645,6 +648,13 @@ msgstr "Geen onderwerp"
 
 msgid "None"
 msgstr "Geen"
+
+msgid ""
+"Number of files visitors may upload at once. A new post is created for each "
+"uploaded file."
+msgstr ""
+"Het aantal bestanden dat bezoekers tegelijk mogen uploaden. Er wordt per "
+"geüpload bestand een nieuw bericht gemaakt."
 
 msgid ""
 "Number of message lines to display in post preview on board index pages. Set "
