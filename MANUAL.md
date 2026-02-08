@@ -103,8 +103,14 @@ Create a custom template file in the new directory with the same name as the
 official template you wish to override. Copy the official template file contents
 into the new custom template file, then apply any desired changes.
 
-The templates `imgboard_begin_extra.gohtml` and `imgboard_end_extra.gohtml` are
-normally blank and may be overridden to add to the page header and footer.
+Template files with the prefix `custom_` are normally blank and are intended
+specifically for customizing the page. These templates do not change between
+each version of Sriracha, so they do not require maintenance.
+
+All other template files may still be overridden to customize Sriracha, but the
+custom templates will require maintenance each time Sriracha is upgraded.
+Official Sriracha templates change between each version, and these changes must
+be copied to any custom templates overriding them before starting Sriracha.
 
 To apply custom template changes when Sriracha is running normally, restart
 Sriracha. When Sriracha is running in development mode, template changes are

@@ -25,6 +25,7 @@
 		{{end}}
     </head>
     <body>
+		{{template "custom_navbar.gohtml" .}}
 		{{if or (and (gt (len .IndexBoards) 1) (or .Opt.BoardIndex .ModMode)) (eq .Template "news")}}
 			{{if ne .Opt.Overboard ""}}
 				[<a href="/{{if ne .Opt.Overboard "/"}}{{.Opt.Overboard}}/{{end}}" style="text-decoration: underline;">{{T "Overboard"}}</a>]
@@ -41,6 +42,7 @@
 			{{end}}
 		{{end}}
 		<div class="adminbar">
+			{{template "custom_adminbar.gohtml" .}}
 			{{if and (ne .Board nil) (eq .Board.Type 0)}}
 				[<a href="{{.Board.Path}}catalog.html" style="text-decoration: underline;">{{T "Catalog"}}</a>] &middot;
 			{{end}}
@@ -57,7 +59,8 @@
 				<option value="sriracha">Sriracha</option>
 			</select>
 		</div>
-		<div class="logo">{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}{{template "imgboard_begin_extra.gohtml" .}}</div>
+		{{template "custom_header.gohtml" .}}
+		<div class="logo">{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}{{template "custom_logo.gohtml" .}}</div>
 		<hr width="90%">
 		{{if .ReplyMode}}
 			{{if not .ModMode}}
