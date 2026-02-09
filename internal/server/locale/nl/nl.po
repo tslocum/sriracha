@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-02-05 10:29+0000\n"
+"PO-Revision-Date: 2026-02-09 18:17+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -67,6 +67,9 @@ msgstr "Beheerder"
 
 msgid "Administrator"
 msgstr "Beheerder"
+
+msgid "Administrators have full access except for managing accounts."
+msgstr "Beheerders hebben volledige toegang, maar kunnen geen accounts beheren."
 
 msgid "All posts"
 msgstr "Alle berichten"
@@ -594,6 +597,13 @@ msgstr "Modereren"
 msgid "Moderator"
 msgstr "Moderator"
 
+msgid ""
+"Moderators may only perform certain actions. See moderator guide for more "
+"info."
+msgstr ""
+"Moderators kunnen slechts bepaalde acties uitvoeren. Bekijk voor meer "
+"informatie de moderatorhandleiding."
+
 msgid "Name"
 msgstr "Naam"
 
@@ -837,6 +847,9 @@ msgstr "Versturen"
 
 msgid "Super-administrator"
 msgstr "Superbeheerder"
+
+msgid "Super-administrators have full access."
+msgstr "Superbeheerders kunnen álles."
 
 msgid "Supported file types are %s."
 msgstr "Ondersteunde bestandstypes: %s."

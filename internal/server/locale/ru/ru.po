@@ -69,6 +69,9 @@ msgstr "Администрирование"
 msgid "Administrator"
 msgstr ""
 
+msgid "Administrators have full access except for managing accounts."
+msgstr ""
+
 msgid "All posts"
 msgstr ""
 
@@ -569,6 +572,11 @@ msgstr ""
 msgid "Moderator"
 msgstr ""
 
+msgid ""
+"Moderators may only perform certain actions. See moderator guide for more "
+"info."
+msgstr ""
+
 msgid "Name"
 msgstr "Имя"
 
@@ -792,6 +800,9 @@ msgid "Submit"
 msgstr "Отправить"
 
 msgid "Super-administrator"
+msgstr ""
+
+msgid "Super-administrators have full access."
 msgstr ""
 
 msgid "Supported file types are %s."
