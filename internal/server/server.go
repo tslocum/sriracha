@@ -1174,8 +1174,8 @@ func (s *Server) Run() error {
 	var devMode bool
 	var printVersion bool
 	flag.StringVar(&configFile, "config", "", "path to configuration file (default: ~/.config/sriracha/config.yml)")
-	flag.BoolVar(&rebuild, "rebuild", false, "rebuild everything on startup (only recommended when running for the first time after upgrading)")
-	flag.BoolVar(&devMode, "dev", false, "run in development mode (monitor template files and apply changes)")
+	flag.BoolVar(&rebuild, "rebuild", false, "rebuild static files on startup")
+	flag.BoolVar(&devMode, "dev", false, "run in development mode (watch template files for changes)")
 	flag.BoolVar(&printVersion, "version", false, "print version information and exit")
 	flag.Parse()
 
