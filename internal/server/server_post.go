@@ -1072,12 +1072,16 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 		}
 	}
 
+	s.rebuildLock.Lock()
 	db.Commit()
-	s.lock.Unlock()
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
+
+	s.lock.Unlock()
 	s.rebuildQueue <- &rebuildInfo{post: post, wg: wg}
+	s.rebuildLock.Unlock()
+
 	wg.Wait()
 
 	redir := fmt.Sprintf("%sres/%d.html#%d", b.Path(), post.Thread(), post.ID)

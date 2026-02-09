@@ -126,7 +126,9 @@ type Server struct {
 	opt    ServerOptions
 	tpl    *template.Template
 
-	rebuildQueue chan *rebuildInfo
+	rebuildQueue     chan *rebuildInfo
+	rebuildWaitGroup sync.WaitGroup
+	rebuildLock      sync.Mutex
 
 	lock sync.Mutex
 }
@@ -1091,6 +1093,8 @@ func (s *Server) listen() error {
 
 // handleRebuild handles requests to rebuild threads.
 func (s *Server) handleRebuild() {
+	defer s.rebuildWaitGroup.Done()
+
 	minWait := 1 * time.Second
 	maxWait := 10 * time.Second
 
@@ -1100,10 +1104,15 @@ func (s *Server) handleRebuild() {
 	var pending []*rebuildInfo
 	var boards []*Board
 	var threads []int
+	var shutdown bool
 	for {
 		// Process queue.
 		info = <-s.rebuildQueue
-		pending = append(pending, info)
+		if info == nil {
+			shutdown = true
+		} else {
+			pending = append(pending, info)
+		}
 		for {
 			// Sleep until minimum wait time has passed.
 			time.Sleep(minWait)
@@ -1113,8 +1122,12 @@ func (s *Server) handleRebuild() {
 			for {
 				select {
 				case info = <-s.rebuildQueue:
-					pending = append(pending, info)
-					found = true
+					if info == nil {
+						shutdown = true
+					} else {
+						pending = append(pending, info)
+						found = true
+					}
 				default:
 					break DRAINQUEUE
 				}
@@ -1126,6 +1139,9 @@ func (s *Server) handleRebuild() {
 			if time.Since(lastBuild) >= maxWait {
 				break
 			}
+		}
+		if shutdown && len(pending) == 0 {
+			return
 		}
 
 		// Flush queue.
@@ -1155,6 +1171,10 @@ func (s *Server) handleRebuild() {
 		threads = threads[:0]
 
 		lastBuild = time.Now()
+
+		if shutdown {
+			return
+		}
 	}
 }
 
@@ -1184,6 +1204,23 @@ func (s *Server) Run() error {
 		printInfo()
 		return nil
 	}
+
+	s.rebuildWaitGroup.Add(1)
+	go s.handleRebuild()
+
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, unix.SIGINT, unix.SIGTERM)
+	go func() {
+		// Wait until SIGINT or SIGTERM is received.
+		<-signals
+		// Shut down server.
+		fmt.Println("Shutting down...")
+		s.lock.Lock()
+		s.rebuildLock.Lock()
+		s.rebuildQueue <- nil
+		s.rebuildWaitGroup.Wait()
+		os.Exit(0)
+	}()
 
 	if configFile == "" {
 		homeDir, err := os.UserHomeDir()
@@ -1313,17 +1350,6 @@ func (s *Server) Run() error {
 		}
 	}
 
-	signals := make(chan os.Signal, 1)
-	signal.Notify(signals, unix.SIGINT, unix.SIGTERM)
-	go func() {
-		for {
-			<-signals
-			fmt.Println("Shutting down...")
-			s.lock.Lock()
-			os.Exit(0)
-		}
-	}()
-
 	// Rebuild everything on startup when explicitly requested and after upgrading.
 	db := s.begin()
 	sv := db.GetString("sv") // Sriracha version.
@@ -1350,8 +1376,6 @@ func (s *Server) Run() error {
 		}
 	}
 	db.Commit()
-
-	go s.handleRebuild()
 
 	return s.listen()
 }
