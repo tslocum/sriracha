@@ -204,7 +204,7 @@ uploads:
 
 ### Example reverse proxy using caddy (Caddyfile)
 
-```
+```caddyfile
 # Serve https://zoopz.org and https://www.zoopz.org
 zoopz.org, www.zoopz.org {
   # Enable zstd and gzip compression.
@@ -431,7 +431,7 @@ directory. Plugin API documentation is available via [godoc](https://pkg.go.dev/
 
 To build a plugin, run the following commands:
 
-```
+```bash
 cd /path/to/sriracha/plugin/fortune
 go build -buildmode=plugin
 ```
@@ -440,7 +440,7 @@ This will compile the fortune plugin as `fortune.so`.
 
 To load a plugin, run the following command:
 
-```
+```bash
 sriracha --config=/path/to/config.yml /path/to/fortune.so
 ```
 
