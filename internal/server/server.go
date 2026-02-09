@@ -111,6 +111,11 @@ func (opt *ServerOptions) DefaultLocaleName() string {
 	return opt.Locale
 }
 
+type rebuildInfo struct {
+	post *Post
+	wg   *sync.WaitGroup
+}
+
 type Server struct {
 	Boards []*Board
 
@@ -120,11 +125,16 @@ type Server struct {
 	dbPool *pgxpool.Pool
 	opt    ServerOptions
 	tpl    *template.Template
-	lock   sync.Mutex
+
+	rebuildQueue chan *rebuildInfo
+
+	lock sync.Mutex
 }
 
 func NewServer() *Server {
-	return &Server{}
+	return &Server{
+		rebuildQueue: make(chan *rebuildInfo),
+	}
 }
 
 func (s *Server) parseBuildInfo() {
@@ -1079,6 +1089,75 @@ func (s *Server) listen() error {
 	return http.ListenAndServe(s.config.Serve, mux)
 }
 
+// handleRebuild handles requests to rebuild threads.
+func (s *Server) handleRebuild() {
+	minWait := 1 * time.Second
+	maxWait := 10 * time.Second
+
+	lastBuild := time.Now()
+
+	var info *rebuildInfo
+	var pending []*rebuildInfo
+	var boards []*Board
+	var threads []int
+	for {
+		// Process queue.
+		info = <-s.rebuildQueue
+		pending = append(pending, info)
+		for {
+			// Sleep until minimum wait time has passed.
+			time.Sleep(minWait)
+			// Drain queue.
+			var found bool
+		DRAINQUEUE:
+			for {
+				select {
+				case info = <-s.rebuildQueue:
+					pending = append(pending, info)
+					found = true
+				default:
+					break DRAINQUEUE
+				}
+			}
+			if !found {
+				break
+			}
+			// Check if maximum wait time has passed.
+			if time.Since(lastBuild) >= maxWait {
+				break
+			}
+		}
+
+		// Flush queue.
+		db := s.begin()
+		for _, info := range pending {
+			thread := info.post.Thread()
+			if !slices.Contains(threads, thread) {
+				s.writeThread(db, info.post.Board, thread)
+				threads = append(threads, thread)
+			}
+			if !slices.Contains(boards, info.post.Board) {
+				s.writeIndexes(db, info.post.Board)
+				boards = append(boards, info.post.Board)
+			}
+		}
+		if s.opt.Overboard != "" {
+			s.writeOverboard(db)
+		}
+		db.Commit()
+
+		for _, info := range pending {
+			info.wg.Done()
+		}
+
+		pending = pending[:0]
+		boards = boards[:0]
+		threads = threads[:0]
+
+		lastBuild = time.Now()
+	}
+}
+
 func (s *Server) Run() error {
 	s.parseBuildInfo()
 
@@ -1271,6 +1350,8 @@ func (s *Server) Run() error {
 		}
 	}
 	db.Commit()
+
+	go s.handleRebuild()
 
 	return s.listen()
 }

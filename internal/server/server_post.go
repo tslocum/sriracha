@@ -117,11 +117,12 @@ func setFileAndThumb(p *Post, fileExt string, thumbExt string) {
 	fileIDString := fmt.Sprintf("%d", fileID)
 
 	if thumbExt == "" {
-		if fileExt == "jpg" || fileExt == "png" || fileExt == "gif" {
+		switch fileExt {
+		case "jpg", "png", "gif":
 			thumbExt = fileExt
-		} else if fileExt == "svg" {
+		case "svg":
 			thumbExt = "png"
-		} else {
+		default:
 			thumbExt = "jpg"
 		}
 	}
@@ -1071,8 +1072,16 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 		}
 	}
 
-	s.rebuildThread(db, post)
+	db.Commit()
+	s.lock.Unlock()
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+	s.rebuildQueue <- &rebuildInfo{post: post, wg: wg}
+	wg.Wait()
 
 	redir := fmt.Sprintf("%sres/%d.html#%d", b.Path(), post.Thread(), post.ID)
 	http.Redirect(w, r, redir, http.StatusFound)
+
+	s.lock.Lock()
 }

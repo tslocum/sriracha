@@ -29,9 +29,10 @@ var argon2idParameters = &argon2id.Params{
 
 // DB represents a database connection.
 type DB struct {
-	conn   *pgxpool.Conn
-	Plugin string
-	config *Config
+	conn      *pgxpool.Conn
+	Plugin    string
+	config    *Config
+	committed bool
 }
 
 func Connect(c *Config) (*pgxpool.Pool, error) {
@@ -220,7 +221,7 @@ func (db *DB) RollBack() {
 }
 
 func (db *DB) Commit() {
-	if db.conn == nil {
+	if db.conn == nil || db.committed {
 		return
 	}
 	_, err := db.conn.Exec(context.Background(), "COMMIT")
@@ -228,10 +229,11 @@ func (db *DB) Commit() {
 		log.Fatalf("failed to commit transaction: %s", err)
 	}
 	db.conn.Release()
+	db.committed = true
 }
 
 func (db *DB) CommitWithErr() error {
-	if db.conn == nil {
+	if db.conn == nil || db.committed {
 		return nil
 	}
 	_, err := db.conn.Exec(context.Background(), "COMMIT")
@@ -239,6 +241,7 @@ func (db *DB) CommitWithErr() error {
 		return fmt.Errorf("failed to commit transaction: %s", err)
 	}
 	db.conn.Release()
+	db.committed = true
 	return nil
 }
 
