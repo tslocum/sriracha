@@ -181,8 +181,6 @@ func (s *Server) registerPlugin(plugin any) {
 		info.Events = append(info.Events, "None")
 	}
 
-	fmt.Printf("%s loaded. Events: %s\n", info.FullName, strings.Join(info.Events, ", "))
-
 	allPlugins = append(allPlugins, plugin)
 	allPluginInfo = append(allPluginInfo, info)
 }
@@ -231,6 +229,17 @@ func (s *Server) loadPlugins() error {
 		if err != nil {
 			return err
 		}
+	}
+	if len(allPluginInfo) != 0 {
+		var plural string
+		if len(allPluginInfo) != 1 {
+			plural = "s"
+		}
+		var names []string
+		for _, info := range allPluginInfo {
+			names = append(names, info.FullName)
+		}
+		fmt.Printf("Loaded %d plugin%s (%s)\n", len(allPluginInfo), plural, strings.Join(names, ", "))
 	}
 	return nil
 }
