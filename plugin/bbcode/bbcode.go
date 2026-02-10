@@ -33,8 +33,13 @@ const (
 
 	enable = "1"
 
+	tabWidth  = 4
+	codeStyle = "xcode-dark"
+
 	maxSize = 100
 )
+
+var codePattern = regexp.MustCompile(`(?ms)\[code=?([^\]]+)?\].*?\[\/code\]`)
 
 type BBCode struct {
 	config  map[string]bool
@@ -42,7 +47,8 @@ type BBCode struct {
 
 	compiler bbcode.Compiler
 
-	formatter chroma.Formatter
+	formatter *htmlformatter.Formatter
+	style     *chroma.Style
 }
 
 func (f *BBCode) About() string {
@@ -116,10 +122,16 @@ func (f *BBCode) rebuildCompiler() {
 
 	formatterOptions := []htmlformatter.Option{
 		htmlformatter.Standalone(false),
-		htmlformatter.TabWidth(2),
+		htmlformatter.TabWidth(tabWidth),
 		htmlformatter.WrapLongLines(false),
+		htmlformatter.WithLineNumbers(true),
 	}
 	f.formatter = htmlformatter.New(formatterOptions...)
+
+	f.style = styles.Get(codeStyle)
+	if f.style == nil {
+		f.style = styles.Fallback
+	}
 
 	var disableTags = []string{
 		"center",
@@ -184,7 +196,8 @@ func (f *BBCode) rebuildCompiler() {
 		}
 		valueStr, ok := node.Value.(string)
 		if ok {
-			node.Value = strings.ReplaceAll(valueStr, "\n", newLineSentinel)
+			valueStr = strings.ReplaceAll(valueStr, "\n", newLineSentinel)
+			node.Value = valueStr
 		}
 	}
 	preFunc := func(node *bbcode.BBCodeNode) (*bbcode.HTMLTag, bool) {
@@ -204,6 +217,7 @@ func (f *BBCode) rebuildCompiler() {
 	}
 
 	out := &bytes.Buffer{}
+	bracketSentinel := "\x1e" // Record separator
 	codeFunc := func(node *bbcode.BBCodeNode) (*bbcode.HTMLTag, bool) {
 		var lexer chroma.Lexer
 		var foundLexer bool
@@ -220,6 +234,8 @@ func (f *BBCode) rebuildCompiler() {
 		tag, appendExpr := preFunc(node)
 		for i, child := range tag.Children {
 			strValue := strings.ReplaceAll(child.Value, newLineSentinel, "\n")
+			strValue = strings.ReplaceAll(strValue, bracketSentinel, "[")
+			strValue = strings.TrimSpace(strValue)
 			if !foundLexer {
 				lexer = lexers.Analyse(strValue)
 				if lexer == nil {
@@ -228,21 +244,17 @@ func (f *BBCode) rebuildCompiler() {
 				lexer = chroma.Coalesce(lexer)
 				foundLexer = true
 			}
-			style := styles.Get("xcode-dark")
-			if style == nil {
-				style = styles.Fallback
-			}
 			iterator, err := lexer.Tokenise(nil, strValue)
 			if err != nil {
 				continue
 			}
 			out.Reset()
-			err = f.formatter.Format(out, style, iterator)
+			err = f.formatter.Format(out, f.style, iterator)
 			if err != nil {
 				continue
 			}
 			tag.Children[i] = bbcode.NewHTMLTag("")
-			tag.Children[i].Value = out.String()
+			tag.Children[i].Value = strings.ReplaceAll(out.String(), "\n", "")
 			tag.Children[i].Raw = true
 		}
 		return tag, appendExpr
@@ -293,6 +305,24 @@ func (f *BBCode) Post(db sriracha.DB, post *Post) error {
 		f.rebuildCompiler()
 		f.updated = false
 	}
+
+	bracketSentinel := byte('\x1e') // Record separator
+	post.Message = codePattern.ReplaceAllStringFunc(post.Message, func(s string) string {
+		firstBracket := strings.IndexByte(s, '[')
+		lastBracket := strings.LastIndexByte(s, '[')
+		if firstBracket == -1 || lastBracket == -1 {
+			return s
+		}
+		var out []byte
+		for i, c := range s {
+			if c == '[' && i != firstBracket && i != lastBracket {
+				out = append(out, bracketSentinel)
+			} else {
+				out = append(out, []byte(string(c))...)
+			}
+		}
+		return string(out)
+	})
 
 	post.Message = f.compiler.Compile(html.UnescapeString(post.Message))
 	return nil

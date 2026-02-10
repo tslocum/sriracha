@@ -956,6 +956,8 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 		newLineSentinel := "\x85" // Next line (NEL) character
 		post.Message = strings.ReplaceAll(post.Message, "\n", "<br>\n")
 		post.Message = strings.ReplaceAll(post.Message, newLineSentinel, "\n")
+		bracketSentinel := "\x1e" // Record separator
+		post.Message = strings.ReplaceAll(post.Message, bracketSentinel, "[")
 	}
 
 	if post.Password != "" {
