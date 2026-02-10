@@ -257,6 +257,7 @@ legend {
 .code {
 	white-space: pre;
 	font-family: monospace;
+	line-height: 0.75;
 }
 
 details {

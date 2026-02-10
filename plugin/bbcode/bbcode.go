@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"html"
 	"log"
@@ -8,9 +9,13 @@ import (
 	"strconv"
 	"strings"
 
+	"codeberg.org/tslocum/bbcode"
 	"codeberg.org/tslocum/sriracha"
 	. "codeberg.org/tslocum/sriracha/model"
-	"github.com/frustra/bbcode"
+	"github.com/alecthomas/chroma/v2"
+	htmlformatter "github.com/alecthomas/chroma/v2/formatters/html"
+	"github.com/alecthomas/chroma/v2/lexers"
+	"github.com/alecthomas/chroma/v2/styles"
 )
 
 const (
@@ -21,7 +26,8 @@ const (
 	configSpoiler       = "spoiler"
 	configColor         = "color"
 	configSize          = "size"
-	configLink          = "link"
+	configURL           = "URL"
+	configPre           = "pre"
 	configCode          = "code"
 	configSJIS          = "SJIS"
 
@@ -35,6 +41,8 @@ type BBCode struct {
 	updated bool
 
 	compiler bbcode.Compiler
+
+	formatter chroma.Formatter
 }
 
 func (f *BBCode) About() string {
@@ -79,12 +87,16 @@ func (f *BBCode) Config() []sriracha.PluginConfig {
 			Info: "[size=72]Size 72 text[/size]",
 		}, {
 			Type: sriracha.TypeBoolean,
-			Name: configLink,
+			Name: configURL,
 			Info: "[url=https://zoopz.org]Link text[/url]",
 		}, {
 			Type: sriracha.TypeBoolean,
+			Name: configPre,
+			Info: "[pre]Preformatted text[/pre]",
+		}, {
+			Type: sriracha.TypeBoolean,
 			Name: configCode,
-			Info: "[code]$str = \"Hello, world!\";[/code]",
+			Info: "[code=go]msg := \"Hello, world!\"[/code]",
 		}, {
 			Type: sriracha.TypeBoolean,
 			Name: configSJIS,
@@ -101,6 +113,13 @@ func (f *BBCode) Update(db sriracha.DB, key string) error {
 
 func (f *BBCode) rebuildCompiler() {
 	f.compiler = bbcode.NewCompiler(true, true)
+
+	formatterOptions := []htmlformatter.Option{
+		htmlformatter.Standalone(false),
+		htmlformatter.TabWidth(2),
+		htmlformatter.WrapLongLines(false),
+	}
+	f.formatter = htmlformatter.New(formatterOptions...)
 
 	var disableTags = []string{
 		"center",
@@ -169,7 +188,7 @@ func (f *BBCode) rebuildCompiler() {
 			node.Value = strings.ReplaceAll(valueStr, "\n", newLineSentinel)
 		}
 	}
-	codeFunc := func(node *bbcode.BBCodeNode) (*bbcode.HTMLTag, bool) {
+	preFunc := func(node *bbcode.BBCodeNode) (*bbcode.HTMLTag, bool) {
 		out := bbcode.NewHTMLTag("")
 		out.Name = "span"
 		out.Attrs["class"] = "code"
@@ -179,12 +198,59 @@ func (f *BBCode) rebuildCompiler() {
 		}
 		return out, false
 	}
-	for _, tag := range []string{"code", "pre"} {
-		if !f.config[configCode] {
-			f.compiler.SetTag(tag, nil)
-		} else {
-			f.compiler.SetTag(tag, codeFunc)
+	if !f.config[configPre] {
+		f.compiler.SetTag("pre", nil)
+	} else {
+		f.compiler.SetTag("pre", preFunc)
+	}
+
+	out := &bytes.Buffer{}
+	codeFunc := func(node *bbcode.BBCodeNode) (*bbcode.HTMLTag, bool) {
+		var lexer chroma.Lexer
+		var foundLexer bool
+		if openingTag, ok := node.Token.Value.(bbcode.BBOpeningTag); ok {
+			language := strings.ToLower(strings.TrimSpace(openingTag.Value))
+			if language != "" {
+				lexer = lexers.Get(language)
+				if lexer != nil {
+					lexer = chroma.Coalesce(lexer)
+					foundLexer = true
+				}
+			}
 		}
+		tag, appendExpr := preFunc(node)
+		for i, child := range tag.Children {
+			strValue := strings.ReplaceAll(child.Value, newLineSentinel, "\n")
+			if !foundLexer {
+				lexer = lexers.Analyse(strValue)
+				if lexer == nil {
+					lexer = lexers.Fallback
+				}
+				foundLexer = true
+			}
+			style := styles.Get("xcode-dark")
+			if style == nil {
+				style = styles.Fallback
+			}
+			iterator, err := lexer.Tokenise(nil, strValue)
+			if err != nil {
+				continue
+			}
+			out.Reset()
+			err = f.formatter.Format(out, style, iterator)
+			if err != nil {
+				continue
+			}
+			tag.Children[i] = bbcode.NewHTMLTag("")
+			tag.Children[i].Value = out.String()
+			tag.Children[i].Raw = true
+		}
+		return tag, appendExpr
+	}
+	if !f.config[configCode] {
+		f.compiler.SetTag("code", nil)
+	} else {
+		f.compiler.SetTag("code", codeFunc)
 	}
 
 	if !f.config[configSJIS] {
@@ -202,7 +268,7 @@ func (f *BBCode) rebuildCompiler() {
 		})
 	}
 
-	if !f.config[configLink] {
+	if !f.config[configURL] {
 		f.compiler.SetTag("url", nil)
 		return
 	}

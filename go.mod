@@ -1,14 +1,13 @@
 module codeberg.org/tslocum/sriracha
 
-go 1.24.0
-
-toolchain go1.24.4
+go 1.24.9
 
 require (
+	codeberg.org/tslocum/bbcode v0.0.0-20260210194643-496280381f96
 	github.com/PuerkitoBio/goquery v1.11.0
+	github.com/alecthomas/chroma/v2 v2.23.1
 	github.com/alexedwards/argon2id v1.0.0
 	github.com/aquilax/tripcode v1.0.1
-	github.com/frustra/bbcode v0.0.0-20201127003707-6ef347fbe1c8
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/gabriel-vasile/mimetype v1.4.12
 	github.com/jackc/pgx/v5 v5.8.0
@@ -25,6 +24,7 @@ require (
 
 require (
 	github.com/andybalholm/cascadia v1.3.3 // indirect
+	github.com/dlclark/regexp2 v1.11.5 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
