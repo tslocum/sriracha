@@ -135,7 +135,6 @@ func (f *BBCode) rebuildCompiler() {
 		configItalic:        "i",
 		configUnderline:     "u",
 		configStrikethrough: "s",
-		configSpoiler:       "spoiler",
 		configColor:         "color",
 	}
 	for configName, tagName := range options {
@@ -226,6 +225,7 @@ func (f *BBCode) rebuildCompiler() {
 				if lexer == nil {
 					lexer = lexers.Fallback
 				}
+				lexer = chroma.Coalesce(lexer)
 				foundLexer = true
 			}
 			style := styles.Get("xcode-dark")
