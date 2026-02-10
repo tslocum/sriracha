@@ -125,6 +125,7 @@ func (f *BBCode) rebuildCompiler() {
 		htmlformatter.TabWidth(tabWidth),
 		htmlformatter.WrapLongLines(false),
 		htmlformatter.WithLineNumbers(true),
+		htmlformatter.LineNumbersInTable(true),
 	}
 	f.formatter = htmlformatter.New(formatterOptions...)
 
@@ -232,6 +233,8 @@ func (f *BBCode) rebuildCompiler() {
 			}
 		}
 		tag, appendExpr := preFunc(node)
+		tag.Name = "div"
+		delete(tag.Attrs, "class")
 		for i, child := range tag.Children {
 			strValue := strings.ReplaceAll(child.Value, newLineSentinel, "\n")
 			strValue = strings.ReplaceAll(strValue, bracketSentinel, "[")
@@ -254,7 +257,7 @@ func (f *BBCode) rebuildCompiler() {
 				continue
 			}
 			tag.Children[i] = bbcode.NewHTMLTag("")
-			tag.Children[i].Value = strings.ReplaceAll(out.String(), "\n", "")
+			tag.Children[i].Value = strings.ReplaceAll(out.String(), "\n", newLineSentinel)
 			tag.Children[i].Raw = true
 		}
 		return tag, appendExpr
@@ -323,6 +326,7 @@ func (f *BBCode) Post(db sriracha.DB, post *Post) error {
 		}
 		return string(out)
 	})
+	post.Message = strings.ReplaceAll(post.Message, "[/code]\n", "[/code]")
 
 	post.Message = f.compiler.Compile(html.UnescapeString(post.Message))
 	return nil

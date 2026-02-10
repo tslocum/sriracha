@@ -259,10 +259,6 @@ legend {
 	font-family: monospace;
 }
 
-.code pre {
-	padding: 5px;
-}
-
 details {
 	display: inline-block;
 }
