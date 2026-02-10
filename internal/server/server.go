@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"crypto/sha512"
 	"embed"
 	"encoding/base64"
@@ -129,6 +130,8 @@ type Server struct {
 	rebuildQueue     chan *rebuildInfo
 	rebuildWaitGroup sync.WaitGroup
 	rebuildLock      sync.Mutex
+
+	httpServer *http.Server
 
 	lock sync.Mutex
 }
@@ -1088,7 +1091,11 @@ func (s *Server) listen() error {
 	mux.Handle("/", http.FileServer(http.Dir(s.config.Root)))
 
 	fmt.Printf("Serving http://%s\n", s.config.Serve)
-	return http.ListenAndServe(s.config.Serve, mux)
+	s.httpServer = &http.Server{
+		Addr:    s.config.Serve,
+		Handler: mux,
+	}
+	return s.httpServer.ListenAndServe()
 }
 
 // handleRebuild handles requests to rebuild threads.
@@ -1178,6 +1185,21 @@ func (s *Server) handleRebuild() {
 	}
 }
 
+func (s *Server) _handleSignal(signals chan os.Signal) {
+	// Wait until SIGINT or SIGTERM is received.
+	<-signals
+	// Shut down server.
+	s.Shutdown()
+}
+
+// startSignalHandler starts the signal handler which is responsible for
+// shutting down the server when SIGINT or SIGTERM is received.
+func (s *Server) startSignalHandler() {
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, unix.SIGINT, unix.SIGTERM)
+	go s._handleSignal(signals)
+}
+
 func (s *Server) Run() error {
 	s.parseBuildInfo()
 
@@ -1208,19 +1230,7 @@ func (s *Server) Run() error {
 	s.rebuildWaitGroup.Add(1)
 	go s.handleRebuild()
 
-	signals := make(chan os.Signal, 1)
-	signal.Notify(signals, unix.SIGINT, unix.SIGTERM)
-	go func() {
-		// Wait until SIGINT or SIGTERM is received.
-		<-signals
-		// Shut down server.
-		fmt.Println("Shutting down...")
-		s.lock.Lock()
-		s.rebuildLock.Lock()
-		s.rebuildQueue <- nil
-		s.rebuildWaitGroup.Wait()
-		os.Exit(0)
-	}()
+	s.startSignalHandler()
 
 	if configFile == "" {
 		homeDir, err := os.UserHomeDir()
@@ -1377,7 +1387,14 @@ func (s *Server) Run() error {
 	}
 	db.Commit()
 
-	return s.listen()
+	err = s.listen()
+	if err != nil {
+		if err != http.ErrServerClosed {
+			return err
+		}
+		s.rebuildWaitGroup.Wait()
+	}
+	return nil
 }
 
 func (s *Server) hashData(data string) string {
@@ -1426,6 +1443,23 @@ func (s *Server) requestIP(r *http.Request) string {
 
 func (s *Server) hashIP(r *http.Request) string {
 	return s._hashIP(s.requestIP(r))
+}
+
+func (s *Server) Shutdown() {
+	fmt.Println("Shutting down...")
+
+	if s.httpServer != nil {
+		s.httpServer.Shutdown(context.Background())
+	}
+
+	s.lock.Lock()
+	s.rebuildLock.Lock()
+	s.rebuildQueue <- nil
+	s.rebuildWaitGroup.Wait()
+
+	if s.httpServer == nil {
+		os.Exit(0)
+	}
 }
 
 func pluginByName(name string) (any, *pluginInfo) {
