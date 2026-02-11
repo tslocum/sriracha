@@ -103,9 +103,10 @@ Create a custom template file in the new directory with the same name as the
 official template you wish to override. Copy the official template file contents
 into the new custom template file, then apply any desired changes.
 
-Template files with the prefix `custom_` are normally blank and are intended
-specifically for customizing the page. These templates do not change between
-each version of Sriracha, so they do not require maintenance.
+Template files with the prefix `extra_` are normally blank and are provided for
+convenience. These templates do not change between each version of Sriracha, so
+they do not require any maintenance. Whenever possible, you should only override
+templates with the `extra_` prefix.
 
 All other template files may still be overridden to customize Sriracha, but the
 custom templates will require maintenance each time Sriracha is upgraded.
