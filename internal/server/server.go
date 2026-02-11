@@ -125,7 +125,9 @@ type Server struct {
 	config *Config
 	dbPool *pgxpool.Pool
 	opt    ServerOptions
-	tpl    *template.Template
+
+	tpl             *template.Template
+	customTemplates []string
 
 	rebuildQueue     chan *rebuildInfo
 	rebuildWaitGroup sync.WaitGroup
@@ -389,7 +391,17 @@ func (s *Server) loadPluginConfig() error {
 // Otherwise, official templates are loaded from disk. When customDir is set,
 // custom templates are loaded from disk.
 func (s *Server) parseTemplates(officialDir string, customDir string) error {
-	parseDir := func(dir string) error {
+	s.customTemplates = s.customTemplates[:0]
+	wrapError := func(name string, err error) error {
+		var source string
+		if !slices.Contains(s.customTemplates, name) {
+			source = "official"
+		} else {
+			source = "custom"
+		}
+		return fmt.Errorf("failed to parse %s template file %s: %s", source, name, err)
+	}
+	parseDir := func(dir string, custom bool) error {
 		entries, err := os.ReadDir(dir)
 		if err != nil {
 			return err
@@ -397,16 +409,18 @@ func (s *Server) parseTemplates(officialDir string, customDir string) error {
 		for _, f := range entries {
 			if !strings.HasSuffix(f.Name(), ".gohtml") {
 				continue
+			} else if custom {
+				s.customTemplates = append(s.customTemplates, f.Name())
 			}
 
 			buf, err := os.ReadFile(filepath.Join(dir, f.Name()))
 			if err != nil {
-				return err
+				return wrapError(f.Name(), err)
 			}
 
 			_, err = s.tpl.New(f.Name()).Parse(string(buf))
 			if err != nil {
-				return err
+				return wrapError(f.Name(), err)
 			}
 		}
 		return nil
@@ -425,24 +439,28 @@ func (s *Server) parseTemplates(officialDir string, customDir string) error {
 
 			buf, err := templateFS.ReadFile(filepath.Join("template", f.Name()))
 			if err != nil {
-				return err
+				return wrapError(f.Name(), err)
 			}
 
 			_, err = s.tpl.New(f.Name()).Parse(string(buf))
 			if err != nil {
-				return err
+				return wrapError(f.Name(), err)
 			}
 		}
 	} else {
 		s.tpl = template.New("sriracha").Funcs(templateFuncMaps[""])
-		err := parseDir(officialDir)
+
+		err := parseDir(officialDir, false)
 		if err != nil {
 			return err
 		}
 	}
 
 	if customDir != "" {
-		return parseDir(customDir)
+		err := parseDir(customDir, true)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -464,7 +482,7 @@ func (s *Server) watchTemplates(officialDir string) error {
 				}
 				err := s.parseTemplates(officialDir, s.config.Template)
 				if err != nil {
-					log.Printf("error: failed to parse templates: %s", err)
+					log.Printf("error: failed to parse template files: %s", err)
 				}
 			case err, ok := <-watcher.Errors:
 				if !ok {
@@ -1339,7 +1357,7 @@ func (s *Server) Run() error {
 
 	err = s.parseTemplates("", s.config.Template)
 	if err != nil {
-		return fmt.Errorf("failed to parse templates: %s", err)
+		return fmt.Errorf("failed to parse template files: %s", err)
 	}
 
 	if unix.Access(s.config.Root, unix.W_OK) != nil {
