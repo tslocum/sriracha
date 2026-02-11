@@ -384,6 +384,10 @@ func (s *Server) loadPluginConfig() error {
 	return nil
 }
 
+// parseTemplates parses official and custom templates. Provide an empty
+// officialDir to load official templates from the embedded file system.
+// Otherwise, official templates are loaded from disk. When customDir is set,
+// custom templates are loaded from disk.
 func (s *Server) parseTemplates(officialDir string, customDir string) error {
 	parseDir := func(dir string) error {
 		entries, err := os.ReadDir(dir)
@@ -1269,8 +1273,11 @@ func (s *Server) Run() error {
 		log.Fatalf("failed to parse locale files: %s", err)
 	}
 
-	officialDir := "internal/server/template"
+	var officialDir string
 	if devMode {
+		s.opt.DevMode = true
+
+		officialDir = "internal/server/template"
 		_, err := os.Stat(officialDir)
 		if os.IsNotExist(err) {
 			officialDir = "template"
@@ -1279,29 +1286,26 @@ func (s *Server) Run() error {
 				log.Fatal("error: could not find official template directory, start sriracha in the same directory as the file README.md")
 			}
 		}
-	}
 
-	if s.config.Template != "" {
-		_, err := os.Stat(s.config.Template)
-		if os.IsNotExist(err) {
-			log.Fatalf("error: custom template directory %s does not exist", s.config.Template)
+		if s.config.Template != "" {
+			_, err := os.Stat(s.config.Template)
+			if os.IsNotExist(err) {
+				log.Fatalf("error: custom template directory %s does not exist", s.config.Template)
+			}
+			officialTemplate, err := os.Stat(officialDir)
+			if err != nil {
+				log.Fatal("error: could not find official template directory, start sriracha in the same directory as the file README.md")
+			}
+			customTemplate, err := os.Stat(s.config.Template)
+			if err != nil {
+				log.Fatalf("error: custom template directory %s is inaccessible", s.config.Template)
+			}
+			if os.SameFile(officialTemplate, customTemplate) {
+				log.Fatalf("error: official templates and custom templates must be located in separate directories")
+			}
 		}
-		officialTemplate, err := os.Stat(officialDir)
-		if err != nil {
-			log.Fatal("error: could not find official template directory, start sriracha in the same directory as the file README.md")
-		}
-		customTemplate, err := os.Stat(s.config.Template)
-		if err != nil {
-			log.Fatalf("error: custom template directory %s is inaccessible", s.config.Template)
-		}
-		if os.SameFile(officialTemplate, customTemplate) {
-			log.Fatalf("error: official templates and custom templates must be located in separate directories")
-		}
-	}
 
-	if devMode {
-		s.opt.DevMode = true
-		err := s.watchTemplates(officialDir)
+		err = s.watchTemplates(officialDir)
 		if err != nil {
 			log.Fatalf("failed to watch templates for changes: %s", err)
 		}

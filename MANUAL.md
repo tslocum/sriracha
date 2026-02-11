@@ -117,6 +117,11 @@ Sriracha. When Sriracha is running in development mode, template changes are
 applied automatically whenever template files are modified. Pass the flag
 `--dev` when starting Sriracha to run in development mode.
 
+All official templates are included in release archives to facilitate
+customizing and overriding individual templates. If you ignore the instructions
+above and use the entire official template directory as a custom template
+directory, please don't ask for support.
+
 Support is not available for Sriracha installations using custom templates.
 
 Support is not available for creating or modifying custom template files.
