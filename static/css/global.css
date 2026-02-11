@@ -259,6 +259,15 @@ legend {
 	font-family: monospace;
 }
 
+.codeblock td {
+	padding-top: 2px !important;
+	padding-bottom: 2px !important;
+}
+
+.codeblock pre {
+	margin: 0;
+}
+
 details {
 	display: inline-block;
 }
@@ -323,6 +332,11 @@ details {
 	table:not(.userdelete) {
 		width: 100%;
 		table-layout: fixed;
+	}
+
+	.codeblock table {
+		width: auto;
+		table-layout: auto;
 	}
 
 	.doubledash {

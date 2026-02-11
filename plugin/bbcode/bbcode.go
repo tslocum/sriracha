@@ -234,7 +234,7 @@ func (f *BBCode) rebuildCompiler() {
 		}
 		tag, appendExpr := preFunc(node)
 		tag.Name = "div"
-		delete(tag.Attrs, "class")
+		tag.Attrs["class"] = "codeblock"
 		for i, child := range tag.Children {
 			strValue := strings.ReplaceAll(child.Value, newLineSentinel, "\n")
 			strValue = strings.ReplaceAll(strValue, bracketSentinel, "[")
