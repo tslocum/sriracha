@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -26,11 +27,17 @@ func (l *Log) formatLabel(message string) template.HTML {
 		return ""
 	}
 	message = html.EscapeString(message)
+
 	rgxp, err := regexp.Compile(`&gt;&gt;/([0-9A-Za-z_-]+)/([0-9]+)`)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return template.HTML(rgxp.ReplaceAllString(message, `<a href="/sriracha/$1/$2">$1 #$2</a>`))
+	return template.HTML(rgxp.ReplaceAllStringFunc(message, func(s string) string {
+		if strings.HasPrefix(s, "&gt;&gt;/post/") {
+			return rgxp.ReplaceAllString(s, `<a href="/sriracha/$1/$2">&gt;&gt;$2</a>`)
+		}
+		return rgxp.ReplaceAllString(s, `<a href="/sriracha/$1/$2">$1 #$2</a>`)
+	}))
 }
 
 func (l *Log) MessageLabel() template.HTML {
