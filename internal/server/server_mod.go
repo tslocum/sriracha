@@ -193,13 +193,16 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 			s.log(db, data.Account, data.Post.Board, fmt.Sprintf("Moved >>/post/%d to >>/board/%d", data.Post.ID, data.Board.ID), "")
 			// Add notice.
 			if FormInt(r, "notice") == 1 {
+				const linkFormat = `<a href="%s">&gt;&gt;&gt;%s</a>`
+				sourceLink := fmt.Sprintf(linkFormat, source.Path(), source.Path())
+				destinationLink := fmt.Sprintf(linkFormat, destination.Path(), destination.Path())
 				now := time.Now().Unix()
 				p := &Post{
 					Board:     destination,
 					Parent:    data.Post.ID,
 					Timestamp: now,
 					Bumped:    now,
-					Message:   fmt.Sprintf(`Thread moved from <a href="%s">&gt;&gt;&gt;%s</a> to <a href="%s">&gt;&gt;&gt;%s</a>.`, source.Path(), source.Path(), destination.Path(), destination.Path()),
+					Message:   Get(destination, nil, "Thread moved from %[1]s to %[2]s.", sourceLink, destinationLink),
 					Moderated: ModeratedApproved,
 				}
 				p.SetNameBlock("", "Mod", false)
@@ -221,7 +224,7 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 			}
 			noticeLabel := Get(data.Board, data.Account, "Notice")
 			addNoticeLabel := Get(data.Board, data.Account, "Add notice")
-			data.Message += `</select></td></tr><tr><td class="postblock"><label for="notice">` + template.HTML(html.EscapeString(noticeLabel)) + `</label></td><td><label><input type="checkbox" name="notice" value="1"> ` + template.HTML(html.EscapeString(addNoticeLabel)) + `</label></td></tr><tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="` + template.HTML(html.EscapeString(moveLabel)) + `"></td></tr></table></form></fieldset><br><br>`
+			data.Message += `</select></td></tr><tr><td class="postblock"><label for="notice">` + template.HTML(html.EscapeString(noticeLabel)) + `</label></td><td><label><input type="checkbox" id="notice" name="notice" value="1"> ` + template.HTML(html.EscapeString(addNoticeLabel)) + `</label></td></tr><tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="` + template.HTML(html.EscapeString(moveLabel)) + `"></td></tr></table></form></fieldset><br><br>`
 		}
 		return
 	}
