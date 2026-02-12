@@ -332,7 +332,7 @@
             {{if le $.Account.Role 2}}
                 <tr>
                     <td>&nbsp;</td>
-                    <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if or (eq .Manage.Board nil) (eq .Manage.Board.ID 0)}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
+                    <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if or (eq .Manage.Board nil) (eq .Manage.Board.ID 0)}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
                     <td>&nbsp;</td>
                 </tr>
             {{end}}

@@ -68,7 +68,7 @@
         {{if or (eq .Manage.News nil) (.Manage.News.MayUpdate .Account)}}
             <tr>
                 <td>&nbsp;</td>
-                <td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="{{if eq .Manage.News nil}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
+                <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.News nil}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
                 <td>&nbsp;</td>
             </tr>
         {{end}}
