@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
@@ -173,12 +174,12 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 			// Delete thread page.
 			os.Remove(filepath.Join(s.config.Root, data.Post.Board.Path(), "res", fmt.Sprintf("%d.html", data.Post.ID)))
 			// Update post board.
-			sourceBoard := data.Post.Board
+			source := data.Post.Board
 			for _, p := range posts {
 				db.UpdatePostBoard(p.ID, destination.ID)
 				p.Board = destination
 				refPath := fmt.Sprintf("res/%d.html#%d", p.Thread(), p.ID)
-				oldPath := sourceBoard.Path() + refPath
+				oldPath := source.Path() + refPath
 				newPath := destination.Path() + refPath
 				_, err := db.Exec(`UPDATE post SET message = replace(replace(message, '<a href="` + oldPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>', '<a href="` + newPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>'), '<a href="` + oldPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>', '<a href="` + newPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>') WHERE message LIKE '%&gt;&gt;` + strconv.Itoa(p.ID) + `%'`)
 				if err != nil {
@@ -190,9 +191,23 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 			data.Threads = [][]*Post{{data.Post}}
 			data.Message = template.HTML(fmt.Sprintf("Moved No.%d to %s.", data.Post.ID, destination.Path()))
 			s.log(db, data.Account, data.Post.Board, fmt.Sprintf("Moved >>/post/%d to >>/board/%d", data.Post.ID, data.Board.ID), "")
+			// Add notice.
+			if FormInt(r, "notice") == 1 {
+				now := time.Now().Unix()
+				p := &Post{
+					Board:     destination,
+					Parent:    data.Post.ID,
+					Timestamp: now,
+					Bumped:    now,
+					Message:   fmt.Sprintf(`Thread moved from <a href="%s">&gt;&gt;&gt;%s</a> to <a href="%s">&gt;&gt;&gt;%s</a>.`, source.Path(), source.Path(), destination.Path(), destination.Path()),
+					Moderated: ModeratedApproved,
+				}
+				p.SetNameBlock("", "Mod", false)
+				db.AddPost(p)
+			}
 			// Rebuild static files.
 			s.rebuildThread(db, data.Post)
-			s.writeIndexes(db, sourceBoard)
+			s.writeIndexes(db, source)
 		} else {
 			moveLabel := Get(data.Board, data.Account, "Move")
 			boardLabel := Get(data.Board, data.Account, "Board")
@@ -204,7 +219,9 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 				}
 				data.Message += template.HTML(fmt.Sprintf(`<option value="%d"%s>%s %s</option>`, b.ID, extra, b.Path(), html.EscapeString(b.Name)))
 			}
-			data.Message += `</select></td></tr><tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="` + template.HTML(html.EscapeString(moveLabel)) + `"></td></tr></table></form></fieldset><br><br>`
+			noticeLabel := Get(data.Board, data.Account, "Notice")
+			addNoticeLabel := Get(data.Board, data.Account, "Add notice")
+			data.Message += `</select></td></tr><tr><td class="postblock"><label for="notice">` + template.HTML(html.EscapeString(noticeLabel)) + `</label></td><td><label><input type="checkbox" name="notice" value="1"> ` + template.HTML(html.EscapeString(addNoticeLabel)) + `</label></td></tr><tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 50%;" value="` + template.HTML(html.EscapeString(moveLabel)) + `"></td></tr></table></form></fieldset><br><br>`
 		}
 		return
 	}

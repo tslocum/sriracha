@@ -55,6 +55,9 @@ msgstr ""
 msgid "Add News"
 msgstr ""
 
+msgid "Add notice"
+msgstr ""
+
 msgid "Admin"
 msgstr ""
 
@@ -598,6 +601,9 @@ msgid "No subject"
 msgstr ""
 
 msgid "None"
+msgstr ""
+
+msgid "Notice"
 msgstr ""
 
 msgid "Number of files visitors may upload at once. A new post is created for each uploaded file."
