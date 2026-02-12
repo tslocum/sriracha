@@ -8,6 +8,8 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"path/filepath"
+	"slices"
 	"strings"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -150,10 +152,20 @@ func (data *templateData) execute(w io.Writer) {
 	}
 }
 
+var expandableMedia = []string{".bmp", ".gif", ".jpg", ".png", ".svg", ".tif"}
+
 var templateFuncMap = template.FuncMap{
 	"Contains": strings.Contains,
 	"Format": func(text string) template.HTML {
 		return template.HTML(strings.ReplaceAll(text, "\n", "<br>\n"))
+	},
+	"HasExpandableMedia": func(thread []*Post) bool {
+		for _, p := range thread {
+			if p.File != "" && !p.IsEmbed() && slices.Contains(expandableMedia, filepath.Ext(p.File)) {
+				return true
+			}
+		}
+		return false
 	},
 	"HasPrefix": strings.HasPrefix,
 	"HasSuffix": strings.HasSuffix,

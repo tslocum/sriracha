@@ -253,6 +253,37 @@ function setPostAttributes(element) {
     });
 }
 
+function openGallery() {
+    var extensions = ["bmp", "gif", "jpg", "png", "svg", "tif"];
+    var lightbox = new FsLightbox();
+    if (!lightbox) {
+        alert("Failed to open gallery: Failed to load lightbox library.");
+        return;
+    }
+    lightbox.props.sources = [];
+    var thumbnails = document.getElementsByClassName('thumb');
+    for (const thumbnail of thumbnails) {
+        var parent = thumbnail.parentElement;
+        if (!parent || parent.tagName.toLowerCase() != "a") {
+            continue;
+        }
+        var href = parent.href;
+        if (!href) {
+            continue;
+        }
+        var ext = href.split('.').pop().toLowerCase();
+        if (!extensions.includes(ext)) {
+            continue;
+        }
+        lightbox.props.sources.push(href);
+    }
+    if (lightbox.props.sources.length == 0) {
+        alert("Failed to open gallery: No expandable media.");
+        return
+    }
+    lightbox.open();
+}
+
 function getCookie(cname) {
     var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);

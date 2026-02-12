@@ -318,6 +318,9 @@ msgstr ""
 msgid "Forum"
 msgstr ""
 
+msgid "Gallery"
+msgstr ""
+
 msgid "Global"
 msgstr ""
 
@@ -858,6 +861,9 @@ msgid "Whether new posts may be created."
 msgstr ""
 
 msgid "Whether reference links are displayed next to No.## pointing to all visible replies mentioning a post."
+msgstr ""
+
+msgid "Whether visitors may browse attachments as an image gallery."
 msgstr ""
 
 msgid "Whether visitors may create and submit drawings."

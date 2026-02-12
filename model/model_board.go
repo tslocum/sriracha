@@ -156,6 +156,7 @@ type Board struct {
 	Files         int
 	Instances     int
 	Identifiers   BoardIdentifiers
+	Gallery       bool
 
 	// Calculated fields.
 	Uploads []string

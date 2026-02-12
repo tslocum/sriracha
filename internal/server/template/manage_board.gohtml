@@ -321,6 +321,14 @@
                 </select></td>
                 <td>{{T "Whether visitors may create and submit drawings."}}</td>
             </tr>
+            <tr>
+                <td class="postblock"><label for="gallery">{{T "Gallery"}}</label></td>
+                <td><select name="gallery" style="width: 100%;">
+                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Gallery)}} selected{{end}}>{{T "Disable"}}</option>
+                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Gallery)}} selected{{end}}>{{T "Enable"}}</option>
+                </select></td>
+                <td>{{T "Whether visitors may browse attachments as an image gallery."}}</td>
+            </tr>
             {{if le $.Account.Role 2}}
                 <tr>
                     <td>&nbsp;</td>

@@ -67,6 +67,7 @@ CREATE TABLE board (
 	-- v8: instances smallint NOT NULL DEFAULT 1
 	-- v9: identifiers smallint NOT NULL DEFAULT 0
 	-- v10: files smallint NOT NULL DEFAULT 1
+	-- v11: gallery smallint NOT NULL DEFAULT 1
 );
 CREATE UNIQUE INDEX ON board (dir);
 
@@ -216,4 +217,7 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 	// Version 10.
 	`ALTER TABLE board ADD COLUMN files smallint NOT NULL DEFAULT 1;
 	UPDATE config SET value = '10' WHERE name = 'version';`,
+	// Version 11.
+	`ALTER TABLE board ADD COLUMN gallery smallint NOT NULL DEFAULT 1;
+	UPDATE config SET value = '11' WHERE name = 'version';`,
 }
