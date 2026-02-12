@@ -5,6 +5,7 @@ import (
 	"html"
 	"html/template"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -176,6 +177,13 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 			for _, p := range posts {
 				db.UpdatePostBoard(p.ID, destination.ID)
 				p.Board = destination
+				refPath := fmt.Sprintf("res/%d.html#%d", p.Thread(), p.ID)
+				oldPath := sourceBoard.Path() + refPath
+				newPath := destination.Path() + refPath
+				_, err := db.Exec(`UPDATE post SET message = replace(replace(message, '<a href="` + oldPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>', '<a href="` + newPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>'), '<a href="` + oldPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>', '<a href="` + newPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>') WHERE message LIKE '%&gt;&gt;` + strconv.Itoa(p.ID) + `%'`)
+				if err != nil {
+					log.Fatalf("failed to move thread: failed to update reflinks: %s", err)
+				}
 			}
 			data.Post = db.PostByID(data.Post.ID)
 			data.Board = destination
