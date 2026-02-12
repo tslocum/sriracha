@@ -37,7 +37,7 @@
 				{{if not $.ModMode}}
 					[<a href="{{.Path}}" title="{{.Name}}" style="text-decoration: underline;">{{if ne .Dir ""}}{{.Dir}}{{else}}{{if eq .Type 0}}{{T "Imageboard"}}{{else}}{{T "Forum"}}{{end}}{{end}}</a>]
 				{{else}}
-					[<a href="/sriracha/board/mod/{{.ID}}" title="{{.Name}}" style="text-decoration: underline;">{{.Dir}}</a>]
+					[<a href="/sriracha/board/mod/{{.ID}}" title="{{.Name}}" style="text-decoration: underline;">{{if ne .Dir ""}}{{.Dir}}{{else}}/{{end}}</a>]
 				{{end}}
 			{{end}}
 		{{end}}
