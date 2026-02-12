@@ -546,6 +546,9 @@ msgstr ""
 msgid "Moderators may only perform certain actions. See moderator guide for more info."
 msgstr ""
 
+msgid "Move"
+msgstr ""
+
 msgid "Name"
 msgstr ""
 

@@ -655,8 +655,10 @@ range, use a wildcard (*) at the end of the range prefix:
 Mod mode is a tool staff members may use to moderate one or more posts.
 When browsing in mod mode, the following moderation links are displayed:
 
-`S L D B D&B`
+`V M S L D B D&B`
 
+- V: View posts by author
+- M: Move thread
 - S: Sticky thread
 - L: Lock thread
 - D: Delete post

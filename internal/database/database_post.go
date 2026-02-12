@@ -344,6 +344,13 @@ func (db *DB) LockPost(postID int, lock bool) {
 	}
 }
 
+func (db *DB) UpdatePostBoard(postID int, boardID int) {
+	_, err := db.conn.Exec(context.Background(), "UPDATE post SET board = $1 WHERE id = $2", boardID, postID)
+	if err != nil {
+		log.Fatalf("failed to update post board: %s", err)
+	}
+}
+
 func (db *DB) UpdatePostNameblock(postID int, nameblock string) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE post SET nameblock = $1 WHERE id = $2", nameblock, postID)
 	if err != nil {
