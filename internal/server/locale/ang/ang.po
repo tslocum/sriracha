@@ -61,6 +61,9 @@ msgstr ""
 msgid "Add News"
 msgstr ""
 
+msgid "Add notice"
+msgstr ""
+
 msgid "Admin"
 msgstr ""
 
@@ -113,9 +116,6 @@ msgid "Bans"
 msgstr ""
 
 msgid "Board"
-msgstr ""
-
-msgid "Board Index"
 msgstr ""
 
 msgid "Board description, which is used by search engines."
@@ -327,6 +327,9 @@ msgid "For post and file deletion."
 msgstr ""
 
 msgid "Forum"
+msgstr ""
+
+msgid "Gallery"
 msgstr ""
 
 msgid "Global"
@@ -574,6 +577,9 @@ msgid ""
 "info."
 msgstr ""
 
+msgid "Move"
+msgstr ""
+
 msgid "Name"
 msgstr ""
 
@@ -583,6 +589,9 @@ msgstr ""
 msgid ""
 "Name shown when no name is entered. Separate multiple names with | (pipe "
 "character). May be blank."
+msgstr ""
+
+msgid "Navigation"
 msgstr ""
 
 msgid "Never"
@@ -625,6 +634,9 @@ msgid "No subject"
 msgstr ""
 
 msgid "None"
+msgstr ""
+
+msgid "Notice"
 msgstr ""
 
 msgid ""
@@ -819,6 +831,9 @@ msgid ""
 "HTTPS server to require password authorization."
 msgstr ""
 
+msgid "Thread moved from %[1]s to %[2]s."
+msgstr ""
+
 msgid "Threads"
 msgstr ""
 
@@ -900,6 +915,9 @@ msgstr ""
 msgid ""
 "Whether reference links are displayed next to No.## pointing to all visible "
 "replies mentioning a post."
+msgstr ""
+
+msgid "Whether visitors may browse attachments as an image gallery."
 msgstr ""
 
 msgid "Whether visitors may create and submit drawings."

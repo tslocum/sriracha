@@ -62,6 +62,9 @@ msgstr "Trefwoord toevoegen"
 msgid "Add News"
 msgstr "Nieuws toevoegen"
 
+msgid "Add notice"
+msgstr ""
+
 msgid "Admin"
 msgstr "Beheerder"
 
@@ -69,7 +72,8 @@ msgid "Administrator"
 msgstr "Beheerder"
 
 msgid "Administrators have full access except for managing accounts."
-msgstr "Beheerders hebben volledige toegang, maar kunnen geen accounts beheren."
+msgstr ""
+"Beheerders hebben volledige toegang, maar kunnen geen accounts beheren."
 
 msgid "All posts"
 msgstr "Alle berichten"
@@ -117,9 +121,6 @@ msgstr "Verbanningen"
 
 msgid "Board"
 msgstr "Subforum"
-
-msgid "Board Index"
-msgstr "Forumoverzicht"
 
 msgid "Board description, which is used by search engines."
 msgstr "Een beschrijving van het subforum, voor zoekmachines."
@@ -339,6 +340,9 @@ msgstr "Voor bericht- en bestandsverwijdering."
 
 msgid "Forum"
 msgstr "Forum"
+
+msgid "Gallery"
+msgstr ""
 
 msgid "Global"
 msgstr "Globaal"
@@ -604,6 +608,9 @@ msgstr ""
 "Moderators kunnen slechts bepaalde acties uitvoeren. Bekijk voor meer "
 "informatie de moderatorhandleiding."
 
+msgid "Move"
+msgstr ""
+
 msgid "Name"
 msgstr "Naam"
 
@@ -616,6 +623,9 @@ msgid ""
 msgstr ""
 "De naam die moet worden getoond als er niks is ingevuld. Scheid namen met "
 "een | (sluisteken). Mag leeg worden gelaten."
+
+msgid "Navigation"
+msgstr ""
 
 msgid "Never"
 msgstr "Nooit"
@@ -658,6 +668,9 @@ msgstr "Geen onderwerp"
 
 msgid "None"
 msgstr "Geen"
+
+msgid "Notice"
+msgstr ""
 
 msgid ""
 "Number of files visitors may upload at once. A new post is created for each "
@@ -870,6 +883,9 @@ msgstr ""
 "Deze instelling is louter cosmetisch. Als je toegang expliciet wilt "
 "voorkomen, stel dan wachtwoordverificatie in op je https-server."
 
+msgid "Thread moved from %[1]s to %[2]s."
+msgstr ""
+
 msgid "Threads"
 msgstr "Onderwerpen"
 
@@ -963,6 +979,9 @@ msgstr ""
 "Of referentielinks worden getoond naast het aantal antwoorden waarin een "
 "bericht vermeld is."
 
+msgid "Whether visitors may browse attachments as an image gallery."
+msgstr ""
+
 msgid "Whether visitors may create and submit drawings."
 msgstr "Of bezoekers tekeningen mogen maken en indienen."
 
@@ -979,3 +998,6 @@ msgstr "Woorden afbreken"
 
 msgid "Your post will be shown once it has been approved."
 msgstr "Je bericht wordt na goedkeuring getoond."
+
+#~ msgid "Board Index"
+#~ msgstr "Forumoverzicht"

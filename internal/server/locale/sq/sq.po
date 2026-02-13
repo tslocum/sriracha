@@ -1,913 +1,997 @@
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2026-02-13 04:31+0000\n"
+"Last-Translator: moshibobu <moshibobu@noreply.codeberg.org>\n"
+"Language-Team: Albanian <https://translate.codeberg.org/projects/sriracha/"
+"sriracha/sq/>\n"
 "Language: sq\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.15.2\n"
 
 msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d postim i fshehur. Kliko Pergjigju per ta pare."
+msgstr[1] "%d postime te fshehura. Kliko Pergjigju per ti pare."
 
 msgid "1 Day"
-msgstr ""
+msgstr "1 Dite"
 
 msgid "1 Hour"
-msgstr ""
+msgstr "1 Ore"
 
 msgid "1 Month"
-msgstr ""
+msgstr "1 Muaj"
 
 msgid "1 Week"
-msgstr ""
+msgstr "1 Jave"
 
 msgid "2 Days"
-msgstr ""
+msgstr "2 Dite"
 
 msgid "2 Weeks"
-msgstr ""
+msgstr "2 Muaj"
 
 msgid "Accounts"
-msgstr ""
+msgstr "Llogarite"
 
 msgid "Action"
-msgstr ""
+msgstr "Veprim"
 
 msgid "Action taken when the keyword is detected."
-msgstr ""
+msgstr "Veprimi i ndermarre kur zbulohet fjala kyce."
 
 msgid "Add"
-msgstr ""
+msgstr "Shto"
 
 msgid "Add Account"
-msgstr ""
+msgstr "Shto Llogarine"
 
 msgid "Add Ban"
-msgstr ""
+msgstr "Shto Denimin"
 
 msgid "Add Board"
-msgstr ""
+msgstr "Shto Bordin"
 
 msgid "Add Keyword"
-msgstr ""
+msgstr "Shto Fjale Kyce"
 
 msgid "Add News"
-msgstr ""
+msgstr "Shto Lajm"
+
+msgid "Add notice"
+msgstr "Shto njoftimin"
 
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
 msgid "Administrator"
-msgstr ""
+msgstr "Administrator"
 
 msgid "Administrators have full access except for managing accounts."
-msgstr ""
+msgstr "Administratoret kane akses te plote pervec menaxhimit te llogarive."
 
 msgid "All posts"
-msgstr ""
+msgstr "Te gjitha postimet"
 
 msgid "Allow all"
-msgstr ""
+msgstr "Lejo te gjitha"
 
 msgid "Allow moderators to post site news."
-msgstr ""
+msgstr "Lejoni moderatoret te postojne lajme ne faqe."
 
 msgid "Appearance"
-msgstr ""
+msgstr "Dukja"
 
 msgid "Appears in page title and header."
-msgstr ""
+msgstr "Shfaqet ne titullin dhe ne krye te faqes."
 
 msgid "Artwork title:"
-msgstr ""
+msgstr "Titulli i vepres artistike:"
 
 msgid "Attachments"
-msgstr ""
+msgstr "Bashkangjitjet"
 
 msgid "Author"
-msgstr ""
+msgstr "Autori"
 
 msgid "Auto Refresh"
-msgstr ""
+msgstr "Auto Rifreskim"
 
 msgid "Available embed services. Visit board settings to enable usage."
 msgstr ""
+"Sherbime e disponueshme per embedding. Vizitoni cilesimet e bordit per te "
+"aktivizuar perdorimin."
 
 msgid "Backlinks"
-msgstr ""
+msgstr "Lidhjet e prapme"
 
 msgid "Ban"
-msgstr ""
+msgstr "Deno"
 
 msgid "Ban file"
-msgstr ""
+msgstr "Deno skedarin"
 
 msgid "Bans"
-msgstr ""
+msgstr "Denimet"
 
 msgid "Board"
-msgstr ""
-
-msgid "Board Index"
-msgstr ""
+msgstr "Bord"
 
 msgid "Board description, which is used by search engines."
-msgstr ""
+msgstr "Pershkrimi i bordit, i cili perdoret nga search engines."
 
 msgid "Boards"
-msgstr ""
+msgstr "Bordet"
 
 msgid "Boards where the keyword applies."
-msgstr ""
+msgstr "Bordet ku zbatohet fjala kyce."
 
 msgid "Capcode"
-msgstr ""
+msgstr "Capkodi"
 
 msgid "Catalog"
-msgstr ""
+msgstr "Katalogu"
 
 msgid "Change Locale"
-msgstr ""
+msgstr "Ndrysho Te Dhenat e Vendodhjes"
 
 msgid "Change Password"
-msgstr ""
+msgstr "Ndrysho Fjalekalimin"
 
 msgid "Change Style"
-msgstr ""
+msgstr "Ndrysho Stilin"
 
 msgid "Click here to go back"
-msgstr ""
+msgstr "Kliko ketu per te shkuar prapa"
 
 msgid "Click to refresh."
-msgstr ""
+msgstr "Kliko per rifreskim."
 
 msgid "Configure"
-msgstr ""
+msgstr "Konfiguro"
 
 msgid "Confirm"
-msgstr ""
+msgstr "Konfirmo"
 
 msgid "Create Thread"
-msgstr ""
+msgstr "Krijo nje Teme"
 
 msgid "Create a new drawing."
-msgstr ""
+msgstr "Krijo nje vizatim te ri."
 
 msgid "Current"
-msgstr ""
+msgstr "E tanishme"
 
 msgid "Currently %d unique user post."
 msgid_plural "Currently %d unique user posts."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Aktualisht %d postim nga perdorues unik."
+msgstr[1] "Aktualisht %d postime nga perdorues unik."
 
 msgid "Date"
-msgstr ""
+msgstr "Data"
 
 msgid "Date and time when the news item was published, or will be published."
-msgstr ""
+msgstr "Data dhe ora kur lajmi eshte publikuar ose do te publikohet."
 
 msgid "Default"
-msgstr ""
+msgstr "Parazgjedhur"
 
 msgid "Default Name"
-msgstr ""
+msgstr "Emri i Parazgjedhur"
 
 msgid "Default oekaki canvas height."
-msgstr ""
+msgstr "Lartesia e parazgjedhur e kanavaces oekaki."
 
 msgid "Default oekaki canvas width."
-msgstr ""
+msgstr "Gjeresia e parazgjedhur e kanavaces oekaki."
 
 msgid ""
 "Default page style. Visitors may choose alternative styles in their browser "
 "settings."
 msgstr ""
+"Stili i parazgjedhur i faqes. Vizitoret mund te zgjedhin stile alternative "
+"ne cilesimet e browser."
 
 msgid "Delay"
-msgstr ""
+msgstr "Vonesa"
 
 msgid ""
 "Delay (in seconds) visitors must wait before posting again. Set to 0 to "
 "disable."
 msgstr ""
+"Vonesa (ne sekonda) qe vizitoret duhet te presin para se te postojne "
+"perseri. Vendos 0 per ta caktivizuar."
 
 msgid "Delete"
-msgstr ""
+msgstr "Fshij"
 
 msgid "Delete %s"
-msgstr ""
+msgstr "Fshij %s"
 
 msgid "Delete & ban"
-msgstr ""
+msgstr "Fshij & deno"
 
 msgid "Delete & ban for 1 hour"
-msgstr ""
+msgstr "Fshij & deno per 1 ore"
 
 msgid "Delete & ban for 1 day"
-msgstr ""
+msgstr "Fshij & deno per 1 dite"
 
 msgid "Delete & ban for 2 days"
-msgstr ""
+msgstr "Fshij & deno per 2 dite"
 
 msgid "Delete & ban for 1 week"
-msgstr ""
+msgstr "Fshij & deno per 1 jave"
 
 msgid "Delete & ban for 2 weeks"
-msgstr ""
+msgstr "Fshij & deno per 2 jave"
 
 msgid "Delete & ban for 1 month"
-msgstr ""
+msgstr "Fshij & deno per 1 muaj"
 
 msgid "Delete & ban permanently"
-msgstr ""
+msgstr "Fshij & deno pergjithmone"
 
 msgid "Delete Post"
-msgstr ""
+msgstr "Fshij Postimin"
 
 msgid "Description"
-msgstr ""
+msgstr "Pershkrimi"
 
 msgid "Details"
-msgstr ""
+msgstr "Detajet"
 
 msgid "Detected banned file."
-msgstr ""
+msgstr "U zbulua nje skedar i ndaluar."
 
 msgid "Detected banned keyword."
-msgstr ""
+msgstr "U zbulua nje fjale kyce e ndaluar."
 
 msgid "Dir"
-msgstr ""
+msgstr "Dir"
 
 msgid "Directory"
-msgstr ""
+msgstr "Directory"
 
 msgid ""
 "Directory where the board files are located. Leave blank to place the board "
 "at the server root."
 msgstr ""
+"Directory ku ndodhen skedaret e bordit. Lereni bosh per ta vendosur bordin "
+"ne rrenjen e serverit."
 
 msgid ""
 "Directory where the overboard files are located. Leave blank to disable. To "
 "write the overboard at the root directory, enter \"/\"."
 msgstr ""
+"Directory ku ndodhen skedaret e overboard. Lereni bosh per ta caktivizuar. "
+"Per te shkruar skedaret e overboard ne directory rrenje, shkruani \"/\"."
 
 msgid "Disable"
-msgstr ""
+msgstr "Caktivizo"
 
 msgid "Disable All"
-msgstr ""
+msgstr "Caktivizo Te Gjitha"
 
 msgid "Disabled"
-msgstr ""
+msgstr "E Caktivizuar"
 
 msgid "Disallow visitor and staff posts"
-msgstr ""
+msgstr "Mos lejo postimet e vizitoreve dhe stafit"
 
 msgid "Disallow visitor posts"
-msgstr ""
+msgstr "Mos lejo postimet e vizitoreve"
 
 msgid "Disallow visitor threads"
-msgstr ""
+msgstr "Mos lejo temat e vizitoreve"
 
 msgid "Do not share with staff"
-msgstr ""
+msgstr "Mos e ndani me stafin"
 
 msgid "Documentation"
-msgstr ""
+msgstr "Dokumentacioni"
 
 msgid "Email"
-msgstr ""
+msgstr "Posta Elektronike"
 
 msgid "Embed"
-msgstr ""
+msgstr "Embed"
 
 msgid "Embed Services"
-msgstr ""
+msgstr "Sherbimet Embed"
 
 msgid "Enable"
-msgstr ""
+msgstr "Aktivizo"
 
 msgid "Enable - Write to %s"
-msgstr ""
+msgstr "Aktivizo - Shkruaj te %s"
 
 msgid "Enable All"
-msgstr ""
+msgstr "Aktivizo Te Gjitha"
 
 msgid "Error: %s"
-msgstr ""
+msgstr "Gabim: %s"
 
 msgid "Exit"
-msgstr ""
+msgstr "Dalje"
 
 msgid "Expires"
-msgstr ""
+msgstr "Skadon"
 
 msgid "Failed to embed media."
-msgstr ""
+msgstr "Deshtoi integrimi i medias."
 
 msgid "File"
-msgstr ""
+msgstr "Skedari"
 
 msgid "File Types"
-msgstr ""
+msgstr "Llojet e Skedarit"
 
 msgid "Files"
-msgstr ""
+msgstr "Skedaret"
 
 msgid "For post and file deletion."
-msgstr ""
+msgstr "Per fshirjen e postimeve dhe skedareve."
 
 msgid "Forum"
-msgstr ""
+msgstr "Forumi"
+
+msgid "Gallery"
+msgstr "Galeria"
 
 msgid "Global"
-msgstr ""
+msgstr "Globale"
 
 msgid "HTML-formatted text."
-msgstr ""
+msgstr "Tekst i formatuar ne HTML."
 
 msgid "HTML-formatted text shown in the new post form."
-msgstr ""
+msgstr "Teksti i formatuar ne HTML qe shfaqet ne formularin e postimit te ri."
 
 msgid "Help translate Sriracha"
-msgstr ""
+msgstr "Ndihmoni ne perkthimin e Sriracha-s"
 
 msgid "Hide everywhere"
-msgstr ""
+msgstr "Fshihe gjithkah"
 
 msgid "Hide from index"
-msgstr ""
+msgstr "Fshije nga indeksi"
 
 msgid "Hide from overboard"
-msgstr ""
+msgstr "Fshihje nga overbordi"
 
 msgid "Hide until approved"
-msgstr ""
+msgstr "Fshije derisa te miratohet"
 
 msgid "Home address. May be a path or URL. Used in return links."
 msgstr ""
+"Adresa e shtepise. Mund te jete nje shteg ose URL. Perdoret ne linqet e "
+"kthimit."
 
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 msgid "IP Address"
-msgstr ""
+msgstr "IP Adresa"
 
 msgid ""
 "IP address to ban. Wildcards (*) may be used to ban a range of addresses."
 msgstr ""
+"Adresa IP qe do te ndalohet. Fusnotat (*) mund te perdoren per te ndaluar "
+"nje game adresash."
 
 msgid "Idenifiers"
-msgstr ""
+msgstr "Identifikuesit"
 
 msgid "Imageboard"
-msgstr ""
+msgstr "Bordimazhi"
 
 msgid ""
 "Imageboards show threads and recent replies on index pages. Forums only show "
 "thread information on index pages."
 msgstr ""
+"Bordimazhet shfaqin temat dhe replikat e fundit ne faqet e indeksit. Forumet "
+"shfaqin vetem informacionin e temave ne faqet e indeksit."
 
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
-msgstr ""
+msgstr "Imazhet me te medha se %[1]dx%[2]d do te behen thumbnail."
 
 msgid "Index Replies"
-msgstr ""
+msgstr "Replikat ne Indeks"
 
 msgid "Index Threads"
-msgstr ""
+msgstr "Temat ne Indeks"
 
 msgid "Incorrect CAPTCHA text. Please try again."
-msgstr ""
+msgstr "Tekst i pasakte CAPTCHA. Ju lutemi provoni perseri."
 
 msgid "Incorrect password."
-msgstr ""
+msgstr "Fjalekalim i pasakte."
 
 msgid "Info"
-msgstr ""
+msgstr "Info"
 
 msgid "Instance Limit"
-msgstr ""
+msgstr "Limiti i Instances"
 
 msgid "Keyword"
-msgstr ""
+msgstr "Fjala Kyce"
 
 msgid "Keywords"
-msgstr ""
+msgstr "Fjalet Kyce"
 
 msgid "Last Active"
-msgstr ""
+msgstr "Aktivi i Fundit"
 
 msgid ""
 "Leave blank to hide until a date is set. News items with publish dates in "
 "the future are hidden until that date."
 msgstr ""
+"Lere bosh per t'a fshehur deri ne caktimin e nje date. Lajmet me data "
+"publikimi ne te ardhmen jane te fshehura deri në ate date."
 
 msgid "Leave blank to keep current password."
-msgstr ""
+msgstr "Lere bosh per te mbajtur fjalekalimin aktual."
 
 msgid "Lift"
-msgstr ""
+msgstr "Hiqe"
 
 msgid "Lift File Ban"
-msgstr ""
+msgstr "Hiq denimin e skedarit"
 
 msgid "Link to boards in page header."
-msgstr ""
+msgstr "Linqet per bordet ne krye te faqes."
 
 msgid "Locale"
-msgstr ""
+msgstr "Vendodhje"
 
 msgid "Locale used when writing board pages."
-msgstr ""
+msgstr "Informacioni vendodhjes perdorur gjate shkrimit te faqeve te bordeve."
 
 msgid "Log In"
-msgstr ""
+msgstr "Hyni ne sistem"
 
 msgid "Log Out"
-msgstr ""
+msgstr "Dilni nga sistemi"
 
 msgid "Logs"
-msgstr ""
+msgstr "Logs"
 
 msgid "Manage"
-msgstr ""
+msgstr "Menaxho"
 
 msgid "Manage mode"
-msgstr ""
+msgstr "Forma menaxhimit"
 
 msgid "Max Email Length"
-msgstr ""
+msgstr "Gjatesia Maksimale e E-Postes"
 
 msgid "Max Message Length"
-msgstr ""
+msgstr "Gjatesia Maksimale e Mesazhit"
 
 msgid "Max Name Length"
-msgstr ""
+msgstr "Gjatesia Maksimale e Emrit"
 
 msgid "Max Reply File Size"
-msgstr ""
+msgstr "Madhesia Maksimale e Skedarit ne Replike"
 
 msgid "Max Replies"
-msgstr ""
+msgstr "Numri Maksimal i Replikave"
 
 msgid "Max Subject Length"
-msgstr ""
+msgstr "Gjatesia Maksimale e Titullit"
 
 msgid "Max Thread File Size"
-msgstr ""
+msgstr "Madhesia Maksimale e Skedarit ne Teme"
 
 msgid "Max Threads"
-msgstr ""
+msgstr "Numri Maksimal i Temave"
 
 msgid ""
 "Maximum file size (in bytes) when creating a thread. Set to 0 to disable "
 "file uploads."
 msgstr ""
+"Madhesia maksimale e skedarit (ne bytes) kur krijon nje teme. Vendos 0 per "
+"ta caktivizuar ngarkimin e skedareve."
 
 msgid ""
 "Maximum file size (in bytes) when replying. Set to 0 to disable file uploads."
 msgstr ""
+"Madhesia maksimale e skedarit (ne bytes) kur ben replike. Vendos 0 per ta "
+"caktivizuar ngarkimet e skedareve."
 
 msgid "Maximum file size allowed is %s."
-msgstr ""
+msgstr "Madhesia maksimale e lejuar e skedareve eshte %s."
 
 msgid "Maximum height of thumbnails."
-msgstr ""
+msgstr "Gjatesia maksimale e thumbnails."
 
 msgid "Maximum length of the email field."
-msgstr ""
+msgstr "Madhesia maksimale e fushes se e-postes."
 
 msgid "Maximum length of the message field."
-msgstr ""
+msgstr "Madhesia maksimale e fushes se mesazhit."
 
 msgid "Maximum length of the name field."
-msgstr ""
+msgstr "Madhesia maksimale e fushes se emrit."
 
 msgid "Maximum length of the subject field."
-msgstr ""
+msgstr "Madhesia maksimale e fushes se titullit."
 
 msgid ""
 "Maximum number of replies to a thread before the thread stops being bumped "
 "to the front. Set to 0 to disable."
 msgstr ""
+"Numri maksimal i replikave ne nje teme diskutimi perpara se tema te ndaloje "
+"se shfaquri në fillim. Vendos 0 per ta caktivizuar."
 
 msgid ""
 "Maximum number of threads in board. Once this limit is reached, the oldest "
 "threads are pruned. Set to 0 to disable."
 msgstr ""
+"Numri maksimal i temave ne bord. Pasi te arrihet ky limit, temat me te "
+"vjetra fshihen. Vendos 0 per ta caktivizuar."
 
 msgid "Maximum width of thumbnails."
-msgstr ""
+msgstr "Gjeresia maksimale e thumbnails."
 
 msgid "Maximum word length. Set to 0 to never break long words."
 msgstr ""
+"Gjatesia maksimale e fjaleve. Vendos 0 per te mos i nderprere fjalet e gjata."
 
 msgid "Memory"
-msgstr ""
+msgstr "Memorja"
 
 msgid "Message"
-msgstr ""
+msgstr "Mesazhi"
 
 msgid "Min Email Length"
-msgstr ""
+msgstr "Madhsia Minimale e E-Postes"
 
 msgid "Min Message Length"
-msgstr ""
+msgstr "Madhesia Minimale e Mesazhit"
 
 msgid "Min Name Length"
-msgstr ""
+msgstr "Madhesia Minimale e Emrit"
 
 msgid "Min Subject Length"
-msgstr ""
+msgstr "Madhesia Minimale e Titullit"
 
 msgid "Min Reply File Size"
-msgstr ""
+msgstr "Madhesia Minimale e Skedarit ne Replike"
 
 msgid "Min Thread File Size"
-msgstr ""
+msgstr "Madhesia Minimale e Skedarit ne Teme"
 
 msgid "Minimum file size (in bytes) when creating a thread."
-msgstr ""
+msgstr "Madhesia minimale e skedarit (ne bytes) kur krijon nje teme."
 
 msgid "Minimum file size (in bytes) when replying."
-msgstr ""
+msgstr "Madhesia minimale e skedarit (ne bytes) kur krijon replike."
 
 msgid "Minimum length of the email field."
-msgstr ""
+msgstr "Madhesia minimale e fushes se e-postes."
 
 msgid "Minimum length of the message field."
-msgstr ""
+msgstr "Madhesia minimale e fushes se mesazhit."
 
 msgid "Minimum length of the name field."
-msgstr ""
+msgstr "Madhesia minimale e fushes se emrit."
 
 msgid "Minimum length of the subject field."
-msgstr ""
+msgstr "Madhesia minimale e fushes se titullit."
 
 msgid "Mod"
-msgstr ""
+msgstr "Mod"
 
 msgid "Mod mode"
-msgstr ""
+msgstr "Forma e moderimit"
 
 msgid "Mod mode: View"
-msgstr ""
+msgstr "Forma e moderimit: Shiko"
 
 msgid "Moderate"
-msgstr ""
+msgstr "Modero"
 
 msgid "Moderator"
-msgstr ""
+msgstr "Moderator"
 
 msgid ""
 "Moderators may only perform certain actions. See moderator guide for more "
 "info."
 msgstr ""
+"Moderatoret mund te bejne vetem veprime te caktuara. Shihni udhezuesin e "
+"moderatorit per me shume informacion."
+
+msgid "Move"
+msgstr "Zhvendos"
 
 msgid "Name"
-msgstr ""
+msgstr "Emri"
 
 msgid "Name of the board, which is displayed in the page title and header."
-msgstr ""
+msgstr "Emri i bordit qe shfaqet ne titull dhe krye te faqes."
 
 msgid ""
 "Name shown when no name is entered. Separate multiple names with | (pipe "
 "character). May be blank."
 msgstr ""
+"Emri qe shfaqet kur nuk ipet asnje emer. Ndani emrat e ndryshem me | "
+"(karakter pipe). Mund te jete bosh."
+
+msgid "Navigation"
+msgstr "Navigacioni"
 
 msgid "Never"
-msgstr ""
+msgstr "Kurre"
 
 msgid "New"
-msgstr ""
+msgstr "I ri"
 
 msgid "New (confirm)"
-msgstr ""
+msgstr "I ri (konfirmo)"
 
 msgid "New drawing..."
-msgstr ""
+msgstr "Vizatim i ri..."
 
 msgid "News"
-msgstr ""
+msgstr "Lajmet"
 
 msgid "Next"
-msgstr ""
+msgstr "Tjeter"
 
 msgid "No board specified."
-msgstr ""
+msgstr "Nuk eshte specifikuar asnje bord."
 
 msgid "No configuration options."
-msgstr ""
+msgstr "Nuk ka mundesi konfigurimi."
 
 msgid "No news is good news."
-msgstr ""
+msgstr "Lajmi i mire eshte asnje lajm."
 
 msgid "No pending moderation requests."
-msgstr ""
+msgstr "Nuk ka kerkesa moderimi ne pritje."
 
 msgid "No post selected."
-msgstr ""
+msgstr "Nuk eshte zgjedhur asnje postim."
 
 msgid "No reason provided."
-msgstr ""
+msgstr "Nuk eshte dhene asnje arsye."
 
 msgid "No subject"
-msgstr ""
+msgstr "Nuk ka titull"
 
 msgid "None"
-msgstr ""
+msgstr "Asnje"
+
+msgid "Notice"
+msgstr "Njoftim"
 
 msgid ""
 "Number of files visitors may upload at once. A new post is created for each "
 "uploaded file."
 msgstr ""
+"Numri i skedareve qe vizitoret mund te ngarkojne ne te njejten kohe. "
+"Krijohet nje postim i ri per cdo skedar te ngarkuar."
 
 msgid ""
 "Number of message lines to display in post preview on board index pages. Set "
 "to 0 to show all."
 msgstr ""
+"Numri i rreshtave te mesazhit per te shfaqur ne preview te postimit ne faqet "
+"e indeksit te bordeve. Vendos 0 per t'i shfaqur te gjitha."
 
 msgid ""
 "Number of replies to show per board index thread. Set to 0 to show none."
 msgstr ""
+"Numri i replikave per te shfaqur ne cdo teme ne indeksin e bordeve. Vendos 0 "
+"per te mos shfaqur asnje."
 
 msgid ""
 "Number of replies to show per overboard index page. Set to 0 to show all."
 msgstr ""
+"Numri i replikave per te shfaqur ne cdo faqe te indeksit overboard. Vendos 0 "
+"per t'i shfaqur te gjitha."
 
 msgid "Number of threads to show per board index page. Set to 0 to show all."
 msgstr ""
+"Numri i temave per te shfaqur ne cdo faqe te indeksit te bordeve. Vendos 0 "
+"per t'i shfaqur te gjitha."
 
 msgid ""
 "Number of threads to show per overboard index page. Set to 0 to show all."
 msgstr ""
+"Numri i temave per te shfaqur ne cdo faqe te indeksit overboard. Vendos 0 "
+"per t'i shfaqur te gjitha."
 
 msgid "Oekaki Height"
-msgstr ""
+msgstr "Gjatesia e Oekaki"
 
 msgid "Oekaki Width"
-msgstr ""
+msgstr "Gjeresia e Oekaki"
 
 msgid "Optional."
-msgstr ""
+msgstr "Opcionale."
 
 msgid "Overboard"
-msgstr ""
+msgstr "Overboard-i"
 
 msgid "Password"
-msgstr ""
+msgstr "Fjalekalimi"
 
 msgid "Paste a YouTube URL."
-msgstr ""
+msgstr "Ngjit nje URL te YouTube-it."
 
 msgid "Permanently ban uploaded file."
-msgstr ""
+msgstr "Deno pergjithmone skedarin e ngarkuar."
 
 msgid "Please wait %s before creating a new post."
-msgstr ""
+msgstr "Ju lutem prisni %s para se te krijoni nje postim te ri."
 
 msgid "Plugins"
-msgstr ""
+msgstr "Plugins"
 
 msgid ""
 "Positive values specify global instances allowed. Negative values specify "
 "board-specific instances allowed. Zero allows unlimited instances."
 msgstr ""
+"Vlerat pozitive percaktojne instancat globale te lejuara. Vlerat negative "
+"percaktojne instancat specifike te bordit te lejuara. Zero lejon instanca te "
+"pakufizuara."
 
 msgid "Post truncated. Click Reply to view."
-msgstr ""
+msgstr "Postimi u shkurtua. Klikoni te \"Repliko\" per ta pare."
 
 msgid "Posting mode: Reply"
-msgstr ""
+msgstr "Forma e postimit: Replike"
 
 msgid "Posts"
-msgstr ""
+msgstr "Postimet"
 
 msgid "Posts with attachments"
-msgstr ""
+msgstr "Postimet me bashkangjitje"
 
 #. TRANSLATORS: The word 'Preferences' is used in reference to user-specific preferences.
 msgid "Preferences"
-msgstr ""
+msgstr "Preferencat"
 
 msgid "Previous"
-msgstr ""
+msgstr "Para"
 
 msgid "Reason"
-msgstr ""
+msgstr "Arsyja"
 
 msgid "Rebuild"
-msgstr ""
+msgstr "Rikrijo"
 
 msgid "Regular expression to search for when a new post is created."
-msgstr ""
+msgstr "Regular expression per t'u kerkuar kur krijohet nje postim i ri."
 
 msgid "Replies"
-msgstr ""
+msgstr "Replikat"
 
 msgid "Reply"
-msgstr ""
+msgstr "Repliko"
 
 msgid "Report"
-msgstr ""
+msgstr "Raporto"
 
 msgid "Reset"
-msgstr ""
+msgstr "Rivendos"
 
 msgid "Reset all configuration options?"
-msgstr ""
+msgstr "Rikrijoni te gjitha opsionet e konfigurimit?"
 
 msgid "Reset all settings?"
-msgstr ""
+msgstr "Rikrijoni te gjitha cilesimet?"
 
 msgid "Restrict New Posts"
-msgstr ""
+msgstr "Kufizo Postimet e Reja"
 
 msgid "Reports"
-msgstr ""
+msgstr "Raportimet"
 
 msgid "Reported No.%d"
-msgstr ""
+msgstr "Raportuar numer %d"
 
 msgid "Require Approval"
-msgstr ""
+msgstr "Kerko Miratim"
 
 msgid "Required."
-msgstr ""
+msgstr "E detyrueshme."
 
 msgid "Return"
-msgstr ""
+msgstr "Kthehu"
 
 msgid "Role"
-msgstr ""
+msgstr "Roli"
 
 msgid "Rules"
-msgstr ""
+msgstr "Rregullat"
 
 msgid ""
 "Seconds between automatic refreshes when viewing a thread. Set to 0 to "
 "disable."
 msgstr ""
+"Sekonda midis rifreskimeve automatike gjate shikimit te nje teme diskutimi. "
+"Vendoseni ne 0 per ta caktivizuar."
 
 #. TRANSLATORS: The word 'Settings' is used in reference to system-wide settings.
 msgid "Settings"
-msgstr ""
+msgstr "Cilesimet"
 
 msgid "Share"
-msgstr ""
+msgstr "Shperndaj"
 
 msgid "Share with staff"
-msgstr ""
+msgstr "Shperndaj me stafin"
 
 msgid "Shared news items may be updated by other staff members."
-msgstr ""
+msgstr "Lajmet e ndara mund te perditesohen nga anetare te tjere te stafit."
 
 msgid "Show everywhere"
-msgstr ""
+msgstr "Shfaq kudo"
 
 msgid "Site Home"
-msgstr ""
+msgstr "Faqja Kryesore"
 
 msgid "Site Name"
-msgstr ""
+msgstr "Emri i Faqes"
 
 msgid "Site News"
-msgstr ""
+msgstr "Lajmet e Faqes"
 
 msgid "Status"
-msgstr ""
+msgstr "Statusi"
 
 msgid "Style"
-msgstr ""
+msgstr "Stili"
 
 msgid "Subject"
-msgstr ""
+msgstr "Titulli"
 
 msgid "Submit"
-msgstr ""
+msgstr "Dergo"
 
 msgid "Super-administrator"
-msgstr ""
+msgstr "Super-administratori"
 
 msgid "Super-administrators have full access."
-msgstr ""
+msgstr "Super-administratoret kane akses te plote."
 
 msgid "Supported file types are %s."
-msgstr ""
+msgstr "Llojet e skedareve te lejuara jane %s."
 
 msgid "Test"
-msgstr ""
+msgstr "Testo"
 
 msgid "Text"
-msgstr ""
+msgstr "Teksti"
 
 msgid "Text to test for a keyword match."
-msgstr ""
+msgstr "Tekst per te testuar a perputhet me nje fjale kyce."
 
 msgid ""
 "This setting is purely cosmetic. To actually prevent access, configure your "
 "HTTPS server to require password authorization."
 msgstr ""
+"Ky cilesim eshte thjesht kozmetik. Per te parandaluar aksesin, konfiguroni "
+"serverin tuaj HTTPS qe te kerkoje autorizim me fjalekalim."
+
+msgid "Thread moved from %[1]s to %[2]s."
+msgstr "Tema eshte zhvendosur nga %[1]s ne %[2]s."
 
 msgid "Threads"
-msgstr ""
+msgstr "Temat"
 
 msgid "Thumbnail Height"
-msgstr ""
+msgstr "Gjatesia e Thumbnail"
 
 msgid "Thumbnail Width"
-msgstr ""
+msgstr "Gjeresia e Thumbnail"
 
 msgid "Truncate"
-msgstr ""
+msgstr "Shkurto"
 
 msgid "Type"
-msgstr ""
+msgstr "Tipi"
 
 msgid "Unknown"
-msgstr ""
+msgstr "E panjohur"
 
 msgid "Unused"
-msgstr ""
+msgstr "E paperdorur"
 
 msgid "Update"
-msgstr ""
+msgstr "Pergjitheso"
 
 msgid "Update %s"
-msgstr ""
+msgstr "Pergjitheso %s"
 
 msgid "Update Settings"
-msgstr ""
+msgstr "Pergjitheso Cilesimet"
 
 msgid "Uptime"
-msgstr ""
+msgstr "Kohezgjatja"
 
 msgid "Used to log in and audit actions."
-msgstr ""
+msgstr "Perdoret per t'u identifikuar dhe per te audituar veprimet."
 
 msgid "User"
-msgstr ""
+msgstr "Perdoruesi"
 
 msgid "Username"
-msgstr ""
+msgstr "Emri i Perdoruesit"
 
 msgid ""
 "Values greater than 75 are not supported when using the default database "
 "schema."
 msgstr ""
+"Vlerat me te medha se 75 nuk mbeshteten kur perdoret skema e parazgjedhur e "
+"bazes se te dhenave."
 
 msgid "Version"
-msgstr ""
+msgstr "Verzioni"
 
 msgid "View"
-msgstr ""
+msgstr "Shiko"
 
 msgid "View posts by author"
-msgstr ""
+msgstr "Shiko postimet e autorit"
 
 msgid "Visibility"
-msgstr ""
+msgstr "Shikueshmeria"
 
 msgid ""
 "Visitors may embed media from selected services instead of uploading a file."
 msgstr ""
+"Vizitoret mund te bashkangjesin media embed nga sherbime te zgjedhura ne "
+"vend qe te ngarkojne nje skedar."
 
 msgid "Visitors may upload the selected types of files."
-msgstr ""
+msgstr "Vizitoret mund te ngarkojne llojet e zgjedhura te skedareve."
 
 msgid ""
 "Whether identifiers are displayed for each post. Identifiers are generated "
 "based on IP address hashes."
 msgstr ""
+"Nese identifikuesit shfaqen per secilin postim. Identifikuesit gjenerohen "
+"bazuar ne \"hashes\" se adreses IP."
 
 msgid ""
 "Whether moderator approval is required before displaying newly created posts."
 msgstr ""
+"Nese ke kerkohet miratimi i moderatorit perpara shfaqjes se postimeve te "
+"sapokrijuara."
 
 msgid "Whether new posts may be created."
-msgstr ""
+msgstr "Nese mund te krijohen postime te reja."
 
 msgid ""
 "Whether reference links are displayed next to No.## pointing to all visible "
 "replies mentioning a post."
 msgstr ""
+"Nese linqet e references shfaqen prane Nr.## qe tregojne te gjitha replikat "
+"e dukshme qe permendin nje postim."
+
+msgid "Whether visitors may browse attachments as an image gallery."
+msgstr ""
+"Nese vizitoret mund te shfletojne bashkangjitjet si nje galeri imazhesh."
 
 msgid "Whether visitors may create and submit drawings."
-msgstr ""
+msgstr "Nese vizitoret mund te krijojne dhe te dorezojne vizatime."
 
 msgid "Whether visitors may report posts."
-msgstr ""
+msgstr "Nese vizitoret mund te raportojne postimet."
 
 msgid "Whether visitors must pass a CAPTCHA when posting."
-msgstr ""
+msgstr "Nese vizitoret duhet te kalojne nje CAPTCHA kur postojne."
 
 msgid "Word Break"
-msgstr ""
+msgstr "Thyerja e Fjaleve"
 
 msgid "Your post will be shown once it has been approved."
-msgstr ""
+msgstr "Postimi juaj do te shfaqet pasi te jete miratuar."
