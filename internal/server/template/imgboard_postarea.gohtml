@@ -59,17 +59,6 @@
                         <textarea id="message" name="message" cols="48" rows="4" maxlength="8000" accesskey="m"></textarea>
                     </td>
                 </tr>
-                {{if and .Opt.CAPTCHA (not .ModMode)}}
-                    <tr>
-                        <td class="postblock">
-                            CAPTCHA
-                        </td>
-                        <td colspan="2">
-                            <input type="text" name="captcha" id="newpostcaptcha" accesskey="c" autocomplete="off" style="vertical-align: middle;box-sizing: border-box;width: 70px;height: 40px;">
-                            <a href="#" onclick="javascript:document.getElementById('captchaimage').src = '/sriracha/captcha/captcha.png?new=' + new Date().getTime();"><img src="/sriracha/captcha/captcha.png" alt="CAPTCHA Challenge" id="captchaimage" width="225" height="40" border="0" style="vertical-align: middle;"></a> <span style="vertical-align: middle;"><small>{{T "Click to refresh."}}</small></span>
-                        </td>
-                    </tr>
-                {{end}}
                 {{if and (and (or (and (eq .ReplyMode 0) (ne .Board.MaxSizeThread 0)) (and (ne .ReplyMode 0) (ne .Board.MaxSizeReply 0))) (ne (len .Board.Uploads) 0)) (ne .Board.Files 0)}}
                     <tr>
                         <td class="postblock">
@@ -108,6 +97,17 @@
                         <input type="password" name="password" id="newpostpassword" size="8" accesskey="p"> <small>{{T "For post and file deletion."}}</small>
                     </td>
                 </tr>
+                {{if and .Opt.CAPTCHA (not .ModMode)}}
+                    <tr>
+                        <td class="postblock">
+                            CAPTCHA
+                        </td>
+                        <td colspan="2">
+                            <input type="text" name="captcha" id="newpostcaptcha" accesskey="c" autocomplete="off" style="vertical-align: middle;box-sizing: border-box;width: 70px;height: 40px;">
+                            <a href="#" onclick="javascript:document.getElementById('captchaimage').src = '/sriracha/captcha/captcha.png?new=' + new Date().getTime();"><img src="/sriracha/captcha/captcha.png" alt="CAPTCHA Challenge" id="captchaimage" width="225" height="40" border="0" style="vertical-align: middle;"></a> <span style="vertical-align: middle;"><small>{{T "Click to refresh."}}</small></span>
+                        </td>
+                    </tr>
+                {{end}}
                 <tr>
                     <td class="postblock">
                         {{T "Submit"}}
