@@ -47,7 +47,6 @@
                         </td>
                         <td colspan="2">
                             <input type="text" name="subject" size="40" maxlength="75" accesskey="s" autocomplete="off">
-                            {{if eq .Board.Type 0}}<input type="submit" value="{{T "Submit"}}" accesskey="z">{{end}}
                         </td>
                     </tr>
                 {{end}}
@@ -109,16 +108,14 @@
                         <input type="password" name="password" id="newpostpassword" size="8" accesskey="p"> <small>{{T "For post and file deletion."}}</small>
                     </td>
                 </tr>
-                {{if or (eq .Board.MaxSubject 0) (eq .Board.Type 1)}}
-                    <tr>
-                        <td class="postblock">
-                            {{T "Submit"}}
-                        </td>
-                        <td colspan="2">
-                            <input type="submit" value="{{T "Submit"}}" accesskey="z">
-                        </td>
-                    </tr>
-                {{end}}
+                <tr>
+                    <td class="postblock">
+                        {{T "Submit"}}
+                    </td>
+                    <td colspan="2">
+                        <input type="submit" value="{{T "Submit"}}" accesskey="z">
+                    </td>
+                </tr>
                 <tr>
                     <td colspan="3" class="rules">
                         <ul>
