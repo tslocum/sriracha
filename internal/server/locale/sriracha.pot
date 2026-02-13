@@ -112,9 +112,6 @@ msgstr ""
 msgid "Board"
 msgstr ""
 
-msgid "Board Index"
-msgstr ""
-
 msgid "Board description, which is used by search engines."
 msgstr ""
 
@@ -562,6 +559,9 @@ msgid "Name of the board, which is displayed in the page title and header."
 msgstr ""
 
 msgid "Name shown when no name is entered. Separate multiple names with | (pipe character). May be blank."
+msgstr ""
+
+msgid "Navigation"
 msgstr ""
 
 msgid "Never"

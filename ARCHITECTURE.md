@@ -25,9 +25,9 @@ This connection will typically be held until the server finishes processing the 
 
 Some requests will release the database connection early, but only when it is safe to do so.
 
-This allows Sriracha to safely handle multiple web requests simulatenously.
+This allows Sriracha to safely handle multiple web requests simultaneously.
 
-When Sriracha data is modified, static HTML files are written to the configured root directory.
+Whenever Sriracha data is modified, static HTML files are written to the configured root directory.
 
 When a static file server is used in conjunction with Sriracha, visitors will only connect to
 the static file server unless they create or delete a post.
