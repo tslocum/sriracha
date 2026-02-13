@@ -329,6 +329,24 @@ function onMouseMove(e) {
     mouseY = e.pageY;
 }
 
+function onDragOver(e) {
+    const files = [...e.dataTransfer.items].filter(
+        (item) => item.kind === "file",
+    );
+    if (files.length > 0) {
+        e.preventDefault();
+    }
+}
+
+function onDrop(e) {
+    e.preventDefault();
+    var fileInputs = document.getElementsByName("file");
+    if (!fileInputs || fileInputs.length == 0) {
+        return;
+    }
+    fileInputs[0].files = e.dataTransfer.files;
+}
+
 function onDOM(e) {
     var style = getCookie("sriracha_style");
     if (style) {
@@ -372,6 +390,12 @@ function onLoad(e) {
 
     setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
 }
+
+document.addEventListener("dragover", onDragOver);
+window.addEventListener("dragover", onDragOver);
+
+document.addEventListener("drop", onDrop);
+window.addEventListener("drop", onDrop);
 
 window.addEventListener("focus", onFocus);
 window.addEventListener("blur", onBlur);
