@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-02-09 18:17+0000\n"
+"PO-Revision-Date: 2026-02-13 18:24+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -63,7 +63,7 @@ msgid "Add News"
 msgstr "Nieuws toevoegen"
 
 msgid "Add notice"
-msgstr ""
+msgstr "Opmerking toevoegen"
 
 msgid "Admin"
 msgstr "Beheerder"
@@ -342,7 +342,7 @@ msgid "Forum"
 msgstr "Forum"
 
 msgid "Gallery"
-msgstr ""
+msgstr "Galerij"
 
 msgid "Global"
 msgstr "Globaal"
@@ -609,7 +609,7 @@ msgstr ""
 "informatie de moderatorhandleiding."
 
 msgid "Move"
-msgstr ""
+msgstr "Verplaatsen"
 
 msgid "Name"
 msgstr "Naam"
@@ -625,7 +625,7 @@ msgstr ""
 "een | (sluisteken). Mag leeg worden gelaten."
 
 msgid "Navigation"
-msgstr ""
+msgstr "Navigatie"
 
 msgid "Never"
 msgstr "Nooit"
@@ -670,7 +670,7 @@ msgid "None"
 msgstr "Geen"
 
 msgid "Notice"
-msgstr ""
+msgstr "Opmerking"
 
 msgid ""
 "Number of files visitors may upload at once. A new post is created for each "
@@ -884,7 +884,7 @@ msgstr ""
 "voorkomen, stel dan wachtwoordverificatie in op je https-server."
 
 msgid "Thread moved from %[1]s to %[2]s."
-msgstr ""
+msgstr "Het onderwerp is verplaatst van %[1]s naar %[2]s."
 
 msgid "Threads"
 msgstr "Onderwerpen"
@@ -981,6 +981,7 @@ msgstr ""
 
 msgid "Whether visitors may browse attachments as an image gallery."
 msgstr ""
+"Geef aan of bezoekers bijlagen mogen bekijken in de vorm van een galerij."
 
 msgid "Whether visitors may create and submit drawings."
 msgstr "Of bezoekers tekeningen mogen maken en indienen."

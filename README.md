@@ -34,6 +34,8 @@
     - Administrators (all privileges except managing accounts and deleting boards)
     - Moderators (may only add bans, approve/delete posts and sticky/lock threads)
 
+Most features do not require JavaScript and will degrade gracefully when necessary.
+
 ## Documentation
 
 See [MANUAL.md](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md)
