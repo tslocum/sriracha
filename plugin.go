@@ -25,12 +25,13 @@ const (
 
 // PluginConfig represents a plugin configuration option.
 type PluginConfig struct {
-	Type     PluginConfigType
-	Multiple bool
-	Name     string
-	Info     string
-	Value    string
-	Default  string
+	Type      PluginConfigType
+	Multiple  bool
+	Name      string
+	Info      string
+	Value     string
+	Default   string
+	Sensitive bool // Sensitive options are excluded from the audit log.
 }
 
 func (c PluginConfig) Validate() error {

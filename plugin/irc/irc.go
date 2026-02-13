@@ -299,9 +299,10 @@ func (i *IRC) Config() []sriracha.PluginConfig {
 			Name: configAddress,
 			Info: configAddressInfo,
 		}, {
-			Type: sriracha.TypeString,
-			Name: configPassword,
-			Info: configPasswordInfo,
+			Type:      sriracha.TypeString,
+			Name:      configPassword,
+			Info:      configPasswordInfo,
+			Sensitive: true,
 		}, {
 			Type:    sriracha.TypeString,
 			Name:    configNick,
@@ -343,9 +344,10 @@ func (i *IRC) Config() []sriracha.PluginConfig {
 			Name:     configAdmin,
 			Info:     configAdminInfo,
 		}, {
-			Type: sriracha.TypeString,
-			Name: configCommand,
-			Info: configCommandInfo,
+			Type:      sriracha.TypeString,
+			Name:      configCommand,
+			Info:      configCommandInfo,
+			Sensitive: true,
 		}, {
 			Type: sriracha.TypeBoolean,
 			Name: configDebug,

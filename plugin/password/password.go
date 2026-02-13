@@ -44,10 +44,11 @@ func (v *Password) Config() []sriracha.PluginConfig {
 			Info:    configMessageInfo,
 			Default: "Sorry, this board is locked. You must supply the correct password to submit a post.",
 		}, {
-			Type:     sriracha.TypeString,
-			Multiple: true,
-			Name:     configPasswords,
-			Info:     configPasswordsInfo,
+			Type:      sriracha.TypeString,
+			Multiple:  true,
+			Name:      configPasswords,
+			Info:      configPasswordsInfo,
+			Sensitive: true,
 		},
 	}
 }

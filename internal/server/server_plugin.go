@@ -30,11 +30,10 @@ func (s *Server) servePlugin(data *templateData, db *database.DB, w http.Respons
 				defaultValue = ""
 			}
 
-			if info.Config[i].Value == defaultValue {
+			oldValue := info.Config[i].Value
+			if oldValue == defaultValue {
 				continue
 			}
-			oldValue := info.Config[i].Value
-
 			db.SaveString(strings.ToLower(info.Name+"."+c.Name), defaultValue)
 			info.Config[i].Value = defaultValue
 
@@ -44,6 +43,9 @@ func (s *Server) servePlugin(data *templateData, db *database.DB, w http.Respons
 				db.Plugin = ""
 			}
 
+			if c.Sensitive {
+				continue
+			}
 			oldLabel := oldValue
 			newLabel := info.Config[i].Value
 			if info.Config[i].Type == sriracha.TypeBoolean {
@@ -67,7 +69,6 @@ func (s *Server) servePlugin(data *templateData, db *database.DB, w http.Respons
 		if changes != "" {
 			s.log(db, data.Account, nil, fmt.Sprintf("Reset plugin %s", info.Name), changes)
 		}
-
 		http.Redirect(w, r, fmt.Sprintf("/sriracha/plugin/%s", strings.ToLower(info.Name)), http.StatusFound)
 		return
 	}
@@ -102,16 +103,19 @@ func (s *Server) servePlugin(data *templateData, db *database.DB, w http.Respons
 		if r.Method == http.MethodPost {
 			r.ParseForm()
 			formKeys := make([]string, len(r.Form))
-			var i int
-			for key := range r.Form {
-				formKeys[i] = key
-				i++
+			{
+				var i int
+				for key := range r.Form {
+					formKeys[i] = key
+					i++
+				}
+				sort.Slice(formKeys, func(i, j int) bool {
+					return formKeys[i] < formKeys[j]
+				})
 			}
-			sort.Slice(formKeys, func(i, j int) bool {
-				return formKeys[i] < formKeys[j]
-			})
 
 			pUpdate, _ := plugin.(sriracha.PluginWithUpdate)
+			var changed bool
 			var changes string
 			for i, c := range info.Config {
 				var newValue string
@@ -129,41 +133,46 @@ func (s *Server) servePlugin(data *templateData, db *database.DB, w http.Respons
 					}
 				}
 
-				if info.Config[i].Value != newValue {
-					oldLabel := info.Config[i].Value
-					newLabel := newValue
-					if info.Config[i].Type == sriracha.TypeBoolean {
-						if info.Config[i].Value != "1" {
-							oldLabel = "false"
-						} else {
-							oldLabel = "true"
-						}
-						if newValue != "1" {
-							newLabel = "false"
-						} else {
-							newLabel = "true"
-						}
-					}
-					if changes != "" {
-						changes += " "
-					}
-					changes += fmt.Sprintf(`[%s: "%s" > "%s"]`, strings.Title(strings.ReplaceAll(c.Name, "_", " ")), oldLabel, newLabel)
+				oldValue := c.Value
+				if oldValue == newValue {
+					continue
+				}
+				db.SaveString(strings.ToLower(info.Name+"."+c.Name), newValue)
+				info.Config[i].Value = newValue
+				changed = true
 
-					db.SaveString(strings.ToLower(info.Name+"."+c.Name), newValue)
-					info.Config[i].Value = newValue
+				if pUpdate != nil {
+					db.Plugin = info.Name
+					pUpdate.Update(db, c.Name)
+					db.Plugin = ""
+				}
 
-					if pUpdate != nil {
-						db.Plugin = info.Name
-						pUpdate.Update(db, c.Name)
-						db.Plugin = ""
+				if c.Sensitive {
+					continue
+				}
+				oldLabel := oldValue
+				newLabel := newValue
+				if c.Type == sriracha.TypeBoolean {
+					if oldValue != "1" {
+						oldLabel = "false"
+					} else {
+						oldLabel = "true"
+					}
+					if newValue != "1" {
+						newLabel = "false"
+					} else {
+						newLabel = "true"
 					}
 				}
+				if changes != "" {
+					changes += " "
+				}
+				changes += fmt.Sprintf(`[%s: "%s" > "%s"]`, strings.Title(strings.ReplaceAll(c.Name, "_", " ")), oldLabel, newLabel)
 			}
 
-			if changes != "" {
+			if changed {
 				s.log(db, data.Account, nil, fmt.Sprintf("Updated plugin %s", info.Name), changes)
 			}
-
 			http.Redirect(w, r, "/sriracha/plugin", http.StatusFound)
 		}
 		return
