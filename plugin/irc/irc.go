@@ -47,7 +47,7 @@ const (
 	configDebugInfo    = "Print connection info and events to console."
 
 	nameShort = "sriracha"
-	nameFull  = "Sriracha Imageboard and Forum"
+	nameFull  = "Sriracha imageboard and forum server"
 
 	about = "Send server event notifications."
 

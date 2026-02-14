@@ -230,6 +230,27 @@ func (s *Server) parseConfig(configFile string) error {
 	return nil
 }
 
+func (s *Server) parseLocales() error {
+	return fs.WalkDir(localeFS, "locale", func(p string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		} else if d.IsDir() || !strings.HasSuffix(p, ".po") {
+			return nil
+		}
+		id := filepath.Base(strings.TrimSuffix(p, ".po"))
+
+		buf, err := localeFS.ReadFile(fmt.Sprintf("locale/%s/%s.po", id, id))
+		if err != nil {
+			return fmt.Errorf("failed to load locale %s: %s", id, err)
+		}
+
+		po := gotext.NewPo()
+		po.Parse(buf)
+		gotext.GetStorage().AddTranslator(fmt.Sprintf("sriracha-%s", id), po)
+		return nil
+	})
+}
+
 func (s *Server) begin() *database.DB {
 	return database.Begin(s.dbPool, s.config)
 }
@@ -386,6 +407,42 @@ func (s *Server) loadPluginConfig() error {
 	return nil
 }
 
+func (s *Server) officialTemplateDir() string {
+	officialDir := "internal/server/template"
+	_, err := os.Stat(officialDir)
+	if !os.IsNotExist(err) {
+		return officialDir
+	}
+	officialDir = "template"
+	_, err = os.Stat(officialDir)
+	if !os.IsNotExist(err) {
+		return officialDir
+	}
+	return ""
+}
+
+func (s *Server) validateTemplateConfig(officialDir string) error {
+	if s.config.Template == "" {
+		return nil
+	}
+	_, err := os.Stat(s.config.Template)
+	if os.IsNotExist(err) {
+		return fmt.Errorf("custom template directory %s does not exist", s.config.Template)
+	}
+	officialTemplate, err := os.Stat(officialDir)
+	if err != nil {
+		return fmt.Errorf("failed to locate official template directory: start sriracha in the same directory as the file README.md")
+	}
+	customTemplate, err := os.Stat(s.config.Template)
+	if err != nil {
+		return fmt.Errorf("custom template directory %s is inaccessible", s.config.Template)
+	}
+	if os.SameFile(officialTemplate, customTemplate) {
+		return fmt.Errorf("official templates and custom templates must be located in separate directories")
+	}
+	return nil
+}
+
 // parseTemplates parses official and custom templates. Provide an empty
 // officialDir to load official templates from the embedded file system.
 // Otherwise, official templates are loaded from disk. When customDir is set,
@@ -465,33 +522,34 @@ func (s *Server) parseTemplates(officialDir string, customDir string) error {
 	return nil
 }
 
+func (s *Server) _watchTemplates(officialDir string, watcher *fsnotify.Watcher) {
+	for {
+		select {
+		case event, ok := <-watcher.Events:
+			if !ok {
+				return
+			} else if !event.Has(fsnotify.Create) && !event.Has(fsnotify.Write) && !event.Has(fsnotify.Remove) && !event.Has(fsnotify.Rename) {
+				continue
+			}
+			err := s.parseTemplates(officialDir, s.config.Template)
+			if err != nil {
+				log.Printf("failed to parse template files: %s", err)
+			}
+		case err, ok := <-watcher.Errors:
+			if !ok {
+				return
+			}
+			log.Printf("fsnotify error: %s", err)
+		}
+	}
+}
+
 func (s *Server) watchTemplates(officialDir string) error {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	go func() {
-		for {
-			select {
-			case event, ok := <-watcher.Events:
-				if !ok {
-					return
-				} else if !event.Has(fsnotify.Create) && !event.Has(fsnotify.Write) && !event.Has(fsnotify.Remove) && !event.Has(fsnotify.Rename) {
-					continue
-				}
-				err := s.parseTemplates(officialDir, s.config.Template)
-				if err != nil {
-					log.Printf("error: failed to parse template files: %s", err)
-				}
-			case err, ok := <-watcher.Errors:
-				if !ok {
-					return
-				}
-				log.Printf("fsnotify error: %s", err)
-			}
-		}
-	}()
+	go s._watchTemplates(officialDir, watcher)
 
 	err = watcher.Add(officialDir)
 	if err == nil && s.config.Template != "" {
@@ -1211,7 +1269,7 @@ func (s *Server) _handleSignal(signals chan os.Signal) {
 	// Wait until SIGINT or SIGTERM is received.
 	<-signals
 	// Shut down server.
-	s.Shutdown()
+	s.Stop()
 }
 
 // startSignalHandler starts the signal handler which is responsible for
@@ -1226,7 +1284,7 @@ func (s *Server) Run() error {
 	s.parseBuildInfo()
 
 	printInfo := func() {
-		fmt.Fprintf(os.Stderr, "\nSriracha imageboard and forum\n  https://codeberg.org/tslocum/sriracha\nGNU LESSER GENERAL PUBLIC LICENSE\n  https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE\n")
+		fmt.Fprintf(os.Stderr, "\nSriracha imageboard and forum server\n  https://codeberg.org/tslocum/sriracha\nGNU LESSER GENERAL PUBLIC LICENSE\n  https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE\n")
 	}
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage:\n  sriracha [OPTION...] [PLUGIN...]\n\nOptions:\n")
@@ -1238,8 +1296,8 @@ func (s *Server) Run() error {
 	var devMode bool
 	var printVersion bool
 	flag.StringVar(&configFile, "config", "", "path to configuration file (default: ~/.config/sriracha/config.yml)")
-	flag.BoolVar(&rebuild, "rebuild", false, "rebuild static files on startup")
-	flag.BoolVar(&devMode, "dev", false, "run in development mode (watch template files for changes)")
+	flag.BoolVar(&rebuild, "rebuild", false, "rebuild static files before serving any requests")
+	flag.BoolVar(&devMode, "dev", false, "run in development mode (watch official and custom template files for changes)")
 	flag.BoolVar(&printVersion, "version", false, "print version information and exit")
 	flag.Parse()
 
@@ -1265,28 +1323,9 @@ func (s *Server) Run() error {
 	if err != nil {
 		return err
 	}
-
 	s.config.StartTime = time.Now()
 
-	// Parse locale files.
-	err = fs.WalkDir(localeFS, "locale", func(p string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		} else if d.IsDir() || !strings.HasSuffix(p, ".po") {
-			return nil
-		}
-		id := filepath.Base(strings.TrimSuffix(p, ".po"))
-
-		buf, err := localeFS.ReadFile(fmt.Sprintf("locale/%s/%s.po", id, id))
-		if err != nil {
-			log.Fatalf("failed to load locale %s: %s", id, err)
-		}
-
-		po := gotext.NewPo()
-		po.Parse(buf)
-		gotext.GetStorage().AddTranslator(fmt.Sprintf("sriracha-%s", id), po)
-		return nil
-	})
+	err = s.parseLocales()
 	if err != nil {
 		log.Fatalf("failed to parse locale files: %s", err)
 	}
@@ -1295,37 +1334,19 @@ func (s *Server) Run() error {
 	if devMode {
 		s.opt.DevMode = true
 
-		officialDir = "internal/server/template"
-		_, err := os.Stat(officialDir)
-		if os.IsNotExist(err) {
-			officialDir = "template"
-			_, err := os.Stat(officialDir)
-			if os.IsNotExist(err) {
-				log.Fatal("error: could not find official template directory, start sriracha in the same directory as the file README.md")
-			}
+		officialDir = s.officialTemplateDir()
+		if officialDir == "" {
+			return fmt.Errorf("failed to locate official template directory: start sriracha in the same directory as the file README.md")
 		}
 
-		if s.config.Template != "" {
-			_, err := os.Stat(s.config.Template)
-			if os.IsNotExist(err) {
-				log.Fatalf("error: custom template directory %s does not exist", s.config.Template)
-			}
-			officialTemplate, err := os.Stat(officialDir)
-			if err != nil {
-				log.Fatal("error: could not find official template directory, start sriracha in the same directory as the file README.md")
-			}
-			customTemplate, err := os.Stat(s.config.Template)
-			if err != nil {
-				log.Fatalf("error: custom template directory %s is inaccessible", s.config.Template)
-			}
-			if os.SameFile(officialTemplate, customTemplate) {
-				log.Fatalf("error: official templates and custom templates must be located in separate directories")
-			}
+		err = s.validateTemplateConfig(officialDir)
+		if err != nil {
+			return fmt.Errorf("invalid custom template directory: %s", err)
 		}
 
 		err = s.watchTemplates(officialDir)
 		if err != nil {
-			log.Fatalf("failed to watch templates for changes: %s", err)
+			return fmt.Errorf("failed to watch templates for changes: %s", err)
 		}
 		fmt.Println("Running in development mode. Template files are monitored for changes.")
 	}
@@ -1355,13 +1376,13 @@ func (s *Server) Run() error {
 		return err
 	}
 
-	err = s.parseTemplates("", s.config.Template)
+	err = s.parseTemplates(officialDir, s.config.Template)
 	if err != nil {
 		return fmt.Errorf("failed to parse template files: %s", err)
 	}
 
 	if unix.Access(s.config.Root, unix.W_OK) != nil {
-		return fmt.Errorf("failed to set root: %s is not writable", s.config.Root)
+		return fmt.Errorf("configured root directory %s is not writable", s.config.Root)
 	}
 
 	captchaDir := filepath.Join(s.config.Root, "captcha")
@@ -1369,7 +1390,7 @@ func (s *Server) Run() error {
 	if os.IsNotExist(err) {
 		err := os.Mkdir(captchaDir, NewDirPermission)
 		if err != nil {
-			log.Fatalf("failed to create captcha dir: %s", err)
+			log.Fatalf("failed to create captcha directory: %s", err)
 		}
 	}
 
@@ -1414,6 +1435,7 @@ func (s *Server) Run() error {
 		if err != http.ErrServerClosed {
 			return err
 		}
+		// Wait until all web requests have been processed.
 		s.rebuildWaitGroup.Wait()
 	}
 	return nil
@@ -1467,7 +1489,7 @@ func (s *Server) hashIP(r *http.Request) string {
 	return s._hashIP(s.requestIP(r))
 }
 
-func (s *Server) Shutdown() {
+func (s *Server) Stop() {
 	fmt.Println("Shutting down...")
 
 	if s.httpServer != nil {
