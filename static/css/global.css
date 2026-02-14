@@ -22,6 +22,10 @@ form {
 	box-sizing: border-box;
 }
 
+fieldset {
+	display: inline-block;
+}
+
 hr {
 	clear: both;
 	border: 0 none;

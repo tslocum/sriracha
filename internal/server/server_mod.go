@@ -214,7 +214,7 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 		} else {
 			moveLabel := Get(data.Board, data.Account, "Move")
 			boardLabel := Get(data.Board, data.Account, "Board")
-			data.Message = `<br><fieldset style="display: inline-block;"><legend>` + template.HTML(html.EscapeString(moveLabel)) + ` No.` + template.HTML(strconv.Itoa(data.Post.ID)) + `</legend><form method="post"><table border="0" class="manageform"><input type="hidden" name="confirmation" value="1"><tr><td class="postblock">` + template.HTML(html.EscapeString(boardLabel)) + `</td><td><select name="board">`
+			data.Message = `<br><fieldset><legend>` + template.HTML(html.EscapeString(moveLabel)) + ` No.` + template.HTML(strconv.Itoa(data.Post.ID)) + `</legend><form method="post"><table border="0" class="manageform"><input type="hidden" name="confirmation" value="1"><tr><td class="postblock">` + template.HTML(html.EscapeString(boardLabel)) + `</td><td><select name="board">`
 			for _, b := range db.AllBoards() {
 				var extra string
 				if data.Board.ID == b.ID {
