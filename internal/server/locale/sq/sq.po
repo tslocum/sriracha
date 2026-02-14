@@ -333,7 +333,7 @@ msgstr "Llojet e Skedarit"
 msgid "Files"
 msgstr "Skedaret"
 
-msgid "For post and file deletion."
+msgid "For post deletion."
 msgstr "Per fshirjen e postimeve dhe skedareve."
 
 msgid "Forum"

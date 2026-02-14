@@ -326,7 +326,7 @@ msgstr ""
 msgid "Files"
 msgstr ""
 
-msgid "For post and file deletion."
+msgid "For post deletion."
 msgstr "Для удаления записи или файла."
 
 msgid "Forum"

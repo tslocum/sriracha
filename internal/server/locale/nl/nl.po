@@ -335,7 +335,7 @@ msgstr "Bestandstypen"
 msgid "Files"
 msgstr "Bestanden"
 
-msgid "For post and file deletion."
+msgid "For post deletion."
 msgstr "Voor bericht- en bestandsverwijdering."
 
 msgid "Forum"

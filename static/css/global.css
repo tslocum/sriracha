@@ -17,7 +17,7 @@ form {
 	margin-bottom: 0;
 }
 
-#postform #subject, #postform #message {
+#postform #name, #postform #email, #postform #subject, #postform #message {
 	width: 100%;
 	box-sizing: border-box;
 }
