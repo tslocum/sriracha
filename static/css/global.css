@@ -17,6 +17,11 @@ form {
 	margin-bottom: 0;
 }
 
+#postform #subject, #postform #message {
+	width: 100%;
+	box-sizing: border-box;
+}
+
 hr {
 	clear: both;
 	border: 0 none;

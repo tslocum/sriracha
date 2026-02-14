@@ -46,7 +46,7 @@
                             {{T "Subject"}}
                         </td>
                         <td colspan="2">
-                            <input type="text" name="subject" size="40" maxlength="75" accesskey="s" autocomplete="off">
+                            <input type="text" id="subject" name="subject" size="40" maxlength="75" accesskey="s" autocomplete="off">
                         </td>
                     </tr>
                 {{end}}
@@ -56,7 +56,7 @@
                     </td>
                     <td colspan="2">
                         {{if .ModMode}}<label for="raw"><input type="checkbox" name="raw" id="raw" value="1"> HTML</label><br>{{end}}
-                        <textarea id="message" name="message" cols="48" rows="4" maxlength="8000" accesskey="m"></textarea>
+                        <textarea id="message" name="message" cols="48" rows="4" maxlength="{{.Board.MaxMessage}}" accesskey="m"></textarea>
                     </td>
                 </tr>
                 {{if and (and (or (and (eq .ReplyMode 0) (ne .Board.MaxSizeThread 0)) (and (ne .ReplyMode 0) (ne .Board.MaxSizeReply 0))) (ne (len .Board.Uploads) 0)) (ne .Board.Files 0)}}
