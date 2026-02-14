@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -192,5 +191,5 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 	runtime.ReadMemStats(&m)
 	data.Extra2 = FormatFileSize(int64(m.Sys))
 
-	data.Extra3 = fmt.Sprintf("%s", time.Since(s.config.StartTime).Round(time.Second))
+	data.Extra3 = FormatDuration(time.Since(s.config.StartTime))
 }

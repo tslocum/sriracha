@@ -169,7 +169,7 @@ func (i *IRC) onPrivMsg(_ *girc.Client, e girc.Event) {
 	runtime.ReadMemStats(&m)
 	memoryUsage := FormatFileSize(int64(m.Sys))
 
-	status := fmt.Sprintf("Goroutines: %d - Memory: %s - Uptime: %s", runtime.NumGoroutine(), memoryUsage, time.Since(i.startedAt).Round(time.Second))
+	status := fmt.Sprintf("Goroutines: %d - Memory: %s - Uptime: %s", runtime.NumGoroutine(), memoryUsage, FormatDuration(time.Since(i.startedAt)))
 	i.client.Cmd.Reply(e, girc.Fmt(status))
 }
 
