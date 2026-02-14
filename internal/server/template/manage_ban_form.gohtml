@@ -38,7 +38,7 @@
     </fieldset>
 </form>
 {{if and (le .Account.Role 2) (and (eq .Manage.Ban nil) (eq .Extra ""))}}{{/* Admin */}}
-<br>
+<br><br>
 <form method="post" enctype="multipart/form-data">
     <fieldset>
     <legend>{{T "Lift File Ban"}}</legend>

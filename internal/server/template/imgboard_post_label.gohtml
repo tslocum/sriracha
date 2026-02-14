@@ -12,7 +12,7 @@
         {{if and $post.Board.Reports (not $.ModMode)}}
             <a href="/sriracha/?action=report&board={{$post.Board.ID}}&post={{$post.ID}}" title="{{T "Report"}}">R</a>
         {{end}}
-        <a href="{{$post.Board.Path}}res/{{$post.Thread}}.html#{{$post.ID}}">No.</a><a href="{{$post.Board.Path}}res/{{$post.Thread}}.html#q{{$post.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{$post.ID}}');"{{end}}>{{$post.ID}}</a>
+        <a href="{{if not $.ModMode}}{{$post.Board.Path}}res/{{$post.Thread}}.html{{else}}/sriracha/board/mod/{{$post.Board.ID}}/{{$post.Thread}}{{end}}#{{$post.ID}}">No.</a><a href="{{if not $.ModMode}}{{$post.Board.Path}}res/{{$post.Thread}}.html{{else}}/sriracha/board/mod/{{$post.Board.ID}}/{{$post.Thread}}{{end}}#q{{$post.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{$post.ID}}');"{{end}}>{{$post.ID}}</a>
         {{if and (eq $post.Parent 0) (or $post.Stickied $post.Locked)}}
             {{if $post.Stickied}}<img src="/static/img/sticky.png" alt="{{T "Stickied"}}" title="{{T "Stickied"}}" width="16" height="16">{{end}}
             {{if $post.Locked}}<img src="/static/img/lock.png" alt="{{T "Locked"}}" title="{{T "Locked"}}" width="16" height="16">{{end}}
