@@ -22,7 +22,7 @@
             <td><input type="text" name="reason" value="{{if ne .Manage.Ban nil}}{{.Manage.Ban.Reason}}{{end}}"></td>
             <td>{{T "Optional."}}</td>
         </tr>
-        {{if and (and (eq .Manage.Ban nil) (ne .Extra "") (ne .Extra2 ""))}}
+        {{if and (May "banfile.add" $.Account $.Opt.Access) (and (and (eq .Manage.Ban nil) (ne .Extra "") (ne .Extra2 "")))}}
             <tr>
                 <td class="postblock"><label for="banfile">{{T "File"}}</label></td>
                 <td><label><input type="checkbox" name="banfile" value="{{.Extra2}}"> {{T "Ban file"}}</label></td>
@@ -37,7 +37,7 @@
     </table>
     </fieldset>
 </form>
-{{if and (le .Account.Role 2) (and (eq .Manage.Ban nil) (eq .Extra ""))}}{{/* Admin */}}
+{{if and (May "banfile.delete" $.Account $.Opt.Access) (and (eq .Manage.Ban nil) (eq .Extra ""))}}{{/* Admin */}}
 <br><br>
 <form method="post" enctype="multipart/form-data">
     <fieldset>
