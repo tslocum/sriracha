@@ -704,7 +704,7 @@ func (s *Server) writeThread(db *database.DB, board *Board, postID int) {
 		board.Unique = db.UniqueUserPosts(board)
 	}
 
-	f, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "res", fmt.Sprintf("%d.html", postID)), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	f, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "res", fmt.Sprintf("%d.html", postID)), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -733,7 +733,7 @@ func (s *Server) writeIndexes(db *database.DB, board *Board) {
 
 	// Write catalog.
 	if board.Type == TypeImageboard {
-		catalogFile, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "catalog.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+		catalogFile, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "catalog.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -759,7 +759,7 @@ func (s *Server) writeIndexes(db *database.DB, board *Board) {
 			fileName = fmt.Sprintf("%d.html", page)
 		}
 
-		indexFile, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, fileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+		indexFile, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, fileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -812,7 +812,7 @@ func (s *Server) writeOverboard(db *database.DB) {
 
 	// Write catalog.
 	if overboard.Type == TypeImageboard {
-		catalogFile, err := os.OpenFile(filepath.Join(s.config.Root, overboardDir, "catalog.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+		catalogFile, err := os.OpenFile(filepath.Join(s.config.Root, overboardDir, "catalog.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -838,7 +838,7 @@ func (s *Server) writeOverboard(db *database.DB) {
 			fileName = fmt.Sprintf("%d.html", page)
 		}
 
-		indexFile, err := os.OpenFile(filepath.Join(s.config.Root, overboardDir, fileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+		indexFile, err := os.OpenFile(filepath.Join(s.config.Root, overboardDir, fileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -916,7 +916,7 @@ func (s *Server) writePages(db *database.DB, pages []*Page, dryRun bool) error {
 		if dryRun {
 			w = io.Discard
 		} else {
-			pageFile, err = os.OpenFile(filepath.Join(s.config.Root, p.Path+".html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+			pageFile, err = os.OpenFile(filepath.Join(s.config.Root, p.Path+".html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -998,7 +998,7 @@ func (s *Server) writeNewsItem(db *database.DB, n *News) {
 	data.Pages = 1
 	data.Extra = "view"
 
-	itemFile, err := os.OpenFile(filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", n.ID)), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	itemFile, err := os.OpenFile(filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", n.ID)), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -1023,7 +1023,7 @@ func (s *Server) writeNewsIndexes(db *database.DB) {
 			fileName = fmt.Sprintf("news-p%d.html", page)
 		}
 
-		indexFile, err := os.OpenFile(filepath.Join(s.config.Root, fileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+		indexFile, err := os.OpenFile(filepath.Join(s.config.Root, fileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 		if err != nil {
 			log.Fatal(err)
 		}

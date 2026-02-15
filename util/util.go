@@ -16,7 +16,7 @@ import (
 )
 
 const NewDirPermission = 0755
-const NewFilePermission = 0640
+const NewFilePermission = 0644
 
 var (
 	AlphaNumericAndSymbols = regexp.MustCompile(`^[0-9A-Za-z_\-]+$`)
