@@ -151,6 +151,9 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
+msgid "Content"
+msgstr ""
+
 msgid "Create Thread"
 msgstr ""
 

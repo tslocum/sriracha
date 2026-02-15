@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -46,6 +48,8 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 		}
 		db.DeletePage(p.ID)
 
+		os.Remove(filepath.Join(s.config.Root, p.Path+".html"))
+
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted >>/page/%d", p.ID), "")
 
 		http.Redirect(w, r, "/sriracha/page/", http.StatusFound)
@@ -54,38 +58,42 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 
 	pageID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/page/"))
 	if err == nil && pageID > 0 {
-		data.Manage.Page = db.PageByID(pageID)
-
-		if data.Manage.Page != nil && r.Method == http.MethodPost {
-			oldPath := data.Manage.Page.Path
-			err = s.loadPageForm(db, r, data.Manage.Page)
-			if err != nil {
-				data.ManageError(err.Error())
-				return
-			}
-
-			err := data.Manage.Page.Validate()
-			if err != nil {
-				data.ManageError(err.Error())
-				return
-			}
-
-			if data.Manage.Page.Path != oldPath {
-				match := db.PageByPath(data.Manage.Page.Path)
-				if match != nil {
-					data.ManageError("Page with that path already exists")
-					return
-				}
-			}
-
-			db.UpdatePage(data.Manage.Page)
-			s.writePages(db, []*Page{data.Manage.Page})
-
-			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/page/%d", data.Manage.Page.ID), "")
-
-			http.Redirect(w, r, "/sriracha/page/", http.StatusFound)
+		p := db.PageByID(pageID)
+		if p == nil {
+			data.ManageError("Invalid page.")
+			return
+		} else if r.Method != http.MethodPost {
 			return
 		}
+		data.Manage.Page = p
+
+		oldPath := data.Manage.Page.Path
+		err = s.loadPageForm(db, r, data.Manage.Page)
+		if err != nil {
+			data.ManageError(err.Error())
+			return
+		}
+
+		err := data.Manage.Page.Validate()
+		if err != nil {
+			data.ManageError(err.Error())
+			return
+		}
+
+		if data.Manage.Page.Path != oldPath {
+			match := db.PageByPath(data.Manage.Page.Path)
+			if match != nil {
+				data.ManageError("Page with that path already exists")
+				return
+			}
+		}
+
+		db.UpdatePage(data.Manage.Page)
+		s.writePages(db, []*Page{data.Manage.Page})
+
+		s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/page/%d", data.Manage.Page.ID), "")
+
+		http.Redirect(w, r, "/sriracha/page/", http.StatusFound)
 		return
 	}
 
@@ -106,6 +114,12 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 		match := db.PageByPath(p.Path)
 		if match != nil {
 			data.ManageError("Page with that path already exists")
+			return
+		}
+
+		_, err = os.Stat(filepath.Join(s.config.Root, p.Path+".html"))
+		if !os.IsNotExist(err) {
+			data.ManageError("File already exists at that path")
 			return
 		}
 
