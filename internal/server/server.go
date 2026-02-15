@@ -983,14 +983,19 @@ func (s *Server) rebuildBoard(db *database.DB, board *Board) {
 }
 
 func (s *Server) rebuildAll(db *database.DB) {
-	for _, b := range db.AllBoards() {
-		s.rebuildBoard(db, b)
+	pages := db.AllPages()
+	if len(pages) != 0 {
+		s.writePages(db, pages, false)
+	}
+
+	if s.opt.Overboard != "" {
+		s.writeOverboard(db)
 	}
 
 	s.rebuildNews(db)
 
-	if s.opt.Overboard != "" {
-		s.writeOverboard(db)
+	for _, b := range db.AllBoards() {
+		s.rebuildBoard(db, b)
 	}
 }
 

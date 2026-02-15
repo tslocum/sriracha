@@ -72,11 +72,7 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 			s.log(db, data.Account, nil, "Reset settings", changes)
 		}
 
-		for _, b := range db.AllBoards() {
-			s.rebuildBoard(db, b)
-		}
-
-		s.rebuildNews(db)
+		s.rebuildAll(db)
 
 		http.Redirect(w, r, "/sriracha/setting", http.StatusFound)
 		return
