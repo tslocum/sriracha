@@ -100,9 +100,9 @@ func (data *templateData) forbidden(w http.ResponseWriter, required AccountRole)
 	return true
 }
 
-func (data *templateData) execute(w io.Writer) {
+func (data *templateData) executeWithError(w io.Writer) error {
 	if data.Template == "" {
-		return
+		return nil
 	}
 
 	if data.Account != nil {
@@ -152,7 +152,11 @@ func (data *templateData) execute(w io.Writer) {
 	if data.Template == "line" {
 		tplName = data.Template
 	}
-	err := data.tpl.Funcs(funcMap).ExecuteTemplate(w, tplName, data)
+	return data.tpl.Funcs(funcMap).ExecuteTemplate(w, tplName, data)
+}
+
+func (data *templateData) execute(w io.Writer) {
+	err := data.executeWithError(w)
 	if err != nil {
 		log.Fatal(err)
 	}

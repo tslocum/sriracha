@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"html/template"
+	"io"
 	"io/fs"
 	"log"
 	"maps"
@@ -865,11 +866,40 @@ func (s *Server) writeOverboard(db *database.DB) {
 	}
 }
 
-func (s *Server) writePages(db *database.DB, pages []*Page) {
+func (s *Server) newPageTemplate(db *database.DB) *template.Template {
+	tpl, err := s.original.Clone()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return tpl.Funcs(map[string]any{
+		// Board.
+		"BoardByID":       db.BoardByID,
+		"BoardByDir":      db.BoardByDir,
+		"UniqueUserPosts": db.UniqueUserPosts,
+		"AllBoards":       db.AllBoards,
+		// News.
+		"NewsByID": db.NewsByID,
+		"AllNews":  db.AllNews,
+		// Post.
+		"AllThreads":       db.AllThreads,
+		"AllPostsInThread": db.AllPostsInThread,
+		"AllReplies":       db.AllReplies,
+		"PendingPosts":     db.PendingPosts,
+		"PostByID":         db.PostByID,
+		"PostsByIP":        db.PostsByIP,
+		"PostsByFileHash":  db.PostsByFileHash,
+		"PostByField":      db.PostByField,
+		"LastPostByIP":     db.LastPostByIP,
+		"ReplyCount":       db.ReplyCount,
+	})
+}
+
+func (s *Server) writePages(db *database.DB, pages []*Page, dryRun bool) error {
 	data := s.newTemplateData()
 	data.Boards = db.AllBoards()
 	data.Template = "page"
 
+	tpl := s.newPageTemplate(db)
 	for _, p := range pages {
 		dir := filepath.Dir(p.Path)
 		if dir != "" {
@@ -880,17 +910,28 @@ func (s *Server) writePages(db *database.DB, pages []*Page) {
 			}
 		}
 
-		pageFile, err := os.OpenFile(filepath.Join(s.config.Root, p.Path+".html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
-		if err != nil {
-			log.Fatal(err)
+		var w io.Writer
+		var pageFile *os.File
+		var err error
+		if dryRun {
+			w = io.Discard
+		} else {
+			pageFile, err = os.OpenFile(filepath.Join(s.config.Root, p.Path+".html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+			if err != nil {
+				log.Fatal(err)
+			}
+			w = pageFile
 		}
 
-		data.tpl, err = s.original.Clone()
+		data.tpl, err = tpl.Clone()
 		if err != nil {
 			log.Fatal(err)
 		}
 		data.tpl, err = data.tpl.New("line").Parse(p.Content)
 		if err != nil {
+			if dryRun {
+				return err
+			}
 			log.Printf("Warning: failed to parse content of page %s: %s", p.Path, err)
 			pageFile.Close()
 			continue
@@ -901,11 +942,21 @@ func (s *Server) writePages(db *database.DB, pages []*Page) {
 		} else {
 			data.Template = "page"
 		}
-		data.Message = template.HTML(p.Content)
-		data.execute(pageFile)
+		err = data.executeWithError(w)
+		if err != nil {
+			if dryRun {
+				return err
+			}
+			log.Printf("Warning: failed to render page %s: %s", p.Path, err)
+			pageFile.Close()
+			continue
+		}
 
-		pageFile.Close()
+		if !dryRun {
+			pageFile.Close()
+		}
 	}
+	return nil
 }
 
 func (s *Server) rebuildThread(db *database.DB, post *Post) {
@@ -1464,10 +1515,9 @@ func (s *Server) Run() error {
 	}
 	if rebuild {
 		allPages := db.AllPages()
-		pages := len(allPages)
-		if pages > 0 {
+		if len(allPages) > 0 {
 			fmt.Println("Rebuilding pages...")
-			s.writePages(db, allPages)
+			s.writePages(db, allPages, false)
 		}
 		published := len(db.AllNews(true))
 		if published > 0 {

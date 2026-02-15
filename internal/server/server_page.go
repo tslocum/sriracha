@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -20,15 +19,7 @@ func (s *Server) loadPageForm(db *database.DB, r *http.Request, p *Page) error {
 
 	p.Path = strings.TrimSuffix(p.Path, ".html")
 
-	tpl, err := s.original.Clone()
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = tpl.New("line").Parse(p.Content)
-	if err != nil {
-		return fmt.Errorf("failed to parse page content: %s", err)
-	}
-	return nil
+	return s.writePages(db, []*Page{p}, true)
 }
 
 func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
@@ -91,7 +82,7 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 		}
 
 		db.UpdatePage(data.Manage.Page)
-		s.writePages(db, []*Page{data.Manage.Page})
+		s.writePages(db, []*Page{data.Manage.Page}, false)
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/page/%d", data.Manage.Page.ID), "")
 
@@ -126,7 +117,7 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 		}
 
 		db.AddPage(p)
-		s.writePages(db, []*Page{p})
+		s.writePages(db, []*Page{p}, false)
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/page/%d", p.ID), "")
 
