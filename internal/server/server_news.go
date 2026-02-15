@@ -55,7 +55,7 @@ func (s *Server) serveNews(data *templateData, db *database.DB, w http.ResponseW
 
 		s.writeNewsIndexes(db)
 
-		s.log(db, data.Account, nil, fmt.Sprintf("Deleted >>/news/%d", deleteNewsID), "")
+		s.log(db, data.Account, nil, fmt.Sprintf("Deleted news #%d", deleteNewsID), "")
 
 		http.Redirect(w, r, "/sriracha/news/", http.StatusFound)
 		return

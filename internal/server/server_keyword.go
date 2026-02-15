@@ -71,7 +71,7 @@ func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.Respon
 		}
 		db.DeleteKeyword(k.ID)
 
-		s.log(db, data.Account, nil, fmt.Sprintf("Deleted >>/keyword/%d", k.ID), "")
+		s.log(db, data.Account, nil, fmt.Sprintf("Deleted keyword #%d", k.ID), "")
 
 		http.Redirect(w, r, "/sriracha/keyword/", http.StatusFound)
 		return

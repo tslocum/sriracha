@@ -41,7 +41,7 @@ func (s *Server) serveBan(data *templateData, db *database.DB, w http.ResponseWr
 			changes = "Reason: " + liftReason
 		}
 
-		s.log(db, data.Account, nil, fmt.Sprintf("Lifted >>/ban/%d", b.ID), changes)
+		s.log(db, data.Account, nil, fmt.Sprintf("Lifted ban #%d", b.ID), changes)
 
 		http.Redirect(w, r, "/sriracha/ban/", http.StatusFound)
 		return

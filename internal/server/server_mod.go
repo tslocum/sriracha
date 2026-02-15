@@ -75,7 +75,7 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 		if r.FormValue("confirmation") == "1" {
 			for _, post := range posts {
 				s.deletePost(db, post)
-				s.log(db, data.Account, post.Board, fmt.Sprintf("Deleted No.%d", post.ID), "")
+				s.log(db, data.Account, post.Board, fmt.Sprintf("Deleted >>%d", post.ID), "")
 				s.rebuildThread(db, post)
 			}
 			data.Message = "Deleted all posts by author."
@@ -293,7 +293,7 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 		if action == "d" || action == "db" {
 			s.deletePost(db, data.Post)
 
-			s.log(db, data.Account, data.Board, fmt.Sprintf("Deleted No.%d", data.Post.ID), "")
+			s.log(db, data.Account, data.Board, fmt.Sprintf("Deleted >>%d", data.Post.ID), "")
 
 			s.rebuildThread(db, data.Post)
 		}

@@ -223,7 +223,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 			}
 		}
 
-		s.log(db, data.Account, nil, fmt.Sprintf("Deleted >>/board/%d", b.ID), "")
+		s.log(db, data.Account, nil, fmt.Sprintf("Deleted board #%d", b.ID), "")
 
 		data.Template = "manage_info"
 		http.Redirect(w, r, "/sriracha/board/", http.StatusFound)

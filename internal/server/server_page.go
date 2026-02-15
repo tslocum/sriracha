@@ -50,7 +50,7 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 
 		os.Remove(filepath.Join(s.config.Root, p.Path+".html"))
 
-		s.log(db, data.Account, nil, fmt.Sprintf("Deleted >>/page/%d", p.ID), "")
+		s.log(db, data.Account, nil, fmt.Sprintf("Deleted page #%d", p.ID), "")
 
 		http.Redirect(w, r, "/sriracha/page/", http.StatusFound)
 		return
@@ -62,11 +62,12 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 		if p == nil {
 			data.ManageError("Invalid page.")
 			return
-		} else if r.Method != http.MethodPost {
-			return
 		}
 		data.Manage.Page = p
 
+		if r.Method != http.MethodPost {
+			return
+		}
 		oldPath := data.Manage.Page.Path
 		err = s.loadPageForm(db, r, data.Manage.Page)
 		if err != nil {
@@ -86,6 +87,7 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 				data.ManageError("Page with that path already exists")
 				return
 			}
+			os.Remove(filepath.Join(s.config.Root, oldPath+".html"))
 		}
 
 		db.UpdatePage(data.Manage.Page)
