@@ -30,6 +30,24 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 	data.Boards = db.AllBoards()
 	data.Manage.Page = &Page{}
 
+	if PathString(r, "/sriracha/page/rebuild/") != "" {
+		var pages []*Page
+		rebuildPageID := PathInt(r, "/sriracha/page/rebuild/")
+		if rebuildPageID > 0 {
+			p := db.PageByID(rebuildPageID)
+			if p == nil {
+				data.ManageError("Invalid page.")
+				return
+			}
+			pages = append(pages, p)
+			data.Info = Get(nil, data.Account, "Rebuilt %s.", p.Path)
+		} else {
+			pages = db.AllPages()
+			data.Info = Get(nil, data.Account, "Rebuilt all pages.")
+		}
+		s.writePages(db, pages, false)
+	}
+
 	deletePageID := PathInt(r, "/sriracha/page/delete/")
 	if deletePageID > 0 {
 		p := db.PageByID(deletePageID)

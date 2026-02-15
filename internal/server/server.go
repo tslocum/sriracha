@@ -901,6 +901,15 @@ func (s *Server) writePages(db *database.DB, pages []*Page, dryRun bool) error {
 
 	tpl := s.newPageTemplate(db)
 	for _, p := range pages {
+		err := p.Validate()
+		if err != nil {
+			if dryRun {
+				return err
+			}
+			log.Printf("Warning: skipped invalid page %s: %s", p.Path, err)
+			continue
+		}
+
 		dir := filepath.Dir(p.Path)
 		if dir != "" {
 			dirPath := filepath.Join(s.config.Root, dir)
@@ -912,7 +921,6 @@ func (s *Server) writePages(db *database.DB, pages []*Page, dryRun bool) error {
 
 		var w io.Writer
 		var pageFile *os.File
-		var err error
 		if dryRun {
 			w = io.Discard
 		} else {

@@ -12,12 +12,16 @@
                 <td>
                     {{if le $.Account.Role 2}}{{/* Admin */}}
                         <form method="get" action="/sriracha/page/{{$page.ID}}"><input type="submit" value="{{T "Update"}}"></form>
+                        <form method="get" action="/sriracha/page/rebuild/{{$page.ID}}"><input type="submit" value="{{T "Rebuild"}}"></form>
                         <form method="get" action="/sriracha/page/delete/{{$page.ID}}" onsubmit="javascript:return confirm('Delete {{$page.Path}}?');"><input type="submit" value="{{T "Delete"}}"></form>
                     {{end}}
                 </td>
             </tr>
         {{end}}
     </table><br>
+    {{if gt (len .Manage.Pages) 1}}
+        <form method="get" action="/sriracha/page/rebuild/0"><input type="submit" value="{{T "Rebuild All"}}"></form><br><br>
+    {{end}}
 {{end}}
 {{if le $.Account.Role 2}}
     {{if eq .Manage.Page.ID 0}}
