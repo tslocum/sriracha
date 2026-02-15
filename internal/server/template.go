@@ -189,6 +189,20 @@ var templateFuncMap = template.FuncMap{
 		}
 		return values
 	},
+	"May": func(action string, account *Account, access map[string]string) bool {
+		var required AccountRole
+		switch access[action] {
+		case "mod":
+			required = RoleMod
+		case "admin":
+			required = RoleAdmin
+		case "super-admin":
+			required = RoleSuperAdmin
+		default:
+			return false
+		}
+		return account != nil && account.Role <= required
+	},
 	"MinusOne": func(i int) int {
 		return i - 1
 	},

@@ -98,6 +98,7 @@ type ServerOptions struct {
 	Locale           string
 	Locales          map[string]string
 	LocalesSorted    []string
+	Access           map[string]string
 	DevMode          bool
 	FuncMaps         map[string]template.FuncMap
 }
@@ -420,6 +421,8 @@ func (s *Server) setDefaultServerConfig() error {
 	for id := range s.opt.Locales {
 		templateFuncMaps[id] = newTemplateFuncMap(id)
 	}
+
+	s.opt.Access = s.config.Access
 	return nil
 }
 

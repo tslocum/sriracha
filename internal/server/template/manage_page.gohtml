@@ -10,20 +10,22 @@
             <tr>
                 <td><a href="{{$page.URL}}">{{$page.Path}}</a></td>
                 <td>
-                    {{if le $.Account.Role 2}}{{/* Admin */}}
+                    {{if May "page.update" $.Account $.Opt.Access}}
                         <form method="get" action="/sriracha/page/{{$page.ID}}"><input type="submit" value="{{T "Update"}}"></form>
                         <form method="get" action="/sriracha/page/rebuild/{{$page.ID}}"><input type="submit" value="{{T "Rebuild"}}"></form>
+                    {{end}}
+                    {{if May "page.delete" $.Account $.Opt.Access}}
                         <form method="get" action="/sriracha/page/delete/{{$page.ID}}" onsubmit="javascript:return confirm('Delete {{$page.Path}}?');"><input type="submit" value="{{T "Delete"}}"></form>
                     {{end}}
                 </td>
             </tr>
         {{end}}
     </table><br>
-    {{if gt (len .Manage.Pages) 1}}
+    {{if and (gt (len .Manage.Pages) 1) (May "page.update" $.Account $.Opt.Access)}}
         <form method="get" action="/sriracha/page/rebuild/0"><input type="submit" value="{{T "Rebuild All"}}"></form><br><br>
     {{end}}
 {{end}}
-{{if le $.Account.Role 2}}
+{{if or (and (eq .Manage.Page.ID 0) (May "page.add" $.Account $.Opt.Access)) (and (ne .Manage.Page.ID 0) (May "page.update" $.Account $.Opt.Access))}}
     {{if eq .Manage.Page.ID 0}}
         <details>
             <summary>{{T "Add Page"}}</summary>

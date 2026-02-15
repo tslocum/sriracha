@@ -35,6 +35,7 @@ func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.Respon
 	var err error
 	data.Template = "manage_keyword"
 	data.Boards = db.AllBoards()
+	data.Manage.Keyword = &Keyword{}
 
 	keywordID := PathInt(r, "/sriracha/keyword/test/")
 	if keywordID > 0 {
@@ -42,23 +43,29 @@ func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.Respon
 			return
 		}
 		data.Template = "manage_keyword_test"
-		data.Manage.Keyword = db.KeywordByID(keywordID)
-		if data.Manage.Keyword != nil && r.Method == http.MethodPost {
-			rgxp, err := regexp.Compile(data.Manage.Keyword.Text)
-			if err != nil {
-				data.ManageError(fmt.Sprintf("Failed to compile regular expression: %s", err))
-			}
-
-			message := r.FormValue("message")
-			data.Extra = message
-
-			match := rgxp.MatchString(message)
-			matchLabel := "NO MATCH"
-			if match {
-				matchLabel = "MATCH FOUND"
-			}
-			data.Message = template.HTML(fmt.Sprintf(`Result: <b>%s</b>`, matchLabel))
+		k := db.KeywordByID(keywordID)
+		if k == nil {
+			data.ManageError("Invalid keyword.")
+			return
 		}
+		data.Manage.Keyword = k
+		if r.Method != http.MethodPost {
+			return
+		}
+		rgxp, err := regexp.Compile(data.Manage.Keyword.Text)
+		if err != nil {
+			data.ManageError(fmt.Sprintf("Failed to compile regular expression: %s", err))
+		}
+
+		message := r.FormValue("message")
+		data.Extra = message
+
+		match := rgxp.MatchString(message)
+		matchLabel := "NO MATCH"
+		if match {
+			matchLabel = "MATCH FOUND"
+		}
+		data.Message = template.HTML(fmt.Sprintf(`Result: <b>%s</b>`, matchLabel))
 		return
 	}
 

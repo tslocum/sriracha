@@ -23,15 +23,11 @@
 			{{end}}
 			[<a href="/sriracha/ban/" style="text-decoration: underline;">{{T "Bans"}}</a>]
 			[<a href="/sriracha/board/" style="text-decoration: underline;">{{T "Boards"}}</a>]
-			{{if le .Account.Role 2}}{{/* Admin */}}
-				[<a href="/sriracha/keyword/" style="text-decoration: underline;">{{T "Keywords"}}</a>]
-			{{end}}
+			[<a href="/sriracha/keyword/" style="text-decoration: underline;">{{T "Keywords"}}</a>]
 			[<a href="/sriracha/log/" style="text-decoration: underline;">{{T "Logs"}}</a>]
-			{{if ne .Opt.News 0}}
-				[<a href="/sriracha/news/" style="text-decoration: underline;">{{T "News"}}</a>]
-			{{end}}
+			[<a href="/sriracha/news/" style="text-decoration: underline;">{{T "News"}}</a>]
+			[<a href="/sriracha/page/" style="text-decoration: underline;">{{T "Pages"}}</a>]
 			{{if le .Account.Role 2}}{{/* Admin */}}
-				[<a href="/sriracha/page/" style="text-decoration: underline;">{{T "Pages"}}</a>]
 				{{if ne (len .Manage.Plugins) 0}}
 					[<a href="/sriracha/plugin/" style="text-decoration: underline;">{{T "Plugins"}}</a>]
 				{{end}}
