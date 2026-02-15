@@ -23,9 +23,9 @@ CREATE TABLE ban (
 );
 CREATE UNIQUE INDEX ON ban (ip);
 
---v9: CREATE TABLE banfile (
---v9: 	hash char(64) PRIMARY KEY
---v9: );
+-- v9: CREATE TABLE banfile (
+-- v9: 	hash char(64) PRIMARY KEY
+-- v9: );
 
 CREATE TABLE board (
 	id smallserial PRIMARY KEY,
@@ -118,6 +118,12 @@ CREATE TABLE log (
 	message text NOT NULL,
 	changes text NOT NULL
 );
+
+-- v12: CREATE TABLE page (
+-- v12: 	id serial PRIMARY KEY,
+-- v12: 	path text NOT NULL,
+-- v12: 	content text NOT NULL
+-- v12: );
 
 CREATE TABLE post (
 	id serial PRIMARY KEY,
@@ -220,4 +226,11 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 	// Version 11.
 	`ALTER TABLE board ADD COLUMN gallery smallint NOT NULL DEFAULT 1;
 	UPDATE config SET value = '11' WHERE name = 'version';`,
+	// Version 12.
+	`CREATE TABLE page (
+		id serial PRIMARY KEY,
+		path text NOT NULL,
+		content text NOT NULL
+	);
+	UPDATE config SET value = '12' WHERE name = 'version';`,
 }

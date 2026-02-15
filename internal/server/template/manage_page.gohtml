@@ -1,0 +1,59 @@
+{{template "manage_begin.gohtml" .}}
+<h2 class="managetitle">{{T "Pages"}}</h2>
+{{if ne (len .Manage.Pages) 0}}
+    <table class="managetable">
+        <tr>
+            <th>{{T "Path"}}</th>
+            <th>&nbsp;</th>
+        </tr>
+        {{range $i, $page := .Manage.Pages}}
+            <tr>
+                <td><a href="{{$page.URL}}">{{$page.Path}}</a></td>
+                <td>
+                    {{if le $.Account.Role 2}}{{/* Admin */}}
+                        <form method="get" action="/sriracha/page/{{$page.ID}}"><input type="submit" value="{{T "Update"}}"></form>
+                        <form method="get" action="/sriracha/page/delete/{{$page.ID}}" onsubmit="javascript:return confirm('Delete {{$page.Path}}?');"><input type="submit" value="{{T "Delete"}}"></form>
+                    {{end}}
+                </td>
+            </tr>
+        {{end}}
+    </table><br>
+{{end}}
+{{if le $.Account.Role 2}}
+    {{if eq .Manage.Page.ID 0}}
+        <details>
+            <summary>{{T "Add Page"}}</summary>
+            <div>
+    {{else}}
+        [<a href="/sriracha/page/">{{T "Return"}}</a>]<br>
+    {{end}}
+    <form method="post">
+        <fieldset>
+        {{if and (ne .Manage.Page nil) (ne .Manage.Page.ID 0)}}
+            <legend>{{T "Update"}} {{.Manage.Page.Path}}</legend>
+        {{end}}
+        <table border="0" class="manageform">
+            <tr>
+                <td class="postblock"><label for="path">{{T "Path"}}</label></td>
+                <td><input type="text" name="path" value="{{if ne .Manage.Page nil}}{{.Manage.Page.Path}}{{end}}"></td>
+                <td>{{T "Relative file path where the page is located, excluding the .html suffix."}}</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="Content">{{T "Content"}}</label></td>
+                <td><textarea name="content" rows="24" cols="80">{{if ne .Manage.Page nil}}{{.Manage.Page.Content}}{{end}}</textarea></td>
+                <td>{{T "HTML content of the page. Go HTML template actions are supported."}}</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if or (eq .Manage.Page nil) (eq .Manage.Page.ID 0)}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        </fieldset>
+    </form>
+    {{if eq .Manage.Page.ID 0}}
+        </div>
+    </details>
+    {{end}}
+{{end}}
+{{template "manage_end.gohtml" .}}

@@ -62,7 +62,7 @@
 		</div>
 		{{template "extra_header.gohtml" .}}
 		<div class="logo">{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}{{template "extra_logo.gohtml" .}}</div>
-		<hr width="90%">
+		{{if ne .Template "page"}}<hr width="90%">{{end}}
 		{{if .ReplyMode}}
 			{{if not .ModMode}}
 				[<a href="{{.Board.Path}}">{{T "Return"}}</a>]

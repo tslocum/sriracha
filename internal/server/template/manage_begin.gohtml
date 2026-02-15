@@ -31,6 +31,7 @@
 				[<a href="/sriracha/news/" style="text-decoration: underline;">{{T "News"}}</a>]
 			{{end}}
 			{{if le .Account.Role 2}}{{/* Admin */}}
+				[<a href="/sriracha/page/" style="text-decoration: underline;">{{T "Pages"}}</a>]
 				{{if ne (len .Manage.Plugins) 0}}
 					[<a href="/sriracha/plugin/" style="text-decoration: underline;">{{T "Plugins"}}</a>]
 				{{end}}

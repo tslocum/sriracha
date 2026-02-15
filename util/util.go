@@ -19,7 +19,8 @@ const NewDirPermission = 0755
 const NewFilePermission = 0640
 
 var (
-	AlphaNumericAndSymbols = regexp.MustCompile(`^[0-9A-Za-z_-]+$`)
+	AlphaNumericAndSymbols = regexp.MustCompile(`^[0-9A-Za-z_\-]+$`)
+	FilePathPattern        = regexp.MustCompile(`^[0-9A-Za-z_\-/.]+$`)
 
 	QuotePattern = regexp.MustCompile(`^&gt;(.*)$`)
 

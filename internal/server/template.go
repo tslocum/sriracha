@@ -32,6 +32,8 @@ type manageData struct {
 	Logs     []*Log
 	News     *News
 	AllNews  []*News
+	Page     *Page
+	Pages    []*Page
 	Plugin   *pluginInfo
 	Plugins  []*pluginInfo
 	Report   *Report
@@ -146,7 +148,11 @@ func (data *templateData) execute(w io.Writer) {
 		funcMap = templateFuncMaps[""]
 	}
 
-	err := data.tpl.Funcs(funcMap).ExecuteTemplate(w, data.Template+".gohtml", data)
+	tplName := data.Template + ".gohtml"
+	if data.Template == "line" {
+		tplName = data.Template
+	}
+	err := data.tpl.Funcs(funcMap).ExecuteTemplate(w, tplName, data)
 	if err != nil {
 		log.Fatal(err)
 	}

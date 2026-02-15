@@ -127,6 +127,7 @@ type Server struct {
 	opt    ServerOptions
 
 	tpl             *template.Template
+	original        *template.Template
 	customTemplates []string
 
 	rebuildQueue     chan *rebuildInfo
@@ -519,7 +520,10 @@ func (s *Server) parseTemplates(officialDir string, customDir string) error {
 			return err
 		}
 	}
-	return nil
+
+	var err error
+	s.original, err = s.tpl.Clone()
+	return err
 }
 
 func (s *Server) _watchTemplates(officialDir string, watcher *fsnotify.Watcher) {
@@ -861,6 +865,49 @@ func (s *Server) writeOverboard(db *database.DB) {
 	}
 }
 
+func (s *Server) writePages(db *database.DB, pages []*Page) {
+	data := s.newTemplateData()
+	data.Boards = db.AllBoards()
+	data.Template = "page"
+
+	for _, p := range pages {
+		dir := filepath.Dir(p.Path)
+		if dir != "" {
+			dirPath := filepath.Join(s.config.Root, dir)
+			_, err := os.Stat(dirPath)
+			if os.IsNotExist(err) {
+				os.MkdirAll(dirPath, NewDirPermission)
+			}
+		}
+
+		pageFile, err := os.OpenFile(filepath.Join(s.config.Root, p.Path+".html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		data.tpl, err = s.original.Clone()
+		if err != nil {
+			log.Fatal(err)
+		}
+		data.tpl, err = data.tpl.New("line").Parse(p.Content)
+		if err != nil {
+			log.Printf("Warning: failed to parse content of page %s: %s", p.Path, err)
+			pageFile.Close()
+			continue
+		}
+
+		if strings.HasPrefix(p.Content, doctypePrefx) {
+			data.Template = "line"
+		} else {
+			data.Template = "page"
+		}
+		data.Message = template.HTML(p.Content)
+		data.execute(pageFile)
+
+		pageFile.Close()
+	}
+}
+
 func (s *Server) rebuildThread(db *database.DB, post *Post) {
 	s.writeThread(db, post.Board, post.Thread())
 	s.writeIndexes(db, post.Board)
@@ -1050,6 +1097,8 @@ func (s *Server) serveManage(db *database.DB, w http.ResponseWriter, r *http.Req
 		s.serveMod(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/news"):
 		s.serveNews(data, db, w, r)
+	case strings.HasPrefix(r.URL.Path, "/sriracha/page"):
+		s.servePage(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/plugin"):
 		s.servePlugin(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/setting"):
@@ -1414,6 +1463,12 @@ func (s *Server) Run() error {
 		db.SaveString("sv", SrirachaVersion)
 	}
 	if rebuild {
+		allPages := db.AllPages()
+		pages := len(allPages)
+		if pages > 0 {
+			fmt.Println("Rebuilding pages...")
+			s.writePages(db, allPages)
+		}
 		published := len(db.AllNews(true))
 		if published > 0 {
 			fmt.Println("Rebuilding news...")
@@ -1575,6 +1630,8 @@ func pageCount(items int, pageSize int) int {
 	}
 	return pages
 }
+
+const doctypePrefx = "<!DOCTYPE html>"
 
 var siteIndexHTML = []byte(`
 <!DOCTYPE html>
