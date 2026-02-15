@@ -20,7 +20,7 @@
                     {{if May "board.update" $.Account $.Opt.Access}}
                         <form method="get" action="/sriracha/board/rebuild/{{$board.ID}}"><input type="submit" value="{{T "Rebuild"}}"></form>
                     {{end}}
-                    <form method="get" action="/sriracha/board/{{$board.ID}}"><input type="submit" value=" {{if May "board.update" $.Account $.Opt.Access}}{{T "Update"}}{{else}}{{T "Details"}}{{end}}"></form>
+                    <form method="get" action="/sriracha/board/{{$board.ID}}"><input type="submit" value="{{if May "board.update" $.Account $.Opt.Access}}{{T "Update"}}{{else}}{{T "Details"}}{{end}}"></form>
                     {{if May "board.delete" $.Account $.Opt.Access}}
                          <form method="get" action="/sriracha/board/delete/{{$board.ID}}" onsubmit="javascript:return confirm('Delete {{$board.Path}} {{$board.Name}}?');"><input type="submit" value="{{T "Delete"}}"></form>
                     {{end}}
