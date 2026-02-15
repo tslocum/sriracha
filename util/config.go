@@ -49,6 +49,8 @@ type Config struct {
 
 	Uploads []string // Supported upload file types.
 
+	Access map[string]string // Specifies which roles may perform each management or moderation action.
+
 	Import ImportConfig // Board import configuration.
 
 	// Calculated fields.

@@ -32,15 +32,15 @@ func (s *Server) loadKeywordForm(db *database.DB, r *http.Request, k *Keyword) {
 }
 
 func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
-	if data.forbidden(w, RoleAdmin) {
-		return
-	}
 	var err error
 	data.Template = "manage_keyword"
 	data.Boards = db.AllBoards()
 
 	keywordID := PathInt(r, "/sriracha/keyword/test/")
 	if keywordID > 0 {
+		if s.forbidden(w, data, "keyword.update") {
+			return
+		}
 		data.Template = "manage_keyword_test"
 		data.Manage.Keyword = db.KeywordByID(keywordID)
 		if data.Manage.Keyword != nil && r.Method == http.MethodPost {
@@ -64,6 +64,9 @@ func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.Respon
 
 	deleteKeywordID := PathInt(r, "/sriracha/keyword/delete/")
 	if deleteKeywordID > 0 {
+		if s.forbidden(w, data, "keyword.delete") {
+			return
+		}
 		k := db.KeywordByID(deleteKeywordID)
 		if k == nil {
 			data.ManageError("Invalid keyword.")
@@ -79,6 +82,9 @@ func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.Respon
 
 	keywordID, err = strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/keyword/"))
 	if err == nil && keywordID > 0 {
+		if s.forbidden(w, data, "keyword.update") {
+			return
+		}
 		data.Manage.Keyword = db.KeywordByID(keywordID)
 
 		if data.Manage.Keyword != nil && r.Method == http.MethodPost {
@@ -112,6 +118,9 @@ func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.Respon
 	}
 
 	if r.Method == http.MethodPost {
+		if s.forbidden(w, data, "keyword.add") {
+			return
+		}
 		k := &Keyword{}
 		s.loadKeywordForm(db, r, k)
 

@@ -185,14 +185,29 @@ func (s *Server) parseBuildInfo() {
 	}
 }
 
+func (s *Server) forbidden(w http.ResponseWriter, data *templateData, action string) bool {
+	var required AccountRole
+	switch s.config.Access[action] {
+	case "mod":
+		required = RoleMod
+	case "admin":
+		required = RoleAdmin
+	case "super-admin":
+		required = RoleSuperAdmin
+	}
+	return data.forbidden(w, required)
+}
+
 func (s *Server) parseConfig(configFile string) error {
 	buf, err := os.ReadFile(configFile)
 	if err != nil {
 		return err
 	}
 
-	var config Config
-	err = yaml.Unmarshal(buf, &config)
+	config := &Config{
+		Access: make(map[string]string),
+	}
+	err = yaml.Unmarshal(buf, config)
 	if err != nil {
 		return err
 	}
@@ -227,7 +242,49 @@ func (s *Server) parseConfig(configFile string) error {
 		config.Locale = "en"
 	}
 
-	s.config = &config
+	validateAccess := func(name string, v string) error {
+		switch v {
+		case "mod", "admin", "super-admin", "disable":
+			return nil
+		default:
+			return fmt.Errorf("action %s has unknown access level %s: must be 'mod', 'admin', 'super-admin' or 'disable'", name, v)
+		}
+	}
+	for name, v := range config.Access {
+		err = validateAccess(name, v)
+		if err != nil {
+			return err
+		}
+	}
+	defaultAccess := map[string]string{
+		"ban.add":        "mod",
+		"ban.shorten":    "admin",
+		"ban.lengthen":   "mod",
+		"ban.delete":     "admin",
+		"banfile.add":    "mod",
+		"banfile.delete": "admin",
+		"board.add":      "admin",
+		"board.update":   "admin",
+		"board.delete":   "super-admin",
+		"keyword.add":    "admin",
+		"keyword.update": "admin",
+		"keyword.delete": "admin",
+		"page.add":       "admin",
+		"page.update":    "admin",
+		"page.delete":    "admin",
+		"post.sticky":    "mod",
+		"post.lock":      "mod",
+		"post.move":      "mod",
+		"post.delete":    "mod",
+	}
+	for name, v := range defaultAccess {
+		if config.Access[name] != "" {
+			continue
+		}
+		config.Access[name] = v
+	}
+
+	s.config = config
 	s.config.ImportMode = s.config.Import.Enabled()
 	return nil
 }

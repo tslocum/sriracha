@@ -172,7 +172,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 
 	deleteBoardID := PathInt(r, "/sriracha/board/delete/")
 	if deleteBoardID > 0 {
-		if data.forbidden(w, RoleSuperAdmin) {
+		if s.forbidden(w, data, "board.delete") {
 			return
 		}
 
@@ -239,7 +239,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 		}
 
 		if data.Manage.Board != nil && r.Method == http.MethodPost {
-			if data.forbidden(w, RoleAdmin) {
+			if s.forbidden(w, data, "board.update") {
 				return false
 			}
 			oldBoard := *data.Manage.Board
@@ -347,7 +347,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 	}
 
 	if r.Method == http.MethodPost {
-		if data.forbidden(w, RoleAdmin) {
+		if s.forbidden(w, data, "board.add") {
 			return
 		}
 		b := &Board{}

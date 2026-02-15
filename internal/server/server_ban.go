@@ -24,6 +24,9 @@ func (s *Server) serveBan(data *templateData, db *database.DB, w http.ResponseWr
 
 	deleteBanID := PathInt(r, "/sriracha/ban/delete/")
 	if deleteBanID > 0 {
+		if s.forbidden(w, data, "ban.delete") {
+			return
+		}
 		b := db.BanByID(deleteBanID)
 		if b == nil {
 			data.ManageError("Invalid ban.")
@@ -56,7 +59,9 @@ func (s *Server) serveBan(data *templateData, db *database.DB, w http.ResponseWr
 			s.loadBanForm(db, r, data.Manage.Ban)
 
 			shorter := data.Manage.Ban.Expire != 0 && (oldBan.Expire == 0 || data.Manage.Ban.Expire < oldBan.Expire)
-			if shorter && data.forbidden(w, RoleAdmin) {
+			if shorter && s.forbidden(w, data, "ban.shorten") {
+				return
+			} else if !shorter && s.forbidden(w, data, "ban.lengthen") {
 				return
 			}
 
@@ -85,7 +90,7 @@ func (s *Server) serveBan(data *templateData, db *database.DB, w http.ResponseWr
 		r.ParseForm()
 		f, _, err := r.FormFile("liftfile")
 		if err == nil && f != nil {
-			if data.forbidden(w, RoleAdmin) {
+			if s.forbidden(w, data, "banfile.delete") {
 				return
 			}
 			buf, err := io.ReadAll(f)
@@ -100,6 +105,8 @@ func (s *Server) serveBan(data *templateData, db *database.DB, w http.ResponseWr
 			} else {
 				data.ManageError("File is not banned.")
 			}
+			return
+		} else if s.forbidden(w, data, "ban.add") {
 			return
 		}
 

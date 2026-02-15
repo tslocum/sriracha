@@ -179,6 +179,30 @@ dbname: "sriracha"
 # files in this directory will override official templates of the same name.
 #template: "/home/sriracha/template"
 
+# Access required to perform an action. Default values for all actions are listed below.
+#
+# Format: mod / admin / super-admin / disable (disallow all roles)
+#access:
+#  ban.add:        mod
+#  ban.shorten:    admin
+#  ban.lengthen:   mod
+#  ban.delete:     admin
+#  banfile.add:    mod
+#  banfile.delete: admin
+#  board.add:      admin
+#  board.update:   admin
+#  board.delete:   super-admin
+#  keyword.add:    admin
+#  keyword.update: admin
+#  keyword.delete: admin
+#  page.add:       admin
+#  page.update:    admin
+#  page.delete:    admin
+#  post.sticky:    mod
+#  post.lock:      mod
+#  post.move:      mod
+#  post.delete:    mod
+
 # Supported upload file types. Specify a file extension and a MIME type to
 # enable uploading files of that type. You may specify an image to use as the
 # thumbnail for all uploads of that type, or 'none' to not create a thumbnail.

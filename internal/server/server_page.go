@@ -23,14 +23,14 @@ func (s *Server) loadPageForm(db *database.DB, r *http.Request, p *Page) error {
 }
 
 func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
-	if data.forbidden(w, RoleAdmin) {
-		return
-	}
 	data.Template = "manage_page"
 	data.Boards = db.AllBoards()
 	data.Manage.Page = &Page{}
 
 	if PathString(r, "/sriracha/page/rebuild/") != "" {
+		if s.forbidden(w, data, "page.update") {
+			return
+		}
 		var pages []*Page
 		rebuildPageID := PathInt(r, "/sriracha/page/rebuild/")
 		if rebuildPageID > 0 {
@@ -50,6 +50,9 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 
 	deletePageID := PathInt(r, "/sriracha/page/delete/")
 	if deletePageID > 0 {
+		if s.forbidden(w, data, "page.delete") {
+			return
+		}
 		p := db.PageByID(deletePageID)
 		if p == nil {
 			data.ManageError("Invalid page.")
@@ -67,6 +70,9 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 
 	pageID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/page/"))
 	if err == nil && pageID > 0 {
+		if s.forbidden(w, data, "page.update") {
+			return
+		}
 		p := db.PageByID(pageID)
 		if p == nil {
 			data.ManageError("Invalid page.")
@@ -109,6 +115,9 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 	}
 
 	if r.Method == http.MethodPost {
+		if s.forbidden(w, data, "page.add") {
+			return
+		}
 		p := &Page{}
 		err = s.loadPageForm(db, r, p)
 		if err != nil {

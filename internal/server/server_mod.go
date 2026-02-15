@@ -73,6 +73,9 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 		data.Board = data.Post.Board
 		posts := db.PostsByIP(data.Post.IP)
 		if r.FormValue("confirmation") == "1" {
+			if s.forbidden(w, data, "post.delete") {
+				return
+			}
 			for _, post := range posts {
 				s.deletePost(db, post)
 				s.log(db, data.Account, post.Board, fmt.Sprintf("Deleted >>%d", post.ID), "")
@@ -87,6 +90,9 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 		data.Message = `<form method="post" onsubmit="javascript:return confirm('Delete all posts by author?');"><input type="hidden" name="confirmation" value="1"><input type="submit" value="Delete all posts by author"></form><br>`
 		return
 	} else if action == "m" {
+		if s.forbidden(w, data, "post.move") {
+			return
+		}
 		if data.Post.Parent != 0 {
 			data.ManageError("Only threads may be moved")
 			return
@@ -238,15 +244,27 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 		var skipRebuild bool
 		switch {
 		case action == "s" && !data.Post.Stickied:
+			if s.forbidden(w, data, "post.sticky") {
+				return
+			}
 			db.StickyPost(data.Post.ID, true)
 			s.log(db, data.Account, nil, fmt.Sprintf("Stickied >>/post/%d", data.Post.ID), "")
 		case action == "us" && data.Post.Stickied:
+			if s.forbidden(w, data, "post.sticky") {
+				return
+			}
 			db.StickyPost(data.Post.ID, false)
 			s.log(db, data.Account, nil, fmt.Sprintf("Unstickied >>/post/%d", data.Post.ID), "")
 		case action == "l" && !data.Post.Locked:
+			if s.forbidden(w, data, "post.lock") {
+				return
+			}
 			db.LockPost(data.Post.ID, true)
 			s.log(db, data.Account, nil, fmt.Sprintf("Locked >>/post/%d", data.Post.ID), "")
 		case action == "ul" && data.Post.Locked:
+			if s.forbidden(w, data, "post.lock") {
+				return
+			}
 			db.LockPost(data.Post.ID, false)
 			s.log(db, data.Account, nil, fmt.Sprintf("Unlocked >>/post/%d", data.Post.ID), "")
 		default:
@@ -266,6 +284,9 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 	if r.FormValue("confirmation") == "1" {
 		banFile := FormString(r, "banfile")
 		if banFile != "" && !db.FileBanned(banFile) {
+			if s.forbidden(w, data, "banfile.add") {
+				return
+			}
 			db.AddFileBan(banFile)
 			s.log(db, data.Account, nil, "Banned file", "")
 		}
@@ -276,12 +297,18 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 		}
 		if action == "b" || action == "db" {
 			if data.Manage.Ban != nil {
+				if s.forbidden(w, data, "ban.lengthen") {
+					return
+				}
 				s.loadBanForm(db, r, data.Manage.Ban)
 				db.UpdateBan(data.Manage.Ban)
 
 				changes := printChanges(oldBan, *data.Manage.Ban)
 				s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/ban/%d", data.Manage.Ban.ID), changes)
 			} else {
+				if s.forbidden(w, data, "ban.add") {
+					return
+				}
 				ban := &Ban{}
 				s.loadBanForm(db, r, ban)
 				ban.IP = data.Post.IP
@@ -291,6 +318,9 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 			}
 		}
 		if action == "d" || action == "db" {
+			if s.forbidden(w, data, "post.delete") {
+				return
+			}
 			s.deletePost(db, data.Post)
 
 			s.log(db, data.Account, data.Board, fmt.Sprintf("Deleted >>%d", data.Post.ID), "")

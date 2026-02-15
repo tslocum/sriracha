@@ -91,7 +91,7 @@ func (data *templateData) ManageError(message string) {
 }
 
 func (data *templateData) forbidden(w http.ResponseWriter, required AccountRole) bool {
-	allow := data.Account != nil && data.Account.Role != 0 && data.Account.Role <= required
+	allow := required != 0 && data.Account != nil && data.Account.Role != 0 && data.Account.Role <= required
 	if allow {
 		return false
 	}
