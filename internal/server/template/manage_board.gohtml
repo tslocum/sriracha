@@ -283,9 +283,12 @@
             {{if ne (len .Opt.Uploads) 0}}
                 <tr>
                     <td class="postblock">
-                        <label for="uploads">{{T "File Types"}}</label><br>
-                        &nbsp;&nbsp;<a href="#" onclick="return setAllUploads(true);">{{T "Enable All"}}</a><br>
-                        &nbsp;&nbsp;<a href="#" onclick="return setAllUploads(false);">{{T "Disable All"}}</a>
+                        <label for="uploads">{{T "File Types"}}</label>
+                        {{if or (and (eq .Manage.Board.ID 0) (May "board.add" $.Account $.Opt.Access)) (and (ne .Manage.Board.ID 0) (May "board.update" $.Account $.Opt.Access))}}
+                            <br>
+                            &nbsp;&nbsp;<a href="#" onclick="return setAllUploads(true);">{{T "Enable All"}}</a><br>
+                            &nbsp;&nbsp;<a href="#" onclick="return setAllUploads(false);">{{T "Disable All"}}</a>
+                        {{end}}
                     </td>
                     <td>
                         {{range $i, $info := .Opt.Uploads}}

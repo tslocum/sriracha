@@ -25,14 +25,11 @@
 - Play SWF files with the included [ruffle emulator](https://ruffle.rs)
 - View Shift JIS text art with the included [submona web font](https://github.com/pera/submona-web-font)
 - Management panel:
+  - Configure which roles have access to management and moderation actions
   - Automatically moderate new posts using regular expressions
   - Ban offensive/abusive visitors across all boards
   - Post using admin or mod capcode
   - Post using raw HTML
-  - Account system:
-    - Super-administrators (all privileges)
-    - Administrators (all privileges except managing accounts and deleting boards)
-    - Moderators (may only add bans, approve/delete posts and sticky/lock threads)
 
 Most features do not require JavaScript and will degrade gracefully when necessary.
 
