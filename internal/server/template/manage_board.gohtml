@@ -27,9 +27,10 @@
                 </td>
             </tr>
         {{end}}
-    </table><br>
+    </table>
 {{end}}
 {{if or (ne .Manage.Board.ID 0) (May "board.add" $.Account $.Opt.Access)}}
+    <br>
     {{if eq .Manage.Board.ID 0}}
         <details>
             <summary>{{T "Add Board"}}</summary>

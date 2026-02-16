@@ -13,7 +13,7 @@
     </fieldset><br>
 {{end}}
 {{if and (eq .Message "") (eq .Message2 "")}}
-    {{T "No pending moderation requests."}}<br>
+    &nbsp;✔️ {{T "No pending moderation requests."}}<br>
     <meta http-equiv="refresh" content="300; url=/sriracha/">
 {{else}}
     <script type="text/javascript">
