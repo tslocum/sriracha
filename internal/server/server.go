@@ -422,7 +422,8 @@ func (s *Server) setDefaultServerConfig() error {
 		templateFuncMaps[id] = newTemplateFuncMap(id)
 	}
 
-	s.opt.Access = s.config.Access
+	s.opt.Access = make(map[string]string)
+	maps.Copy(s.opt.Access, s.config.Access)
 	return nil
 }
 
