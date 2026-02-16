@@ -127,6 +127,54 @@ Support is not available for Sriracha installations using custom templates.
 
 Support is not available for creating or modifying custom template files.
 
+#### Database access
+
+Custom pages and templates may access the database via the following read-only methods:
+
+- [Board](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Board)
+  - `BoardByID(id int) *Board`
+  - `BoardByDir(dir string) *Board`
+  - `UniqueUserPosts(b *Board) int`
+  - `AllBoards() []*Board`
+- [News](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#News)
+  - `NewsByID(id int) *News`
+  - `AllNews(onlyPublished bool) []*News`
+- [Post](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Post)
+  - `AllThreads(board *Board, moderated bool) [][2]int`
+  - `AllPostsInThread(postID int, moderated bool) []*Post`
+  - `AllReplies(threadID int, limit int, moderated bool) []*Post`
+  - `PendingPosts() []*Post`
+  - `PostByID(postID int) *Post`
+  - `PostsByIP(hash string) []*Post`
+  - `PostsByFileHash(hash string, filterBoard *Board) []*Post`
+  - `PostByField(b *Board, field string, value any) *Post`
+  - `LastPostByIP(board *Board, ip string) *Post`
+  - `ReplyCount(threadID int) int`
+
+For example, the following custom page or template will render all moderated
+posts in the board with ID #7 by printing their ID, subject and message:
+
+```gohtml
+{{$onlyShowModerated := true}}
+{{$board := BoardByID 7}}
+{{$threads := AllThreads $board $onlyShowModerated}}
+<hr>
+Found {{len $threads}} threads.
+{{range $i, $thread := $threads}}
+    {{$threadID := index $thread 0}}
+    {{$threadReplyCount := index $thread 1}}
+    <hr>
+    Thread No.{{$threadID}} (Replies: {{$threadReplyCount}})
+    {{range $post := AllPostsInThread $threadID $onlyShowModerated}}
+        <br><br>
+        ID: {{$post.ID}}<br>
+        Subject: {{$post.Subject}}<br>
+        Message {{$post.Message | HTML}}
+    {{end}}
+{{end}}
+<hr>
+```
+
 ### Example configuration (config.yml)
 
 ```yaml

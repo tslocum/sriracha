@@ -4,7 +4,8 @@ package sriracha
 import . "codeberg.org/tslocum/sriracha/model"
 
 // DB is an interface to the database used by plugins. This allows plugins to
-// avoid importing pgx and its dependencies redundantly.
+// avoid importing pgx and its dependencies redundantly. See database package
+// for method documentation.
 type DB interface {
 	// Config.
 	HaveConfig(key string) bool
