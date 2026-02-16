@@ -1,35 +1,43 @@
 {{template "manage_begin.gohtml" .}}
 <h2 class="managetitle">{{T "Keywords"}}</h2>
 {{if ne (len .Manage.Keywords) 0}}
+    {{$mayUpdate := May "keyword.update" $.Account $.Opt.Access}}
+    {{$mayDelete := May "keyword.delete" $.Account $.Opt.Access}}
     <table class="managetable">
         <tr>
             <th>{{T "Text"}}</th>
             <th>{{T "Action"}}</th>
             <th>{{T "Boards"}}</th>
-            <th>&nbsp;</th>
+            {{if or $mayUpdate $mayDelete}}
+                <th>&nbsp;</th>
+            {{end}}
         </tr>
         {{range $i, $keyword := .Manage.Keywords}}
             <tr>
                 <td>{{$keyword.Text}}</td>
                 <td>{{$keyword.ActionLabel $.Account}}</td>
                 <td>{{template "manage_print_board.gohtml" $keyword.Boards}}</td>
-                <td>
-                    {{if May "keyword.update" $.Account $.Opt.Access}}
-                        <form method="get" action="/sriracha/keyword/test/{{$keyword.ID}}"><input type="submit" value="{{T "Test"}}"></form>
-                        <form method="get" action="/sriracha/keyword/{{$keyword.ID}}"><input type="submit" value="{{T "Update"}}"></form>
-                    {{end}}
-                    {{if May "keyword.delete" $.Account $.Opt.Access}}
-                        <form method="get" action="/sriracha/keyword/delete/{{$keyword.ID}}" onsubmit="javascript:return confirm('Delete {{$keyword.Text}}?');"><input type="submit" value="{{T "Delete"}}"></form>
-                    {{end}}
-                </td>
+                {{if or $mayUpdate $mayDelete}}
+                    <td>
+                        {{if $mayUpdate}}
+                            <form method="get" action="/sriracha/keyword/test/{{$keyword.ID}}"><input type="submit" value="{{T "Test"}}"></form>
+                            <form method="get" action="/sriracha/keyword/{{$keyword.ID}}"><input type="submit" value="{{T "Update"}}"></form>
+                        {{end}}
+                        {{if $mayDelete}}
+                            <form method="get" action="/sriracha/keyword/delete/{{$keyword.ID}}" onsubmit="javascript:return confirm('Delete {{$keyword.Text}}?');"><input type="submit" value="{{T "Delete"}}"></form>
+                        {{end}}
+                    </td>
+                {{end}}
             </tr>
         {{end}}
-    </table><br>
+    </table>
 {{end}}
 {{if ne .Manage.Keyword.ID 0}}
+    <br>
     [<a href="/sriracha/keyword/">{{T "Return"}}</a>]<br>
 {{end}}
 {{if or (and (eq .Manage.Keyword.ID 0) (May "keyword.add" $.Account $.Opt.Access)) (and (ne .Manage.Keyword.ID 0) (May "keyword.update" $.Account $.Opt.Access))}}
+    <br>
     <form method="post">
         <fieldset>
         <legend>{{if eq .Manage.Keyword.ID 0}}{{T "Add Keyword"}}{{else}}{{T "Update"}} {{.Manage.Keyword.Text}}{{end}}</legend>

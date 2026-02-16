@@ -243,20 +243,6 @@ func (s *Server) parseConfig(configFile string) error {
 		config.Locale = "en"
 	}
 
-	validateAccess := func(name string, v string) error {
-		switch v {
-		case "mod", "admin", "super-admin", "disable":
-			return nil
-		default:
-			return fmt.Errorf("action %s has unknown access level %s: must be 'mod', 'admin', 'super-admin' or 'disable'", name, v)
-		}
-	}
-	for name, v := range config.Access {
-		err = validateAccess(name, v)
-		if err != nil {
-			return err
-		}
-	}
 	defaultAccess := map[string]string{
 		"ban.add":        "mod",
 		"ban.shorten":    "admin",
@@ -278,8 +264,30 @@ func (s *Server) parseConfig(configFile string) error {
 		"post.move":      "mod",
 		"post.delete":    "mod",
 	}
+	validateAccess := func(name string, v string) error {
+		if _, ok := defaultAccess[name]; !ok && name != "default" {
+			return fmt.Errorf("access configuration contains unrecognized action %s", name)
+		}
+		switch v {
+		case "mod", "admin", "super-admin", "disable":
+			return nil
+		default:
+			return fmt.Errorf("action %s has unknown access level %s: must be 'mod', 'admin', 'super-admin' or 'disable'", name, v)
+		}
+	}
+	var defaultRequirement string
+	for name, v := range config.Access {
+		err = validateAccess(name, v)
+		if err != nil {
+			return err
+		} else if name == "default" {
+			defaultRequirement = v
+			delete(config.Access, name)
+		}
+	}
 	for name, v := range defaultAccess {
-		if config.Access[name] != "" {
+		if defaultRequirement != "" {
+			config.Access[name] = defaultRequirement
 			continue
 		}
 		config.Access[name] = v

@@ -1,31 +1,40 @@
 {{template "manage_begin.gohtml" .}}
+{{$mayAdd := May "page.add" $.Account $.Opt.Access}}
+{{$mayUpdate := May "page.update" $.Account $.Opt.Access}}
+{{$mayDelete := May "page.delete" $.Account $.Opt.Access}}
 <h2 class="managetitle">{{T "Pages"}}</h2>
 {{if ne (len .Manage.Pages) 0}}
     <table class="managetable">
         <tr>
             <th>{{T "Path"}}</th>
-            <th>&nbsp;</th>
+            {{if or $mayUpdate $mayDelete}}
+                <th>&nbsp;</th>
+            {{end}}
         </tr>
         {{range $i, $page := .Manage.Pages}}
             <tr>
                 <td><a href="{{$page.URL}}">{{$page.Path}}</a></td>
-                <td>
-                    {{if May "page.update" $.Account $.Opt.Access}}
-                        <form method="get" action="/sriracha/page/{{$page.ID}}"><input type="submit" value="{{T "Update"}}"></form>
-                        <form method="get" action="/sriracha/page/rebuild/{{$page.ID}}"><input type="submit" value="{{T "Rebuild"}}"></form>
-                    {{end}}
-                    {{if May "page.delete" $.Account $.Opt.Access}}
-                        <form method="get" action="/sriracha/page/delete/{{$page.ID}}" onsubmit="javascript:return confirm('Delete {{$page.Path}}?');"><input type="submit" value="{{T "Delete"}}"></form>
-                    {{end}}
-                </td>
+                {{if or $mayUpdate $mayDelete}}
+                    <td>
+                        {{if $mayUpdate}}
+                            <form method="get" action="/sriracha/page/{{$page.ID}}"><input type="submit" value="{{T "Update"}}"></form>
+                            <form method="get" action="/sriracha/page/rebuild/{{$page.ID}}"><input type="submit" value="{{T "Rebuild"}}"></form>
+                        {{end}}
+                        {{if $mayDelete}}
+                            <form method="get" action="/sriracha/page/delete/{{$page.ID}}" onsubmit="javascript:return confirm('Delete {{$page.Path}}?');"><input type="submit" value="{{T "Delete"}}"></form>
+                        {{end}}
+                    </td>
+                {{end}}
             </tr>
         {{end}}
-    </table><br>
-    {{if and (gt (len .Manage.Pages) 1) (May "page.update" $.Account $.Opt.Access)}}
+    </table>
+    {{if and (gt (len .Manage.Pages) 1) $mayUpdate}}
+        <br>
         <form method="get" action="/sriracha/page/rebuild/0"><input type="submit" value="{{T "Rebuild All"}}"></form><br><br>
     {{end}}
 {{end}}
-{{if or (and (eq .Manage.Page.ID 0) (May "page.add" $.Account $.Opt.Access)) (and (ne .Manage.Page.ID 0) (May "page.update" $.Account $.Opt.Access))}}
+{{if or (and (eq .Manage.Page.ID 0) $mayAdd) (and (ne .Manage.Page.ID 0) $mayUpdate)}}
+    <br>
     {{if eq .Manage.Page.ID 0}}
         <details>
             <summary>{{T "Add Page"}}</summary>

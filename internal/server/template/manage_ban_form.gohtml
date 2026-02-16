@@ -1,66 +1,71 @@
-<form name="sriracha" method="post">
-    {{if ne .Extra ""}}
-    <input type="hidden" name="confirmation" value="1">
+{{$mayAdd := May "ban.add" $.Account $.Opt.Access}}
+{{$mayUpdate := or (May "ban.shorten" $.Account $.Opt.Access) (May "ban.lengthen" $.Account $.Opt.Access)}}
+{{if or (and (eq .Manage.Ban nil) $mayAdd) (and (ne .Manage.Ban nil) $mayUpdate)}}
+    <br>
+    <form name="sriracha" method="post">
+        {{if ne .Extra ""}}
+        <input type="hidden" name="confirmation" value="1">
+        {{end}}
+        <fieldset>
+        <legend>{{if eq .Manage.Ban nil}}{{T "Add Ban"}}{{else}}{{T "Update"}} #{{.Manage.Ban.ID}}{{if HasPrefix .Manage.Ban.IP "r "}} - {{.Manage.Ban.TypeLabel}}{{end}}{{end}}</legend>
+        <table border="0" class="manageform">
+            {{if and (eq .Manage.Ban nil) (eq .Extra "")}}
+                <tr>
+                    <td class="postblock"><label for="ip">{{T "IP Address"}}</label></td>
+                    <td><input type="text" name="ip"></td>
+                    <td>{{T "IP address to ban. Wildcards (*) may be used to ban a range of addresses."}}</td>
+                </tr>
+            {{end}}
+            <tr>
+                <td class="postblock"><label for="expire">{{T "Expires"}}</label></td>
+                <td><input type="text" name="expire" value="{{if and (ne .Manage.Ban nil) (ne .Manage.Ban.Expire 0)}}{{.Manage.Ban.Expire}}{{end}}"></td>
+                <td><small><button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+3600;document.sriracha.reason.focus();return false;">{{T "1 Hour"}}</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+86400;document.sriracha.reason.focus();return false;">{{T "1 Day"}}</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+172800;document.sriracha.reason.focus();return false;">{{T "2 Days"}}</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+604800;document.sriracha.reason.focus();return false;">{{T "1 Week"}}</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+1209600;document.sriracha.reason.focus();return false;">{{T "2 Weeks"}}</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+2592000;document.sriracha.reason.focus();return false;">{{T "1 Month"}}</button>&nbsp;<button onclick="document.sriracha.expire.value='';document.sriracha.reason.focus();return false;">{{T "Never"}}</button></small></td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="reason">{{T "Reason"}}</label></td>
+                <td><input type="text" name="reason" value="{{if ne .Manage.Ban nil}}{{.Manage.Ban.Reason}}{{end}}"></td>
+                <td>{{T "Optional."}}</td>
+            </tr>
+            {{if and (May "banfile.add" $.Account $.Opt.Access) (and (and (eq .Manage.Ban nil) (ne .Extra "") (ne .Extra2 "")))}}
+                <tr>
+                    <td class="postblock"><label for="banfile">{{T "File"}}</label></td>
+                    <td><label><input type="checkbox" name="banfile" value="{{.Extra2}}"> {{T "Ban file"}}</label></td>
+                    <td>{{T "Permanently ban uploaded file."}}</td>
+                </tr>
+            {{end}}
+            <tr>
+                <td>&nbsp;</td>
+                <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.Ban nil}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        </fieldset>
+    </form>
+    <script type="text/javascript">
+    {{if eq .Manage.Ban nil}}
+        document.sriracha.ip.focus();
+    {{else}}
+        document.sriracha.expire.focus();
     {{end}}
-    <fieldset>
-    <legend>{{if eq .Manage.Ban nil}}{{T "Add Ban"}}{{else}}{{T "Update"}} #{{.Manage.Ban.ID}}{{if HasPrefix .Manage.Ban.IP "r "}} - {{.Manage.Ban.TypeLabel}}{{end}}{{end}}</legend>
-    <table border="0" class="manageform">
-        {{if and (eq .Manage.Ban nil) (eq .Extra "")}}
-            <tr>
-                <td class="postblock"><label for="ip">{{T "IP Address"}}</label></td>
-                <td><input type="text" name="ip"></td>
-                <td>{{T "IP address to ban. Wildcards (*) may be used to ban a range of addresses."}}</td>
-            </tr>
-        {{end}}
-        <tr>
-            <td class="postblock"><label for="expire">{{T "Expires"}}</label></td>
-            <td><input type="text" name="expire" value="{{if and (ne .Manage.Ban nil) (ne .Manage.Ban.Expire 0)}}{{.Manage.Ban.Expire}}{{end}}"></td>
-            <td><small><button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+3600;document.sriracha.reason.focus();return false;">{{T "1 Hour"}}</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+86400;document.sriracha.reason.focus();return false;">{{T "1 Day"}}</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+172800;document.sriracha.reason.focus();return false;">{{T "2 Days"}}</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+604800;document.sriracha.reason.focus();return false;">{{T "1 Week"}}</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+1209600;document.sriracha.reason.focus();return false;">{{T "2 Weeks"}}</button>&nbsp;<button onclick="document.sriracha.expire.value=Math.floor(Date.now()/1000)+2592000;document.sriracha.reason.focus();return false;">{{T "1 Month"}}</button>&nbsp;<button onclick="document.sriracha.expire.value='';document.sriracha.reason.focus();return false;">{{T "Never"}}</button></small></td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="reason">{{T "Reason"}}</label></td>
-            <td><input type="text" name="reason" value="{{if ne .Manage.Ban nil}}{{.Manage.Ban.Reason}}{{end}}"></td>
-            <td>{{T "Optional."}}</td>
-        </tr>
-        {{if and (May "banfile.add" $.Account $.Opt.Access) (and (and (eq .Manage.Ban nil) (ne .Extra "") (ne .Extra2 "")))}}
-            <tr>
-                <td class="postblock"><label for="banfile">{{T "File"}}</label></td>
-                <td><label><input type="checkbox" name="banfile" value="{{.Extra2}}"> {{T "Ban file"}}</label></td>
-                <td>{{T "Permanently ban uploaded file."}}</td>
-            </tr>
-        {{end}}
-        <tr>
-            <td>&nbsp;</td>
-            <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.Ban nil}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
-            <td>&nbsp;</td>
-        </tr>
-    </table>
-    </fieldset>
-</form>
+    </script>
+{{end}}
 {{if and (May "banfile.delete" $.Account $.Opt.Access) (and (eq .Manage.Ban nil) (eq .Extra ""))}}{{/* Admin */}}
-<br><br>
-<form method="post" enctype="multipart/form-data">
-    <fieldset>
-    <legend>{{T "Lift File Ban"}}</legend>
-    <table border="0" class="manageform">
-        <tr>
-            <td class="postblock"><label for="liftfile">{{T "File"}}</label></td>
-            <td><input type="file" name="liftfile"></td>
-            <td>&nbsp;</td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Lift"}}"></td>
-            <td>&nbsp;</td>
-        </tr>
-    </table>
-    </fieldset>
-</form>
+    <br><br>
+    <form method="post" enctype="multipart/form-data">
+        <fieldset>
+        <legend>{{T "Lift File Ban"}}</legend>
+        <table border="0" class="manageform">
+            <tr>
+                <td class="postblock"><label for="liftfile">{{T "File"}}</label></td>
+                <td><input type="file" name="liftfile"></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Lift"}}"></td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        </fieldset>
+    </form>
 {{end}}
-<script type="text/javascript">
-{{if eq .Manage.Ban nil}}
-    document.sriracha.ip.focus();
-{{else}}
-    document.sriracha.expire.focus();
-{{end}}
-</script>
