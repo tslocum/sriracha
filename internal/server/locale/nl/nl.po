@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-02-13 18:24+0000\n"
+"PO-Revision-Date: 2026-02-16 17:52+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -61,6 +61,9 @@ msgstr "Trefwoord toevoegen"
 
 msgid "Add News"
 msgstr "Nieuws toevoegen"
+
+msgid "Add Page"
+msgstr "Pagina toevoegen"
 
 msgid "Add notice"
 msgstr "Opmerking toevoegen"
@@ -157,6 +160,9 @@ msgstr "Instellen"
 
 msgid "Confirm"
 msgstr "Bevestigen"
+
+msgid "Content"
+msgstr "Inhoud"
 
 msgid "Create Thread"
 msgstr "Onderwerp toevoegen"
@@ -346,6 +352,9 @@ msgstr "Galerij"
 
 msgid "Global"
 msgstr "Globaal"
+
+msgid "HTML content of the page. Go HTML template actions are supported."
+msgstr "De html-inhoud van de pagina. Html-sjabloonacties zijn toegestaan."
 
 msgid "HTML-formatted text."
 msgstr "Opgemaakte tekst (html)."
@@ -721,11 +730,17 @@ msgstr "Optioneel."
 msgid "Overboard"
 msgstr "Overboard"
 
+msgid "Pages"
+msgstr "Pagina's"
+
 msgid "Password"
 msgstr "Wachtwoord"
 
 msgid "Paste a YouTube URL."
 msgstr "Plak een YouTube-url."
+
+msgid "Path"
+msgstr "Locatie"
 
 msgid "Permanently ban uploaded file."
 msgstr "Verban geüploade bestanden."
@@ -768,9 +783,23 @@ msgstr "Reden"
 msgid "Rebuild"
 msgstr "Herbouwen"
 
+msgid "Rebuild All"
+msgstr ""
+
+msgid "Rebuilt %s."
+msgstr ""
+
+msgid "Rebuilt all pages."
+msgstr ""
+
 msgid "Regular expression to search for when a new post is created."
 msgstr ""
 "De te zoeken reguliere uitdrukking na het opstellen van een nieuw bericht."
+
+msgid ""
+"Relative file path where the page is located, excluding the .html suffix."
+msgstr ""
+"De relatieve bestandslocatie van de pacina, zonder het html-achtervoegsel."
 
 msgid "Replies"
 msgstr "Antwoorden"

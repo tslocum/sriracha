@@ -61,6 +61,9 @@ msgstr "Shto Fjale Kyce"
 msgid "Add News"
 msgstr "Shto Lajm"
 
+msgid "Add Page"
+msgstr ""
+
 msgid "Add notice"
 msgstr "Shto njoftimin"
 
@@ -155,6 +158,9 @@ msgstr "Konfiguro"
 
 msgid "Confirm"
 msgstr "Konfirmo"
+
+msgid "Content"
+msgstr ""
 
 msgid "Create Thread"
 msgstr "Krijo nje Teme"
@@ -344,6 +350,9 @@ msgstr "Galeria"
 
 msgid "Global"
 msgstr "Globale"
+
+msgid "HTML content of the page. Go HTML template actions are supported."
+msgstr ""
 
 msgid "HTML-formatted text."
 msgstr "Tekst i formatuar ne HTML."
@@ -719,11 +728,17 @@ msgstr "Opcionale."
 msgid "Overboard"
 msgstr "Overboard-i"
 
+msgid "Pages"
+msgstr ""
+
 msgid "Password"
 msgstr "Fjalekalimi"
 
 msgid "Paste a YouTube URL."
 msgstr "Ngjit nje URL te YouTube-it."
+
+msgid "Path"
+msgstr ""
 
 msgid "Permanently ban uploaded file."
 msgstr "Deno pergjithmone skedarin e ngarkuar."
@@ -767,8 +782,21 @@ msgstr "Arsyja"
 msgid "Rebuild"
 msgstr "Rikrijo"
 
+msgid "Rebuild All"
+msgstr ""
+
+msgid "Rebuilt %s."
+msgstr ""
+
+msgid "Rebuilt all pages."
+msgstr ""
+
 msgid "Regular expression to search for when a new post is created."
 msgstr "Regular expression per t'u kerkuar kur krijohet nje postim i ri."
+
+msgid ""
+"Relative file path where the page is located, excluding the .html suffix."
+msgstr ""
 
 msgid "Replies"
 msgstr "Replikat"

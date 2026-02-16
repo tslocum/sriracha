@@ -58,6 +58,9 @@ msgstr ""
 msgid "Add News"
 msgstr ""
 
+msgid "Add Page"
+msgstr ""
+
 msgid "Add notice"
 msgstr ""
 
@@ -149,6 +152,9 @@ msgid "Configure"
 msgstr ""
 
 msgid "Confirm"
+msgstr ""
+
+msgid "Content"
 msgstr ""
 
 msgid "Create Thread"
@@ -331,6 +337,9 @@ msgid "Gallery"
 msgstr ""
 
 msgid "Global"
+msgstr ""
+
+msgid "HTML content of the page. Go HTML template actions are supported."
 msgstr ""
 
 msgid "HTML-formatted text."
@@ -674,10 +683,16 @@ msgstr ""
 msgid "Overboard"
 msgstr ""
 
+msgid "Pages"
+msgstr ""
+
 msgid "Password"
 msgstr ""
 
 msgid "Paste a YouTube URL."
+msgstr ""
+
+msgid "Path"
 msgstr ""
 
 msgid "Permanently ban uploaded file."
@@ -719,7 +734,20 @@ msgstr ""
 msgid "Rebuild"
 msgstr ""
 
+msgid "Rebuild All"
+msgstr ""
+
+msgid "Rebuilt %s."
+msgstr ""
+
+msgid "Rebuilt all pages."
+msgstr ""
+
 msgid "Regular expression to search for when a new post is created."
+msgstr ""
+
+msgid ""
+"Relative file path where the page is located, excluding the .html suffix."
 msgstr ""
 
 msgid "Replies"

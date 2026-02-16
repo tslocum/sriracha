@@ -61,6 +61,9 @@ msgstr ""
 msgid "Add News"
 msgstr ""
 
+msgid "Add Page"
+msgstr ""
+
 msgid "Add notice"
 msgstr ""
 
@@ -153,6 +156,9 @@ msgstr ""
 
 msgid "Confirm"
 msgstr "Vahvista"
+
+msgid "Content"
+msgstr ""
 
 msgid "Create Thread"
 msgstr "Luo viestiketju"
@@ -333,6 +339,9 @@ msgid "Gallery"
 msgstr ""
 
 msgid "Global"
+msgstr ""
+
+msgid "HTML content of the page. Go HTML template actions are supported."
 msgstr ""
 
 msgid "HTML-formatted text."
@@ -677,11 +686,17 @@ msgstr ""
 msgid "Overboard"
 msgstr "Yli laidan"
 
+msgid "Pages"
+msgstr ""
+
 msgid "Password"
 msgstr "Salasana"
 
 msgid "Paste a YouTube URL."
 msgstr "Liitä YouTuben URL-osoite."
+
+msgid "Path"
+msgstr ""
 
 msgid "Permanently ban uploaded file."
 msgstr ""
@@ -722,7 +737,20 @@ msgstr ""
 msgid "Rebuild"
 msgstr ""
 
+msgid "Rebuild All"
+msgstr ""
+
+msgid "Rebuilt %s."
+msgstr ""
+
+msgid "Rebuilt all pages."
+msgstr ""
+
 msgid "Regular expression to search for when a new post is created."
+msgstr ""
+
+msgid ""
+"Relative file path where the page is located, excluding the .html suffix."
 msgstr ""
 
 msgid "Replies"
