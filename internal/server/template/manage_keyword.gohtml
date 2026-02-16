@@ -30,14 +30,12 @@
                 {{end}}
             </tr>
         {{end}}
-    </table>
+    </table><br>
 {{end}}
 {{if ne .Manage.Keyword.ID 0}}
-    <br>
     [<a href="/sriracha/keyword/">{{T "Return"}}</a>]<br>
 {{end}}
 {{if or (and (eq .Manage.Keyword.ID 0) (May "keyword.add" $.Account $.Opt.Access)) (and (ne .Manage.Keyword.ID 0) (May "keyword.update" $.Account $.Opt.Access))}}
-    <br>
     <form method="post">
         <fieldset>
         <legend>{{if eq .Manage.Keyword.ID 0}}{{T "Add Keyword"}}{{else}}{{T "Update"}} {{.Manage.Keyword.Text}}{{end}}</legend>
@@ -75,6 +73,6 @@
             </tr>
         </table>
         </fieldset>
-    </form>
+    </form><br>
 {{end}}
 {{template "manage_end.gohtml" .}}

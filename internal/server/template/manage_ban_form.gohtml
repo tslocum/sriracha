@@ -1,7 +1,6 @@
 {{$mayAdd := May "ban.add" $.Account $.Opt.Access}}
 {{$mayUpdate := or (May "ban.shorten" $.Account $.Opt.Access) (May "ban.lengthen" $.Account $.Opt.Access)}}
 {{if or (and (eq .Manage.Ban nil) $mayAdd) (and (ne .Manage.Ban nil) $mayUpdate)}}
-    <br>
     <form name="sriracha" method="post">
         {{if ne .Extra ""}}
         <input type="hidden" name="confirmation" value="1">
@@ -40,7 +39,7 @@
             </tr>
         </table>
         </fieldset>
-    </form>
+    </form><br>
     <script type="text/javascript">
     {{if eq .Manage.Ban nil}}
         document.sriracha.ip.focus();
@@ -50,7 +49,7 @@
     </script>
 {{end}}
 {{if and (May "banfile.delete" $.Account $.Opt.Access) (and (eq .Manage.Ban nil) (eq .Extra ""))}}{{/* Admin */}}
-    <br><br>
+    <br>
     <form method="post" enctype="multipart/form-data">
         <fieldset>
         <legend>{{T "Lift File Ban"}}</legend>
@@ -67,5 +66,5 @@
             </tr>
         </table>
         </fieldset>
-    </form>
+    </form><br>
 {{end}}

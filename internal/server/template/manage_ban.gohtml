@@ -34,10 +34,9 @@
                 {{end}}
             </tr>
         {{end}}
-    </table>
+    </table><br>
 {{end}}
 {{if ne .Manage.Ban nil}}
-    <br>
     [<a href="/sriracha/ban/">{{T "Return"}}</a>]<br>
 {{end}}
 {{template "manage_ban_form.gohtml" .}}
