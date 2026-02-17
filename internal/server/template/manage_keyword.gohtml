@@ -36,9 +36,15 @@
     [<a href="/sriracha/keyword/">{{T "Return"}}</a>]<br>
 {{end}}
 {{if or (and (eq .Manage.Keyword.ID 0) (May "keyword.add" $.Account $.Opt.Access)) (and (ne .Manage.Keyword.ID 0) (May "keyword.update" $.Account $.Opt.Access))}}
+    {{if eq .Manage.Keyword.ID 0}}
+        <br>
+        <details>
+            <summary>{{T "Add Keyword"}}</summary>
+            <div>
+    {{end}}
     <form method="post">
         <fieldset>
-        <legend>{{if eq .Manage.Keyword.ID 0}}{{T "Add Keyword"}}{{else}}{{T "Update"}} {{.Manage.Keyword.Text}}{{end}}</legend>
+        {{if ne .Manage.Keyword.ID 0}}<legend>{{T "Update"}} {{.Manage.Keyword.Text}}</legend>{{end}}
         <table border="0" class="manageform">
             <tr>
                 <td class="postblock"><label for="text">{{T "Text"}}</label></td>
@@ -77,6 +83,11 @@
             </tr>
         </table>
         </fieldset>
-    </form><br>
+    </form>
+    {{if eq .Manage.Keyword.ID 0}}
+            </div>
+        </details>
+    {{end}}
 {{end}}
+<br>
 {{template "manage_end.gohtml" .}}

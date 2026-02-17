@@ -18,12 +18,17 @@
         {{end}}
     </table><br>
 {{end}}
-{{if ne .Manage.Account nil}}
+{{if eq .Manage.Account nil}}
+    <br>
+    <details>
+        <summary>{{T "Add Account"}}</summary>
+        <div>
+{{else}}
     [<a href="/sriracha/account/">{{T "Return"}}</a>]<br>
 {{end}}
 <form method="post">
     <fieldset>
-    <legend>{{if eq .Manage.Account nil}}{{T "Add Account"}}{{else}}{{T "Update %s" .Manage.Account.Username}}{{end}}</legend>
+    {{if ne .Manage.Account nil}}<legend>{{T "Update %s" .Manage.Account.Username}}</legend>{{end}}
     <table border="0" class="manageform">
         <tr>
             <td class="postblock"><label for="dir">{{T "Username"}}</label></td>
@@ -56,5 +61,10 @@
         </tr>
     </table>
     </fieldset>
-</form><br>
+</form>
+{{if eq .Manage.Account nil}}
+        </div>
+    </details>
+{{end}}
+<br>
 {{template "manage_end.gohtml" .}}

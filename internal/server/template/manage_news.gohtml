@@ -27,12 +27,17 @@
         {{end}}
     </table><br>
 {{end}}
-{{if ne .Manage.News nil}}
+{{if eq .Manage.News nil}}
+    <br>
+    <details>
+        <summary>{{T "Add News"}}</summary>
+        <div>
+{{else}}
     [<a href="/sriracha/news/">{{T "Return"}}</a>]<br>
 {{end}}
 <form method="post">
     <fieldset>
-    <legend>{{if eq .Manage.News nil}}{{T "Add News"}}{{else}}{{if .Manage.News.MayUpdate $.Account}}{{T "Update"}} {{end}}{{if ne .Manage.News.Subject ""}}{{.Manage.News.Subject}}{{else}}#{{.Manage.News.ID}}{{end}}{{end}}</legend>
+    {{if ne .Manage.News nil}}<legend>{{if .Manage.News.MayUpdate $.Account}}{{T "Update"}} {{end}}{{if ne .Manage.News.Subject ""}}{{.Manage.News.Subject}}{{else}}#{{.Manage.News.ID}}{{end}}</legend>{{end}}
     <table border="0" class="manageform">
         <tr>
             <td class="postblock"><label for="timestamp">{{T "Date"}}</label></td>
@@ -74,5 +79,10 @@
         {{end}}
     </table>
     </fieldset>
-</form><br>
+</form>
+{{if eq .Manage.News nil}}
+        </div>
+    </details>
+{{end}}
+<br>
 {{template "manage_end.gohtml" .}}
