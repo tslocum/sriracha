@@ -66,7 +66,11 @@
             <tr>
                 <td class="postblock"><label for="boards">{{T "Boards"}}</label></td>
                 <td>{{template "manage_input_board.gohtml" (Slice .Boards .Manage.Banner)}}</td>
-                <td>{{T "Boards where the banner is displayed."}}</td>
+                <td>
+                    {{T "Boards where the banner is displayed."}}<br>
+                    &nbsp;&nbsp;<a href="#" onclick="return setAllBoards(true);">{{T "Enable All"}}</a><br>
+                    &nbsp;&nbsp;<a href="#" onclick="return setAllBoards(false);">{{T "Disable All"}}</a>
+                </td>
             </tr>
             <tr>
                 <td class="postblock"><label for="overboard">{{T "Overboard"}}</label></td>

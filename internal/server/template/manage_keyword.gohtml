@@ -64,7 +64,11 @@
             <tr>
                 <td class="postblock"><label for="boards">{{T "Boards"}}</label></td>
                 <td>{{template "manage_input_board.gohtml" (Slice .Boards .Manage.Keyword)}}</td>
-                <td>{{T "Boards where the keyword applies."}}</td>
+                <td>
+                    {{T "Boards where the keyword applies."}}<br>
+                    &nbsp;&nbsp;<a href="#" onclick="return setAllBoards(true);">{{T "Enable All"}}</a><br>
+                    &nbsp;&nbsp;<a href="#" onclick="return setAllBoards(false);">{{T "Disable All"}}</a>
+                </td>
             </tr>
             <tr>
                 <td>&nbsp;</td>

@@ -7,10 +7,18 @@ function liftBan(id) {
     return true;
 }
 
-function setAllUploads(enabled) {
+function setAllBoards(enable) {
+    var boards = document.getElementsByName('boards');
+    for (var i = 0; i < boards.length; i++) {
+        boards[i].checked = enable;
+    }
+    return false;
+}
+
+function setAllUploads(enable) {
     var uploads = document.getElementsByName('uploads');
     for (var i = 0; i < uploads.length; i++) {
-        uploads[i].checked = enabled;
+        uploads[i].checked = enable;
     }
     return false;
 }
