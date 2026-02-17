@@ -3,15 +3,15 @@
 {{if ne (len .Manage.AllNews) 0}}
     <table class="managetable">
         <tr>
-            <th>{{T "Author"}}</th>
             <th>{{T "Subject"}}</th>
+            <th>{{T "Author"}}</th>
             <th>{{T "Date"}}</th>
             <th>&nbsp;</th>
         </tr>
         {{range $i, $news := .Manage.AllNews}}
             <tr>
+                <td>{{if $news.Published}}<a href="/news-{{$news.ID}}.html">{{end}}{{if ne $news.Subject ""}}{{$news.Subject}}{{else}}{{T "No subject"}}{{end}}{{if $news.Published}}</a>{{end}}</td>
                 <td>{{if ne $news.Account nil}}{{$news.Account.Username}}{{else}}{{T "None"}}{{end}}</td>
-                <td>{{if ne $news.Subject ""}}{{$news.Subject}}{{else}}{{T "No subject"}}{{end}}</td>
                 <td>{{$news.DateLabel}}</td>
                 <td>
                     {{if .MayUpdate $.Account}}

@@ -27,13 +27,15 @@
                 </td>
             </tr>
         {{end}}
-    </table><br>
+    </table>
 {{end}}
 {{if and (eq .Manage.Board.ID 0) (or (May "banner.add" $.Account $.Opt.Access) (or (May "banner.update" $.Account $.Opt.Access) (May "banner.delete" $.Account $.Opt.Access)))}}
-    <form method="get" action="/sriracha/banner/"><input type="submit" value="{{T "Manage Banners"}}"></form><br><br><br>
+    <br>
+    <form method="get" action="/sriracha/banner/"><input type="submit" value="{{T "Manage Banners"}}"></form><br><br>
 {{end}}
 {{if or (ne .Manage.Board.ID 0) (May "board.add" $.Account $.Opt.Access)}}
     {{if eq .Manage.Board.ID 0}}
+        <br>
         <details>
             <summary>{{T "Add Board"}}</summary>
             <div>

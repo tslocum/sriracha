@@ -35,6 +35,7 @@
 {{end}}
 {{if or (and (eq .Manage.Page.ID 0) $mayAdd) (and (ne .Manage.Page.ID 0) $mayUpdate)}}
     {{if eq .Manage.Page.ID 0}}
+        <br>
         <details>
             <summary>{{T "Add Page"}}</summary>
             <div>

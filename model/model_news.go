@@ -62,3 +62,10 @@ func (n *News) DateLabel() template.HTML {
 		return FormatTimestamp(n.Timestamp)
 	}
 }
+
+func (n *News) Published() bool {
+	if n.Timestamp == 0 {
+		return false
+	}
+	return n.Timestamp <= time.Now().Unix()
+}
