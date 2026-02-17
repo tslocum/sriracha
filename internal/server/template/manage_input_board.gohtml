@@ -1,10 +1,12 @@
-{{if eq (len .Boards) 0}}
+{{$boards := index . 0}}
+{{$data := index . 1}}
+{{if eq (len $boards) 0}}
     {{T "None"}}
 {{else}}
-    {{range $i, $board := .Boards}}
+    {{range $i, $board := $boards}}
         {{if ne $i 0}}
             <br>
         {{end}}
-        <label><input type="checkbox" name="boards" value="{{$board.ID}}"{{if and (ne $.Manage.Keyword nil) ($.Manage.Keyword.HasBoard $board.ID)}} checked{{end}}> {{$board.Path}} {{$board.Name}}</label>
+        <label><input type="checkbox" name="boards" value="{{$board.ID}}"{{if and (ne $data nil) ($data.HasBoard $board.ID)}} checked{{end}}> {{$board.Path}} {{$board.Name}}</label>
     {{end}}
 {{end}}

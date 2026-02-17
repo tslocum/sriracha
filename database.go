@@ -89,6 +89,14 @@ type DB interface {
 	UpdateNews(n *News)
 	DeleteNews(id int)
 
+	// Page.
+	AddPage(p *Page)
+	PageByID(id int) *Page
+	PageByPath(path string) *Page
+	AllPages() []*Page
+	UpdatePage(p *Page)
+	DeletePage(id int)
+
 	// Post.
 	AddPost(p *Post)
 	AllThreads(board *Board, moderated bool) [][2]int

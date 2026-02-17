@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha512"
 	"embed"
@@ -8,6 +9,7 @@ import (
 	"flag"
 	"fmt"
 	"html/template"
+	"image"
 	"io"
 	"io/fs"
 	"log"
@@ -59,6 +61,12 @@ var defaultServerEmbeds = [][2]string{
 	{"SoundCloud", "https://soundcloud.com/oembed?format=json&url=SRIRACHA_EMBED"},
 }
 
+const (
+	bannerOverboard = -1
+	bannerNews      = -2
+	bannerPages     = -3
+)
+
 func init() {
 	gotext.SetDomain("sriracha")
 }
@@ -99,6 +107,7 @@ type ServerOptions struct {
 	Locales          map[string]string
 	LocalesSorted    []string
 	Access           map[string]string
+	Banners          map[int][]*Banner
 	DevMode          bool
 	FuncMaps         map[string]template.FuncMap
 }
@@ -143,6 +152,9 @@ type Server struct {
 
 func NewServer() *Server {
 	return &Server{
+		opt: ServerOptions{
+			Banners: make(map[int][]*Banner),
+		},
 		rebuildQueue: make(chan *rebuildInfo),
 	}
 }
@@ -250,6 +262,9 @@ func (s *Server) parseConfig(configFile string) error {
 		"ban.delete":     "admin",
 		"banfile.add":    "mod",
 		"banfile.delete": "admin",
+		"banner.add":     "admin",
+		"banner.update":  "admin",
+		"banner.delete":  "super-admin",
 		"board.add":      "admin",
 		"board.update":   "admin",
 		"board.delete":   "super-admin",
@@ -656,6 +671,34 @@ func (s *Server) log(db *database.DB, account *Account, board *Board, action str
 		Message: action,
 		Changes: info,
 	})
+}
+
+func (s *Server) refreshBannerCache(db *database.DB) {
+	banners := s.opt.Banners
+	for id := range banners {
+		banners[id] = banners[id][:0]
+	}
+
+	for _, banner := range db.AllBanners() {
+		for _, board := range banner.Boards {
+			banners[board.ID] = append(banners[board.ID], banner)
+		}
+		if banner.Overboard {
+			banners[bannerOverboard] = append(banners[bannerOverboard], banner)
+		}
+		if banner.News {
+			banners[bannerNews] = append(banners[bannerNews], banner)
+		}
+		if banner.Pages {
+			banners[bannerPages] = append(banners[bannerPages], banner)
+		}
+	}
+
+	for id := range banners {
+		if len(banners[id]) == 0 {
+			delete(banners, id)
+		}
+	}
 }
 
 func (s *Server) deletePostFiles(p *Post) {
@@ -1216,6 +1259,8 @@ func (s *Server) serveManage(db *database.DB, w http.ResponseWriter, r *http.Req
 		s.servePreference(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/account"):
 		s.serveAccount(data, db, w, r)
+	case strings.HasPrefix(r.URL.Path, "/sriracha/banner"):
+		s.serveBanner(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/ban"):
 		s.serveBan(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/board"):
@@ -1576,6 +1621,15 @@ func (s *Server) Run() error {
 		}
 	}
 
+	bannerDir := filepath.Join(s.config.Root, "banner")
+	_, err = os.Stat(bannerDir)
+	if os.IsNotExist(err) {
+		err := os.Mkdir(bannerDir, NewDirPermission)
+		if err != nil {
+			log.Fatalf("failed to create banner directory: %s", err)
+		}
+	}
+
 	siteIndexFile := filepath.Join(s.config.Root, "index.html")
 	_, err = os.Stat(siteIndexFile)
 	if os.IsNotExist(err) {
@@ -1587,10 +1641,11 @@ func (s *Server) Run() error {
 
 	// Rebuild everything on startup when explicitly requested and after upgrading.
 	db := s.begin()
+	s.refreshBannerCache(db)
 	sv := db.GetString("sv") // Sriracha version.
 	if sv != SrirachaVersion {
 		if sv != "" {
-			fmt.Printf("Upgraded from Sriracha version %s to %s\n", sv, SrirachaVersion)
+			fmt.Printf("Upgraded from Sriracha version %s to %s, rebuilding...\n", sv, SrirachaVersion)
 			rebuild = true
 		}
 		db.SaveString("sv", SrirachaVersion)
@@ -1674,6 +1729,14 @@ func (s *Server) requestIP(r *http.Request) string {
 
 func (s *Server) hashIP(r *http.Request) string {
 	return s._hashIP(s.requestIP(r))
+}
+
+func (s *Server) imageDimensions(buf []byte) (int, int) {
+	imgConfig, _, err := image.DecodeConfig(bytes.NewReader(buf))
+	if err != nil {
+		return 0, 0
+	}
+	return imgConfig.Width, imgConfig.Height
 }
 
 func (s *Server) Stop() {

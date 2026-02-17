@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"path/filepath"
@@ -24,6 +25,8 @@ type manageData struct {
 	Accounts []*Account
 	Ban      *Ban
 	Bans     []*Ban
+	Banner   *Banner
+	Banners  []*Banner
 	Board    *Board
 	Boards   []*Board
 	Keyword  *Keyword
@@ -165,6 +168,17 @@ func (data *templateData) execute(w io.Writer) {
 var expandableMedia = []string{".bmp", ".gif", ".jpg", ".png", ".svg", ".tif"}
 
 var templateFuncMap = template.FuncMap{
+	"Banner": func(banners []*Banner) *Banner {
+		l := len(banners)
+		switch l {
+		case 0:
+			return nil
+		case 1:
+			return banners[0]
+		default:
+			return banners[rand.Intn(l)]
+		}
+	},
 	"Contains": strings.Contains,
 	"Format": func(text string) template.HTML {
 		return template.HTML(strings.ReplaceAll(text, "\n", "<br>\n"))

@@ -27,6 +27,23 @@ CREATE UNIQUE INDEX ON ban (ip);
 -- v9: 	hash char(64) PRIMARY KEY
 -- v9: );
 
+-- v13: CREATE TABLE banner (
+-- v13: 	id serial PRIMARY KEY,
+-- v13: 	name text NOT NULL,
+-- v13: 	width smallint NOT NULL,
+-- v13: 	height smallint NOT NULL,
+-- v13: 	overboard smallint NOT NULL,
+-- v13: 	news smallint NOT NULL,
+-- v13: 	pages smallint NOT NULL
+-- v13: );
+-- v13: CREATE UNIQUE INDEX ON banner (name);
+
+-- v13: CREATE TABLE banner_board (
+-- v13: 	banner smallint NOT NULL REFERENCES banner (id) ON DELETE CASCADE,
+-- v13: 	board smallint NOT NULL REFERENCES board (id) ON DELETE CASCADE,
+-- v13: 	PRIMARY KEY	(banner, board)
+-- v13: );
+
 CREATE TABLE board (
 	id smallserial PRIMARY KEY,
 	dir varchar(255) NOT NULL,
@@ -124,6 +141,7 @@ CREATE TABLE log (
 -- v12: 	path text NOT NULL,
 -- v12: 	content text NOT NULL
 -- v12: );
+-- v13: CREATE UNIQUE INDEX ON page (path);
 
 CREATE TABLE post (
 	id serial PRIMARY KEY,
@@ -233,4 +251,22 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 		content text NOT NULL
 	);
 	UPDATE config SET value = '12' WHERE name = 'version';`,
+	// Version 13.
+	`CREATE UNIQUE INDEX ON page (path);
+	CREATE TABLE banner (
+		id serial PRIMARY KEY,
+		name text NOT NULL,
+		width smallint NOT NULL,
+		height smallint NOT NULL,
+		overboard smallint NOT NULL,
+		news smallint NOT NULL,
+		pages smallint NOT NULL
+	);
+	CREATE UNIQUE INDEX ON banner (name);
+	CREATE TABLE banner_board (
+		banner smallint NOT NULL REFERENCES banner (id) ON DELETE CASCADE,
+		board smallint NOT NULL REFERENCES board (id) ON DELETE CASCADE,
+		PRIMARY KEY	(banner, board)
+	);
+	UPDATE config SET value = '13' WHERE name = 'version';`,
 }

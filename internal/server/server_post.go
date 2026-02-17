@@ -357,11 +357,11 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 			log.Fatal(err)
 		}
 
-		imgConfig, _, err := image.DecodeConfig(bytes.NewReader(buf))
-		if err != nil {
+		imgWidth, imgHeight := s.imageDimensions(buf)
+		if imgWidth == 0 || imgHeight == 0 {
 			return fmt.Errorf("unsupported thumbnail filetype")
 		}
-		p.FileWidth, p.FileHeight = imgConfig.Width, imgConfig.Height
+		p.FileWidth, p.FileHeight = imgWidth, imgHeight
 
 		return createPostThumbnail(p, buf, "image/png", false, thumbPath)
 	}
@@ -375,11 +375,11 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 
 	isImage := p.FileMIME == "image/jpeg" || p.FileMIME == "image/pjpeg" || p.FileMIME == "image/png" || p.FileMIME == "image/gif"
 	if isImage {
-		imgConfig, _, err := image.DecodeConfig(bytes.NewReader(buf))
-		if err != nil {
+		imgWidth, imgHeight := s.imageDimensions(buf)
+		if imgWidth == 0 || imgHeight == 0 {
 			return fmt.Errorf("unsupported filetype")
 		}
-		p.FileWidth, p.FileHeight = imgConfig.Width, imgConfig.Height
+		p.FileWidth, p.FileHeight = imgWidth, imgHeight
 
 		return createPostThumbnail(p, buf, p.FileMIME, false, thumbPath)
 	}

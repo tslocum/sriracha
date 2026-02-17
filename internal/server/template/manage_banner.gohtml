@@ -1,0 +1,109 @@
+{{template "manage_begin.gohtml" .}}
+{{$mayAdd := May "banner.add" $.Account $.Opt.Access}}
+{{$mayUpdate := May "banner.update" $.Account $.Opt.Access}}
+{{$mayDelete := May "banner.delete" $.Account $.Opt.Access}}
+<h2 class="managetitle">{{T "Banners"}}</h2>
+{{if ne (len .Manage.Banners) 0}}
+    <table class="managetable">
+        <tr>
+            <th>{{T "Name"}}</th>
+            <th>{{T "Dimensions"}}</th>
+            <th>{{T "Boards"}}</th>
+            <th>{{T "Overboard"}}</th>
+            <th>{{T "News"}}</th>
+            <th>{{T "Pages"}}</th>
+            {{if or $mayUpdate $mayDelete}}
+                <th>&nbsp;</th>
+            {{end}}
+        </tr>
+        {{range $i, $banner := .Manage.Banners}}
+            <tr>
+                <td><a href="/banner/{{$banner.Name}}">{{$banner.Name}}</a></td>
+                <td>{{$banner.Width}}x{{$banner.Height}}</td>
+                <td>{{template "manage_print_board.gohtml" $banner.Boards}}</td>
+                <td>{{if $banner.Overboard}}{{T "Visible"}}{{else}}{{T "Hidden"}}{{end}}</td>
+                <td>{{if $banner.News}}{{T "Visible"}}{{else}}{{T "Hidden"}}{{end}}</td>
+                <td>{{if $banner.Pages}}{{T "Visible"}}{{else}}{{T "Hidden"}}{{end}}</td>
+                {{if or $mayUpdate $mayDelete}}
+                    <td>
+                        {{if $mayUpdate}}
+                            <form method="get" action="/sriracha/banner/{{$banner.ID}}"><input type="submit" value="{{T "Update"}}"></form>
+                        {{end}}
+                        {{if $mayDelete}}
+                            <form method="get" action="/sriracha/banner/delete/{{$banner.ID}}" onsubmit="javascript:return confirm('Delete {{$banner.Name}}?');"><input type="submit" value="{{T "Delete"}}"></form>
+                        {{end}}
+                    </td>
+                {{end}}
+            </tr>
+        {{end}}
+    </table>
+{{end}}
+{{if or (and (eq .Manage.Banner.ID 0) $mayAdd) (and (ne .Manage.Banner.ID 0) $mayUpdate)}}
+    {{if eq .Manage.Banner.ID 0}}
+        <br>
+        <details>
+            <summary>{{T "Add Banner"}}</summary>
+            <div>
+    {{else}}
+        [<a href="/sriracha/banner/">{{T "Return"}}</a>]<br>
+    {{end}}
+    <form method="post" enctype="multipart/form-data">
+        <fieldset>
+        {{if and (ne .Manage.Banner nil) (ne .Manage.Banner.ID 0)}}
+            <legend>{{T "Update"}} {{.Manage.Banner.Name}}</legend>
+        {{end}}
+        <table border="0" class="manageform">
+            <tr>
+                <td class="postblock"><label for="name">{{T "Name"}}</label></td>
+                <td><input type="text" name="name" value="{{if ne .Manage.Banner nil}}{{.Manage.Banner.Name}}{{end}}"></td>
+                <td>{{T "File name."}}</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="file">{{T "File"}}</label></td>
+                <td><input type="file" name="file"></td>
+                <td>{{if or (eq .Manage.Banner nil) (eq .Manage.Banner.ID 0)}}{{T "Required."}}{{else}}{{T "Optional."}}{{end}}</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="boards">{{T "Boards"}}</label></td>
+                <td>{{template "manage_input_board.gohtml" (Slice .Boards .Manage.Banner)}}</td>
+                <td>{{T "Boards where the banner is displayed."}}</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="overboard">{{T "Overboard"}}</label></td>
+                <td><select name="overboard" style="width: 100%;">
+                    <option value="0"{{if and (ne .Manage.Banner nil) (not .Manage.Banner.Overboard)}} selected{{end}}>{{T "Disable"}}</option>
+                    <option value="1"{{if and (ne .Manage.Banner nil) (.Manage.Banner.Overboard)}} selected{{end}}>{{T "Enable"}}</option>
+                </select></td>
+                <td>{{T "Whether the banner is displayed in overboard pages."}}</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="news">{{T "News"}}</label></td>
+                <td><select name="news" style="width: 100%;">
+                    <option value="0"{{if and (ne .Manage.Banner nil) (not .Manage.Banner.News)}} selected{{end}}>{{T "Disable"}}</option>
+                    <option value="1"{{if and (ne .Manage.Banner nil) (.Manage.Banner.News)}} selected{{end}}>{{T "Enable"}}</option>
+                </select></td>
+                <td>{{T "Whether the banner is displayed in news pages."}}</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="pages">{{T "Pages"}}</label></td>
+                <td><select name="pages" style="width: 100%;">
+                    <option value="0"{{if and (ne .Manage.Banner nil) (not .Manage.Banner.Pages)}} selected{{end}}>{{T "Disable"}}</option>
+                    <option value="1"{{if and (ne .Manage.Banner nil) (.Manage.Banner.Pages)}} selected{{end}}>{{T "Enable"}}</option>
+                </select></td>
+                <td>{{T "Whether the banner is displayed in custom pages."}}</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if or (eq .Manage.Banner nil) (eq .Manage.Banner.ID 0)}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        </fieldset>
+    </form>
+    {{if eq .Manage.Banner.ID 0}}
+        </div>
+    </details>
+    {{end}}
+    <br>
+{{end}}
+{{template "manage_end.gohtml" .}}

@@ -46,6 +46,9 @@ msgstr ""
 msgid "Add Ban"
 msgstr ""
 
+msgid "Add Banner"
+msgstr ""
+
 msgid "Add Board"
 msgstr ""
 
@@ -109,6 +112,9 @@ msgstr ""
 msgid "Ban file"
 msgstr ""
 
+msgid "Banners"
+msgstr ""
+
 msgid "Bans"
 msgstr ""
 
@@ -119,6 +125,9 @@ msgid "Board description, which is used by search engines."
 msgstr ""
 
 msgid "Boards"
+msgstr ""
+
+msgid "Boards where the banner is displayed."
 msgstr ""
 
 msgid "Boards where the keyword applies."
@@ -240,6 +249,9 @@ msgstr ""
 msgid "Detected banned keyword."
 msgstr ""
 
+msgid "Dimensions"
+msgstr ""
+
 msgid "Dir"
 msgstr ""
 
@@ -312,6 +324,9 @@ msgstr ""
 msgid "File Types"
 msgstr ""
 
+msgid "File name."
+msgstr ""
+
 msgid "Files"
 msgstr ""
 
@@ -337,6 +352,9 @@ msgid "HTML-formatted text shown in the new post form."
 msgstr ""
 
 msgid "Help translate Sriracha"
+msgstr ""
+
+msgid "Hidden"
 msgstr ""
 
 msgid "Hide everywhere"
@@ -433,6 +451,9 @@ msgid "Logs"
 msgstr ""
 
 msgid "Manage"
+msgstr ""
+
+msgid "Manage Banners"
 msgstr ""
 
 msgid "Manage mode"
@@ -875,6 +896,9 @@ msgstr ""
 msgid "Visibility"
 msgstr ""
 
+msgid "Visible"
+msgstr ""
+
 msgid "Visitors may embed media from selected services instead of uploading a file."
 msgstr ""
 
@@ -891,6 +915,15 @@ msgid "Whether new posts may be created."
 msgstr ""
 
 msgid "Whether reference links are displayed next to No.## pointing to all visible replies mentioning a post."
+msgstr ""
+
+msgid "Whether the banner is displayed in custom pages."
+msgstr ""
+
+msgid "Whether the banner is displayed in news pages."
+msgstr ""
+
+msgid "Whether the banner is displayed in overboard pages."
 msgstr ""
 
 msgid "Whether visitors may browse attachments as an image gallery."
