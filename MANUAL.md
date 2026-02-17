@@ -237,6 +237,9 @@ dbname: "sriracha"
 #  ban.delete:     admin
 #  banfile.add:    mod
 #  banfile.delete: admin
+#  banner.add:     admin
+#  banner.update:  admin
+#  banner.delete:  super-admin
 #  board.add:      admin
 #  board.update:   admin
 #  board.delete:   super-admin
