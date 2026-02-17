@@ -301,7 +301,9 @@ func (s *Server) parseConfig(configFile string) error {
 		}
 	}
 	for name, v := range defaultAccess {
-		if defaultRequirement != "" {
+		if config.Access[name] != "" {
+			continue
+		} else if defaultRequirement != "" {
 			config.Access[name] = defaultRequirement
 			continue
 		}
