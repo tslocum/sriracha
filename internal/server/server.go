@@ -1552,6 +1552,7 @@ func (s *Server) handleRebuild() {
 	var boards []*Board
 	var threads []int
 	var shutdown bool
+	var t *time.Timer
 	for {
 		// Process queue.
 		info = <-s.rebuildQueue
@@ -1561,9 +1562,8 @@ func (s *Server) handleRebuild() {
 			pending = append(pending, info)
 		}
 		for {
-			// Sleep until minimum wait time has passed.
-			time.Sleep(minWait)
-			// Drain queue.
+			// Drain queue until minimum wait time has passed.
+			t = time.NewTimer(minWait)
 			var found bool
 		DRAINQUEUE:
 			for {
@@ -1575,7 +1575,7 @@ func (s *Server) handleRebuild() {
 						pending = append(pending, info)
 						found = true
 					}
-				default:
+				case <-t.C:
 					break DRAINQUEUE
 				}
 			}
@@ -1712,6 +1712,7 @@ func (s *Server) Run() error {
 	}
 
 	if s.config.MailAddress != "" {
+		fmt.Println("Verifying mail server configuration...")
 		client, err := s.connectToMailServer()
 		if err != nil {
 			log.Fatalf("failed to verify mail server configuration: %s", err)
