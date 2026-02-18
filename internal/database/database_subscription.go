@@ -20,6 +20,17 @@ func (db *DB) AddSubscription(s *Subscription) {
 	}
 }
 
+func (db *DB) SubscriptionByID(id int) *Subscription {
+	s := &Subscription{}
+	err := scanSubscription(s, db.conn.QueryRow(context.Background(), "SELECT * FROM subscription WHERE id = $1", id))
+	if err == pgx.ErrNoRows {
+		return nil
+	} else if err != nil {
+		log.Fatalf("failed to select subscription: %s", err)
+	}
+	return s
+}
+
 func (db *DB) SubscriptionsByEmail(email string) []*Subscription {
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM subscription WHERE email = $1 ORDER BY board ASC, target ASC")
 	if err != nil {

@@ -391,7 +391,7 @@ func (s *Server) connectToMailServer() (*smtp.Client, error) {
 			err = client.StartTLS(tlsConfig)
 			if err != nil {
 				client.Close()
-				return nil, err
+				return nil, fmt.Errorf("failed to upgrade plain text connection to TLS even though support for it was advertised")
 			}
 		}
 	}
@@ -413,37 +413,41 @@ func (s *Server) connectToMailServer() (*smtp.Client, error) {
 		err := client.Auth(auth)
 		if err != nil {
 			client.Close()
-			return nil, fmt.Errorf("SMTP server authentication failed: %s", err)
+			return nil, fmt.Errorf("failed to authenticate with SMTP server: %s", err)
 		}
 	}
 
 	// Send NOOP command to verify connection and authentication were successful.
 	if err = client.Noop(); err != nil {
 		client.Close()
-		return nil, fmt.Errorf("failed to verify SMTP server connection: %s", err)
+		return nil, fmt.Errorf("failed to verify SMTP server connection by sending NOOP command: %s", err)
 	}
 	return client, nil
 }
 
-func (s *Server) sendMail(recipient string, subject string, message string) error {
+func (s *Server) sendMail(client *smtp.Client, recipient string, subject string, message string) error {
 	// Build mail body.
 	var body []byte
 	if s.config.MailFrom != "" {
-		body = append(body, []byte(fmt.Sprintf("From: %s\n", s.config.MailFrom))...)
+		body = fmt.Appendf(body, "From: %s\n", s.config.MailFrom)
 	}
-	body = append(body, []byte(fmt.Sprintf("To: %s\nSubject: %s\n\n%s", recipient, subject, message))...)
+	body = fmt.Appendf(body, "To: %s\nSubject: %s\n", recipient, subject)
+	if s.config.MailReplyTo != "" {
+		body = fmt.Appendf(body, "Reply-To: %s\n", s.config.MailReplyTo)
+	}
+	body = fmt.Appendf(body, "\n%s", message)
+	log.Println(string(body))
 
-	client, err := s.connectToMailServer()
-	if err != nil {
-		return err
-	} else if client == nil {
-		return nil // Email notifications are disabled.
+	// Reset state.
+	if err := client.Reset(); err != nil {
+		return fmt.Errorf("failed to reset state: %s", err)
 	}
-	defer client.Close()
 
 	// Set "From" and "To" addresses.
-	if err := client.Mail(s.config.MailFrom); err != nil {
-		return fmt.Errorf("failed to set from address: %s", err)
+	if s.config.MailFrom != "" {
+		if err := client.Mail(s.config.MailFrom); err != nil {
+			return fmt.Errorf("failed to set from address: %s", err)
+		}
 	}
 	if err := client.Rcpt(recipient); err != nil {
 		return fmt.Errorf("failed to set recipient address: %s", err)
@@ -461,7 +465,7 @@ func (s *Server) sendMail(recipient string, subject string, message string) erro
 		return fmt.Errorf("failed to write email body: %s", err)
 	}
 
-	// Finish data transfer.
+	// Complete data transfer.
 	err = wc.Close()
 	if err != nil {
 		return fmt.Errorf("failed to write email body: %s", err)
@@ -1819,6 +1823,10 @@ func (s *Server) Run() error {
 		}
 	}
 	db.Commit()
+
+	if s.config.MailAddress != "" {
+		go s.handleNotifications()
+	}
 
 	err = s.listen()
 	if err != nil {

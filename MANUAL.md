@@ -254,6 +254,7 @@ dbname: "sriracha"
 #mailpassword: ""          # SMTP server password.
 #mailauth:     "challenge" # SMTP server authentication mechanism. Format: challenge / plain / none
 #mailfrom:     ""          # Notification "From" email address.
+#mailreplyto:  ""          # Notification "Reply-To" email address.
 
 # Access required to perform an action. Default values for all actions are listed below.
 #

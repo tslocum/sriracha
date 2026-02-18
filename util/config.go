@@ -50,6 +50,7 @@ type Config struct {
 	MailPassword string // SMTP server password.
 	MailAuth     string // SMTP server authentication mechanism. May be challenge / plain / none.
 	MailFrom     string // "From" email address.
+	MailReplyTo  string // "Reply-To" email address.
 
 	Template string // Custom template directory.
 
