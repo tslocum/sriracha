@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/sha512"
+	"crypto/tls"
 	"embed"
 	"encoding/base64"
 	"flag"
@@ -14,7 +15,9 @@ import (
 	"io/fs"
 	"log"
 	"maps"
+	"net"
 	"net/http"
+	"net/smtp"
 	"net/url"
 	"os"
 	"os/signal"
@@ -334,6 +337,134 @@ func (s *Server) parseLocales() error {
 		gotext.GetStorage().AddTranslator(fmt.Sprintf("sriracha-%s", id), po)
 		return nil
 	})
+}
+
+// connectToMailServer connects to the configured mail server and returns a SMTP client.
+func (s *Server) connectToMailServer() (*smtp.Client, error) {
+	if s.config.MailAddress == "" {
+		return nil, nil // Email notifications are disabled.
+	}
+
+	// Parse hostname and set default port.
+	address := s.config.MailAddress
+	hostname, _, err := net.SplitHostPort(s.config.MailAddress)
+	if err != nil {
+		hostname = s.config.MailAddress
+		if strings.ContainsRune(s.config.MailAddress, ':') {
+			address = fmt.Sprintf("[%s]:25", address)
+		} else {
+			address = address + ":25"
+		}
+	}
+	tlsConfig := &tls.Config{
+		InsecureSkipVerify: s.config.MailInsecure,
+		ServerName:         hostname,
+	}
+
+	// Connect to mail server.
+	var conn net.Conn
+	if s.config.MailTLS {
+		conn, err = tls.Dial("tcp", address, tlsConfig)
+		if err != nil {
+			log.Fatalf("failed to connect to SMTP server with TLS enabled at %s: %s", address, err)
+		}
+	} else {
+		conn, err = net.Dial("tcp", address)
+		if err != nil {
+			log.Fatalf("failed to connect to SMTP server without TLS enabled at %s: %s", address, err)
+		}
+	}
+
+	// Initialize client,
+	client, err := smtp.NewClient(conn, hostname)
+	if err != nil {
+		conn.Close()
+		return nil, fmt.Errorf("failed to initialize SMTP client: %s", err)
+	}
+
+	// Upgrade to TLS connection when available.
+	if !s.config.MailTLS {
+		ok, _ := client.Extension("STARTTLS")
+		if ok {
+			err = client.StartTLS(tlsConfig)
+			if err != nil {
+				client.Close()
+				return nil, err
+			}
+		}
+	}
+
+	// Authenticate.
+	var auth smtp.Auth
+	switch s.config.MailAuth {
+	case "challenge":
+		auth = smtp.CRAMMD5Auth(s.config.MailUsername, s.config.MailPassword)
+	case "plain":
+		auth = smtp.PlainAuth("", s.config.MailUsername, s.config.MailPassword, hostname)
+	case "", "none":
+		// Do nothing.
+	default:
+		client.Close()
+		return nil, fmt.Errorf("unrecognized mailauth configuration value %s: must be challenge / plain / none", s.config.MailAuth)
+	}
+	if auth != nil {
+		err := client.Auth(auth)
+		if err != nil {
+			client.Close()
+			return nil, fmt.Errorf("SMTP server authentication failed: %s", err)
+		}
+	}
+
+	// Send NOOP command to verify connection and authentication were successful.
+	if err = client.Noop(); err != nil {
+		client.Close()
+		return nil, fmt.Errorf("failed to verify SMTP server connection: %s", err)
+	}
+	return client, nil
+}
+
+func (s *Server) sendMail(recipient string, subject string, message string) error {
+	// Build mail body.
+	var body []byte
+	if s.config.MailFrom != "" {
+		body = append(body, []byte(fmt.Sprintf("From: %s\n", s.config.MailFrom))...)
+	}
+	body = append(body, []byte(fmt.Sprintf("To: %s\nSubject: %s\n\n%s", recipient, subject, message))...)
+
+	client, err := s.connectToMailServer()
+	if err != nil {
+		return err
+	} else if client == nil {
+		return nil // Email notifications are disabled.
+	}
+	defer client.Close()
+
+	// Set "From" and "To" addresses.
+	if err := client.Mail(s.config.MailFrom); err != nil {
+		return fmt.Errorf("failed to set from address: %s", err)
+	}
+	if err := client.Rcpt(recipient); err != nil {
+		return fmt.Errorf("failed to set recipient address: %s", err)
+	}
+
+	// Initiate data transfer.
+	wc, err := client.Data()
+	if err != nil {
+		return fmt.Errorf("failed to send DATA command: %s", err)
+	}
+
+	// Write mail body.
+	_, err = wc.Write(body)
+	if err != nil {
+		return fmt.Errorf("failed to write email body: %s", err)
+	}
+
+	// Finish data transfer.
+	err = wc.Close()
+	if err != nil {
+		return fmt.Errorf("failed to write email body: %s", err)
+	}
+	return nil
 }
 
 func (s *Server) begin() *database.DB {

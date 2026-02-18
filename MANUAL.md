@@ -86,6 +86,34 @@ When starting Sriracha for the first time, visit the management panel at
 `admin` as the username and the password. Once you have logged in, visit the
 accounts page and change your username and password.
 
+### SMTP mail server
+
+Sriracha may optionally be configured to connect to an SMTP server to send
+email notifications. When configured, visitors may subscribe to receive email
+notifications when new posts are created. Sriracha does not read any incoming
+email messages.
+
+Depending on the configuration of your mail server, you will most likely need to
+connect on port 587, 465 or 25, in order of most to least secure. You will also
+need to adjust the values of `mailtls`, `mailinsecure` and `mailauth`, depending
+on whether TLS is enabled and which authentication mechanisms are supported.
+
+`mailtls` should be set to `true` if possible, which will connect to the mail
+server using a secure connection. If `mailtls` is set to `false`, a plain text
+connection is established. However, if the mail server supports the `STARTTLS`
+extension, the plain text connection is immediately upgraded to a TLS connection.
+
+`mailinsecure` should be set to `false` if possible, which will require TLS
+certificate verification when connecting to the server. The hostname or IP
+address used to connect to the mail server must be listed in the certificate.
+If `mailinsecure` is set to `true`, TLS certificate verification is skipped.
+
+`mailauth` should be set to `challenge` if possible, which will authenticate
+with the mail server using the [CRAM-MD5](https://en.wikipedia.org/wiki/CRAM-MD5)
+challenge-response authentication mechanism. `mailauth` may instead be set to
+`plain`, which will authenticate with the server using a plain text password.
+`mailauth` may also be set to `none` to skip authentication entirely.
+
 ### Custom templates
 
 Sriracha supports overriding official templates with custom templates. This
@@ -226,6 +254,17 @@ dbname: "sriracha"
 # Custom template directory. Leave blank to use official templates. Template
 # files in this directory will override official templates of the same name.
 #template: "/home/sriracha/template"
+
+# SMTP mail server configuration. When configured, visitors may subscribe to
+# receive email notifications when new posts are created. Leave mailaddress
+# blank to disable email notifications.
+mailaddress:  ""          # SMTP server Address:Port.
+mailtls:      true        # Whether TLS is used to connect to the server.
+mailinsecure: false       # Whether TLS certificate verification is skipped.
+mailusername: ""          # SMTP server username.
+mailpassword: ""          # SMTP server password.
+mailauth:     "challenge" # SMTP server authentication mechanism. Format: challenge / plain / none
+mailfrom:     ""          # Notification "From" email address.
 
 # Access required to perform an action. Default values for all actions are listed below.
 #

@@ -43,6 +43,14 @@ type Config struct {
 	DBName   string // Database name.
 	DBURL    string // Database connection URL.
 
+	MailAddress  string // SMTP server Address:Port.
+	MailTLS      bool   // Whether TLS is used to connect to the server.
+	MailInsecure bool   // Whether TLS certificate verification is skipped.
+	MailUsername string // SMTP server username.
+	MailPassword string // SMTP server password.
+	MailAuth     string // SMTP server authentication mechanism. May be challenge / plain / none.
+	MailFrom     string // "From" email address.
+
 	Template string // Custom template directory.
 
 	Identifiers bool // Whether staff may browse posts by IP hashes and boards may display identifier hashes.
