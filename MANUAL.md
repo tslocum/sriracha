@@ -240,6 +240,7 @@ dbname: "sriracha"
 
 # Database connection URL. Allows specifying additional connection options.
 # This option supercedes the address, username, password and dbname options.
+# You probably don't need this. Configure the database options above instead.
 # See https://pkg.go.dev/github.com/jackc/pgx/v5@v5.7.4/pgconn#ParseConfig
 #dburl: "postgresql://sriracha:hunter2@localhost/sriracha"
 
@@ -258,28 +259,28 @@ dbname: "sriracha"
 #
 # Format: mod / admin / super-admin / disable (disallow all roles)
 #access:
-#  ban.add:        mod
-#  ban.shorten:    admin
-#  ban.lengthen:   mod
-#  ban.delete:     admin
-#  banfile.add:    mod
-#  banfile.delete: admin
-#  banner.add:     admin
-#  banner.update:  admin
-#  banner.delete:  super-admin
-#  board.add:      admin
-#  board.update:   admin
-#  board.delete:   super-admin
-#  keyword.add:    admin
-#  keyword.update: admin
-#  keyword.delete: admin
-#  page.add:       admin
-#  page.update:    admin
-#  page.delete:    admin
-#  post.sticky:    mod
-#  post.lock:      mod
-#  post.move:      mod
-#  post.delete:    mod
+#  ban.add:        "mod"
+#  ban.shorten:    "admin"
+#  ban.lengthen:   "mod"
+#  ban.delete:     "admin"
+#  banfile.add:    "mod"
+#  banfile.delete: "admin"
+#  banner.add:     "admin"
+#  banner.update:  "admin"
+#  banner.delete:  "super-admin"
+#  board.add:      "admin"
+#  board.update:   "admin"
+#  board.delete:   "super-admin"
+#  keyword.add:    "admin"
+#  keyword.update: "admin"
+#  keyword.delete: "admin"
+#  page.add:       "admin"
+#  page.update:    "admin"
+#  page.delete:    "admin"
+#  post.sticky:    "mod"
+#  post.lock:      "mod"
+#  post.move:      "mod"
+#  post.delete:    "mod"
 
 # Whether identifier hashes are enabled. Identifier hashes are generated based
 # on IP hashes. When enabled, staff may view and delete all posts created by an
