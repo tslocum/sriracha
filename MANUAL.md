@@ -93,10 +93,8 @@ email notifications. When configured, visitors may subscribe to receive email
 notifications when new posts are created. Sriracha does not read any incoming
 email messages.
 
-Depending on the configuration of your mail server, you will most likely need to
-connect on port 587, 465 or 25, in order of most to least secure. You will also
-need to adjust the values of `mailtls`, `mailinsecure` and `mailauth`, depending
-on whether TLS is enabled and which authentication mechanisms are supported.
+Depending on the configuration of your mail server, you should connect on port
+587, 465 or 25, in order from most to least secure.
 
 `mailtls` should be set to `true` if possible, which will connect to the mail
 server using a secure connection. If `mailtls` is set to `false`, a plain text
@@ -108,11 +106,10 @@ certificate verification when connecting to the server. The hostname or IP
 address used to connect to the mail server must be listed in the certificate.
 If `mailinsecure` is set to `true`, TLS certificate verification is skipped.
 
-`mailauth` should be set to `challenge` if possible, which will authenticate
-with the mail server using the [CRAM-MD5](https://en.wikipedia.org/wiki/CRAM-MD5)
+`mailauth` should be set to `challenge` if possible, which will enable the [CRAM-MD5](https://en.wikipedia.org/wiki/CRAM-MD5)
 challenge-response authentication mechanism. `mailauth` may instead be set to
-`plain`, which will authenticate with the server using a plain text password.
-`mailauth` may also be set to `none` to skip authentication entirely.
+`plain`, which will enable authentication using a plain text password.
+`mailauth` may also be set to `none`, which will skip authentication entirely.
 
 ### Custom templates
 
@@ -246,25 +243,16 @@ dbname: "sriracha"
 # See https://pkg.go.dev/github.com/jackc/pgx/v5@v5.7.4/pgconn#ParseConfig
 #dburl: "postgresql://sriracha:hunter2@localhost/sriracha"
 
-# Whether identifier hashes are enabled. Identifier hashes are generated based
-# on IP hashes. When enabled, staff may view and delete all posts created by an
-# IP address, and boards may optionally display identifier hashes to visitors.
-#identifiers: false
-
-# Custom template directory. Leave blank to use official templates. Template
-# files in this directory will override official templates of the same name.
-#template: "/home/sriracha/template"
-
 # SMTP mail server configuration. When configured, visitors may subscribe to
-# receive email notifications when new posts are created. Leave mailaddress
-# blank to disable email notifications.
-mailaddress:  ""          # SMTP server Address:Port.
-mailtls:      true        # Whether TLS is used to connect to the server.
-mailinsecure: false       # Whether TLS certificate verification is skipped.
-mailusername: ""          # SMTP server username.
-mailpassword: ""          # SMTP server password.
-mailauth:     "challenge" # SMTP server authentication mechanism. Format: challenge / plain / none
-mailfrom:     ""          # Notification "From" email address.
+# to receive email notifications when a new post is created. To disable email
+# notifications, leave mailaddress blank.
+#mailaddress:  ""          # SMTP server Address:Port.
+#mailtls:      true        # Whether TLS is used to connect to the server.
+#mailinsecure: false       # Whether TLS certificate verification is skipped.
+#mailusername: ""          # SMTP server username.
+#mailpassword: ""          # SMTP server password.
+#mailauth:     "challenge" # SMTP server authentication mechanism. Format: challenge / plain / none
+#mailfrom:     ""          # Notification "From" email address.
 
 # Access required to perform an action. Default values for all actions are listed below.
 #
@@ -292,6 +280,15 @@ mailfrom:     ""          # Notification "From" email address.
 #  post.lock:      mod
 #  post.move:      mod
 #  post.delete:    mod
+
+# Whether identifier hashes are enabled. Identifier hashes are generated based
+# on IP hashes. When enabled, staff may view and delete all posts created by an
+# IP address, and boards may optionally display identifier hashes to visitors.
+#identifiers: false
+
+# Custom template directory. Leave blank to use official templates. Template
+# files in this directory will override official templates of the same name.
+#template: "/home/sriracha/template"
 
 # Supported upload file types. Specify a file extension and a MIME type to
 # enable uploading files of that type. You may specify an image to use as the

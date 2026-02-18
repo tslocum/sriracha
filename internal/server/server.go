@@ -1711,6 +1711,14 @@ func (s *Server) Run() error {
 		fmt.Println("Running in development mode. Template files are monitored for changes.")
 	}
 
+	if s.config.MailAddress != "" {
+		client, err := s.connectToMailServer()
+		if err != nil {
+			log.Fatalf("failed to verify mail server configuration: %s", err)
+		}
+		client.Close()
+	}
+
 	s.dbPool, err = database.Connect(s.config)
 	if err != nil {
 		return err
