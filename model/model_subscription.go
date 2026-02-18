@@ -16,9 +16,9 @@ type Subscription struct {
 	ID      int
 	IP      string // For anti-spam protection. Cleared after 24 hours.
 	Confirm int64  // Timestamp when confirmation request was zent, or zero once confirmed.
-	Email   string
-	Board   int
-	Target  int // When greater than zero, Target is a post ID. Otherwise, Target is a SubscriptionType.
+	Email   string // Email address.
+	Board   int    // Only set when Target is a SubscriptionType.
+	Target  int    // When greater than zero, Target is a post ID. Otherwise, Target is a SubscriptionType.
 }
 
 func (s *Subscription) Validate() error {

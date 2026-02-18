@@ -374,6 +374,7 @@ func (db *DB) DeletePost(postID int) {
 	if err != nil {
 		log.Fatalf("failed to delete post: %s", err)
 	}
+	db.DeleteSubscriptionsByPost(postID)
 }
 
 func scanPost(p *Post, row pgx.Row) (int, error) {

@@ -191,6 +191,7 @@ func (db *DB) DeleteBoard(id int) {
 	if err != nil {
 		log.Fatalf("failed to delete board: %s", err)
 	}
+	db.DeleteSubscriptionsByBoard(id)
 }
 
 func (db *DB) UpdateBoard(b *Board) {

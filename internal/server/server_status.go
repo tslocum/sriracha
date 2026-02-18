@@ -30,6 +30,7 @@ func (s *Server) serveStatus(data *templateData, db *database.DB, w http.Respons
 						if rebuild {
 							db.BumpThread(post.Thread(), time.Now().Unix())
 							s.rebuildThread(db, post)
+							s.queueNotifications(db, post)
 						}
 					}
 				}

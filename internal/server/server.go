@@ -144,6 +144,8 @@ type Server struct {
 	original        *template.Template
 	customTemplates []string
 
+	notifications []notification
+
 	rebuildQueue     chan *rebuildInfo
 	rebuildWaitGroup sync.WaitGroup
 	rebuildLock      sync.Mutex
@@ -1611,6 +1613,10 @@ func (s *Server) handleRebuild() {
 
 		for _, info := range pending {
 			info.wg.Done()
+		}
+
+		for _, info := range pending {
+			s.queueNotifications(db, info.post)
 		}
 
 		pending = pending[:0]
