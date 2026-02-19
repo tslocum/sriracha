@@ -3,6 +3,7 @@ package server
 import (
 	"bytes"
 	"context"
+	"crypto/md5"
 	"crypto/sha512"
 	"crypto/tls"
 	"embed"
@@ -259,6 +260,13 @@ func (s *Server) parseConfig(configFile string) error {
 
 	if config.Locale == "" {
 		config.Locale = "en"
+	}
+
+	if config.Mentions <= 0 {
+		config.Mentions = 60
+	}
+	if config.Notifications <= 0 {
+		config.Notifications = 1440
 	}
 
 	defaultAccess := map[string]string{
@@ -1620,14 +1628,13 @@ func (s *Server) handleRebuild() {
 		if s.opt.Overboard != "" {
 			s.writeOverboard(db)
 		}
+		for _, info := range pending {
+			s.queueNotifications(db, info.post)
+		}
 		db.Commit()
 
 		for _, info := range pending {
 			info.wg.Done()
-		}
-
-		for _, info := range pending {
-			s.queueNotifications(db, info.post)
 		}
 
 		pending = pending[:0]
@@ -1850,6 +1857,10 @@ func (s *Server) Run() error {
 func (s *Server) hashData(data string) string {
 	checksum := sha512.Sum384([]byte(data + s.config.SaltData))
 	return base64.URLEncoding.EncodeToString(checksum[:])
+}
+
+func md5Sum(data string) string {
+	return fmt.Sprintf("%x", md5.Sum([]byte(data)))
 }
 
 func parseAddress(address string) string {

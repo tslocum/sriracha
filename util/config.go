@@ -52,6 +52,9 @@ type Config struct {
 	MailFrom     string // "From" email address.
 	MailReplyTo  string // "Reply-To" email address.
 
+	Mentions      int // Duration (in minutes) mention notifications are batched together.
+	Notifications int // Duration (in minutes) non-mention notifications are batched together.
+
 	Template string // Custom template directory.
 
 	Identifiers bool // Whether staff may browse posts by IP hashes and boards may display identifier hashes.

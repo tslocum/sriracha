@@ -136,6 +136,17 @@ CREATE TABLE log (
 	changes text NOT NULL
 );
 
+-- v4: CREATE TABLE news (
+-- v4: 	id serial PRIMARY KEY,
+-- v4: 	account smallint NULL REFERENCES account (id) ON DELETE SET NULL,
+-- v4: 	timestamp bigint NOT NULL,
+-- v4: 	modified bigint NOT NULL,
+-- v4: 	share smallint NOT NULL,
+-- v4: 	name varchar(255) NOT NULL,
+-- v4: 	subject varchar(255) NOT NULL,
+-- v4: 	message text NOT NULL
+-- v4: );
+
 -- v12: CREATE TABLE page (
 -- v12: 	id serial PRIMARY KEY,
 -- v12: 	path text NOT NULL,
@@ -188,16 +199,14 @@ CREATE TABLE report (
 );
 CREATE UNIQUE INDEX ON report (board, post, ip);
 
--- v4: CREATE TABLE news (
--- v4: 	id serial PRIMARY KEY,
--- v4: 	account smallint NULL REFERENCES account (id) ON DELETE SET NULL,
--- v4: 	timestamp bigint NOT NULL,
--- v4: 	modified bigint NOT NULL,
--- v4: 	share smallint NOT NULL,
--- v4: 	name varchar(255) NOT NULL,
--- v4: 	subject varchar(255) NOT NULL,
--- v4: 	message text NOT NULL
--- v4: );`,
+-- v14: CREATE TABLE subscription (
+-- v14: 	id serial PRIMARY KEY,
+-- v14: 	ip text NOT NULL,
+-- v14: 	confirm bigint NOT NULL,
+-- v14: 	email text NOT NULL,
+-- v14: 	board int NOT NULL,
+-- v14: 	target int NOT NULL
+-- v14: );`,
 	// Version 2.
 	`ALTER TABLE account ADD COLUMN style varchar(64) NOT NULL DEFAULT '';
 	UPDATE config SET value = '2' WHERE name = 'version';`,
@@ -269,4 +278,14 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 		PRIMARY KEY	(banner, board)
 	);
 	UPDATE config SET value = '13' WHERE name = 'version';`,
+	// Version 14.
+	`CREATE TABLE subscription (
+		id serial PRIMARY KEY,
+		ip text NOT NULL,
+		confirm bigint NOT NULL,
+		email text NOT NULL,
+		board int NOT NULL,
+		target int NOT NULL
+	);
+	UPDATE config SET value = '14' WHERE name = 'version';`,
 }

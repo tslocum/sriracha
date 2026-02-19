@@ -48,15 +48,22 @@ func (db *DB) SubscriptionsByEmail(email string) []*Subscription {
 	return subs
 }
 
-func (db *DB) SubscriptionsByPost(p *Post) []*Subscription {
-	query := "SELECT * FROM subscription WHERE target = $1"
-	if p.Parent == 0 {
-		query += " OR board = $2"
-	} else {
-		query += " OR (board = $2 AND target = 0)"
+func (db *DB) SubscriptionsByPost(p *Post, distinct bool, includeBoard bool) []*Subscription {
+	query := "SELECT"
+	if distinct {
+		query = "SELECT DISTINCT ON (email)"
 	}
-	query += " ORDER BY board ASC, target ASC"
-	args := []any{p.ID, p.Board.ID}
+	query += " * FROM subscription WHERE target = $1"
+	args := []any{p.ID}
+	if includeBoard {
+		if p.Parent == 0 {
+			query += " OR board = $2"
+		} else {
+			query += " OR (board = $2 AND target = 0)"
+		}
+		args = append(args, p.Board.ID)
+	}
+	query += " ORDER BY email ASC, target DESC, board ASC"
 	rows, err := db.conn.Query(context.Background(), query, args...)
 	if err != nil {
 		log.Fatalf("failed to select subscriptions: %s", err)

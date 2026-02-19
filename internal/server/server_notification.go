@@ -3,12 +3,15 @@ package server
 import (
 	"fmt"
 	"log"
+	"slices"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
 	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
+	. "codeberg.org/tslocum/sriracha/util"
 )
 
 // notification represents a pending notification. The referenced subscription
@@ -24,13 +27,46 @@ func (s *Server) queueNotifications(db *database.DB, p *Post) {
 		return
 	}
 
-	subs := db.SubscriptionsByPost(p)
+	var references []int
+	for _, m := range RefLinkPattern.FindAllStringSubmatch(p.Message, -1) {
+		if len(m) != 2 {
+			continue
+		}
+		id, err := strconv.Atoi(m[1])
+		if err == nil && !slices.Contains(references, id) {
+			references = append(references, id)
+		}
+	}
+
+	notified := make(map[string]bool)
+	for _, referenceID := range references {
+		reference := db.PostByID(referenceID)
+		if reference == nil {
+			continue
+		}
+		subs := db.SubscriptionsByPost(reference, true, false)
+		for _, sub := range subs {
+			if notified[sub.Email] {
+				continue
+			}
+			n := notification{
+				subscriptionID: sub.ID,
+				postID:         p.ID,
+				mentioned:      true,
+			}
+			s.notifications = append(s.notifications, n)
+			notified[sub.Email] = true
+		}
+	}
+
+	subs := db.SubscriptionsByPost(p, true, true)
 	for _, sub := range subs {
-		mentioned := sub.Target > 0 && (p.Parent == sub.Target || strings.Contains(p.Message, fmt.Sprintf(`.html#%d">&gt;&gt;%d</a>`, sub.Target, sub.Target)))
+		if notified[sub.Email] {
+			continue
+		}
 		n := notification{
 			subscriptionID: sub.ID,
 			postID:         p.ID,
-			mentioned:      mentioned,
 		}
 		s.notifications = append(s.notifications, n)
 	}
@@ -43,10 +79,15 @@ func (s *Server) sendNotifications(onlyMentions bool) {
 	db := s.begin()
 	defer db.Commit()
 
+	type notificationInfo struct {
+		n notification
+		p *Post
+	}
+
 	var keep []notification
 	var modified bool
 	postCache := make(map[int]*Post)
-	pending := make(map[string][]*Post)
+	pending := make(map[string][]*notificationInfo)
 	for _, n := range s.notifications {
 		sub := db.SubscriptionByID(n.subscriptionID)
 		if sub == nil {
@@ -65,7 +106,7 @@ func (s *Server) sendNotifications(onlyMentions bool) {
 		if post == nil {
 			continue
 		}
-		pending[sub.Email] = append(pending[sub.Email], post)
+		pending[sub.Email] = append(pending[sub.Email], &notificationInfo{n: n, p: post})
 	}
 	if modified {
 		client, err := s.connectToMailServer()
@@ -74,37 +115,60 @@ func (s *Server) sendNotifications(onlyMentions bool) {
 		}
 		const batchSize = 16
 		var sent int
-		for email, posts := range pending {
-			sort.Slice(posts, func(i, j int) bool {
-				if posts[i].Board.ID != posts[j].Board.ID {
-					return posts[i].Board.Name < posts[j].Board.Name
+		for email, allInfo := range pending {
+			sort.Slice(allInfo, func(i, j int) bool {
+				if allInfo[i].n.mentioned != allInfo[j].n.mentioned {
+					return allInfo[i].n.mentioned
+				} else if allInfo[i].p.Board.ID != allInfo[j].p.Board.ID {
+					return allInfo[i].p.Board.Name < allInfo[j].p.Board.Name
 				}
-				return posts[i].ID < posts[j].ID
+				return allInfo[i].p.ID < allInfo[j].p.ID
 			})
-			l := len(posts)
+
+			var message strings.Builder
+			var lastBoard int
+			var i int
+			var mentioned bool
+			var lastMentioned bool
+			for _, info := range allInfo {
+				if lastMentioned && !info.n.mentioned {
+					message.WriteString("\n\n===\n\n")
+					lastBoard = 0
+				}
+
+				p := info.p
+				if p.Board.ID != lastBoard {
+					if lastBoard != 0 {
+						message.WriteString("\n\n")
+					}
+					message.WriteString(p.Board.Path())
+
+					i = 0
+					lastBoard = p.Board.ID
+				}
+
+				message.WriteString("\n" + string(p.URL(s.opt.SiteHome)))
+				if info.n.mentioned {
+					message.WriteString(" ***")
+					mentioned = true
+				}
+				i++
+				lastMentioned = info.n.mentioned
+			}
+
+			key := md5Sum(s.hashData(md5Sum(email)))
+			message.WriteString("\n\n--\nManage Subscriptions\n" + s.opt.SiteHome + "sriracha/subscribe/?email=" + email + "&key=" + key)
+
+			l := len(allInfo)
 			var plural string
 			if l != 1 {
 				plural = "s"
 			}
 			subject := fmt.Sprintf("%d new post%s", l, plural)
-
-			var message strings.Builder
-			var lastBoard int
-			var i int
-			for _, p := range posts {
-				if i != 0 && lastBoard != 0 {
-					message.WriteString(", ")
-				}
-				if p.Board.ID != lastBoard {
-					if lastBoard != 0 {
-						message.WriteString("\n")
-					}
-					message.WriteString(p.Board.Path())
-					i = 0
-				}
-				message.WriteString(" " + string(p.RefLink()))
-				i++
+			if mentioned {
+				subject = "(Mentioned) " + subject
 			}
+
 			if sent == batchSize {
 				client.Close()
 				client, err = s.connectToMailServer()
@@ -113,6 +177,7 @@ func (s *Server) sendNotifications(onlyMentions bool) {
 				}
 				sent = 0
 			}
+
 			err := s.sendMail(client, email, subject, message.String())
 			if err != nil {
 				log.Fatalf("failed to send email: %s", err)
@@ -126,17 +191,14 @@ func (s *Server) sendNotifications(onlyMentions bool) {
 }
 
 func (s *Server) handleNotifications() {
-	defaultDelay := 24 * time.Hour
-	mentionDelay := 1 * time.Hour
-
-	defaultTicker := time.NewTicker(defaultDelay)
-	mentionTicker := time.NewTicker(mentionDelay)
+	mentionTicker := time.NewTicker(time.Duration(s.config.Mentions) * time.Minute)
+	defaultTicker := time.NewTicker(time.Duration(s.config.Notifications) * time.Minute)
 	for {
 		select {
-		case <-defaultTicker.C:
-			s.sendNotifications(false)
 		case <-mentionTicker.C:
 			s.sendNotifications(true)
+		case <-defaultTicker.C:
+			s.sendNotifications(false)
 		}
 	}
 }

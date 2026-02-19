@@ -44,27 +44,28 @@ type manageData struct {
 }
 
 type templateData struct {
-	Account   *Account
-	Info      string
-	Message   template.HTML
-	Message2  template.HTML
-	Message3  template.HTML
-	Board     *Board
-	Boards    []*Board
-	News      *News
-	AllNews   []*News
-	Page      int
-	Pages     int
-	Post      *Post
-	Threads   [][]*Post
-	ReplyMode int
-	ModMode   bool
-	Extra     string
-	Extra2    string
-	Extra3    string
-	Opt       *ServerOptions
-	Manage    *manageData
-	Template  string
+	Account       *Account
+	Info          string
+	Message       template.HTML
+	Message2      template.HTML
+	Message3      template.HTML
+	Board         *Board
+	Boards        []*Board
+	News          *News
+	AllNews       []*News
+	Subscriptions []*Subscription
+	Page          int
+	Pages         int
+	Post          *Post
+	Threads       [][]*Post
+	ReplyMode     int
+	ModMode       bool
+	Extra         string
+	Extra2        string
+	Extra3        string
+	Opt           *ServerOptions
+	Manage        *manageData
+	Template      string
 
 	// Calculated fields.
 	IndexBoards []*Board

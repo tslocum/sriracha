@@ -256,6 +256,10 @@ dbname: "sriracha"
 #mailfrom:     ""          # Notification "From" email address.
 #mailreplyto:  ""          # Notification "Reply-To" email address.
 
+# Notification batch durations. These options only apply when a mail server is configured.
+#mentions:      60   # Duration (in minutes) mention notifications are batched together.
+#notifications: 1440 # Duration (in minutes) all other notifications are batched together.
+
 # Access required to perform an action. Default values for all actions are listed below.
 #
 # Format: mod / admin / super-admin / disable (disallow all roles)
