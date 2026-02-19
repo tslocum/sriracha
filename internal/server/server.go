@@ -111,6 +111,7 @@ type ServerOptions struct {
 	LocalesSorted    []string
 	Access           map[string]string
 	Banners          map[int][]*Banner
+	Notifications    bool
 	DevMode          bool
 	FuncMaps         map[string]template.FuncMap
 }
@@ -1728,6 +1729,7 @@ func (s *Server) Run() error {
 			log.Fatalf("failed to verify mail server configuration: %s", err)
 		}
 		client.Close()
+		s.opt.Notifications = true
 	}
 
 	s.dbPool, err = database.Connect(s.config)

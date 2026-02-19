@@ -22,12 +22,28 @@ func (s *Server) serveDelete(db *database.DB, w http.ResponseWriter, r *http.Req
 		return
 	}
 
+	subscribe := FormString(r, "subscribe") != ""
+
 	var post *Post
 	postID, err := strconv.Atoi(r.FormValue("delete[]"))
 	if err == nil && postID > 0 {
 		post = db.PostByID(postID)
 	}
-	if data.Account != nil {
+	if subscribe {
+		if post == nil {
+			threadID := FormInt(r, "thread")
+			if threadID > 0 {
+				post = db.PostByID(threadID)
+			}
+		}
+		if post == nil {
+			data.BoardError(w, Get(b, data.Account, "Invalid post."))
+			return
+		}
+		url := fmt.Sprintf("/sriracha/subscribe/post/%d", post.ID)
+		http.Redirect(w, r, url, http.StatusFound)
+		return
+	} else if data.Account != nil {
 		if post == nil {
 			threadID := FormInt(r, "thread")
 			if threadID > 0 {

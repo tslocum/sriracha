@@ -815,6 +815,9 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
+msgid "Subscribe"
+msgstr ""
+
 msgid "Super-administrator"
 msgstr ""
 
