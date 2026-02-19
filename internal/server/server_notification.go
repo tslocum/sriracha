@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"log"
 	"slices"
 	"sort"
@@ -12,6 +11,7 @@ import (
 	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
+	"github.com/leonelquinteros/gotext"
 )
 
 // notification represents a pending notification. The referenced subscription
@@ -157,16 +157,12 @@ func (s *Server) sendNotifications(onlyMentions bool) {
 			}
 
 			key := md5Sum(s.hashData(md5Sum(email)))
-			message.WriteString("\n\n--\nManage Subscriptions\n" + s.opt.SiteHome + "sriracha/subscribe/?email=" + email + "&key=" + key)
+			message.WriteString("\n\n--\n" + gotext.Get("Manage Subscriptions") + "\n" + s.opt.SiteHome + "sriracha/subscribe/?email=" + email + "&key=" + key)
 
 			l := len(allInfo)
-			var plural string
-			if l != 1 {
-				plural = "s"
-			}
-			subject := fmt.Sprintf("%d new post%s", l, plural)
+			subject := gotext.GetN("%d new post", "%d new posts", l, l)
 			if mentioned {
-				subject = "(Mentioned) " + subject
+				subject = gotext.Get("(Mentioned) %s", subject)
 			}
 
 			if sent == batchSize {

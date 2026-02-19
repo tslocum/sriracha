@@ -10,6 +10,14 @@ msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d new post"
+msgid_plural "%d new posts"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "(Mentioned) %s"
+msgstr ""
+
 msgid "1 Day"
 msgstr ""
 
