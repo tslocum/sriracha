@@ -14,17 +14,19 @@
 - Upload files matching MIME type whitelist
 - Embed external media (YouTube, Vimeo and SoundCloud)
 - Reference links `>>###`
+- CAPTCHA
 - Overboard
 - Thread catalog
 - Oekaki (drawings)
-- CAPTCHA
 - Report posts
 - Fetch new replies automatically
 - Extend with [plugins](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#plugins)
+- Customize [HTML templates](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#custom-templates)
+- Send [email notifications](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#email-notifications)
 - Translate into [additional languages](https://translate.codeberg.org/projects/sriracha/sriracha/)
 - Play SWF files with the included [ruffle emulator](https://ruffle.rs)
 - View Shift JIS text art with the included [submona web font](https://github.com/pera/submona-web-font)
-- Management panel:
+- Management panel
   - Configure which roles have access to management and moderation actions
   - Automatically moderate new posts using regular expressions
   - Ban offensive/abusive visitors across all boards

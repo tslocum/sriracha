@@ -146,7 +146,9 @@ type Server struct {
 	original        *template.Template
 	customTemplates []string
 
-	notifications []notification
+	notifications          []notification
+	notificationsWaitGroup sync.WaitGroup
+	shutdownNotifications  chan struct{}
 
 	rebuildQueue     chan *rebuildInfo
 	rebuildWaitGroup sync.WaitGroup
@@ -162,7 +164,8 @@ func NewServer() *Server {
 		opt: ServerOptions{
 			Banners: make(map[int][]*Banner),
 		},
-		rebuildQueue: make(chan *rebuildInfo),
+		shutdownNotifications: make(chan struct{}),
+		rebuildQueue:          make(chan *rebuildInfo),
 	}
 }
 
@@ -1844,6 +1847,7 @@ func (s *Server) Run() error {
 	db.Commit()
 
 	if s.config.MailAddress != "" {
+		s.notificationsWaitGroup.Add(1)
 		go s.handleNotifications()
 	}
 
@@ -1854,6 +1858,7 @@ func (s *Server) Run() error {
 		}
 		// Wait until all web requests have been processed.
 		s.rebuildWaitGroup.Wait()
+		s.notificationsWaitGroup.Wait()
 	}
 	return nil
 }
@@ -1929,6 +1934,10 @@ func (s *Server) Stop() {
 	s.rebuildLock.Lock()
 	s.rebuildQueue <- nil
 	s.rebuildWaitGroup.Wait()
+
+	if s.opt.Notifications {
+		s.shutdownNotifications <- struct{}{}
+	}
 
 	if s.httpServer == nil {
 		os.Exit(0)

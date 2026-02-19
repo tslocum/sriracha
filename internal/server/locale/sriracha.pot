@@ -623,7 +623,7 @@ msgstr ""
 msgid "New drawing..."
 msgstr ""
 
-msgid "New threads"
+msgid "New threads only"
 msgstr ""
 
 msgid "News"

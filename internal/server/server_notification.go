@@ -187,6 +187,8 @@ func (s *Server) sendNotifications(onlyMentions bool) {
 }
 
 func (s *Server) handleNotifications() {
+	defer s.notificationsWaitGroup.Done()
+
 	mentionTicker := time.NewTicker(time.Duration(s.config.Mentions) * time.Minute)
 	defaultTicker := time.NewTicker(time.Duration(s.config.Notifications) * time.Minute)
 	for {
@@ -195,6 +197,9 @@ func (s *Server) handleNotifications() {
 			s.sendNotifications(true)
 		case <-defaultTicker.C:
 			s.sendNotifications(false)
+		case <-s.shutdownNotifications:
+			s.sendNotifications(false)
+			return
 		}
 	}
 }

@@ -16,7 +16,7 @@
                         <tr>
                             <td class="postblock"><label for="notify">{{T "Notify"}}</label></td>
                             <td><select name="notify" style="width: 100%;">
-                                <option value="-1">{{T "New threads"}}</option>
+                                <option value="-1">{{T "New threads only"}}</option>
                                 <option value="0">{{T "All new posts"}}</option>
                             </select></td>
                         </tr>
@@ -54,7 +54,7 @@
                                     <td>
                                         <select name="sub{{$sub.ID}}">
                                             <option value="1">{{T "Unsubscribe"}}</option>
-                                            <option value="-1"{{if eq $sub.Target -1}} selected{{end}}>{{T "New threads"}}</option>
+                                            <option value="-1"{{if eq $sub.Target -1}} selected{{end}}>{{T "New threads only"}}</option>
                                             <option value="0"{{if eq $sub.Target 0}} selected{{end}}>{{T "All new posts"}}</option>
                                         </select>
                                     </td>
