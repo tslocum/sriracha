@@ -1,0 +1,35 @@
+{{template "imgboard_begin.gohtml" .}}
+<br>
+<div style="text-align: center;">
+    <form method="post">
+        <fieldset>
+            <legend>{{if ne .Post nil}}{{T "Subscribe to %s" (print "No." .Post.ID)}}{{else}}{{T "Subscribe to %s" .Board.Path}}{{end}}</legend>
+            <table border="0" class="manageform">
+                {{if ne .Post nil}}
+                    <tr>
+                        <td class="postblock"><label>Notify</label></td>
+                        <td>{{if eq .Post.Parent 0}}When {{.Post.RefLink}} receives new replies.{{else}}When {{.Post.RefLink}} is mentioned.{{end}}</td>
+                    </tr>
+                {{else}}
+                    <tr>
+                        <td class="postblock"><label for="notify">Notify</label></td>
+                        <td><select name="notify" style="width: 100%;">
+                            <option value="-1">{{T "New threads"}}</option>
+                            <option value="0">{{T "New posts"}}</option>
+                        </select></td>
+                    </tr>
+                {{end}}
+                <tr>
+                    <td class="postblock">{{T "Email"}}</td>
+                    <td><input type="text" name="email"></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td align="right"><input type="submit" value="{{T "Subscribe"}}" class="managebutton" style="width: auto;min-width: 50%;"></td>
+                </tr>
+            </table>
+        </fieldset>
+    </form><br><br>
+</div>
+<hr>
+{{template "imgboard_end.gohtml" .}}

@@ -1506,6 +1506,10 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !handled {
+		if strings.HasPrefix(r.URL.Path, "/sriracha/subscribe") {
+			action = "subscribe"
+		}
+
 		if s.config.ImportMode && action != "" {
 			data := s.buildData(db, w, r)
 			data.BoardError(w, "Sriracha is running in import mode. All boards are currently locked. Please wait and try again.")
@@ -1519,6 +1523,8 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 				s.serveDelete(db, w, r)
 			case "captcha":
 				s.serveCAPTCHA(db, w, r)
+			case "subscribe":
+				s.serveSubscribe(db, w, r)
 			default:
 				s.serveManage(db, w, r)
 			}
