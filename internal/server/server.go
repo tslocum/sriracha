@@ -445,7 +445,6 @@ func (s *Server) sendMail(client *smtp.Client, recipient string, subject string,
 		body = fmt.Appendf(body, "Reply-To: %s\n", s.config.MailReplyTo)
 	}
 	body = fmt.Appendf(body, "\n%s", message)
-	log.Println(string(body))
 
 	// Reset state.
 	if err := client.Reset(); err != nil {

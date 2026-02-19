@@ -9,12 +9,21 @@ import (
 	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
+	"github.com/leonelquinteros/gotext"
 )
+
+func (s *Server) subscriptionConfirmKey(sub *Subscription) string {
+	return md5Sum(s.hashData(md5Sum(fmt.Sprintf("%s/%d", sub.Email, sub.Confirm))))
+}
 
 func (s *Server) serveSubscribe(db *database.DB, w http.ResponseWriter, r *http.Request) {
 	data := s.buildData(db, w, r)
-	data.Template = "subscribe"
 	data.Boards = db.AllBoards()
+	if !s.opt.Notifications {
+		data.BoardError(w, "Email notifications are disabled.")
+		return
+	}
+	data.Template = "subscribe"
 
 	key := r.URL.Query().Get("key")
 	if key != "" {
@@ -31,7 +40,36 @@ func (s *Server) serveSubscribe(db *database.DB, w http.ResponseWriter, r *http.
 		data.Extra = email
 		data.Extra2 = key
 
+		var confirmed bool
 		subs := db.SubscriptionsByEmail(email)
+		for _, sub := range subs {
+			if sub.Confirm == 0 {
+				confirmed = true
+				break
+			}
+		}
+		if !confirmed {
+			if len(subs) == 0 {
+				data.BoardError(w, "Your email address is unconfirmed. Subscribe to request a confirmation link.")
+				return
+			}
+			const errorMessage = "Click the confirmation link sent to your email."
+			confirmKey := r.URL.Query().Get("confirm")
+			if confirmKey == "" {
+				data.BoardError(w, "Your email address is unconfirmed. "+errorMessage)
+				return
+			}
+			expectedConfirmKey := s.subscriptionConfirmKey(subs[0])
+			if confirmKey != expectedConfirmKey {
+				data.BoardError(w, "Invalid confirmation key. "+errorMessage)
+				return
+			}
+			subs[0].Confirm = 0
+			db.UpdateSubscription(subs[0])
+
+			data.Info = "Subscription confirmed."
+		}
+
 		if r.Method == http.MethodPost {
 			for _, sub := range subs {
 				v := FormNegInt(r, fmt.Sprintf("sub%d", sub.ID))
@@ -109,23 +147,54 @@ func (s *Server) serveSubscribe(db *database.DB, w http.ResponseWriter, r *http.
 			data.BoardError(w, "Enter your email address to subscribe.")
 			return
 		}
-		s := &Subscription{
+
+		var confirmed bool
+		subs := db.SubscriptionsByEmail(email)
+		for _, sub := range subs {
+			if sub.Confirm == 0 {
+				confirmed = true
+				break
+			}
+		}
+
+		var confirmTime int64
+		if !confirmed {
+			if len(subs) != 0 {
+				expireTime := time.Now().Unix() - 86400 // 24 hours.
+				var modified bool
+				for _, sub := range subs {
+					if sub.Confirm <= expireTime {
+						db.DeleteSubscription(sub)
+						modified = true
+					}
+				}
+				if modified {
+					subs = db.SubscriptionsByEmail(email)
+				}
+			}
+			if len(subs) != 0 {
+				data.BoardError(w, "A confirmation link was sent to you via email. You may request another confirmation link when 24 hours have passed.")
+				return
+			}
+			confirmTime = time.Now().Unix()
+		}
+
+		sub := &Subscription{
 			IP:      s.hashIP(r),
-			Confirm: time.Now().Unix(), // TODO
+			Confirm: confirmTime,
 			Email:   email,
 		}
 		if data.Post != nil {
-			s.Target = data.Post.ID
+			sub.Target = data.Post.ID
 		} else {
-			s.Board = data.Board.ID
-			s.Target = int(FormRange(r, "notify", SubscriptionThreads, SubscriptionAll))
+			sub.Board = data.Board.ID
+			sub.Target = int(FormRange(r, "notify", SubscriptionThreads, SubscriptionAll))
 		}
-		err := s.Validate()
+		err := sub.Validate()
 		if err != nil {
 			data.BoardError(w, fmt.Sprintf("Failed to add subscription: %s", err))
 			return
 		}
-		db.AddSubscription(s)
 
 		var target string
 		if data.Post != nil {
@@ -133,9 +202,47 @@ func (s *Server) serveSubscribe(db *database.DB, w http.ResponseWriter, r *http.
 		} else {
 			target = data.Board.Path()
 		}
+		if !confirmed {
+			const errorMessage = "Failed to send confirmation link. Please try again later."
+			client, err := s.connectToMailServer()
+			if err != nil {
+				data.BoardError(w, errorMessage)
+				return
+			}
+			subject := gotext.Get("Subscribe to %s", target)
+			key := md5Sum(s.hashData(md5Sum(email)))
+			confirmKey := s.subscriptionConfirmKey(sub)
+			message := s.opt.SiteHome + "sriracha/subscribe/?email=" + email + "&key=" + key + "&confirm=" + confirmKey
+			err = s.sendMail(client, sub.Email, subject, message)
+			client.Close()
+			if err != nil {
+				data.BoardError(w, errorMessage)
+				return
+			}
+		}
+
+		var updated bool
+		if confirmed {
+			for _, existing := range subs {
+				if sub.Board == existing.Board && (sub.Board != 0 || sub.Target == existing.Target) {
+					existing.Board = sub.Board
+					existing.Target = sub.Target
+					db.UpdateSubscription(existing)
+					updated = true
+					break
+				}
+			}
+		}
+		if !updated {
+			db.AddSubscription(sub)
+		}
 
 		data.Template = "board_info"
-		data.Info = fmt.Sprintf("Subscribed to %s", target)
+		if !confirmed {
+			data.Info = "Please confirm your subscription by clicking the link sent to your email."
+		} else {
+			data.Info = fmt.Sprintf("Subscribed to %s", target)
+		}
 	}
 
 	data.execute(w)

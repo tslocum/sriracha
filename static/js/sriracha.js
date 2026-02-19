@@ -37,6 +37,7 @@ function unsubscribeAll() {
             subs[i].checked = true;
         }
     }
+    return false;
 }
 
 function fetchPosts(url, append) {

@@ -1,4 +1,5 @@
 {{template "imgboard_begin.gohtml" .}}
+{{if ne .Info ""}}<div class="manageinfo">{{.Info}}</div>{{end}}
 <br>
 <div style="  width:100%;  display: flex;  justify-content: center;">
     <form method="post">
@@ -49,7 +50,7 @@
                                 {{if ne $sub.Board 0}}
                                     {{$board := GetBoard $sub.Board $.Boards}}
                                     {{if eq $board nil}}{{continue}}{{end}}
-                                    <td class="postblock">{{$board.Path}}</td>
+                                    <td class="postblock"><a href="{{$board.Path}}">{{$board.Path}}</a></td>
                                     <td>
                                         <select name="sub{{$sub.ID}}">
                                             <option value="1">{{T "Unsubscribe"}}</option>
@@ -58,7 +59,7 @@
                                         </select>
                                     </td>
                                 {{else}}
-                                    <td class="postblock">No.{{$sub.Target}}</td>
+                                    <td class="postblock"><a href="/sriracha/post/{{$sub.Target}}">&gt;&gt;{{$sub.Target}}</a></td>
                                     <td>
                                         <select name="sub{{$sub.ID}}">
                                             <option value="1">{{T "Unsubscribe"}}</option>
@@ -69,7 +70,7 @@
                             </tr>
                         {{end}}
                         <tr>
-                            <td align="center" style="vertical-align: middle">[<a href="#" onclick="return unsubscribeAll();">{{T "All"}}</a>]</td>
+                            <td style="vertical-align: middle">[<a href="#" onclick="return unsubscribeAll();">{{T "All"}}</a>]</td>
                             <td align="right"><input type="submit" value="{{T "Submit"}}" class="managebutton" style="width: auto;min-width: 50%;"></td>
                         </tr>
                     {{end}}

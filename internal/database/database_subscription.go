@@ -53,7 +53,7 @@ func (db *DB) SubscriptionsByPost(p *Post, distinct bool, includeBoard bool) []*
 	if distinct {
 		query = "SELECT DISTINCT ON (email)"
 	}
-	query += " * FROM subscription WHERE target = $1"
+	query += " * FROM subscription WHERE (target = $1"
 	args := []any{p.ID}
 	if includeBoard {
 		if p.Parent == 0 {
@@ -63,7 +63,7 @@ func (db *DB) SubscriptionsByPost(p *Post, distinct bool, includeBoard bool) []*
 		}
 		args = append(args, p.Board.ID)
 	}
-	query += " ORDER BY email ASC, target DESC, board ASC"
+	query += ") AND confirm = 0 ORDER BY email ASC, target DESC, board ASC"
 	rows, err := db.conn.Query(context.Background(), query, args...)
 	if err != nil {
 		log.Fatalf("failed to select subscriptions: %s", err)
