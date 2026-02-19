@@ -28,6 +28,7 @@ func (s *Server) serveSubscribe(db *database.DB, w http.ResponseWriter, r *http.
 			return
 		}
 		data.Extra = email
+		data.Extra2 = key
 		data.execute(w)
 		return
 	}

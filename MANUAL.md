@@ -86,12 +86,11 @@ When starting Sriracha for the first time, visit the management panel at
 `admin` as the username and the password. Once you have logged in, visit the
 accounts page and change your username and password.
 
-### SMTP mail server
+### Email notifications
 
-Sriracha may optionally be configured to connect to an SMTP server to send
-email notifications. When configured, visitors may subscribe to receive email
-notifications when new posts are created. Sriracha does not read any incoming
-email messages.
+Sriracha may be configured to connect to an [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)
+server to send email notifications. When configured, visitors may subscribe to
+receive email notifications when new posts are created.
 
 Depending on the configuration of your mail server, you should connect on port
 587, 465 or 25, in order from most to least secure.
@@ -99,7 +98,7 @@ Depending on the configuration of your mail server, you should connect on port
 `mailtls` should be set to `true` if possible, which will connect to the mail
 server using a secure connection. If `mailtls` is set to `false`, a plain text
 connection is established. However, if the mail server supports the `STARTTLS`
-extension, the plain text connection is immediately upgraded to a TLS connection.
+extension, the connection is immediately upgraded to TLS.
 
 `mailinsecure` should be set to `false` if possible, which will require TLS
 certificate verification when connecting to the server. The hostname or IP
@@ -108,8 +107,14 @@ If `mailinsecure` is set to `true`, TLS certificate verification is skipped.
 
 `mailauth` should be set to `challenge` if possible, which will enable the [CRAM-MD5](https://en.wikipedia.org/wiki/CRAM-MD5)
 challenge-response authentication mechanism. `mailauth` may instead be set to
-`plain`, which will enable authentication using a plain text password.
-`mailauth` may also be set to `none`, which will skip authentication entirely.
+`plain` to authenticate using a plain text password. `mailauth` may also be set
+to `none` to skip authentication entirely.
+
+Notifications will contain clickable links when the `Site Home` setting is
+configured as a URL (e.g. `https://example.com/`) rather than a relative path.
+
+Sriracha does not read any incoming emails. Replies via email are ignored.
+Because of this, you should bounce emails sent to the notification address.
 
 ### Custom templates
 
@@ -245,7 +250,7 @@ dbname: "sriracha"
 #dburl: "postgresql://sriracha:hunter2@localhost/sriracha"
 
 # SMTP mail server configuration. When configured, visitors may subscribe to
-# to receive email notifications when a new post is created. To disable email
+# to receive email notifications when new posts are created. To disable email
 # notifications, leave mailaddress blank.
 #mailaddress:  ""          # SMTP server Address:Port.
 #mailtls:      true        # Whether TLS is used to connect to the server.

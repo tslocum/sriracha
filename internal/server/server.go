@@ -1736,13 +1736,15 @@ func (s *Server) Run() error {
 	}
 
 	if s.config.MailAddress != "" {
-		fmt.Println("Verifying mail server configuration...")
-		client, err := s.connectToMailServer()
-		if err != nil {
-			log.Fatalf("failed to verify mail server configuration: %s", err)
-		}
-		client.Close()
 		s.opt.Notifications = true
+		if !devMode {
+			fmt.Println("Verifying mail server configuration...")
+			client, err := s.connectToMailServer()
+			if err != nil {
+				log.Fatalf("failed to verify mail server configuration: %s", err)
+			}
+			client.Close()
+		}
 	}
 
 	s.dbPool, err = database.Connect(s.config)
