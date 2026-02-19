@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"sort"
 	"time"
 
 	"codeberg.org/tslocum/sriracha/internal/database"
@@ -29,6 +30,49 @@ func (s *Server) serveSubscribe(db *database.DB, w http.ResponseWriter, r *http.
 		}
 		data.Extra = email
 		data.Extra2 = key
+
+		subs := db.SubscriptionsByEmail(email)
+		if r.Method == http.MethodPost {
+			for _, sub := range subs {
+				v := FormNegInt(r, fmt.Sprintf("sub%d", sub.ID))
+
+				// Board subscription.
+				if sub.Board != 0 {
+					switch v {
+					case int(SubscriptionThreads), int(SubscriptionAll):
+						sub.Target = v
+						db.UpdateSubscription(sub)
+					case 1:
+						db.DeleteSubscription(sub)
+					}
+					continue
+				}
+
+				// Post subscription.
+				if v == 1 {
+					db.DeleteSubscription(sub)
+				}
+			}
+
+			subs = db.SubscriptionsByEmail(email)
+		}
+
+		boardLabels := make(map[int]string)
+		for _, board := range data.Boards {
+			boardLabels[board.ID] = board.Path()
+		}
+
+		sort.Slice(subs, func(i, j int) bool {
+			iBoard, jBoard := subs[i].Board != 0, subs[j].Board != 0
+			if iBoard != jBoard {
+				return iBoard
+			} else if iBoard && jBoard {
+				return boardLabels[subs[i].Board] < boardLabels[subs[j].Board]
+			}
+			return subs[i].Target < subs[j].Target
+		})
+		data.Subscriptions = subs
+
 		data.execute(w)
 		return
 	}

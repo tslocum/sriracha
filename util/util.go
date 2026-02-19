@@ -116,7 +116,7 @@ func FormBool(r *http.Request, key string) bool {
 }
 
 func FormRange[T constraints.Integer](r *http.Request, key string, min T, max T) T {
-	v := FormInt(r, key)
+	v := FormNegInt(r, key)
 	if v >= int(min) && v <= int(max) {
 		return T(v)
 	}

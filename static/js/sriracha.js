@@ -24,6 +24,21 @@ function updateTitle() {
     setTimeout(updateTitle, 2000);
 }
 
+function unsubscribeAll() {
+    var subs = document.querySelectorAll("[name^=sub]");
+    if (!subs) {
+        return;
+    }
+    for (var i = 0; i < subs.length; i++) {
+        var tag = subs[i].tagName.toLowerCase();
+        if (tag == "select") {
+            subs[i].value = "1";
+        } else if (tag == "input") {
+            subs[i].checked = true;
+        }
+    }
+}
+
 function fetchPosts(url, append) {
     return fetch(url).then(function(resp) {
         return resp.text();

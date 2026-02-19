@@ -184,6 +184,14 @@ var templateFuncMap = template.FuncMap{
 	"Format": func(text string) template.HTML {
 		return template.HTML(strings.ReplaceAll(text, "\n", "<br>\n"))
 	},
+	"GetBoard": func(boardID int, boards []*Board) *Board {
+		for _, board := range boards {
+			if board.ID == boardID {
+				return board
+			}
+		}
+		return nil
+	},
 	"HasExpandableMedia": func(thread []*Post) bool {
 		for _, p := range thread {
 			if p.File != "" && !p.IsEmbed() && slices.Contains(expandableMedia, filepath.Ext(p.File)) {

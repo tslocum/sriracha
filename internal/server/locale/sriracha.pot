@@ -73,6 +73,12 @@ msgstr ""
 msgid "Administrators have full access except for managing accounts."
 msgstr ""
 
+msgid "All"
+msgstr ""
+
+msgid "All new posts"
+msgstr ""
+
 msgid "All posts"
 msgstr ""
 
@@ -456,6 +462,9 @@ msgstr ""
 msgid "Manage Banners"
 msgstr ""
 
+msgid "Manage Subscriptions"
+msgstr ""
+
 msgid "Manage mode"
 msgstr ""
 
@@ -606,10 +615,16 @@ msgstr ""
 msgid "New drawing..."
 msgstr ""
 
+msgid "New threads"
+msgstr ""
+
 msgid "News"
 msgstr ""
 
 msgid "Next"
+msgstr ""
+
+msgid "No active subscriptions."
 msgstr ""
 
 msgid "No board specified."
@@ -637,6 +652,9 @@ msgid "None"
 msgstr ""
 
 msgid "Notice"
+msgstr ""
+
+msgid "Notify"
 msgstr ""
 
 msgid "Number of files visitors may upload at once. A new post is created for each uploaded file."
@@ -818,6 +836,9 @@ msgstr ""
 msgid "Subscribe"
 msgstr ""
 
+msgid "Subscribe to %s"
+msgstr ""
+
 msgid "Super-administrator"
 msgstr ""
 
@@ -858,6 +879,9 @@ msgid "Type"
 msgstr ""
 
 msgid "Unknown"
+msgstr ""
+
+msgid "Unsubscribe"
 msgstr ""
 
 msgid "Unused"
@@ -906,6 +930,12 @@ msgid "Visitors may embed media from selected services instead of uploading a fi
 msgstr ""
 
 msgid "Visitors may upload the selected types of files."
+msgstr ""
+
+msgid "When %s is mentioned."
+msgstr ""
+
+msgid "When %s receives new replies."
 msgstr ""
 
 msgid "Whether identifiers are displayed for each post. Identifiers are generated based on IP address hashes."

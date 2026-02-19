@@ -32,7 +32,7 @@ func (db *DB) SubscriptionByID(id int) *Subscription {
 }
 
 func (db *DB) SubscriptionsByEmail(email string) []*Subscription {
-	rows, err := db.conn.Query(context.Background(), "SELECT * FROM subscription WHERE email = $1 ORDER BY board ASC, target ASC")
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM subscription WHERE email = $1 ORDER BY board DESC, target ASC", email)
 	if err != nil {
 		log.Fatalf("failed to select subscriptions: %s", err)
 	}
@@ -78,6 +78,20 @@ func (db *DB) SubscriptionsByPost(p *Post, distinct bool, includeBoard bool) []*
 		subs = append(subs, s)
 	}
 	return subs
+}
+
+func (db *DB) UpdateSubscription(s *Subscription) {
+	if s.ID <= 0 {
+		log.Fatalf("invalid subscription ID %d", s.ID)
+	}
+	_, err := db.conn.Exec(context.Background(), "UPDATE subscription SET ip = $1, confirm = $2, target = $3 WHERE id = $4",
+		s.IP,
+		s.Confirm,
+		s.Target,
+		s.ID)
+	if err != nil {
+		log.Fatalf("failed to update subscription: %s", err)
+	}
 }
 
 func (db *DB) DeleteSubscription(s *Subscription) {

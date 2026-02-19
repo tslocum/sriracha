@@ -1,19 +1,19 @@
 {{template "imgboard_begin.gohtml" .}}
 <br>
-<div style="text-align: center;">
+<div style="  width:100%;  display: flex;  justify-content: center;">
     <form method="post">
         <fieldset>
             {{if eq .Extra ""}}
-                <legend>{{if ne .Post nil}}{{T "Subscribe to %s" (print "No." .Post.ID)}}{{else}}{{T "Subscribe to %s" .Board.Path}}{{end}}</legend>
+                <legend align="center">{{if ne .Post nil}}{{T "Subscribe to %s" (print "No." .Post.ID)}}{{else}}{{T "Subscribe to %s" .Board.Path}}{{end}}</legend>
                 <table border="0" class="manageform">
                     {{if ne .Post nil}}
                         <tr>
-                            <td class="postblock"><label>Notify</label></td>
-                            <td>{{if eq .Post.Parent 0}}When {{.Post.RefLink}} receives new replies.{{else}}When {{.Post.RefLink}} is mentioned.{{end}}</td>
+                            <td class="postblock"><label>{{T "Notify"}}</label></td>
+                            <td>{{if eq .Post.Parent 0}}{{T "When %s receives new replies." .Post.RefLink | HTML}}{{else}}{{T "When %s is mentioned." .Post.RefLink | HTML}}{{end}}</td>
                         </tr>
                     {{else}}
                         <tr>
-                            <td class="postblock"><label for="notify">Notify</label></td>
+                            <td class="postblock"><label for="notify">{{T "Notify"}}</label></td>
                             <td><select name="notify" style="width: 100%;">
                                 <option value="-1">{{T "New threads"}}</option>
                                 <option value="0">{{T "All new posts"}}</option>
@@ -31,21 +31,53 @@
                 </table>
             {{else}}
                 <input type="hidden" name="key" value="{{.Extra2}}">
-                <legend>Manage Subscriptions</legend>
+                <legend align="center">{{T "Manage Subscriptions"}}</legend>
                 <table border="0" class="manageform">
                     <tr>
-                        <td class="postblock">{{T "Email"}}</td>
-                        <td><input type="text" name="email" value="{{.Extra}}" disabled></td>
+                        <td colspan="2" align="center">{{.Extra}}</td>
                     </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td align="right"><input type="submit" value="{{T "Submit"}}" class="managebutton" style="width: auto;min-width: 50%;"></td>
-                    </tr>
+                    {{if eq (len .Subscriptions) 0}}
+                        <tr>
+                            <td colspan="2">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center">{{T "No active subscriptions."}}</td>
+                        </tr>
+                    {{else}}
+                        {{range $i, $sub := .Subscriptions}}
+                            <tr>
+                                {{if ne $sub.Board 0}}
+                                    {{$board := GetBoard $sub.Board $.Boards}}
+                                    {{if eq $board nil}}{{continue}}{{end}}
+                                    <td class="postblock">{{$board.Path}}</td>
+                                    <td>
+                                        <select name="sub{{$sub.ID}}">
+                                            <option value="1">{{T "Unsubscribe"}}</option>
+                                            <option value="-1"{{if eq $sub.Target -1}} selected{{end}}>{{T "New threads"}}</option>
+                                            <option value="0"{{if eq $sub.Target 0}} selected{{end}}>{{T "All new posts"}}</option>
+                                        </select>
+                                    </td>
+                                {{else}}
+                                    <td class="postblock">No.{{$sub.Target}}</td>
+                                    <td>
+                                        <select name="sub{{$sub.ID}}">
+                                            <option value="1">{{T "Unsubscribe"}}</option>
+                                            <option value="0" selected>{{T "Subscribe"}}</option>
+                                        </select>
+                                    </td>
+                                {{end}}
+                            </tr>
+                        {{end}}
+                        <tr>
+                            <td align="center" style="vertical-align: middle">[<a href="#" onclick="return unsubscribeAll();">{{T "All"}}</a>]</td>
+                            <td align="right"><input type="submit" value="{{T "Submit"}}" class="managebutton" style="width: auto;min-width: 50%;"></td>
+                        </tr>
+                    {{end}}
                 </table>
             {{end}}
         </fieldset>
-    </form><br><br>
-</div>
+    </form>
+</div><br>
 {{if eq .Extra ""}}
     <div style="text-align: center;">- <a href="javascript:history.go(-1)">{{T "Click here to go back"}}</a> -</div><br>
 {{end}}
