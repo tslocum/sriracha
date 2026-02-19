@@ -1475,6 +1475,8 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	defer db.Commit()
 	var handled bool
 
+	db.DeleteExpiredSubscriptions()
+
 	if db.DeleteExpiredBans() > 0 {
 		s.reloadBans(db)
 	}

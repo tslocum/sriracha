@@ -53,7 +53,7 @@ func (s *Server) serveSubscribe(db *database.DB, w http.ResponseWriter, r *http.
 				data.BoardError(w, "Your email address is unconfirmed. Subscribe to request a confirmation link.")
 				return
 			}
-			const errorMessage = "Click the confirmation link sent to your email."
+			const errorMessage = "Click the confirmation link emailed to you."
 			confirmKey := r.URL.Query().Get("confirm")
 			if confirmKey == "" {
 				data.BoardError(w, "Your email address is unconfirmed. "+errorMessage)
@@ -65,6 +65,7 @@ func (s *Server) serveSubscribe(db *database.DB, w http.ResponseWriter, r *http.
 				return
 			}
 			subs[0].Confirm = 0
+			subs[0].IP = ""
 			db.UpdateSubscription(subs[0])
 
 			data.Info = "Subscription confirmed."
@@ -148,6 +149,14 @@ func (s *Server) serveSubscribe(db *database.DB, w http.ResponseWriter, r *http.
 			return
 		}
 
+		const confirmErrorMessage = "You already requested a confirmation link. You may request another confirmation link when 24 hours have passed."
+		ipHash := s.hashIP(r)
+		ipSub := db.SubscriptionByIP(ipHash)
+		if ipSub != nil {
+			data.BoardError(w, confirmErrorMessage)
+			return
+		}
+
 		var confirmed bool
 		subs := db.SubscriptionsByEmail(email)
 		for _, sub := range subs {
@@ -160,29 +169,18 @@ func (s *Server) serveSubscribe(db *database.DB, w http.ResponseWriter, r *http.
 		var confirmTime int64
 		if !confirmed {
 			if len(subs) != 0 {
-				expireTime := time.Now().Unix() - 86400 // 24 hours.
-				var modified bool
-				for _, sub := range subs {
-					if sub.Confirm <= expireTime {
-						db.DeleteSubscription(sub)
-						modified = true
-					}
-				}
-				if modified {
-					subs = db.SubscriptionsByEmail(email)
-				}
-			}
-			if len(subs) != 0 {
-				data.BoardError(w, "A confirmation link was sent to you via email. You may request another confirmation link when 24 hours have passed.")
+				data.BoardError(w, confirmErrorMessage)
 				return
 			}
 			confirmTime = time.Now().Unix()
 		}
 
 		sub := &Subscription{
-			IP:      s.hashIP(r),
 			Confirm: confirmTime,
 			Email:   email,
+		}
+		if !confirmed {
+			sub.IP = ipHash
 		}
 		if data.Post != nil {
 			sub.Target = data.Post.ID
@@ -239,7 +237,7 @@ func (s *Server) serveSubscribe(db *database.DB, w http.ResponseWriter, r *http.
 
 		data.Template = "board_info"
 		if !confirmed {
-			data.Info = "Please confirm your subscription by clicking the link sent to your email."
+			data.Info = "Please confirm your subscription by clicking the link emailed to you."
 		} else {
 			data.Info = fmt.Sprintf("Subscribed to %s", target)
 		}

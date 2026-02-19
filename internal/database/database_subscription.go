@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"log"
+	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	"github.com/jackc/pgx/v5"
@@ -23,6 +24,17 @@ func (db *DB) AddSubscription(s *Subscription) {
 func (db *DB) SubscriptionByID(id int) *Subscription {
 	s := &Subscription{}
 	err := scanSubscription(s, db.conn.QueryRow(context.Background(), "SELECT * FROM subscription WHERE id = $1", id))
+	if err == pgx.ErrNoRows {
+		return nil
+	} else if err != nil {
+		log.Fatalf("failed to select subscription: %s", err)
+	}
+	return s
+}
+
+func (db *DB) SubscriptionByIP(ip string) *Subscription {
+	s := &Subscription{}
+	err := scanSubscription(s, db.conn.QueryRow(context.Background(), "SELECT * FROM subscription WHERE ip = $1 LIMIT 1", ip))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {
@@ -122,6 +134,16 @@ func (db *DB) DeleteSubscriptionsByPost(postID int) {
 	if err != nil {
 		log.Fatalf("failed to delete subscription: %s", err)
 	}
+}
+
+func (db *DB) DeleteExpiredSubscriptions() int {
+	var deleted int
+	expireTime := time.Now().Unix() - 86400 // 24 hours.
+	err := db.conn.QueryRow(context.Background(), "WITH deleted AS (DELETE FROM subscription WHERE confirm != 0 AND confirm <= $1 RETURNING *) SELECT COUNT(*) FROM deleted", expireTime).Scan(&deleted)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return deleted
 }
 
 func scanSubscription(s *Subscription, row pgx.Row) error {
