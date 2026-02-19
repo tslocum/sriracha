@@ -1579,34 +1579,35 @@ func (s *Server) handleRebuild() {
 		// Process queue.
 		info = <-s.rebuildQueue
 		if info == nil {
-			shutdown = true
-		} else {
-			pending = append(pending, info)
+			return // Shut down.
 		}
-		for {
-			// Drain queue until minimum wait time has passed.
-			t = time.NewTimer(minWait)
-			var found bool
-		DRAINQUEUE:
+		pending = append(pending, info)
+		if time.Since(lastBuild) < maxWait {
 			for {
-				select {
-				case info = <-s.rebuildQueue:
-					if info == nil {
-						shutdown = true
-					} else {
-						pending = append(pending, info)
-						found = true
+				// Drain queue until minimum wait time has passed.
+				t = time.NewTimer(minWait)
+				var found bool
+			DRAINQUEUE:
+				for {
+					select {
+					case info = <-s.rebuildQueue:
+						if info == nil {
+							shutdown = true
+						} else {
+							pending = append(pending, info)
+							found = true
+						}
+					case <-t.C:
+						break DRAINQUEUE
 					}
-				case <-t.C:
-					break DRAINQUEUE
 				}
-			}
-			if !found {
-				break
-			}
-			// Check if maximum wait time has passed.
-			if time.Since(lastBuild) >= maxWait {
-				break
+				if !found {
+					break
+				}
+				// Check if maximum wait time has passed.
+				if time.Since(lastBuild) >= maxWait {
+					break
+				}
 			}
 		}
 		if shutdown && len(pending) == 0 {
