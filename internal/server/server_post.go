@@ -92,7 +92,7 @@ func writeImage(img image.Image, mimeType string, filePath string) error {
 func createPostThumbnail(p *Post, buf []byte, mimeType string, mediaOverlay bool, thumbPath string) error {
 	thumbImg, err := resizeImage(p.Board, bytes.NewReader(buf), mimeType)
 	if err != nil {
-		return err
+		return fmt.Errorf("unsupported filetype")
 	}
 
 	if mediaOverlay {

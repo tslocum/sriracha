@@ -318,7 +318,7 @@ func (s *Server) parseConfig(configFile string) error {
 	for name, v := range config.Access {
 		err = validateAccess(name, v)
 		if err != nil {
-			return err
+			return fmt.Errorf("access configuration is invalid: %s", err)
 		} else if name == "default" {
 			defaultRequirement = v
 			delete(config.Access, name)
@@ -1746,12 +1746,6 @@ func (s *Server) Run() error {
 		if err != nil {
 			return fmt.Errorf("invalid custom template directory: %s", err)
 		}
-
-		err = s.watchTemplates(officialDir)
-		if err != nil {
-			return fmt.Errorf("failed to watch templates for changes: %s", err)
-		}
-		fmt.Println("Running in development mode. Template files are monitored for changes.")
 	}
 
 	if s.config.MailAddress != "" {
@@ -1859,6 +1853,18 @@ func (s *Server) Run() error {
 		}
 	}
 	db.Commit()
+
+	if devMode {
+		dir := "directory"
+		if s.config.Template != "" {
+			dir = "directories"
+		}
+		fmt.Printf("Development mode enabled. Monitoring template %s...\n", dir)
+		err = s.watchTemplates(officialDir)
+		if err != nil {
+			return fmt.Errorf("failed to watch templates for changes: %s", err)
+		}
+	}
 
 	if s.config.MailAddress != "" {
 		s.notificationsWaitGroup.Add(1)
