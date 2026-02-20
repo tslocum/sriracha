@@ -86,6 +86,11 @@ When starting Sriracha for the first time, visit the management panel at
 `admin` as the username and the password. Once you have logged in, visit the
 accounts page and change your username and password.
 
+When Sriracha receives a `SIGINT` or `SIGTERM` signal, new web requests stop
+being served, existing web requests are allowed to finish processing, all
+pending changes to static files are written to disk and all pending
+notifications are sent.
+
 ### Email notifications
 
 Sriracha may be configured to connect to an [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)
