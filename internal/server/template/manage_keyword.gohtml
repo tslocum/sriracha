@@ -9,7 +9,7 @@
             <th>{{T "Action"}}</th>
             <th>{{T "Boards"}}</th>
             {{if or $mayUpdate $mayDelete}}
-                <th>&nbsp;</th>
+                <th>{{T "Action"}}</th>
             {{end}}
         </tr>
         {{range $i, $keyword := .Manage.Keywords}}

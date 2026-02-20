@@ -89,9 +89,9 @@
     {{if gt (len .Manage.Plugins) 0}}
         <table class="managetable">
             <tr>
-                <th align="left">{{T "Name"}}</th>
-                <th align="left">{{T "Description"}}</th>
-                <th align="left">&nbsp;</th>
+                <th>{{T "Name"}}</th>
+                <th>{{T "Description"}}</th>
+                <th>{{T "Action"}}</th>
             </tr>
             {{range $i, $plugin := .Manage.Plugins}}
                 <tr>

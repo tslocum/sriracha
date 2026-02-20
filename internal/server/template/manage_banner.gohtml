@@ -13,7 +13,7 @@
             <th>{{T "News"}}</th>
             <th>{{T "Pages"}}</th>
             {{if or $mayUpdate $mayDelete}}
-                <th>&nbsp;</th>
+                <th>{{T "Action"}}</th>
             {{end}}
         </tr>
         {{range $i, $banner := .Manage.Banners}}

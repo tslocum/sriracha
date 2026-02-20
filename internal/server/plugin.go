@@ -239,7 +239,7 @@ func (s *Server) loadPlugins() error {
 		for _, info := range allPluginInfo {
 			names = append(names, info.FullName)
 		}
-		fmt.Printf("Loaded %d plugin%s (%s)\n", len(allPluginInfo), plural, strings.Join(names, ", "))
+		fmt.Printf("Loaded %d plugin%s: %s.\n", len(allPluginInfo), plural, strings.Join(names, ", "))
 	}
 	return nil
 }

@@ -8,7 +8,7 @@
         <tr>
             <th>{{T "Path"}}</th>
             {{if or $mayUpdate $mayDelete}}
-                <th>&nbsp;</th>
+                <th>{{T "Action"}}</th>
             {{end}}
         </tr>
         {{range $i, $page := .Manage.Pages}}

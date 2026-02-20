@@ -29,9 +29,9 @@ func (s *Statistics) Serve(db sriracha.DB, a *Account, w http.ResponseWriter, r 
 		text := `[<a href="./">Return</a>]<br>
 		<table class="managetable">
 			<tr>
-				<th align="left">Attachment</th>
-				<th align="left">Posts</th>
-				<th align="left">Size</th>
+				<th>Attachment</th>
+				<th>Posts</th>
+				<th>Size</th>
 			</tr>`
 		postStats := make(map[string]int64)
 		sizeStats := make(map[string]int64)
@@ -71,11 +71,11 @@ func (s *Statistics) Serve(db sriracha.DB, a *Account, w http.ResponseWriter, r 
 	var totalSize int64
 	text := `<table class="managetable">
         <tr>
-            <th align="left">Board</th>
-            <th align="left">Posts</th>
-            <th align="left">Threads</th>
-            <th align="left">Unique</th>
-            <th align="left">Attachments</th>
+            <th>Board</th>
+            <th>Posts</th>
+            <th>Threads</th>
+            <th>Unique</th>
+            <th>Attachments</th>
         </tr>`
 	for _, b := range boards {
 		allThreads := db.AllThreads(b, false)

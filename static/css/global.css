@@ -4,6 +4,10 @@ body {
 	font-family: system-ui, Roboto, Helvetica, Arial, sans-serif;
 }
 
+th {
+	text-align: left;
+}
+
 td {
 	vertical-align: top;
 }
