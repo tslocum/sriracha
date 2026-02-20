@@ -116,6 +116,13 @@ configured as a URL (e.g. `https://example.com/`) rather than a relative path.
 Sriracha does not read any incoming emails. Replies via email are ignored.
 Because of this, you should bounce emails sent to the notification address.
 
+If you only want to allow certain email addresses to subscribe, set `maidomains`
+to a reguar expression:
+
+```yaml
+maildomains: '^(example\.com|example2\.com|example3\.com)$'
+```
+
 ### Custom templates
 
 Sriracha supports overriding official templates with custom templates. This
@@ -251,7 +258,8 @@ dbname: "sriracha"
 
 # SMTP mail server configuration. When configured, visitors may subscribe to
 # to receive email notifications when new posts are created. To disable email
-# notifications, leave mailaddress blank.
+# notifications, leave mailaddress blank. To allow subscriptions using any
+# email address domain, leave maildomains blank.
 #mailaddress:  ""          # SMTP server Address:Port.
 #mailtls:      true        # Whether TLS is used to connect to the server.
 #mailinsecure: false       # Whether TLS certificate verification is skipped.
@@ -260,6 +268,7 @@ dbname: "sriracha"
 #mailauth:     "challenge" # SMTP server authentication mechanism. Format: challenge / plain / none
 #mailfrom:     ""          # Notification "From" email address.
 #mailreplyto:  ""          # Notification "Reply-To" email address.
+#maildomains:  ""          # Regular expression specifying allowed email address domains.
 
 # Notification batch durations. These options only apply when a mail server is configured.
 #mentions:      60   # Duration (in minutes) mention notifications are batched together.

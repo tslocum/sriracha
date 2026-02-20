@@ -147,6 +147,7 @@ type Server struct {
 	customTemplates []string
 
 	notifications          []notification
+	notificationsPattern   *regexp.Regexp
 	notificationsWaitGroup sync.WaitGroup
 	shutdownNotifications  chan struct{}
 
@@ -329,6 +330,13 @@ func (s *Server) parseConfig(configFile string) error {
 
 	s.config = config
 	s.config.ImportMode = s.config.Import.Enabled()
+
+	if s.config.MailDomains != "" {
+		s.notificationsPattern, err = regexp.Compile(s.config.MailDomains)
+		if err != nil {
+			return fmt.Errorf("failed to parse maildomains regular expression: %s", err)
+		}
+	}
 	return nil
 }
 

@@ -3,7 +3,9 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"net/mail"
 	"sort"
+	"strings"
 	"time"
 
 	"codeberg.org/tslocum/sriracha/internal/database"
@@ -172,6 +174,23 @@ func (s *Server) serveSubscribe(db *database.DB, w http.ResponseWriter, r *http.
 				data.BoardError(w, confirmErrorMessage)
 				return
 			}
+
+			if s.notificationsPattern != nil {
+				var matchDomain bool
+				address, err := mail.ParseAddress(email)
+				if err == nil {
+					atSymbol := strings.IndexRune(address.Address, '@')
+					if atSymbol != -1 {
+						domain := address.Address[atSymbol+1:]
+						matchDomain = s.notificationsPattern.MatchString(domain)
+					}
+				}
+				if !matchDomain {
+					data.BoardError(w, "Sorry, only the following email addresses domains are allowed: "+s.config.MailDomains)
+					return
+				}
+			}
+
 			confirmTime = time.Now().Unix()
 		}
 

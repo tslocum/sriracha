@@ -51,6 +51,7 @@ type Config struct {
 	MailAuth     string // SMTP server authentication mechanism. May be challenge / plain / none.
 	MailFrom     string // "From" email address.
 	MailReplyTo  string // "Reply-To" email address.
+	MailDomains  string // Regular expression specifying allowed email address domains.
 
 	Mentions      int // Duration (in minutes) mention notifications are batched together.
 	Notifications int // Duration (in minutes) non-mention notifications are batched together.
