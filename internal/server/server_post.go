@@ -852,12 +852,8 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			if err != nil {
 				s.deletePostFiles(post)
 
-				if _, ok := err.(*HTMLError); ok {
-					w.Write([]byte(err.Error()))
-				} else {
-					data := s.buildData(db, w, r)
-					data.BoardError(w, err.Error())
-				}
+				data := s.buildData(db, w, r)
+				data.BoardError(w, err.Error())
 				return
 			}
 			post.Message = strings.ReplaceAll(post.Message, "<br>", "\n")

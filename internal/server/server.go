@@ -46,11 +46,14 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// SrirachaVersion is the version of the software. In official releases, this
+// variable is replaced during compilation with the version of the release.
 var SrirachaVersion = "DEV"
 
 //go:embed locale
 var localeFS embed.FS
 
+// Default server settings.
 const (
 	defaultServerSiteName     = "Sriracha"
 	defaultServerSiteHome     = "/"
@@ -59,38 +62,31 @@ const (
 	defaultServerRefresh      = 30
 )
 
+// defaultServerEmbeds is a list of default oEmbed services.
 var defaultServerEmbeds = [][2]string{
 	{"YouTube", "https://youtube.com/oembed?format=json&url=SRIRACHA_EMBED"},
 	{"Vimeo", "https://vimeo.com/api/oembed.json?url=SRIRACHA_EMBED"},
 	{"SoundCloud", "https://soundcloud.com/oembed?format=json&url=SRIRACHA_EMBED"},
 }
 
+// Banner options.
 const (
 	bannerOverboard = -1
 	bannerNews      = -2
 	bannerPages     = -3
 )
 
-func init() {
-	gotext.SetDomain("sriracha")
-}
-
-type HTMLError struct {
-	Page string
-}
-
-func (e *HTMLError) Error() string {
-	return e.Page
-}
-
+// NewsOption represents a News setting option.
 type NewsOption int
 
+// News options.
 const (
 	NewsDisable      NewsOption = 0
 	NewsWriteToNews  NewsOption = 1
 	NewsWriteToIndex NewsOption = 2
 )
 
+// ServerOptions represents server configuration options and related data.
 type ServerOptions struct {
 	SiteName         string
 	SiteHome         string
@@ -117,6 +113,7 @@ type ServerOptions struct {
 	FuncMaps         map[string]template.FuncMap
 }
 
+// DefaultLocaleName returns the name of the configured default locale.
 func (opt *ServerOptions) DefaultLocaleName() string {
 	if opt.Locale == "" || opt.Locale == "en" {
 		return "English"
@@ -128,11 +125,13 @@ func (opt *ServerOptions) DefaultLocaleName() string {
 	return opt.Locale
 }
 
+// rebuildInfo contains information used to request rebuilding a thread.
 type rebuildInfo struct {
 	post *Post
 	wg   *sync.WaitGroup
 }
 
+// Server is the Sriracha imageboard and forum server.
 type Server struct {
 	Boards []*Board
 
@@ -160,6 +159,7 @@ type Server struct {
 	lock sync.Mutex
 }
 
+// NewServer returns a new server.
 func NewServer() *Server {
 	return &Server{
 		opt: ServerOptions{
@@ -170,6 +170,8 @@ func NewServer() *Server {
 	}
 }
 
+// parseBuildInfo parses version control information embedded in the binary
+// during compilation. This is only used in unofficial releases.
 func (s *Server) parseBuildInfo() {
 	if SrirachaVersion == "" {
 		SrirachaVersion = "DEV"
@@ -209,6 +211,8 @@ func (s *Server) parseBuildInfo() {
 	}
 }
 
+// forbidden returns whether a user is forbidden from performing an accion.
+// When forbidden, an error page is written to the web request automatically.
 func (s *Server) forbidden(w http.ResponseWriter, data *templateData, action string) bool {
 	var required AccountRole
 	switch s.config.Access[action] {
@@ -222,6 +226,7 @@ func (s *Server) forbidden(w http.ResponseWriter, data *templateData, action str
 	return data.forbidden(w, required)
 }
 
+// parseConfig parses a YAML configuration file.
 func (s *Server) parseConfig(configFile string) error {
 	buf, err := os.ReadFile(configFile)
 	if err != nil {
@@ -346,6 +351,7 @@ func (s *Server) parseConfig(configFile string) error {
 	return nil
 }
 
+// parseLocales parses locale files.
 func (s *Server) parseLocales() error {
 	return fs.WalkDir(localeFS, "locale", func(p string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -451,6 +457,7 @@ func (s *Server) connectToMailServer() (*smtp.Client, error) {
 	return client, nil
 }
 
+// sendMail sends an email.
 func (s *Server) sendMail(client *smtp.Client, recipient string, subject string, message string) error {
 	// Build mail body.
 	var body []byte
@@ -498,10 +505,12 @@ func (s *Server) sendMail(client *smtp.Client, recipient string, subject string,
 	return nil
 }
 
+// begin acquires a database connection from the pool and starts a transaction.
 func (s *Server) begin() *database.DB {
 	return database.Begin(s.dbPool, s.config)
 }
 
+// setDefaultServerConfig loads the server configuration and sets default values.
 func (s *Server) setDefaultServerConfig() error {
 	db := s.begin()
 	defer db.Commit()
@@ -614,6 +623,7 @@ func (s *Server) setDefaultServerConfig() error {
 	return nil
 }
 
+// setDefaultPluginConfig sets default plugin configuration values.
 func (s *Server) setDefaultPluginConfig() error {
 	db := s.begin()
 	defer db.Commit()
@@ -640,6 +650,7 @@ func (s *Server) setDefaultPluginConfig() error {
 	return nil
 }
 
+// loadPluginConfig loads plugin configuration options.
 func (s *Server) loadPluginConfig() error {
 	db := s.begin()
 	defer db.Commit()
@@ -657,6 +668,7 @@ func (s *Server) loadPluginConfig() error {
 	return nil
 }
 
+// officialTemplateDir searches for the path to the official template directory and returns it.
 func (s *Server) officialTemplateDir() string {
 	officialDir := "internal/server/template"
 	_, err := os.Stat(officialDir)
@@ -671,6 +683,8 @@ func (s *Server) officialTemplateDir() string {
 	return ""
 }
 
+// validateTemplateConfig validates whether the official and custom template
+// directories are unique and accessible.
 func (s *Server) validateTemplateConfig(officialDir string) error {
 	if s.config.Template == "" {
 		return nil
@@ -797,6 +811,7 @@ func (s *Server) _watchTemplates(officialDir string, watcher *fsnotify.Watcher) 
 	}
 }
 
+// watchTemplates watches the official and custom template directories for changes.
 func (s *Server) watchTemplates(officialDir string) error {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -811,6 +826,7 @@ func (s *Server) watchTemplates(officialDir string) error {
 	return err
 }
 
+// log adds an entry to the audit log.
 func (s *Server) log(db *database.DB, account *Account, board *Board, action string, info string) {
 	user := "system"
 	if account != nil && account.ID != 0 {
@@ -837,6 +853,7 @@ func (s *Server) log(db *database.DB, account *Account, board *Board, action str
 	})
 }
 
+// refreshBannerCache refreshes the banner cache.
 func (s *Server) refreshBannerCache(db *database.DB) {
 	banners := s.opt.Banners
 	for id := range banners {
@@ -865,6 +882,7 @@ func (s *Server) refreshBannerCache(db *database.DB) {
 	}
 }
 
+// deletePostFiles deletes files associated with a post.
 func (s *Server) deletePostFiles(p *Post) {
 	if p.Board == nil {
 		return
@@ -885,6 +903,7 @@ func (s *Server) deletePostFiles(p *Post) {
 	os.Remove(thumbPath)
 }
 
+// deletePost deletes a post from the database as well as any associated files.
 func (s *Server) deletePost(db *database.DB, p *Post) {
 	posts := db.AllPostsInThread(p.ID, false)
 	for _, post := range posts {
@@ -894,6 +913,7 @@ func (s *Server) deletePost(db *database.DB, p *Post) {
 	db.DeletePost(p.ID)
 }
 
+// buildData returns a new template data instance.
 func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Request) *templateData {
 	if strings.HasPrefix(r.URL.Path, "/sriracha/logout") {
 		http.SetCookie(w, &http.Cookie{
@@ -970,6 +990,7 @@ func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Reque
 	return s.newTemplateData()
 }
 
+// writeThread writes a thread res page to disk.
 func (s *Server) writeThread(db *database.DB, board *Board, postID int) {
 	posts := db.AllPostsInThread(postID, true)
 	if len(posts) == 0 {
@@ -994,6 +1015,7 @@ func (s *Server) writeThread(db *database.DB, board *Board, postID int) {
 	data.execute(f)
 }
 
+// writeIndexes writes board index pages to disk.
 func (s *Server) writeIndexes(db *database.DB, board *Board) {
 	if board.Unique == 0 {
 		board.Unique = db.UniqueUserPosts(board)
@@ -1063,6 +1085,7 @@ func (s *Server) writeIndexes(db *database.DB, board *Board) {
 	}
 }
 
+// writeOverboard writes overboard pages to disk.
 func (s *Server) writeOverboard(db *database.DB) {
 	var overboardDir string
 	if s.opt.Overboard != "/" {
@@ -1142,6 +1165,7 @@ func (s *Server) writeOverboard(db *database.DB) {
 	}
 }
 
+// newPageTemplate returns a new collection of templates with read-only database access.
 func (s *Server) newPageTemplate(db *database.DB) *template.Template {
 	tpl, err := s.original.Clone()
 	if err != nil {
@@ -1170,6 +1194,7 @@ func (s *Server) newPageTemplate(db *database.DB) *template.Template {
 	})
 }
 
+// writePages writes custom pages to disk.
 func (s *Server) writePages(db *database.DB, pages []*Page, dryRun bool) error {
 	data := s.newTemplateData()
 	data.Boards = db.AllBoards()
@@ -1243,6 +1268,7 @@ func (s *Server) writePages(db *database.DB, pages []*Page, dryRun bool) error {
 	return nil
 }
 
+// rebuildBoard rebuilds a thread res page and board index pages.
 func (s *Server) rebuildThread(db *database.DB, post *Post) {
 	s.writeThread(db, post.Board, post.Thread())
 	s.writeIndexes(db, post.Board)
@@ -1251,6 +1277,7 @@ func (s *Server) rebuildThread(db *database.DB, post *Post) {
 	}
 }
 
+// rebuildBoard rebuilds all pages in a board.
 func (s *Server) rebuildBoard(db *database.DB, board *Board) {
 	for _, info := range db.AllThreads(board, true) {
 		s.writeThread(db, board, info[0])
@@ -1258,10 +1285,10 @@ func (s *Server) rebuildBoard(db *database.DB, board *Board) {
 	s.writeIndexes(db, board)
 }
 
+// rebuildAll rebuilds all board, overboard, news and custom pages.
 func (s *Server) rebuildAll(db *database.DB) {
-	pages := db.AllPages()
-	if len(pages) != 0 {
-		s.writePages(db, pages, false)
+	for _, b := range db.AllBoards() {
+		s.rebuildBoard(db, b)
 	}
 
 	if s.opt.Overboard != "" {
@@ -1270,11 +1297,13 @@ func (s *Server) rebuildAll(db *database.DB) {
 
 	s.rebuildNews(db)
 
-	for _, b := range db.AllBoards() {
-		s.rebuildBoard(db, b)
+	pages := db.AllPages()
+	if len(pages) != 0 {
+		s.writePages(db, pages, false)
 	}
 }
 
+// writeNewsItem writes a news entry page to disk.
 func (s *Server) writeNewsItem(db *database.DB, n *News) {
 	if n.ID <= 0 {
 		return
@@ -1295,6 +1324,7 @@ func (s *Server) writeNewsItem(db *database.DB, n *News) {
 	itemFile.Close()
 }
 
+// writeNewsIndexes writes news index pages to disk.
 func (s *Server) writeNewsIndexes(db *database.DB) {
 	allNews := db.AllNews(true)
 	data := s.newTemplateData()
@@ -1331,11 +1361,13 @@ func (s *Server) writeNewsIndexes(db *database.DB) {
 	}
 }
 
+// rebuildNewsItem rebuilds a news entry.
 func (s *Server) rebuildNewsItem(db *database.DB, n *News) {
 	s.writeNewsItem(db, n)
 	s.writeNewsIndexes(db)
 }
 
+// rebuildNews rebuilds all news entries.
 func (s *Server) rebuildNews(db *database.DB) {
 	for _, n := range db.AllNews(true) {
 		s.writeNewsItem(db, n)
@@ -1343,6 +1375,7 @@ func (s *Server) rebuildNews(db *database.DB) {
 	s.writeNewsIndexes(db)
 }
 
+// reloadBans refreshes the range ban regular expression cache.
 func (s *Server) reloadBans(db *database.DB) {
 	var rangeBans = make(map[*Ban]*regexp.Regexp)
 	bans := db.AllBans(true)
@@ -1357,6 +1390,7 @@ func (s *Server) reloadBans(db *database.DB) {
 	s.rangeBans = rangeBans
 }
 
+// serveManage serves management panel web requests.
 func (s *Server) serveManage(db *database.DB, w http.ResponseWriter, r *http.Request) {
 	data := s.buildData(db, w, r)
 	if strings.HasPrefix(r.URL.Path, "/sriracha/logout") {
@@ -1455,6 +1489,7 @@ func (s *Server) serveManage(db *database.DB, w http.ResponseWriter, r *http.Req
 	data.execute(w)
 }
 
+// serve serves web requests.
 func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
@@ -1558,6 +1593,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// listen listens for HTTP connections.
 func (s *Server) listen() error {
 	info, err := os.Stat("static/css/futaba.css")
 	if err != nil || info.IsDir() {
@@ -1683,6 +1719,7 @@ func (s *Server) startSignalHandler() {
 	go s._handleSignal(signals)
 }
 
+// Run initializes the server and starts listening for connections.
 func (s *Server) Run() error {
 	s.parseBuildInfo()
 
@@ -1694,13 +1731,15 @@ func (s *Server) Run() error {
 		flag.PrintDefaults()
 		printInfo()
 	}
-	var configFile string
-	var rebuild bool
-	var devMode bool
-	var printVersion bool
+	var (
+		configFile   string
+		devMode      bool
+		rebuild      bool
+		printVersion bool
+	)
 	flag.StringVar(&configFile, "config", "", "path to configuration file (default: ~/.config/sriracha/config.yml)")
-	flag.BoolVar(&rebuild, "rebuild", false, "rebuild static files before serving any requests")
 	flag.BoolVar(&devMode, "dev", false, "run in development mode (watch official and custom template files for changes)")
+	flag.BoolVar(&rebuild, "rebuild", false, "rebuild static files before serving any requests")
 	flag.BoolVar(&printVersion, "version", false, "print version information and exit")
 	flag.Parse()
 
@@ -1727,6 +1766,9 @@ func (s *Server) Run() error {
 		return fmt.Errorf("failed to parse configuration %s: %s", configFile, err)
 	}
 	s.config.StartTime = time.Now()
+
+	// Set default gettext domain.
+	gotext.SetDomain("sriracha")
 
 	err = s.parseLocales()
 	if err != nil {
@@ -1878,43 +1920,36 @@ func (s *Server) Run() error {
 		}
 		// Wait until all web requests have been processed.
 		s.rebuildWaitGroup.Wait()
+		// Wait until all notifications have been sent.
 		s.notificationsWaitGroup.Wait()
 	}
 	return nil
 }
 
+// hashData returns the salted hash of the provided data.
 func (s *Server) hashData(data string) string {
 	checksum := sha512.Sum384([]byte(data + s.config.SaltData))
 	return base64.URLEncoding.EncodeToString(checksum[:])
 }
 
+// md5Sum returns the MD5 sum of the provided data.
 func md5Sum(data string) string {
 	return fmt.Sprintf("%x", md5.Sum([]byte(data)))
 }
 
-func parseAddress(address string) string {
+// parseHostname returns the hostname portion of an address.
+func parseHostname(address string) string {
 	if address == "" {
 		return ""
 	}
-	leftBracket, rightBracket := strings.IndexByte(address, '['), strings.IndexByte(address, ']')
-	if leftBracket != -1 && rightBracket != -1 && rightBracket > leftBracket {
-		address = address[1:rightBracket]
-	} else if strings.IndexByte(address, '.') != -1 {
-		colon := strings.IndexByte(address, ':')
-		if colon != -1 {
-			address = address[:colon]
-		}
+	hostname, port, err := net.SplitHostPort(address)
+	if err != nil || port == "" {
+		return address
 	}
-	return address
+	return hostname
 }
 
-func (s *Server) _hashIP(address string) string {
-	if address == "" {
-		return ""
-	}
-	return s.hashData(parseAddress(address))
-}
-
+// requestIP returns the remote IP address of a request.
 func (s *Server) requestIP(r *http.Request) string {
 	var address string
 	if s.config.Header != "" {
@@ -1928,13 +1963,22 @@ func (s *Server) requestIP(r *http.Request) string {
 	if address == "" {
 		log.Fatal("Error: No client IP address specified in HTTP request. Are you sure the header server option is correct? See MANUAL.md for more info.")
 	}
-	return parseAddress(address)
+	return parseHostname(address)
 }
 
+func (s *Server) _hashIP(address string) string {
+	if address == "" {
+		return ""
+	}
+	return s.hashData(parseHostname(address))
+}
+
+// hashIP returns the salted hash of a request's IP address.
 func (s *Server) hashIP(r *http.Request) string {
 	return s._hashIP(s.requestIP(r))
 }
 
+// imageDimensions returns the width and height of a JPG, PNG or GIF image.
 func (s *Server) imageDimensions(buf []byte) (int, int) {
 	imgConfig, _, err := image.DecodeConfig(bytes.NewReader(buf))
 	if err != nil {
@@ -1943,27 +1987,33 @@ func (s *Server) imageDimensions(buf []byte) (int, int) {
 	return imgConfig.Width, imgConfig.Height
 }
 
+// Stop shuts down the server gracefully.
 func (s *Server) Stop() {
 	fmt.Println("Shutting down...")
 
+	// Stop serving new web requests.
 	if s.httpServer != nil {
 		s.httpServer.Shutdown(context.Background())
 	}
 
+	// Wait until existing web requests finish processing.
 	s.lock.Lock()
 	s.rebuildLock.Lock()
 	s.rebuildQueue <- nil
 	s.rebuildWaitGroup.Wait()
 
+	// Flush notification queue.
 	if s.opt.Notifications {
 		s.shutdownNotifications <- struct{}{}
 	}
 
+	// If the HTTP server hasn't started yet, exit immediately.
 	if s.httpServer == nil {
 		os.Exit(0)
 	}
 }
 
+// pluginByName returns the specified plugin instance and associated plugin information.
 func pluginByName(name string) (any, *pluginInfo) {
 	name = strings.ToLower(name)
 	for i, info := range allPluginInfo {
@@ -1974,6 +2024,7 @@ func pluginByName(name string) (any, *pluginInfo) {
 	return nil, nil
 }
 
+// FormatValue formats a value as a human-readable string.
 func FormatValue(v interface{}) interface{} {
 	if role, ok := v.(AccountRole); ok {
 		return FormatRole(role)
@@ -1991,6 +2042,7 @@ func FormatValue(v interface{}) interface{} {
 	return v
 }
 
+// printChanges returns the difference between two structs as a human-readable string.
 func printChanges(old interface{}, new interface{}) string {
 	const mask = "***"
 	diff, err := diff.Diff(old, new)
@@ -2018,11 +2070,13 @@ func printChanges(old interface{}, new interface{}) string {
 	return label
 }
 
+// calculateFileHash returns the unsalted hash of the provided data.
 func calculateFileHash(buf []byte) string {
 	checksum := sha512.Sum384(buf)
 	return base64.URLEncoding.EncodeToString(checksum[:])
 }
 
+// pageCount returns the number of pages required to display the provided number of items.
 func pageCount(items int, pageSize int) int {
 	if items == 0 || pageSize == 0 {
 		return 1
@@ -2034,8 +2088,11 @@ func pageCount(items int, pageSize int) int {
 	return pages
 }
 
+// doctypePrefx is an HTML prefix which may be used in custom pages to skip
+// including the default page header and footer templates.
 const doctypePrefx = "<!DOCTYPE html>"
 
+// siteIndexHTML is an HTML page written to index.html when such a file does not already exist.
 var siteIndexHTML = []byte(`
 <!DOCTYPE html>
 <html>
