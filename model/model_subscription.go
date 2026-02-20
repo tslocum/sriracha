@@ -2,7 +2,8 @@ package model
 
 import (
 	"fmt"
-	"net/mail"
+
+	. "codeberg.org/tslocum/sriracha/util"
 )
 
 type SubscriptionType int
@@ -22,9 +23,9 @@ type Subscription struct {
 }
 
 func (s *Subscription) Validate() error {
-	_, err := mail.ParseAddress(s.Email)
-	if err != nil {
-		return fmt.Errorf("invalid email address %s: %s", s.Email, err)
+	email := ParseEmail(s.Email)
+	if email == "" {
+		return fmt.Errorf("invalid email address")
 	} else if s.Board < 0 {
 		return fmt.Errorf("invalid board %d", s.Board)
 	} else if s.Target < int(SubscriptionThreads) {

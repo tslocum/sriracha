@@ -3,7 +3,6 @@ package server
 import (
 	"fmt"
 	"net/http"
-	"net/mail"
 	"sort"
 	"strings"
 	"time"
@@ -176,17 +175,17 @@ func (s *Server) serveSubscribe(db *database.DB, w http.ResponseWriter, r *http.
 			}
 
 			if s.notificationsPattern != nil {
-				var matchDomain bool
-				address, err := mail.ParseAddress(email)
-				if err == nil {
-					atSymbol := strings.IndexRune(address.Address, '@')
+				var matched bool
+				address := ParseEmail(email)
+				if address != "" {
+					atSymbol := strings.IndexRune(address, '@')
 					if atSymbol != -1 {
-						domain := address.Address[atSymbol+1:]
-						matchDomain = s.notificationsPattern.MatchString(domain)
+						domain := address[atSymbol+1:]
+						matched = s.notificationsPattern.MatchString(domain)
 					}
 				}
-				if !matchDomain {
-					data.BoardError(w, "Sorry, only the following email addresses domains are allowed: "+s.config.MailDomains)
+				if !matched {
+					data.BoardError(w, "Sorry, only the following email address domains are allowed: "+s.config.MailDomains)
 					return
 				}
 			}

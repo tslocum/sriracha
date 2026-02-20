@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"math"
 	"net/http"
+	"net/mail"
 	"regexp"
 	"sort"
 	"strconv"
@@ -139,6 +140,14 @@ func PathString(r *http.Request, prefix string) string {
 		return ""
 	}
 	return strings.TrimPrefix(r.URL.Path, prefix)
+}
+
+func ParseEmail(address string) string {
+	a, err := mail.ParseAddress(address)
+	if err != nil {
+		return ""
+	}
+	return a.Address
 }
 
 func MIMEToExt(mimeType string) string {

@@ -266,6 +266,12 @@ func (s *Server) parseConfig(configFile string) error {
 		config.Locale = "en"
 	}
 
+	if config.MailFrom != "" && ParseEmail(config.MailFrom) == "" {
+		return fmt.Errorf("mailfrom is not a valid email address: %s", config.MailFrom)
+	} else if config.MailReplyTo != "" && ParseEmail(config.MailReplyTo) == "" {
+		return fmt.Errorf("mailreplyto is not a valid email address: %s", config.MailReplyTo)
+	}
+
 	if config.Mentions <= 0 {
 		config.Mentions = 60
 	}
@@ -1718,7 +1724,7 @@ func (s *Server) Run() error {
 
 	err := s.parseConfig(configFile)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse configuration %s: %s", configFile, err)
 	}
 	s.config.StartTime = time.Now()
 
@@ -1762,27 +1768,27 @@ func (s *Server) Run() error {
 
 	s.dbPool, err = database.Connect(s.config)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to connect to database: %s", err)
 	}
 
 	err = s.setDefaultServerConfig()
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to set default server configuration: %s", err)
 	}
 
 	err = s.loadPluginConfig()
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to load plugin configuration: %s", err)
 	}
 
 	err = s.loadPlugins()
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to load plugins: %s", err)
 	}
 
 	err = s.setDefaultPluginConfig()
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to set default plugin configuration: %s", err)
 	}
 
 	err = s.parseTemplates(officialDir, s.config.Template)
