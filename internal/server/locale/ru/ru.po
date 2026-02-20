@@ -18,6 +18,15 @@ msgstr[0] "%d сообщение не показано. Нажмите Отве�
 msgstr[1] "%d сообщения не показано. Нажмите Ответить для просмотра."
 msgstr[2] "%d сообщений не показано. Нажмите Ответить для просмотра."
 
+msgid "%d new post"
+msgid_plural "%d new posts"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "(Mentioned) %s"
+msgstr ""
+
 msgid "1 Day"
 msgstr ""
 
@@ -54,6 +63,9 @@ msgstr ""
 msgid "Add Ban"
 msgstr ""
 
+msgid "Add Banner"
+msgstr ""
+
 msgid "Add Board"
 msgstr ""
 
@@ -76,6 +88,12 @@ msgid "Administrator"
 msgstr ""
 
 msgid "Administrators have full access except for managing accounts."
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "All new posts"
 msgstr ""
 
 msgid "All posts"
@@ -117,6 +135,9 @@ msgstr "Блокировка"
 msgid "Ban file"
 msgstr ""
 
+msgid "Banners"
+msgstr ""
+
 msgid "Bans"
 msgstr "Блокировки"
 
@@ -128,6 +149,9 @@ msgstr ""
 
 msgid "Boards"
 msgstr "Разделы"
+
+msgid "Boards where the banner is displayed."
+msgstr ""
 
 msgid "Boards where the keyword applies."
 msgstr ""
@@ -253,6 +277,9 @@ msgstr ""
 msgid "Detected banned keyword."
 msgstr "Обнаружено запрещенное слово."
 
+msgid "Dimensions"
+msgstr ""
+
 msgid "Dir"
 msgstr ""
 
@@ -329,6 +356,9 @@ msgstr "Файл"
 msgid "File Types"
 msgstr ""
 
+msgid "File name."
+msgstr ""
+
 msgid "Files"
 msgstr ""
 
@@ -354,6 +384,9 @@ msgid "HTML-formatted text shown in the new post form."
 msgstr ""
 
 msgid "Help translate Sriracha"
+msgstr ""
+
+msgid "Hidden"
 msgstr ""
 
 msgid "Hide everywhere"
@@ -456,6 +489,12 @@ msgstr "Журналы"
 
 msgid "Manage"
 msgstr "Управлять"
+
+msgid "Manage Banners"
+msgstr ""
+
+msgid "Manage Subscriptions"
+msgstr ""
 
 msgid "Manage mode"
 msgstr "Режим управления"
@@ -618,11 +657,17 @@ msgstr ""
 msgid "New drawing..."
 msgstr ""
 
+msgid "New threads only"
+msgstr ""
+
 msgid "News"
 msgstr "Новости"
 
 msgid "Next"
 msgstr "Следующий"
+
+msgid "No active subscriptions."
+msgstr ""
 
 msgid "No board specified."
 msgstr "Не указана доска."
@@ -649,6 +694,9 @@ msgid "None"
 msgstr "Нету"
 
 msgid "Notice"
+msgstr ""
+
+msgid "Notify"
 msgstr ""
 
 msgid ""
@@ -839,6 +887,12 @@ msgstr "Тема"
 msgid "Submit"
 msgstr "Отправить"
 
+msgid "Subscribe"
+msgstr ""
+
+msgid "Subscribe to %s"
+msgstr ""
+
 msgid "Super-administrator"
 msgstr ""
 
@@ -883,6 +937,9 @@ msgstr ""
 msgid "Unknown"
 msgstr "Неизвестен"
 
+msgid "Unsubscribe"
+msgstr ""
+
 msgid "Unused"
 msgstr ""
 
@@ -924,11 +981,20 @@ msgstr ""
 msgid "Visibility"
 msgstr ""
 
+msgid "Visible"
+msgstr ""
+
 msgid ""
 "Visitors may embed media from selected services instead of uploading a file."
 msgstr ""
 
 msgid "Visitors may upload the selected types of files."
+msgstr ""
+
+msgid "When %s is mentioned."
+msgstr ""
+
+msgid "When %s receives new replies."
 msgstr ""
 
 msgid ""
@@ -946,6 +1012,15 @@ msgstr ""
 msgid ""
 "Whether reference links are displayed next to No.## pointing to all visible "
 "replies mentioning a post."
+msgstr ""
+
+msgid "Whether the banner is displayed in custom pages."
+msgstr ""
+
+msgid "Whether the banner is displayed in news pages."
+msgstr ""
+
+msgid "Whether the banner is displayed in overboard pages."
 msgstr ""
 
 msgid "Whether visitors may browse attachments as an image gallery."

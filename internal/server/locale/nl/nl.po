@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-02-16 17:52+0000\n"
+"PO-Revision-Date: 2026-02-20 18:35+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -15,6 +15,14 @@ msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] "%d bericht overgeslagen. Klik op beantwoorden om te bekijken."
 msgstr[1] "%d berichten overgeslagen. Klik op beantwoorden om te bekijken."
+
+msgid "%d new post"
+msgid_plural "%d new posts"
+msgstr[0] "%d nieuw bericht"
+msgstr[1] "%d nieuwe berichten"
+
+msgid "(Mentioned) %s"
+msgstr "%s vermeld"
 
 msgid "1 Day"
 msgstr "1 dag"
@@ -53,6 +61,9 @@ msgstr "Account toevoegen"
 msgid "Add Ban"
 msgstr "Verbanning toevoegen"
 
+msgid "Add Banner"
+msgstr "Banier toevoegen"
+
 msgid "Add Board"
 msgstr "Forum toevoegen"
 
@@ -77,6 +88,12 @@ msgstr "Beheerder"
 msgid "Administrators have full access except for managing accounts."
 msgstr ""
 "Beheerders hebben volledige toegang, maar kunnen geen accounts beheren."
+
+msgid "All"
+msgstr "Alles"
+
+msgid "All new posts"
+msgstr "Alle nieuwe berichten"
 
 msgid "All posts"
 msgstr "Alle berichten"
@@ -119,6 +136,9 @@ msgstr "Verbannen"
 msgid "Ban file"
 msgstr "Bestand verbannen"
 
+msgid "Banners"
+msgstr "Banieren"
+
 msgid "Bans"
 msgstr "Verbanningen"
 
@@ -130,6 +150,9 @@ msgstr "Een beschrijving van het subforum, voor zoekmachines."
 
 msgid "Boards"
 msgstr "Fora"
+
+msgid "Boards where the banner is displayed."
+msgstr "De subfora waarop de banier moet worden getoond."
 
 msgid "Boards where the keyword applies."
 msgstr "Subfora waarop het trefwoord van toepassing is."
@@ -258,6 +281,9 @@ msgstr "Er is een verbannen bestand aangetroffen."
 msgid "Detected banned keyword."
 msgstr "Verbannen trefwoord aangetroffen."
 
+msgid "Dimensions"
+msgstr "Afmetingen"
+
 msgid "Dir"
 msgstr "Map"
 
@@ -338,6 +364,9 @@ msgstr "Bestand"
 msgid "File Types"
 msgstr "Bestandstypen"
 
+msgid "File name."
+msgstr "Bestandsnaam."
+
 msgid "Files"
 msgstr "Bestanden"
 
@@ -364,6 +393,9 @@ msgstr "De opgemaakte tekst die dient te worden getoond op berichtformulieren."
 
 msgid "Help translate Sriracha"
 msgstr "Helpen met vertalen"
+
+msgid "Hidden"
+msgstr "Verborgen"
 
 msgid "Hide everywhere"
 msgstr "Overal verbergen"
@@ -472,6 +504,12 @@ msgstr "Logboeken"
 
 msgid "Manage"
 msgstr "Beheren"
+
+msgid "Manage Banners"
+msgstr "Banieren beheren"
+
+msgid "Manage Subscriptions"
+msgstr "Abonnementen beheren"
 
 msgid "Manage mode"
 msgstr "Beheermodus"
@@ -648,11 +686,17 @@ msgstr "Nieuw (bevestigen)"
 msgid "New drawing..."
 msgstr "Nieuwe tekening…"
 
+msgid "New threads only"
+msgstr "Alleen nieuwe onderwerpen"
+
 msgid "News"
 msgstr "Nieuws"
 
 msgid "Next"
 msgstr "Volgende"
+
+msgid "No active subscriptions."
+msgstr "Er zijn geen abonnementen."
 
 msgid "No board specified."
 msgstr "Er is geen forum gekozen."
@@ -680,6 +724,9 @@ msgstr "Geen"
 
 msgid "Notice"
 msgstr "Opmerking"
+
+msgid "Notify"
+msgstr "Melden"
 
 msgid ""
 "Number of files visitors may upload at once. A new post is created for each "
@@ -784,13 +831,13 @@ msgid "Rebuild"
 msgstr "Herbouwen"
 
 msgid "Rebuild All"
-msgstr ""
+msgstr "Alles herbouwen"
 
 msgid "Rebuilt %s."
-msgstr ""
+msgstr "%s is herbouwd."
 
 msgid "Rebuilt all pages."
-msgstr ""
+msgstr "Alle pagina's zijn herbouwd."
 
 msgid "Regular expression to search for when a new post is created."
 msgstr ""
@@ -887,6 +934,12 @@ msgstr "Onderwerp"
 msgid "Submit"
 msgstr "Versturen"
 
+msgid "Subscribe"
+msgstr "Abonneren"
+
+msgid "Subscribe to %s"
+msgstr "Abonneren op %s"
+
 msgid "Super-administrator"
 msgstr "Superbeheerder"
 
@@ -933,6 +986,9 @@ msgstr "Type"
 msgid "Unknown"
 msgstr "Onbekend"
 
+msgid "Unsubscribe"
+msgstr "Deabonneren"
+
 msgid "Unused"
 msgstr "Ongebruikt"
 
@@ -976,6 +1032,9 @@ msgstr "Berichten van auteur bekijken"
 msgid "Visibility"
 msgstr "Zichtbaarheid"
 
+msgid "Visible"
+msgstr "Zichtbaar"
+
 msgid ""
 "Visitors may embed media from selected services instead of uploading a file."
 msgstr ""
@@ -984,6 +1043,12 @@ msgstr ""
 
 msgid "Visitors may upload the selected types of files."
 msgstr "Bezoekers kunnen deze bestandstypen uploaden."
+
+msgid "When %s is mentioned."
+msgstr "Als %s vermeld wordt."
+
+msgid "When %s receives new replies."
+msgstr "Als %s nieuwe antwoorden ontvangt."
 
 msgid ""
 "Whether identifiers are displayed for each post. Identifiers are generated "
@@ -1007,6 +1072,15 @@ msgid ""
 msgstr ""
 "Of referentielinks worden getoond naast het aantal antwoorden waarin een "
 "bericht vermeld is."
+
+msgid "Whether the banner is displayed in custom pages."
+msgstr "Of de banier moet worden getoond op aangepaste pagina's."
+
+msgid "Whether the banner is displayed in news pages."
+msgstr "Of de banier moet worden getoond op nieuwspagina's."
+
+msgid "Whether the banner is displayed in overboard pages."
+msgstr "Of de banier moet worden getoond op overzichtspagina's."
 
 msgid "Whether visitors may browse attachments as an image gallery."
 msgstr ""

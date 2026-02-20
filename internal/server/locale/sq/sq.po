@@ -16,6 +16,14 @@ msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] "%d postim i fshehur. Kliko Pergjigju per ta pare."
 msgstr[1] "%d postime te fshehura. Kliko Pergjigju per ti pare."
 
+msgid "%d new post"
+msgid_plural "%d new posts"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "(Mentioned) %s"
+msgstr ""
+
 msgid "1 Day"
 msgstr "1 Dite"
 
@@ -52,6 +60,9 @@ msgstr "Shto Llogarine"
 msgid "Add Ban"
 msgstr "Shto Denimin"
 
+msgid "Add Banner"
+msgstr ""
+
 msgid "Add Board"
 msgstr "Shto Bordin"
 
@@ -75,6 +86,12 @@ msgstr "Administrator"
 
 msgid "Administrators have full access except for managing accounts."
 msgstr "Administratoret kane akses te plote pervec menaxhimit te llogarive."
+
+msgid "All"
+msgstr ""
+
+msgid "All new posts"
+msgstr ""
 
 msgid "All posts"
 msgstr "Te gjitha postimet"
@@ -117,6 +134,9 @@ msgstr "Deno"
 msgid "Ban file"
 msgstr "Deno skedarin"
 
+msgid "Banners"
+msgstr ""
+
 msgid "Bans"
 msgstr "Denimet"
 
@@ -128,6 +148,9 @@ msgstr "Pershkrimi i bordit, i cili perdoret nga search engines."
 
 msgid "Boards"
 msgstr "Bordet"
+
+msgid "Boards where the banner is displayed."
+msgstr ""
 
 msgid "Boards where the keyword applies."
 msgstr "Bordet ku zbatohet fjala kyce."
@@ -256,6 +279,9 @@ msgstr "U zbulua nje skedar i ndaluar."
 msgid "Detected banned keyword."
 msgstr "U zbulua nje fjale kyce e ndaluar."
 
+msgid "Dimensions"
+msgstr ""
+
 msgid "Dir"
 msgstr "Dir"
 
@@ -336,6 +362,9 @@ msgstr "Skedari"
 msgid "File Types"
 msgstr "Llojet e Skedarit"
 
+msgid "File name."
+msgstr ""
+
 msgid "Files"
 msgstr "Skedaret"
 
@@ -362,6 +391,9 @@ msgstr "Teksti i formatuar ne HTML qe shfaqet ne formularin e postimit te ri."
 
 msgid "Help translate Sriracha"
 msgstr "Ndihmoni ne perkthimin e Sriracha-s"
+
+msgid "Hidden"
+msgstr ""
 
 msgid "Hide everywhere"
 msgstr "Fshihe gjithkah"
@@ -471,6 +503,12 @@ msgstr "Logs"
 
 msgid "Manage"
 msgstr "Menaxho"
+
+msgid "Manage Banners"
+msgstr ""
+
+msgid "Manage Subscriptions"
+msgstr ""
 
 msgid "Manage mode"
 msgstr "Forma menaxhimit"
@@ -646,11 +684,17 @@ msgstr "I ri (konfirmo)"
 msgid "New drawing..."
 msgstr "Vizatim i ri..."
 
+msgid "New threads only"
+msgstr ""
+
 msgid "News"
 msgstr "Lajmet"
 
 msgid "Next"
 msgstr "Tjeter"
+
+msgid "No active subscriptions."
+msgstr ""
 
 msgid "No board specified."
 msgstr "Nuk eshte specifikuar asnje bord."
@@ -678,6 +722,9 @@ msgstr "Asnje"
 
 msgid "Notice"
 msgstr "Njoftim"
+
+msgid "Notify"
+msgstr ""
 
 msgid ""
 "Number of files visitors may upload at once. A new post is created for each "
@@ -884,6 +931,12 @@ msgstr "Titulli"
 msgid "Submit"
 msgstr "Dergo"
 
+msgid "Subscribe"
+msgstr ""
+
+msgid "Subscribe to %s"
+msgstr ""
+
 msgid "Super-administrator"
 msgstr "Super-administratori"
 
@@ -930,6 +983,9 @@ msgstr "Tipi"
 msgid "Unknown"
 msgstr "E panjohur"
 
+msgid "Unsubscribe"
+msgstr ""
+
 msgid "Unused"
 msgstr "E paperdorur"
 
@@ -973,6 +1029,9 @@ msgstr "Shiko postimet e autorit"
 msgid "Visibility"
 msgstr "Shikueshmeria"
 
+msgid "Visible"
+msgstr ""
+
 msgid ""
 "Visitors may embed media from selected services instead of uploading a file."
 msgstr ""
@@ -981,6 +1040,12 @@ msgstr ""
 
 msgid "Visitors may upload the selected types of files."
 msgstr "Vizitoret mund te ngarkojne llojet e zgjedhura te skedareve."
+
+msgid "When %s is mentioned."
+msgstr ""
+
+msgid "When %s receives new replies."
+msgstr ""
 
 msgid ""
 "Whether identifiers are displayed for each post. Identifiers are generated "
@@ -1004,6 +1069,15 @@ msgid ""
 msgstr ""
 "Nese linqet e references shfaqen prane Nr.## qe tregojne te gjitha replikat "
 "e dukshme qe permendin nje postim."
+
+msgid "Whether the banner is displayed in custom pages."
+msgstr ""
+
+msgid "Whether the banner is displayed in news pages."
+msgstr ""
+
+msgid "Whether the banner is displayed in overboard pages."
+msgstr ""
 
 msgid "Whether visitors may browse attachments as an image gallery."
 msgstr ""

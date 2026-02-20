@@ -16,6 +16,14 @@ msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d new post"
+msgid_plural "%d new posts"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "(Mentioned) %s"
+msgstr ""
+
 msgid "1 Day"
 msgstr ""
 
@@ -52,6 +60,9 @@ msgstr ""
 msgid "Add Ban"
 msgstr ""
 
+msgid "Add Banner"
+msgstr ""
+
 msgid "Add Board"
 msgstr ""
 
@@ -74,6 +85,12 @@ msgid "Administrator"
 msgstr ""
 
 msgid "Administrators have full access except for managing accounts."
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "All new posts"
 msgstr ""
 
 msgid "All posts"
@@ -115,6 +132,9 @@ msgstr "Verbannen"
 msgid "Ban file"
 msgstr ""
 
+msgid "Banners"
+msgstr ""
+
 msgid "Bans"
 msgstr "Verbote"
 
@@ -126,6 +146,9 @@ msgstr ""
 
 msgid "Boards"
 msgstr "Foren"
+
+msgid "Boards where the banner is displayed."
+msgstr ""
 
 msgid "Boards where the keyword applies."
 msgstr ""
@@ -250,6 +273,9 @@ msgstr ""
 msgid "Detected banned keyword."
 msgstr ""
 
+msgid "Dimensions"
+msgstr ""
+
 msgid "Dir"
 msgstr ""
 
@@ -326,6 +352,9 @@ msgstr ""
 msgid "File Types"
 msgstr ""
 
+msgid "File name."
+msgstr ""
+
 msgid "Files"
 msgstr ""
 
@@ -351,6 +380,9 @@ msgid "HTML-formatted text shown in the new post form."
 msgstr ""
 
 msgid "Help translate Sriracha"
+msgstr ""
+
+msgid "Hidden"
 msgstr ""
 
 msgid "Hide everywhere"
@@ -452,6 +484,12 @@ msgid "Logs"
 msgstr ""
 
 msgid "Manage"
+msgstr ""
+
+msgid "Manage Banners"
+msgstr ""
+
+msgid "Manage Subscriptions"
 msgstr ""
 
 msgid "Manage mode"
@@ -615,10 +653,16 @@ msgstr ""
 msgid "New drawing..."
 msgstr ""
 
+msgid "New threads only"
+msgstr ""
+
 msgid "News"
 msgstr ""
 
 msgid "Next"
+msgstr ""
+
+msgid "No active subscriptions."
 msgstr ""
 
 msgid "No board specified."
@@ -646,6 +690,9 @@ msgid "None"
 msgstr ""
 
 msgid "Notice"
+msgstr ""
+
+msgid "Notify"
 msgstr ""
 
 msgid ""
@@ -836,6 +883,12 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
+msgid "Subscribe"
+msgstr ""
+
+msgid "Subscribe to %s"
+msgstr ""
+
 msgid "Super-administrator"
 msgstr ""
 
@@ -880,6 +933,9 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
+msgid "Unsubscribe"
+msgstr ""
+
 msgid "Unused"
 msgstr ""
 
@@ -921,11 +977,20 @@ msgstr ""
 msgid "Visibility"
 msgstr ""
 
+msgid "Visible"
+msgstr ""
+
 msgid ""
 "Visitors may embed media from selected services instead of uploading a file."
 msgstr ""
 
 msgid "Visitors may upload the selected types of files."
+msgstr ""
+
+msgid "When %s is mentioned."
+msgstr ""
+
+msgid "When %s receives new replies."
 msgstr ""
 
 msgid ""
@@ -943,6 +1008,15 @@ msgstr ""
 msgid ""
 "Whether reference links are displayed next to No.## pointing to all visible "
 "replies mentioning a post."
+msgstr ""
+
+msgid "Whether the banner is displayed in custom pages."
+msgstr ""
+
+msgid "Whether the banner is displayed in news pages."
+msgstr ""
+
+msgid "Whether the banner is displayed in overboard pages."
 msgstr ""
 
 msgid "Whether visitors may browse attachments as an image gallery."
