@@ -1,4 +1,4 @@
-// Package sriracha is a plugin interface to the sriracha imageboard and forum server.
+// Package sriracha is a plugin interface for the Sriracha imageboard and forum server.
 package sriracha
 
 import . "codeberg.org/tslocum/sriracha/model"

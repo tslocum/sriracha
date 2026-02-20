@@ -1,3 +1,4 @@
+// Package database provides methods for interacting with a Sriracha database.
 package database
 
 import (

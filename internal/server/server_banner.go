@@ -164,8 +164,8 @@ func (s *Server) serveBanner(data *templateData, db *database.DB, w http.Respons
 				}
 			}
 
-			bannerPath := filepath.Join(s.config.Root, "banner", data.Manage.Banner.Name)
 			if buf != nil {
+				bannerPath := filepath.Join(s.config.Root, "banner", data.Manage.Banner.Name)
 				err = os.WriteFile(bannerPath, buf, NewFilePermission)
 				if err != nil {
 					log.Fatalf("failed to write banner image at %s: %s", bannerPath, err)
@@ -212,11 +212,9 @@ func (s *Server) serveBanner(data *templateData, db *database.DB, w http.Respons
 		}
 
 		bannerPath := filepath.Join(s.config.Root, "banner", b.Name)
-		if buf != nil {
-			err = os.WriteFile(bannerPath, buf, NewFilePermission)
-			if err != nil {
-				log.Fatalf("failed to write banner image at %s: %s", bannerPath, err)
-			}
+		err = os.WriteFile(bannerPath, buf, NewFilePermission)
+		if err != nil {
+			log.Fatalf("failed to write banner image at %s: %s", bannerPath, err)
 		}
 
 		db.AddBanner(b)

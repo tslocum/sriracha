@@ -1,3 +1,4 @@
+// Package server is the Sriracha imageboard and forum server.
 package server
 
 import (
