@@ -1,3 +1,6 @@
+1.4.0:
+- Support specifying which email address domains may be used to subscribe
+
 1.3.9:
 - Support sending email notifications
 

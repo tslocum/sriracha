@@ -121,8 +121,8 @@ configured as a URL (e.g. `https://example.com/`) rather than a relative path.
 Sriracha does not read any incoming emails. Replies via email are ignored.
 Because of this, you should bounce emails sent to the notification address.
 
-If you only want to allow certain email addresses to subscribe, set `maidomains`
-to a reguar expression:
+If you only want to allow subscriptions from visitors with specific email
+address domains, set `maildomains` to a reguar expression:
 
 ```yaml
 maildomains: '^(example\.com|example2\.com|example3\.com)$'
