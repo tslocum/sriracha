@@ -834,3 +834,9 @@ may rebuild all `nameblock` fields by visiting `/sriracha/?rebuildNameblocks`.
 To support banning visitors, Sriracha must be able to resolve remote IP addresses,
 which is only possible when the header server option is configured correctly.
 Super-administrators may verify remote IP address resolution by visiting `/sriracha/?remoteAddress`.
+
+#### Scan for unexpected files
+
+While Sriracha always attempts to clean up any files related to posts, it is
+possible for files which are not attached to any posts to accumulate in board
+directories. Super-administrators may scan for any unexpected files by visiting `/sriracha/?scanFiles`.

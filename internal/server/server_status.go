@@ -2,8 +2,13 @@ package server
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
+	"io/fs"
+	"log"
 	"net/http"
+	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -74,6 +79,95 @@ func (s *Server) serveStatus(data *templateData, db *database.DB, w http.Respons
 			s.rebuildBoard(db, b)
 		}
 		data.Info = "Rebuilt nameblocks"
+	}
+
+	// Allow super-administrators to scan for unexpected files.
+	if r.URL.Query().Has("scanFiles") {
+		if data.forbidden(w, RoleSuperAdmin) {
+			return
+		}
+		data.Template = "manage_info"
+		data.Message = `<h2 class="managetitle">Scan Files</h2>`
+		var scanned int
+		var found []string
+		checkBoardDir := func(b *Board, dir string) {
+			boardDir := filepath.Join(s.config.Root, b.Dir)
+			checkDir := filepath.Join(boardDir, dir)
+			err := filepath.WalkDir(checkDir, func(path string, d fs.DirEntry, err error) error {
+				if err != nil {
+					return err
+				} else if d.IsDir() {
+					return nil
+				}
+				scanned++
+				if filepath.Dir(path) != checkDir {
+					found = append(found, path)
+					return nil
+				}
+				fieldName := "file"
+				if dir == "thumb" {
+					fieldName = "thumb"
+				}
+				post := db.PostByField(b, fieldName, filepath.Base(path))
+				if post == nil {
+					found = append(found, path)
+				}
+				return nil
+			})
+			if err != nil {
+				log.Fatalf("failed to scan directory %s: %s", checkDir, err)
+			}
+		}
+		for _, b := range db.AllBoards() {
+			checkBoardDir(b, "src")
+			checkBoardDir(b, "thumb")
+			resDir := filepath.Join(s.config.Root, b.Dir, "res")
+			err := filepath.WalkDir(resDir, func(path string, d fs.DirEntry, err error) error {
+				if err != nil {
+					return err
+				} else if d.IsDir() {
+					return nil
+				}
+				scanned++
+				if filepath.Dir(path) != resDir || !strings.HasSuffix(path, ".html") {
+					found = append(found, path)
+					return nil
+				}
+				id, err := strconv.Atoi(strings.TrimSuffix(filepath.Base(path), ".html"))
+				if err != nil || id <= 0 {
+					found = append(found, path)
+					return nil
+				}
+				post := db.PostByID(id)
+				if post == nil || post.Parent != 0 {
+					found = append(found, path)
+				}
+				return nil
+			})
+			if err != nil {
+				log.Fatalf("failed to scan directory %s: %s", resDir, err)
+			}
+		}
+		data.Message += template.HTML(fmt.Sprintf("&nbsp; Scanned %d files", scanned))
+		if len(found) == 0 {
+			data.Message += template.HTML(" and only found expected files.")
+		} else {
+			data.Message += template.HTML(fmt.Sprintf(" and found %d unexpected files:<ul>", len(found)))
+			for _, filePath := range found {
+				relativePath := strings.TrimPrefix(filePath, s.config.Root)
+				data.Message += template.HTML(fmt.Sprintf(`<li><a href="%s">%s</a></li>`, relativePath, relativePath))
+			}
+			data.Message += template.HTML("</ul><fieldset><legend>Remove unexpected files</legend><textarea style=\"width: 500px;height: 200px;\">")
+			for i, filePath := range found {
+				if i != 0 {
+					data.Message += template.HTML("\n")
+				}
+				relativePath := strings.TrimPrefix(filePath, s.config.Root)
+				data.Message += template.HTML(fmt.Sprintf("rm '%s'", relativePath[1:]))
+			}
+			data.Message += template.HTML("</textarea></fieldset><br>")
+		}
+		return
 	}
 
 	reports := db.AllReports()
