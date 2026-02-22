@@ -24,6 +24,13 @@ type attachHandlerInfo struct {
 	Handler attachHandler
 }
 
+type embedHandler func(db sriracha.DB, post *Post, embedURL string) (handled bool, err error)
+
+type embedHandlerInfo struct {
+	Name    string
+	Handler embedHandler
+}
+
 type postHandler func(db sriracha.DB, post *Post) error
 
 type postHandlerInfo struct {
@@ -81,6 +88,7 @@ var (
 	allPlugins              []any
 	allPluginInfo           []*pluginInfo
 	allPluginAttachHandlers []attachHandlerInfo
+	allPluginEmbedHandlers  []embedHandlerInfo
 	allPluginPostHandlers   []postHandlerInfo
 	allPluginInsertHandlers []insertHandlerInfo
 	allPluginCreateHandlers []createHandlerInfo
@@ -144,6 +152,11 @@ func (s *Server) registerPlugin(plugin any) {
 	if pAttach, ok := plugin.(sriracha.PluginWithAttach); ok {
 		info.Events = append(info.Events, "Attach")
 		allPluginAttachHandlers = append(allPluginAttachHandlers, attachHandlerInfo{strings.ToLower(info.Name), pAttach.Attach})
+	}
+
+	if pEmbed, ok := plugin.(sriracha.PluginWithEmbed); ok {
+		info.Events = append(info.Events, "Embed")
+		allPluginEmbedHandlers = append(allPluginEmbedHandlers, embedHandlerInfo{strings.ToLower(info.Name), pEmbed.Embed})
 	}
 
 	if pPost, ok := plugin.(sriracha.PluginWithPost); ok {

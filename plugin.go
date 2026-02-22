@@ -114,6 +114,15 @@ type PluginWithAttach interface {
 	Attach(db DB, post *Post, file []byte) (handled bool, err error)
 }
 
+// PluginWithEmbed describes the required methods for a plugin subscribing to embed events.
+type PluginWithEmbed interface {
+	Plugin
+
+	// Embed events are sent when a URL is embedded in a post. When an embed URL
+	// is handled, return true to stop propagating events.
+	Embed(db DB, post *Post, embedURL string) (handled bool, err error)
+}
+
 // PluginWithPost describes the required methods for a plugin subscribing to post events.
 type PluginWithPost interface {
 	Plugin

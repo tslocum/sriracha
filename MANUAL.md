@@ -676,6 +676,18 @@ type PluginWithAttach interface {
 }
 ```
 
+#### Embed event
+
+Embed events are sent when a URL is embedded in a post. When an embed URL is
+handled, return true to stop propagating events to other plugins.
+
+```go
+// PluginWithEmbed describes the required methods for a plugin subscribing to embed events.
+type PluginWithEmbed interface {
+	Embed(db DB, post *Post, embedURL string) (handled bool, err error)
+}
+```
+
 #### Post event
 
 Post events are sent when a new post is being created. Message is the only

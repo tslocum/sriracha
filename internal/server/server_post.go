@@ -683,9 +683,25 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			}
 
 			if post.File == "" {
-				data := s.buildData(db, w, r)
-				data.BoardError(w, Get(b, data.Account, "Failed to embed media."))
-				return
+				for _, info := range allPluginEmbedHandlers {
+					db.Plugin = info.Name
+					handled, err := info.Handler(db, post, embed)
+					if err != nil {
+						db.Plugin = ""
+						data := s.buildData(db, w, r)
+						data.BoardError(w, err.Error())
+						return
+					} else if handled {
+						break
+					}
+				}
+				db.Plugin = ""
+
+				if post.File == "" {
+					data := s.buildData(db, w, r)
+					data.BoardError(w, Get(b, data.Account, "Failed to embed media."))
+					return
+				}
 			}
 		}
 	}

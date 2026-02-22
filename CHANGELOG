@@ -1,3 +1,6 @@
+1.4.1:
+- Allow plugins to handle URL embed events
+
 1.4.0:
 - Support specifying which email address domains may be used to subscribe
 
