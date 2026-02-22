@@ -3,7 +3,7 @@
 [![Translate](https://translate.codeberg.org/widget/sriracha/sriracha/svg-badge.svg)](https://translate.codeberg.org/projects/sriracha/sriracha/)
 [![Donate](https://img.shields.io/liberapay/receives/rocket9labs.com.svg?logo=liberapay)](https://liberapay.com/rocket9labs.com)
 
-[**Browse a read-only demo**](https://sriracha.rocket9labs.com/img/)
+[**Browse the read-only demo**](https://sriracha.rocket9labs.com/img/)
 
 - Host imageboards and forums online or offline
 - Organize files via boards and threads
@@ -15,14 +15,14 @@
 - Embed external media (YouTube, Vimeo and SoundCloud)
 - Reference links `>>###`
 - CAPTCHA
+- Report posts
 - Overboard
 - Thread catalog
 - Oekaki (drawings)
-- Report posts
 - Fetch new replies automatically
+- Send [email notifications](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#email-notifications)
 - Extend with [plugins](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#plugins)
 - Customize [HTML templates](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#custom-templates)
-- Send [email notifications](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#email-notifications)
 - Translate into [additional languages](https://translate.codeberg.org/projects/sriracha/sriracha/)
 - Play SWF files with the included [ruffle emulator](https://ruffle.rs)
 - View Shift JIS text art with the included [submona web font](https://github.com/pera/submona-web-font)
