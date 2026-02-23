@@ -1181,6 +1181,10 @@ func (s *Server) newPageTemplate(db *database.DB) *template.Template {
 		// News.
 		"NewsByID": db.NewsByID,
 		"AllNews":  db.AllNews,
+		// Page.
+		"PageByID":   db.PageByID,
+		"PageByPath": db.PageByPath,
+		"AllPages":   db.AllPages,
 		// Post.
 		"AllThreads":       db.AllThreads,
 		"AllPostsInThread": db.AllPostsInThread,

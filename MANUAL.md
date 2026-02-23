@@ -169,9 +169,9 @@ Support is not available for Sriracha installations using custom templates.
 
 Support is not available for creating or modifying custom template files.
 
-#### Database access
+### Custom pages
 
-Custom pages and templates may access the database via the following read-only methods:
+Pages may access the database via the following read-only methods:
 
 - [Board](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Board)
   - `BoardByID(id int) *Board`
@@ -181,6 +181,10 @@ Custom pages and templates may access the database via the following read-only m
 - [News](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#News)
   - `NewsByID(id int) *News`
   - `AllNews(onlyPublished bool) []*News`
+- [Page](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Page)
+  - `PageByID(id int) *Page`
+  - `PageByPath(path string) *Page`
+  - `AllPages() []*Page`
 - [Post](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Post)
   - `AllThreads(board *Board, moderated bool) [][2]int`
   - `AllPostsInThread(postID int, moderated bool) []*Post`
@@ -193,8 +197,8 @@ Custom pages and templates may access the database via the following read-only m
   - `LastPostByIP(board *Board, ip string) *Post`
   - `ReplyCount(threadID int) int`
 
-For example, the following custom page or template will render all moderated
-posts in the board with ID #7 by printing their ID, subject and message:
+For example, the following custom page will render all moderated posts in the
+board with ID #7 by printing their ID, subject and message:
 
 ```gohtml
 {{$onlyShowModerated := true}}
