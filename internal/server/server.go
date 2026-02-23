@@ -1594,11 +1594,12 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// listen listens for HTTP connections.
-func (s *Server) listen() error {
+// listen listens for HTTP connections and sends the error returned by the HTTP
+// server via the provided channel.
+func (s *Server) listen(httpErrors chan error) {
 	info, err := os.Stat("static/css/futaba.css")
 	if err != nil || info.IsDir() {
-		return fmt.Errorf("failed to locate static directory, unable to serve CSS and JS files: run sriracha from the directory that contains static as a subdirectory")
+		httpErrors <- fmt.Errorf("failed to locate static directory, unable to serve CSS and JS files: run sriracha from the directory that contains static as a subdirectory")
 	}
 
 	mux := http.NewServeMux()
@@ -1606,12 +1607,11 @@ func (s *Server) listen() error {
 	mux.HandleFunc("/sriracha/", s.serve)
 	mux.Handle("/", http.FileServer(http.Dir(s.config.Root)))
 
-	fmt.Printf("Serving http://%s\n", s.config.Serve)
 	s.httpServer = &http.Server{
 		Addr:    s.config.Serve,
 		Handler: mux,
 	}
-	return s.httpServer.ListenAndServe()
+	httpErrors <- s.httpServer.ListenAndServe()
 }
 
 // handleRebuild handles requests to rebuild threads.
@@ -1724,6 +1724,7 @@ func (s *Server) startSignalHandler() {
 func (s *Server) Run() error {
 	s.parseBuildInfo()
 
+	// Parse flags and arguments.
 	printInfo := func() {
 		fmt.Fprintf(os.Stderr, "\nSriracha imageboard and forum server\n  https://codeberg.org/tslocum/sriracha\nGNU LESSER GENERAL PUBLIC LICENSE\n  https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE\n")
 	}
@@ -1744,17 +1745,21 @@ func (s *Server) Run() error {
 	flag.BoolVar(&printVersion, "version", false, "print version information and exit")
 	flag.Parse()
 
+	// Print version information and exit.
 	if printVersion {
 		fmt.Fprintf(os.Stderr, "Sriracha version %s\n", SrirachaVersion)
 		printInfo()
 		return nil
 	}
 
+	// Start rebuild queue handler.
 	s.rebuildWaitGroup.Add(1)
 	go s.handleRebuild()
 
+	// Start SIGINT and SIGTERM signal handler.
 	s.startSignalHandler()
 
+	// Set default server configuration file path.
 	if configFile == "" {
 		homeDir, err := os.UserHomeDir()
 		if err == nil {
@@ -1762,6 +1767,7 @@ func (s *Server) Run() error {
 		}
 	}
 
+	// Parse server YAML configuration file.
 	err := s.parseConfig(configFile)
 	if err != nil {
 		return fmt.Errorf("failed to parse configuration %s: %s", configFile, err)
@@ -1771,11 +1777,13 @@ func (s *Server) Run() error {
 	// Set default gettext domain.
 	gotext.SetDomain("sriracha")
 
+	// Parse locale files.
 	err = s.parseLocales()
 	if err != nil {
 		log.Fatalf("failed to parse locale files: %s", err)
 	}
 
+	// Locate official templates and validate custom template configuration.
 	var officialDir string
 	if devMode {
 		s.opt.DevMode = true
@@ -1791,6 +1799,7 @@ func (s *Server) Run() error {
 		}
 	}
 
+	// Verify mail server configuration.
 	if s.config.MailAddress != "" {
 		s.opt.Notifications = true
 		if !devMode {
@@ -1803,40 +1812,48 @@ func (s *Server) Run() error {
 		}
 	}
 
+	// Initialize database connection pool, which contains a single connection.
 	s.dbPool, err = database.Connect(s.config)
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %s", err)
 	}
 
+	// Load server configuration and set default values.
 	err = s.setDefaultServerConfig()
 	if err != nil {
 		return fmt.Errorf("failed to set default server configuration: %s", err)
 	}
 
+	// Load plugin configuration.
 	err = s.loadPluginConfig()
 	if err != nil {
 		return fmt.Errorf("failed to load plugin configuration: %s", err)
 	}
 
+	// Load plugins.
 	err = s.loadPlugins()
 	if err != nil {
 		return fmt.Errorf("failed to load plugins: %s", err)
 	}
 
+	// Set default plugin configuration.
 	err = s.setDefaultPluginConfig()
 	if err != nil {
 		return fmt.Errorf("failed to set default plugin configuration: %s", err)
 	}
 
+	// Parse template files.
 	err = s.parseTemplates(officialDir, s.config.Template)
 	if err != nil {
 		return fmt.Errorf("failed to parse template files: %s", err)
 	}
 
+	// Verify root directory is writable.
 	if unix.Access(s.config.Root, unix.W_OK) != nil {
 		return fmt.Errorf("configured root directory %s is not writable", s.config.Root)
 	}
 
+	// Create captcha directory.
 	captchaDir := filepath.Join(s.config.Root, "captcha")
 	_, err = os.Stat(captchaDir)
 	if os.IsNotExist(err) {
@@ -1846,6 +1863,7 @@ func (s *Server) Run() error {
 		}
 	}
 
+	// Create banner directory.
 	bannerDir := filepath.Join(s.config.Root, "banner")
 	_, err = os.Stat(bannerDir)
 	if os.IsNotExist(err) {
@@ -1855,6 +1873,7 @@ func (s *Server) Run() error {
 		}
 	}
 
+	// Write default site index file.
 	siteIndexFile := filepath.Join(s.config.Root, "index.html")
 	_, err = os.Stat(siteIndexFile)
 	if os.IsNotExist(err) {
@@ -1863,6 +1882,13 @@ func (s *Server) Run() error {
 			log.Fatalf("failed to write site index at %s: %s", siteIndexFile, err)
 		}
 	}
+
+	// Lock server until initialization is complete.
+	s.lock.Lock()
+
+	// Start listening for HTTP connections.
+	httpErrors := make(chan error)
+	go s.listen(httpErrors)
 
 	// Rebuild everything on startup when explicitly requested and after upgrading.
 	db := s.begin()
@@ -1897,6 +1923,7 @@ func (s *Server) Run() error {
 	}
 	db.Commit()
 
+	// Watch template directories.
 	if devMode {
 		dir := "directory"
 		if s.config.Template != "" {
@@ -1905,26 +1932,33 @@ func (s *Server) Run() error {
 		fmt.Printf("Development mode enabled. Monitoring template %s...\n", dir)
 		err = s.watchTemplates(officialDir)
 		if err != nil {
+			s.lock.Unlock()
 			return fmt.Errorf("failed to watch templates for changes: %s", err)
 		}
 	}
 
+	// Start notification queue handler.
 	if s.config.MailAddress != "" {
 		s.notificationsWaitGroup.Add(1)
 		go s.handleNotifications()
 	}
 
-	err = s.listen()
-	if err != nil {
-		if err != http.ErrServerClosed {
-			return err
-		}
+	// Initialization complete. Unlock server.
+	fmt.Printf("Serving http://%s\n", s.config.Serve)
+	s.lock.Unlock()
+
+	// Wait until the HTTP server returns an error.
+	err = <-httpErrors
+
+	// Shut down gracefully.
+	if err == http.ErrServerClosed {
 		// Wait until all web requests have been processed.
 		s.rebuildWaitGroup.Wait()
 		// Wait until all notifications have been sent.
 		s.notificationsWaitGroup.Wait()
+		return nil
 	}
-	return nil
+	return err
 }
 
 // hashData returns the salted hash of the provided data.
