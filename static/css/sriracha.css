@@ -16,12 +16,12 @@ label a {
 }
 
 hr {
-	color: #26A8FF;
-	background-color: #26a8ff;
-	background-image: -webkit-linear-gradient(left,rgb(13,17,23),rgba(38, 168, 255,0.75),rgba(13,17,23,1));
-	background-image: -moz-linear-gradient(left,rgba(13,17,23,1),rgba(38, 168, 255,0.75),rgba(13,17,23,1));
-	background-image: -ms-linear-gradient(left,rgba(13,17,23,1),rgba(38, 168, 255,0.75),rgba(13,17,23,1));
-	background-image: -o-linear-gradient(left,rgba(13,17,23,1),rgba(38, 168, 255,0.75),rgba(13,17,23,1));
+	color: #003253;
+	background-color: #003253;
+	background-image: -webkit-linear-gradient(left,rgb(13,17,23),rgba(38, 168, 255,0.5),rgba(13,17,23,1));
+	background-image: -moz-linear-gradient(left,rgba(13,17,23,1),rgba(38, 168, 255,0.5),rgba(13,17,23,1));
+	background-image: -ms-linear-gradient(left,rgba(13,17,23,1),rgba(38, 168, 255,0.5),rgba(13,17,23,1));
+	background-image: -o-linear-gradient(left,rgba(13,17,23,1),rgba(38, 168, 255,0.5),rgba(13,17,23,1));
 }
 
 .reflink a:hover {
