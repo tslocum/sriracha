@@ -84,6 +84,9 @@ msgstr ""
 msgid "All"
 msgstr ""
 
+msgid "All board options will be duplicated except those below."
+msgstr ""
+
 msgid "All new posts"
 msgstr ""
 
@@ -300,6 +303,12 @@ msgid "Do not share with staff"
 msgstr ""
 
 msgid "Documentation"
+msgstr ""
+
+msgid "Duplicate"
+msgstr ""
+
+msgid "Duplicate Board"
 msgstr ""
 
 msgid "Email"

@@ -353,6 +353,53 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 		b := &Board{}
 		s.loadBoardForm(db, r, b)
 
+		if FormBool(r, "duplicate") {
+			duplicateID := FormInt(r, "board")
+			d := db.BoardByID(duplicateID)
+			if d == nil {
+				data.ManageError("Board not found")
+				return false
+			}
+			b.Type = d.Type
+			b.Hide = d.Hide
+			b.Lock = d.Lock
+			b.Approval = d.Approval
+			b.Reports = d.Reports
+			b.Style = d.Style
+			b.Locale = d.Locale
+			b.Delay = d.Delay
+			b.MinName = d.MinName
+			b.MaxName = d.MaxName
+			b.MinEmail = d.MinEmail
+			b.MaxEmail = d.MaxEmail
+			b.MinSubject = d.MinSubject
+			b.MaxSubject = d.MaxSubject
+			b.MinMessage = d.MinMessage
+			b.MaxMessage = d.MaxMessage
+			b.MinSizeThread = d.MinSizeThread
+			b.MaxSizeThread = d.MaxSizeThread
+			b.MinSizeReply = d.MinSizeReply
+			b.MaxSizeReply = d.MaxSizeReply
+			b.ThumbWidth = d.ThumbWidth
+			b.ThumbHeight = d.ThumbHeight
+			b.DefaultName = d.DefaultName
+			b.WordBreak = d.WordBreak
+			b.Truncate = d.Truncate
+			b.Threads = d.Threads
+			b.Replies = d.Replies
+			b.MaxThreads = d.MaxThreads
+			b.MaxReplies = d.MaxReplies
+			b.Oekaki = d.Oekaki
+			b.Backlinks = d.Backlinks
+			b.Files = d.Files
+			b.Instances = d.Instances
+			b.Identifiers = d.Identifiers
+			b.Gallery = d.Gallery
+			b.Uploads = d.Uploads
+			b.Embeds = d.Embeds
+			b.Rules = d.Rules
+		}
+
 		err := b.Validate()
 		if err != nil {
 			data.ManageError(err.Error())

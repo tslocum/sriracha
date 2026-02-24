@@ -350,6 +350,52 @@
     {{if eq .Manage.Board.ID 0}}
         </div>
     </details>
+        {{if and (May "board.add" $.Account $.Opt.Access) (gt (len .Manage.Boards) 0)}}
+            <br><br>
+            <details>
+                <summary>{{T "Duplicate Board"}}</summary>
+                <div>
+                    <form method="post">
+                        <input type="hidden" name="duplicate" value="1">
+                        <fieldset>
+                            <table border="0" class="manageform">
+                                <tr>
+                                    <td class="postblock"><label for="board">{{T "Board"}}</label></td>
+                                    <td>
+                                        <select name="board">
+                                        {{range $i, $board := .Manage.Boards}}
+                                            <option value="{{$board.ID}}">{{$board.Path}} {{$board.Name}}</option>
+                                        {{end}}
+                                        </select>
+                                    </td>
+                                    <td>{{T "All board options will be duplicated except those below."}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="postblock"><label for="dir">{{T "Directory"}}</label></td>
+                                    <td><input type="text" name="dir" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Dir}}{{end}}"></td>
+                                    <td>{{T "Directory where the board files are located. Leave blank to place the board at the server root."}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="postblock"><label for="name">{{T "Name"}}</label></td>
+                                    <td><input type="text" name="name" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Name}}{{end}}"></td>
+                                    <td>{{T "Name of the board, which is displayed in the page title and header."}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="postblock"><label for="description">{{T "Description"}}</label></td>
+                                    <td><input type="text" name="description" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Description}}{{end}}"></td>
+                                    <td>{{T "Board description, which is used by search engines."}}</td>
+                                </tr>
+                                <tr>
+                                <td>&nbsp;</td>
+                                    <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Duplicate"}}"></td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                    </form>
+                </div>
+            </details>
+        {{end}}
     {{end}}
     <br>
 {{end}}
