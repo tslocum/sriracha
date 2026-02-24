@@ -263,6 +263,14 @@ legend {
 	margin-left: 2px;
 }
 
+.logo {
+	clear: both;
+	text-align: center;
+	font-size: 2em;
+	width: 100%;
+	margin: 2px 0;
+}
+
 #newreplies {
 	margin: 5px 0 0 2px;
 	font-weight: bold;

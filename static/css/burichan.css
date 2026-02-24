@@ -42,12 +42,7 @@ hr {
 }
 
 .logo {
-	clear: both;
-	text-align: center;
-	background: inherit;
-	font-size: 24pt;
 	color: #AF0A0F;
-	width: 100%;
 }
 
 .replymode {
