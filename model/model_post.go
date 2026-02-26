@@ -208,7 +208,7 @@ func (p *Post) MessageTruncated(lines int, account *Account) template.HTML {
 		return template.HTML(p.Message)
 	}
 
-	count := strings.Count(p.Message, "<br>")
+	count := strings.Count(p.Message, "\n")
 	if count < lines {
 		return template.HTML(p.Message)
 	}
@@ -217,7 +217,7 @@ func (p *Post) MessageTruncated(lines int, account *Account) template.HTML {
 	out := &bytes.Buffer{}
 	var start int
 	for i := 0; i < lines; i++ {
-		index := bytes.Index(msg[start:], []byte("<br>"))
+		index := bytes.Index(msg[start:], []byte("\n"))
 
 		end := len(msg) - start
 		if index != -1 {
@@ -225,7 +225,7 @@ func (p *Post) MessageTruncated(lines int, account *Account) template.HTML {
 		}
 
 		if i > 0 {
-			out.Write([]byte("<br>"))
+			out.Write([]byte("\n"))
 		}
 		out.Write(msg[start : start+end])
 
@@ -236,7 +236,11 @@ func (p *Post) MessageTruncated(lines int, account *Account) template.HTML {
 		}
 	}
 
-	doc, err := goquery.NewDocumentFromReader(out)
+	buf := out.Bytes()
+	buf = bytes.TrimSuffix(buf, []byte("\n"))
+	buf = bytes.TrimSuffix(buf, []byte("<br>"))
+
+	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(buf))
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -455,4 +455,5 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 
 	s.config.ImportComplete = true
 	s.rebuildBoard(db, b)
+	s.writeSiteIndex(db)
 }

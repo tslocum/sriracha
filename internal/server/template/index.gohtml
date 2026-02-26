@@ -1,0 +1,76 @@
+{{template "imgboard_begin.gohtml" .}}
+<style type="text/css">
+hr {
+    max-width: 930px;
+}
+.reply {
+    border: 1px solid;
+    box-shadow: 2px 2px;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+	padding: 0.5rem;
+}
+td {
+    vertical-align: top;
+}
+</style>
+<div class="news">
+    {{if ne .News nil}}
+        <div class="reply" style="width: 60%;margin-left: auto;margin-right: auto;">
+            <a href="/news-{{.News.ID}}.html" style="text-decoration: none;color: inherit;">
+                <label style="cursor: pointer;">
+                    {{if ne .News.Subject ""}}<span class="filetitle">{{.News.Subject}}</span>{{end}}
+                    {{if ne .News.Name ""}}<span class="postername">{{.News.Name}}</span>{{end}}
+                    {{.News.DateLabel}}
+                    <span class="reflink">
+                        No.{{.News.ID}}
+                    </span>
+                </label>
+            </a><br>
+            <div class="newsmessage">
+                {{.News.Message | HTML}}
+            </div>
+        </div>
+    {{end}}
+    <div class="reply">
+        <table border="0" width="100%">
+        {{range $i, $board := .Boards}}
+            {{if ne $i 0}}
+                <tr>
+                    <td colspan="3">&nbsp;</td>
+                </tr>
+            {{end}}
+            <tr>
+                <td width="1%" align="right" style="white-space: nowrap;">
+                    {{.Path}}
+                </td>
+                <td>&nbsp;</td>
+                <td>
+                    <a href="{{.Path}}"><b>{{.Name}}</b></a>
+                    {{if ne .Description ""}}<br>{{.Description}}{{end}}
+                </td>
+                <td>&nbsp;</td>
+                <td>
+                    {{$lastPosts := index $.Threads $i}}
+                    {{if eq (len $lastPosts) 0}}
+                        {{T "None"}}
+                    {{else}}
+                        {{$last := index $lastPosts 0}}
+                        {{if eq $last nil}}
+                            {{T "None"}}
+                        {{else}}
+                            {{$last.NameBlock | HTML}}
+                            {{if ne $last.Message ""}}
+                                <br>
+                                {{$last.MessageTruncated 1 $.Account}}
+                            {{end}}
+                        {{end}}
+                    {{end}}
+                </td>
+            </tr>
+        {{end}}
+        </table>
+    </div>
+</div>
+<hr>
+{{template "imgboard_end.gohtml" .}}

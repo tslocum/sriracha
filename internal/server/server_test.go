@@ -44,7 +44,7 @@ func newTestServer() (*Server, error) {
 	s := NewServer()
 	s.config = &Config{}
 
-	s.setDefaultServerConfig()
+	s.loadServerConfig()
 
 	err := s.parseTemplates("", s.config.Template)
 	if err != nil {

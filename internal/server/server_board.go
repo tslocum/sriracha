@@ -223,6 +223,8 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 			}
 		}
 
+		s.writeSiteIndex(db)
+
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted board #%d", b.ID), "")
 
 		data.Template = "manage_info"
@@ -336,6 +338,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 			}
 
 			s.rebuildBoard(db, data.Manage.Board)
+			s.writeSiteIndex(db)
 
 			changes := printChanges(oldBoard, *data.Manage.Board)
 			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/board/%d", data.Manage.Board.ID), changes)
@@ -426,6 +429,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 		db.AddBoard(b)
 
 		s.rebuildBoard(db, b)
+		s.writeSiteIndex(db)
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/board/%d", b.ID), "")
 

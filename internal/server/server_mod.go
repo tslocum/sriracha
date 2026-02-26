@@ -216,7 +216,7 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 			}
 			// Rebuild static files.
 			s.rebuildThread(db, data.Post)
-			s.writeIndexes(db, source)
+			s.writeBoardIndexes(db, source)
 		} else {
 			moveLabel := Get(data.Board, data.Account, "Move")
 			boardLabel := Get(data.Board, data.Account, "Board")

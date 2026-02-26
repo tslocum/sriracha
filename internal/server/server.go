@@ -511,8 +511,8 @@ func (s *Server) begin() *database.DB {
 	return database.Begin(s.dbPool, s.config)
 }
 
-// setDefaultServerConfig loads the server configuration and sets default values.
-func (s *Server) setDefaultServerConfig() error {
+// loadServerConfig loads the server configuration and sets default values.
+func (s *Server) loadServerConfig() error {
 	db := s.begin()
 	defer db.Commit()
 
@@ -1016,8 +1016,8 @@ func (s *Server) writeThread(db *database.DB, board *Board, postID int) {
 	data.execute(f)
 }
 
-// writeIndexes writes board index pages to disk.
-func (s *Server) writeIndexes(db *database.DB, board *Board) {
+// writeBoardIndexes writes board index pages to disk.
+func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 	if board.Unique == 0 {
 		board.Unique = db.UniqueUserPosts(board)
 	}
@@ -1276,7 +1276,7 @@ func (s *Server) writePages(db *database.DB, pages []*Page, dryRun bool) error {
 // rebuildBoard rebuilds a thread res page and board index pages.
 func (s *Server) rebuildThread(db *database.DB, post *Post) {
 	s.writeThread(db, post.Board, post.Thread())
-	s.writeIndexes(db, post.Board)
+	s.writeBoardIndexes(db, post.Board)
 	if s.opt.Overboard != "" {
 		s.writeOverboard(db)
 	}
@@ -1287,7 +1287,7 @@ func (s *Server) rebuildBoard(db *database.DB, board *Board) {
 	for _, info := range db.AllThreads(board, true) {
 		s.writeThread(db, board, info[0])
 	}
-	s.writeIndexes(db, board)
+	s.writeBoardIndexes(db, board)
 }
 
 // rebuildAll rebuilds all board, overboard, news and custom pages.
@@ -1299,6 +1299,8 @@ func (s *Server) rebuildAll(db *database.DB) {
 	if s.opt.Overboard != "" {
 		s.writeOverboard(db)
 	}
+
+	s.writeSiteIndex(db)
 
 	s.rebuildNews(db)
 
@@ -1378,6 +1380,39 @@ func (s *Server) rebuildNews(db *database.DB) {
 		s.writeNewsItem(db, n)
 	}
 	s.writeNewsIndexes(db)
+}
+
+// writeSiteIndex writes the site index page to disk.
+func (s *Server) writeSiteIndex(db *database.DB) {
+	if s.opt.News == NewsWriteToIndex || s.opt.Overboard == "/" {
+		return
+	}
+	allBoards := db.AllBoards()
+	if len(allBoards) < 2 {
+		return
+	}
+	data := s.newTemplateData()
+	data.Template = "index"
+
+	data.Boards = allBoards
+	data.Threads = make([][]*Post, len(allBoards))
+	for i, board := range allBoards {
+		data.Threads[i] = append(data.Threads[i], db.LastPostByBoard(board))
+	}
+
+	allNews := db.AllNews(true)
+	var latest *News
+	if len(allNews) > 0 {
+		latest = allNews[0]
+	}
+	data.News = latest
+
+	indexFile, err := os.OpenFile(filepath.Join(s.config.Root, "index.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	if err != nil {
+		log.Fatal(err)
+	}
+	data.execute(indexFile)
+	indexFile.Close()
 }
 
 // reloadBans refreshes the range ban regular expression cache.
@@ -1681,13 +1716,14 @@ func (s *Server) handleRebuild() {
 				threads = append(threads, thread)
 			}
 			if !slices.Contains(boards, info.post.Board) {
-				s.writeIndexes(db, info.post.Board)
+				s.writeBoardIndexes(db, info.post.Board)
 				boards = append(boards, info.post.Board)
 			}
 		}
 		if s.opt.Overboard != "" {
 			s.writeOverboard(db)
 		}
+		s.writeSiteIndex(db)
 		for _, info := range pending {
 			s.queueNotifications(db, info.post)
 		}
@@ -1804,26 +1840,24 @@ func (s *Server) Run() error {
 	}
 
 	// Verify mail server configuration.
-	if s.config.MailAddress != "" {
-		s.opt.Notifications = true
-		if !devMode {
-			fmt.Println("Verifying mail server configuration...")
-			client, err := s.connectToMailServer()
-			if err != nil {
-				log.Fatalf("failed to verify mail server configuration: %s", err)
-			}
-			client.Close()
+	s.opt.Notifications = s.config.MailAddress != ""
+	if s.opt.Notifications && !devMode {
+		fmt.Println("Verifying mail server configuration...")
+		client, err := s.connectToMailServer()
+		if err != nil {
+			log.Fatalf("failed to verify mail server configuration: %s", err)
 		}
+		client.Close()
 	}
 
-	// Initialize database connection pool, which contains a single connection.
+	// Initialize database connection pool, which contains one connection.
 	s.dbPool, err = database.Connect(s.config)
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %s", err)
 	}
 
 	// Load server configuration and set default values.
-	err = s.setDefaultServerConfig()
+	err = s.loadServerConfig()
 	if err != nil {
 		return fmt.Errorf("failed to set default server configuration: %s", err)
 	}
@@ -1924,6 +1958,7 @@ func (s *Server) Run() error {
 			fmt.Printf("Rebuilding %s...\n", b.Path())
 			s.rebuildBoard(db, b)
 		}
+		s.writeSiteIndex(db)
 	}
 	db.Commit()
 

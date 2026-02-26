@@ -1,3 +1,6 @@
+1.4.3:
+- Write site navigation index page when more than one board exists
+
 1.4.2:
 - Support duplicating existing board options when adding a new board
 

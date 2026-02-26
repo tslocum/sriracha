@@ -80,7 +80,7 @@ func (s *Server) serveDelete(db *database.DB, w http.ResponseWriter, r *http.Req
 		} else {
 			s.writeThread(db, b, post.Thread())
 		}
-		s.writeIndexes(db, b)
+		s.writeBoardIndexes(db, b)
 
 		data.Template = "board_info"
 		data.Info = fmt.Sprintf("Deleted No.%d", post.ID)

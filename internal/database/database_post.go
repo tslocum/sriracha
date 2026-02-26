@@ -297,6 +297,18 @@ func (db *DB) LastPostByIP(board *Board, ip string) *Post {
 	return p
 }
 
+func (db *DB) LastPostByBoard(board *Board) *Post {
+	p := &Post{}
+	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT *, 0 as replies FROM post WHERE board = $1 AND moderated> 0 ORDER BY id DESC LIMIT 1", board.ID))
+	if err == pgx.ErrNoRows {
+		return nil
+	} else if err != nil || p.ID == 0 {
+		log.Fatalf("failed to select last post by board: %s", err)
+	}
+	p.Board = board
+	return p
+}
+
 func (db *DB) ReplyCount(threadID int) int {
 	var count int
 	err := db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM post WHERE parent = $1", threadID).Scan(&count)
