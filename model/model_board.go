@@ -180,6 +180,7 @@ const (
 	DefaultBoardThumbHeight = 250
 	DefaultBoardFiles       = 1
 	DefaultBoardInstances   = 1
+	DefaultBoardGallery     = true
 )
 
 func NewBoard() *Board {
@@ -199,6 +200,7 @@ func NewBoard() *Board {
 		ThumbHeight:   DefaultBoardThumbHeight,
 		Files:         DefaultBoardFiles,
 		Instances:     DefaultBoardInstances,
+		Gallery:       DefaultBoardGallery,
 	}
 }
 
