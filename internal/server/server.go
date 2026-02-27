@@ -1388,7 +1388,7 @@ func (s *Server) rebuildNews(db *database.DB) {
 
 // writeSiteIndex writes the site index page to disk.
 func (s *Server) writeSiteIndex(db *database.DB) {
-	if !s.opt.SiteIndex || s.opt.News == NewsWriteToIndex || s.opt.Overboard == "/" {
+	if !s.opt.SiteIndex || s.opt.News == NewsWriteToIndex || s.opt.Overboard == "/" || db.BoardByDir("") != nil {
 		return
 	}
 	allBoards := db.AllBoards()
