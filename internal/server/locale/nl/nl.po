@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-02-20 18:35+0000\n"
+"PO-Revision-Date: 2026-02-24 17:55+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -11,15 +11,15 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.15.2\n"
 
-msgid "%d post omitted. Click Reply to view."
-msgid_plural "%d posts omitted. Click Reply to view."
-msgstr[0] "%d bericht overgeslagen. Klik op beantwoorden om te bekijken."
-msgstr[1] "%d berichten overgeslagen. Klik op beantwoorden om te bekijken."
-
 msgid "%d new post"
 msgid_plural "%d new posts"
 msgstr[0] "%d nieuw bericht"
 msgstr[1] "%d nieuwe berichten"
+
+msgid "%d post omitted. Click Reply to view."
+msgid_plural "%d posts omitted. Click Reply to view."
+msgstr[0] "%d bericht overgeslagen. Klik op beantwoorden om te bekijken."
+msgstr[1] "%d berichten overgeslagen. Klik op beantwoorden om te bekijken."
 
 msgid "(Mentioned) %s"
 msgstr "%s vermeld"
@@ -91,6 +91,9 @@ msgstr ""
 
 msgid "All"
 msgstr "Alles"
+
+msgid "All board options will be duplicated except those below."
+msgstr "Alle subforumopties worden gekloond, behalve onderstaande."
 
 msgid "All new posts"
 msgstr "Alle nieuwe berichten"
@@ -327,6 +330,12 @@ msgstr "Niet delen met staf"
 
 msgid "Documentation"
 msgstr "Documentatie"
+
+msgid "Duplicate"
+msgstr "Klonen"
+
+msgid "Duplicate Board"
+msgstr "Subforum klonen"
 
 msgid "Email"
 msgstr "E-mailen"
@@ -916,6 +925,9 @@ msgstr "Overal tonen"
 msgid "Site Home"
 msgstr "Startpagina"
 
+msgid "Site Index"
+msgstr ""
+
 msgid "Site Name"
 msgstr "Sitenaam"
 
@@ -1099,6 +1111,11 @@ msgstr ""
 
 msgid "Word Break"
 msgstr "Woorden afbreken"
+
+msgid ""
+"Write site index page, which contains the most recent news item, links to "
+"boards and the most recent posts."
+msgstr ""
 
 msgid "Your post will be shown once it has been approved."
 msgstr "Je bericht wordt na goedkeuring getoond."

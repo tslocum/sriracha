@@ -11,15 +11,15 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.15.2\n"
 
-msgid "%d post omitted. Click Reply to view."
-msgid_plural "%d posts omitted. Click Reply to view."
-msgstr[0] "%d postim i fshehur. Kliko Pergjigju per ta pare."
-msgstr[1] "%d postime te fshehura. Kliko Pergjigju per ti pare."
-
 msgid "%d new post"
 msgid_plural "%d new posts"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "%d post omitted. Click Reply to view."
+msgid_plural "%d posts omitted. Click Reply to view."
+msgstr[0] "%d postim i fshehur. Kliko Pergjigju per ta pare."
+msgstr[1] "%d postime te fshehura. Kliko Pergjigju per ti pare."
 
 msgid "(Mentioned) %s"
 msgstr ""
@@ -88,6 +88,9 @@ msgid "Administrators have full access except for managing accounts."
 msgstr "Administratoret kane akses te plote pervec menaxhimit te llogarive."
 
 msgid "All"
+msgstr ""
+
+msgid "All board options will be duplicated except those below."
 msgstr ""
 
 msgid "All new posts"
@@ -325,6 +328,12 @@ msgstr "Mos e ndani me stafin"
 
 msgid "Documentation"
 msgstr "Dokumentacioni"
+
+msgid "Duplicate"
+msgstr ""
+
+msgid "Duplicate Board"
+msgstr ""
 
 msgid "Email"
 msgstr "Posta Elektronike"
@@ -913,6 +922,9 @@ msgstr "Shfaq kudo"
 msgid "Site Home"
 msgstr "Faqja Kryesore"
 
+msgid "Site Index"
+msgstr ""
+
 msgid "Site Name"
 msgstr "Emri i Faqes"
 
@@ -1094,6 +1106,11 @@ msgstr "Nese vizitoret duhet te kalojne nje CAPTCHA kur postojne."
 
 msgid "Word Break"
 msgstr "Thyerja e Fjaleve"
+
+msgid ""
+"Write site index page, which contains the most recent news item, links to "
+"boards and the most recent posts."
+msgstr ""
 
 msgid "Your post will be shown once it has been approved."
 msgstr "Postimi juaj do te shfaqet pasi te jete miratuar."

@@ -12,17 +12,17 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 5.11.4\n"
 
-msgid "%d post omitted. Click Reply to view."
-msgid_plural "%d posts omitted. Click Reply to view."
-msgstr[0] "%d сообщение не показано. Нажмите Ответить для просмотра."
-msgstr[1] "%d сообщения не показано. Нажмите Ответить для просмотра."
-msgstr[2] "%d сообщений не показано. Нажмите Ответить для просмотра."
-
 msgid "%d new post"
 msgid_plural "%d new posts"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+msgid "%d post omitted. Click Reply to view."
+msgid_plural "%d posts omitted. Click Reply to view."
+msgstr[0] "%d сообщение не показано. Нажмите Ответить для просмотра."
+msgstr[1] "%d сообщения не показано. Нажмите Ответить для просмотра."
+msgstr[2] "%d сообщений не показано. Нажмите Ответить для просмотра."
 
 msgid "(Mentioned) %s"
 msgstr ""
@@ -91,6 +91,9 @@ msgid "Administrators have full access except for managing accounts."
 msgstr ""
 
 msgid "All"
+msgstr ""
+
+msgid "All board options will be duplicated except those below."
 msgstr ""
 
 msgid "All new posts"
@@ -318,6 +321,12 @@ msgid "Do not share with staff"
 msgstr ""
 
 msgid "Documentation"
+msgstr ""
+
+msgid "Duplicate"
+msgstr ""
+
+msgid "Duplicate Board"
 msgstr ""
 
 msgid "Email"
@@ -869,6 +878,9 @@ msgstr ""
 msgid "Site Home"
 msgstr ""
 
+msgid "Site Index"
+msgstr ""
+
 msgid "Site Name"
 msgstr ""
 
@@ -1036,6 +1048,11 @@ msgid "Whether visitors must pass a CAPTCHA when posting."
 msgstr ""
 
 msgid "Word Break"
+msgstr ""
+
+msgid ""
+"Write site index page, which contains the most recent news item, links to "
+"boards and the most recent posts."
 msgstr ""
 
 msgid "Your post will be shown once it has been approved."

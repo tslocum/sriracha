@@ -7,8 +7,8 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
 
-msgid "%d post omitted. Click Reply to view."
-msgid_plural "%d posts omitted. Click Reply to view."
+msgid "%d new post"
+msgid_plural "%d new posts"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
@@ -16,8 +16,8 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-msgid "%d new post"
-msgid_plural "%d new posts"
+msgid "%d post omitted. Click Reply to view."
+msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
@@ -92,6 +92,9 @@ msgid "Administrators have full access except for managing accounts."
 msgstr ""
 
 msgid "All"
+msgstr ""
+
+msgid "All board options will be duplicated except those below."
 msgstr ""
 
 msgid "All new posts"
@@ -322,6 +325,12 @@ msgid "Do not share with staff"
 msgstr ""
 
 msgid "Documentation"
+msgstr ""
+
+msgid "Duplicate"
+msgstr ""
+
+msgid "Duplicate Board"
 msgstr ""
 
 msgid "Email"
@@ -873,6 +882,9 @@ msgstr ""
 msgid "Site Home"
 msgstr ""
 
+msgid "Site Index"
+msgstr ""
+
 msgid "Site Name"
 msgstr ""
 
@@ -1040,6 +1052,11 @@ msgid "Whether visitors must pass a CAPTCHA when posting."
 msgstr ""
 
 msgid "Word Break"
+msgstr ""
+
+msgid ""
+"Write site index page, which contains the most recent news item, links to "
+"boards and the most recent posts."
 msgstr ""
 
 msgid "Your post will be shown once it has been approved."
