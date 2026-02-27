@@ -832,6 +832,9 @@ msgstr ""
 msgid "Site Home"
 msgstr ""
 
+msgid "Site Index"
+msgstr ""
+
 msgid "Site Name"
 msgstr ""
 
@@ -989,6 +992,9 @@ msgid "Whether visitors must pass a CAPTCHA when posting."
 msgstr ""
 
 msgid "Word Break"
+msgstr ""
+
+msgid "Write site index page, which contains the most recent news item, links to boards and the most recent posts."
 msgstr ""
 
 msgid "Your post will be shown once it has been approved."

@@ -28,6 +28,9 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 		s.opt.SiteHome = defaultServerSiteHome
 		db.SaveString("sitehome", s.opt.SiteHome)
 
+		s.opt.SiteIndex = true
+		db.SaveBool("siteindex", s.opt.SiteIndex)
+
 		s.opt.News = NewsDisable
 		db.SaveInt("news", int(s.opt.News))
 
@@ -103,6 +106,10 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 			db.SaveString("sitehome", siteHome)
 			s.opt.SiteHome = siteHome
 		}
+
+		siteIndex := FormBool(r, "siteindex")
+		db.SaveBool("siteindex", siteIndex)
+		s.opt.SiteIndex = siteIndex
 
 		news := FormInt(r, "news")
 		db.SaveInt("news", news)

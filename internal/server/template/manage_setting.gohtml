@@ -45,6 +45,14 @@
             <td>{{T "Allow moderators to post site news."}}</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="siteindex">{{T "Site Index"}}</label></td>
+            <td><select name="siteindex" style="width: 100%;">
+                <option value="0"{{if not .Opt.SiteIndex}} selected{{end}}>{{T "Disable"}}</option>
+                <option value="1"{{if .Opt.SiteIndex}} selected{{end}}>{{T "Enable"}}</option>
+            </select></td>
+            <td>{{T "Write site index page, which contains the most recent news item, links to boards and the most recent posts."}}</td>
+        </tr>
+        <tr>
             <td class="postblock"><label for="boardindex">{{T "Navigation"}}</label></td>
             <td><select name="boardindex" style="width: 100%;">
                 <option value="0"{{if not .Opt.BoardIndex}} selected{{end}}>{{T "Disable"}}</option>

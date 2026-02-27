@@ -91,6 +91,7 @@ const (
 type ServerOptions struct {
 	SiteName         string
 	SiteHome         string
+	SiteIndex        bool
 	News             NewsOption
 	BoardIndex       bool
 	CAPTCHA          bool
@@ -527,6 +528,9 @@ func (s *Server) loadServerConfig() error {
 		siteHome = defaultServerSiteHome
 	}
 	s.opt.SiteHome = siteHome
+
+	siteIndex := db.GetString("siteindex")
+	s.opt.SiteIndex = siteIndex == "" || siteIndex == "1"
 
 	news := NewsOption(db.GetInt("news"))
 	if news == NewsDisable || news == NewsWriteToNews || news == NewsWriteToIndex {
@@ -1384,7 +1388,7 @@ func (s *Server) rebuildNews(db *database.DB) {
 
 // writeSiteIndex writes the site index page to disk.
 func (s *Server) writeSiteIndex(db *database.DB) {
-	if s.opt.News == NewsWriteToIndex || s.opt.Overboard == "/" {
+	if !s.opt.SiteIndex || s.opt.News == NewsWriteToIndex || s.opt.Overboard == "/" {
 		return
 	}
 	allBoards := db.AllBoards()

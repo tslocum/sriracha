@@ -30,15 +30,17 @@
 		{{if or (and (gt (len .IndexBoards) 1) (or .Opt.BoardIndex .ModMode)) (eq .Template "news")}}
 			{{if ne .Opt.Overboard ""}}
 				[<a href="/{{if ne .Opt.Overboard "/"}}{{.Opt.Overboard}}/{{end}}" style="text-decoration: underline;">{{T "Overboard"}}</a>]
-				{{if gt (len .IndexBoards) 0}}
+			{{end}}
+			{{if and (gt (len .IndexBoards) 0) (ne .Template "index")}}
+				{{if ne .Opt.Overboard ""}}
 					&middot;
 				{{end}}
-			{{end}}
-			{{range $i, $board := .IndexBoards}}
-				{{if not $.ModMode}}
-					[<a href="{{.Path}}" title="{{.Name}}" style="text-decoration: underline;">{{if ne .Dir ""}}{{.Dir}}{{else}}{{if eq .Type 0}}{{T "Imageboard"}}{{else}}{{T "Forum"}}{{end}}{{end}}</a>]
-				{{else}}
-					[<a href="/sriracha/board/mod/{{.ID}}" title="{{.Name}}" style="text-decoration: underline;">{{if ne .Dir ""}}{{.Dir}}{{else}}/{{end}}</a>]
+				{{range $i, $board := .IndexBoards}}
+					{{if not $.ModMode}}
+						[<a href="{{.Path}}" title="{{.Name}}" style="text-decoration: underline;">{{if ne .Dir ""}}{{.Dir}}{{else}}{{if eq .Type 0}}{{T "Imageboard"}}{{else}}{{T "Forum"}}{{end}}{{end}}</a>]
+					{{else}}
+						[<a href="/sriracha/board/mod/{{.ID}}" title="{{.Name}}" style="text-decoration: underline;">{{if ne .Dir ""}}{{.Dir}}{{else}}/{{end}}</a>]
+					{{end}}
 				{{end}}
 			{{end}}
 		{{end}}
