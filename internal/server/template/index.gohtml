@@ -13,6 +13,15 @@ hr {
 td {
     vertical-align: top;
 }
+.midtd {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+.msgtd {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 </style>
 <div class="news">
     {{if ne .News nil}}
@@ -35,7 +44,7 @@ td {
         </div>
     {{end}}
     <div class="reply">
-        <table border="0" width="100%">
+        <table border="0" width="100%" style="table-layout: fixed;">
         {{range $i, $board := .Boards}}
             {{if ne $i 0}}
                 <tr>
@@ -43,16 +52,14 @@ td {
                 </tr>
             {{end}}
             <tr>
-                <td width="1%" align="right" style="white-space: nowrap;">
+                <td align="right">
                     {{.Path}}
                 </td>
-                <td>&nbsp;</td>
-                <td>
+                <td class="midtd">
                     <a href="{{.Path}}"><b>{{.Name}}</b></a>
                     {{if ne .Description ""}}<br>{{.Description}}{{end}}
                 </td>
-                <td>&nbsp;</td>
-                <td>
+                <td colspan="3" class="msgtd">
                     {{$lastPosts := index $.Threads $i}}
                     {{if eq (len $lastPosts) 0}}
                         {{T "None"}}<br>&nbsp;
@@ -61,7 +68,11 @@ td {
                         {{if eq $last nil}}
                             {{T "None"}}<br>&nbsp;
                         {{else}}
-                            <a href="{{$last.Board.Path}}res/{{$last.Thread}}.html#{{$last.ID}}" style="color: inherit;text-decoration: none;">{{$last.NameBlock | HTML}} No.{{$last.ID}}</a>
+                            <a href="{{$last.Board.Path}}res/{{$last.Thread}}.html#{{$last.ID}}" style="color: inherit;text-decoration: none;">
+                                <label style="cursor: pointer;">
+                                    {{$last.NameBlock | HTML}} No.{{$last.ID}}
+                                </label>
+                            </a>
                             <br>
                             {{$msg := $last.MessageTruncated 1 $.Account}}
                             {{if eq $msg ""}}
