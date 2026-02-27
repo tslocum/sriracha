@@ -54,6 +54,7 @@ func (s *Server) serveNews(data *templateData, db *database.DB, w http.ResponseW
 		os.Remove(filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", news.ID)))
 
 		s.writeNewsIndexes(db)
+		s.writeSiteIndex(db)
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted news #%d", deleteNewsID), "")
 
@@ -91,6 +92,7 @@ func (s *Server) serveNews(data *templateData, db *database.DB, w http.ResponseW
 			} else {
 				s.rebuildNewsItem(db, data.Manage.News)
 			}
+			s.writeSiteIndex(db)
 
 			changes := printChanges(oldNews, *data.Manage.News)
 			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/news/%d", data.Manage.News.ID), changes)
@@ -119,6 +121,7 @@ func (s *Server) serveNews(data *templateData, db *database.DB, w http.ResponseW
 		db.AddNews(n)
 		if n.Timestamp != 0 && n.Timestamp <= time.Now().Unix() {
 			s.rebuildNewsItem(db, n)
+			s.writeSiteIndex(db)
 		}
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/news/%d", n.ID), "")
