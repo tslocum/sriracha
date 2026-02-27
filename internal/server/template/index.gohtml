@@ -16,7 +16,7 @@ td {
 </style>
 <div class="news">
     {{if ne .News nil}}
-        <div class="reply" style="width: 60%;margin-left: auto;margin-right: auto;">
+        <div class="reply" style="width: 50%;margin-left: auto;margin-right: auto;">
             <a href="/news-{{.News.ID}}.html" style="text-decoration: none;color: inherit;">
                 <label style="cursor: pointer;">
                     {{if ne .News.Subject ""}}<span class="filetitle">{{.News.Subject}}</span>{{end}}
@@ -42,7 +42,7 @@ td {
             {{end}}
             <tr>
                 <td width="1%" align="right" style="white-space: nowrap;">
-                    {{.Path}}
+                    {{if eq .Dir ""}}/{{else}}{{.Dir}}{{end}}
                 </td>
                 <td>&nbsp;</td>
                 <td>
@@ -53,16 +53,19 @@ td {
                 <td>
                     {{$lastPosts := index $.Threads $i}}
                     {{if eq (len $lastPosts) 0}}
-                        {{T "None"}}
+                        {{T "None"}}<br>&nbsp;
                     {{else}}
                         {{$last := index $lastPosts 0}}
                         {{if eq $last nil}}
-                            {{T "None"}}
+                            {{T "None"}}<br>&nbsp;
                         {{else}}
-                            {{$last.NameBlock | HTML}}
-                            {{if ne $last.Message ""}}
-                                <br>
-                                {{$last.MessageTruncated 1 $.Account}}
+                            <a href="{{$last.Board.Path}}res/{{$last.Thread}}.html#{{$last.ID}}" style="color: inherit;text-decoration: none;">{{$last.NameBlock | HTML}} No.{{$last.ID}}</a>
+                            <br>
+                            {{$msg := $last.MessageTruncated 1 $.Account}}
+                            {{if eq $msg ""}}
+                                &nbsp;
+                            {{else}}
+                                {{$msg}}&nbsp;
                             {{end}}
                         {{end}}
                     {{end}}

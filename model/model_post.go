@@ -239,6 +239,7 @@ func (p *Post) MessageTruncated(lines int, account *Account) template.HTML {
 	buf := out.Bytes()
 	buf = bytes.TrimSuffix(buf, []byte("\n"))
 	buf = bytes.TrimSuffix(buf, []byte("<br>"))
+	buf = bytes.TrimSuffix(buf, []byte("\n"))
 
 	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(buf))
 	if err != nil {
