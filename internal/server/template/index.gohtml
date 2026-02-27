@@ -13,11 +13,12 @@ hr {
 td {
     vertical-align: top;
 }
-.midtd {
-    padding-left: 4px;
+.boardtd {
+    text-align: right;
     padding-right: 4px;
 }
 .msgtd {
+    padding-left: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -52,14 +53,11 @@ td {
                 </tr>
             {{end}}
             <tr>
-                <td align="right">
-                    {{.Path}}
-                </td>
-                <td class="midtd">
+                <td class="boardtd">
                     <a href="{{.Path}}"><b>{{.Name}}</b></a>
                     {{if ne .Description ""}}<br>{{.Description}}{{end}}
                 </td>
-                <td colspan="3" class="msgtd">
+                <td colspan="2" class="msgtd">
                     {{$lastPosts := index $.Threads $i}}
                     {{if eq (len $lastPosts) 0}}
                         {{T "None"}}<br>&nbsp;
