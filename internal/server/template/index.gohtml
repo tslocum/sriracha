@@ -74,9 +74,17 @@ td {
                             <br>
                             {{$msg := $last.MessageTruncated 1 $.Account}}
                             {{if eq $msg ""}}
-                                &nbsp;
+                                {{if ne $last.File ""}}
+                                    {{if $last.IsEmbed}}
+                                        {{T "Embed"}}
+                                    {{else}}
+                                        {{T "File"}}
+                                    {{end}}
+                                {{else}}
+                                    …
+                                {{end}}
                             {{else}}
-                                {{$msg}}&nbsp;
+                                {{$msg}}
                             {{end}}
                         {{end}}
                     {{end}}

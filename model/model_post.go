@@ -208,50 +208,40 @@ func (p *Post) MessageTruncated(lines int, account *Account) template.HTML {
 		return template.HTML(p.Message)
 	}
 
-	count := strings.Count(p.Message, "\n")
-	if count < lines {
+	split := bytes.Split([]byte(p.Message), []byte("\n"))
+	if len(split) <= lines {
 		return template.HTML(p.Message)
 	}
 
-	msg := []byte(p.Message)
-	out := &bytes.Buffer{}
-	var start int
-	for i := 0; i < lines; i++ {
-		index := bytes.Index(msg[start:], []byte("\n"))
-
-		end := len(msg) - start
-		if index != -1 {
-			end = index
-		}
-
-		if i > 0 {
-			out.Write([]byte("\n"))
-		}
-		out.Write(msg[start : start+end])
-
-		start += end + 4
-
-		if start >= len(msg) {
-			break
-		}
+	blankMessage := template.HTML("…")
+	if showOmitted {
+		blankMessage = template.HTML(`<span class="omittedposts">` + Get(p.Board, account, "Post truncated. Click Reply to view.") + `</span><br>`)
 	}
 
-	buf := out.Bytes()
-	buf = bytes.TrimSuffix(buf, []byte("\n"))
-	buf = bytes.TrimSuffix(buf, []byte("<br>"))
-	buf = bytes.TrimSuffix(buf, []byte("\n"))
+	buf := bytes.Join(split[:lines], []byte("\n"))
+	if bytes.Contains(buf, []byte(`<div class="codeblock">`)) {
+		return blankMessage
+	}
 
 	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(buf))
 	if err != nil {
 		log.Fatal(err)
 	}
-	truncated, err := doc.Find("body").First().Html()
+	body := doc.Find("body")
+	if body == nil || body.Length() == 0 {
+		return blankMessage
+	}
+	first := body.First()
+	if first == nil || first.Length() == 0 || first.Text() == "" {
+		return blankMessage
+	}
+	truncated, err := first.Html()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if showOmitted {
-		truncated += `<br><span class="omittedposts">` + Get(p.Board, account, "Post truncated. Click Reply to view.") + `</span><br>`
+		truncated += "<br>" + string(blankMessage)
 	}
 	return template.HTML(truncated)
 }

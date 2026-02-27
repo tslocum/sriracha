@@ -1,3 +1,6 @@
+1.4.4:
+- Fix truncating messages containing code blocks
+
 1.4.3:
 - Write site navigation index page when more than one board exists
 
