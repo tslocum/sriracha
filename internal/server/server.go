@@ -1404,12 +1404,14 @@ func (s *Server) writeSiteIndex(db *database.DB) {
 		data.Threads[i] = append(data.Threads[i], db.LastPostByBoard(board))
 	}
 
-	allNews := db.AllNews(true)
-	var latest *News
-	if len(allNews) > 0 {
-		latest = allNews[0]
+	if s.opt.News != NewsDisable {
+		allNews := db.AllNews(true)
+		var latest *News
+		if len(allNews) > 0 {
+			latest = allNews[0]
+		}
+		data.News = latest
 	}
-	data.News = latest
 
 	indexFile, err := os.OpenFile(filepath.Join(s.config.Root, "index.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 	if err != nil {
