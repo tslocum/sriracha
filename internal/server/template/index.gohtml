@@ -31,16 +31,16 @@ td {
     {{if ne .News nil}}
         <div style="text-align: center;margin-top: 1.5rem;">
             <div class="reply" style="display: inline-block;text-align: left;margin: 0;">
-                <a href="/news.html" style="text-decoration: none;color: inherit;">
-                    <label style="cursor: pointer;">
+                <label style="cursor: pointer;">
+                    <a href="/news.html" style="text-decoration: none;color: inherit;">
                         {{if ne .News.Subject ""}}<span class="filetitle">{{.News.Subject}}</span>{{end}}
                         {{if ne .News.Name ""}}<span class="postername">{{.News.Name}}</span>{{end}}
                         {{.News.DateLabel}}
                         <span class="reflink">
                             No.{{.News.ID}}
                         </span>
-                    </label>
-                </a><br>
+                    </a>
+                </label><br>
                 <div class="newsmessage">
                     {{.News.Message | HTML}}
                 </div>
@@ -64,11 +64,11 @@ td {
                         {{if eq $last nil}}
                             {{T "None"}}<br>&nbsp;
                         {{else}}
-                            <a href="{{$last.Board.Path}}res/{{$last.Thread}}.html#{{$last.ID}}" style="color: inherit;text-decoration: none;">
-                                <label style="cursor: pointer;">
+                            <label style="cursor: pointer;">
+                                <a href="{{$last.Board.Path}}res/{{$last.Thread}}.html#{{$last.ID}}" style="color: inherit;text-decoration: none;">
                                     {{$last.NameBlock | HTML}} No.{{$last.ID}}
-                                </label>
-                            </a>
+                                </a>
+                            </label>
                             <br>
                             {{$msg := $last.MessageTruncated 1 $.Account}}
                             {{if eq $msg ""}}
