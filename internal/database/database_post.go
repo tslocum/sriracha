@@ -79,7 +79,7 @@ func (db *DB) AllThreads(board *Board, moderated bool) [][2]int {
 		if len(ids) == 0 {
 			return nil
 		}
-		boardWhere = fmt.Sprintf("post.board IN (%s) AND ", ids)
+		boardWhere = fmt.Sprintf("post.board IN (%s) AND post.stickied = 0 AND", ids)
 	}
 	var extraJoin string
 	var extraWhere string
