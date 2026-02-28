@@ -13,6 +13,9 @@ hr {
 td {
     vertical-align: top;
 }
+.navindex tr:not(:first-child) td {
+    padding-top: 1rem;
+}
 .boardtd {
     text-align: right;
     padding-right: 4px;
@@ -44,14 +47,9 @@ td {
             </div>
         </div>
     {{end}}
-    <div class="reply">
+    <div class="reply navindex">
         <table border="0" width="100%" style="table-layout: fixed;">
         {{range $i, $board := .Boards}}
-            {{if ne $i 0}}
-                <tr>
-                    <td colspan="3">&nbsp;</td>
-                </tr>
-            {{end}}
             <tr>
                 <td class="boardtd">
                     <a href="{{.Path}}"><b>{{.Name}}</b></a>
