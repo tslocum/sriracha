@@ -1392,6 +1392,14 @@ func (s *Server) writeSiteIndex(db *database.DB) {
 		return
 	}
 	allBoards := db.AllBoards()
+	var keep []*Board
+	for _, board := range allBoards {
+		if board.Hide == HideIndex || board.Hide == HideEverywhere {
+			continue
+		}
+		keep = append(keep, board)
+	}
+	allBoards = keep
 	if len(allBoards) < 2 {
 		return
 	}
