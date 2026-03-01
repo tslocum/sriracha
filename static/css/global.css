@@ -377,3 +377,12 @@ details {
 		max-width: 100%;
 	}
 }
+
+@media print {
+	.navbar, .adminbar, .header, .replymode, .postarea, .forumpostarea, .navtable, .userdelete, .fadedetails, input[type=checkbox], input[type=submit] {
+		display: none;
+	}
+	.reply {
+		border: 0px none !important;
+	}
+}

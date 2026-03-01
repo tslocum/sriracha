@@ -21,24 +21,26 @@
 		{{end}}
     </head>
     <body>
-		{{template "extra_navbar.gohtml" .}}
-		{{if or (and (gt (len .IndexBoards) 1) (or .Opt.BoardIndex .ModMode)) (eq .Template "news")}}
-			{{if ne .Opt.Overboard ""}}
-				[<a href="/{{if ne .Opt.Overboard "/"}}{{.Opt.Overboard}}/{{end}}" style="text-decoration: underline;">{{T "Overboard"}}</a>]
-			{{end}}
-			{{if and (gt (len .IndexBoards) 0) (ne .Template "index")}}
+		<span class="navbar">
+			{{template "extra_navbar.gohtml" .}}
+			{{if or (and (gt (len .IndexBoards) 1) (or .Opt.BoardIndex .ModMode)) (eq .Template "news")}}
 				{{if ne .Opt.Overboard ""}}
-					&middot;
+					[<a href="/{{if ne .Opt.Overboard "/"}}{{.Opt.Overboard}}/{{end}}" style="text-decoration: underline;">{{T "Overboard"}}</a>]
 				{{end}}
-				{{range $i, $board := .IndexBoards}}
-					{{if not $.ModMode}}
-						[<a href="{{.Path}}" title="{{.Name}}" style="text-decoration: underline;">{{if ne .Dir ""}}{{.Dir}}{{else}}{{if eq .Type 0}}{{T "Imageboard"}}{{else}}{{T "Forum"}}{{end}}{{end}}</a>]
-					{{else}}
-						[<a href="/sriracha/board/mod/{{.ID}}" title="{{.Name}}" style="text-decoration: underline;">{{if ne .Dir ""}}{{.Dir}}{{else}}/{{end}}</a>]
+				{{if and (gt (len .IndexBoards) 0) (ne .Template "index")}}
+					{{if ne .Opt.Overboard ""}}
+						&middot;
+					{{end}}
+					{{range $i, $board := .IndexBoards}}
+						{{if not $.ModMode}}
+							[<a href="{{.Path}}" title="{{.Name}}" style="text-decoration: underline;">{{if ne .Dir ""}}{{.Dir}}{{else}}{{if eq .Type 0}}{{T "Imageboard"}}{{else}}{{T "Forum"}}{{end}}{{end}}</a>]
+						{{else}}
+							[<a href="/sriracha/board/mod/{{.ID}}" title="{{.Name}}" style="text-decoration: underline;">{{if ne .Dir ""}}{{.Dir}}{{else}}/{{end}}</a>]
+						{{end}}
 					{{end}}
 				{{end}}
 			{{end}}
-		{{end}}
+		</span>
 		<div class="adminbar">
 			{{template "extra_adminbar.gohtml" .}}
 			{{if and (ne .Board nil) (eq .Board.Type 0)}}
@@ -57,7 +59,9 @@
 				<option value="sriracha">Sriracha</option>
 			</select>
 		</div>
-		{{template "extra_header.gohtml" .}}
+		<span class="header">
+			{{template "extra_header.gohtml" .}}
+		</span>
 		{{$bannerType := 0}}
 		{{if ne .Board nil}}
 			{{$bannerType = .Board.ID}}
