@@ -873,6 +873,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 				return
 			}
 			post.Message = strings.ReplaceAll(post.Message, "<br>", "\n")
+			post.Message = strings.ReplaceAll(post.Message, "<br/>", "\n")
 		}
 		db.Plugin = ""
 
