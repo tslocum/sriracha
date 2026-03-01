@@ -964,6 +964,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 
 	post.SetNameBlock(b.DefaultName, staffCapcode, s.opt.Identifiers)
 
+	// Replace sentinels with characters.
 	if !rawHTML {
 		newLineSentinel := "\x85" // Next line (NEL) character
 		post.Message = strings.ReplaceAll(post.Message, "\n", "<br>\n")
@@ -971,6 +972,9 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 		bracketSentinel := "\x1e" // Record separator
 		post.Message = strings.ReplaceAll(post.Message, bracketSentinel, "[")
 	}
+
+	// Replace XHTML line break tags added by plugins or by staff posting raw HTML.
+	post.Message = strings.ReplaceAll(post.Message, "<br/>", "<br>")
 
 	if post.Password != "" {
 		post.Password = s.hashData(post.Password)
