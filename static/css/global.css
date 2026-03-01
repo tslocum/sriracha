@@ -379,7 +379,7 @@ details {
 }
 
 @media print {
-	.navbar, .adminbar, .header, .replymode, .postarea, .forumpostarea, .navtable, .userdelete, .fadedetails, input[type=checkbox], input[type=submit] {
+	.navbar, .adminbar, .header, .replymode, .postarea, .forumpostarea, .threadui, .navtable, .userdelete, details, input[type=checkbox], input[type=submit] {
 		display: none;
 	}
 	.reply {
