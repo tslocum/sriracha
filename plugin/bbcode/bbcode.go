@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"fmt"
 	"html"
+	"html/template"
 	"log"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -41,11 +43,21 @@ const (
 
 var codePattern = regexp.MustCompile(`(?ms)\[code=?([^\]]+)?\].*?\[\/code\]`)
 
+var shortTags = map[string]string{
+	"bold":          "b",
+	"italic":        "i",
+	"strikethrough": "s",
+	"underline":     "u",
+}
+
 type BBCode struct {
 	config  map[string]bool
 	updated bool
 
 	compiler bbcode.Compiler
+
+	rules       template.HTML
+	rulesCached bool
 
 	formatter *htmlformatter.Formatter
 	style     *chroma.Style
@@ -114,7 +126,52 @@ func (f *BBCode) Config() []sriracha.PluginConfig {
 func (f *BBCode) Update(db sriracha.DB, key string) error {
 	f.config[key] = db.GetBool(key)
 	f.updated = true
+	f.rulesCached = false
 	return nil
+}
+
+func (f *BBCode) Rules(db sriracha.DB, board *Board) (template.HTML, error) {
+	if f.rulesCached {
+		return f.rules, nil
+	}
+	var enabledTags []string
+	for tag, enabled := range f.config {
+		if !enabled {
+			continue
+		}
+		enabledTags = append(enabledTags, strings.ToLower(tag))
+	}
+	if len(enabledTags) == 0 {
+		return "", nil
+	}
+	var out strings.Builder
+	out.WriteString("Supported BBCode tags are ")
+	slices.Sort(enabledTags)
+	l := len(enabledTags)
+	configInfo := f.Config()
+	for i, tag := range enabledTags {
+		if i != 0 {
+			if i == l-1 {
+				out.WriteString(" and ")
+			} else {
+				out.WriteString(", ")
+			}
+		}
+		for _, c := range configInfo {
+			if strings.ToLower(c.Name) == tag {
+				shortTag := shortTags[tag]
+				if shortTag == "" {
+					shortTag = tag
+				}
+				out.WriteString(fmt.Sprintf(`<span title="%s">%s</a>`, template.HTMLEscapeString(c.Info), template.HTMLEscapeString(shortTag)))
+				break
+			}
+		}
+	}
+	out.WriteRune('.')
+	f.rules = template.HTML(out.String())
+	f.rulesCached = true
+	return f.rules, nil
 }
 
 func (f *BBCode) rebuildCompiler() {
@@ -346,5 +403,6 @@ var (
 	_ sriracha.Plugin           = &BBCode{}
 	_ sriracha.PluginWithConfig = &BBCode{}
 	_ sriracha.PluginWithUpdate = &BBCode{}
+	_ sriracha.PluginWithRules  = &BBCode{}
 	_ sriracha.PluginWithPost   = &BBCode{}
 )

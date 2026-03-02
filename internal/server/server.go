@@ -110,6 +110,7 @@ type ServerOptions struct {
 	LocalesSorted    []string
 	Access           map[string]string
 	Banners          map[int][]*Banner
+	Rules            map[int][]template.HTML
 	Notifications    bool
 	DevMode          bool
 	FuncMaps         map[string]template.FuncMap
@@ -166,6 +167,7 @@ func NewServer() *Server {
 	return &Server{
 		opt: ServerOptions{
 			Banners: make(map[int][]*Banner),
+			Rules:   make(map[int][]template.HTML),
 		},
 		shutdownNotifications: make(chan struct{}),
 		rebuildQueue:          make(chan *rebuildInfo),
@@ -883,6 +885,39 @@ func (s *Server) refreshBannerCache(db *database.DB) {
 	for id := range banners {
 		if len(banners[id]) == 0 {
 			delete(banners, id)
+		}
+	}
+}
+
+// refreshRulesCache refreshes the board rules cache.
+func (s *Server) refreshRulesCache(db *database.DB) {
+	rules := s.opt.Rules
+	for id := range rules {
+		rules[id] = rules[id][:0]
+	}
+
+	for _, board := range db.AllBoards() {
+		for _, info := range allPluginRulesHandlers {
+			rulesHTML, err := info.Handler(db, board)
+			if err != nil {
+				log.Fatalf("failed to refresh rules cache: plugin %s encountered an error: %s", info.Name, err)
+			}
+			rulesText := strings.TrimSpace(string(rulesHTML))
+			if rulesText == "" {
+				continue
+			}
+			for _, rulesLine := range strings.Split(rulesText, "\n") {
+				if rulesLine == "" {
+					continue
+				}
+				rules[board.ID] = append(rules[board.ID], template.HTML(rulesLine))
+			}
+		}
+	}
+
+	for id := range rules {
+		if len(rules[id]) == 0 {
+			delete(rules, id)
 		}
 	}
 }
@@ -1945,6 +1980,7 @@ func (s *Server) Run() error {
 	// Rebuild everything on startup when explicitly requested and after upgrading.
 	db := s.begin()
 	s.refreshBannerCache(db)
+	s.refreshRulesCache(db)
 	sv := db.GetString("sv") // Sriracha version.
 	if sv != SrirachaVersion {
 		if sv != "" {

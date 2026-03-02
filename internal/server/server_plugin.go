@@ -66,6 +66,10 @@ func (s *Server) servePlugin(data *templateData, db *database.DB, w http.Respons
 			changes += fmt.Sprintf(`[%s: "%s" > "%s"]`, strings.Title(strings.ReplaceAll(c.Name, "_", " ")), oldLabel, newLabel)
 		}
 
+		if _, ok := plugin.(sriracha.PluginWithRules); ok {
+			s.refreshRulesCache(db)
+		}
+
 		if changes != "" {
 			s.log(db, data.Account, nil, fmt.Sprintf("Reset plugin %s", info.Name), changes)
 		}
@@ -168,6 +172,10 @@ func (s *Server) servePlugin(data *templateData, db *database.DB, w http.Respons
 					changes += " "
 				}
 				changes += fmt.Sprintf(`[%s: "%s" > "%s"]`, strings.Title(strings.ReplaceAll(c.Name, "_", " ")), oldLabel, newLabel)
+			}
+
+			if _, ok := plugin.(sriracha.PluginWithRules); ok {
+				s.refreshRulesCache(db)
 			}
 
 			if changed {

@@ -104,6 +104,15 @@ type PluginWithUpdate interface {
 	Update(db DB, key string) error
 }
 
+// PluginWithRules describes the required methods for a plugin with text displayed below the post form.
+type PluginWithRules interface {
+	Plugin
+
+	// Rules returns text informing visitors of available features and functionality.
+	// This text is displayed below the post form in board index and thread pages.
+	Rules(db DB, board *Board) (template.HTML, error)
+}
+
 // PluginWithAttach describes the required methods for a plugin subscribing to attach events.
 type PluginWithAttach interface {
 	Plugin

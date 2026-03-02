@@ -17,6 +17,13 @@ import (
 	. "codeberg.org/tslocum/sriracha/model"
 )
 
+type rulesHandler func(db sriracha.DB, board *Board) (template.HTML, error)
+
+type rulesHandlerInfo struct {
+	Name    string
+	Handler rulesHandler
+}
+
 type attachHandler func(db sriracha.DB, post *Post, file []byte) (handled bool, err error)
 
 type attachHandlerInfo struct {
@@ -87,6 +94,7 @@ type pluginInfo struct {
 var (
 	allPlugins              []any
 	allPluginInfo           []*pluginInfo
+	allPluginRulesHandlers  []rulesHandlerInfo
 	allPluginAttachHandlers []attachHandlerInfo
 	allPluginEmbedHandlers  []embedHandlerInfo
 	allPluginPostHandlers   []postHandlerInfo
@@ -147,6 +155,11 @@ func (s *Server) registerPlugin(plugin any) {
 
 	if _, ok := plugin.(sriracha.PluginWithUpdate); ok {
 		info.Events = append(info.Events, "Update")
+	}
+
+	if pRules, ok := plugin.(sriracha.PluginWithRules); ok {
+		info.Events = append(info.Events, "Rules")
+		allPluginRulesHandlers = append(allPluginRulesHandlers, rulesHandlerInfo{strings.ToLower(info.Name), pRules.Rules})
 	}
 
 	if pAttach, ok := plugin.(sriracha.PluginWithAttach); ok {

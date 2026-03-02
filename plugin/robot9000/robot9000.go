@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"html/template"
+	"slices"
 
 	"codeberg.org/tslocum/sriracha"
 	. "codeberg.org/tslocum/sriracha/model"
@@ -47,6 +49,13 @@ func (r *Robot9000) Update(db sriracha.DB, key string) error {
 	return nil
 }
 
+func (r *Robot9000) Rules(db sriracha.DB, board *Board) (template.HTML, error) {
+	if len(r.boards) == 0 || !slices.Contains(r.boards, board.ID) {
+		return "", nil
+	}
+	return "Robot 9000 mode enabled. Post message must be unique.", nil
+}
+
 func (r *Robot9000) Insert(db sriracha.DB, post *Post) error {
 	if post.Message == "" {
 		return nil
@@ -81,5 +90,6 @@ var (
 	_ sriracha.Plugin           = &Robot9000{}
 	_ sriracha.PluginWithConfig = &Robot9000{}
 	_ sriracha.PluginWithUpdate = &Robot9000{}
+	_ sriracha.PluginWithRules  = &Robot9000{}
 	_ sriracha.PluginWithInsert = &Robot9000{}
 )

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"slices"
 	"strconv"
 	"strings"
@@ -82,6 +83,23 @@ func (v *Password) Update(db sriracha.DB, key string) error {
 	return nil
 }
 
+func (v *Password) Rules(db sriracha.DB, board *Board) (template.HTML, error) {
+	if len(v.passwords) == 0 {
+		return "", nil
+	}
+	var foundBoard bool
+	for _, p := range v.passwords {
+		if len(p.boards) == 0 || slices.Contains(p.boards, board.ID) {
+			foundBoard = true
+			break
+		}
+	}
+	if !foundBoard {
+		return "", nil
+	}
+	return "Password protection enabled. You must enter an allowed password to post.", nil
+}
+
 func (v *Password) Post(db sriracha.DB, post *Post) error {
 	var passwordRequired bool
 	var passwordSubmitted bool
@@ -113,5 +131,6 @@ var (
 	_ sriracha.Plugin           = &Password{}
 	_ sriracha.PluginWithConfig = &Password{}
 	_ sriracha.PluginWithUpdate = &Password{}
+	_ sriracha.PluginWithRules  = &Password{}
 	_ sriracha.PluginWithPost   = &Password{}
 )

@@ -690,6 +690,18 @@ type PluginWithUpdate interface {
 }
 ```
 
+#### Rules event
+
+Rules returns text informing visitors of available features and functionality.
+This text is displayed below the post form in board index and thread pages.
+
+```go
+// PluginWithRules describes the required methods for a plugin with text displayed below the post form.
+type PluginWithRules interface {
+	Rules(db DB, board *Board) (template.HTML, error)
+}
+```
+
 #### Attach event
 
 Attach events are sent when a file is attached to a post. FileOriginal contains

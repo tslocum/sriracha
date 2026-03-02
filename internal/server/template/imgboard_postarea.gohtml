@@ -132,6 +132,11 @@
                             {{range $i, $value := .Board.Rules}}
                                 <li>{{$value | HTML}}</li>
                             {{end}}
+                            {{if gt .Board.ID 0}}
+                                {{range $i, $rulesText := (index .Opt.Rules .Board.ID)}}
+                                    <li>{{$rulesText}}</li>
+                                {{end}}
+                            {{end}}
                         </ul>
                     </td>
                 </tr>
