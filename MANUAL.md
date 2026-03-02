@@ -91,6 +91,19 @@ being served, existing web requests are allowed to finish processing, all
 pending changes to static files are written to disk and all pending
 notifications are sent.
 
+### Board types
+
+Each board is either an imageboard or a forum. The difference between the two
+is purely cosmetic. A board's type may be changed at any time.
+
+- Imageboards display attachment thumbnails and truncated messages in index pages.
+The first post in a thread has a unique style.
+- Forums only display thread subjects in index pages. All posts in a thread
+have the same style.
+
+As a general rule, boards which accept image and video attachments should be
+imageboards, and boards which do not should be forums.
+
 ### Email notifications
 
 Sriracha may be configured to connect to an [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)
