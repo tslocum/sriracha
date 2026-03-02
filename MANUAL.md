@@ -91,6 +91,16 @@ being served, existing web requests are allowed to finish processing, all
 pending changes to static files are written to disk and all pending
 notifications are sent.
 
+### Root directory
+
+The root directory is where all board directories, attachments, thumbnails and
+static HTML pages are located. Sriracha will delete or overwrite files in this
+directory whenever data is updated.
+
+While you can add custom files to the root directory, to avoid risk of deletion
+you should instead configure your HTTPS server to serve the custom static files
+from a separate directory outside of the root directory.
+
 ### Board types
 
 Each board is either an imageboard or a forum. The difference between the two
