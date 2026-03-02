@@ -9,7 +9,9 @@
 	<div class="replymode">{{T "Mod mode"}}</div>
 {{end}}
 {{if ne .Board.ID -1}}
-	{{if or .ModMode (and (eq .Board.Type 1) (eq .ReplyMode 0))}}
+	{{if ne .Message ""}}
+		{{.Message}}
+	{{else if or .ModMode (and (eq .Board.Type 1) (eq .ReplyMode 0))}}
 		<details>
 			<summary>{{if eq .ReplyMode 0}}{{T "Create Thread"}}{{else}}{{T "Reply"}}{{end}}</summary>
 			<div>
