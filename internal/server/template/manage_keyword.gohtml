@@ -45,7 +45,7 @@
     <form method="post">
         <fieldset>
         {{if ne .Manage.Keyword.ID 0}}<legend>{{T "Update"}} {{.Manage.Keyword.Text}}</legend>{{end}}
-        <table border="0" class="manageform">
+        <table class="manageform">
             <tr>
                 <td class="postblock"><label for="text">{{T "Text"}}</label></td>
                 <td><input type="text" name="text" value="{{.Manage.Keyword.Text}}"></td>

@@ -116,7 +116,7 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 	doImport := FormBool(r, "import")
 	if !doImport {
 		data.Message += template.HTML(`<form method="post"><input type="hidden" name="import" value="1">
-        <table border="0" class="manageform">
+        <table class="manageform">
             <tr>
                 <td class="postblock"><label for="dir">Board Directory</label></td>
                 <td><input type="text" name="dir"></td>

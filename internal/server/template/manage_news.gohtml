@@ -38,7 +38,7 @@
 <form method="post">
     <fieldset>
     {{if ne .Manage.News nil}}<legend>{{if .Manage.News.MayUpdate $.Account}}{{T "Update"}} {{end}}{{if ne .Manage.News.Subject ""}}{{.Manage.News.Subject}}{{else}}#{{.Manage.News.ID}}{{end}}</legend>{{end}}
-    <table border="0" class="manageform">
+    <table class="manageform">
         <tr>
             <td class="postblock"><label for="timestamp">{{T "Date"}}</label></td>
             <td><input type="text" name="timestamp" value="{{if ne .Manage.News nil}}{{.Manage.News.DateInput}}{{end}}"></td>

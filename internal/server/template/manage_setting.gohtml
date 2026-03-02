@@ -3,7 +3,7 @@
 {{if Contains .Extra "DEV"}}<b>Warning:</b> You are running an unsupported version of Sriracha. Install an <a href="https://codeberg.org/tslocum/sriracha/releases">official version</a> to receive support.<br>{{end}}
 <fieldset>
 <legend>{{T "Status"}}</legend>
-<table border="0" class="manageform">
+<table class="manageform">
     <tr>
         <td class="postblock"><label for="version">{{T "Version"}}</label></td>
         <td><input type="text" name="version" value="{{.Extra}}" disabled></input></td>
@@ -24,7 +24,7 @@
 <form method="post">
     <fieldset>
     <legend>{{T "Update Settings"}}</legend>
-    <table border="0" class="manageform">
+    <table class="manageform">
         <tr>
             <td class="postblock"><label for="sitename">{{T "Site Name"}}</label></td>
             <td><input type="text" name="sitename" value="{{.Opt.SiteName}}"></input></td>
@@ -74,7 +74,7 @@
             <td>{{T "Seconds between automatic refreshes when viewing a thread. Set to 0 to disable."}}</td>
         </tr>
         <tr>
-            <th><br>{{T "Overboard"}}</td><td>&nbsp;</td>
+            <th><br>{{T "Overboard"}}</th><td>&nbsp;</td>
         </tr>
         <tr>
             <td class="postblock"><label for="overboard">{{T "Directory"}}</label></td>
@@ -100,7 +100,7 @@
             <td>{{T "Number of replies to show per overboard index thread. Set to 0 to show none."}}</td>
         </tr>
         <tr>
-            <th><br>{{T "Attachments"}}</td><td>&nbsp;</td>
+            <th><br>{{T "Attachments"}}</th><td>&nbsp;</td>
         </tr>
         <tr>
             <td class="postblock"><label for="oekakiwidth">{{T "Oekaki Width"}}</label></td>

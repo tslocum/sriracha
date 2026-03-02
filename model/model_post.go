@@ -235,10 +235,14 @@ func (p *Post) MessageTruncated(lines int, account *Account) template.HTML {
 	if first == nil || first.Length() == 0 || first.Text() == "" {
 		return blankMessage
 	}
+
+	// Get document body HTML.
 	truncated, err := first.Html()
 	if err != nil {
 		log.Fatal(err)
 	}
+	// Replace XHTML line break tags.
+	truncated = strings.ReplaceAll(truncated, "<br/>", "<br>")
 
 	if showOmitted {
 		truncated += "<br>" + string(blankMessage)

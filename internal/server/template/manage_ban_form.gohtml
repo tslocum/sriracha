@@ -7,7 +7,7 @@
         {{end}}
         <fieldset>
         <legend>{{if eq .Manage.Ban nil}}{{T "Add Ban"}}{{else}}{{T "Update"}} #{{.Manage.Ban.ID}}{{if HasPrefix .Manage.Ban.IP "r "}} - {{.Manage.Ban.TypeLabel}}{{end}}{{end}}</legend>
-        <table border="0" class="manageform">
+        <table class="manageform">
             {{if and (eq .Manage.Ban nil) (eq .Extra "")}}
                 <tr>
                     <td class="postblock"><label for="ip">{{T "IP Address"}}</label></td>
@@ -53,7 +53,7 @@
     <form method="post" enctype="multipart/form-data">
         <fieldset>
         <legend>{{T "Lift File Ban"}}</legend>
-        <table border="0" class="manageform">
+        <table class="manageform">
             <tr>
                 <td class="postblock"><label for="liftfile">{{T "File"}}</label></td>
                 <td><input type="file" name="liftfile"></td>

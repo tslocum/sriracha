@@ -7,7 +7,7 @@
     <input type="hidden" name="confirmation" value="1">
 	<fieldset>
         <legend>{{T "Delete %s" .Post.RefLink | HTML}}</legend>
-        <table border="0">
+        <table style="border: 0;">
             <tr><td class="postblock">{{T "Confirm"}}</td><td><input type="submit" class="managebutton" style="width: 100%;" value="{{T "Delete %s" (print ">>" .Post.ID)}}"></td></tr>
         </table>
 	</fieldset>

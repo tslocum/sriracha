@@ -29,7 +29,7 @@
 <form method="post">
     <fieldset>
     {{if ne .Manage.Account nil}}<legend>{{T "Update %s" .Manage.Account.Username}}</legend>{{end}}
-    <table border="0" class="manageform">
+    <table class="manageform">
         <tr>
             <td class="postblock"><label for="dir">{{T "Username"}}</label></td>
             <td><input type="text" name="username" value="{{if ne .Manage.Account nil}}{{.Manage.Account.Username}}{{end}}"></td>

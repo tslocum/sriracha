@@ -47,7 +47,7 @@
         {{if and (ne .Manage.Board nil) (ne .Manage.Board.ID 0)}}
             <legend>{{if le $.Account.Role 2}}{{T "Update"}} {{end}}{{.Manage.Board.Path}} {{.Manage.Board.Name}}</legend>
         {{end}}
-        <table border="0" class="manageform">
+        <table class="manageform">
             <tr>
                 <td class="postblock"><label for="dir">{{T "Directory"}}</label></td>
                 <td><input type="text" name="dir" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Dir}}{{end}}"></td>
@@ -64,7 +64,7 @@
                 <td>{{T "Board description, which is used by search engines."}}</td>
             </tr>
             <tr>
-                <th><br>{{T "Appearance"}}</td><td>&nbsp;</td>
+                <th><br>{{T "Appearance"}}</th><td>&nbsp;</td>
             </tr>
             <tr>
                 <td class="postblock"><label for="type">{{T "Type"}}</label></td>
@@ -153,7 +153,7 @@
                 <td>{{T "HTML-formatted text shown in the new post form."}}</td>
             </tr>
             <tr>
-                <th><br>{{T "Posts"}}</td><td>&nbsp;</td>
+                <th><br>{{T "Posts"}}</th><td>&nbsp;</td>
             </tr>
             <tr>
                 <td class="postblock"><label for="lock">{{T "Restrict New Posts"}}</label></td>
@@ -243,7 +243,7 @@
                 <td>{{T "Delay (in seconds) visitors must wait before posting again. Set to 0 to disable."}}</td>
             </tr>
             <tr>
-                <th><br>{{T "Attachments"}}</td><td>&nbsp;</td>
+                <th><br>{{T "Attachments"}}</th><td>&nbsp;</td>
             </tr>
             <tr>
                 <td class="postblock"><label for="files">{{T "Files"}}</label></td>
@@ -358,7 +358,7 @@
                     <form method="post">
                         <input type="hidden" name="duplicate" value="1">
                         <fieldset>
-                            <table border="0" class="manageform">
+                            <table class="manageform">
                                 <tr>
                                     <td class="postblock"><label for="board">{{T "Board"}}</label></td>
                                     <td>

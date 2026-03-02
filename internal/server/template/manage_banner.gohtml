@@ -52,7 +52,7 @@
         {{if and (ne .Manage.Banner nil) (ne .Manage.Banner.ID 0)}}
             <legend>{{T "Update"}} {{.Manage.Banner.Name}}</legend>
         {{end}}
-        <table border="0" class="manageform">
+        <table class="manageform">
             <tr>
                 <td class="postblock"><label for="name">{{T "Name"}}</label></td>
                 <td><input type="text" name="name" value="{{if ne .Manage.Banner nil}}{{.Manage.Banner.Name}}{{end}}"></td>

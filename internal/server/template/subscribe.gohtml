@@ -6,7 +6,7 @@
         <fieldset>
             {{if eq .Extra ""}}
                 <legend align="center">{{if ne .Post nil}}{{T "Subscribe to %s" (print "No." .Post.ID)}}{{else}}{{T "Subscribe to %s" .Board.Path}}{{end}}</legend>
-                <table border="0" class="manageform">
+                <table class="manageform">
                     {{if ne .Post nil}}
                         <tr>
                             <td class="postblock"><label>{{T "Notify"}}</label></td>
@@ -33,7 +33,7 @@
             {{else}}
                 <input type="hidden" name="key" value="{{.Extra2}}">
                 <legend align="center">{{T "Manage Subscriptions"}}</legend>
-                <table border="0" class="manageform">
+                <table class="manageform">
                     <tr>
                         <td colspan="2" align="center">{{.Extra}}</td>
                     </tr>
