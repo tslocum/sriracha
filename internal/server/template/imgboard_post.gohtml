@@ -2,7 +2,8 @@
 	{{if gt $i 0}}
         <hr>
     {{end}}
-	{{range $i, $post := $thread}}
+    <div class="thread">
+    {{range $i, $post := $thread}}
         {{if eq .Parent 0}}
             <div id="post{{.ID}}" class="op">
                 <a id="{{.ID}}"></a>
@@ -46,4 +47,5 @@
             </table>
         {{end}}
     {{end}}
+    </div>
 {{end}}

@@ -53,7 +53,11 @@ img, audio, video {
 .thumb {
 	border: none;
 	float: left;
-	margin: 4px 20px;
+	margin: 4px 20px 2px 20px;
+}
+
+.reply .thumb {
+	margin-bottom: 4px;
 }
 
 .nothumb {
@@ -63,6 +67,12 @@ img, audio, video {
 	text-align: center;
 	margin: 2px 20px;
 	padding: 1em 0.5em 1em 0.5em;
+}
+
+.thread::after {
+	content: "";
+	clear: both;
+	display: table;
 }
 
 .op input[type=checkbox] {
