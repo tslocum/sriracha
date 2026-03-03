@@ -11,13 +11,15 @@
 {{if ne .Board.ID -1}}
 	{{if ne .Message ""}}
 		{{.Message}}
+		<hr>
 	{{else if eq .ReplyMode 0}}
-		<details style="display: block;margin-left: 2px;padding-top: 3px;padding-bottom: 3px;">
+		<details style="display: block;margin-left: 2px;padding-top: 3px;">
 			<summary>{{T "Post thread"}}</summary>
 			<div>
 				{{template "imgboard_postarea.gohtml" .}}
 			</div>
 		</details>
+		<hr>
 	{{end}}
 {{end}}
 <form method="post" action="/sriracha/">
@@ -42,7 +44,7 @@
 		</details>
 	{{end}}
 </form>
-{{if and (ne .ReplyMode 0) (not .ModMode)}}
+{{if and (ne .ReplyMode 0) (eq .Message "")}}
     {{template "forum_postarea.gohtml" .}}
 {{end}}
 <hr>
