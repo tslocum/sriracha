@@ -29,7 +29,7 @@ td {
 </style>
 <div class="news">
     {{if ne .News nil}}
-        <div style="text-align: center;margin-top: 1.5rem;">
+        <div style="text-align: center;margin-top: 0.75rem;margin-bottom: 1.5rem;">
             <div class="reply" style="display: inline-block;text-align: left;margin: 0;">
                 <label style="cursor: pointer;">
                     <a href="/news.html" style="text-decoration: none;color: inherit;">
@@ -47,6 +47,7 @@ td {
             </div>
         </div>
     {{end}}
+    <hr>
     <div class="reply navindex">
         <table style="border: 0;table-layout: fixed;width: 100%;">
         {{range $i, $board := .Boards}}

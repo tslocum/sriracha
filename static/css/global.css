@@ -42,13 +42,7 @@ img, audio, video {
 }
 
 .postarea {
-	text-align: center;
 	max-width: 100%;
-}
-
-.postarea table {
-	margin: 0 auto;
-	text-align: left;
 }
 
 .postblock {
@@ -139,8 +133,8 @@ legend {
 }
 
 .replymode {
-	text-align: center;
 	margin: 2px -8px;
+	padding: 2px 8px;
 }
 
 .manageinfo {

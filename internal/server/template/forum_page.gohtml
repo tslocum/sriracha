@@ -11,16 +11,13 @@
 {{if ne .Board.ID -1}}
 	{{if ne .Message ""}}
 		{{.Message}}
-	{{else if or .ModMode (and (eq .Board.Type 1) (eq .ReplyMode 0))}}
-		<details>
-			<summary>{{if eq .ReplyMode 0}}{{T "Create Thread"}}{{else}}{{T "Reply"}}{{end}}</summary>
+	{{else if eq .ReplyMode 0}}
+		<details style="display: block;margin-left: 2px;padding-top: 3px;padding-bottom: 3px;">
+			<summary>{{T "Post thread"}}</summary>
 			<div>
 				{{template "imgboard_postarea.gohtml" .}}
 			</div>
 		</details>
-	{{else if eq .ReplyMode 0}}
-		{{template "imgboard_postarea.gohtml" .}}
-		<br>
 	{{end}}
 {{end}}
 <form method="post" action="/sriracha/">
