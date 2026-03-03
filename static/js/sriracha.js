@@ -110,8 +110,20 @@ function quotePost(postID) {
     if (!message) {
         return false;
     }
+    var details = document.getElementById("postdetails");
+    if (details) {
+        details.open = true;
+    }
     message.value = message.value + '>>' + postID + "\n";
     message.focus();
+    if (details) {
+        details.scrollIntoView();
+        return false;
+    }
+    var postform = document.getElementById("postform");
+    if (postform) {
+        postform.scrollIntoView();
+    }
     return false;
 }
 

@@ -12,7 +12,7 @@
 	{{if ne .Message ""}}
 		{{.Message}}
 	{{else}}
-		<details style="display: block;margin-left: 2px;padding-top: 3px;">
+		<details id="postdetails" style="display: block;margin-left: 2px;padding-top: 3px;">
 			<summary>{{if eq .ReplyMode 0}}{{T "Post thread"}}{{else}}{{T "Post reply"}}{{end}}</summary>
 			<div>
 				{{template "imgboard_postarea.gohtml" .}}
