@@ -126,7 +126,7 @@
                             {{if or (ne (len .Board.Uploads) 0) (ne (len .Board.Embeds) 0)}}
                                 <li>{{T "Images greater than %[1]dx%[2]d will be thumbnailed." .Board.ThumbWidth .Board.ThumbHeight}}</li>
                             {{end}}
-                            {{if ne .Board.Unique 0}}
+                            {{if gt .Board.Unique 2}}
                                 <li>{{TN "Currently %d unique user post." "Currently %d unique user posts." .Board.Unique .Board.Unique}}</li>
                             {{end}}
                             {{if gt .Board.ID 0}}
