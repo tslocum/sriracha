@@ -141,8 +141,13 @@ hr {
 
 .reply {
 	background: #1a1e23 !important;
-	border-right: 1px solid #222222;
-	border-bottom: 1px solid #222222;
+	border: 1px solid #222222;
+	border-top: 0px none;
+	border-left: 0px none;
+}
+
+.highlight {
+	border: 3px ridge #003253;
 }
 
 .replyhl {
@@ -173,12 +178,6 @@ hr {
 
 .abbrev {
 	color: #707070;
-}
-
-.highlight {
-	background: #F0E0D6;
-	color: #26A8FF;
-	border: 2px dashed #EEAA88;
 }
 
 fieldset, .managetable, .managetable th, .managetable td {

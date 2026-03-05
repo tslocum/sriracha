@@ -138,8 +138,13 @@ hr {
 .reply {
 	background: #F0E0D6 !important;
 	color: #800000 !important;
-	border-right: 1px solid #d9bfb7;
-	border-bottom: 1px solid #d9bfb7;
+	border: 1px solid #d9bfb7;
+	border-top: 0px none;
+	border-left: 0px none;
+}
+
+.highlight {
+	border: 2px ridge #800000;
 }
 
 .replyhl {
@@ -170,10 +175,4 @@ hr {
 
 .abbrev {
 	color: #707070;
-}
-
-.highlight {
-	background: #F0E0D6;
-	color: #800000;
-	border: 2px dashed #EEAA88;
 }

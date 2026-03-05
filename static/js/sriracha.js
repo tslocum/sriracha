@@ -1,6 +1,7 @@
 var mouseX = 0;
 var mouseY = 0;
 var haveFocus = false;
+var highlightedPost = null;
 var originalTitle = "";
 var newRepliesCount = 0;
 var postCache = {};
@@ -375,6 +376,24 @@ function onDrop(e) {
     fileInputs[0].files = e.dataTransfer.files;
 }
 
+function onHashChange(e) {
+    if (highlightedPost) {
+        highlightedPost.classList.remove("highlight");
+        highlightedPost = null;
+    }
+    var match = window.location.hash.match(/^#[0-9]+$/i);
+    if (match === null) {
+        return false;
+    }
+    var post = document.getElementById("post" + window.location.hash.substring(1));
+    if (!post || !post.classList.contains("reply")) {
+        return false;
+    }
+    post.classList.add("highlight");
+    highlightedPost = post;
+    return false;
+}
+
 function onDOM(e) {
     var style = getCookie("sriracha_style");
     if (style) {
@@ -403,6 +422,8 @@ function onLoad(e) {
                 quotePost(quotePostID);
             }
         }
+
+        onHashChange(false);
     }
 
     setPostAttributes(document);
@@ -428,5 +449,6 @@ window.addEventListener("drop", onDrop);
 window.addEventListener("focus", onFocus);
 window.addEventListener("blur", onBlur);
 window.addEventListener("mousemove", onMouseMove);
+window.addEventListener("hashchange", onHashChange);
 window.addEventListener("DOMContentLoaded", onDOM);
 window.addEventListener("load", onLoad);

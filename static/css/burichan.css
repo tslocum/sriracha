@@ -164,8 +164,13 @@ hr {
 .reply {
 	background: #D6DAF0 !important;
 	color: #000000 !important;
-	border-right: 1px solid #8c8eab;
-	border-bottom: 1px solid #8c8eab;
+	border: 1px solid #8c8eab;
+	border-top: 0px none;
+	border-left: 0px none;
+}
+
+.highlight {
+	border: 2px ridge #0010E0;
 }
 
 .replyhl {
