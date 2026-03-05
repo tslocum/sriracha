@@ -1,74 +1,75 @@
-{{template "forum_begin.gohtml" .}}
 {{if .ReplyMode}}
-	{{if not .ModMode}}
-		<div class="replymode">{{T "Posting mode: Reply"}}</div>
-	{{else}}
-		<div class="replymode">{{T "Mod mode: View"}}</div>
-	{{end}}
-{{else if .ModMode}}
-	<div class="replymode">{{T "Mod mode"}}</div>
-{{end}}
-{{if ne .Board.ID -1}}
-	{{if ne .Message ""}}
-		{{.Message}}
-		<hr>
-	{{else if eq .ReplyMode 0}}
-		<details style="display: block;margin-left: 2px;padding-top: 3px;">
-			<summary>{{T "Post thread"}}</summary>
-			<div>
-				{{template "imgboard_postarea.gohtml" .}}
-			</div>
-		</details>
-		<hr>
-	{{end}}
-{{end}}
-<form method="post" action="/sriracha/">
-	<input type="hidden" name="action" value="delete">
-	<input type="hidden" name="board" value="{{.Board.Dir}}">
-	{{if ne .ReplyMode 0}}
-		<input type="hidden" name="thread" value="{{.ReplyMode}}">
-	{{end}}
-	{{template "forum_post.gohtml" .}}
-	{{if and (ne .ReplyMode 0) (not .ModMode)}}
-		<br>
-		{{if .Opt.Notifications}}
-			<input type="submit" name="subscribe" value="{{T "Subscribe"}}"><br>
+	{{template "imgboard_page.gohtml" .}}
+{{else}}
+	{{template "forum_begin.gohtml" .}}
+	{{if .ReplyMode}}
+		{{if not .ModMode}}
+			<div class="replymode">{{T "Posting mode: Reply"}}</div>
+		{{else}}
+			<div class="replymode">{{T "Mod mode: View"}}</div>
 		{{end}}
-		<details class="fadedetails">
-			<summary style="margin-right: 2px;">
-				{{T "Delete Post"}}
-			</summary>
-			<div class="replyhl" style="display: inline-block;padding: 4px;">
-				<input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}"> <input type="submit" id="deletepost" name="deletepost" value="{{T "Delete"}}">
-			</div>
-		</details>
+	{{else if .ModMode}}
+		<div class="replymode">{{T "Mod mode"}}</div>
 	{{end}}
-</form>
-{{if and (ne .ReplyMode 0) (eq .Message "")}}
-    {{template "forum_postarea.gohtml" .}}
-{{end}}
-<hr>
-{{if eq .ReplyMode 0}}
-	<table class="navtable">
-		<tbody>
-			<tr>
-				<td>{{if gt .Page 0}}<form method="get" action="{{if not $.ModMode}}{{.Board.Path}}{{if eq .Page 1}}index{{else}}{{.Page | MinusOne}}{{end}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}{{if ne .Page 1}}p{{.Page | MinusOne}}{{end}}{{end}}"><input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
-				<td>
-					{{range $i := Iterate (.Pages | MinusOne)}}
-						[{{if eq $i $.Page}}{{$i}}{{else}}<a href="{{if not $.ModMode}}{{$.Board.Path}}{{if eq $i 0}}index{{else}}{{$i}}{{end}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}{{if ne $i 0}}/p{{$i}}{{end}}{{end}}">{{$i}}</a>{{end}}]
-					{{end}}
-				</td>
-				<td>{{if lt .Page (.Pages | MinusOne)}}<form method="get" action="{{if not $.ModMode}}{{.Board.Path}}{{.Page | PlusOne}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}/p{{.Page | PlusOne}}{{end}}"><input type="submit" value="{{T "Next"}}"></form>{{else}}{{T "Next"}}{{end}}</td>
-				{{if and .Opt.Notifications (gt .Board.ID 0)}}
-					<td style="border: 0px none;">&nbsp;</td>
-					<td style="border: 0px none;">
-						<form method="get" action="/sriracha/subscribe/board/{{.Board.ID}}">
-							<input type="submit"{{if ne .ReplyMode 0}} name="subscribe"{{end}} value="{{T "Subscribe"}}">
-						</form>
+	{{if ne .Board.ID -1}}
+		{{if ne .Message ""}}
+			{{.Message}}
+			<hr>
+		{{else}}
+			<details style="display: block;margin-left: 2px;padding-top: 3px;">
+				<summary>{{if eq .ReplyMode 0}}{{T "Post thread"}}{{else}}{{T "Post reply"}}{{end}}</summary>
+				<div>
+					{{template "imgboard_postarea.gohtml" .}}
+				</div>
+			</details>
+			<hr>
+		{{end}}
+	{{end}}
+	<form method="post" action="/sriracha/">
+		<input type="hidden" name="action" value="delete">
+		<input type="hidden" name="board" value="{{.Board.Dir}}">
+		{{if ne .ReplyMode 0}}
+			<input type="hidden" name="thread" value="{{.ReplyMode}}">
+		{{end}}
+		{{template "forum_post.gohtml" .}}
+		{{if and (ne .ReplyMode 0) (not .ModMode)}}
+			<br>
+			{{if .Opt.Notifications}}
+				<input type="submit" name="subscribe" value="{{T "Subscribe"}}"><br>
+			{{end}}
+			<details class="fadedetails">
+				<summary style="margin-right: 2px;">
+					{{T "Delete Post"}}
+				</summary>
+				<div class="replyhl" style="display: inline-block;padding: 4px;">
+					<input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}"> <input type="submit" id="deletepost" name="deletepost" value="{{T "Delete"}}">
+				</div>
+			</details>
+		{{end}}
+	</form>
+	<hr>
+	{{if eq .ReplyMode 0}}
+		<table class="navtable">
+			<tbody>
+				<tr>
+					<td>{{if gt .Page 0}}<form method="get" action="{{if not $.ModMode}}{{.Board.Path}}{{if eq .Page 1}}index{{else}}{{.Page | MinusOne}}{{end}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}{{if ne .Page 1}}p{{.Page | MinusOne}}{{end}}{{end}}"><input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
+					<td>
+						{{range $i := Iterate (.Pages | MinusOne)}}
+							[{{if eq $i $.Page}}{{$i}}{{else}}<a href="{{if not $.ModMode}}{{$.Board.Path}}{{if eq $i 0}}index{{else}}{{$i}}{{end}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}{{if ne $i 0}}/p{{$i}}{{end}}{{end}}">{{$i}}</a>{{end}}]
+						{{end}}
 					</td>
-				{{end}}
-			</tr>
-		</tbody>
-	</table>
+					<td>{{if lt .Page (.Pages | MinusOne)}}<form method="get" action="{{if not $.ModMode}}{{.Board.Path}}{{.Page | PlusOne}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}/p{{.Page | PlusOne}}{{end}}"><input type="submit" value="{{T "Next"}}"></form>{{else}}{{T "Next"}}{{end}}</td>
+					{{if and .Opt.Notifications (gt .Board.ID 0)}}
+						<td style="border: 0px none;">&nbsp;</td>
+						<td style="border: 0px none;">
+							<form method="get" action="/sriracha/subscribe/board/{{.Board.ID}}">
+								<input type="submit"{{if ne .ReplyMode 0}} name="subscribe"{{end}} value="{{T "Subscribe"}}">
+							</form>
+						</td>
+					{{end}}
+				</tr>
+			</tbody>
+		</table>
+	{{end}}
+	{{template "forum_end.gohtml" .}}
 {{end}}
-{{template "forum_end.gohtml" .}}
