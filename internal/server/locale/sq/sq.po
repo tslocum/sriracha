@@ -164,6 +164,9 @@ msgstr "Capkodi"
 msgid "Catalog"
 msgstr "Katalogu"
 
+msgid "Catalog mode"
+msgstr ""
+
 msgid "Change Locale"
 msgstr "Ndrysho Te Dhenat e Vendodhjes"
 
@@ -187,9 +190,6 @@ msgstr "Konfirmo"
 
 msgid "Content"
 msgstr ""
-
-msgid "Create Thread"
-msgstr "Krijo nje Teme"
 
 msgid "Create a new drawing."
 msgstr "Krijo nje vizatim te ri."
@@ -812,6 +812,12 @@ msgstr ""
 "Vlerat pozitive percaktojne instancat globale te lejuara. Vlerat negative "
 "percaktojne instancat specifike te bordit te lejuara. Zero lejon instanca te "
 "pakufizuara."
+
+msgid "Post reply"
+msgstr ""
+
+msgid "Post thread"
+msgstr ""
 
 msgid "Post truncated. Click Reply to view."
 msgstr "Postimi u shkurtua. Klikoni te \"Repliko\" per ta pare."

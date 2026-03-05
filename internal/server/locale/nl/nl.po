@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-03-01 16:19+0000\n"
+"PO-Revision-Date: 2026-03-05 10:29+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -166,6 +166,9 @@ msgstr "Capcode"
 msgid "Catalog"
 msgstr "Catalogus"
 
+msgid "Catalog mode"
+msgstr "Catalogusmodus"
+
 msgid "Change Locale"
 msgstr "Taal wijzigen"
 
@@ -189,9 +192,6 @@ msgstr "Bevestigen"
 
 msgid "Content"
 msgstr "Inhoud"
-
-msgid "Create Thread"
-msgstr "Onderwerp toevoegen"
 
 msgid "Create a new drawing."
 msgstr "Maak een nieuwe tekening."
@@ -814,6 +814,12 @@ msgstr ""
 "Positieve waarden staan voor globale instanties; negatieve voor subfora. 0 = "
 "onbeperkt aantal instanties."
 
+msgid "Post reply"
+msgstr "Antwoord plaatsen"
+
+msgid "Post thread"
+msgstr "Onderwerp plaatsen"
+
 msgid "Post truncated. Click Reply to view."
 msgstr "Het bericht is ingekort. Klik op beantwoorden om te bekijken."
 
@@ -1121,6 +1127,3 @@ msgstr ""
 
 msgid "Your post will be shown once it has been approved."
 msgstr "Je bericht wordt na goedkeuring getoond."
-
-#~ msgid "Board Index"
-#~ msgstr "Forumoverzicht"

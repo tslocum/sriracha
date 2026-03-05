@@ -165,6 +165,9 @@ msgstr "Capcode"
 msgid "Catalog"
 msgstr "Каталог"
 
+msgid "Catalog mode"
+msgstr ""
+
 msgid "Change Locale"
 msgstr ""
 
@@ -188,9 +191,6 @@ msgstr "Подтвердить"
 
 msgid "Content"
 msgstr ""
-
-msgid "Create Thread"
-msgstr "Создать обсуждение"
 
 msgid "Create a new drawing."
 msgstr ""
@@ -769,6 +769,12 @@ msgstr "Плагины"
 msgid ""
 "Positive values specify global instances allowed. Negative values specify "
 "board-specific instances allowed. Zero allows unlimited instances."
+msgstr ""
+
+msgid "Post reply"
+msgstr ""
+
+msgid "Post thread"
 msgstr ""
 
 msgid "Post truncated. Click Reply to view."
