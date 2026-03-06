@@ -83,6 +83,10 @@ func (data *templateData) Style() string {
 	}
 }
 
+func (data *templateData) ManageMode() bool {
+	return strings.HasPrefix(data.Template, "manage_")
+}
+
 func (data *templateData) BoardError(w http.ResponseWriter, message string) {
 	data.Template = "board_error"
 	data.Info = message

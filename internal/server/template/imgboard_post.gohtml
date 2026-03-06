@@ -11,7 +11,7 @@
                 {{template "imgboard_post_label.gohtml" (Slice $ $thread $post)}}
                 <span class="threadui">{{if not $.ReplyMode}}{{if not $.ModMode}}&nbsp;[<a href="{{$post.Board.Path}}res/{{.Thread}}.html">{{T "Reply"}}</a>]{{else}}&nbsp;[<a href="/sriracha/board/mod/{{$post.Board.ID}}/{{.Thread}}">{{T "Reply"}}</a>]{{end}}{{else if and $post.Board.Gallery (HasExpandableMedia $thread)}}&nbsp;[<a href="#" onclick="javascript:openGallery();">{{T "Gallery"}}</a>]{{end}}</span>
                 <div class="message">
-                    {{if eq $.ReplyMode 0}}
+                    {{if and (eq $.ReplyMode 0) (not $.ManageMode)}}
                         {{.MessageTruncated 0 $.Account}}
                     {{else}}
                         {{.Message | HTML}}
@@ -35,7 +35,7 @@
                             <br>
                             {{template "imgboard_post_attachment.gohtml" .}}
                             <div class="message">
-                                {{if eq $.ReplyMode 0}}
+                                {{if and (eq $.ReplyMode 0) (not $.ManageMode)}}
                                     {{.MessageTruncated 0 $.Account}}
                                 {{else}}
                                     {{.Message | HTML}}

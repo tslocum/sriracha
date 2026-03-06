@@ -245,7 +245,10 @@ func (p *Post) MessageTruncated(lines int, account *Account) template.HTML {
 	truncated = strings.ReplaceAll(truncated, "<br/>", "<br>")
 
 	if showOmitted {
-		truncated += "<br>" + string(blankMessage)
+		if !strings.HasSuffix(truncated, "<br>\n<br>") {
+			truncated += "<br>"
+		}
+		truncated += string(blankMessage)
 	}
 	return template.HTML(truncated)
 }
