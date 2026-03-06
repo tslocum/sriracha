@@ -116,9 +116,8 @@ imageboards, and boards which do not should be forums.
 
 ### Email notifications
 
-Sriracha may be configured to connect to an [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)
-server to send email notifications. When configured, visitors may subscribe to
-receive email notifications when new posts are created.
+Sriracha may optionally allow visitors to subscribe to receive email notifications
+when new posts are created. This feature requires an [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol) server.
 
 Depending on the configuration of your mail server, you should connect on port
 587, 465 or 25, in order from most to least secure.
