@@ -593,7 +593,7 @@ msgstr ""
 msgid "Mod mode"
 msgstr ""
 
-msgid "Mod mode: View"
+msgid "Mod mode: Reply"
 msgstr ""
 
 msgid "Moderate"

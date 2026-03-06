@@ -646,9 +646,6 @@ msgstr "Mod"
 msgid "Mod mode"
 msgstr "Forma e moderimit"
 
-msgid "Mod mode: View"
-msgstr "Forma e moderimit: Shiko"
-
 msgid "Moderate"
 msgstr "Modero"
 

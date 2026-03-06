@@ -621,9 +621,6 @@ msgstr "Mate"
 msgid "Mod mode"
 msgstr "Mate mode"
 
-msgid "Mod mode: View"
-msgstr "Mate mode: Sail"
-
 msgid "Moderate"
 msgstr ""
 

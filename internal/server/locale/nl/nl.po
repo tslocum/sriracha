@@ -648,9 +648,6 @@ msgstr "Modereren"
 msgid "Mod mode"
 msgstr "Modereermodus"
 
-msgid "Mod mode: View"
-msgstr "Modereermodus: weergave"
-
 msgid "Moderate"
 msgstr "Modereren"
 
