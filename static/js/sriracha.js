@@ -394,7 +394,7 @@ function onHashChange(e) {
     return false;
 }
 
-function onDOM(e) {
+function onDOMContentLoaded(e) {
     var style = getCookie("sriracha_style");
     if (style) {
         setStyle(style);
@@ -403,19 +403,16 @@ function onDOM(e) {
     onHashChange(false);
 
     var switchStyle = document.getElementById('switchStyle');
-    if (!switchStyle) {
-        return;
+    if (switchStyle) {
+        switchStyle.addEventListener("change", function(e) {
+            if (this.value == "") {
+                return;
+            }
+            setStyle(this.value);
+            this.value = "";
+        });
     }
-    switchStyle.addEventListener("change", function(e) {
-        if (this.value == "") {
-            return;
-        }
-        setStyle(this.value);
-        this.value = "";
-    });
-}
 
-function onLoad(e) {
     if (window.location.hash) {
         var match = window.location.hash.match(/^#q[0-9]+$/i);
         if (match !== null) {
@@ -431,12 +428,10 @@ function onLoad(e) {
     if (typeof autoRefreshDelay === 'undefined') {
         return;
     }
-
     var result = window.location.pathname.match(/.*\/res\/([0-9]+)\.html$/);
     if (!result || result.length < 2) {
         return;
     }
-
     setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
 }
 
@@ -450,5 +445,4 @@ window.addEventListener("focus", onFocus);
 window.addEventListener("blur", onBlur);
 window.addEventListener("mousemove", onMouseMove);
 window.addEventListener("hashchange", onHashChange);
-window.addEventListener("DOMContentLoaded", onDOM);
-window.addEventListener("load", onLoad);
+window.addEventListener("DOMContentLoaded", onDOMContentLoaded);
