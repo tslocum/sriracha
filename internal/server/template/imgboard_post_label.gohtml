@@ -10,7 +10,9 @@
     {{end}}
     <span class="reflink">
         {{if and $post.Board.Reports (not $.ModMode)}}
-            <a href="/sriracha/?action=report&board={{$post.Board.ID}}&post={{$post.ID}}" title="{{T "Report"}}">R</a>
+            <span class="postui">
+                <a href="/sriracha/?action=report&board={{$post.Board.ID}}&post={{$post.ID}}" title="{{T "Report"}}">R</a>
+            </span>
         {{end}}
         <a href="{{if not $.ModMode}}{{$post.Board.Path}}res/{{$post.Thread}}.html{{else}}/sriracha/board/mod/{{$post.Board.ID}}/{{$post.Thread}}{{end}}#{{$post.ID}}">No.</a><a href="{{if not $.ModMode}}{{$post.Board.Path}}res/{{$post.Thread}}.html{{else}}/sriracha/board/mod/{{$post.Board.ID}}/{{$post.Thread}}{{end}}#q{{$post.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{$post.ID}}');"{{end}}>{{$post.ID}}</a>
         {{if and (eq $post.Parent 0) (or $post.Stickied $post.Locked)}}
@@ -18,7 +20,7 @@
             {{if $post.Locked}}<img src="/static/img/lock.png" alt="{{T "Locked"}}" title="{{T "Locked"}}" width="16" height="16">{{end}}
         {{end}}
         {{if $.ModMode}}
-            <b>
+            <span class="modui">
                 {{if $.Opt.Identifiers}}
                     <a href="/sriracha/mod/view/{{$post.ID}}" title="{{T "View posts by author"}}">V</a>
                 {{end}}
@@ -42,7 +44,7 @@
                 {{if and (May "post.delete" $.Account $.Opt.Access) (May "ban.add" $.Account $.Opt.Access)}}
                     <a href="/sriracha/mod/{{$post.ID}}" title="{{T "Delete & ban"}}">D&amp;B</a>
                 {{end}}
-            </b>
+            </span>
         {{end}}
         {{$post.Backlinks $thread}}
     </span>

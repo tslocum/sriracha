@@ -50,6 +50,10 @@ img, audio, video {
 	padding: 3px;
 }
 
+.modui {
+	font-weight: bold;
+}
+
 .thumb {
 	border: none;
 	float: left;
@@ -382,8 +386,14 @@ details {
 }
 
 @media print {
-	.navbar, .adminbar, .header, .replymode, .postarea, .forumpostarea, .threadui, .navtable, .userdelete, details, input[type=checkbox], input[type=submit] {
+	.navbar, .adminbar, .header, .replymode, .postarea, .forumpostarea, .threadui, .postui, .modui, .navtable, .userdelete, details, summary, input[type=checkbox], input[type=submit] {
 		display: none;
+	}
+	* {
+		color: #000000 !important;
+	}
+	hr {
+		border-top: 1px solid #000000;
 	}
 	.reply {
 		border: 0px none !important;
