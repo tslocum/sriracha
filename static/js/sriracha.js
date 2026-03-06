@@ -400,6 +400,8 @@ function onDOM(e) {
         setStyle(style);
     }
 
+    onHashChange(false);
+
     var switchStyle = document.getElementById('switchStyle');
     if (!switchStyle) {
         return;
@@ -422,8 +424,6 @@ function onLoad(e) {
                 quotePost(quotePostID);
             }
         }
-
-        onHashChange(false);
     }
 
     setPostAttributes(document);
