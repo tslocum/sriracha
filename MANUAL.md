@@ -698,7 +698,7 @@ This text is displayed below the post form in board index and thread pages.
 ```go
 // PluginWithRules describes the required methods for a plugin with text displayed below the post form.
 type PluginWithRules interface {
-	Rules(db DB, board *Board) (template.HTML, error)
+	Rules(db sriracha.DB, board *Board) (template.HTML, error)
 }
 ```
 
@@ -711,7 +711,7 @@ attachment is handled, return true to stop propagating events to other plugins.
 ```go
 // PluginWithAttach describes the required methods for a plugin subscribing to attach events.
 type PluginWithAttach interface {
-	Attach(db DB, post *Post, file []byte) (handled bool, err error)
+	Attach(db sriracha.DB, post *Post, file []byte) (handled bool, err error)
 }
 ```
 
@@ -723,7 +723,7 @@ handled, return true to stop propagating events to other plugins.
 ```go
 // PluginWithEmbed describes the required methods for a plugin subscribing to embed events.
 type PluginWithEmbed interface {
-	Embed(db DB, post *Post, embedURL string) (handled bool, err error)
+	Embed(db sriracha.DB, post *Post, embedURL string) (handled bool, err error)
 }
 ```
 
