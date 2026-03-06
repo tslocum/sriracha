@@ -108,82 +108,89 @@ func (s *Server) sendNotifications(onlyMentions bool) {
 		}
 		pending[sub.Email] = append(pending[sub.Email], &notificationInfo{n: n, p: post})
 	}
-	if modified {
-		client, err := s.connectToMailServer()
-		if err != nil {
-			log.Fatalf("failed to send notifications: %s", err)
-		}
-		const batchSize = 16
-		var sent int
-		for email, allInfo := range pending {
-			sort.Slice(allInfo, func(i, j int) bool {
-				if allInfo[i].n.mentioned != allInfo[j].n.mentioned {
-					return allInfo[i].n.mentioned
-				} else if allInfo[i].p.Board.ID != allInfo[j].p.Board.ID {
-					return allInfo[i].p.Board.Name < allInfo[j].p.Board.Name
-				}
-				return allInfo[i].p.ID < allInfo[j].p.ID
-			})
-
-			var message strings.Builder
-			var lastBoard int
-			var i int
-			var mentioned bool
-			var lastMentioned bool
-			for _, info := range allInfo {
-				if lastMentioned && !info.n.mentioned {
-					message.WriteString("\n\n===\n\n")
-					lastBoard = 0
-				}
-
-				p := info.p
-				if p.Board.ID != lastBoard {
-					if lastBoard != 0 {
-						message.WriteString("\n\n")
-					}
-					message.WriteString(p.Board.Path())
-
-					i = 0
-					lastBoard = p.Board.ID
-				}
-
-				message.WriteString("\n" + string(p.URL(s.opt.SiteHome)))
-				if info.n.mentioned {
-					message.WriteString(" ***")
-					mentioned = true
-				}
-				i++
-				lastMentioned = info.n.mentioned
-			}
-
-			key := md5Sum(s.hashData(md5Sum(email)))
-			message.WriteString("\n\n--\n" + gotext.Get("Manage Subscriptions") + "\n" + s.opt.SiteHome + "sriracha/subscribe/?email=" + email + "&key=" + key)
-
-			l := len(allInfo)
-			subject := gotext.GetN("%d new post", "%d new posts", l, l)
-			if mentioned {
-				subject = gotext.Get("(Mentioned) %s", subject)
-			}
-
-			if sent == batchSize {
-				client.Close()
-				client, err = s.connectToMailServer()
-				if err != nil {
-					log.Fatalf("failed to send notifications: %s", err)
-				}
-				sent = 0
-			}
-
-			err := s.sendMail(client, email, subject, message.String())
-			if err != nil {
-				log.Fatalf("failed to send email: %s", err)
-			}
-			sent++
-		}
-		client.Close()
-
-		s.notifications = keep
+	if !modified {
+		return // No pending notifications.
 	}
+
+	// batchSize is the maximum number of emails to send using a single SMTP connection.
+	// This is required because some SMTP servers limit the number of messages that may
+	// be sent at once. When the batch size is reached, a fresh SMTP connection is obtained.
+	const batchSize = 16
+
+	client, err := s.connectToMailServer()
+	if err != nil {
+		log.Fatalf("failed to send notifications: %s", err)
+	}
+	var sent int
+	for email, allInfo := range pending {
+		sort.Slice(allInfo, func(i, j int) bool {
+			if allInfo[i].n.mentioned != allInfo[j].n.mentioned {
+				return allInfo[i].n.mentioned
+			} else if allInfo[i].p.Board.ID != allInfo[j].p.Board.ID {
+				return allInfo[i].p.Board.Name < allInfo[j].p.Board.Name
+			}
+			return allInfo[i].p.ID < allInfo[j].p.ID
+		})
+
+		var message strings.Builder
+		var lastBoard int
+		var i int
+		var mentioned bool
+		var lastMentioned bool
+		for _, info := range allInfo {
+			if lastMentioned && !info.n.mentioned {
+				message.WriteString("\n\n===\n\n")
+				lastBoard = 0
+			}
+
+			p := info.p
+			if p.Board.ID != lastBoard {
+				if lastBoard != 0 {
+					message.WriteString("\n\n")
+				}
+				message.WriteString(p.Board.Path())
+
+				i = 0
+				lastBoard = p.Board.ID
+			}
+
+			message.WriteString("\n" + string(p.URL(s.opt.SiteHome)))
+			if info.n.mentioned {
+				message.WriteString(" ***")
+				mentioned = true
+			}
+			i++
+			lastMentioned = info.n.mentioned
+		}
+
+		key := md5Sum(s.hashData(md5Sum(email)))
+		message.WriteString("\n\n--\n" + gotext.Get("Manage Subscriptions") + "\n" + s.opt.SiteHome + "sriracha/subscribe/?email=" + email + "&key=" + key)
+
+		l := len(allInfo)
+		subject := gotext.GetN("%d new post", "%d new posts", l, l)
+		if mentioned {
+			subject = gotext.Get("(Mentioned) %s", subject)
+		}
+
+		// Reconnect when batch size is reached.
+		if sent == batchSize {
+			client.Close()
+			client, err = s.connectToMailServer()
+			if err != nil {
+				log.Fatalf("failed to send notifications: %s", err)
+			}
+			sent = 0
+		}
+
+		err := s.sendMail(client, email, subject, message.String())
+		if err != nil {
+			log.Fatalf("failed to send email: %s", err)
+		}
+		sent++
+	}
+	client.Close()
+
+	s.notifications = keep
 }
 
 func (s *Server) handleNotifications() {
