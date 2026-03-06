@@ -50,6 +50,13 @@ hr {
 	color: #e2ebf0;
 }
 
+.postarea table {
+	background-color: #13171c;
+	border: 1px solid #1b1c1e;
+	border-top: 0px none;
+	border-left: 0px none;
+}
+
 .rules li {
 	margin-left: 1em;
 	/*text-indent: 0em;*/

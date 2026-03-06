@@ -45,6 +45,13 @@ hr {
 	color: #FFFFFF;
 }
 
+.postarea table {
+	background-color: #f6ede0;
+	border: 1px solid #e1cec4;
+	border-top: 0px none;
+	border-left: 0px none;
+}
+
 .rules li {
 	margin-left: 1em;
 	/*text-indent: 0em;*/
