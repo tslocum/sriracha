@@ -208,7 +208,7 @@ function previewPost(el) {
             preview.style.textAlign = 'left';
             preview.style.pointerEvents = 'none';
             preview.setAttribute('refID', el.getAttribute('refID'));
-            preview.className = 'hoverpost';
+            preview.className = 'hoverpost reply';
             preview.innerHTML = refpost.innerHTML;
             if (refpost.tagName.toLowerCase() == 'td') {
                 preview.classList.add('reply');
@@ -376,31 +376,11 @@ function onDrop(e) {
     fileInputs[0].files = e.dataTransfer.files;
 }
 
-function onHashChange(e) {
-    if (highlightedPost) {
-        highlightedPost.classList.remove("highlight");
-        highlightedPost = null;
-    }
-    var match = window.location.hash.match(/^#[0-9]+$/i);
-    if (match === null) {
-        return false;
-    }
-    var post = document.getElementById("post" + window.location.hash.substring(1));
-    if (!post || !post.classList.contains("reply")) {
-        return false;
-    }
-    post.classList.add("highlight");
-    highlightedPost = post;
-    return false;
-}
-
 function onDOMContentLoaded(e) {
     var style = getCookie("sriracha_style");
     if (style) {
         setStyle(style);
     }
-
-    onHashChange(false);
 
     var switchStyle = document.getElementById('switchStyle');
     if (switchStyle) {
@@ -444,5 +424,4 @@ window.addEventListener("drop", onDrop);
 window.addEventListener("focus", onFocus);
 window.addEventListener("blur", onBlur);
 window.addEventListener("mousemove", onMouseMove);
-window.addEventListener("hashchange", onHashChange);
 window.addEventListener("DOMContentLoaded", onDOMContentLoaded);

@@ -172,7 +172,7 @@ hr {
 	border-left: 0px none;
 }
 
-.highlight {
+.forumpost:target, .reply:target {
 	border: 2px ridge #0010E0;
 }
 

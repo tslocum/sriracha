@@ -153,7 +153,7 @@ hr {
 	border-left: 0px none;
 }
 
-.highlight {
+.forumpost:target, .reply:target {
 	border: 3px ridge #003253;
 }
 
