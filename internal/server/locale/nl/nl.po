@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-03-05 10:29+0000\n"
+"PO-Revision-Date: 2026-03-07 19:52+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -647,6 +647,9 @@ msgstr "Modereren"
 
 msgid "Mod mode"
 msgstr "Modereermodus"
+
+msgid "Mod mode: Reply"
+msgstr "Modmodus: beantwoorden"
 
 msgid "Moderate"
 msgstr "Modereren"

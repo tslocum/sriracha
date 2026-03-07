@@ -627,6 +627,9 @@ msgstr ""
 msgid "Mod mode"
 msgstr ""
 
+msgid "Mod mode: Reply"
+msgstr ""
+
 msgid "Moderate"
 msgstr ""
 
