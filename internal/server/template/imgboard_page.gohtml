@@ -14,7 +14,7 @@
 	{{if ne .Message ""}}
 		{{.Message}}
 	{{else}}
-		<details id="postdetails" style="display: block;margin-left: 2px;padding-top: 3px;">
+		<details id="postdetails">
 			<summary>{{if eq .ReplyMode 0}}{{T "Post thread"}}{{else}}{{T "Post reply"}}{{end}}</summary>
 			<div>
 				{{if eq .Board.Type 0}}{{template "imgboard_postarea.gohtml" .}}{{else}}{{template "forum_postarea.gohtml" .}}{{end}}

@@ -41,6 +41,12 @@ img, audio, video {
 	height: auto;
 }
 
+#postdetails {
+	display: block;
+	margin-left: 2px;
+	padding-top: 3px;
+}
+
 .postarea {
 	max-width: 100%;
 }
@@ -386,7 +392,7 @@ details {
 }
 
 @media print {
-	.navbar, .adminbar, .header, .replymode, .postarea, .forumpostarea, .threadui, .postui, .modui, .navtable, .userdelete, details, summary, input[type=checkbox], input[type=submit] {
+	.navbar, .adminbar, .header, .replymode, .postarea, .threadui, .postui, .modui, .navtable, .userdelete, details, summary, input[type=checkbox], input[type=submit] {
 		display: none;
 	}
 	* {
