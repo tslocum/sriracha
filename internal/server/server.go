@@ -1330,23 +1330,34 @@ func (s *Server) rebuildBoard(db *database.DB, board *Board) {
 }
 
 // rebuildAll rebuilds all board, overboard, news and custom pages.
-func (s *Server) rebuildAll(db *database.DB) {
-	for _, b := range db.AllBoards() {
-		s.rebuildBoard(db, b)
+func (s *Server) rebuildAll(db *database.DB, verbose bool) {
+	allPages := db.AllPages()
+	if len(allPages) > 0 {
+		if verbose {
+			fmt.Println("Rebuilding pages...")
+		}
+		s.writePages(db, allPages, false)
 	}
-
+	published := len(db.AllNews(true))
+	if published > 0 {
+		if verbose {
+			fmt.Println("Rebuilding news...")
+		}
+		s.rebuildNews(db)
+	}
 	if s.opt.Overboard != "" {
+		if verbose {
+			fmt.Println("Rebuilding overboard...")
+		}
 		s.writeOverboard(db)
 	}
-
-	s.writeSiteIndex(db)
-
-	s.rebuildNews(db)
-
-	pages := db.AllPages()
-	if len(pages) != 0 {
-		s.writePages(db, pages, false)
+	for _, b := range db.AllBoards() {
+		if verbose {
+			fmt.Printf("Rebuilding %s...\n", b.Path())
+		}
+		s.rebuildBoard(db, b)
 	}
+	s.writeSiteIndex(db)
 }
 
 // writeNewsItem writes a news entry page to disk.
@@ -1795,17 +1806,30 @@ func (s *Server) handleRebuild() {
 }
 
 func (s *Server) _handleSignal(signals chan os.Signal) {
-	// Wait until SIGINT or SIGTERM is received.
-	<-signals
-	// Shut down server.
-	s.Stop()
+	for {
+		// Wait until SIGHUP, SIGINT or SIGTERM is received.
+		sig := <-signals
+
+		// Rebuild static files when SIGHUP is received.
+		if sig == unix.SIGHUP {
+			db := s.begin()
+			s.rebuildAll(db, true)
+			db.Commit()
+			fmt.Printf("Serving http://%s\n", s.config.Serve)
+			continue
+		}
+
+		// Shut down server when SIGINT or SIGTERM is received.
+		s.Stop()
+		return
+	}
 }
 
-// startSignalHandler starts the signal handler which is responsible for
-// shutting down the server when SIGINT or SIGTERM is received.
+// startSignalHandler starts the signal handler which rebuilds static files on
+// SIGHUP and shuts down the server on SIGINT or SIGTERM.
 func (s *Server) startSignalHandler() {
 	signals := make(chan os.Signal, 1)
-	signal.Notify(signals, unix.SIGINT, unix.SIGTERM)
+	signal.Notify(signals, unix.SIGHUP, unix.SIGINT, unix.SIGTERM)
 	go s._handleSignal(signals)
 }
 
@@ -1990,25 +2014,7 @@ func (s *Server) Run() error {
 		db.SaveString("sv", SrirachaVersion)
 	}
 	if rebuild {
-		allPages := db.AllPages()
-		if len(allPages) > 0 {
-			fmt.Println("Rebuilding pages...")
-			s.writePages(db, allPages, false)
-		}
-		published := len(db.AllNews(true))
-		if published > 0 {
-			fmt.Println("Rebuilding news...")
-			s.rebuildNews(db)
-		}
-		if s.opt.Overboard != "" {
-			fmt.Println("Rebuilding overboard...")
-			s.writeOverboard(db)
-		}
-		for _, b := range db.AllBoards() {
-			fmt.Printf("Rebuilding %s...\n", b.Path())
-			s.rebuildBoard(db, b)
-		}
-		s.writeSiteIndex(db)
+		s.rebuildAll(db, true)
 	}
 	db.Commit()
 

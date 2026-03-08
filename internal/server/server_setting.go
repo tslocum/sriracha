@@ -75,7 +75,7 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 			s.log(db, data.Account, nil, "Reset settings", changes)
 		}
 
-		s.rebuildAll(db)
+		s.rebuildAll(db, false)
 
 		http.Redirect(w, r, "/sriracha/setting", http.StatusFound)
 		return
@@ -185,7 +185,7 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 			s.log(db, data.Account, nil, "Updated settings", changes)
 		}
 
-		s.rebuildAll(db)
+		s.rebuildAll(db, false)
 	}
 	data.Template = "manage_setting"
 	data.Extra = SrirachaVersion

@@ -116,7 +116,7 @@ func (s *Server) serveBanner(data *templateData, db *database.DB, w http.Respons
 
 		db.DeleteBanner(b.ID)
 		s.refreshBannerCache(db)
-		s.rebuildAll(db)
+		s.rebuildAll(db, false)
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted banner #%d", b.ID), "")
 
@@ -174,7 +174,7 @@ func (s *Server) serveBanner(data *templateData, db *database.DB, w http.Respons
 
 			db.UpdateBanner(data.Manage.Banner)
 			s.refreshBannerCache(db)
-			s.rebuildAll(db)
+			s.rebuildAll(db, false)
 
 			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/banner/%d", data.Manage.Banner.ID), "")
 
@@ -219,7 +219,7 @@ func (s *Server) serveBanner(data *templateData, db *database.DB, w http.Respons
 
 		db.AddBanner(b)
 		s.refreshBannerCache(db)
-		s.rebuildAll(db)
+		s.rebuildAll(db, false)
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/banner/%d", b.ID), "")
 
