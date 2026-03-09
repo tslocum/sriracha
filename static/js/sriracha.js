@@ -2,9 +2,13 @@ var mouseX = 0;
 var mouseY = 0;
 var haveFocus = false;
 var highlightedPost = null;
+var blinkTitle = false;
 var originalTitle = "";
 var newRepliesCount = 0;
 var postCache = {};
+
+// verbose is a flag which enables verbose logging.
+const verbose = false;
 
 function updateTitle() {
     if (originalTitle == "") {
@@ -42,9 +46,15 @@ function unsubscribeAll() {
 }
 
 function fetchPosts(url, append) {
+    if (verbose) {
+        console.log('fetching ' + url + '...');
+    }
     return fetch(url).then(function(resp) {
         return resp.text();
     }).then(function(body) {
+        if (verbose) {
+            console.log('fetched ' + url);
+        }
         var container;
         var replies = document.getElementsByClassName('reply');
         if (replies.length > 0) {
@@ -56,6 +66,8 @@ function fetchPosts(url, append) {
             }
         }
         if (!container) {
+            console.log('fetched ' + url + ' but could not find container');
+            console.log(body);
             return;
         }
 
@@ -64,6 +76,9 @@ function fetchPosts(url, append) {
         var newReplies = [];
         for (const reply of replies) {
             if (reply.id != "" && !document.getElementById(reply.id)) {
+                if (verbose) {
+                    console.log('found new reply', reply);
+                }
                 newReplies.push(reply);
             }
         }
@@ -168,21 +183,36 @@ function expandFile(e, id) {
 function previewPost(el) {
     var preview = document.getElementById('ref' + el.getAttribute('refID'));
     if (!preview) {
-        var refpost = document.getElementById('post' + el.getAttribute('refID'));
+        var refpost = document.getElementById(el.getAttribute('refID'));
         if (!refpost || !refpost.innerHTML || refpost.innerHTML == undefined) {
+            if (verbose) {
+                console.log('preview missing post No.' + el.getAttribute('refID'));
+            }
             var m = el.getAttribute('href').match(/([0-9]+)\.html\#([0-9]+)/i);
             if (m == null) {
+                if (verbose) {
+                    console.log('failed to preview post: thread URL does not match expected pattern');
+                }
                 return;
             }
             var threadID = m[1];
             var postID = m[2];
-            var post = postCache['post' + postID];
+            if (verbose) {
+                console.log('preview thread No.' + threadID + ' post No.' + postID);
+            }
+            var post = postCache[postID];
             if (post) {
+                if (verbose) {
+                    console.log('post is cached');
+                }
                 refpost = post;
             } else {
                 // Check if thread res page is already cached.
-                var thread = postCache['post' + threadID];
+                var thread = postCache['thread' + threadID];
                 if (thread) {
+                    if (verbose) {
+                        console.log('thread page is cached');
+                    }
                     return;
                 }
                 // Fetch thread res page.
@@ -191,8 +221,12 @@ function previewPost(el) {
                 if (hash != -1) {
                     url = url.substring(0, hash);
                 }
+                if (verbose) {
+                    console.log('fetching thread page ' + url + '...');
+                }
+                postCache['thread' + threadID] = true;
                 fetchPosts(url, false).then(function() {
-                    post = postCache['post' + postID];
+                    post = postCache[postID];
                     if (post && post.innerHTML) {
                         // Preview fetched post.
                         previewPost(el);
@@ -204,15 +238,9 @@ function previewPost(el) {
         if (refpost && refpost.innerHTML && refpost.innerHTML != undefined) {
             var preview = document.createElement('div');
             preview.id = 'ref' + el.getAttribute('refID');
-            preview.style.position = 'absolute';
-            preview.style.textAlign = 'left';
-            preview.style.pointerEvents = 'none';
             preview.setAttribute('refID', el.getAttribute('refID'));
-            preview.className = 'hoverpost reply';
+            preview.className = 'hoverpost';
             preview.innerHTML = refpost.innerHTML;
-            if (refpost.tagName.toLowerCase() == 'td') {
-                preview.classList.add('reply');
-            }
             postCache[el.getAttribute('refID')] = refpost;
         } else {
             // Post no longer exists.

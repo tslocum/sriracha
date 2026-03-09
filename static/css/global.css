@@ -110,10 +110,14 @@ img, audio, video {
 .hoverpost {
 	display: block;
 	clear: both;
-	padding: 5px;
-	border: 1px solid rgba(0, 0, 0, .15);
-	border-right-color: rgba(0, 0, 0, .5);
-	border-bottom-color: rgba(0, 0, 0, .5);
+	position: absolute;
+	text-align: left;
+	pointer-events: none;
+	padding: 3px;
+}
+
+.hoverpost .postui, .hoverpost .threadui {
+	display: none;
 }
 
 .spoiler {

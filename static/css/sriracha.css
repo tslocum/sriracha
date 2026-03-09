@@ -50,7 +50,7 @@ hr {
 	color: #e2ebf0;
 }
 
-.postarea table {
+.postarea table, .hoverpost {
 	background-color: #13171c;
 	border: 1px solid #1b1c1e;
 	border-top: 0px none;
@@ -166,11 +166,6 @@ hr {
 	font-size: 1.2em;
 	color: #26A8FF;
 	font-weight: 800;
-}
-
-.hoverpost {
-	background: #0d1117;
-	color: #e2ebf0;
 }
 
 .commentpostername {
