@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"log"
@@ -64,7 +65,7 @@ func (s *Server) loadBannerFormFile(db *database.DB, r *http.Request, b *Banner)
 		b.Name = strings.TrimSuffix(b.Name, filepath.Ext(b.Name)) + fileExt
 	}
 
-	imgWidth, imgHeight := s.imageDimensions(buf)
+	imgWidth, imgHeight := s.imageDimensions(bytes.NewReader(buf))
 	if imgWidth == 0 || imgHeight == 0 {
 		return nil, fmt.Errorf("invalid image")
 	}

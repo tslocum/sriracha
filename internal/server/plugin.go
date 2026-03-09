@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"io/fs"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -24,7 +25,7 @@ type rulesHandlerInfo struct {
 	Handler rulesHandler
 }
 
-type attachHandler func(db sriracha.DB, post *Post, file []byte) (handled bool, err error)
+type attachHandler func(db sriracha.DB, post *Post, file multipart.File) (handled bool, err error)
 
 type attachHandlerInfo struct {
 	Name    string

@@ -2,7 +2,6 @@
 package server
 
 import (
-	"bytes"
 	"context"
 	"crypto/md5"
 	"crypto/sha512"
@@ -2109,8 +2108,8 @@ func (s *Server) hashIP(r *http.Request) string {
 }
 
 // imageDimensions returns the width and height of a JPG, PNG or GIF image.
-func (s *Server) imageDimensions(buf []byte) (int, int) {
-	imgConfig, _, err := image.DecodeConfig(bytes.NewReader(buf))
+func (s *Server) imageDimensions(reader io.Reader) (int, int) {
+	imgConfig, _, err := image.DecodeConfig(reader)
 	if err != nil {
 		return 0, 0
 	}

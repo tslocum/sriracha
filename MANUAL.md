@@ -712,7 +712,7 @@ attachment is handled, return true to stop propagating events to other plugins.
 ```go
 // PluginWithAttach describes the required methods for a plugin subscribing to attach events.
 type PluginWithAttach interface {
-	Attach(db sriracha.DB, post *Post, file []byte) (handled bool, err error)
+	Attach(db sriracha.DB, post *Post, file multipart.File) (handled bool, err error)
 }
 ```
 

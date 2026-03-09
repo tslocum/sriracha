@@ -2,6 +2,8 @@ package server
 
 import (
 	"bytes"
+	"crypto/sha512"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"html"
@@ -89,8 +91,8 @@ func writeImage(img image.Image, mimeType string, filePath string) error {
 	return nil
 }
 
-func createPostThumbnail(p *Post, buf []byte, mimeType string, mediaOverlay bool, thumbPath string) error {
-	thumbImg, err := resizeImage(p.Board, bytes.NewReader(buf), mimeType)
+func createPostThumbnail(p *Post, file io.Reader, mimeType string, mediaOverlay bool, thumbPath string) error {
+	thumbImg, err := resizeImage(p.Board, file, mimeType)
 	if err != nil {
 		return fmt.Errorf("unsupported filetype")
 	}
@@ -131,10 +133,18 @@ func setFileAndThumb(p *Post, fileExt string, thumbExt string) {
 	p.Thumb = fileIDString + "s." + thumbExt
 }
 
-func setPostFileAttributes(p *Post, buf []byte) error {
-	p.FileHash = calculateFileHash(buf)
+func setPostFileAttributes(p *Post, fileHeader *multipart.FileHeader, file multipart.File) error {
+	hash := sha512.New384()
+	file.Seek(0, 0)
+	_, err := io.Copy(hash, file)
+	if err != nil {
+		return err
+	}
+	var sum [sha512.Size384]byte
+	hash.Sum(sum[:0])
+	p.FileHash = base64.URLEncoding.EncodeToString(sum[:])
 
-	p.FileSize = int64(len(buf))
+	p.FileSize = fileHeader.Size
 	return nil
 }
 
@@ -259,31 +269,21 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 	}
 	defer formFile.Close()
 
-	buf, err := io.ReadAll(formFile)
-	if err != nil {
-		return err
+	mime, err := mimetype.DetectReader(formFile)
+	if err == nil {
+		p.FileMIME = mime.String()
 	}
-
-	if int64(len(buf)) < minSize {
-		if minSize == 1 {
-			if len(p.Board.Embeds) == 0 {
-				return fmt.Errorf("a file is required")
-			} else {
-				return fmt.Errorf("a file or embed is required")
-			}
-		} else {
-			return fmt.Errorf("a file %s or larger is required", FormatFileSize(minSize))
-		}
-	} else if int64(len(buf)) > maxSize {
-		return fmt.Errorf("that file exceeds the maximum file size: %s", FormatFileSize(maxSize))
-	}
-
-	p.FileMIME = mimetype.Detect(buf).String()
 	p.FileOriginal = fileHeader.Filename
 
-	oekakiPost := p.Board.Oekaki && p.FileMIME == "application/octet-stream" && len(buf) >= 3 && buf[0] == 0x54 && buf[1] == 0x47 && buf[2] == 0x4B
+	oekakiPost := p.Board.Oekaki && p.FileMIME == "application/octet-stream"
 	if oekakiPost {
-		p.FileMIME = "application/x-tegaki"
+		buf := make([]byte, 3)
+		formFile.Seek(0, 0)
+		formFile.Read(buf)
+		oekakiPost = buf[0] == 0x54 && buf[1] == 0x47 && buf[2] == 0x4B
+		if oekakiPost {
+			p.FileMIME = "application/x-tegaki"
+		}
 	}
 
 	var fileExt string
@@ -303,7 +303,8 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 		} else {
 			for _, info := range allPluginAttachHandlers {
 				db.Plugin = info.Name
-				handled, err := info.Handler(db, p, buf)
+				formFile.Seek(0, 0)
+				handled, err := info.Handler(db, p, formFile)
 				if err != nil {
 					db.Plugin = ""
 					return err
@@ -330,7 +331,7 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 
 	setFileAndThumb(p, fileExt, thumbExt)
 
-	err = setPostFileAttributes(p, buf)
+	err = setPostFileAttributes(p, fileHeader, formFile)
 	if err != nil {
 		return err
 	}
@@ -341,10 +342,25 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 	srcPath := filepath.Join(s.config.Root, p.Board.Dir, "src", p.File)
 	thumbPath := filepath.Join(s.config.Root, p.Board.Dir, "thumb", p.Thumb)
 
-	err = os.WriteFile(srcPath, buf, NewFilePermission)
+	file, err := os.OpenFile(srcPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	err = preallocateFile(file, fileHeader.Size)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	formFile.Seek(0, 0)
+	wrote, err := io.Copy(file, formFile)
+	if err != nil {
+		log.Fatal(err)
+	} else if wrote != fileHeader.Size {
+		log.Fatalf("failed to store uploaded file: tried to write %d bytes, but only %d bytes were written to disk (is the disk full?)", fileHeader.Size, wrote)
+	}
+
+	file.Close()
 
 	if oekakiPost {
 		formThumb, formThumbHeader, err := r.FormFile("thumb")
@@ -357,31 +373,33 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 			log.Fatal(err)
 		}
 
-		imgWidth, imgHeight := s.imageDimensions(buf)
+		imgWidth, imgHeight := s.imageDimensions(bytes.NewReader(buf))
 		if imgWidth == 0 || imgHeight == 0 {
 			return fmt.Errorf("unsupported thumbnail filetype")
 		}
 		p.FileWidth, p.FileHeight = imgWidth, imgHeight
 
-		return createPostThumbnail(p, buf, "image/png", false, thumbPath)
+		return createPostThumbnail(p, bytes.NewReader(buf), "image/png", false, thumbPath)
 	}
 
 	if fileThumb == "none" {
 		p.Thumb = ""
 		return nil
 	} else if fileThumb != "" {
-		return createPostThumbnail(p, thumbData, mimetype.Detect(thumbData).String(), false, thumbPath)
+		return createPostThumbnail(p, bytes.NewReader(thumbData), mimetype.Detect(thumbData).String(), false, thumbPath)
 	}
 
 	isImage := p.FileMIME == "image/jpeg" || p.FileMIME == "image/pjpeg" || p.FileMIME == "image/png" || p.FileMIME == "image/gif"
 	if isImage {
-		imgWidth, imgHeight := s.imageDimensions(buf)
+		formFile.Seek(0, 0)
+		imgWidth, imgHeight := s.imageDimensions(formFile)
 		if imgWidth == 0 || imgHeight == 0 {
 			return fmt.Errorf("unsupported filetype")
 		}
 		p.FileWidth, p.FileHeight = imgWidth, imgHeight
 
-		return createPostThumbnail(p, buf, p.FileMIME, false, thumbPath)
+		formFile.Seek(0, 0)
+		return createPostThumbnail(p, formFile, p.FileMIME, false, thumbPath)
 	}
 
 	ffmpegThumbnail := strings.HasPrefix(p.FileMIME, "image/") || strings.HasPrefix(p.FileMIME, "video/")
@@ -429,7 +447,7 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 					log.Fatal(err)
 				}
 
-				err = createPostThumbnail(p, thumbData, "image/jpeg", true, thumbPath)
+				err = createPostThumbnail(p, bytes.NewReader(thumbData), "image/jpeg", true, thumbPath)
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -670,7 +688,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 				thumbName := fmt.Sprintf("%d.%s", time.Now().UnixNano(), fileExt)
 				thumbPath := filepath.Join(s.config.Root, b.Dir, "thumb", thumbName)
 
-				err = createPostThumbnail(post, buf, mimeType, true, thumbPath)
+				err = createPostThumbnail(post, bytes.NewReader(buf), mimeType, true, thumbPath)
 				if err != nil {
 					continue
 				}

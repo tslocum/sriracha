@@ -3,6 +3,7 @@ package sriracha
 import (
 	"fmt"
 	"html/template"
+	"mime/multipart"
 	"net/http"
 	"strings"
 
@@ -120,7 +121,7 @@ type PluginWithAttach interface {
 	// Attach events are sent when a file is attached to a post. FileOriginal contains
 	// the original file name and FileMIME contains the detected MIME type. When a
 	// file attachment is handled, return true to stop propagating events.
-	Attach(db DB, post *Post, file []byte) (handled bool, err error)
+	Attach(db DB, post *Post, file multipart.File) (handled bool, err error)
 }
 
 // PluginWithEmbed describes the required methods for a plugin subscribing to embed events.
