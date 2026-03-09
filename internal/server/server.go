@@ -1565,6 +1565,8 @@ func (s *Server) serveManage(db *database.DB, w http.ResponseWriter, r *http.Req
 		s.serveBan(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/board"):
 		skipExecute = s.serveBoard(data, db, w, r)
+	case strings.HasPrefix(r.URL.Path, "/sriracha/category"):
+		s.serveCategory(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/import"):
 		s.serveImport(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/keyword"):

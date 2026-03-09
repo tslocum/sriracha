@@ -159,6 +159,9 @@ msgstr ""
 msgid "Catalog mode"
 msgstr ""
 
+msgid "Categories"
+msgstr ""
+
 msgid "Change Locale"
 msgstr ""
 
