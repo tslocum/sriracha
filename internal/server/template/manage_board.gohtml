@@ -33,10 +33,6 @@
     <br>
     <form method="get" action="/sriracha/banner/"><input type="submit" value="{{T "Manage Banners"}}"></form><br><br>
 {{end}}
-{{if and (eq .Manage.Board.ID 0) (or (May "category.add" $.Account $.Opt.Access) (or (May "category.update" $.Account $.Opt.Access) (May "category.delete" $.Account $.Opt.Access)))}}
-    <br>
-    <form method="get" action="/sriracha/category/"><input type="submit" value="{{T "Manage Categories"}}"></form><br><br>
-{{end}}
 {{if or (ne .Manage.Board.ID 0) (May "board.add" $.Account $.Opt.Access)}}
     {{if eq .Manage.Board.ID 0}}
         <br>
