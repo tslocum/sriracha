@@ -29,13 +29,22 @@
         {{end}}
     </table>
 {{end}}
-{{if and (eq .Manage.Board.ID 0) (or (May "banner.add" $.Account $.Opt.Access) (or (May "banner.update" $.Account $.Opt.Access) (May "banner.delete" $.Account $.Opt.Access)))}}
+{{$bannerAllowed := and (eq .Manage.Board.ID 0) (or (May "banner.add" $.Account $.Opt.Access) (or (May "banner.update" $.Account $.Opt.Access) (May "banner.delete" $.Account $.Opt.Access)))}}
+{{$categoryAllowed := and (eq .Manage.Board.ID 0) (or (May "category.add" $.Account $.Opt.Access) (or (May "category.update" $.Account $.Opt.Access) (May "category.delete" $.Account $.Opt.Access)))}}
+{{if or $bannerAllowed $categoryAllowed}}
     <br>
-    <form method="get" action="/sriracha/banner/"><input type="submit" value="{{T "Manage Banners"}}"></form><br><br>
+    {{if $bannerAllowed}}
+        <form method="get" action="/sriracha/banner/"><input type="submit" value="{{T "Manage Banners"}}"></form>
+    {{end}}
+    {{if $categoryAllowed}}
+        {{if $bannerAllowed}}&nbsp;{{end}}
+        <form method="get" action="/sriracha/category/"><input type="submit" value="{{T "Manage Categories"}}"></form>
+    {{end}}
+    <br>
 {{end}}
 {{if or (ne .Manage.Board.ID 0) (May "board.add" $.Account $.Opt.Access)}}
     {{if eq .Manage.Board.ID 0}}
-        <br>
+        <br><br>
         <details>
             <summary>{{T "Add Board"}}</summary>
             <div>

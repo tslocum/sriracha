@@ -479,6 +479,9 @@ msgstr ""
 msgid "Manage Banners"
 msgstr ""
 
+msgid "Manage Categories"
+msgstr ""
+
 msgid "Manage Subscriptions"
 msgstr ""
 
