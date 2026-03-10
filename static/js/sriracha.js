@@ -57,12 +57,19 @@ function fetchPosts(url, append) {
         }
         var container;
         var replies = document.getElementsByClassName('reply');
+        var forum = false;
         if (replies.length > 0) {
             container = replies[replies.length - 1].parentElement.parentElement.parentElement.parentElement;
         } else {
-            var ops = document.getElementsByClassName('op');
-            if (ops.length > 0) {
-                container = ops[0].parentElement;
+            replies = document.getElementsByClassName('forumpost');
+            if (replies.length > 0) {
+                forum = true;
+                container = replies[replies.length - 1].parentElement.parentElement.parentElement;
+            } else {
+                var ops = document.getElementsByClassName('op');
+                if (ops.length > 0) {
+                    container = ops[0].parentElement;
+                }
             }
         }
         if (!container) {
@@ -71,8 +78,13 @@ function fetchPosts(url, append) {
             return;
         }
 
+        var postClass = "reply";
+        if (forum) {
+            postClass = "forumpost";
+        }
+
         var doc = (new DOMParser).parseFromString(body, 'text/html');
-        var replies = doc.getElementsByClassName('reply');
+        var replies = doc.getElementsByClassName(postClass);
         var newReplies = [];
         for (const reply of replies) {
             if (reply.id != "" && !document.getElementById(reply.id)) {
@@ -86,22 +98,35 @@ function fetchPosts(url, append) {
             return;
         }
         for (const reply of newReplies) {
-            var table = doc.createElement('table');
-            var tbody = doc.createElement('tbody');
-            table.appendChild(tbody);
-            var tr = doc.createElement('tr');
-            tbody.appendChild(tr);
-
-            var td = doc.createElement('td');
-            td.classList.add('doubledash');
-            td.innerHTML = "&#0168;";
-
-            tr.appendChild(td);
-            tr.appendChild(reply);
-
             postCache[reply.id] = reply;
             if (append) {
-                container.appendChild(table);
+                if (forum) { // Append forum reply.
+                    var td = doc.createElement('td');
+                    td.id = "post" + reply.id;
+                    td.className = "op";
+                    td.style.paddingTop = "10px";
+                    td.appendChild(reply);
+                    
+                    var tr = doc.createElement('tr');
+                    tr.appendChild(td);
+
+                    container.appendChild(tr);
+                } else { // Append imageboard reply.
+                    var table = doc.createElement('table');
+                    var tbody = doc.createElement('tbody');
+                    table.appendChild(tbody);
+                    var tr = doc.createElement('tr');
+                    tbody.appendChild(tr);
+
+                    var td = doc.createElement('td');
+                    td.classList.add('doubledash');
+                    td.innerHTML = "&#0168;";
+
+                    tr.appendChild(td);
+                    tr.appendChild(reply);
+
+                    container.appendChild(table);
+                }
             }
         }
         setPostAttributes(container);
