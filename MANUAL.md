@@ -834,6 +834,9 @@ you will need to periodically review the status page in the management panel.
 The status page is the default page shown when you log in. When posts require
 moderator approval, they will appear on this status page.
 
+When there are no pending moderation requests, the status page will automatically
+refresh after five minutes have passed.
+
 #### Banning IP addresses
 
 Single IP addresses and IP address ranges may be banned. To ban an IP address
