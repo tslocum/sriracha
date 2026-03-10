@@ -116,6 +116,17 @@ have the same style.
 As a general rule, boards which accept image and video attachments should be
 imageboards, and boards which do not should be forums.
 
+### Post batching
+
+When a visitor creates a new post, and less than ten seconds have passed since
+a post was last created (by anyone), static files are not immediately updated.
+
+Once a full second has passed without any new posts being created, or ten seconds
+have passed, static files are updated and visitors are redirected.
+
+This batching is invisible to visitors, and allows the server to handle an influx
+of posts without wasting resources writing and then quickly overwriting pages.
+
 ### Email notifications
 
 Sriracha may optionally allow visitors to subscribe to receive email notifications
