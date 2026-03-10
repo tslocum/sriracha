@@ -111,15 +111,15 @@ CREATE TABLE captcha (
 -- v15: CREATE TABLE category (
 -- v15: 	id smallserial PRIMARY KEY,
 -- v15: 	parent smallint REFERENCES category (id) ON DELETE CASCADE,
--- v15: 	order smallint NOT NULL,
+-- v15: 	sort smallint NOT NULL,
 -- v15: 	name varchar(255) NOT NULL,
 -- v15: 	description varchar(255) NOT NULL
--- v15: }
+-- v15: );
 
 -- v15: CREATE TABLE category_board (
 -- v15: 	category smallint NOT NULL REFERENCES category (id) ON DELETE CASCADE,
 -- v15: 	board smallint NOT NULL REFERENCES board (id) ON DELETE CASCADE,
--- v15: 	order smallint NOT NULL
+-- v15: 	sort smallint NOT NULL,
 -- v15: 	PRIMARY KEY (category, board)
 -- v15: );
 
@@ -307,14 +307,14 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 	`CREATE TABLE category (
 		id smallserial PRIMARY KEY,
 		parent smallint REFERENCES category (id) ON DELETE CASCADE,
-		order smallint NOT NULL,
+		sort smallint NOT NULL,
 		name varchar(255) NOT NULL,
 		description varchar(255) NOT NULL
-	}
+	);
 	CREATE TABLE category_board (
 		category smallint NOT NULL REFERENCES category (id) ON DELETE CASCADE,
 		board smallint NOT NULL REFERENCES board (id) ON DELETE CASCADE,
-		order smallint NOT NULL
+		sort smallint NOT NULL,
 		PRIMARY KEY (category, board)
 	);
 	UPDATE config SET value = '15' WHERE name = 'version';`,
