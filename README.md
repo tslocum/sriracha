@@ -52,8 +52,7 @@ Translation is handled [online](https://translate.codeberg.org/projects/sriracha
   2. Review the [open issues](https://codeberg.org/tslocum/sriracha/issues).
   3. Open a [new issue](https://codeberg.org/tslocum/sriracha/issues/new).
 
-Unofficial support is also available via [Matrix](https://matrix.to/#/#sriracha:matrix.org)
-and [#sriracha @ irc.libera.chat](https://web.libera.chat/?channel=#sriracha).
+Unofficial support is also available via [Matrix](https://matrix.to/#/#sriracha:matrix.org).
 
 ## License
 
