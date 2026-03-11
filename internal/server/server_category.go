@@ -46,6 +46,52 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 		return
 	}
 
+	categoryAndBoard := func(s string) (*Category, *Board) {
+		split := strings.Split(s, "/")
+		if len(split) != 2 {
+			return nil, nil
+		}
+		categoryID, err := strconv.Atoi(split[0])
+		if err != nil {
+			return nil, nil
+		}
+		boardID, err := strconv.Atoi(split[1])
+		if err != nil {
+			return nil, nil
+		}
+		return db.CategoryByID(categoryID), db.BoardByID(boardID)
+	}
+	boardDown := PathString(r, "/sriracha/category/board/down/")
+	if boardDown != "" {
+		category, board := categoryAndBoard(boardDown)
+		if category != nil && board != nil {
+			for i, b := range category.Boards {
+				if b.ID == board.ID && i < len(category.Boards)-1 {
+					category.Boards[i], category.Boards[i+1] = category.Boards[i+1], category.Boards[i]
+					db.UpdateCategory(category)
+					break
+				}
+			}
+		}
+		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+		return
+	}
+	boardUp := PathString(r, "/sriracha/category/board/up/")
+	if boardUp != "" {
+		category, board := categoryAndBoard(boardUp)
+		if category != nil && board != nil {
+			for i, b := range category.Boards {
+				if b.ID == board.ID && i > 0 {
+					category.Boards[i], category.Boards[i-1] = category.Boards[i-1], category.Boards[i]
+					db.UpdateCategory(category)
+					break
+				}
+			}
+		}
+		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+		return
+	}
+
 	boardCategoryID := PathInt(r, "/sriracha/category/board/")
 	if boardCategoryID > 0 {
 		if s.forbidden(w, data, "category.update") {
