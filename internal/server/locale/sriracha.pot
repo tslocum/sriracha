@@ -60,6 +60,9 @@ msgstr ""
 msgid "Add Board"
 msgstr ""
 
+msgid "Add Category"
+msgstr ""
+
 msgid "Add Keyword"
 msgstr ""
 
@@ -67,6 +70,9 @@ msgid "Add News"
 msgstr ""
 
 msgid "Add Page"
+msgstr ""
+
+msgid "Add board to %s"
 msgstr ""
 
 msgid "Add notice"
@@ -300,6 +306,9 @@ msgid "Disallow visitor posts"
 msgstr ""
 
 msgid "Disallow visitor threads"
+msgstr ""
+
+msgid "Displayed in site index."
 msgstr ""
 
 msgid "Do not share with staff"
@@ -713,6 +722,12 @@ msgstr ""
 msgid "Pages"
 msgstr ""
 
+msgid "Parent"
+msgstr ""
+
+msgid "Parent category."
+msgstr ""
+
 msgid "Password"
 msgstr ""
 
@@ -778,6 +793,9 @@ msgid "Regular expression to search for when a new post is created."
 msgstr ""
 
 msgid "Relative file path where the page is located, excluding the .html suffix."
+msgstr ""
+
+msgid "Remove"
 msgstr ""
 
 msgid "Replies"

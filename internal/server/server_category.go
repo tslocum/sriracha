@@ -88,24 +88,6 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 		return
 	}
 
-	boardDown := PathString(r, "/sriracha/category/board/down/")
-	if boardDown != "" {
-		if s.forbidden(w, data, "category.update") {
-			return
-		}
-		category, board := categoryAndBoard(boardDown)
-		if category != nil && board != nil {
-			for i, b := range category.Boards {
-				if b.ID == board.ID && i < len(category.Boards)-1 {
-					category.Boards[i], category.Boards[i+1] = category.Boards[i+1], category.Boards[i]
-					db.UpdateCategory(category)
-					break
-				}
-			}
-		}
-		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
-		return
-	}
 	boardUp := PathString(r, "/sriracha/category/board/up/")
 	if boardUp != "" {
 		if s.forbidden(w, data, "category.update") {
@@ -124,48 +106,25 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
 		return
 	}
-
-	categoryDownID := PathInt(r, "/sriracha/category/down/")
-	if categoryDownID != 0 {
+	boardDown := PathString(r, "/sriracha/category/board/down/")
+	if boardDown != "" {
 		if s.forbidden(w, data, "category.update") {
 			return
 		}
-		category := db.CategoryByID(categoryDownID)
-		if category != nil {
-			if category.Parent != nil {
-				category.Parent.Categories = db.ChildCategories(category.Parent.ID)
-				for i, c := range category.Parent.Categories {
-					if c.ID == category.ID && i < len(category.Parent.Categories)-1 {
-						category.Parent.Categories[i], category.Parent.Categories[i+1] = category.Parent.Categories[i+1], category.Parent.Categories[i]
-						break
-					}
-				}
-				for i, c := range category.Parent.Categories {
-					c.Sort = i
-					db.UpdateCategory(c)
-				}
-			} else {
-				var rootCategories []*Category
-				for _, c := range data.Categories {
-					if c.Parent == nil {
-						rootCategories = append(rootCategories, c)
-					}
-				}
-				for i, c := range rootCategories {
-					if c.ID == category.ID && i < len(rootCategories)-1 {
-						rootCategories[i], rootCategories[i+1] = rootCategories[i+1], rootCategories[i]
-						break
-					}
-				}
-				for i, c := range rootCategories {
-					c.Sort = i
-					db.UpdateCategory(c)
+		category, board := categoryAndBoard(boardDown)
+		if category != nil && board != nil {
+			for i, b := range category.Boards {
+				if b.ID == board.ID && i < len(category.Boards)-1 {
+					category.Boards[i], category.Boards[i+1] = category.Boards[i+1], category.Boards[i]
+					db.UpdateCategory(category)
+					break
 				}
 			}
 		}
 		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
 		return
 	}
+
 	categoryUpID := PathInt(r, "/sriracha/category/up/")
 	if categoryUpID != 0 {
 		if s.forbidden(w, data, "category.update") {
@@ -195,6 +154,47 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 				for i, c := range rootCategories {
 					if c.ID == category.ID && i > 0 {
 						rootCategories[i], rootCategories[i-1] = rootCategories[i-1], rootCategories[i]
+						break
+					}
+				}
+				for i, c := range rootCategories {
+					c.Sort = i
+					db.UpdateCategory(c)
+				}
+			}
+		}
+		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+		return
+	}
+	categoryDownID := PathInt(r, "/sriracha/category/down/")
+	if categoryDownID != 0 {
+		if s.forbidden(w, data, "category.update") {
+			return
+		}
+		category := db.CategoryByID(categoryDownID)
+		if category != nil {
+			if category.Parent != nil {
+				category.Parent.Categories = db.ChildCategories(category.Parent.ID)
+				for i, c := range category.Parent.Categories {
+					if c.ID == category.ID && i < len(category.Parent.Categories)-1 {
+						category.Parent.Categories[i], category.Parent.Categories[i+1] = category.Parent.Categories[i+1], category.Parent.Categories[i]
+						break
+					}
+				}
+				for i, c := range category.Parent.Categories {
+					c.Sort = i
+					db.UpdateCategory(c)
+				}
+			} else {
+				var rootCategories []*Category
+				for _, c := range data.Categories {
+					if c.Parent == nil {
+						rootCategories = append(rootCategories, c)
+					}
+				}
+				for i, c := range rootCategories {
+					if c.ID == category.ID && i < len(rootCategories)-1 {
+						rootCategories[i], rootCategories[i+1] = rootCategories[i+1], rootCategories[i]
 						break
 					}
 				}

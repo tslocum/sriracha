@@ -255,6 +255,7 @@ var templateFuncMap = template.FuncMap{
 	"Slice": func(elements ...any) []any {
 		return elements
 	},
+	"Sprintf": fmt.Sprintf,
 	"ToUpper": strings.ToUpper,
 	"ToLower": strings.ToLower,
 	"Title":   strings.Title,

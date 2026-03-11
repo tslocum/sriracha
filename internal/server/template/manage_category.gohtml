@@ -9,11 +9,13 @@ li {
 {{if eq .Manage.Category.ID 0}}
     {{template "manage_category_item.gohtml" (Slice $ .Categories true)}}
 {{end}}
+{{$name := .Manage.Category.Name}}
+{{if eq $name ""}}{{$name = (Sprintf "Category #%d" .Manage.Category.ID)}}{{end}}
 {{if and (eq .Extra "board") (ne .Manage.Category.ID 0)}}
     [<a href="/sriracha/category/">{{T "Return"}}</a>]<br>
     <form method="post">
         <fieldset>
-        <legend>Add board to {{.Manage.Category.Name}}</legend>
+        <legend>{{T "Add board to %s" $name}}</legend>
         <table class="manageform">
             <tr>
                 <td class="postblock"><label for="board">{{T "Board"}}</label></td>
@@ -44,7 +46,7 @@ li {
         {{end}}
         <form method="post">
             <fieldset>
-            {{if ne .Manage.Category.ID 0}}<legend>{{T "Update"}} {{.Manage.Category.Name}}</legend>{{end}}
+            {{if ne .Manage.Category.ID 0}}<legend>{{T "Update"}} {{$name}}</legend>{{end}}
             <table class="manageform">
                 <tr>
                     <td class="postblock"><label for="parent">{{T "Parent"}}</label></td>
