@@ -125,11 +125,11 @@ func (db *DB) UpdateCategory(c *Category) {
 	if c.ID <= 0 {
 		log.Fatalf("invalid category ID %d", c.ID)
 	}
-	var parent int
+	var parent *int
 	if c.Parent != nil {
-		parent = c.Parent.ID
+		parent = &c.Parent.ID
 	}
-	_, err := db.conn.Exec(context.Background(), "UPDATE category SET parent = $1, sort = $2, name = $3, $description = $4 WHERE id = $5",
+	_, err := db.conn.Exec(context.Background(), "UPDATE category SET parent = $1, sort = $2, name = $3, description = $4 WHERE id = $5",
 		parent,
 		c.Sort,
 		c.Name,

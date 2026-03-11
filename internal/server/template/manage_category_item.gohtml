@@ -21,16 +21,30 @@
             <b>{{if ne .Name ""}}{{.Name}}{{else}}Category #{{.ID}}{{end}}</b>
             {{if ne .Description ""}}({{.Description}}){{end}}
             {{if May "category.update" $.Account $.Opt.Access}}
-                <form method="get" action="/sriracha/category/board/{{$category.ID}}"><input type="submit" value="{{T "Add Board"}}"></form>
-                <form method="get" action="/sriracha/category/{{$category.ID}}"><input type="submit" value="{{T "Update Category"}}"></form>
+                [<a href="/sriracha/category/down/{{$category.ID}}">Move Down</a>]
+                [<a href="/sriracha/category/up/{{$category.ID}}">Move Up</a>]
+                [<a href="/sriracha/category/board/{{$category.ID}}">{{T "Add Board"}}</a>]
+                [<a href="/sriracha/category/{{$category.ID}}">{{T "Update Category"}}</a>]
             {{end}}
             {{if May "category.delete" $.Account $.Opt.Access}}
-                <form method="get" action="/sriracha/category/delete/{{$category.ID}}" onsubmit="javascript:return confirm('Delete category?');"><input type="submit" value="{{T "Delete Category"}}"></form>
+                [<a href="/sriracha/category/delete/{{$category.ID}}" onclick="javascript:return confirm('Delete category?');">{{T "Delete Category"}}</a>]
             {{end}}<br>
             {{if and (eq (len .Categories) 0) (eq (len .Boards) 0)}}
                 <ul><li>No boards or subcategories.</li></ul>
             {{else}}
                 {{template "manage_category_item.gohtml" (Slice $ $category.Categories false)}}
+                {{if gt (len $category.Boards) 0}}
+                    <ul>
+                    {{range $board := $category.Boards}}
+                        <li>
+                            {{$board.Path}} {{$board.Name}}
+                            [<a href="/sriracha/category/board/down/{{$category.ID}}/{{$board.ID}}">Move Down</a>]
+                            [<a href="/sriracha/category/board/up/{{$category.ID}}/{{$board.ID}}">Move Up</a>]
+                            [<a href="/sriracha/category/board/delete/{{$category.ID}}/{{$board.ID}}">Remove Board</a>]
+                        </li>
+                    {{end}}
+                    </ul>
+                {{end}}
             {{end}}
         </li>
     {{end}}

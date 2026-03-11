@@ -32,16 +32,45 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 		if s.forbidden(w, data, "category.delete") {
 			return
 		}
-		k := db.CategoryByID(deleteCategoryID)
-		if k == nil {
+		c := db.CategoryByID(deleteCategoryID)
+		if c == nil {
 			data.ManageError("Invalid category.")
 			return
 		}
-		db.DeleteCategory(k.ID)
+		db.DeleteCategory(c.ID)
 
-		s.log(db, data.Account, nil, fmt.Sprintf("Deleted category #%d", k.ID), "")
+		s.log(db, data.Account, nil, fmt.Sprintf("Deleted category #%d", c.ID), "")
 
 		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+		return
+	}
+
+	boardCategoryID := PathInt(r, "/sriracha/category/board/")
+	if boardCategoryID > 0 {
+		if s.forbidden(w, data, "category.update") {
+			return
+		}
+		data.Manage.Category = db.CategoryByID(boardCategoryID)
+		data.Extra = "board"
+
+		if data.Manage.Category != nil && r.Method == http.MethodPost {
+			boardID := FormInt(r, "board")
+			board := db.BoardByID(boardID)
+			if board == nil {
+				data.ManageError("Invalid board.")
+				return
+			}
+
+			if !data.Manage.Category.HasBoard(board.ID) {
+				data.Manage.Category.Boards = append(data.Manage.Category.Boards, board)
+				db.UpdateCategory(data.Manage.Category)
+			}
+
+			http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+			return
+		}
+
+		data.Categories = db.AllCategories()
 		return
 	}
 
@@ -71,12 +100,12 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 		if s.forbidden(w, data, "category.add") {
 			return
 		}
-		k := &Category{}
-		s.loadCategoryForm(db, r, k)
+		c := &Category{}
+		s.loadCategoryForm(db, r, c)
 
-		db.AddCategory(k)
+		db.AddCategory(c)
 
-		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/category/%d", k.ID), "")
+		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/category/%d", c.ID), "")
 
 		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
 		return
