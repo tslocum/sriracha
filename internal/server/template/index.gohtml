@@ -13,8 +13,8 @@ hr {
 td {
     vertical-align: top;
 }
-.navindex tr:not(:first-child) td {
-    padding-top: 1rem;
+.navindex tr:not(:last-child):not(.category) td {
+    padding-bottom: 1rem;
 }
 .boardtd {
     text-align: right;
@@ -50,46 +50,60 @@ td {
     <hr>
     <div class="reply navindex">
         <table style="border: 0;table-layout: fixed;width: 100%;">
-        {{range $i, $board := .Boards}}
-            <tr>
-                <td class="boardtd">
-                    <a href="{{.Path}}"><b>{{.Name}}</b></a>
-                    {{if ne .Description ""}}<br>{{.Description}}{{end}}
-                </td>
-                <td colspan="2" class="msgtd">
-                    {{$lastPosts := index $.Threads $i}}
-                    {{if eq (len $lastPosts) 0}}
-                        {{T "None"}}<br>&nbsp;
-                    {{else}}
-                        {{$last := index $lastPosts 0}}
-                        {{if eq $last nil}}
-                            {{T "None"}}<br>&nbsp;
-                        {{else}}
-                            <label style="cursor: pointer;">
-                                <a href="{{$last.Board.Path}}res/{{$last.Thread}}.html#{{$last.ID}}" style="color: inherit;text-decoration: none;">
-                                    {{$last.NameBlock | HTML}} No.{{$last.ID}}
-                                </a>
-                            </label>
-                            <br>
-                            {{$msg := $last.MessageTruncated 1 $.Account}}
-                            {{if eq $msg ""}}
-                                {{if ne $last.File ""}}
-                                    {{if $last.IsEmbed}}
-                                        {{T "Embed"}}
-                                    {{else}}
-                                        {{T "File"}}
-                                    {{end}}
-                                {{else}}
-                                    …
-                                {{end}}
+            {{$needSpacer := false}}
+            {{range $i, $category := .Opt.Categories}}
+                {{if eq (len $category.Boards) 0}}
+                    {{continue}}
+                {{else if ne $category.Name ""}}
+                    <tr class="category">
+                        <td class="boardtd">
+                            <b>{{$category.Name}}</b>
+                        </td>
+                        <td>
+                            {{if ne $category.Description ""}}{{$category.Description}}{{else}}&nbsp;{{end}}
+                        </td>
+                    </tr>
+                {{end}}
+                {{range $j, $board := $category.Boards}}
+                    <tr>
+                        <td class="boardtd">
+                            <a href="{{.Path}}"><b>{{.Name}}</b></a>
+                            {{if ne .Description ""}}<br>{{.Description}}{{end}}
+                        </td>
+                        <td colspan="2" class="msgtd">
+                            {{$post := index $category.Recent $j}}
+                            {{if eq $post nil}}
+                                {{T "None"}}<br>&nbsp;
                             {{else}}
-                                {{$msg}}
+                                {{if eq $post nil}}
+                                    {{T "None"}}<br>&nbsp;
+                                {{else}}
+                                    <label style="cursor: pointer;">
+                                        <a href="{{$post.Board.Path}}res/{{$post.Thread}}.html#{{$post.ID}}" style="color: inherit;text-decoration: none;">
+                                            {{$post.NameBlock | HTML}} No.{{$post.ID}}
+                                        </a>
+                                    </label>
+                                    <br>
+                                    {{$msg := $post.MessageTruncated 1 $.Account}}
+                                    {{if eq $msg ""}}
+                                        {{if ne $post.File ""}}
+                                            {{if $post.IsEmbed}}
+                                                {{T "Embed"}}
+                                            {{else}}
+                                                {{T "File"}}
+                                            {{end}}
+                                        {{else}}
+                                            …
+                                        {{end}}
+                                    {{else}}
+                                        {{$msg}}
+                                    {{end}}
+                                {{end}}
                             {{end}}
-                        {{end}}
-                    {{end}}
-                </td>
-            </tr>
-        {{end}}
+                        </td>
+                    </tr>
+                {{end}}
+            {{end}}
         </table>
     </div>
 </div>

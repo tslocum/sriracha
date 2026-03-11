@@ -62,6 +62,8 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 			if b.ID == board.ID {
 				category.Boards = append(category.Boards[:i], category.Boards[i+1:]...)
 				db.UpdateCategory(category)
+				s.refreshCategoryCache(db)
+				s.rebuildAll(db, false)
 				break
 			}
 		}
@@ -82,6 +84,25 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 		}
 		db.DeleteCategory(c.ID)
 
+		allCategories := db.AllCategories()
+		if len(allCategories) > 0 {
+			var haveRoot bool
+			for _, c := range allCategories {
+				if c.Parent == nil {
+					haveRoot = true
+					break
+				}
+			}
+			if !haveRoot {
+				db.RollBack()
+				data.ManageError("Failed to delete category: At least one category without any parent categories must exist.")
+				return
+			}
+		}
+
+		s.refreshCategoryCache(db)
+		s.rebuildAll(db, false)
+
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted category #%d", c.ID), "")
 
 		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
@@ -99,6 +120,8 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 				if b.ID == board.ID && i > 0 {
 					category.Boards[i], category.Boards[i-1] = category.Boards[i-1], category.Boards[i]
 					db.UpdateCategory(category)
+					s.refreshCategoryCache(db)
+					s.rebuildAll(db, false)
 					break
 				}
 			}
@@ -117,6 +140,8 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 				if b.ID == board.ID && i < len(category.Boards)-1 {
 					category.Boards[i], category.Boards[i+1] = category.Boards[i+1], category.Boards[i]
 					db.UpdateCategory(category)
+					s.refreshCategoryCache(db)
+					s.rebuildAll(db, false)
 					break
 				}
 			}
@@ -143,6 +168,8 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 				for i, c := range category.Parent.Categories {
 					c.Sort = i
 					db.UpdateCategory(c)
+					s.refreshCategoryCache(db)
+					s.rebuildAll(db, false)
 				}
 			} else {
 				var rootCategories []*Category
@@ -160,6 +187,8 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 				for i, c := range rootCategories {
 					c.Sort = i
 					db.UpdateCategory(c)
+					s.refreshCategoryCache(db)
+					s.rebuildAll(db, false)
 				}
 			}
 		}
@@ -184,6 +213,8 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 				for i, c := range category.Parent.Categories {
 					c.Sort = i
 					db.UpdateCategory(c)
+					s.refreshCategoryCache(db)
+					s.rebuildAll(db, false)
 				}
 			} else {
 				var rootCategories []*Category
@@ -201,6 +232,8 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 				for i, c := range rootCategories {
 					c.Sort = i
 					db.UpdateCategory(c)
+					s.refreshCategoryCache(db)
+					s.rebuildAll(db, false)
 				}
 			}
 		}
@@ -227,6 +260,8 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 			if !data.Manage.Category.HasBoard(board.ID) {
 				data.Manage.Category.Boards = append(data.Manage.Category.Boards, board)
 				db.UpdateCategory(data.Manage.Category)
+				s.refreshCategoryCache(db)
+				s.rebuildAll(db, false)
 			}
 
 			http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
@@ -247,6 +282,22 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 			s.loadCategoryForm(db, r, data.Manage.Category)
 
 			db.UpdateCategory(data.Manage.Category)
+
+			var haveRoot bool
+			for _, c := range db.AllCategories() {
+				if c.Parent == nil {
+					haveRoot = true
+					break
+				}
+			}
+			if !haveRoot {
+				db.RollBack()
+				data.ManageError("Failed to delete category: At least one category without any parent categories must exist.")
+				return
+			}
+
+			s.refreshCategoryCache(db)
+			s.rebuildAll(db, false)
 
 			changes := printChanges(oldCategory, *data.Manage.Category)
 			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/category/%d", data.Manage.Category.ID), changes)
@@ -281,6 +332,9 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 		c.Sort = cSort + 1
 
 		db.AddCategory(c)
+
+		s.refreshCategoryCache(db)
+		s.rebuildAll(db, false)
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/category/%d", c.ID), "")
 

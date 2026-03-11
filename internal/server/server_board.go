@@ -224,6 +224,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 		}
 
 		s.refreshRulesCache(db)
+		s.refreshCategoryCache(db)
 		s.writeSiteIndex(db)
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted board #%d", b.ID), "")
@@ -339,6 +340,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 			}
 
 			s.refreshRulesCache(db)
+			s.refreshCategoryCache(db)
 			s.rebuildBoard(db, data.Manage.Board)
 			s.writeSiteIndex(db)
 
@@ -431,6 +433,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 		db.AddBoard(b)
 
 		s.refreshRulesCache(db)
+		s.refreshCategoryCache(db)
 		s.rebuildBoard(db, b)
 		s.writeSiteIndex(db)
 

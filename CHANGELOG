@@ -1,5 +1,6 @@
 1.5.1:
 - Fix displaying new forum replies automatically
+- Support organizing boards in categories
 
 1.5.0:
 - Fix forum post area styling

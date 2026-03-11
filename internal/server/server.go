@@ -86,6 +86,13 @@ const (
 	NewsWriteToIndex NewsOption = 2
 )
 
+type categoryInfo struct {
+	Name        string
+	Description string
+	Boards      []*Board
+	Recent      []*Post
+}
+
 // ServerOptions represents server configuration options and related data.
 type ServerOptions struct {
 	SiteName         string
@@ -110,6 +117,7 @@ type ServerOptions struct {
 	Access           map[string]string
 	Banners          map[int][]*Banner
 	Rules            map[int][]template.HTML
+	Categories       []*categoryInfo
 	Notifications    bool
 	DevMode          bool
 	FuncMaps         map[string]template.FuncMap
@@ -924,6 +932,51 @@ func (s *Server) refreshRulesCache(db *database.DB) {
 	}
 }
 
+func (s *Server) _processCategory(c *Category) {
+	for _, cat := range c.Categories {
+		s._processCategory(cat)
+	}
+	if len(c.Boards) == 0 {
+		return
+	}
+	info := &categoryInfo{
+		Name:        c.Name,
+		Description: c.Description,
+		Boards:      c.Boards,
+	}
+	s.opt.Categories = append(s.opt.Categories, info)
+}
+
+// refreshCategoryCache refreshes the category cache.
+func (s *Server) refreshCategoryCache(db *database.DB) {
+	s.opt.Categories = s.opt.Categories[:0]
+	for _, c := range db.AllCategories() {
+		if c.Parent == nil {
+			s._processCategory(c)
+		}
+	}
+	// Create pseudo-category.
+	if len(s.opt.Categories) == 0 {
+		info := &categoryInfo{}
+		for _, b := range db.AllBoards() {
+			if b.Hide == HideIndex || b.Hide == HideEverywhere {
+				continue
+			}
+			info.Boards = append(info.Boards, b)
+		}
+		s.opt.Categories = append(s.opt.Categories, info)
+	}
+}
+
+func (s *Server) refreshRecentPosts(db *database.DB) {
+	for _, info := range s.opt.Categories {
+		info.Recent = info.Recent[:0]
+		for _, b := range info.Boards {
+			info.Recent = append(info.Recent, db.LastPostByBoard(b))
+		}
+	}
+}
+
 // deletePostFiles deletes files associated with a post.
 func (s *Server) deletePostFiles(p *Post) {
 	if p.Board == nil {
@@ -1455,10 +1508,6 @@ func (s *Server) writeSiteIndex(db *database.DB) {
 	data.Template = "index"
 
 	data.Boards = allBoards
-	data.Threads = make([][]*Post, len(allBoards))
-	for i, board := range allBoards {
-		data.Threads[i] = append(data.Threads[i], db.LastPostByBoard(board))
-	}
 
 	if s.opt.News != NewsDisable {
 		allNews := db.AllNews(true)
@@ -1468,6 +1517,8 @@ func (s *Server) writeSiteIndex(db *database.DB) {
 		}
 		data.News = latest
 	}
+
+	s.refreshRecentPosts(db)
 
 	indexFile, err := os.OpenFile(filepath.Join(s.config.Root, "index.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 	if err != nil {
@@ -2009,6 +2060,7 @@ func (s *Server) Run() error {
 	db := s.begin()
 	s.refreshBannerCache(db)
 	s.refreshRulesCache(db)
+	s.refreshCategoryCache(db)
 	sv := db.GetString("sv") // Sriracha version.
 	if sv != SrirachaVersion {
 		if sv != "" {
