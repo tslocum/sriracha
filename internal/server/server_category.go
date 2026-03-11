@@ -133,6 +133,7 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 		category := db.CategoryByID(categoryDownID)
 		if category != nil {
 			if category.Parent != nil {
+				category.Parent.Categories = db.ChildCategories(category.Parent.ID)
 				for i, c := range category.Parent.Categories {
 					if c.ID == category.ID && i < len(category.Parent.Categories)-1 {
 						category.Parent.Categories[i], category.Parent.Categories[i+1] = category.Parent.Categories[i+1], category.Parent.Categories[i]
@@ -173,6 +174,7 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 		category := db.CategoryByID(categoryUpID)
 		if category != nil {
 			if category.Parent != nil {
+				category.Parent.Categories = db.ChildCategories(category.Parent.ID)
 				for i, c := range category.Parent.Categories {
 					if c.ID == category.ID && i > 0 {
 						category.Parent.Categories[i], category.Parent.Categories[i-1] = category.Parent.Categories[i-1], category.Parent.Categories[i]

@@ -77,7 +77,7 @@ func (db *DB) CategoryByID(id int) *Category {
 }
 
 func (db *DB) ChildCategories(id int) []*Category {
-	rows, err := db.conn.Query(context.Background(), "SELECT * FROM category WHERE parent = $1 ORDER BY parent ASC, sort ASC", id)
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM category WHERE parent = $1 ORDER BY parent ASC NULLS FIRST, sort ASC", id)
 	if err != nil {
 		log.Fatalf("failed to select all categories: %s", err)
 	}
@@ -94,12 +94,13 @@ func (db *DB) ChildCategories(id int) []*Category {
 	}
 	for i, c := range categories {
 		db.fetchCategoryData(c, parents[i])
+		c.Categories = db.ChildCategories(c.ID)
 	}
 	return categories
 }
 
 func (db *DB) AllCategories() []*Category {
-	rows, err := db.conn.Query(context.Background(), "SELECT * FROM category ORDER BY parent ASC, sort ASC")
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM category ORDER BY parent ASC NULLS FIRST, sort ASC")
 	if err != nil {
 		log.Fatalf("failed to select all categories: %s", err)
 	}
