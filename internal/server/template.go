@@ -29,6 +29,7 @@ type manageData struct {
 	Banners  []*Banner
 	Board    *Board
 	Boards   []*Board
+	Category *Category
 	Keyword  *Keyword
 	Keywords []*Keyword
 	Log      *Log
@@ -51,6 +52,7 @@ type templateData struct {
 	Message3      template.HTML
 	Board         *Board
 	Boards        []*Board
+	Categories    []*Category
 	News          *News
 	AllNews       []*News
 	Subscriptions []*Subscription

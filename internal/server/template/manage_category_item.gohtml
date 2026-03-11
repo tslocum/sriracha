@@ -1,0 +1,38 @@
+{{$ := index . 0}}
+{{$categories := index . 1}}
+{{$rootOnly := index . 2}}
+{{$haveCategories := true}}
+{{if $rootOnly}}
+    {{$haveCategories = false}}
+    {{range $category := $categories}}
+        {{if eq $category.Parent nil}}
+            {{$haveCategories = true}}
+            {{break}}
+        {{end}}
+    {{end}}
+{{end}}
+{{if $haveCategories}}
+    <ul>
+    {{range $category := $categories}}
+        {{if and $rootOnly (ne $category.Parent nil)}}
+            {{continue}}
+        {{end}}
+        <li>
+            <b>{{if ne .Name ""}}{{.Name}}{{else}}Category #{{.ID}}{{end}}</b>
+            {{if ne .Description ""}}({{.Description}}){{end}}
+            {{if May "category.update" $.Account $.Opt.Access}}
+                <form method="get" action="/sriracha/category/board/{{$category.ID}}"><input type="submit" value="{{T "Add Board"}}"></form>
+                <form method="get" action="/sriracha/category/{{$category.ID}}"><input type="submit" value="{{T "Update Category"}}"></form>
+            {{end}}
+            {{if May "category.delete" $.Account $.Opt.Access}}
+                <form method="get" action="/sriracha/category/delete/{{$category.ID}}" onsubmit="javascript:return confirm('Delete category?');"><input type="submit" value="{{T "Delete Category"}}"></form>
+            {{end}}<br>
+            {{if and (eq (len .Categories) 0) (eq (len .Boards) 0)}}
+                <ul><li>No boards or subcategories.</li></ul>
+            {{else}}
+                {{template "manage_category_item.gohtml" (Slice $ $category.Categories false)}}
+            {{end}}
+        </li>
+    {{end}}
+    </ul>
+{{end}}

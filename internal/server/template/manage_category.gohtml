@@ -1,3 +1,57 @@
 {{template "manage_begin.gohtml" .}}
 <h2 class="managetitle">{{T "Categories"}}</h2>
+<style type="text/css">
+li {
+    margin-top: 7px;
+    margin-bottom: 7px;
+}
+</style>
+{{template "manage_category_item.gohtml" (Slice $ .Categories true)}}
+{{if or (and (eq .Manage.Category.ID 0) (May "category.add" $.Account $.Opt.Access)) (and (ne .Manage.Category.ID 0) (May "category.update" $.Account $.Opt.Access))}}
+    {{if eq .Manage.Category.ID 0}}
+        <br>
+        <details>
+            <summary>{{T "Add Category"}}</summary>
+            <div>
+    {{end}}
+    <form method="post">
+        <fieldset>
+        {{if ne .Manage.Category.ID 0}}<legend>{{T "Update"}} {{.Manage.Category.Name}}</legend>{{end}}
+        <table class="manageform">
+            <tr>
+                <td class="postblock"><label for="parent">{{T "Parent"}}</label></td>
+                <td>
+                    <select name="parent">
+                        <option value="0"{{if eq .Manage.Category.Parent nil}} selected{{end}}>{{T "None"}}</option>
+                        {{range $category := .Categories}}
+                            <option value="{{.ID}}"{{if and (ne $.Manage.Category.Parent nil) (eq $.Manage.Category.Parent.ID $category.ID)}} selected{{end}}>{{if ne .Name ""}}{{.Name}}{{else}}Category #{{.ID}}{{end}}</option>
+                        {{end}}
+                    </select>
+                </td>
+                <td>{{T "Parent category."}}</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="name">{{T "Name"}}</label></td>
+                <td><input type="text" name="name" value="{{.Manage.Category.Name}}"></td>
+                <td>{{T "Displayed in site index."}}</td>
+            </tr>
+            <tr>
+                <td class="postblock"><label for="description">{{T "Description"}}</label></td>
+                <td><input type="text" name="description" value="{{.Manage.Category.Description}}"></td>
+                <td>{{T "Optional."}}</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.Category.ID 0}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        </fieldset>
+    </form>
+    {{if eq .Manage.Category.ID 0}}
+            </div>
+        </details>
+    {{end}}
+{{end}}
+<br>
 {{template "manage_end.gohtml" .}}
