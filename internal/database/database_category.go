@@ -56,8 +56,8 @@ func (db *DB) updateCategoryBoards(c *Category) {
 	if err != nil {
 		log.Fatalf("failed to update category boards: %s", err)
 	}
-	for _, b := range c.Boards {
-		_, err = db.conn.Exec(context.Background(), "INSERT INTO category_board VALUES ($1, $2, $3)", c.ID, b.ID, c.Sort)
+	for i, b := range c.Boards {
+		_, err = db.conn.Exec(context.Background(), "INSERT INTO category_board VALUES ($1, $2, $3)", c.ID, b.ID, i)
 		if err != nil {
 			log.Fatalf("failed to update category boards: %s", err)
 		}

@@ -21,8 +21,8 @@
             <b>{{if ne .Name ""}}{{.Name}}{{else}}Category #{{.ID}}{{end}}</b>
             {{if ne .Description ""}}({{.Description}}){{end}}
             {{if May "category.update" $.Account $.Opt.Access}}
-                [<a href="/sriracha/category/down/{{$category.ID}}">Move Down</a>]
-                [<a href="/sriracha/category/up/{{$category.ID}}">Move Up</a>]
+                [<a href="/sriracha/category/down/{{$category.ID}}">Down</a>]
+                [<a href="/sriracha/category/up/{{$category.ID}}">Up</a>]
                 [<a href="/sriracha/category/board/{{$category.ID}}">{{T "Add Board"}}</a>]
                 [<a href="/sriracha/category/{{$category.ID}}">{{T "Update Category"}}</a>]
             {{end}}
@@ -38,8 +38,8 @@
                     {{range $board := $category.Boards}}
                         <li>
                             {{$board.Path}} {{$board.Name}}
-                            [<a href="/sriracha/category/board/down/{{$category.ID}}/{{$board.ID}}">Move Down</a>]
-                            [<a href="/sriracha/category/board/up/{{$category.ID}}/{{$board.ID}}">Move Up</a>]
+                            [<a href="/sriracha/category/board/down/{{$category.ID}}/{{$board.ID}}">Down</a>]
+                            [<a href="/sriracha/category/board/up/{{$category.ID}}/{{$board.ID}}">Up</a>]
                             [<a href="/sriracha/category/board/delete/{{$category.ID}}/{{$board.ID}}">Remove Board</a>]
                         </li>
                     {{end}}

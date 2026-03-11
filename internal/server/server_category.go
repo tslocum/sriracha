@@ -26,6 +26,7 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 	data.Template = "manage_category"
 	data.Boards = db.AllBoards()
 	data.Manage.Category = &Category{}
+	data.Categories = db.AllCategories()
 
 	deleteCategoryID := PathInt(r, "/sriracha/category/delete/")
 	if deleteCategoryID > 0 {
@@ -69,8 +70,6 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 			http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
 			return
 		}
-
-		data.Categories = db.AllCategories()
 		return
 	}
 
@@ -103,6 +102,22 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 		c := &Category{}
 		s.loadCategoryForm(db, r, c)
 
+		var cSort int
+		if c.Parent != nil {
+			for _, cat := range c.Categories {
+				if cat.Sort > cSort {
+					cSort = cat.Sort
+				}
+			}
+		} else {
+			for _, cat := range data.Categories {
+				if cat.Parent == nil && cat.Sort > cSort {
+					cSort = cat.Sort
+				}
+			}
+		}
+		c.Sort = cSort + 1
+
 		db.AddCategory(c)
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/category/%d", c.ID), "")
@@ -110,6 +125,4 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
 		return
 	}
-
-	data.Categories = db.AllCategories()
 }
