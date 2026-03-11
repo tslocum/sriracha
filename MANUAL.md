@@ -116,6 +116,12 @@ have the same style.
 As a general rule, boards which accept image and video attachments should be
 imageboards, and boards which do not should be forums.
 
+### Board categories
+
+Categories may be used to organize boards. When at least one category exists, only
+categorized boards are displayed in the site index and navigation header. When no
+categories exist, all visible boards are displayed.
+
 ### Post batching
 
 When a visitor creates a new post, and less than ten seconds have passed since
