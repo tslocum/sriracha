@@ -92,6 +92,81 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 		return
 	}
 
+	categoryDownID := PathInt(r, "/sriracha/category/down/")
+	if categoryDownID != 0 {
+		category := db.CategoryByID(categoryDownID)
+		if category != nil {
+			if category.Parent != nil {
+				for i, c := range category.Parent.Categories {
+					if c.ID == category.ID && i < len(category.Parent.Categories)-1 {
+						category.Parent.Categories[i], category.Parent.Categories[i+1] = category.Parent.Categories[i+1], category.Parent.Categories[i]
+						break
+					}
+				}
+				for i, c := range category.Parent.Categories {
+					c.Sort = i
+					db.UpdateCategory(c)
+				}
+			} else {
+				var rootCategories []*Category
+				for _, c := range data.Categories {
+					if c.Parent == nil {
+						rootCategories = append(rootCategories, c)
+					}
+				}
+				for i, c := range rootCategories {
+					if c.ID == category.ID && i < len(rootCategories)-1 {
+						rootCategories[i], rootCategories[i+1] = rootCategories[i+1], rootCategories[i]
+						break
+					}
+				}
+				for i, c := range rootCategories {
+					c.Sort = i
+					db.UpdateCategory(c)
+				}
+			}
+		}
+		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+		return
+	}
+	categoryUpID := PathInt(r, "/sriracha/category/up/")
+	if categoryUpID != 0 {
+		category := db.CategoryByID(categoryUpID)
+		if category != nil {
+			if category.Parent != nil {
+				for i, c := range category.Parent.Categories {
+					if c.ID == category.ID && i > 0 {
+						category.Parent.Categories[i], category.Parent.Categories[i-1] = category.Parent.Categories[i-1], category.Parent.Categories[i]
+						break
+					}
+				}
+				for i, c := range category.Parent.Categories {
+					c.Sort = i
+					db.UpdateCategory(c)
+				}
+			} else {
+				var rootCategories []*Category
+				for _, c := range data.Categories {
+					if c.Parent == nil {
+						rootCategories = append(rootCategories, c)
+					}
+				}
+				for i, c := range rootCategories {
+					if c.ID == category.ID && i > 0 {
+						rootCategories[i], rootCategories[i-1] = rootCategories[i-1], rootCategories[i]
+						break
+					}
+				}
+				for i, c := range rootCategories {
+					c.Sort = i
+					db.UpdateCategory(c)
+				}
+			}
+		}
+		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+		return
+	}
+
 	boardCategoryID := PathInt(r, "/sriracha/category/board/")
 	if boardCategoryID > 0 {
 		if s.forbidden(w, data, "category.update") {
