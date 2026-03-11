@@ -119,6 +119,7 @@
                 <tr>
                     <td colspan="3" class="rules">
                         <ul>
+                            <li>{{T "Helpful information is available in the %s." .GuideLink | HTML}}</li>
                             {{if and (or (and (eq .ReplyMode 0) (ne .Board.MaxSizeThread 0)) (and (ne .ReplyMode 0) (ne .Board.MaxSizeReply 0))) (ne (len .Board.Uploads) 0)}}
                                 <li>{{T "Supported file types are %s." (.Board.UploadTypesLabel $.Opt.Uploads)}}</li>
                                 <li>{{T "Maximum file size allowed is %s." (.Board.MaxSizeLabel (eq .ReplyMode 0))}}</li>

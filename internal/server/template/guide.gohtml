@@ -1,0 +1,97 @@
+{{template "imgboard_begin.gohtml" .}}
+<style type="text/css">
+.guidetitle {
+    font-size: 1.25rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+.guidetitle a {
+    color: inherit;
+    text-decoration: none;
+}
+.entry {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+ol, ul {
+    margin: 0;
+}
+</style>
+<div class="news">
+    <div style="text-align: center;margin-top: 0.75rem;margin-bottom: 1.5rem;">
+        <div class="reply" style="display: inline-block;text-align: left;margin: 0;padding: 1rem;">
+            <h1 style="text-align: center;margin: 0;">{{T "visitor guide" | Title}}</h1>
+
+            <span class="guidetitle">
+                <a id="quote" href="#quote">
+                    {{T "Quote"}}
+                </a>
+            </span><br>
+            <div class="entry">
+                {{T "Prefix a line of text with > (greater-than sign) to quote a message:"}}<br>
+                <span class="unkfunc">&gt; {{T "%s imageboard and forum server" "Sriracha"}}.</span>
+            </div><br>
+
+            <span class="guidetitle">
+                <a id="reply" href="#reply">
+                    {{T "Reply"}}
+                </a>
+            </span><br>
+            <div class="entry">
+                {{T "Type >> and a post ID to reply to a post:"}}<br>
+                <a href="#">&gt;&gt;9001</a>
+            </div><br>
+
+            <span class="guidetitle">
+                <a id="link" href="#link">
+                    {{T "Link"}}
+                </a>
+            </span><br>
+            <div class="entry">
+                {{T "Type >>> and a board directory to link to a board:"}}<br>
+                <a href="#">&gt;&gt;&gt;/dir/</a>
+            </div><br>
+
+            <span class="guidetitle">
+                <a id="tripcode" href="#tripcode">
+                    Tripcode
+                </a>
+            </span><br>
+            <div class="entry">
+                {{T "Type # (hash) and some text in the name field to add a global tripcode:"}}<br>
+                <div class="entry">{{T "Name"}}#sriracha -&gt; <span class="postername">{{T "Name"}}</span><span class="postertrip">!yBxFJKfXOU</span></div><br>
+
+                {{T "Type ## and some text in the name field to add a secure tripcode:"}}<br>
+                <div class="entry">{{T "Name"}}##sriracha -&gt; <span class="postername">{{T "Name"}}</span><span class="postertrip">!!81fzlA4z2Y</span></div><br>
+
+                {{T "Global tripcodes are the same on all websites. Secure tripcodes are unique."}}
+            </div><br>
+
+            <span class="guidetitle">
+                <a id="password" href="#password">
+                    {{T "Password"}}
+                </a>
+            </span><br>
+            <div class="entry">
+                {{T "If you enter a password when creating a post, you may delete it later."}}
+            </div><br>
+
+            <span class="guidetitle">
+                <a id="delete" href="#delete">
+                    {{T "Delete"}}
+                </a>
+            </span><br>
+            <div class="entry">
+                {{T "To delete a post:"}}
+                <ol>
+                    <li>{{T "Select the checkbox next to your post's ID."}}</li>
+                    <li>{{T "Scroll down to the bottom of the page."}}</li>
+                    <li>{{T "Enter your password."}}</li>
+                    <li>{{T "Click 'Delete'."}}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+{{template "imgboard_end.gohtml" .}}

@@ -89,6 +89,10 @@ func (data *templateData) ManageMode() bool {
 	return strings.HasPrefix(data.Template, "manage_")
 }
 
+func (data *templateData) GuideLink() string {
+	return `<a href="/guide.html" target="_blank">` + Get(data.Board, data.Account, "visitor guide") + `</a>`
+}
+
 func (data *templateData) BoardError(w http.ResponseWriter, message string) {
 	data.Template = "board_error"
 	data.Info = message

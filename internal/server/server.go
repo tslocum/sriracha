@@ -1413,6 +1413,7 @@ func (s *Server) rebuildAll(db *database.DB, verbose bool) {
 		s.rebuildBoard(db, b)
 	}
 	s.writeSiteIndex(db)
+	s.writeVisitorGuide(db)
 }
 
 // writeNewsItem writes a news entry page to disk.
@@ -1485,6 +1486,20 @@ func (s *Server) rebuildNews(db *database.DB) {
 		s.writeNewsItem(db, n)
 	}
 	s.writeNewsIndexes(db)
+}
+
+// writeVisitorGuide writes the visitor guide to disk.
+func (s *Server) writeVisitorGuide(db *database.DB) {
+	data := s.newTemplateData()
+	data.Template = "guide"
+	data.Boards = db.AllBoards()
+
+	file, err := os.OpenFile(filepath.Join(s.config.Root, "guide.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	if err != nil {
+		log.Fatal(err)
+	}
+	data.execute(file)
+	file.Close()
 }
 
 // writeSiteIndex writes the site index page to disk.
