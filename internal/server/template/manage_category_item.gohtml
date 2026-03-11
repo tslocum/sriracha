@@ -19,15 +19,15 @@
         {{end}}
         <li>
             <b>{{if ne .Name ""}}{{.Name}}{{else}}Category #{{.ID}}{{end}}</b>
-            {{if ne .Description ""}}({{.Description}}){{end}}
+            {{if ne .Description ""}} - {{.Description}}{{end}}
             {{if May "category.update" $.Account $.Opt.Access}}
                 [<a href="/sriracha/category/down/{{$category.ID}}">Down</a>]
                 [<a href="/sriracha/category/up/{{$category.ID}}">Up</a>]
-                [<a href="/sriracha/category/board/{{$category.ID}}">{{T "Add Board"}}</a>]
-                [<a href="/sriracha/category/{{$category.ID}}">{{T "Update Category"}}</a>]
+                [<a href="/sriracha/category/board/{{$category.ID}}">{{T "Add"}}</a>]
+                [<a href="/sriracha/category/{{$category.ID}}">{{T "Update"}}</a>]
             {{end}}
             {{if May "category.delete" $.Account $.Opt.Access}}
-                [<a href="/sriracha/category/delete/{{$category.ID}}" onclick="javascript:return confirm('Delete category?');">{{T "Delete Category"}}</a>]
+                [<a href="/sriracha/category/delete/{{$category.ID}}" onclick="javascript:return confirm('Delete category?');">{{T "Delete"}}</a>]
             {{end}}<br>
             {{if and (eq (len .Categories) 0) (eq (len .Boards) 0)}}
                 <ul><li>No boards or subcategories.</li></ul>
@@ -40,7 +40,7 @@
                             {{$board.Path}} {{$board.Name}}
                             [<a href="/sriracha/category/board/down/{{$category.ID}}/{{$board.ID}}">Down</a>]
                             [<a href="/sriracha/category/board/up/{{$category.ID}}/{{$board.ID}}">Up</a>]
-                            [<a href="/sriracha/category/board/delete/{{$category.ID}}/{{$board.ID}}">Remove Board</a>]
+                            [<a href="/sriracha/category/board/delete/{{$category.ID}}/{{$board.ID}}">Remove</a>]
                         </li>
                     {{end}}
                     </ul>

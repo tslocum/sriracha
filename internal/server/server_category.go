@@ -28,6 +28,48 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 	data.Manage.Category = &Category{}
 	data.Categories = db.AllCategories()
 
+	categoryAndBoard := func(s string) (*Category, *Board) {
+		split := strings.Split(s, "/")
+		if len(split) != 2 {
+			return nil, nil
+		}
+		categoryID, err := strconv.Atoi(split[0])
+		if err != nil {
+			return nil, nil
+		}
+		boardID, err := strconv.Atoi(split[1])
+		if err != nil {
+			return nil, nil
+		}
+		return db.CategoryByID(categoryID), db.BoardByID(boardID)
+	}
+
+	deleteBoardCategory := PathString(r, "/sriracha/category/board/delete/")
+	if deleteBoardCategory != "" {
+		if s.forbidden(w, data, "category.update") {
+			return
+		}
+		category, board := categoryAndBoard(deleteBoardCategory)
+		if category == nil {
+			data.ManageError("Invalid category.")
+			return
+		} else if board == nil {
+			data.ManageError("Invalid board.")
+			return
+		}
+
+		for i, b := range category.Boards {
+			if b.ID == board.ID {
+				category.Boards = append(category.Boards[:i], category.Boards[i+1:]...)
+				db.UpdateCategory(category)
+				break
+			}
+		}
+
+		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+		return
+	}
+
 	deleteCategoryID := PathInt(r, "/sriracha/category/delete/")
 	if deleteCategoryID > 0 {
 		if s.forbidden(w, data, "category.delete") {
@@ -46,23 +88,11 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 		return
 	}
 
-	categoryAndBoard := func(s string) (*Category, *Board) {
-		split := strings.Split(s, "/")
-		if len(split) != 2 {
-			return nil, nil
-		}
-		categoryID, err := strconv.Atoi(split[0])
-		if err != nil {
-			return nil, nil
-		}
-		boardID, err := strconv.Atoi(split[1])
-		if err != nil {
-			return nil, nil
-		}
-		return db.CategoryByID(categoryID), db.BoardByID(boardID)
-	}
 	boardDown := PathString(r, "/sriracha/category/board/down/")
 	if boardDown != "" {
+		if s.forbidden(w, data, "category.update") {
+			return
+		}
 		category, board := categoryAndBoard(boardDown)
 		if category != nil && board != nil {
 			for i, b := range category.Boards {
@@ -78,6 +108,9 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 	}
 	boardUp := PathString(r, "/sriracha/category/board/up/")
 	if boardUp != "" {
+		if s.forbidden(w, data, "category.update") {
+			return
+		}
 		category, board := categoryAndBoard(boardUp)
 		if category != nil && board != nil {
 			for i, b := range category.Boards {
@@ -94,6 +127,9 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 
 	categoryDownID := PathInt(r, "/sriracha/category/down/")
 	if categoryDownID != 0 {
+		if s.forbidden(w, data, "category.update") {
+			return
+		}
 		category := db.CategoryByID(categoryDownID)
 		if category != nil {
 			if category.Parent != nil {
@@ -131,6 +167,9 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 	}
 	categoryUpID := PathInt(r, "/sriracha/category/up/")
 	if categoryUpID != 0 {
+		if s.forbidden(w, data, "category.update") {
+			return
+		}
 		category := db.CategoryByID(categoryUpID)
 		if category != nil {
 			if category.Parent != nil {
