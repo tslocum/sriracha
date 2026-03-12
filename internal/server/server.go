@@ -164,6 +164,8 @@ type Server struct {
 	rebuildWaitGroup sync.WaitGroup
 	rebuildLock      sync.Mutex
 
+	httpClient *http.Client
+
 	httpServer *http.Server
 
 	lock sync.Mutex
@@ -171,6 +173,9 @@ type Server struct {
 
 // NewServer returns a new server.
 func NewServer() *Server {
+	httpClient := &http.Client{
+		Timeout: 15 * time.Second,
+	}
 	return &Server{
 		opt: ServerOptions{
 			Banners: make(map[int][]*Banner),
@@ -178,6 +183,7 @@ func NewServer() *Server {
 		},
 		shutdownNotifications: make(chan struct{}),
 		rebuildQueue:          make(chan *rebuildInfo),
+		httpClient:            httpClient,
 	}
 }
 
@@ -1006,6 +1012,12 @@ func (s *Server) deletePost(db *database.DB, p *Post) {
 	}
 
 	db.DeletePost(p.ID)
+}
+
+// httpResponse executes a HTTP request and returns the response.
+func (s *Server) httpResponse(r *http.Request) (*http.Response, error) {
+	r.Header.Set("User-Agent", "Sriracha imageboard and forum server")
+	return s.httpClient.Do(r)
 }
 
 // buildData returns a new template data instance.

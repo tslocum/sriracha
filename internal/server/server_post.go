@@ -2,7 +2,6 @@ package server
 
 import (
 	"bytes"
-	"context"
 	"crypto/sha512"
 	"encoding/base64"
 	"encoding/json"
@@ -644,7 +643,6 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 	if post.File == "" && len(b.Embeds) > 0 {
 		embed := FormString(r, "embed")
 		if embed != "" {
-			const embedTimeout = 15 * time.Second
 			for _, embedName := range b.Embeds {
 				var embedURL string
 				for _, info := range s.opt.Embeds {
@@ -657,18 +655,14 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 					continue
 				}
 
-				ctx, cancel := context.WithTimeout(context.Background(), embedTimeout)
-
 				url := strings.ReplaceAll(embedURL, "SRIRACHA_EMBED", embed)
-				req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+				req, err := http.NewRequest(http.MethodGet, url, nil)
 				if err != nil {
-					cancel()
 					continue
 				}
 
-				resp, err := http.DefaultClient.Do(req)
+				resp, err := s.httpResponse(req)
 				if err != nil {
-					cancel()
 					continue
 				}
 				defer resp.Body.Close()
@@ -676,20 +670,22 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 				info := &embedInfo{}
 				err = json.NewDecoder(resp.Body).Decode(&info)
 				if err != nil || info.Title == "" || info.Thumb == "" || info.HTML == "" || !strings.HasPrefix(info.Thumb, "https://") {
-					cancel()
 					continue
 				}
 
-				thumbResp, err := http.Get(info.Thumb)
+				thumbReq, err := http.NewRequest(http.MethodGet, info.Thumb, nil)
 				if err != nil {
-					cancel()
+					continue
+				}
+
+				thumbResp, err := s.httpResponse(thumbReq)
+				if err != nil {
 					continue
 				}
 				defer thumbResp.Body.Close()
 
 				buf, err := io.ReadAll(thumbResp.Body)
 				if err != nil {
-					cancel()
 					continue
 				}
 
@@ -697,7 +693,6 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 
 				fileExt := MIMEToExt(mimeType)
 				if fileExt == "" {
-					cancel()
 					continue
 				}
 
@@ -706,7 +701,6 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 
 				err = createPostThumbnail(post, bytes.NewReader(buf), mimeType, true, thumbPath)
 				if err != nil {
-					cancel()
 					continue
 				}
 
@@ -714,7 +708,6 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 				post.FileOriginal = embed
 				post.File = info.HTML
 				post.Thumb = thumbName
-				cancel()
 				break
 			}
 
