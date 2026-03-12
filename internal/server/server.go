@@ -135,6 +135,12 @@ func (opt *ServerOptions) DefaultLocaleName() string {
 	return opt.Locale
 }
 
+type cachedKeyword struct {
+	id int            // ID.
+	p  *regexp.Regexp // Pattern.
+	a  string         // Action.
+}
+
 // rebuildInfo contains information used to request rebuilding a thread.
 type rebuildInfo struct {
 	post *Post
@@ -146,6 +152,8 @@ type Server struct {
 	Boards []*Board
 
 	rangeBans map[*Ban]*regexp.Regexp
+
+	keywordCache map[int][]*cachedKeyword
 
 	config *Config
 	dbPool *pgxpool.Pool
@@ -177,6 +185,7 @@ func NewServer() *Server {
 		Timeout: 15 * time.Second,
 	}
 	return &Server{
+		keywordCache: make(map[int][]*cachedKeyword),
 		opt: ServerOptions{
 			Banners: make(map[int][]*Banner),
 			Rules:   make(map[int][]template.HTML),
@@ -934,6 +943,34 @@ func (s *Server) refreshRulesCache(db *database.DB) {
 	for id := range rules {
 		if len(rules[id]) == 0 {
 			delete(rules, id)
+		}
+	}
+}
+
+// refreshKeywordCache refreshes the keyword cache.
+func (s *Server) refreshKeywordCache(db *database.DB) {
+	for boardID := range s.keywordCache {
+		s.keywordCache[boardID] = s.keywordCache[boardID][:0]
+	}
+
+	for _, k := range db.AllKeywords() {
+		var err error
+		kw := &cachedKeyword{
+			id: k.ID,
+			a:  k.Action,
+		}
+		kw.p, err = regexp.Compile(k.Text)
+		if err != nil {
+			log.Fatalf("failed to parse keyword %s as regular expression: %s", k.Text, err)
+		}
+		for _, board := range k.Boards {
+			s.keywordCache[board.ID] = append(s.keywordCache[board.ID], kw)
+		}
+	}
+
+	for boardID := range s.keywordCache {
+		if len(s.keywordCache[boardID]) == 0 {
+			delete(s.keywordCache, boardID)
 		}
 	}
 }
@@ -2088,6 +2125,7 @@ func (s *Server) Run() error {
 	s.refreshBannerCache(db)
 	s.refreshRulesCache(db)
 	s.refreshCategoryCache(db)
+	s.refreshKeywordCache(db)
 	sv := db.GetString("sv") // Sriracha version.
 	if sv != SrirachaVersion {
 		if sv != "" {

@@ -811,77 +811,72 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			return
 		}
 
-		for _, keyword := range db.AllKeywords() {
-			if !keyword.HasBoard(b.ID) {
+		for _, k := range s.keywordCache[post.Board.ID] {
+			if !k.p.MatchString(post.Name) && !k.p.MatchString(post.Email) && !k.p.MatchString(post.Subject) && !k.p.MatchString(post.Message) {
 				continue
 			}
-			rgxp, err := regexp.Compile(keyword.Text)
-			if err != nil {
+
+			// Keyword matched. Parse action.
+			var action string
+			var banExpire int64
+			switch k.a {
+			case "hide":
+				action = "hide"
+			case "report":
+				action = "report"
+			case "delete":
+				action = "delete"
+			case "ban1h":
+				action = "ban"
+				banExpire = time.Now().Add(1 * time.Hour).Unix()
+			case "ban1d":
+				action = "ban"
+				banExpire = time.Now().Add(24 * time.Hour).Unix()
+			case "ban2d":
+				action = "ban"
+				banExpire = time.Now().Add(2 * 24 * time.Hour).Unix()
+			case "ban1w":
+				action = "ban"
+				banExpire = time.Now().Add(7 * 24 * time.Hour).Unix()
+			case "ban2w":
+				action = "ban"
+				banExpire = time.Now().Add(14 * 24 * time.Hour).Unix()
+			case "ban1m":
+				action = "ban"
+				banExpire = time.Now().Add(28 * 24 * time.Hour).Unix()
+			case "ban0":
+				action = "ban"
+			default:
 				s.deletePostFiles(post)
-				log.Fatalf("failed to compile regexp %s: %s", keyword.Text, err)
+				log.Fatalf("unknown keyword action: %s", k.a)
 			}
-			if rgxp.MatchString(post.Name) || rgxp.MatchString(post.Email) || rgxp.MatchString(post.Subject) || rgxp.MatchString(post.Message) {
-				var action string
-				var banExpire int64
-				switch keyword.Action {
-				case "hide":
-					action = "hide"
-				case "report":
-					action = "report"
-				case "delete":
-					action = "delete"
-				case "ban1h":
-					action = "ban"
-					banExpire = time.Now().Add(1 * time.Hour).Unix()
-				case "ban1d":
-					action = "ban"
-					banExpire = time.Now().Add(24 * time.Hour).Unix()
-				case "ban2d":
-					action = "ban"
-					banExpire = time.Now().Add(2 * 24 * time.Hour).Unix()
-				case "ban1w":
-					action = "ban"
-					banExpire = time.Now().Add(7 * 24 * time.Hour).Unix()
-				case "ban2w":
-					action = "ban"
-					banExpire = time.Now().Add(14 * 24 * time.Hour).Unix()
-				case "ban1m":
-					action = "ban"
-					banExpire = time.Now().Add(28 * 24 * time.Hour).Unix()
-				case "ban0":
-					action = "ban"
-				default:
-					s.deletePostFiles(post)
-					log.Fatalf("unknown keyword action: %s", keyword.Action)
-				}
 
-				switch action {
-				case "hide":
-					post.Moderated = 0
-				case "report":
-					addReport = true
-				case "ban":
-					existing := db.BanByIP(post.IP)
-					if existing == nil {
-						ban := &Ban{
-							IP:        post.IP,
-							Timestamp: time.Now().Unix(),
-							Expire:    banExpire,
-							Reason:    Get(b, data.Account, "Detected banned keyword."),
-						}
-						db.AddBan(ban)
-
-						s.log(db, nil, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info()+fmt.Sprintf(" Detected >>/keyword/%d", keyword.ID))
+			// Apply action.
+			switch action {
+			case "hide":
+				post.Moderated = 0
+			case "report":
+				addReport = true
+			case "ban":
+				existing := db.BanByIP(post.IP)
+				if existing == nil {
+					ban := &Ban{
+						IP:        post.IP,
+						Timestamp: time.Now().Unix(),
+						Expire:    banExpire,
+						Reason:    Get(b, data.Account, "Detected banned keyword."),
 					}
-				}
+					db.AddBan(ban)
 
-				if action == "delete" || action == "ban" {
-					s.deletePostFiles(post)
-
-					data := s.buildData(db, w, r)
-					data.BoardError(w, Get(b, data.Account, "Detected banned keyword."))
-					return
+					s.log(db, nil, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info()+fmt.Sprintf(" Detected >>/keyword/%d", k.id))
 				}
+			}
+			if action == "delete" || action == "ban" {
+				s.deletePostFiles(post)
+
+				data := s.buildData(db, w, r)
+				data.BoardError(w, Get(b, data.Account, "Detected banned keyword."))
+				return
 			}
 		}
 

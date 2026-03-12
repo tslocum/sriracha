@@ -80,6 +80,7 @@ func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.Respon
 			return
 		}
 		db.DeleteKeyword(k.ID)
+		s.refreshKeywordCache(db)
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted keyword #%d", k.ID), "")
 
@@ -114,6 +115,7 @@ func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.Respon
 			}
 
 			db.UpdateKeyword(data.Manage.Keyword)
+			s.refreshKeywordCache(db)
 
 			changes := printChanges(oldKeyword, *data.Manage.Keyword)
 			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/keyword/%d", data.Manage.Keyword.ID), changes)
@@ -144,6 +146,7 @@ func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.Respon
 		}
 
 		db.AddKeyword(k)
+		s.refreshKeywordCache(db)
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/keyword/%d", k.ID), "")
 
