@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-03-07 19:52+0000\n"
+"PO-Revision-Date: 2026-03-12 15:24+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -20,6 +20,9 @@ msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] "%d bericht overgeslagen. Klik op beantwoorden om te bekijken."
 msgstr[1] "%d berichten overgeslagen. Klik op beantwoorden om te bekijken."
+
+msgid "%s imageboard and forum server"
+msgstr "%s: afbeeldingsforum en forumserver"
 
 msgid "(Mentioned) %s"
 msgstr "%s vermeld"
@@ -67,6 +70,9 @@ msgstr "Banier toevoegen"
 msgid "Add Board"
 msgstr "Forum toevoegen"
 
+msgid "Add Category"
+msgstr "Categorie toevoegen"
+
 msgid "Add Keyword"
 msgstr "Trefwoord toevoegen"
 
@@ -75,6 +81,9 @@ msgstr "Nieuws toevoegen"
 
 msgid "Add Page"
 msgstr "Pagina toevoegen"
+
+msgid "Add board to %s"
+msgstr "Forum toevoegen aan %s"
 
 msgid "Add notice"
 msgstr "Opmerking toevoegen"
@@ -169,6 +178,9 @@ msgstr "Catalogus"
 msgid "Catalog mode"
 msgstr "Catalogusmodus"
 
+msgid "Categories"
+msgstr "Categorieën"
+
 msgid "Change Locale"
 msgstr "Taal wijzigen"
 
@@ -177,6 +189,12 @@ msgstr "Wachtwoord wĳzigen"
 
 msgid "Change Style"
 msgstr "Stijl aanpassen"
+
+msgid "Click 'Delete'."
+msgstr "Klik op verwijderen."
+
+msgid "Click a post ID next to 'No.' to reply quickly:"
+msgstr "Klik op een bericht-id naast het nummer om snel te antwoorden:"
 
 msgid "Click here to go back"
 msgstr "Klik hier om terug te gaan"
@@ -325,6 +343,9 @@ msgstr "Geen berichten toestaan van bezoekers"
 msgid "Disallow visitor threads"
 msgstr "Geen onderwerpen toestaan van bezoekers"
 
+msgid "Displayed in site index."
+msgstr "Wordt getoond op de overzichtspagina."
+
 msgid "Do not share with staff"
 msgstr "Niet delen met staf"
 
@@ -355,11 +376,17 @@ msgstr "Inschakelen — schrijven aan %s"
 msgid "Enable All"
 msgstr "Alles inschakelen"
 
+msgid "Enter your password."
+msgstr "Voer je wachtwoord in."
+
 msgid "Error: %s"
 msgstr "Foutmelding: %s"
 
 msgid "Exit"
 msgstr "Afsluiten"
+
+msgid "Expand"
+msgstr "Uitklappen"
 
 msgid "Expires"
 msgstr "Vervalt op"
@@ -391,6 +418,12 @@ msgstr "Galerij"
 msgid "Global"
 msgstr "Globaal"
 
+msgid ""
+"Global tripcodes are the same on all websites. Secure tripcodes are unique."
+msgstr ""
+"Globale toegangscodes zijn op alle websites gelijk; beveiligde codes zijn "
+"uniek."
+
 msgid "HTML content of the page. Go HTML template actions are supported."
 msgstr "De html-inhoud van de pagina. Html-sjabloonacties zijn toegestaan."
 
@@ -402,6 +435,9 @@ msgstr "De opgemaakte tekst die dient te worden getoond op berichtformulieren."
 
 msgid "Help translate Sriracha"
 msgstr "Helpen met vertalen"
+
+msgid "Helpful information is available in the %s."
+msgstr "Nuttige informatie is beschikbaar op %s."
 
 msgid "Hidden"
 msgstr "Verborgen"
@@ -436,6 +472,11 @@ msgstr ""
 
 msgid "Idenifiers"
 msgstr "Identificaties"
+
+msgid "If you enter a password when creating a post, you may delete it later."
+msgstr ""
+"Als je een bericht van een wachtwoord voorziet, kun je het later nog "
+"verwijderen."
 
 msgid "Imageboard"
 msgstr "Afbeeldingsforum"
@@ -487,11 +528,17 @@ msgstr ""
 msgid "Leave blank to keep current password."
 msgstr "Laat leeg om het huidige wachtwoord te behouden."
 
+msgid "Left-click a thumbnail to expand an attachment."
+msgstr "Klik op een miniatuur om de bijlage te tonen."
+
 msgid "Lift"
 msgstr "Opheffen"
 
 msgid "Lift File Ban"
 msgstr "Bestandsverbanning opheffen"
+
+msgid "Link"
+msgstr "Link"
 
 msgid "Link to boards in page header."
 msgstr "Een link naar subfora in de paginakop."
@@ -516,6 +563,9 @@ msgstr "Beheren"
 
 msgid "Manage Banners"
 msgstr "Banieren beheren"
+
+msgid "Manage Categories"
+msgstr "Categorieën beheren"
 
 msgid "Manage Subscriptions"
 msgstr "Abonnementen beheren"
@@ -603,6 +653,10 @@ msgstr "Geheugen"
 
 msgid "Message"
 msgstr "Bericht"
+
+msgid "Middle-click a thumbnail to open an attachment in a new tab."
+msgstr ""
+"Middelklik op een miniatuur om de bijlage op een nieuw tabblad te openen."
 
 msgid "Min Email Length"
 msgstr "Minimale e-maillengte"
@@ -789,6 +843,12 @@ msgstr "Overboard"
 msgid "Pages"
 msgstr "Pagina's"
 
+msgid "Parent"
+msgstr "Bovenliggend"
+
+msgid "Parent category."
+msgstr "De bovenliggende categorie."
+
 msgid "Password"
 msgstr "Wachtwoord"
 
@@ -836,8 +896,15 @@ msgstr "Berichten met bijlagen"
 msgid "Preferences"
 msgstr "Instellingen"
 
+msgid "Prefix a line of text with > (greater-than sign) to quote a message:"
+msgstr ""
+"Voorzie een tekstregel van > (groter-danteken) om een bericht te citeren:"
+
 msgid "Previous"
 msgstr "Vorige"
+
+msgid "Quote"
+msgstr "Citeren"
 
 msgid "Reason"
 msgstr "Reden"
@@ -862,6 +929,9 @@ msgid ""
 "Relative file path where the page is located, excluding the .html suffix."
 msgstr ""
 "De relatieve bestandslocatie van de pacina, zonder het html-achtervoegsel."
+
+msgid "Remove"
+msgstr "Verwijderen"
 
 msgid "Replies"
 msgstr "Antwoorden"
@@ -905,12 +975,18 @@ msgstr "Rol"
 msgid "Rules"
 msgstr "Regels"
 
+msgid "Scroll down to the bottom of the page."
+msgstr "Ga naar de onderkant van de pagina."
+
 msgid ""
 "Seconds between automatic refreshes when viewing a thread. Set to 0 to "
 "disable."
 msgstr ""
 "Het aantal seconden tussen automatische herladingen tijdens het bekijken van "
 "een draadje. Stel in op 0 om uit te schakelen."
+
+msgid "Select the checkbox next to your post's ID."
+msgstr "Kruis het vakje naast de bericht-id aan."
 
 #. TRANSLATORS: The word 'Settings' is used in reference to system-wide settings.
 msgid "Settings"
@@ -995,11 +1071,29 @@ msgstr "Miniatuurhoogte"
 msgid "Thumbnail Width"
 msgstr "Miniatuurbreedte"
 
+msgid "To delete a post:"
+msgstr "Om een bericht te verwijderen:"
+
 msgid "Truncate"
 msgstr "Inkorten"
 
 msgid "Type"
 msgstr "Type"
+
+msgid "Type >> and a post ID to reply to a post:"
+msgstr "Typ >> en een bericht-id om een bericht te beantwoorden:"
+
+msgid "Type >>> and a board directory to link to a board:"
+msgstr "Typ >>> en een forummap om een forum te linken:"
+
+msgid "Type # (hash) and some text in the name field to add a global tripcode:"
+msgstr ""
+"Typ # (hekje) en tekst in het naamveld om een globale toegangscode toe te "
+"voegen:"
+
+msgid "Type ## and some text in the name field to add a secure tripcode:"
+msgstr ""
+"Typ ## en tekst in het naamveld om een beveiligde toegangscode toe te voegen:"
 
 msgid "Unknown"
 msgstr "Onbekend"
@@ -1061,6 +1155,9 @@ msgstr ""
 
 msgid "Visitors may upload the selected types of files."
 msgstr "Bezoekers kunnen deze bestandstypen uploaden."
+
+msgid "visitor guide"
+msgstr "bezoekersgids"
 
 msgid "When %s is mentioned."
 msgstr "Als %s vermeld wordt."

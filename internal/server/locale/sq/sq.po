@@ -21,6 +21,9 @@ msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] "%d postim i fshehur. Kliko Pergjigju per ta pare."
 msgstr[1] "%d postime te fshehura. Kliko Pergjigju per ti pare."
 
+msgid "%s imageboard and forum server"
+msgstr ""
+
 msgid "(Mentioned) %s"
 msgstr ""
 
@@ -66,6 +69,9 @@ msgstr ""
 msgid "Add Board"
 msgstr "Shto Bordin"
 
+msgid "Add Category"
+msgstr ""
+
 msgid "Add Keyword"
 msgstr "Shto Fjale Kyce"
 
@@ -73,6 +79,9 @@ msgid "Add News"
 msgstr "Shto Lajm"
 
 msgid "Add Page"
+msgstr ""
+
+msgid "Add board to %s"
 msgstr ""
 
 msgid "Add notice"
@@ -167,6 +176,9 @@ msgstr "Katalogu"
 msgid "Catalog mode"
 msgstr ""
 
+msgid "Categories"
+msgstr ""
+
 msgid "Change Locale"
 msgstr "Ndrysho Te Dhenat e Vendodhjes"
 
@@ -175,6 +187,12 @@ msgstr "Ndrysho Fjalekalimin"
 
 msgid "Change Style"
 msgstr "Ndrysho Stilin"
+
+msgid "Click 'Delete'."
+msgstr ""
+
+msgid "Click a post ID next to 'No.' to reply quickly:"
+msgstr ""
 
 msgid "Click here to go back"
 msgstr "Kliko ketu per te shkuar prapa"
@@ -323,6 +341,9 @@ msgstr "Mos lejo postimet e vizitoreve"
 msgid "Disallow visitor threads"
 msgstr "Mos lejo temat e vizitoreve"
 
+msgid "Displayed in site index."
+msgstr ""
+
 msgid "Do not share with staff"
 msgstr "Mos e ndani me stafin"
 
@@ -353,11 +374,17 @@ msgstr "Aktivizo - Shkruaj te %s"
 msgid "Enable All"
 msgstr "Aktivizo Te Gjitha"
 
+msgid "Enter your password."
+msgstr ""
+
 msgid "Error: %s"
 msgstr "Gabim: %s"
 
 msgid "Exit"
 msgstr "Dalje"
+
+msgid "Expand"
+msgstr ""
 
 msgid "Expires"
 msgstr "Skadon"
@@ -389,6 +416,10 @@ msgstr "Galeria"
 msgid "Global"
 msgstr "Globale"
 
+msgid ""
+"Global tripcodes are the same on all websites. Secure tripcodes are unique."
+msgstr ""
+
 msgid "HTML content of the page. Go HTML template actions are supported."
 msgstr ""
 
@@ -400,6 +431,9 @@ msgstr "Teksti i formatuar ne HTML qe shfaqet ne formularin e postimit te ri."
 
 msgid "Help translate Sriracha"
 msgstr "Ndihmoni ne perkthimin e Sriracha-s"
+
+msgid "Helpful information is available in the %s."
+msgstr ""
 
 msgid "Hidden"
 msgstr ""
@@ -435,6 +469,9 @@ msgstr ""
 
 msgid "Idenifiers"
 msgstr "Identifikuesit"
+
+msgid "If you enter a password when creating a post, you may delete it later."
+msgstr ""
 
 msgid "Imageboard"
 msgstr "Bordimazhi"
@@ -486,11 +523,17 @@ msgstr ""
 msgid "Leave blank to keep current password."
 msgstr "Lere bosh per te mbajtur fjalekalimin aktual."
 
+msgid "Left-click a thumbnail to expand an attachment."
+msgstr ""
+
 msgid "Lift"
 msgstr "Hiqe"
 
 msgid "Lift File Ban"
 msgstr "Hiq denimin e skedarit"
+
+msgid "Link"
+msgstr ""
 
 msgid "Link to boards in page header."
 msgstr "Linqet per bordet ne krye te faqes."
@@ -514,6 +557,9 @@ msgid "Manage"
 msgstr "Menaxho"
 
 msgid "Manage Banners"
+msgstr ""
+
+msgid "Manage Categories"
 msgstr ""
 
 msgid "Manage Subscriptions"
@@ -603,6 +649,9 @@ msgstr "Memorja"
 
 msgid "Message"
 msgstr "Mesazhi"
+
+msgid "Middle-click a thumbnail to open an attachment in a new tab."
+msgstr ""
 
 msgid "Min Email Length"
 msgstr "Madhsia Minimale e E-Postes"
@@ -787,6 +836,12 @@ msgstr "Overboard-i"
 msgid "Pages"
 msgstr ""
 
+msgid "Parent"
+msgstr ""
+
+msgid "Parent category."
+msgstr ""
+
 msgid "Password"
 msgstr "Fjalekalimi"
 
@@ -835,8 +890,14 @@ msgstr "Postimet me bashkangjitje"
 msgid "Preferences"
 msgstr "Preferencat"
 
+msgid "Prefix a line of text with > (greater-than sign) to quote a message:"
+msgstr ""
+
 msgid "Previous"
 msgstr "Para"
+
+msgid "Quote"
+msgstr ""
 
 msgid "Reason"
 msgstr "Arsyja"
@@ -858,6 +919,9 @@ msgstr "Regular expression per t'u kerkuar kur krijohet nje postim i ri."
 
 msgid ""
 "Relative file path where the page is located, excluding the .html suffix."
+msgstr ""
+
+msgid "Remove"
 msgstr ""
 
 msgid "Replies"
@@ -902,12 +966,18 @@ msgstr "Roli"
 msgid "Rules"
 msgstr "Rregullat"
 
+msgid "Scroll down to the bottom of the page."
+msgstr ""
+
 msgid ""
 "Seconds between automatic refreshes when viewing a thread. Set to 0 to "
 "disable."
 msgstr ""
 "Sekonda midis rifreskimeve automatike gjate shikimit te nje teme diskutimi. "
 "Vendoseni ne 0 per ta caktivizuar."
+
+msgid "Select the checkbox next to your post's ID."
+msgstr ""
 
 #. TRANSLATORS: The word 'Settings' is used in reference to system-wide settings.
 msgid "Settings"
@@ -992,11 +1062,26 @@ msgstr "Gjatesia e Thumbnail"
 msgid "Thumbnail Width"
 msgstr "Gjeresia e Thumbnail"
 
+msgid "To delete a post:"
+msgstr ""
+
 msgid "Truncate"
 msgstr "Shkurto"
 
 msgid "Type"
 msgstr "Tipi"
+
+msgid "Type >> and a post ID to reply to a post:"
+msgstr ""
+
+msgid "Type >>> and a board directory to link to a board:"
+msgstr ""
+
+msgid "Type # (hash) and some text in the name field to add a global tripcode:"
+msgstr ""
+
+msgid "Type ## and some text in the name field to add a secure tripcode:"
+msgstr ""
 
 msgid "Unknown"
 msgstr "E panjohur"
@@ -1058,6 +1143,9 @@ msgstr ""
 
 msgid "Visitors may upload the selected types of files."
 msgstr "Vizitoret mund te ngarkojne llojet e zgjedhura te skedareve."
+
+msgid "visitor guide"
+msgstr ""
 
 msgid "When %s is mentioned."
 msgstr ""

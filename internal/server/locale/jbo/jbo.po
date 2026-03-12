@@ -14,6 +14,9 @@ msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] ""
 
+msgid "%s imageboard and forum server"
+msgstr ""
+
 msgid "(Mentioned) %s"
 msgstr ""
 
@@ -59,6 +62,9 @@ msgstr ""
 msgid "Add Board"
 msgstr ""
 
+msgid "Add Category"
+msgstr ""
+
 msgid "Add Keyword"
 msgstr ""
 
@@ -66,6 +72,9 @@ msgid "Add News"
 msgstr ""
 
 msgid "Add Page"
+msgstr ""
+
+msgid "Add board to %s"
 msgstr ""
 
 msgid "Add notice"
@@ -158,6 +167,9 @@ msgstr ""
 msgid "Catalog mode"
 msgstr ""
 
+msgid "Categories"
+msgstr ""
+
 msgid "Change Locale"
 msgstr ""
 
@@ -165,6 +177,12 @@ msgid "Change Password"
 msgstr ""
 
 msgid "Change Style"
+msgstr ""
+
+msgid "Click 'Delete'."
+msgstr ""
+
+msgid "Click a post ID next to 'No.' to reply quickly:"
 msgstr ""
 
 msgid "Click here to go back"
@@ -305,6 +323,9 @@ msgstr ""
 msgid "Disallow visitor threads"
 msgstr ""
 
+msgid "Displayed in site index."
+msgstr ""
+
 msgid "Do not share with staff"
 msgstr ""
 
@@ -335,10 +356,16 @@ msgstr ""
 msgid "Enable All"
 msgstr ""
 
+msgid "Enter your password."
+msgstr ""
+
 msgid "Error: %s"
 msgstr ""
 
 msgid "Exit"
+msgstr ""
+
+msgid "Expand"
 msgstr ""
 
 msgid "Expires"
@@ -371,6 +398,10 @@ msgstr ""
 msgid "Global"
 msgstr ""
 
+msgid ""
+"Global tripcodes are the same on all websites. Secure tripcodes are unique."
+msgstr ""
+
 msgid "HTML content of the page. Go HTML template actions are supported."
 msgstr ""
 
@@ -381,6 +412,9 @@ msgid "HTML-formatted text shown in the new post form."
 msgstr ""
 
 msgid "Help translate Sriracha"
+msgstr ""
+
+msgid "Helpful information is available in the %s."
 msgstr ""
 
 msgid "Hidden"
@@ -412,6 +446,9 @@ msgid ""
 msgstr ""
 
 msgid "Idenifiers"
+msgstr ""
+
+msgid "If you enter a password when creating a post, you may delete it later."
 msgstr ""
 
 msgid "Imageboard"
@@ -460,10 +497,16 @@ msgstr ""
 msgid "Leave blank to keep current password."
 msgstr ""
 
+msgid "Left-click a thumbnail to expand an attachment."
+msgstr ""
+
 msgid "Lift"
 msgstr ""
 
 msgid "Lift File Ban"
+msgstr ""
+
+msgid "Link"
 msgstr ""
 
 msgid "Link to boards in page header."
@@ -488,6 +531,9 @@ msgid "Manage"
 msgstr ""
 
 msgid "Manage Banners"
+msgstr ""
+
+msgid "Manage Categories"
 msgstr ""
 
 msgid "Manage Subscriptions"
@@ -567,6 +613,9 @@ msgid "Memory"
 msgstr ""
 
 msgid "Message"
+msgstr ""
+
+msgid "Middle-click a thumbnail to open an attachment in a new tab."
 msgstr ""
 
 msgid "Min Email Length"
@@ -736,6 +785,12 @@ msgstr ""
 msgid "Pages"
 msgstr ""
 
+msgid "Parent"
+msgstr ""
+
+msgid "Parent category."
+msgstr ""
+
 msgid "Password"
 msgstr ""
 
@@ -781,7 +836,13 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
+msgid "Prefix a line of text with > (greater-than sign) to quote a message:"
+msgstr ""
+
 msgid "Previous"
+msgstr ""
+
+msgid "Quote"
 msgstr ""
 
 msgid "Reason"
@@ -804,6 +865,9 @@ msgstr ""
 
 msgid ""
 "Relative file path where the page is located, excluding the .html suffix."
+msgstr ""
+
+msgid "Remove"
 msgstr ""
 
 msgid "Replies"
@@ -848,9 +912,15 @@ msgstr ""
 msgid "Rules"
 msgstr ""
 
+msgid "Scroll down to the bottom of the page."
+msgstr ""
+
 msgid ""
 "Seconds between automatic refreshes when viewing a thread. Set to 0 to "
 "disable."
+msgstr ""
+
+msgid "Select the checkbox next to your post's ID."
 msgstr ""
 
 #. TRANSLATORS: The word 'Settings' is used in reference to system-wide settings.
@@ -934,10 +1004,25 @@ msgstr ""
 msgid "Thumbnail Width"
 msgstr ""
 
+msgid "To delete a post:"
+msgstr ""
+
 msgid "Truncate"
 msgstr ""
 
 msgid "Type"
+msgstr ""
+
+msgid "Type >> and a post ID to reply to a post:"
+msgstr ""
+
+msgid "Type >>> and a board directory to link to a board:"
+msgstr ""
+
+msgid "Type # (hash) and some text in the name field to add a global tripcode:"
+msgstr ""
+
+msgid "Type ## and some text in the name field to add a secure tripcode:"
 msgstr ""
 
 msgid "Unknown"
@@ -995,6 +1080,9 @@ msgid ""
 msgstr ""
 
 msgid "Visitors may upload the selected types of files."
+msgstr ""
+
+msgid "visitor guide"
 msgstr ""
 
 msgid "When %s is mentioned."
