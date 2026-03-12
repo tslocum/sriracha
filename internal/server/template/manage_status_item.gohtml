@@ -2,7 +2,7 @@
     <form method="post" action="/sriracha/" style="display: inline-block;">
         <input type="hidden" name="board" value="{{.Post.Board.ID}}">
         <input type="hidden" name="approve" value="{{.Post.ID}}">
-        <input type="submit" value="Approve">
+        <input type="submit" value="{{T "Approve"}}">
     </form>
     <form method="post" action="/sriracha/mod/delete/{{.Post.ID}}" style="display: inline-block;" onsubmit="return confirm('Delete No.{{.Post.ID}}?');">
         <input type="hidden" name="confirmation" value="1">
@@ -15,7 +15,7 @@
         <input type="submit" value="{{T "Delete & ban"}}"> &nbsp;
     </form>
     {{if ne .Manage.Report nil}}
-        {{.Manage.Report.Count}} report{{if ne .Manage.Report.Count 1}}s{{end}}
+        {{TN "%d report" "%d reports" .Manage.Report.Count .Manage.Report.Count}}
     {{end}}
 </div>
 {{template "imgboard_post.gohtml" $}}

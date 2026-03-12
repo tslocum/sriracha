@@ -15,6 +15,11 @@ msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d report"
+msgid_plural "%d reports"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%s imageboard and forum server"
 msgstr ""
 
@@ -112,6 +117,9 @@ msgid "Appearance"
 msgstr ""
 
 msgid "Appears in page title and header."
+msgstr ""
+
+msgid "Approve"
 msgstr ""
 
 msgid "Artwork title:"
