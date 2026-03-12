@@ -16,6 +16,7 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -655,8 +656,8 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 					continue
 				}
 
-				url := strings.ReplaceAll(embedURL, "SRIRACHA_EMBED", embed)
-				req, err := http.NewRequest(http.MethodGet, url, nil)
+				requestURL := strings.ReplaceAll(embedURL, "SRIRACHA_EMBED", embed)
+				req, err := http.NewRequest(http.MethodGet, requestURL, nil)
 				if err != nil {
 					continue
 				}
@@ -673,14 +674,44 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 					continue
 				}
 
+				var backupThumb string
+				u, err := url.Parse(embed)
+				if err == nil {
+					switch strings.ToLower(u.Host) {
+					// YouTube returns low quality 4:3 thumbnails by default. Replace with high quality 16:9 thumbnails.
+					case "youtube.com", "www.youtube.com", "youtu.be":
+						videoID := u.Query().Get("v")
+						if videoID != "" && AlphaNumericAndSymbols.MatchString(videoID) {
+							backupThumb = info.Thumb
+							info.Thumb = "https://img.youtube.com/vi/" + videoID + "/maxresdefault.jpg"
+						}
+					}
+				}
+
 				thumbReq, err := http.NewRequest(http.MethodGet, info.Thumb, nil)
 				if err != nil {
 					continue
 				}
 
 				thumbResp, err := s.httpResponse(thumbReq)
-				if err != nil {
-					continue
+				respOK := thumbResp != nil && thumbResp.StatusCode >= 200 && thumbResp.StatusCode < 300
+				if err != nil || !respOK {
+					if !respOK {
+						thumbResp.Body.Close()
+					}
+					if backupThumb == "" {
+						continue
+					}
+
+					// Retry using backup thumbnail URL.
+					thumbReq, err = http.NewRequest(http.MethodGet, backupThumb, nil)
+					if err != nil {
+						continue
+					}
+					thumbResp, err = s.httpResponse(thumbReq)
+					if err != nil {
+						continue
+					}
 				}
 				defer thumbResp.Body.Close()
 
