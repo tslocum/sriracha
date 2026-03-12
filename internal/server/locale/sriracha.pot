@@ -978,6 +978,9 @@ msgstr ""
 msgid "To delete a post:"
 msgstr ""
 
+msgid "Tripcode"
+msgstr ""
+
 msgid "Truncate"
 msgstr ""
 
