@@ -16,12 +16,27 @@
 ol, ul {
     margin: 0;
 }
+.js {
+    display: none;
+}
 </style>
 <hr>
 <div class="news">
     <div style="text-align: center;margin-top: 1.5rem;margin-bottom: 1.5rem;">
         <div class="reply" style="display: inline-block;text-align: left;margin: 0;padding: 1rem;">
             <h2 style="text-align: center;margin: 0;">{{T "visitor guide" | Title}}</h2><br>
+
+            <div class="js">
+                <span class="guidetitle">
+                    <a id="expand" href="#expand">
+                        {{T "Expand"}}
+                    </a>
+                </span><br>
+                <div class="entry">
+                    {{T "Left-click a thumbnail to expand an attachment."}}<br>
+                    {{T "Middle-click a thumbnail to open an attachment in a new tab."}}
+                </div><br>
+            </div>
 
             <span class="guidetitle">
                 <a id="quote" href="#quote">
@@ -41,6 +56,13 @@ ol, ul {
             <div class="entry">
                 {{T "Type >> and a post ID to reply to a post:"}}<br>
                 <div class="entry"><a href="#">&gt;&gt;9001</a></div>
+
+                <div class="js">
+                    <br>{{T "Click a post ID next to 'No.' to reply quickly:"}}<br>
+                    <div class="entry"><span class="reflink">
+                        <span class="postername">Anonymous</span> 2025/01/01<wbr>(Wed)<wbr>12:30:00 <a href="#">No.</a><a href="#">9001</a>
+                    </span></div>
+                </div>
             </div><br>
 
             <span class="guidetitle">
@@ -91,6 +113,12 @@ ol, ul {
                     <li>{{T "Click 'Delete'."}}</li>
                 </ol>
             </div>
+            <script type="text/javascript">
+            var js = document.getElementsByClassName("js");
+            for (const el of js) {
+                el.style.display = "block";
+            }
+            </script>
         </div>
     </div>
 </div>
