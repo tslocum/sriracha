@@ -679,7 +679,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 				if err == nil {
 					switch strings.ToLower(u.Host) {
 					// YouTube returns low quality 4:3 thumbnails by default. Replace with high quality 16:9 thumbnails.
-					case "youtube.com", "www.youtube.com", "youtu.be":
+					case "youtube.com", "www.youtube.com", "youtu.be", "www.youtu.be":
 						videoID := u.Query().Get("v")
 						if videoID != "" && AlphaNumericAndSymbols.MatchString(videoID) {
 							backupThumb = info.Thumb
@@ -688,11 +688,11 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 					}
 				}
 
+				// Fetch thumbnail.
 				thumbReq, err := http.NewRequest(http.MethodGet, info.Thumb, nil)
 				if err != nil {
 					continue
 				}
-
 				thumbResp, err := s.httpResponse(thumbReq)
 				respOK := thumbResp != nil && thumbResp.StatusCode >= 200 && thumbResp.StatusCode < 300
 				if err != nil || !respOK {
@@ -713,9 +713,8 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 						continue
 					}
 				}
-				defer thumbResp.Body.Close()
-
 				buf, err := io.ReadAll(thumbResp.Body)
+				thumbResp.Body.Close()
 				if err != nil {
 					continue
 				}
