@@ -134,21 +134,6 @@ func setFileAndThumb(p *Post, fileExt string, thumbExt string) {
 	p.Thumb = fileIDString + "s." + thumbExt
 }
 
-func setPostFileAttributes(p *Post, fileHeader *multipart.FileHeader, file multipart.File) error {
-	hash := sha512.New384()
-	file.Seek(0, 0)
-	_, err := io.Copy(hash, file)
-	if err != nil {
-		return err
-	}
-	var sum [sha512.Size384]byte
-	hash.Sum(sum[:0])
-	p.FileHash = base64.URLEncoding.EncodeToString(sum[:])
-
-	p.FileSize = fileHeader.Size
-	return nil
-}
-
 func (s *Server) loadPostForm(db *database.DB, r *http.Request, p *Post) error {
 	limitString := func(v string, limit int) string {
 		if len(v) > limit {
@@ -332,10 +317,7 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 
 	setFileAndThumb(p, fileExt, thumbExt)
 
-	err = setPostFileAttributes(p, fileHeader, formFile)
-	if err != nil {
-		return err
-	}
+	p.FileSize = fileHeader.Size
 	if oekakiPost && FormBool(r, "oekaki") {
 		p.FileOriginal = FormString(r, "title")
 	}
@@ -354,7 +336,11 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 	}
 
 	formFile.Seek(0, 0)
-	wrote, err := io.Copy(file, formFile)
+
+	hash := sha512.New384()
+	tee := io.TeeReader(formFile, hash)
+
+	wrote, err := io.Copy(file, tee)
 	if err != nil {
 		log.Fatal(err)
 	} else if wrote != fileHeader.Size {
@@ -362,6 +348,10 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 	}
 
 	file.Close()
+
+	var sum [sha512.Size384]byte
+	hash.Sum(sum[:0])
+	p.FileHash = base64.URLEncoding.EncodeToString(sum[:])
 
 	if oekakiPost {
 		formThumb, formThumbHeader, err := r.FormFile("thumb")
@@ -769,17 +759,20 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 	if post.File == "" && len(files) > 0 {
 		err = s.loadPostFile(db, r, post, files[0])
 		if err != nil {
+			s.deletePostFiles(post)
+
 			data := s.buildData(db, w, r)
 			data.BoardError(w, err.Error())
 			return
 		} else if len(files) > 1 {
 			remainingFiles = files[1:]
 		}
-
 	}
 
 	duplicate := s.checkDuplicateFileHash(db, post)
 	if duplicate != nil {
+		s.deletePostFiles(post)
+
 		var postLink string
 		if duplicate.Moderated != ModeratedHidden {
 			postLink = fmt.Sprintf(` <a href="%sres/%d.html#%d">here</a>`, duplicate.Board.Path(), duplicate.Thread(), duplicate.ID)
@@ -805,6 +798,8 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 	var addReport bool
 	if !staffPost {
 		if parentPost != nil && parentPost.Locked {
+			s.deletePostFiles(post)
+
 			data := s.buildData(db, w, r)
 			data.BoardError(w, Get(b, data.Account, "That thread is locked."))
 			return
