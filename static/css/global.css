@@ -79,6 +79,13 @@ img, audio, video {
 	padding: 1em 0.5em 1em 0.5em;
 }
 
+.forumpost {
+	padding-left: 0.25em;
+	padding-right: 0.25em;
+	margin-left: -0.25em;
+	margin-right: -0.25em;
+}
+
 .forumpost::after, .thread::after {
 	content: "";
 	clear: both;
