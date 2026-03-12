@@ -30,12 +30,12 @@
     </table>
     {{if and (gt (len .Manage.Pages) 1) $mayUpdate}}
         <br>
-        <form method="get" action="/sriracha/page/rebuild/0"><input type="submit" value="{{T "Rebuild All"}}"></form><br><br>
+        <form method="get" action="/sriracha/page/rebuild/0"><input type="submit" value="{{T "Rebuild All"}}"></form><br>
     {{end}}
 {{end}}
 {{if or (and (eq .Manage.Page.ID 0) $mayAdd) (and (ne .Manage.Page.ID 0) $mayUpdate)}}
     {{if eq .Manage.Page.ID 0}}
-        <br>
+        <br><br>
         <details>
             <summary>{{T "Add Page"}}</summary>
             <div>
