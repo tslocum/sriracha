@@ -74,7 +74,7 @@
 			{{$bannerType = .Board.ID}}
 		{{else if eq .Template "news"}}
 			{{$bannerType = -2}}
-		{{else if or (or (eq .Template "line") (eq .Template "page")) (eq .Template "index")}}
+		{{else if or (or (or (eq .Template "line") (eq .Template "page")) (eq .Template "index")) (eq .Template "guide")}}
 			{{$bannerType = -3}}
 		{{end}}
 		{{$banner := Banner (index .Opt.Banners $bannerType)}}
