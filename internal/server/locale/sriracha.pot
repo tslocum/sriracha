@@ -44,6 +44,12 @@ msgstr ""
 msgid "2 Weeks"
 msgstr ""
 
+msgid "A file %s or larger is required."
+msgstr ""
+
+msgid "A file is required."
+msgstr ""
+
 msgid "Accounts"
 msgstr ""
 
@@ -111,6 +117,9 @@ msgid "Allow all"
 msgstr ""
 
 msgid "Allow moderators to post site news."
+msgstr ""
+
+msgid "An attachment is required."
 msgstr ""
 
 msgid "Appearance"
@@ -373,6 +382,9 @@ msgstr ""
 msgid "Expires"
 msgstr ""
 
+msgid "Failed to create thumbnail: %s"
+msgstr ""
+
 msgid "Failed to embed media."
 msgstr ""
 
@@ -383,6 +395,9 @@ msgid "File Types"
 msgstr ""
 
 msgid "File name."
+msgstr ""
+
+msgid "File uploads are not allowed."
 msgstr ""
 
 msgid "Files"
@@ -754,6 +769,11 @@ msgstr ""
 msgid "Oekaki Width"
 msgstr ""
 
+msgid "Only %d file may be uploaded at once."
+msgid_plural "Only %d files may be uploaded at once."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Optional."
 msgstr ""
 
@@ -779,6 +799,30 @@ msgid "Path"
 msgstr ""
 
 msgid "Permanently ban uploaded file."
+msgstr ""
+
+msgid "Please enter a name."
+msgstr ""
+
+msgid "Please enter a name at least %d characters long."
+msgstr ""
+
+msgid "Please enter a subject."
+msgstr ""
+
+msgid "Please enter a subject at least %d characters long."
+msgstr ""
+
+msgid "Please enter a message."
+msgstr ""
+
+msgid "Please enter a message at least %d characters long."
+msgstr ""
+
+msgid "Please enter an email address."
+msgstr ""
+
+msgid "Please enter an email address at least %d characters long."
 msgstr ""
 
 msgid "Please wait %s before creating a new post."
@@ -1003,6 +1047,9 @@ msgid "Unknown"
 msgstr ""
 
 msgid "Unsubscribe"
+msgstr ""
+
+msgid "Unsupported file format."
 msgstr ""
 
 msgid "Unused"

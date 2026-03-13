@@ -5,6 +5,7 @@ import (
 	"crypto/sha512"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"html"
 	"html/template"
@@ -49,17 +50,17 @@ func resizeImage(b *Board, r io.Reader, mimeType string) (image.Image, error) {
 	case "image/jpeg", "image/pjpeg":
 		img, err = jpeg.Decode(r)
 		if err != nil {
-			return nil, fmt.Errorf("unsupported filetype")
+			return nil, errors.New(Get(b, nil, "Unsupported file format."))
 		}
 	case "image/gif":
 		img, err = gif.Decode(r)
 		if err != nil {
-			return nil, fmt.Errorf("unsupported filetype")
+			return nil, errors.New(Get(b, nil, "Unsupported file format."))
 		}
 	case "image/png":
 		img, err = png.Decode(r)
 		if err != nil {
-			return nil, fmt.Errorf("unsupported filetype")
+			return nil, errors.New(Get(b, nil, "Unsupported file format."))
 		}
 	}
 	return resize.Thumbnail(uint(b.ThumbWidth), uint(b.ThumbHeight), img, resize.Lanczos3), nil
@@ -76,17 +77,17 @@ func writeImage(img image.Image, mimeType string, filePath string) error {
 	case "image/jpeg":
 		err = jpeg.Encode(file, img, nil)
 		if err != nil {
-			return fmt.Errorf("unsupported filetype")
+			return errors.New(Get(nil, nil, "Unsupported file format."))
 		}
 	case "image/gif":
 		err = gif.Encode(file, img, nil)
 		if err != nil {
-			return fmt.Errorf("unsupported filetype")
+			return errors.New(Get(nil, nil, "Unsupported file format."))
 		}
 	case "image/png":
 		err = png.Encode(file, img)
 		if err != nil {
-			return fmt.Errorf("unsupported filetype")
+			return errors.New(Get(nil, nil, "Unsupported file format."))
 		}
 	}
 	return nil
@@ -95,7 +96,7 @@ func writeImage(img image.Image, mimeType string, filePath string) error {
 func createPostThumbnail(p *Post, file io.Reader, mimeType string, mediaOverlay bool, thumbPath string) error {
 	thumbImg, err := resizeImage(p.Board, file, mimeType)
 	if err != nil {
-		return fmt.Errorf("unsupported filetype")
+		return errors.New(Get(p.Board, nil, "Unsupported file format."))
 	}
 
 	if mediaOverlay {
@@ -107,7 +108,7 @@ func createPostThumbnail(p *Post, file io.Reader, mimeType string, mediaOverlay 
 
 	err = writeImage(thumbImg, mimeType, thumbPath)
 	if err != nil {
-		return fmt.Errorf("unsupported filetype")
+		return errors.New(Get(p.Board, nil, "Unsupported file format."))
 	}
 	return nil
 }
@@ -152,31 +153,27 @@ func (s *Server) loadPostForm(db *database.DB, r *http.Request, p *Post) error {
 
 	if len(p.Name) < p.Board.MinName {
 		if p.Board.MinName == 1 {
-			return fmt.Errorf("please enter a name")
-		} else {
-			return fmt.Errorf("name too short: must be at least %d characters in length", p.Board.MinName)
+			return errors.New(Get(p.Board, nil, "Please enter a name."))
 		}
+		return errors.New(Get(p.Board, nil, "Please enter a name at least %d characters long.", p.Board.MinName))
 	}
 	if len(p.Email) < p.Board.MinEmail {
 		if p.Board.MinEmail == 1 {
-			return fmt.Errorf("please enter an email")
-		} else {
-			return fmt.Errorf("email too short: must be at least %d characters in length", p.Board.MinEmail)
+			return errors.New(Get(p.Board, nil, "Please enter an email address."))
 		}
+		return errors.New(Get(p.Board, nil, "Please enter an email address at least %d characters long.", p.Board.MinEmail))
 	}
 	if len(p.Subject) < p.Board.MinSubject && (p.Board.Type == TypeImageboard || p.Parent == 0) {
 		if p.Board.MinSubject == 1 {
-			return fmt.Errorf("please enter a subject")
-		} else {
-			return fmt.Errorf("subject too short: must be at least %d characters in length", p.Board.MinSubject)
+			return errors.New(Get(p.Board, nil, "Please enter a subject."))
 		}
+		return errors.New(Get(p.Board, nil, "Please enter a subject at least %d characters long.", p.Board.MinSubject))
 	}
 	if len(p.Message) < p.Board.MinMessage {
 		if p.Board.MinMessage == 1 {
-			return fmt.Errorf("please enter a message")
-		} else {
-			return fmt.Errorf("message too short: must be at least %d characters in length", p.Board.MinMessage)
+			return errors.New(Get(p.Board, nil, "Please enter a message."))
 		}
+		return errors.New(Get(p.Board, nil, "Please enter a message at least %d characters long.", p.Board.MinMessage))
 	}
 
 	if strings.ContainsRune(p.Name, '#') {
@@ -220,9 +217,9 @@ func (s *Server) loadPostFiles(r *http.Request, p *Post) ([]*multipart.FileHeade
 	files := r.MultipartForm.File["file"]
 	if len(files) > p.Board.Files {
 		if p.Board.Files == 0 {
-			return nil, fmt.Errorf("file attachments are not allowed")
+			return nil, errors.New(Get(p.Board, nil, "File uploads are not allowed."))
 		}
-		return nil, fmt.Errorf("too many files: only %d files may be uploaded at once", p.Board.Files)
+		return nil, errors.New(GetN(p.Board, nil, "Only %d file may be uploaded at once.", "Only %d files may be uploaded at once.", p.Board.Files))
 	}
 	return files, nil
 }
@@ -240,13 +237,13 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 	} else if minSize > 0 && fileHeader.Size < minSize {
 		if minSize == 1 {
 			if len(p.Board.Embeds) == 0 {
-				return fmt.Errorf("a file is required")
+				return errors.New(Get(p.Board, nil, "A file is required."))
 			}
-			return fmt.Errorf("a file or embed is required")
+			return errors.New(Get(p.Board, nil, "An attachment is required."))
 		}
-		return fmt.Errorf("a file %s or larger is required", FormatFileSize(minSize))
+		return errors.New(Get(p.Board, nil, "A file %s or larger is required.", FormatFileSize(minSize)))
 	} else if fileHeader.Size > maxSize {
-		return fmt.Errorf("file too large: maximum file size allowed is %s", FormatFileSize(maxSize))
+		return errors.New(Get(p.Board, nil, "Maximum file size allowed is %s.", FormatFileSize(maxSize)))
 	}
 
 	formFile, err := fileHeader.Open()
@@ -300,7 +297,7 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 				}
 			}
 			db.Plugin = ""
-			return fmt.Errorf("unsupported filetype")
+			return errors.New(Get(p.Board, nil, "Unsupported file format."))
 		}
 	}
 
@@ -385,7 +382,7 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 		formFile.Seek(0, 0)
 		imgWidth, imgHeight := s.imageDimensions(formFile)
 		if imgWidth == 0 || imgHeight == 0 {
-			return fmt.Errorf("unsupported filetype")
+			return errors.New(Get(p.Board, nil, "Unsupported file format."))
 		}
 		p.FileWidth, p.FileHeight = imgWidth, imgHeight
 
@@ -402,7 +399,7 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 	cmd := exec.Command("ffprobe", "-hide_banner", "-loglevel", "error", "-of", "csv=p=0", "-select_streams", "v", "-show_entries", "stream=width,height", srcPath)
 	out, err := cmd.Output()
 	if err != nil {
-		return fmt.Errorf("failed to create thumbnail: %s", err)
+		return errors.New(Get(p.Board, nil, "Failed to create thumbnail: %s", err))
 	}
 	split := bytes.Split(bytes.TrimSpace(out), []byte(","))
 	if len(split) >= 2 {
@@ -422,7 +419,7 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 	cmd = exec.Command("ffmpeg", "-hide_banner", "-loglevel", "error", "-ss", quarterDuration, "-i", srcPath, "-frames:v", "1", "-vf", fmt.Sprintf("scale=w=%d:h=%d:force_original_aspect_ratio=decrease", p.Board.ThumbWidth, p.Board.ThumbHeight), thumbPath)
 	_, err = cmd.Output()
 	if err != nil {
-		return fmt.Errorf("failed to create thumbnail: %s", err)
+		return errors.New(Get(p.Board, nil, "Failed to create thumbnail: %s", err))
 	}
 
 	cmd = exec.Command("ffprobe", "-hide_banner", "-loglevel", "error", "-of", "csv=p=0", "-select_streams", "v", "-show_entries", "stream=width,height", thumbPath)
@@ -452,12 +449,10 @@ func (s *Server) checkDuplicateFileHash(db *database.DB, post *Post) *Post {
 	if post.FileHash == "" || post.Board.Instances == 0 {
 		return nil
 	}
-	var allowed int
 	var filterBoard *Board
-	if post.Board.Instances > 0 {
-		allowed = post.Board.Instances
-	} else {
-		allowed = -post.Board.Instances
+	allowed := post.Board.Instances
+	if allowed < 0 {
+		allowed *= -1
 		filterBoard = post.Board
 	}
 	matches := db.PostsByFileHash(post.FileHash, filterBoard)

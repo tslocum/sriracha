@@ -14,3 +14,15 @@ func Get(board *Board, account *Account, str string, vars ...interface{}) string
 	}
 	return gotext.GetD(locale, str, vars...)
 }
+
+func GetN(board *Board, account *Account, singular string, plural string, v int) string {
+	var locale string
+	if account != nil && account.Locale != "" {
+		locale = "sriracha-" + account.Locale
+	} else if board != nil && board.Locale != "" {
+		locale = "sriracha-" + board.Locale
+	} else {
+		locale = "sriracha"
+	}
+	return gotext.GetND(locale, singular, plural, v, v)
+}
