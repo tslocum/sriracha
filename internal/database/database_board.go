@@ -9,7 +9,12 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+// boardCache is a cache of all boards.
+var boardCache []*Board
+
 func (db *DB) AddBoard(b *Board) {
+	boardCache = nil
+
 	var reports int
 	if b.Reports {
 		reports = 1
@@ -164,40 +169,36 @@ func (db *DB) UniqueUserPosts(b *Board) int {
 }
 
 func (db *DB) AllBoards() []*Board {
+	if boardCache != nil {
+		return boardCache
+	}
+	boardCache = []*Board{}
+
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM board ORDER BY dir ASC")
 	if err != nil {
 		log.Fatalf("failed to select all boards: %s", err)
 	}
-	var boards []*Board
 	for rows.Next() {
 		b := &Board{}
 		err := scanBoard(b, rows)
 		if err != nil {
 			log.Fatalf("failed to select all boards: %s", err)
 		}
-		boards = append(boards, b)
+		boardCache = append(boardCache, b)
 	}
-	for _, b := range boards {
+	for _, b := range boardCache {
 		db.setBoardAttributes(b)
 	}
-	return boards
-}
 
-func (db *DB) DeleteBoard(id int) {
-	if id == 0 {
-		return
-	}
-	_, err := db.conn.Exec(context.Background(), "DELETE FROM board WHERE id = $1", id)
-	if err != nil {
-		log.Fatalf("failed to delete board: %s", err)
-	}
-	db.DeleteSubscriptionsByBoard(id)
+	return boardCache
 }
 
 func (db *DB) UpdateBoard(b *Board) {
 	if b.ID <= 0 {
 		log.Fatalf("invalid board ID %d", b.ID)
 	}
+	boardCache = nil
+
 	var reports int
 	if b.Reports {
 		reports = 1
@@ -281,6 +282,19 @@ func (db *DB) UpdateBoard(b *Board) {
 			log.Fatalf("failed to insert board embeds: %s", err)
 		}
 	}
+}
+
+func (db *DB) DeleteBoard(id int) {
+	if id == 0 {
+		return
+	}
+	boardCache = nil
+
+	_, err := db.conn.Exec(context.Background(), "DELETE FROM board WHERE id = $1", id)
+	if err != nil {
+		log.Fatalf("failed to delete board: %s", err)
+	}
+	db.DeleteSubscriptionsByBoard(id)
 }
 
 func scanBoard(b *Board, row pgx.Row) error {
