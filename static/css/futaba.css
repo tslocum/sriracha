@@ -63,10 +63,6 @@ hr {
 	font-weight: 800;
 }
 
-.footer {
-	font-size: 12px;
-}
-
 .passvalid {
 	background: #EEAA88;
 	text-align: center;
@@ -83,12 +79,6 @@ hr {
 	text-align: center;
 	padding-bottom: 4px;
 
-}
-
-.managehead {
-	background: #AAAA66;
-	color: #400000;
-	padding: 0;
 }
 
 .postlists {
@@ -119,7 +109,6 @@ hr {
 
 .filetitle {
 	background: inherit;
-	font-size: 1.2em;
 	color: #CC1105;
 	font-weight: 800;
 }
@@ -159,19 +148,12 @@ hr {
 	color: #800000;
 }
 
-.replytitle {
-	font-size: 1.2em;
-	color: #CC1105;
-	font-weight: 800;
-}
-
 .commentpostername {
 	color: #117743;
 	font-weight: 800;
 }
 
 .thumbnailmsg {
-	font-size: small;
 	color: #800000;
 }
 
