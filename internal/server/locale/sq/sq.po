@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-02-13 04:31+0000\n"
-"Last-Translator: moshibobu <moshibobu@noreply.codeberg.org>\n"
+"PO-Revision-Date: 2026-03-13 04:53+0000\n"
+"Last-Translator: tslocum <tslocum@noreply.codeberg.org>\n"
 "Language-Team: Albanian <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/sq/>\n"
 "Language: sq\n"
@@ -20,6 +20,11 @@ msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] "%d postim i fshehur. Kliko Pergjigju per ta pare."
 msgstr[1] "%d postime te fshehura. Kliko Pergjigju per ti pare."
+
+msgid "%d report"
+msgid_plural "%d reports"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "%s imageboard and forum server"
 msgstr ""
@@ -44,6 +49,12 @@ msgstr "2 Dite"
 
 msgid "2 Weeks"
 msgstr "2 Muaj"
+
+msgid "A file %s or larger is required."
+msgstr ""
+
+msgid "A file is required."
+msgstr ""
 
 msgid "Accounts"
 msgstr "Llogarite"
@@ -114,11 +125,17 @@ msgstr "Lejo te gjitha"
 msgid "Allow moderators to post site news."
 msgstr "Lejoni moderatoret te postojne lajme ne faqe."
 
+msgid "An attachment is required."
+msgstr ""
+
 msgid "Appearance"
 msgstr "Dukja"
 
 msgid "Appears in page title and header."
 msgstr "Shfaqet ne titullin dhe ne krye te faqes."
+
+msgid "Approve"
+msgstr ""
 
 msgid "Artwork title:"
 msgstr "Titulli i vepres artistike:"
@@ -389,6 +406,9 @@ msgstr ""
 msgid "Expires"
 msgstr "Skadon"
 
+msgid "Failed to create thumbnail: %s"
+msgstr ""
+
 msgid "Failed to embed media."
 msgstr "Deshtoi integrimi i medias."
 
@@ -399,6 +419,9 @@ msgid "File Types"
 msgstr "Llojet e Skedarit"
 
 msgid "File name."
+msgstr ""
+
+msgid "File uploads are not allowed."
 msgstr ""
 
 msgid "Files"
@@ -827,6 +850,11 @@ msgstr "Gjatesia e Oekaki"
 msgid "Oekaki Width"
 msgstr "Gjeresia e Oekaki"
 
+msgid "Only %d file may be uploaded at once."
+msgid_plural "Only %d files may be uploaded at once."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Optional."
 msgstr "Opcionale."
 
@@ -853,6 +881,30 @@ msgstr ""
 
 msgid "Permanently ban uploaded file."
 msgstr "Deno pergjithmone skedarin e ngarkuar."
+
+msgid "Please enter a name."
+msgstr ""
+
+msgid "Please enter a name at least %d characters long."
+msgstr ""
+
+msgid "Please enter a subject."
+msgstr ""
+
+msgid "Please enter a subject at least %d characters long."
+msgstr ""
+
+msgid "Please enter a message."
+msgstr ""
+
+msgid "Please enter a message at least %d characters long."
+msgstr ""
+
+msgid "Please enter an email address."
+msgstr ""
+
+msgid "Please enter an email address at least %d characters long."
+msgstr ""
 
 msgid "Please wait %s before creating a new post."
 msgstr "Ju lutem prisni %s para se te krijoni nje postim te ri."
@@ -1065,6 +1117,9 @@ msgstr "Gjeresia e Thumbnail"
 msgid "To delete a post:"
 msgstr ""
 
+msgid "Tripcode"
+msgstr ""
+
 msgid "Truncate"
 msgstr "Shkurto"
 
@@ -1087,6 +1142,9 @@ msgid "Unknown"
 msgstr "E panjohur"
 
 msgid "Unsubscribe"
+msgstr ""
+
+msgid "Unsupported file format."
 msgstr ""
 
 msgid "Unused"

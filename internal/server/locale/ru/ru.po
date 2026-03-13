@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-06-05 07:58+0000\n"
-"Last-Translator: yurtpage <yurtpage@noreply.codeberg.org>\n"
+"PO-Revision-Date: 2026-03-13 04:53+0000\n"
+"Last-Translator: tslocum <tslocum@noreply.codeberg.org>\n"
 "Language-Team: Russian <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/ru/>\n"
 "Language: ru\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.11.4\n"
+"X-Generator: Weblate 5.15.2\n"
 
 msgid "%d new post"
 msgid_plural "%d new posts"
@@ -23,6 +23,12 @@ msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] "%d сообщение не показано. Нажмите Ответить для просмотра."
 msgstr[1] "%d сообщения не показано. Нажмите Ответить для просмотра."
 msgstr[2] "%d сообщений не показано. Нажмите Ответить для просмотра."
+
+msgid "%d report"
+msgid_plural "%d reports"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 msgid "%s imageboard and forum server"
 msgstr ""
@@ -46,6 +52,12 @@ msgid "2 Days"
 msgstr ""
 
 msgid "2 Weeks"
+msgstr ""
+
+msgid "A file %s or larger is required."
+msgstr ""
+
+msgid "A file is required."
 msgstr ""
 
 msgid "Accounts"
@@ -117,10 +129,16 @@ msgstr ""
 msgid "Allow moderators to post site news."
 msgstr ""
 
+msgid "An attachment is required."
+msgstr ""
+
 msgid "Appearance"
 msgstr ""
 
 msgid "Appears in page title and header."
+msgstr ""
+
+msgid "Approve"
 msgstr ""
 
 msgid "Artwork title:"
@@ -383,6 +401,9 @@ msgstr ""
 msgid "Expires"
 msgstr ""
 
+msgid "Failed to create thumbnail: %s"
+msgstr ""
+
 msgid "Failed to embed media."
 msgstr "Не удалось встроить медиа."
 
@@ -393,6 +414,9 @@ msgid "File Types"
 msgstr ""
 
 msgid "File name."
+msgstr ""
+
+msgid "File uploads are not allowed."
 msgstr ""
 
 msgid "Files"
@@ -788,6 +812,12 @@ msgstr ""
 msgid "Oekaki Width"
 msgstr ""
 
+msgid "Only %d file may be uploaded at once."
+msgid_plural "Only %d files may be uploaded at once."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
 msgid "Optional."
 msgstr ""
 
@@ -813,6 +843,30 @@ msgid "Path"
 msgstr ""
 
 msgid "Permanently ban uploaded file."
+msgstr ""
+
+msgid "Please enter a name."
+msgstr ""
+
+msgid "Please enter a name at least %d characters long."
+msgstr ""
+
+msgid "Please enter a subject."
+msgstr ""
+
+msgid "Please enter a subject at least %d characters long."
+msgstr ""
+
+msgid "Please enter a message."
+msgstr ""
+
+msgid "Please enter a message at least %d characters long."
+msgstr ""
+
+msgid "Please enter an email address."
+msgstr ""
+
+msgid "Please enter an email address at least %d characters long."
 msgstr ""
 
 msgid "Please wait %s before creating a new post."
@@ -1019,6 +1073,9 @@ msgstr ""
 msgid "To delete a post:"
 msgstr ""
 
+msgid "Tripcode"
+msgstr ""
+
 msgid "Truncate"
 msgstr ""
 
@@ -1041,6 +1098,9 @@ msgid "Unknown"
 msgstr "Неизвестен"
 
 msgid "Unsubscribe"
+msgstr ""
+
+msgid "Unsupported file format."
 msgstr ""
 
 msgid "Unused"

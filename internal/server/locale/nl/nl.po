@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-03-12 15:24+0000\n"
+"PO-Revision-Date: 2026-03-13 15:13+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -20,6 +20,11 @@ msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] "%d bericht overgeslagen. Klik op beantwoorden om te bekijken."
 msgstr[1] "%d berichten overgeslagen. Klik op beantwoorden om te bekijken."
+
+msgid "%d report"
+msgid_plural "%d reports"
+msgstr[0] "%d melding"
+msgstr[1] "%d meldingen"
 
 msgid "%s imageboard and forum server"
 msgstr "%s: afbeeldingsforum en forumserver"
@@ -44,6 +49,12 @@ msgstr "2 dagen"
 
 msgid "2 Weeks"
 msgstr "2 weken"
+
+msgid "A file %s or larger is required."
+msgstr "Er is een bestand van %s of groter vereist."
+
+msgid "A file is required."
+msgstr "Er is een bestand vereist."
 
 msgid "Accounts"
 msgstr "Accounts"
@@ -116,11 +127,17 @@ msgstr "Alles toestaan"
 msgid "Allow moderators to post site news."
 msgstr "Sta toe dat moderators nieuws mogen plaatsen."
 
+msgid "An attachment is required."
+msgstr "Er is een bijlage vereist."
+
 msgid "Appearance"
 msgstr "Vormgeving"
 
 msgid "Appears in page title and header."
 msgstr "Wordt getoond in de paginatitel en -kop."
+
+msgid "Approve"
+msgstr "Goedkeuren"
 
 msgid "Artwork title:"
 msgstr "Naam van illustraties:"
@@ -391,6 +408,9 @@ msgstr "Uitklappen"
 msgid "Expires"
 msgstr "Vervalt op"
 
+msgid "Failed to create thumbnail: %s"
+msgstr "De miniatuur kan niet worden samengesteld: %s"
+
 msgid "Failed to embed media."
 msgstr "De media kan niet worden ingevoegd."
 
@@ -402,6 +422,9 @@ msgstr "Bestandstypen"
 
 msgid "File name."
 msgstr "Bestandsnaam."
+
+msgid "File uploads are not allowed."
+msgstr "Het uploaden van bestanden is niet toegestaan."
 
 msgid "Files"
 msgstr "Bestanden"
@@ -834,6 +857,11 @@ msgstr "Oekaki-hoogte"
 msgid "Oekaki Width"
 msgstr "Oekaki-breedte"
 
+msgid "Only %d file may be uploaded at once."
+msgid_plural "Only %d files may be uploaded at once."
+msgstr[0] "Je mag slechts %d bestand per keer uploaden."
+msgstr[1] "Je mag slechts %d bestanden per keer uploaden."
+
 msgid "Optional."
 msgstr "Optioneel."
 
@@ -860,6 +888,30 @@ msgstr "Locatie"
 
 msgid "Permanently ban uploaded file."
 msgstr "Verban geüploade bestanden."
+
+msgid "Please enter a name."
+msgstr "Voer een naam in."
+
+msgid "Please enter a name at least %d characters long."
+msgstr "Voer een naam van ten minste %d tekens in."
+
+msgid "Please enter a subject."
+msgstr "Voer een onderwerp in."
+
+msgid "Please enter a subject at least %d characters long."
+msgstr "Voer een onderwerp van ten minste %d tekens in."
+
+msgid "Please enter a message."
+msgstr "Voer een bericht in."
+
+msgid "Please enter a message at least %d characters long."
+msgstr "Voer een bericht van ten minste %d tekens in."
+
+msgid "Please enter an email address."
+msgstr "Voer een e-mailadres in."
+
+msgid "Please enter an email address at least %d characters long."
+msgstr "Voer een e-mailadres van ten minste %d tekens in."
 
 msgid "Please wait %s before creating a new post."
 msgstr "Wacht %s alvorens een nieuw bericht op te stellen."
@@ -1074,6 +1126,9 @@ msgstr "Miniatuurbreedte"
 msgid "To delete a post:"
 msgstr "Om een bericht te verwijderen:"
 
+msgid "Tripcode"
+msgstr "Toegangscode"
+
 msgid "Truncate"
 msgstr "Inkorten"
 
@@ -1100,6 +1155,9 @@ msgstr "Onbekend"
 
 msgid "Unsubscribe"
 msgstr "Deabonneren"
+
+msgid "Unsupported file format."
+msgstr "Niet-ondersteund bestandsformaat."
 
 msgid "Unused"
 msgstr "Ongebruikt"
