@@ -664,17 +664,21 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 					continue
 				}
 
+				// YouTube returns a low quality 4:3 thumbnail by default.
+				// Replace with high quality 16:9 thumbnail when available.
 				var backupThumb string
 				u, err := url.Parse(embed)
 				if err == nil {
+					var ytVideoID string
 					switch strings.ToLower(u.Host) {
-					// YouTube returns low quality 4:3 thumbnails by default. Replace with high quality 16:9 thumbnails.
-					case "youtube.com", "www.youtube.com", "youtu.be", "www.youtu.be":
-						videoID := u.Query().Get("v")
-						if videoID != "" && AlphaNumericAndSymbols.MatchString(videoID) {
-							backupThumb = info.Thumb
-							info.Thumb = "https://img.youtube.com/vi/" + videoID + "/maxresdefault.jpg"
-						}
+					case "youtube.com", "www.youtube.com":
+						ytVideoID = u.Query().Get("v")
+					case "youtu.be", "www.youtu.be":
+						ytVideoID = strings.TrimPrefix(u.Path, "/")
+					}
+					if ytVideoID != "" && AlphaNumericAndSymbols.MatchString(ytVideoID) {
+						backupThumb = info.Thumb
+						info.Thumb = "https://img.youtube.com/vi/" + ytVideoID + "/maxresdefault.jpg"
 					}
 				}
 
