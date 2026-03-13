@@ -1,3 +1,7 @@
+1.5.3:
+- Cache boards in memory
+- Copy uploaded file and calculate file hash simultaneously
+
 1.5.2:
 - Fetch high quality YouTube video thumbnails
 
