@@ -69,6 +69,8 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 			embeds = append(embeds, embedName+" "+embedURL)
 		}
 		db.SaveMultiString("embeds", embeds)
+		db.ClearBoardCache()
+		s.removeInvalidBoardOptions(db)
 
 		changes := printChanges(oldOpt, s.opt)
 		if changes != "" {
@@ -179,6 +181,8 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 			}
 		}
 		db.SaveMultiString("embeds", embeds)
+		db.ClearBoardCache()
+		s.removeInvalidBoardOptions(db)
 
 		changes := printChanges(oldOpt, s.opt)
 		if changes != "" {

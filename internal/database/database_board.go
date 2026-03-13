@@ -297,6 +297,10 @@ func (db *DB) DeleteBoard(id int) {
 	db.DeleteSubscriptionsByBoard(id)
 }
 
+func (db *DB) ClearBoardCache() {
+	boardCache = nil
+}
+
 func scanBoard(b *Board, row pgx.Row) error {
 	var (
 		reports   int

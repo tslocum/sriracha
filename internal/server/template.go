@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"io"
 	"log"
+	"maps"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -278,9 +279,7 @@ var templateFuncMaps map[string]template.FuncMap
 
 func newTemplateFuncMap(locale string) template.FuncMap {
 	f := make(template.FuncMap)
-	for name, v := range templateFuncMap {
-		f[name] = v
-	}
+	maps.Copy(f, templateFuncMap)
 
 	domain := "sriracha"
 	if locale != "" {

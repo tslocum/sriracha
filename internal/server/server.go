@@ -607,6 +607,8 @@ func (s *Server) loadServerConfig() error {
 			s.opt.Embeds = append(s.opt.Embeds, [2]string{split[0], split[1]})
 		}
 	}
+	db.ClearBoardCache()
+	s.removeInvalidBoardOptions(db)
 
 	s.reloadBans(db)
 
@@ -1590,6 +1592,32 @@ func (s *Server) writeSiteIndex(db *database.DB) {
 	}
 	data.execute(indexFile)
 	indexFile.Close()
+}
+
+// removeInvalidBoardOptions removes invalid board options from the database.
+func (s *Server) removeInvalidBoardOptions(db *database.DB) {
+	for _, b := range db.AllBoards() {
+		var keep []string
+		var modified bool
+		for _, boardEmbed := range b.Embeds {
+			var found bool
+			for _, serverEmbed := range s.opt.Embeds {
+				if serverEmbed[0] == boardEmbed {
+					found = true
+					break
+				}
+			}
+			if !found {
+				modified = true
+				continue
+			}
+			keep = append(keep, boardEmbed)
+		}
+		if modified {
+			b.Embeds = keep
+			db.UpdateBoard(b)
+		}
+	}
 }
 
 // reloadBans refreshes the range ban regular expression cache.
