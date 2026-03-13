@@ -1,3 +1,6 @@
+1.5.4:
+- Set cache control headers when serving files directly
+
 1.5.3:
 - Cache boards in memory
 - Copy uploaded file and calculate file hash simultaneously

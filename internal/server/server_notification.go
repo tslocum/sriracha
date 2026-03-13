@@ -23,7 +23,7 @@ type notification struct {
 }
 
 func (s *Server) queueNotifications(db *database.DB, p *Post) {
-	if s.config.MailAddress == "" {
+	if !s.opt.Notifications {
 		return
 	}
 

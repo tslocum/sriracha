@@ -1840,6 +1840,21 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+var cachePattern = regexp.MustCompile(`^.*\.(aac|avi|css|flac|gif|ico|jpg|js|mp3|mp4|ogg|opus|png|svg|swf|wasm|wav|webm|webp|woff)$`)
+
+func withCacheHeader(fs http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if cachePattern.MatchString(r.URL.Path) {
+			// Cache static files.
+			w.Header().Set("Cache-Control", "public, max-age=1209600, immutable")
+		} else {
+			// Revalidate HTML files.
+			w.Header().Set("Cache-Control", "public, no-cache")
+		}
+		fs.ServeHTTP(w, r)
+	}
+}
+
 // listen listens for HTTP connections and sends the error returned by the HTTP
 // server via the provided channel.
 func (s *Server) listen(httpErrors chan error) {
@@ -1849,9 +1864,9 @@ func (s *Server) listen(httpErrors chan error) {
 	}
 
 	mux := http.NewServeMux()
-	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	mux.Handle("/static/", withCacheHeader(http.StripPrefix("/static/", http.FileServer(http.Dir("static")))))
 	mux.HandleFunc("/sriracha/", s.serve)
-	mux.Handle("/", http.FileServer(http.Dir(s.config.Root)))
+	mux.Handle("/", withCacheHeader(http.FileServer(http.Dir(s.config.Root))))
 
 	s.httpServer = &http.Server{
 		Addr:    s.config.Serve,
@@ -1931,8 +1946,10 @@ func (s *Server) handleRebuild() {
 			s.writeOverboard(db)
 		}
 		s.writeSiteIndex(db)
-		for _, info := range pending {
-			s.queueNotifications(db, info.post)
+		if s.opt.Notifications {
+			for _, info := range pending {
+				s.queueNotifications(db, info.post)
+			}
 		}
 		db.Commit()
 
