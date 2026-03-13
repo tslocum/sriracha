@@ -12,6 +12,41 @@ import (
 // boardCache is a cache of all boards.
 var boardCache []*Board
 
+func (db *DB) setBoardAttributes(b *Board) {
+	rows, err := db.conn.Query(context.Background(), "SELECT upload FROM board_upload WHERE board = $1", b.ID)
+	if err != nil {
+		log.Fatalf("failed to select board uploads: %s", err)
+	}
+	b.Uploads = nil
+	for rows.Next() {
+		var mimeType string
+		err := rows.Scan(&mimeType)
+		if err != nil {
+			log.Fatalf("failed to select board uploads: %s", err)
+		}
+		for _, u := range db.config.UploadTypes() {
+			if u.MIME == mimeType {
+				b.Uploads = append(b.Uploads, u.MIME)
+				break
+			}
+		}
+	}
+
+	rows, err = db.conn.Query(context.Background(), "SELECT embed FROM board_embed WHERE board = $1", b.ID)
+	if err != nil {
+		log.Fatalf("failed to select board embeds: %s", err)
+	}
+	b.Embeds = nil
+	for rows.Next() {
+		var name string
+		err := rows.Scan(&name)
+		if err != nil {
+			log.Fatalf("failed to select board embeds: %s", err)
+		}
+		b.Embeds = append(b.Embeds, name)
+	}
+}
+
 func (db *DB) AddBoard(b *Board) {
 	boardCache = nil
 
@@ -93,81 +128,6 @@ func (db *DB) AddBoard(b *Board) {
 	}
 }
 
-func (db *DB) setBoardAttributes(b *Board) {
-	rows, err := db.conn.Query(context.Background(), "SELECT upload FROM board_upload WHERE board = $1", b.ID)
-	if err != nil {
-		log.Fatalf("failed to select board uploads: %s", err)
-	}
-	b.Uploads = nil
-	for rows.Next() {
-		var mimeType string
-		err := rows.Scan(&mimeType)
-		if err != nil {
-			log.Fatalf("failed to select board uploads: %s", err)
-		}
-		for _, u := range db.config.UploadTypes() {
-			if u.MIME == mimeType {
-				b.Uploads = append(b.Uploads, u.MIME)
-				break
-			}
-		}
-	}
-
-	rows, err = db.conn.Query(context.Background(), "SELECT embed FROM board_embed WHERE board = $1", b.ID)
-	if err != nil {
-		log.Fatalf("failed to select board embeds: %s", err)
-	}
-	b.Embeds = nil
-	for rows.Next() {
-		var name string
-		err := rows.Scan(&name)
-		if err != nil {
-			log.Fatalf("failed to select board embeds: %s", err)
-		}
-		b.Embeds = append(b.Embeds, name)
-	}
-}
-
-func (db *DB) BoardByID(id int) *Board {
-	b := &Board{}
-	err := scanBoard(b, db.conn.QueryRow(context.Background(), "SELECT * FROM board WHERE id = $1", id))
-	if err == pgx.ErrNoRows {
-		return nil
-	} else if err != nil {
-		log.Fatalf("failed to select board: %s", err)
-	}
-	db.setBoardAttributes(b)
-	return b
-}
-
-func (db *DB) BoardByDir(dir string) *Board {
-	b := &Board{}
-	err := scanBoard(b, db.conn.QueryRow(context.Background(), "SELECT * FROM board WHERE dir = $1", dir))
-	if err == pgx.ErrNoRows {
-		return nil
-	} else if err != nil {
-		log.Fatalf("failed to select board: %s", err)
-	}
-	db.setBoardAttributes(b)
-	return b
-}
-
-func (db *DB) UniqueUserPosts(b *Board) int {
-	var count int
-	var err error
-	if b == nil {
-		err = db.conn.QueryRow(context.Background(), "SELECT COUNT(DISTINCT ip) FROM post").Scan(&count)
-	} else {
-		err = db.conn.QueryRow(context.Background(), "SELECT COUNT(DISTINCT ip) FROM post WHERE board = $1", b.ID).Scan(&count)
-	}
-	if err == pgx.ErrNoRows {
-		return 0
-	} else if err != nil {
-		log.Fatalf("failed to select unique user posts: %s", err)
-	}
-	return count
-}
-
 func (db *DB) AllBoards() []*Board {
 	if boardCache != nil {
 		return boardCache
@@ -191,6 +151,42 @@ func (db *DB) AllBoards() []*Board {
 	}
 
 	return boardCache
+}
+
+func (db *DB) BoardByID(id int) *Board {
+	// Search cached boards.
+	for _, b := range db.AllBoards() {
+		if b.ID == id {
+			return b
+		}
+	}
+	return nil
+}
+
+func (db *DB) BoardByDir(dir string) *Board {
+	// Search cached boards.
+	for _, b := range db.AllBoards() {
+		if b.Dir == dir {
+			return b
+		}
+	}
+	return nil
+}
+
+func (db *DB) UniqueUserPosts(b *Board) int {
+	var count int
+	var err error
+	if b == nil {
+		err = db.conn.QueryRow(context.Background(), "SELECT COUNT(DISTINCT ip) FROM post").Scan(&count)
+	} else {
+		err = db.conn.QueryRow(context.Background(), "SELECT COUNT(DISTINCT ip) FROM post WHERE board = $1", b.ID).Scan(&count)
+	}
+	if err == pgx.ErrNoRows {
+		return 0
+	} else if err != nil {
+		log.Fatalf("failed to select unique user posts: %s", err)
+	}
+	return count
 }
 
 func (db *DB) UpdateBoard(b *Board) {
