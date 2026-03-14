@@ -283,15 +283,28 @@ function previewPost(el) {
     var vh = Math.max(doc.clientHeight || 0, window.innerHeight || 0);
     var vl = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
     var vt = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-
     var rect = el.getBoundingClientRect();
-    var px = rect.right+vl+7;
-    if (px + preview.offsetWidth > vw + vl) {
-        px = vw + vl - preview.offsetWidth
+
+    var pr = preview.getBoundingClientRect();
+    var pw = pr.right - pr.left;
+    var ph = pr.bottom - pr.top;
+
+    var px = vl+rect.left;
+    if (px > vl + vw - pw) {
+        py = vl + vw - pw;
     }
-    var py = rect.top+vt+(rect.bottom-rect.top)/2;
-    if (py + preview.offsetHeight > vh + vt) {
-        py = vh + vt - preview.offsetHeight
+    if (px < vl) {
+        px = vl;
+    }
+    var py = vt+rect.top+(rect.bottom-rect.top)/2;
+    if (touchScreen) {
+        py -= ph / 2;
+    }
+    if (py > vt + vh - ph) {
+        py = vt + vh - ph;
+    }
+    if (py < vt ) {
+        py = vt ;
     }
     preview.style.left = px + 'px';
     preview.style.top = py + 'px';
