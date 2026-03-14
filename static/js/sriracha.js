@@ -296,10 +296,7 @@ function previewPost(el) {
     if (px < vl) {
         px = vl;
     }
-    var py = vt+rect.top+(rect.bottom-rect.top)/2;
-    if (touchScreen) {
-        py -= ph / 2;
-    }
+    var py = vt+rect.bottom;
     if (py > vt + vh - ph) {
         py = vt + vh - ph;
     }
