@@ -123,7 +123,7 @@ img, audio, video {
 	padding: 3px;
 }
 
-.hoverpost .postui, .hoverpost .threadui {
+.hoverpost .postui, .hoverpost .threadui, .hoverpost .backlink {
 	display: none;
 }
 
@@ -157,6 +157,7 @@ img, audio, video {
 
 summary {
 	cursor: pointer;
+	user-select: none;
 }
 
 legend {

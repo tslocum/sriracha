@@ -317,7 +317,10 @@ BACKLINKS:
 			continue BACKLINKS
 		}
 	}
-	return template.HTML(string(out))
+	if out == nil {
+		return ""
+	}
+	return template.HTML(`<span class="backlink">` + string(out) + `</span>`)
 }
 
 func FormatRefLink(boardPath string, threadID int, postID int) []byte {

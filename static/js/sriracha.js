@@ -351,10 +351,12 @@ function setPostAttributes(element) {
             });
             var pressTime;
             el.addEventListener("touchstart", function(e) {
+                e.preventDefault();
                 pressTime = new Date().getTime();
                 previewPost(el);
             });
             el.addEventListener("touchend", function(e) {
+                e.preventDefault();
                 var now = new Date().getTime();
                 var preview = document.getElementById('ref' + el.getAttribute('refID'));
                 if (preview) {
@@ -365,6 +367,7 @@ function setPostAttributes(element) {
                 }
             });
             el.addEventListener("touchcancel", function(e) {
+                e.preventDefault();
                 var now = new Date().getTime();
                 var preview = document.getElementById('ref' + el.getAttribute('refID'));
                 if (preview) {
