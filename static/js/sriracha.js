@@ -10,6 +10,11 @@ var postCache = {};
 // verbose is a flag which enables verbose logging.
 const verbose = false;
 
+const touchScreen = 'ontouchstart' in window ||
+    (window.DocumentTouch && document instanceof window.DocumentTouch) ||
+    navigator.maxTouchPoints > 0 ||
+    window.navigator.msMaxTouchPoints > 0;
+
 function updateTitle() {
     if (originalTitle == "") {
         originalTitle = document.title;
@@ -331,6 +336,36 @@ function setPostAttributes(element) {
                     preview.remove();
                 }
             });
+            var pressTime;
+            el.addEventListener("touchstart", function(e) {
+                pressTime = new Date().getTime();
+                previewPost(el);
+            });
+            el.addEventListener("touchend", function(e) {
+                var now = new Date().getTime();
+                var preview = document.getElementById('ref' + el.getAttribute('refID'));
+                if (preview) {
+                    preview.remove();
+                }
+                if (now - pressTime < 200) {
+                    el.click()
+                }
+            });
+            el.addEventListener("touchcancel", function(e) {
+                var now = new Date().getTime();
+                var preview = document.getElementById('ref' + el.getAttribute('refID'));
+                if (preview) {
+                    preview.remove();
+                }
+                if (now - pressTime < 200) {
+                    el.click()
+                }
+            });
+            if (touchScreen) {
+                el.addEventListener("contextmenu", function(e) {
+                    e.preventDefault();
+                });
+            }
         }
     });
 }
