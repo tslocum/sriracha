@@ -290,18 +290,24 @@ function previewPost(el) {
     var ph = pr.bottom - pr.top;
 
     var px = vl+rect.left;
+    var py = vt+rect.bottom;
+    var offset = false;
+    if (py > vt + vh - ph) {
+        py = vt + vh - ph;
+        offset = true;
+    }
+    if (py < vt ) {
+        py = vt;
+        offset = true;
+    }
+    if (offset) {
+        px += rect.right-rect.left;
+    }
     if (px > vl + vw - pw) {
-        py = vl + vw - pw;
+        px = vl + vw - pw;
     }
     if (px < vl) {
         px = vl;
-    }
-    var py = vt+rect.bottom;
-    if (py > vt + vh - ph) {
-        py = vt + vh - ph;
-    }
-    if (py < vt ) {
-        py = vt ;
     }
     preview.style.left = px + 'px';
     preview.style.top = py + 'px';
