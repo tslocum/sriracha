@@ -262,10 +262,24 @@ Found {{len $threads}} threads.
 <hr>
 ```
 
+### Locales
+
+The following `locale` configuration options are available:
+
+| Language | Locale |
+| --       | --     |
+| English  | `en`   |
+| Albanian | `sq`   |
+| Dutch    | `nl`   |
+| Finnish  | `fi`   |
+| Russian  | `ru`   |
+
+Help translate Sriracha into additional languages [online](https://translate.codeberg.org/projects/sriracha/sriracha/).
+
 ### Example configuration (config.yml)
 
 ```yaml
-# Interface language. See locale directory for available languages.
+# Interface language. See locale directory for full list.
 locale: "en"
 
 # Directory where board files are written to.
