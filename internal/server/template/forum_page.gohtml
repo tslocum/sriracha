@@ -48,10 +48,10 @@
 		{{end}}
 	</form>
 	<hr>
-	{{if eq .ReplyMode 0}}
-		<table class="navtable">
-			<tbody>
-				<tr>
+	<table class="navtable">
+		<tbody>
+			<tr>
+				{{if eq .ReplyMode 0}}
 					<td>{{if gt .Page 0}}<form method="get" action="{{if not $.ModMode}}{{.Board.Path}}{{if eq .Page 1}}index{{else}}{{.Page | MinusOne}}{{end}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}{{if ne .Page 1}}p{{.Page | MinusOne}}{{end}}{{end}}"><input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
 					<td>
 						{{range $i := Iterate (.Pages | MinusOne)}}
@@ -67,9 +67,11 @@
 							</form>
 						</td>
 					{{end}}
-				</tr>
-			</tbody>
-		</table>
-	{{end}}
+				{{else if ne $.Opt.Refresh 0}}
+					<td id="postdeleted" style="display: none;border: 0px none;color: red;font-weight: bold;">{{T "Thread deleted."}}</td>
+				{{end}}
+			</tr>
+		</tbody>
+	</table>
 	{{template "forum_end.gohtml" .}}
 {{end}}

@@ -26,7 +26,12 @@ function updateTitle() {
     }
 
     if (document.title == originalTitle) {
-        document.title = "(" + newRepliesCount + " new)";
+        document.title = newRepliesCount;
+        if (newRepliesCount == 1) {
+            document.title += " reply";
+        } else {
+            document.title += " replies";
+        }
     } else {
         document.title = originalTitle;
     }
@@ -54,12 +59,23 @@ function fetchPosts(url, append) {
     if (verbose) {
         console.log('fetching ' + url + '...');
     }
-    return fetch(url).then(function(resp) {
-        return resp.text();
+    var deleted = false;
+    return fetch(url).then(function(response) {
+        if (response.status == 404) {
+            deleted = true;
+            return;
+        } else if (!response.ok) {
+            return;
+        }
+        return response.text();
     }).then(function(body) {
         if (verbose) {
             console.log('fetched ' + url);
         }
+        if (body == "") {
+            return;
+        }
+
         var container;
         var replies = document.getElementsByClassName('reply');
         var forum = false;
@@ -145,6 +161,15 @@ function fetchPosts(url, append) {
     }).catch(function(err) {
         console.log('Failed to fetch thread (' + url + '):', err);
     }).finally(function() {
+        if (deleted) {
+            if (append) {
+                var postdeleted = document.getElementById("postdeleted");
+                if (postdeleted) {
+                    postdeleted.style.display = "table-cell";
+                }
+            }
+            return;
+        }
         if (append) {
             setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
         }
