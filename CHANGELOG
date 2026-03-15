@@ -1,3 +1,9 @@
+1.5.7:
+- Highlight first new auto-refreshed reply
+- Display notice when auto-refreshed thread has been deleted
+- Display loading message while fetching post preview
+- Display notice when previewed post has been deleted
+
 1.5.6:
 - Fix post preview position
 
