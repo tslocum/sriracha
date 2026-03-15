@@ -170,11 +170,14 @@ legend {
 }
 
 .manageinfo {
-	text-align: center;
+	margin: 2px -8px;
+	margin-top: -2px;
+	padding: 2px 8px;
 }
 
 .catalogmode {
-	text-align: center;
+	margin: 2px -8px;
+	padding: 2px 8px;
 }
 
 .managetitle {
