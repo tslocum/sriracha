@@ -5,6 +5,7 @@ var highlightedPost = null;
 var blinkTitle = false;
 var originalTitle = "";
 var newRepliesCount = 0;
+var newReplyID = 0;
 var postCache = {};
 
 // verbose is a flag which enables verbose logging.
@@ -26,7 +27,7 @@ function updateTitle() {
     }
 
     if (document.title == originalTitle) {
-        document.title = newRepliesCount;
+        document.title = newRepliesCount + " new";
         if (newRepliesCount == 1) {
             document.title += " reply";
         } else {
@@ -152,6 +153,9 @@ function fetchPosts(url, append) {
         }
         setPostAttributes(container);
         if (!haveFocus) {
+            if (newReplyID == 0) {
+                newReplyID = newReplies[0].id;
+            }
             newRepliesCount += newReplies.length;
             if (!blinkTitle) {
                 blinkTitle = true;
@@ -477,6 +481,10 @@ function onFocus(e) {
     haveFocus = true;
     if (originalTitle != "") {
         document.title = originalTitle;
+    }
+    if (newReplyID != 0) {
+        window.location.hash = newReplyID;
+        newReplyID = 0;
     }
 }
 
