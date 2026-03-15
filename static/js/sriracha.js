@@ -78,59 +78,63 @@ function fetchPosts(url, append) {
         }
 
         var container;
-        var replies = document.getElementsByClassName('reply');
-        var forum = false;
-        if (replies.length > 0) {
-            container = replies[replies.length - 1].parentElement.parentElement.parentElement.parentElement;
-        } else {
-            replies = document.getElementsByClassName('forumpost');
-            if (replies.length > 0) {
-                forum = true;
-                container = replies[replies.length - 1].parentElement.parentElement.parentElement;
-            } else {
-                var ops = document.getElementsByClassName('op');
-                if (ops.length > 0) {
-                    container = ops[0].parentElement;
-                }
+        var posts = [];
+        var forum = document.getElementsByClassName('forumpost').length > 0;
+        if (forum) {
+            threadElements = document.getElementsByClassName('thread');
+            if (threadElements.length > 0) {
+                container = threadElements[0];
             }
         }
         if (!container) {
-            console.log('fetched ' + url + ' but could not find container');
-            console.log(body);
-            return;
-        }
-
-        var postClass = "reply";
-        if (forum) {
-            postClass = "forumpost";
+            var ops = document.getElementsByClassName('op');
+            if (ops.length > 0) {
+                posts.push(ops[0]);
+            }
+            for (const post of document.getElementsByClassName('reply')) {
+                posts.push(post);
+            }
+            if (posts.length > 0) {
+                container = posts[posts.length - 1].parentElement.parentElement.parentElement.parentElement;
+            } else {
+                posts = document.getElementsByClassName('forumpost');
+                if (posts.length > 0) {
+                    forum = true;
+                    container = posts[posts.length - 1].parentElement.parentElement.parentElement;
+                } else {
+                    var ops = document.getElementsByClassName('op');
+                    if (ops.length > 0) {
+                        container = ops[0].parentElement;
+                    }
+                }
+            }
+            if (!container) {
+                console.log('fetched ' + url + ' but could not find container');
+                console.log(body);
+                return;
+            }
         }
 
         var doc = (new DOMParser).parseFromString(body, 'text/html');
-        var replies = doc.getElementsByClassName(postClass);
-        var newReplies = [];
-        for (const reply of replies) {
-            if (reply.id != "" && !document.getElementById(reply.id)) {
+        var posts = doc.getElementsByClassName("post");
+        var newPosts = [];
+        for (const post of posts) {
+            if (post.id != "" && !document.getElementById(post.id)) {
                 if (verbose) {
-                    console.log('found new reply', reply);
+                    console.log('found new post', post);
                 }
-                newReplies.push(reply);
+                newPosts.push(post);
             }
         }
-        if (newReplies.length == 0) {
+        if (newPosts.length == 0) {
             return;
         }
-        for (const reply of newReplies) {
-            postCache[reply.id] = reply;
+        for (const post of newPosts) {
+            postCache[post.id] = post;
             if (append) {
                 if (forum) { // Append forum reply.
-                    var td = doc.createElement('td');
-                    td.id = "post" + reply.id;
-                    td.className = "op";
-                    td.style.paddingTop = "10px";
-                    td.appendChild(reply);
-                    
                     var tr = doc.createElement('tr');
-                    tr.appendChild(td);
+                    tr.appendChild(post);
 
                     container.appendChild(tr);
                 } else { // Append imageboard reply.
@@ -145,18 +149,18 @@ function fetchPosts(url, append) {
                     td.innerHTML = "&#0168;";
 
                     tr.appendChild(td);
-                    tr.appendChild(reply);
+                    tr.appendChild(post);
 
                     container.appendChild(table);
                 }
             }
         }
         setPostAttributes(container);
-        if (!haveFocus) {
+        if (append && !haveFocus) {
             if (newReplyID == 0) {
-                newReplyID = newReplies[0].id;
+                newReplyID = newPosts[0].id;
             }
-            newRepliesCount += newReplies.length;
+            newRepliesCount += newPosts.length;
             if (!blinkTitle) {
                 blinkTitle = true;
                 updateTitle();

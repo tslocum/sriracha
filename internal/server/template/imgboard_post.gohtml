@@ -5,7 +5,7 @@
     <div class="thread">
     {{range $i, $post := $thread}}
         {{if eq .Parent 0}}
-            <div id="{{.ID}}" class="op">
+            <div id="{{.ID}}" class="op post">
                 <div id="post{{.ID}}">
                     {{template "imgboard_post_attachment.gohtml" .}}
                     {{template "imgboard_post_label.gohtml" (Slice $ $thread $post)}}
@@ -30,7 +30,7 @@
                         <td class="doubledash">
                             &#0168;
                         </td>
-                        <td class="reply" id="{{.ID}}">
+                        <td class="reply post" id="{{.ID}}">
                             <div id="post{{.ID}}">
                                 {{template "imgboard_post_label.gohtml" (Slice $ $thread $post)}}
                                 <br>

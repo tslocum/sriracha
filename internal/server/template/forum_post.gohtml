@@ -1,31 +1,33 @@
 <table {{if eq .ReplyMode 0}} class="managetable forumindex"{{end}}>
-	{{if eq .ReplyMode 0}}
-		{{range $i, $thread := .Threads}}
-			{{range $i, $post := $thread}}
-				<tr>
-					<td>{{.TimestampLabel}}</td>
-					<td>{{.Replies | PlusOne}}</td>
-					<td><span class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}{{T "No subject"}}{{end}}</a></span></td>
-				</tr>
+	<tbody class="thread">
+		{{if eq .ReplyMode 0}}
+			{{range $i, $thread := .Threads}}
+				{{range $i, $post := $thread}}
+					<tr>
+						<td>{{.TimestampLabel}}</td>
+						<td>{{.Replies | PlusOne}}</td>
+						<td><span class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}{{T "No subject"}}{{end}}</a></span></td>
+					</tr>
+				{{end}}
 			{{end}}
-		{{end}}
-	{{else}}
-		{{range $i, $thread := .Threads}}
-			{{range $i, $post := $thread}}
-				<tr>
-					<td id="post{{.ID}}" class="op"{{if ne $i 0}} style="padding-top: 10px;"{{end}}>
-						<div id="{{.ID}}" class="forumpost">
-							{{template "imgboard_post_label.gohtml" (Slice $ $thread $post)}}
-							{{if and (and (eq $post.Parent 0) $post.Board.Gallery) (HasExpandableMedia $thread)}}<span class="threadui">&nbsp;[<a href="#" onclick="javascript:openGallery();">{{T "Gallery"}}</a>]</span>{{end}}
-							<br>
-							{{template "imgboard_post_attachment.gohtml" .}}
-							<div class="message">
-								{{.Message | HTML}}
+		{{else}}
+			{{range $i, $thread := .Threads}}
+				{{range $i, $post := $thread}}
+					<tr>
+						<td id="{{.ID}}" class="op post forumpost"{{if ne $i 0}} style="padding-top: 10px;"{{end}}>
+							<div id="post{{.ID}}">
+								{{template "imgboard_post_label.gohtml" (Slice $ $thread $post)}}
+								{{if and (and (eq $post.Parent 0) $post.Board.Gallery) (HasExpandableMedia $thread)}}<span class="threadui">&nbsp;[<a href="#" onclick="javascript:openGallery();">{{T "Gallery"}}</a>]</span>{{end}}
+								<br>
+								{{template "imgboard_post_attachment.gohtml" .}}
+								<div class="message">
+									{{.Message | HTML}}
+								</div>
 							</div>
-						</div>
-					</td>
-				</tr>
+						</td>
+					</tr>
+				{{end}}
 			{{end}}
 		{{end}}
-	{{end}}
+	</tbody>
 </table>
