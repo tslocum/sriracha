@@ -1744,6 +1744,9 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		const maxMemory = 32 << 20 // 32 megabytes.
 		r.ParseMultipartForm(maxMemory)
+		if r.MultipartForm != nil {
+			defer r.MultipartForm.RemoveAll()
+		}
 
 		var modified bool
 		f := make(url.Values)
