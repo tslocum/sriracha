@@ -125,13 +125,13 @@ categories exist, all visible boards are displayed.
 ### Post batching
 
 When a visitor creates a new post, and less than ten seconds have passed since
-a post was last created (by anyone), static files are not immediately updated.
+someone last created a post, static files are not immediately updated.
 
-Once a full second has passed without any new posts being created, or ten seconds
-have passed, static files are updated and visitors are redirected.
+Once either a full second passes without any new posts being created, or ten
+seconds pass, static files are updated and visitors are redirected.
 
-This batching is invisible to visitors, and allows the server to handle an influx
-of posts without wasting resources writing and then quickly overwriting pages.
+This batching is invisible to visitors and allows the server to handle an influx
+of posts without wasting resources writing and immediately overwriting pages.
 
 ### Email notifications
 
