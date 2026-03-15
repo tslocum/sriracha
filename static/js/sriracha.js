@@ -244,6 +244,13 @@ function expandFile(e, id) {
 }
 
 function previewPost(el) {
+    var doc = document.documentElement;
+    var vw = Math.max(doc.clientWidth || 0, window.innerWidth || 0);
+    var vh = Math.max(doc.clientHeight || 0, window.innerHeight || 0);
+    var vl = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
+    var vt = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
+    var rect = el.getBoundingClientRect();
+
     var preview = document.getElementById('ref' + el.getAttribute('refID'));
     if (!preview) {
         var refpost = document.getElementById(el.getAttribute('refID'));
@@ -276,6 +283,15 @@ function previewPost(el) {
                     if (verbose) {
                         console.log('thread page is cached');
                     }
+
+                    var preview = document.createElement('div');
+                    preview.id = 'ref' + el.getAttribute('refID');
+                    preview.setAttribute('refID', el.getAttribute('refID'));
+                    preview.className = 'hoverpost';
+                    preview.innerHTML = '<span style="color: red;font-weight: bold;">Post deleted.</span>';
+                    preview.style.left = vl + rect.left + 'px';
+                    preview.style.top = vt + rect.bottom + 'px';
+                    document.body.append(preview);
                     return;
                 }
                 // Fetch thread res page.
@@ -287,12 +303,25 @@ function previewPost(el) {
                 if (verbose) {
                     console.log('fetching thread page ' + url + '...');
                 }
+
+                var preview = document.createElement('div');
+                preview.id = 'ref' + el.getAttribute('refID');
+                preview.setAttribute('refID', el.getAttribute('refID'));
+                preview.className = 'hoverpost';
+                preview.innerHTML = 'Loading...';
+                preview.style.left = vl + rect.left + 'px';
+                preview.style.top = vt + rect.bottom + 'px';
+                document.body.append(preview);
+
                 postCache['thread' + threadID] = true;
                 fetchPosts(url, false).then(function() {
                     post = postCache[postID];
                     if (post && post.innerHTML) {
                         // Preview fetched post.
+                        preview.remove();
                         previewPost(el);
+                    } else {
+                        preview.innerHTML = '<span style="color: red;font-weight: bold;">Post deleted.</span>';
                     }
                 });
                 return;
@@ -311,12 +340,6 @@ function previewPost(el) {
         }
         document.body.append(preview);
     }
-    var doc = document.documentElement;
-    var vw = Math.max(doc.clientWidth || 0, window.innerWidth || 0);
-    var vh = Math.max(doc.clientHeight || 0, window.innerHeight || 0);
-    var vl = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
-    var vt = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-    var rect = el.getBoundingClientRect();
 
     var pr = preview.getBoundingClientRect();
     var pw = pr.right - pr.left;
