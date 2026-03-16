@@ -564,7 +564,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			s.deletePostFiles(post)
 
 			data := s.buildData(db, w, r)
-			data.BoardError(w, Get(b, data.Account, "You may only reply to threads."))
+			data.BoardError(w, Get(b, data.Account, "Board locked. You may only reply to threads."))
 			return
 		}
 		if s.opt.CAPTCHA {
@@ -984,29 +984,30 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 		if post.Parent != 0 {
 			maxSize = post.Board.MaxSizeReply
 		}
-		var options []string
-		if maxSize != 0 {
-			options = append(options, "upload a file")
-		}
-		if len(post.Board.Embeds) != 0 {
-			options = append(options, "enter an embed URL")
-		}
-		if post.Board.MaxMessage != 0 {
-			options = append(options, "enter a message")
-		}
-		buf := &strings.Builder{}
-		for i, o := range options {
-			if i > 0 {
-				if i == len(options)-1 {
-					buf.WriteString(" or ")
-				} else {
-					buf.WriteString(", ")
-				}
-			}
-			buf.WriteString(o)
+		fileOK := maxSize != 0
+		embedOK := len(post.Board.Embeds) != 0
+		msgOK := post.Board.MaxMessage != 0
+		var msg string
+		switch {
+		case fileOK && embedOK && msgOK:
+			msg = "Please upload a file, enter an embed URL or enter a message."
+		case fileOK && embedOK:
+			msg = "Please upload a file or enter an embed URL."
+		case fileOK && msgOK:
+			msg = "Please upload a file or enter a message."
+		case fileOK:
+			msg = "Please upload a file."
+		case embedOK && msgOK:
+			msg = "Please enter an embed URL or enter a message."
+		case embedOK:
+			msg = "Please enter an embed URL."
+		case msgOK:
+			msg = "Please enter a message."
+		default:
+			msg = "Board locked. No new posts may be created."
 		}
 		data := s.buildData(db, w, r)
-		data.BoardError(w, fmt.Sprintf("Please %s.", buf.String()))
+		data.BoardError(w, Get(post.Board, nil, msg))
 		return
 	}
 
