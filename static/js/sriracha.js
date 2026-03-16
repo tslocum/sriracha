@@ -376,6 +376,9 @@ function previewPost(el) {
     }
     preview.style.left = px + 'px';
     preview.style.top = py + 'px';
+    if (touchScreen && px + pw < rect.right) {
+        preview.style.right = (vl + vw - rect.right) + 'px';
+    }
 }
 
 function closePostPreview() {
@@ -413,6 +416,9 @@ function setPostAttributes(element) {
             var m2 = el.innerHTML.match(/^\&gt\;\&gt\;[0-9]+/i);
             if (m2 == null) {
                 return;
+            }
+            if (touchScreen) {
+                el.classList.add("touchreflink")
             }
             el.setAttribute('refID', m[1]);
             el.addEventListener("mouseenter", function(e) {

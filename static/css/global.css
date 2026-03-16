@@ -110,6 +110,17 @@ img, audio, video {
 	color: #800000;
 }
 
+.message .touchreflink {
+	display: block;
+	border: 0px none !important;
+}
+
+.hoverpost .touchreflink {
+	display: inline;
+	background-color: inherit;
+	border: 0px none;
+}
+
 .reply .filesize {
 	margin-left: 20px;
 }

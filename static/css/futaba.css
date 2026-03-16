@@ -49,7 +49,7 @@ hr {
 	color: #FFFFFF;
 }
 
-.postarea table, .hoverpost {
+.postarea table, .hoverpost, .message .touchreflink {
 	background-color: #f6ede0;
 	border: 1px solid #e1cec4;
 	border-top: 0px none;
