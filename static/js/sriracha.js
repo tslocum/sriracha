@@ -124,8 +124,6 @@ function fetchPosts(url, append) {
             if (!container) {
                 if (append) {
                     console.log('warning: fetched ' + url + ' but could not find thread container, falling back to appending replies to document body. as a result, auto-refreshed replies will have style issues.');
-                    console.log(body);
-                    return;
                 }
                 container = document.body;
             }

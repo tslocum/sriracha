@@ -856,7 +856,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 						IP:        post.IP,
 						Timestamp: time.Now().Unix(),
 						Expire:    banExpire,
-						Reason:    Get(b, data.Account, "Detected banned keyword."),
+						Reason:    Get(nil, nil, "Detected banned keyword."),
 					}
 					db.AddBan(ban)
 
@@ -876,7 +876,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			ban := &Ban{
 				IP:        post.IP,
 				Timestamp: time.Now().Unix(),
-				Reason:    Get(b, data.Account, "Detected banned file."),
+				Reason:    Get(nil, nil, "Detected banned file."),
 			}
 			db.AddBan(ban)
 
