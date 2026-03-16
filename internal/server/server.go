@@ -1765,6 +1765,8 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
+	w.Header().Set("Server", "Sriracha GNU LGPL")
+
 	if r.Method == http.MethodPost {
 		const maxMemory = 32 << 20 // 32 megabytes.
 		r.ParseMultipartForm(maxMemory)
