@@ -38,6 +38,10 @@ hr {
 	color: #e2ebf0;
 }
 
+.errormessage {
+	background: #1a1e23;
+}
+
 .manageinfo {
 	background: #004914;
 	color: #e2ebf0;
@@ -135,7 +139,7 @@ hr {
 }
 
 .reply {
-	background: #1a1e23 !important;
+	background: #1a1e23;
 	border: 1px solid #222222;
 	border-top: 0px none;
 	border-left: 0px none;
@@ -174,7 +178,7 @@ input:not([type=file]):not([type=submit]), textarea, select, option {
 }
 
 input:is(:-webkit-autofill, :autofill) {
-    -webkit-box-shadow: 0 0 0 100px #171a1f inset !important;
+    -webkit-box-shadow: 0 0 0 100px #171a1f inset;
 	background-clip: #e2ebf0;
 	-webkit-background-clip: text;
 	-moz-background-clip: #e2ebf0;

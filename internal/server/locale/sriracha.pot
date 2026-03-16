@@ -203,9 +203,6 @@ msgstr ""
 msgid "Click a post ID next to 'No.' to reply quickly:"
 msgstr ""
 
-msgid "Click here to go back"
-msgstr ""
-
 msgid "Click to refresh."
 msgstr ""
 
@@ -416,6 +413,9 @@ msgid "Global"
 msgstr ""
 
 msgid "Global tripcodes are the same on all websites. Secure tripcodes are unique."
+msgstr ""
+
+msgid "Go Back"
 msgstr ""
 
 msgid "HTML content of the page. Go HTML template actions are supported."

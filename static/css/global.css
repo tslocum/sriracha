@@ -169,10 +169,15 @@ legend {
 	padding: 2px 8px;
 }
 
-.manageinfo {
+.manageinfo, .errormessage {
+	font-weight: bold;
 	margin: 2px -8px;
 	margin-top: -2px;
 	padding: 2px 8px;
+}
+
+.errormessage {
+	text-align: center;
 }
 
 .catalogmode {
