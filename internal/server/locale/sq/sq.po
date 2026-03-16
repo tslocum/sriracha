@@ -211,9 +211,6 @@ msgstr ""
 msgid "Click a post ID next to 'No.' to reply quickly:"
 msgstr ""
 
-msgid "Click here to go back"
-msgstr "Kliko ketu per te shkuar prapa"
-
 msgid "Click to refresh."
 msgstr "Kliko per rifreskim."
 
@@ -441,6 +438,9 @@ msgstr "Globale"
 
 msgid ""
 "Global tripcodes are the same on all websites. Secure tripcodes are unique."
+msgstr ""
+
+msgid "Go Back"
 msgstr ""
 
 msgid "HTML content of the page. Go HTML template actions are supported."
@@ -1101,6 +1101,9 @@ msgid ""
 msgstr ""
 "Ky cilesim eshte thjesht kozmetik. Per te parandaluar aksesin, konfiguroni "
 "serverin tuaj HTTPS qe te kerkoje autorizim me fjalekalim."
+
+msgid "Thread deleted."
+msgstr ""
 
 msgid "Thread moved from %[1]s to %[2]s."
 msgstr "Tema eshte zhvendosur nga %[1]s ne %[2]s."

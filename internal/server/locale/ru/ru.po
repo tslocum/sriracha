@@ -213,9 +213,6 @@ msgstr ""
 msgid "Click a post ID next to 'No.' to reply quickly:"
 msgstr ""
 
-msgid "Click here to go back"
-msgstr "Нажмите здесь для возвращения"
-
 msgid "Click to refresh."
 msgstr "Нажмите для обновления."
 
@@ -436,6 +433,9 @@ msgstr ""
 
 msgid ""
 "Global tripcodes are the same on all websites. Secure tripcodes are unique."
+msgstr ""
+
+msgid "Go Back"
 msgstr ""
 
 msgid "HTML content of the page. Go HTML template actions are supported."
@@ -1056,6 +1056,9 @@ msgstr ""
 msgid ""
 "This setting is purely cosmetic. To actually prevent access, configure your "
 "HTTPS server to require password authorization."
+msgstr ""
+
+msgid "Thread deleted."
 msgstr ""
 
 msgid "Thread moved from %[1]s to %[2]s."
