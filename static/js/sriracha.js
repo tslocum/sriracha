@@ -81,6 +81,9 @@ function fetchPosts(url, append) {
         var posts = [];
         var forum = document.getElementsByClassName('forumpost').length > 0;
         if (forum) {
+            if (verbose) {
+                console.log('detected forum board');
+            }
             threadElements = document.getElementsByClassName('thread');
             if (threadElements.length > 0) {
                 container = threadElements[0];
@@ -95,23 +98,36 @@ function fetchPosts(url, append) {
                 posts.push(post);
             }
             if (posts.length > 0) {
+                if (verbose) {
+                    console.log('setting container via elements with class op or reply');
+                }
                 container = posts[posts.length - 1].parentElement.parentElement.parentElement.parentElement;
-            } else {
+            }
+            if (!container) {
                 posts = document.getElementsByClassName('forumpost');
                 if (posts.length > 0) {
                     forum = true;
+                    if (verbose) {
+                        console.log('setting container via elements with class forumpost');
+                    }
                     container = posts[posts.length - 1].parentElement.parentElement.parentElement;
                 } else {
                     var ops = document.getElementsByClassName('op');
                     if (ops.length > 0) {
+                        if (verbose) {
+                            console.log('setting container via elements with class op');
+                        }
                         container = ops[0].parentElement;
                     }
                 }
             }
             if (!container) {
-                console.log('fetched ' + url + ' but could not find container');
-                console.log(body);
-                return;
+                if (append) {
+                    console.log('warning: fetched ' + url + ' but could not find thread container, falling back to appending replies to document body. as a result, auto-refreshed replies will have style issues.');
+                    console.log(body);
+                    return;
+                }
+                container = document.body;
             }
         }
 
