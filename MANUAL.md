@@ -285,7 +285,7 @@ locale: "en"
 # Directory where board files are written to.
 root: "/home/sriracha/public_html"
 
-# Address:Port to listen for HTTP connections on.
+# Hostname:Port to listen for HTTP connections on.
 serve: "localhost:8080"
 
 # Client IP address header. Must be set when running behind a reverse proxy.
@@ -302,8 +302,8 @@ saltpass: "CHANGEME_Random_Data_Here_2"
 # Long random string of text used when generating secure tripcodes. Must not change once set.
 salttrip: "CHANGEME_Random_Data_Here_3"
 
-# Address:Port to connect to the database.
-address: "localhost"
+# Hostname:Port to connect to the database.
+address: "localhost:5432"
 
 # Database username.
 username: "sriracha"
@@ -318,13 +318,13 @@ dbname: "sriracha"
 # This option supercedes the address, username, password and dbname options.
 # You probably don't need this. Configure the database options above instead.
 # See https://pkg.go.dev/github.com/jackc/pgx/v5@v5.7.4/pgconn#ParseConfig
-#dburl: "postgresql://sriracha:hunter2@localhost/sriracha"
+#dburl: "postgresql://sriracha:hunter2@localhost:5432/sriracha"
 
 # SMTP mail server configuration. When configured, visitors may subscribe to
 # to receive email notifications when new posts are created. To disable email
 # notifications, leave mailaddress blank. To allow subscriptions using any
 # email address domain, leave maildomains blank.
-#mailaddress:  ""          # SMTP server Address:Port.
+#mailaddress:  ""          # SMTP server Hostname:Port.
 #mailtls:      true        # Whether TLS is used to connect to the server.
 #mailinsecure: false       # Whether TLS certificate verification is skipped.
 #mailusername: ""          # SMTP server username.
@@ -532,13 +532,13 @@ with your TinyIB PostgreSQL database connection info and table names.
 # Note: Posting is disabled when running in import mode.
 import:
   # Connection info.
-  address: "localhost" # Address:Port to connect to the database.
-  username: "tinyib"   # Database username.
-  password: "hunter2"  # Database password.
-  dbname: "tinyib"     # Database name.
+  address: "localhost:5432" # Hostname:Port to connect to the database.
+  username: "tinyib"        # Database username.
+  password: "hunter2"       # Database password.
+  dbname: "tinyib"          # Database name.
   # Table names.
-  posts: "dir_posts"   # Required.
-  keywords: "keywords" # Optional.
+  posts: "dir_posts"        # Required.
+  keywords: "keywords"      # Optional.
 ```
 
 #### 4. Start Sriracha and visit the management panel
