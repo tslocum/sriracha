@@ -1,3 +1,6 @@
+1.5.8:
+- Support SHA-3 hash algorithm
+
 1.5.7:
 - Highlight first new auto-refreshed reply
 - Display notice when auto-refreshed thread has been deleted

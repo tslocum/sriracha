@@ -253,6 +253,7 @@ function previewPost(el) {
 
     var preview = document.getElementById('ref' + el.getAttribute('refID'));
     if (!preview) {
+        closePostPreview();
         var refpost = document.getElementById(el.getAttribute('refID'));
         if (!refpost || !refpost.innerHTML || refpost.innerHTML == undefined) {
             if (verbose) {
@@ -294,6 +295,13 @@ function previewPost(el) {
                     document.body.append(preview);
                     return;
                 }
+                var fetching = postCache['fetch' + threadID];
+                if (fetching) {
+                    if (verbose) {
+                        console.log('fetch already in progress');
+                    }
+                    return;
+                }
                 // Fetch thread res page.
                 var url = el.getAttribute('href');
                 var hash = url.indexOf('#');
@@ -314,11 +322,12 @@ function previewPost(el) {
                 document.body.append(preview);
 
                 postCache['thread' + threadID] = true;
+                postCache['fetch' + threadID] = true;
                 fetchPosts(url, false).then(function() {
                     post = postCache[postID];
                     if (post && post.innerHTML) {
                         // Preview fetched post.
-                        preview.remove();
+                        closePostPreview();
                         previewPost(el);
                     } else {
                         preview.innerHTML = '<span style="color: red;font-weight: bold;">Post deleted.</span>';
@@ -369,6 +378,13 @@ function previewPost(el) {
     preview.style.top = py + 'px';
 }
 
+function closePostPreview() {
+    var previews = document.getElementsByClassName('hoverpost');
+    for (const preview of previews) {
+        preview.remove();
+    }
+}
+
 function setPostAttributes(element) {
     var base_url = window.location.pathname;
     var resIndex = base_url.indexOf('/res/');
@@ -403,10 +419,7 @@ function setPostAttributes(element) {
                 previewPost(el);
             });
             el.addEventListener("mouseleave", function(e) {
-                var preview = document.getElementById('ref' + el.getAttribute('refID'));
-                if (preview) {
-                    preview.remove();
-                }
+                closePostPreview();
             });
             var pressTime;
             el.addEventListener("touchstart", function(e) {
@@ -417,10 +430,7 @@ function setPostAttributes(element) {
             el.addEventListener("touchend", function(e) {
                 e.preventDefault();
                 var now = new Date().getTime();
-                var preview = document.getElementById('ref' + el.getAttribute('refID'));
-                if (preview) {
-                    preview.remove();
-                }
+                closePostPreview();
                 if (now - pressTime < 200) {
                     el.click()
                 }
@@ -428,10 +438,7 @@ function setPostAttributes(element) {
             el.addEventListener("touchcancel", function(e) {
                 e.preventDefault();
                 var now = new Date().getTime();
-                var preview = document.getElementById('ref' + el.getAttribute('refID'));
-                if (preview) {
-                    preview.remove();
-                }
+                closePostPreview();
                 if (now - pressTime < 200) {
                     el.click()
                 }
