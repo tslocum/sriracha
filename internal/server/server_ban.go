@@ -97,7 +97,7 @@ func (s *Server) serveBan(data *templateData, db *database.DB, w http.ResponseWr
 			if err != nil {
 				log.Fatal(err)
 			}
-			hash := calculateFileHash(buf)
+			hash := s.hashBytes(buf, "")
 			if db.FileBanned(hash) {
 				db.LiftFileBan(hash)
 				data.Info = "Lifted file ban."

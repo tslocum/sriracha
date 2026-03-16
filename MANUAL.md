@@ -293,6 +293,9 @@ serve: "localhost:8080"
 # a proxy, leave blank.
 #header: "X-Forwarded-For"
 
+# Hash algorithm. Supported algorithms are sha-3 (recommended) and sha-2. Must not change once set.
+algorithm: "sha-3"
+
 # Long random string of text used when one-way hashing data. Must not change once set.
 saltdata: "CHANGEME_Random_Data_Here_1"
 

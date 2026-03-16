@@ -2,7 +2,6 @@ package server
 
 import (
 	"bytes"
-	"crypto/sha512"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -334,7 +333,7 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 
 	formFile.Seek(0, 0)
 
-	hash := sha512.New384()
+	hash := s.newHash()
 	tee := io.TeeReader(formFile, hash)
 
 	wrote, err := io.Copy(file, tee)
@@ -346,7 +345,7 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 
 	file.Close()
 
-	var sum [sha512.Size384]byte
+	var sum [HashSize]byte
 	hash.Sum(sum[:0])
 	p.FileHash = base64.URLEncoding.EncodeToString(sum[:])
 

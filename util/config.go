@@ -33,9 +33,10 @@ type Config struct {
 	Serve  string // Address:Port to listen for HTTP connections on.
 	Header string // Client IP address header.
 
-	SaltData string // Long random string of text used when one-way hashing data. Must not change once set.
-	SaltPass string // Long random string of text used when two-way hashing data. Must not change once set.
-	SaltTrip string // Long random string of text used when generating secure tripcodes. Must not change once set.
+	Algorithm string // Hash algorithm. Supported algorithms are sha-2 and sha-3.
+	SaltData  string // Long random string of text used when one-way hashing data. Must not change once set.
+	SaltPass  string // Long random string of text used when two-way hashing data. Must not change once set.
+	SaltTrip  string // Long random string of text used when generating secure tripcodes. Must not change once set.
 
 	Address  string // Address:Port to connect to the database.
 	Username string // Database username.

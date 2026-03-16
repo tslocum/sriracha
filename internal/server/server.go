@@ -4,12 +4,14 @@ package server
 import (
 	"context"
 	"crypto/md5"
+	"crypto/sha3"
 	"crypto/sha512"
 	"crypto/tls"
 	"embed"
 	"encoding/base64"
 	"flag"
 	"fmt"
+	"hash"
 	"html/template"
 	"image"
 	"io"
@@ -93,6 +95,15 @@ type categoryInfo struct {
 	Recent      []*Post
 }
 
+type HashAlgorithm int8
+
+const (
+	AlgorithmSHA2 HashAlgorithm = 0
+	AlgorithmSHA3 HashAlgorithm = 1
+)
+
+const HashSize = 48 // Bytes.
+
 // ServerOptions represents server configuration options and related data.
 type ServerOptions struct {
 	SiteName         string
@@ -114,6 +125,7 @@ type ServerOptions struct {
 	Locale           string
 	Locales          map[string]string
 	LocalesSorted    []string
+	Algorithm        HashAlgorithm
 	Access           map[string]string
 	Banners          map[int][]*Banner
 	Rules            map[int][]template.HTML
@@ -291,6 +303,18 @@ func (s *Server) parseConfig(configFile string) error {
 		case config.DBName == "":
 			return fmt.Errorf("dbname (lowercase!) must be set in %s to the database name", configFile)
 		}
+	}
+
+	if config.Algorithm == "" {
+		config.Algorithm = "sha-2"
+	}
+	switch config.Algorithm {
+	case "sha-2":
+		s.opt.Algorithm = AlgorithmSHA2
+	case "sha-3":
+		s.opt.Algorithm = AlgorithmSHA3
+	default:
+		return fmt.Errorf("algorithm must be set to sha-3 or sha-2")
 	}
 
 	if config.Locale == "" {
@@ -2225,10 +2249,29 @@ func (s *Server) Run() error {
 	return err
 }
 
+// newHash returns a new hash digest.
+func (s *Server) newHash() hash.Hash {
+	if s.opt.Algorithm == AlgorithmSHA3 {
+		return sha3.New384()
+	}
+	return sha512.New384()
+}
+
+// hashBytes returns the hash of the provided bytes and optional salt.
+func (s *Server) hashBytes(buf []byte, salt string) string {
+	hash := s.newHash()
+	hash.Write(buf)
+	if salt != "" {
+		hash.Write([]byte(salt))
+	}
+	var sum [HashSize]byte
+	hash.Sum(sum[:0])
+	return base64.URLEncoding.EncodeToString(sum[:])
+}
+
 // hashData returns the salted hash of the provided data.
 func (s *Server) hashData(data string) string {
-	checksum := sha512.Sum384([]byte(data + s.config.SaltData))
-	return base64.URLEncoding.EncodeToString(checksum[:])
+	return s.hashBytes([]byte(data), s.config.SaltData)
 }
 
 // md5Sum returns the MD5 sum of the provided data.
@@ -2367,12 +2410,6 @@ func printChanges(old interface{}, new interface{}) string {
 		label += fmt.Sprintf(` [%s: "%v" > "%v"]`, name, FormatValue(from), FormatValue(to))
 	}
 	return label
-}
-
-// calculateFileHash returns the unsalted hash of the provided data.
-func calculateFileHash(buf []byte) string {
-	checksum := sha512.Sum384(buf)
-	return base64.URLEncoding.EncodeToString(checksum[:])
 }
 
 // pageCount returns the number of pages required to display the provided number of items.

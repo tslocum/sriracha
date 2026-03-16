@@ -2,8 +2,6 @@ package server
 
 import (
 	"context"
-	"crypto/sha512"
-	"encoding/base64"
 	"fmt"
 	"html"
 	"html/template"
@@ -296,8 +294,7 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 
 				pp.FileMIME = mimetype.Detect(buf).String()
 
-				checksum := sha512.Sum384(buf)
-				pp.FileHash = base64.URLEncoding.EncodeToString(checksum[:])
+				pp.FileHash = s.hashBytes(buf, "")
 
 				if p.Thumb != "" {
 					thumbPath := filepath.Join(s.config.Root, b.Dir, "thumb", p.Thumb)
