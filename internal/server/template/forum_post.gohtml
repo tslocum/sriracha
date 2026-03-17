@@ -4,7 +4,7 @@
 			{{range $i, $thread := .Threads}}
 				{{range $i, $post := $thread}}
 					<tr>
-						<td>{{.TimestampLabel}}</td>
+						<td>{{.BumpLabel}}</td>
 						<td>{{.Replies | PlusOne}}</td>
 						<td><span class="filetitle"><a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}">{{if ne .Subject ""}}{{.Subject}}{{else}}{{T "No subject"}}{{end}}</a></span></td>
 					</tr>

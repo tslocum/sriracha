@@ -175,6 +175,13 @@ func (p *Post) TimestampLabel() template.HTML {
 	return FormatTimestamp(p.Timestamp)
 }
 
+func (p *Post) BumpLabel() template.HTML {
+	if p.Bumped != 0 {
+		return FormatTimestamp(p.Bumped)
+	}
+	return FormatTimestamp(p.Timestamp)
+}
+
 func (p *Post) IsOekaki() bool {
 	return strings.HasSuffix(p.File, ".tgkr")
 }
