@@ -496,8 +496,8 @@ All plugins must implement the Plugin interface:
 ```go
 // Plugin describes the required methods for a plugin.
 type Plugin interface {
-	// About returns the plugin description.
-	About() string
+  // About returns the plugin description.
+  About() string
 }
 ```
 
@@ -508,7 +508,7 @@ Plugins may optionally specify any number of configuration options:
 ```go
 // PluginWithConfig describes the required methods for a plugin with configuration options.
 type PluginWithConfig interface {
-	Config() []PluginConfig
+  Config() []PluginConfig
 }
 ```
 
@@ -547,7 +547,7 @@ are also sent for each configuration option when the server initializes.
 ```go
 // PluginWithUpdate describes the required methods for a plugin subscribing to configuration updates.
 type PluginWithUpdate interface {
-	Update(db sriracha.DB, key string) error
+  Update(db sriracha.DB, key string) error
 }
 ```
 
@@ -559,7 +559,7 @@ This text is displayed below the post form in board index and thread pages.
 ```go
 // PluginWithRules describes the required methods for a plugin with text displayed below the post form.
 type PluginWithRules interface {
-	Rules(db sriracha.DB, board *Board) (template.HTML, error)
+  Rules(db sriracha.DB, board *Board) (template.HTML, error)
 }
 ```
 
@@ -572,7 +572,7 @@ attachment is handled, return true to stop propagating events to other plugins.
 ```go
 // PluginWithAttach describes the required methods for a plugin subscribing to attach events.
 type PluginWithAttach interface {
-	Attach(db sriracha.DB, post *Post, file multipart.File) (handled bool, err error)
+  Attach(db sriracha.DB, post *Post, file multipart.File) (handled bool, err error)
 }
 ```
 
@@ -584,7 +584,7 @@ handled, return true to stop propagating events to other plugins.
 ```go
 // PluginWithEmbed describes the required methods for a plugin subscribing to embed events.
 type PluginWithEmbed interface {
-	Embed(db sriracha.DB, post *Post, embedURL string) (handled bool, err error)
+  Embed(db sriracha.DB, post *Post, embedURL string) (handled bool, err error)
 }
 ```
 
@@ -597,7 +597,7 @@ plugins have finished processing the post.
 ```go
 // PluginWithPost describes the required methods for a plugin subscribing to post events.
 type PluginWithPost interface {
-	Post(db sriracha.DB, post *Post) error
+  Post(db sriracha.DB, post *Post) error
 }
 ```
 
@@ -611,7 +611,7 @@ continue processing.
 ```go
 // PluginWithInsert describes the required methods for a plugin subscribing to insert events.
 type PluginWithInsert interface {
-	Insert(db sriracha.DB, post *Post) error
+  Insert(db sriracha.DB, post *Post) error
 }
 ```
 
@@ -624,7 +624,7 @@ during this event. Modify posts during a Post event instead.
 ```go
 // PluginWithCreate describes the required methods for a plugin subscribing to create events.
 type PluginWithCreate interface {
-	Create(db sriracha.DB, post *Post) error
+  Create(db sriracha.DB, post *Post) error
 }
 ```
 
@@ -635,7 +635,7 @@ Report events are sent when a post is reported.
 ```go
 // PluginWithReport describes the required methods for a plugin subscribing to report events.
 type PluginWithReport interface {
-	Report(db sriracha.DB, post *Post) error
+  Report(db sriracha.DB, post *Post) error
 }
 ```
 
@@ -647,7 +647,7 @@ Based on the source of the event, user is "system", "admin" or "mod".
 ```go
 // PluginWithAudit describes the required methods for a plugin subscribing to audit events.
 type PluginWithAudit interface {
-	Audit(db sriracha.DB, user string, action string, info string) error
+  Audit(db sriracha.DB, user string, action string, info string) error
 }
 ```
 
@@ -661,7 +661,7 @@ to the `http.ResponseWriter` directly and return a blank string.
 ```go
 // PluginWithServe describes the required methods for a plugin with a web interface.
 type PluginWithServe interface {
-	Serve(db sriracha.DB, a *Account, w http.ResponseWriter, r *http.Request) (template.HTML, error)
+  Serve(db sriracha.DB, a *Account, w http.ResponseWriter, r *http.Request) (template.HTML, error)
 }
 ```
 
@@ -717,12 +717,12 @@ messages indicating Sriracha is running normally, the upgrade is complete.
 
 [Go to top](#sections)
 
+Sriracha supports exporting and importing posts via [SQLite](https://sqlite.org) database files.
+
 ### Export posts
 
-Sriracha supports exporting posts via [SQLite database](https://sqlite.org) files.
-
-To export all posts in all boards, start Sriracha with the `--export` flag and
-specify where to write the export ZIP file:
+To export posts, start Sriracha with the `--export` flag and specify where the
+export ZIP archive will be written:
 
 ```bash
 sriracha --export=/home/sriracha/export.zip
@@ -733,10 +733,8 @@ will also need a copy of the `src` and `thumb` directories of each board.
 
 ### Import posts
 
-Sriracha supports importing posts via [SQLite database](https://sqlite.org) files.
-
-Start Sriracha with the `--import` flag and specify a path to an export ZIP
-file or individual SQLite db file.
+To import posts, start Sriracha with the `--import` flag and specify the path
+of an export ZIP archive or SQLite database file:
 
 ```bash
 sriracha --import=/home/sriracha/export.zip
@@ -875,6 +873,42 @@ to re-enable posting.
 
 Don't forget to keep the backup handy, even if the migration appears to
 be successful.
+
+### Import posts from other software
+
+Sriracha is capable of importing posts from any software, provided you or
+someone else writes a tool to export the data in a compatible format.
+
+Sriracha supports importing post data which is contained in a SQLite database file with one table:
+
+```sql
+CREATE TABLE post (
+  id           INTEGER PRIMARY KEY, -- ID number.
+  parent       INTEGER NOT NULL,    -- Parent post ID. Thread posts have their parent set to 0.
+  timestamp    INTEGER NOT NULL,    -- Unix timestamp (in seconds) the post was created.
+  bumped       INTEGER NOT NULL,    -- Unix timestamp (in seconds) the post was last bumped. Only applies to threads.
+  name         TEXT NOT NULL,       -- Poster name.
+  tripcode     TEXT NOT NULL,       -- Poster tripcode. Exclude first '!' character.
+  email        TEXT NOT NULL,       -- Poster email address. Does not need to be a valid email address.
+  nameblock    TEXT NOT NULL,       -- HTML-formatted field containing the poster name, tripcode, capcode, identifier and post date/time.
+  subject      TEXT NOT NULL,       -- Post subject.
+  message      TEXT NOT NULL,       -- HTML-formatted post message.
+  file         TEXT NOT NULL,       -- Attachment file name. Located in board src directory.
+  filemime     TEXT NOT NULL,       -- Attachment MIME type.
+  filehash     TEXT NOT NULL,       -- Hash of attachment file. When exporting/importing posts, this is only used for embed attachments.
+  fileoriginal TEXT NOT NULL,       -- Original file name.
+  filesize     INTEGER NOT NULL,    -- Size (in bytes) of attachment.
+  filewidth    INTEGER NOT NULL,    -- Width (in pixels) of attachment.
+  fileheight   INTEGER NOT NULL,    -- Height (in pixels) of attachment.
+  thumb        TEXT NOT NULL,       -- Thumbnail file name. Located in board thumb directory.
+  thumbwidth   INTEGER NOT NULL,    -- Width (in pixels) of thumbnail.
+  thumbheight  INTEGER NOT NULL,    -- Height (in pixels) of attachment.
+  stickied     INTEGER NOT NULL,    -- 0: Unstickied. 1: Stickied.
+  locked       INTEGER NOT NULL     -- 0: Unlocked. 1: Locked.
+);
+```
+
+All fields are plain text except where noted.
 
 ## Guides
 
