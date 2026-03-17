@@ -771,20 +771,25 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 	if duplicate != nil {
 		s.deletePostFiles(post)
 
-		var postLink string
+		var postLink template.HTML
 		if duplicate.Moderated != ModeratedHidden {
-			postLink = fmt.Sprintf(` <a href="%sres/%d.html#%d">here</a>`, duplicate.Board.Path(), duplicate.Thread(), duplicate.ID)
+			postLink = "<br>" + duplicate.RefLink()
 		}
 
-		var uploadType = "file"
+		var info string
+		var msg string
 		if post.IsEmbed() {
-			uploadType = "embed"
+			info = "Duplicate embed detected."
+			msg = "That embed has already been posted."
+		} else {
+			info = "Duplicate file detected."
+			msg = "That file has already been posted."
 		}
 
 		data := s.buildData(db, w, r)
 		data.Template = "board_error"
-		data.Info = fmt.Sprintf("Duplicate %s uploaded.", uploadType)
-		data.Message = template.HTML(fmt.Sprintf(`<div style="text-align: center;">That %s has already been posted%s.</div><br>`, uploadType, postLink))
+		data.Info = Get(post.Board, nil, info)
+		data.Message = template.HTML(fmt.Sprintf(`<div style="text-align: center;">%s%s</div><br>`, Get(post.Board, nil, msg), postLink))
 		data.execute(w)
 		return
 	}
@@ -1079,20 +1084,25 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 		if duplicate != nil {
 			cancel()
 
-			var postLink string
+			var postLink template.HTML
 			if duplicate.Moderated != ModeratedHidden {
-				postLink = fmt.Sprintf(` <a href="%sres/%d.html#%d">here</a>`, duplicate.Board.Path(), duplicate.Thread(), duplicate.ID)
+				postLink = "<br>" + duplicate.RefLink()
 			}
 
-			var uploadType = "file"
+			var info string
+			var msg string
 			if p.IsEmbed() {
-				uploadType = "embed"
+				info = "Duplicate embed detected."
+				msg = "That embed has already been posted."
+			} else {
+				info = "Duplicate file detected."
+				msg = "That file has already been posted."
 			}
 
 			data := s.buildData(db, w, r)
 			data.Template = "board_error"
-			data.Info = fmt.Sprintf("Duplicate %s uploaded.", uploadType)
-			data.Message = template.HTML(fmt.Sprintf(`<div style="text-align: center;">That %s has already been posted%s.</div><br>`, uploadType, postLink))
+			data.Info = Get(p.Board, nil, info)
+			data.Message = template.HTML(fmt.Sprintf(`<div style="text-align: center;">%s%s</div><br>`, Get(p.Board, nil, msg), postLink))
 			data.execute(w)
 			return
 		}

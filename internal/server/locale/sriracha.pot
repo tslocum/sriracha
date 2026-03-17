@@ -352,6 +352,12 @@ msgstr ""
 msgid "Duplicate Board"
 msgstr ""
 
+msgid "Duplicate embed detected."
+msgstr ""
+
+msgid "Duplicate file detected."
+msgstr ""
+
 msgid "Email"
 msgstr ""
 
@@ -1026,6 +1032,12 @@ msgid "Text"
 msgstr ""
 
 msgid "Text to test for a keyword match."
+msgstr ""
+
+msgid "That embed has already been posted."
+msgstr ""
+
+msgid "That file has already been posted."
 msgstr ""
 
 msgid "This setting is purely cosmetic. To actually prevent access, configure your HTTPS server to require password authorization."
