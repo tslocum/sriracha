@@ -79,7 +79,7 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 
 		s.rebuildAll(db, false)
 
-		http.Redirect(w, r, "/sriracha/setting", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/setting")
 		return
 	}
 

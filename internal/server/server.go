@@ -1131,11 +1131,11 @@ func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Reque
 						Value: account.Session,
 						Path:  "/",
 					})
-					if s.config.ImportMode {
-						http.Redirect(w, r, "/sriracha/import/", http.StatusFound)
-					}
 					data := s.newTemplateData()
 					data.Account = account
+					if s.config.ImportMode {
+						data.Redirect(w, r, "/sriracha/import/")
+					}
 					return data
 				}
 			}
@@ -1715,7 +1715,7 @@ func (s *Server) serveManage(db *database.DB, w http.ResponseWriter, r *http.Req
 			data.execute(w)
 			return
 		} else if !strings.HasPrefix(r.URL.Path, "/sriracha/import/") {
-			http.Redirect(w, r, "/sriracha/import/", http.StatusFound)
+			data.Redirect(w, r, "/sriracha/import/")
 			return
 		}
 		data.Info = "IMPORT MODE"
@@ -1801,7 +1801,6 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 
 	db := s.begin()
 	defer db.Commit()
-	var handled bool
 
 	db.DeleteExpiredSubscriptions()
 
@@ -1816,55 +1815,50 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 			data := s.buildData(db, w, r)
 			data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (Ban #%d)", ban.ID))
 			data.execute(w)
-			handled = true
-			break
+			return
 		}
 	}
 
 	// Check static IP ban.
-	if !handled {
-		ban := db.BanByIP(s.hashIP(r))
-		if ban != nil {
-			data := s.buildData(db, w, r)
-			data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (Ban #%d)", ban.ID))
-			data.execute(w)
-			handled = true
-		} else if strings.HasPrefix(r.URL.Path, "/sriracha/post/") {
-			postID := PathInt(r, "/sriracha/post/")
-			post := db.PostByID(postID)
-			if post == nil {
-				data := s.buildData(db, w, r)
-				data.BoardError(w, "Invalid or deleted post.")
-			} else {
-				http.Redirect(w, r, fmt.Sprintf("%sres/%d.html#%d", post.Board.Path(), post.Thread(), post.ID), http.StatusFound)
-			}
-			handled = true
+	ban := db.BanByIP(s.hashIP(r))
+	if ban != nil {
+		data := s.buildData(db, w, r)
+		data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (Ban #%d)", ban.ID))
+		data.execute(w)
+		return
+	} else if strings.HasPrefix(r.URL.Path, "/sriracha/post/") {
+		postID := PathInt(r, "/sriracha/post/")
+		post := db.PostByID(postID)
+		data := s.buildData(db, w, r)
+		if post == nil {
+			data.BoardError(w, "Invalid or deleted post.")
+		} else {
+			data.Redirect(w, r, fmt.Sprintf("%sres/%d.html#%d", post.Board.Path(), post.Thread(), post.ID))
 		}
+		return
 	}
 
-	if !handled {
-		if strings.HasPrefix(r.URL.Path, "/sriracha/subscribe") {
-			action = "subscribe"
-		}
+	if strings.HasPrefix(r.URL.Path, "/sriracha/subscribe") {
+		action = "subscribe"
+	}
 
-		if s.config.ImportMode && action != "" {
-			data := s.buildData(db, w, r)
-			data.BoardError(w, "Sriracha is running in import mode. All boards are currently locked. Please wait and try again.")
-		} else {
-			switch action {
-			case "post":
-				s.servePost(db, w, r)
-			case "report":
-				s.serveReport(db, w, r)
-			case "delete":
-				s.serveDelete(db, w, r)
-			case "captcha":
-				s.serveCAPTCHA(db, w, r)
-			case "subscribe":
-				s.serveSubscribe(db, w, r)
-			default:
-				s.serveManage(db, w, r)
-			}
+	if s.config.ImportMode && action != "" {
+		data := s.buildData(db, w, r)
+		data.BoardError(w, "Sriracha is running in import mode. All boards are currently locked. Please wait and try again.")
+	} else {
+		switch action {
+		case "post":
+			s.servePost(db, w, r)
+		case "report":
+			s.serveReport(db, w, r)
+		case "delete":
+			s.serveDelete(db, w, r)
+		case "captcha":
+			s.serveCAPTCHA(db, w, r)
+		case "subscribe":
+			s.serveSubscribe(db, w, r)
+		default:
+			s.serveManage(db, w, r)
 		}
 	}
 }

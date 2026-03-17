@@ -68,7 +68,7 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 			}
 		}
 
-		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/category/")
 		return
 	}
 
@@ -105,7 +105,7 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted category #%d", c.ID), "")
 
-		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/category/")
 		return
 	}
 
@@ -126,7 +126,7 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 				}
 			}
 		}
-		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/category/")
 		return
 	}
 	boardDown := PathString(r, "/sriracha/category/board/down/")
@@ -146,7 +146,7 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 				}
 			}
 		}
-		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/category/")
 		return
 	}
 
@@ -192,7 +192,7 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 				}
 			}
 		}
-		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/category/")
 		return
 	}
 	categoryDownID := PathInt(r, "/sriracha/category/down/")
@@ -237,7 +237,7 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 				}
 			}
 		}
-		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/category/")
 		return
 	}
 
@@ -264,7 +264,7 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 				s.rebuildAll(db, false)
 			}
 
-			http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+			data.Redirect(w, r, "/sriracha/category/")
 			return
 		}
 		return
@@ -302,7 +302,7 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 			changes := printChanges(oldCategory, *data.Manage.Category)
 			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/category/%d", data.Manage.Category.ID), changes)
 
-			http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+			data.Redirect(w, r, "/sriracha/category/")
 			return
 		}
 		return
@@ -338,7 +338,7 @@ func (s *Server) serveCategory(data *templateData, db *database.DB, w http.Respo
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/category/%d", c.ID), "")
 
-		http.Redirect(w, r, "/sriracha/category/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/category/")
 		return
 	}
 }

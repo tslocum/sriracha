@@ -58,7 +58,7 @@ func (s *Server) serveNews(data *templateData, db *database.DB, w http.ResponseW
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted news #%d", deleteNewsID), "")
 
-		http.Redirect(w, r, "/sriracha/news/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/news/")
 		return
 	}
 
@@ -97,7 +97,7 @@ func (s *Server) serveNews(data *templateData, db *database.DB, w http.ResponseW
 			changes := printChanges(oldNews, *data.Manage.News)
 			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/news/%d", data.Manage.News.ID), changes)
 
-			http.Redirect(w, r, "/sriracha/news/", http.StatusFound)
+			data.Redirect(w, r, "/sriracha/news/")
 			return
 		}
 		return
@@ -126,7 +126,7 @@ func (s *Server) serveNews(data *templateData, db *database.DB, w http.ResponseW
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/news/%d", n.ID), "")
 
-		http.Redirect(w, r, "/sriracha/news/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/news/")
 		return
 	}
 

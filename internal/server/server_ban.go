@@ -46,7 +46,7 @@ func (s *Server) serveBan(data *templateData, db *database.DB, w http.ResponseWr
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Lifted ban #%d", b.ID), changes)
 
-		http.Redirect(w, r, "/sriracha/ban/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/ban/")
 		return
 	}
 
@@ -80,7 +80,7 @@ func (s *Server) serveBan(data *templateData, db *database.DB, w http.ResponseWr
 			changes := printChanges(oldBan, *data.Manage.Ban)
 			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/ban/%d", data.Manage.Ban.ID), changes)
 
-			http.Redirect(w, r, "/sriracha/ban/", http.StatusFound)
+			data.Redirect(w, r, "/sriracha/ban/")
 			return
 		}
 		return
@@ -146,7 +146,7 @@ func (s *Server) serveBan(data *templateData, db *database.DB, w http.ResponseWr
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/ban/%d", b.ID), b.Info())
 
-		http.Redirect(w, r, "/sriracha/ban/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/ban/")
 		return
 	}
 

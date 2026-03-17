@@ -61,7 +61,7 @@ func (s *Server) serveAccount(data *templateData, db *database.DB, w http.Respon
 			changes := printChanges(oldAccount, *data.Manage.Account)
 			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/account/%d", data.Manage.Account.ID), changes)
 
-			http.Redirect(w, r, "/sriracha/account/", http.StatusFound)
+			data.Redirect(w, r, "/sriracha/account/")
 			return
 		}
 		return
@@ -87,7 +87,7 @@ func (s *Server) serveAccount(data *templateData, db *database.DB, w http.Respon
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/account/%d", a.ID), "")
 
-		http.Redirect(w, r, "/sriracha/account/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/account/")
 		return
 	}
 

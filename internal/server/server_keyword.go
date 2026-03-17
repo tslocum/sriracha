@@ -84,7 +84,7 @@ func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.Respon
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted keyword #%d", k.ID), "")
 
-		http.Redirect(w, r, "/sriracha/keyword/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/keyword/")
 		return
 	}
 
@@ -120,7 +120,7 @@ func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.Respon
 			changes := printChanges(oldKeyword, *data.Manage.Keyword)
 			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/keyword/%d", data.Manage.Keyword.ID), changes)
 
-			http.Redirect(w, r, "/sriracha/keyword/", http.StatusFound)
+			data.Redirect(w, r, "/sriracha/keyword/")
 			return
 		}
 		return
@@ -150,7 +150,7 @@ func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.Respon
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/keyword/%d", k.ID), "")
 
-		http.Redirect(w, r, "/sriracha/keyword/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/keyword/")
 		return
 	}
 

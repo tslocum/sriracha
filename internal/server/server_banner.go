@@ -121,7 +121,7 @@ func (s *Server) serveBanner(data *templateData, db *database.DB, w http.Respons
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted banner #%d", b.ID), "")
 
-		http.Redirect(w, r, "/sriracha/banner/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/banner/")
 		return
 	}
 
@@ -179,7 +179,7 @@ func (s *Server) serveBanner(data *templateData, db *database.DB, w http.Respons
 
 			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/banner/%d", data.Manage.Banner.ID), "")
 
-			http.Redirect(w, r, "/sriracha/banner/", http.StatusFound)
+			data.Redirect(w, r, "/sriracha/banner/")
 			return
 		}
 		return
@@ -224,7 +224,7 @@ func (s *Server) serveBanner(data *templateData, db *database.DB, w http.Respons
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/banner/%d", b.ID), "")
 
-		http.Redirect(w, r, "/sriracha/banner/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/banner/")
 		return
 	}
 

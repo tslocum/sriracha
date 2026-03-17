@@ -42,7 +42,7 @@ func (s *Server) serveStatus(data *templateData, db *database.DB, w http.Respons
 			}
 		}
 
-		http.Redirect(w, r, "/sriracha/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/")
 		return
 	}
 

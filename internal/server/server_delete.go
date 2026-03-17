@@ -41,7 +41,7 @@ func (s *Server) serveDelete(db *database.DB, w http.ResponseWriter, r *http.Req
 			return
 		}
 		url := fmt.Sprintf("/sriracha/subscribe/post/%d", post.ID)
-		http.Redirect(w, r, url, http.StatusFound)
+		data.Redirect(w, r, url)
 		return
 	} else if data.Account != nil {
 		if post == nil {
@@ -54,7 +54,7 @@ func (s *Server) serveDelete(db *database.DB, w http.ResponseWriter, r *http.Req
 		if post != nil {
 			url += fmt.Sprintf("/%d#%d", post.Thread(), post.ID)
 		}
-		http.Redirect(w, r, url, http.StatusFound)
+		data.Redirect(w, r, url)
 		return
 	} else if post != nil {
 		password := r.FormValue("password")

@@ -115,6 +115,11 @@ func (data *templateData) forbidden(w http.ResponseWriter, required AccountRole)
 	return true
 }
 
+func (data *templateData) Redirect(w http.ResponseWriter, r *http.Request, destination string) {
+	data.Template = ""
+	http.Redirect(w, r, destination, http.StatusFound)
+}
+
 func (data *templateData) executeWithError(w io.Writer) error {
 	if data.Template == "" {
 		return nil

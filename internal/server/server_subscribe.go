@@ -139,7 +139,7 @@ func (s *Server) serveSubscribe(db *database.DB, w http.ResponseWriter, r *http.
 	}
 
 	if data.Post == nil && data.Board == nil {
-		http.Redirect(w, r, "/sriracha/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/")
 		return
 	}
 

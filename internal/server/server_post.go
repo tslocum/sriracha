@@ -1162,7 +1162,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 	wg.Wait()
 
 	redir := fmt.Sprintf("%sres/%d.html#%d", b.Path(), post.Thread(), post.ID)
-	http.Redirect(w, r, redir, http.StatusFound)
+	data.Redirect(w, r, redir)
 
 	s.lock.Lock()
 }

@@ -170,6 +170,38 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 		return false
 	}
 
+	resetBoardID := PathInt(r, "/sriracha/board/reset/")
+	if resetBoardID > 0 {
+		if s.forbidden(w, data, "board.update") {
+			return
+		}
+
+		b := db.BoardByID(resetBoardID)
+		if b == nil {
+			data.ManageError("Invalid board.")
+			return
+		}
+
+		bb := NewBoard()
+		bb.ID = b.ID
+		bb.Dir = b.Dir
+		bb.Name = b.Name
+		bb.Description = b.Description
+		db.UpdateBoard(bb)
+
+		s.refreshRulesCache(db)
+		s.refreshCategoryCache(db)
+		s.refreshKeywordCache(db)
+		s.rebuildBoard(db, bb)
+		s.writeSiteIndex(db)
+
+		changes := printChanges(*b, *bb)
+		s.log(db, data.Account, nil, fmt.Sprintf("Reset >>/board/%d", bb.ID), changes)
+
+		data.Redirect(w, r, fmt.Sprintf("/sriracha/board/%d", bb.ID))
+		return
+	}
+
 	deleteBoardID := PathInt(r, "/sriracha/board/delete/")
 	if deleteBoardID > 0 {
 		if s.forbidden(w, data, "board.delete") {
@@ -231,7 +263,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted board #%d", b.ID), "")
 
 		data.Template = "manage_info"
-		http.Redirect(w, r, "/sriracha/board/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/board/")
 		return
 	}
 
@@ -349,7 +381,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 			changes := printChanges(oldBoard, *data.Manage.Board)
 			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/board/%d", data.Manage.Board.ID), changes)
 
-			http.Redirect(w, r, "/sriracha/board/", http.StatusFound)
+			data.Redirect(w, r, "/sriracha/board/")
 			return true
 		}
 		return false
@@ -442,7 +474,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/board/%d", b.ID), "")
 
-		http.Redirect(w, r, "/sriracha/board/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/board/")
 		return true
 	}
 

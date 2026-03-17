@@ -348,7 +348,7 @@
             </tr>
             {{if or (and (eq .Manage.Board.ID 0) (May "board.add" $.Account $.Opt.Access)) (and (ne .Manage.Board.ID 0) (May "board.update" $.Account $.Opt.Access))}}
                 <tr>
-                    <td>&nbsp;</td>
+                    <td style="vertical-align: middle;">{{if ne .Manage.Board.ID 0}}&nbsp;[<a href="/sriracha/board/reset/{{.Manage.Board.ID}}" onclick="return confirm('{{T "Reset board configuration?"}}');">{{T "Reset"}}</a>]{{end}}</td>
                     <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if or (eq .Manage.Board nil) (eq .Manage.Board.ID 0)}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
                     <td>&nbsp;</td>
                 </tr>

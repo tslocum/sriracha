@@ -937,6 +937,9 @@ msgstr ""
 msgid "Reset all settings?"
 msgstr ""
 
+msgid "Reset board configuration?"
+msgstr ""
+
 msgid "Restrict New Posts"
 msgstr ""
 

@@ -275,7 +275,7 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 		}
 
 		data.Template = "manage_info"
-		http.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", data.Post.Board.ID, data.Post.ID), http.StatusFound)
+		data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", data.Post.Board.ID, data.Post.ID))
 		return
 	}
 	data.Board = data.Post.Board

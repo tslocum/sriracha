@@ -20,7 +20,7 @@ func (s *Server) servePreference(data *templateData, db *database.DB, w http.Res
 			}
 			db.UpdateAccountStyle(data.Account.ID, style)
 
-			http.Redirect(w, r, "/sriracha/preference/", http.StatusFound)
+			data.Redirect(w, r, "/sriracha/preference/")
 			return
 		case "locale":
 			locale := FormString(r, "locale")
@@ -29,7 +29,7 @@ func (s *Server) servePreference(data *templateData, db *database.DB, w http.Res
 			}
 			db.UpdateAccountLocale(data.Account.ID, locale)
 
-			http.Redirect(w, r, "/sriracha/preference/", http.StatusFound)
+			data.Redirect(w, r, "/sriracha/preference/")
 			return
 		case "password":
 			oldPass := r.FormValue("old")
@@ -53,7 +53,7 @@ func (s *Server) servePreference(data *templateData, db *database.DB, w http.Res
 
 			db.UpdateAccountPassword(match.ID, newPass)
 
-			http.Redirect(w, r, "/sriracha/", http.StatusFound)
+			data.Redirect(w, r, "/sriracha/")
 			return
 		}
 	}

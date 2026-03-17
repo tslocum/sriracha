@@ -64,7 +64,7 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted page #%d", p.ID), "")
 
-		http.Redirect(w, r, "/sriracha/page/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/page/")
 		return
 	}
 
@@ -110,7 +110,7 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/page/%d", data.Manage.Page.ID), "")
 
-		http.Redirect(w, r, "/sriracha/page/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/page/")
 		return
 	}
 
@@ -148,7 +148,7 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/page/%d", p.ID), "")
 
-		http.Redirect(w, r, "/sriracha/page/", http.StatusFound)
+		data.Redirect(w, r, "/sriracha/page/")
 		return
 	}
 
