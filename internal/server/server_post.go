@@ -880,7 +880,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			}
 			db.AddBan(ban)
 
-			s.log(db, nil, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info())
+			s.log(db, nil, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info()+" File hash: "+post.FileHash)
 			s.deletePostFiles(post)
 
 			data := s.buildData(db, w, r)
