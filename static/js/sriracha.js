@@ -4,6 +4,7 @@ var haveFocus = false;
 var highlightedPost = null;
 var blinkTitle = false;
 var originalTitle = "";
+var viewThreadID = 0;
 var newRepliesCount = 0;
 var newReplyID = 0;
 var postCache = {};
@@ -409,20 +410,30 @@ function setPostAttributes(element) {
         base_url = base_url.substring(0, resIndex) + '/';
     }
     element.querySelectorAll('a').forEach((el, i) => {
+        var postID = 0;
         var m = null;
         if (el.getAttribute('href')) {
-            m = el.getAttribute('href').match(/.*\/[0-9]+?#([0-9]+)/i);
+            m = el.getAttribute('href').match(/.*\/([0-9]+)\.html#([0-9]+)/i);
+            if (m) {
+                postID = m[2];
+                if (m[1] == viewThreadID) {
+                    el.setAttribute("href", "#" + postID);
+                }
+            }
         }
-        if (m == null && el.getAttribute('href')) {
+        if (postID == 0 && el.getAttribute('href')) {
             m = el.getAttribute('href').match(/\#([0-9]+)/i);
+            if (m) {
+                postID = m[1];
+            }
         }
-        if (m == null) {
+        if (postID == 0) {
             return;
         }
 
         if (el.innerHTML == 'No.') {
             if (element != document) {
-                element.setAttribute('postID', m[1]);
+                element.setAttribute('postID', postID);
                 element.setAttribute('postLink', el.getAttribute('href'))
                 element.classList.add('post');
             }
@@ -434,7 +445,7 @@ function setPostAttributes(element) {
             if (touchScreen) {
                 el.classList.add("touchreflink")
             }
-            el.setAttribute('refID', m[1]);
+            el.setAttribute('refID', postID);
             el.addEventListener("mouseenter", function(e) {
                 previewPost(el);
             });
@@ -597,13 +608,14 @@ function onDOMContentLoaded(e) {
         }
     }
 
+    var result = window.location.pathname.match(/.*\/res\/([0-9]+)\.html$/);
+    if (result && result.length == 2) {
+        viewThreadID = result[1];
+    }
+
     setPostAttributes(document);
 
-    if (typeof autoRefreshDelay === 'undefined') {
-        return;
-    }
-    var result = window.location.pathname.match(/.*\/res\/([0-9]+)\.html$/);
-    if (!result || result.length < 2) {
+    if (typeof autoRefreshDelay === 'undefined' || viewThreadID == 0) {
         return;
     }
     setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
