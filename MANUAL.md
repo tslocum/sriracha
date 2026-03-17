@@ -7,6 +7,8 @@
 - [**Configure**](#configure)
 - [**Migrate**](#migrate)
 - [**Upgrade**](#upgrade)
+- [**Export**](#export)
+- [**Import**](#import)
 - [**Plugins**](#plugins)
 - [**Guides**](#guides)
 
@@ -611,6 +613,42 @@ automatically when Sriracha is upgraded.
 
 Verify no error messages are printed when Sriracha starts. If you see the usual
 messages indicating Sriracha is running normally, the upgrade is complete.
+
+## Export
+
+[Go to top](#sections)
+
+Sriracha supports exporting posts via [SQLite database](https://sqlite.org) files.
+
+To export all posts in all boards, start Sriracha with the `--export` flag and
+specify where to write the export ZIP file:
+
+```bash
+sriracha --export=/home/sriracha/export.zip
+```
+
+Attachment files are not included in the export. To import posts later, you
+will also need a copy of the `src` and `thumb` directories of each board.
+
+## Import
+
+[Go to top](#sections)
+
+Sriracha supports importing posts via [SQLite database](https://sqlite.org) files.
+
+Start Sriracha with the `--import` flag and specify a path to an export ZIP
+file or individual SQLite db file.
+
+```bash
+sriracha --import=/home/sriracha/export.zip
+```
+
+Note: Posting is disabled when running in import mode.
+
+Attachment files are not included in the export. To import posts, you will also
+need a copy of the `src` and `thumb` directories of each board.
+
+Log in to the Sriracha management panel as a super-administrator to complete the import.
 
 ## Plugins
 

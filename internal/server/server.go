@@ -2035,11 +2035,13 @@ func (s *Server) Run() error {
 	}
 	var (
 		configFile   string
+		exportPath   string
 		devMode      bool
 		rebuild      bool
 		printVersion bool
 	)
 	flag.StringVar(&configFile, "config", "", "path to configuration file (default: ~/.config/sriracha/config.yml)")
+	flag.StringVar(&exportPath, "export", "", "export board data to zip file at specified path")
 	flag.BoolVar(&devMode, "dev", false, "run in development mode (watch official and custom template files for changes)")
 	flag.BoolVar(&rebuild, "rebuild", false, "rebuild static files before serving any requests")
 	flag.BoolVar(&printVersion, "version", false, "print version information and exit")
@@ -2144,6 +2146,18 @@ func (s *Server) Run() error {
 	err = s.parseTemplates(officialDir, s.config.Template)
 	if err != nil {
 		return fmt.Errorf("failed to parse template files: %s", err)
+	}
+
+	// Export board data.
+	if exportPath != "" {
+		db := s.begin()
+		defer db.Commit()
+
+		err := s.exportPosts(db, exportPath)
+		if err != nil {
+			return fmt.Errorf("failed to export board data: %s", err)
+		}
+		return nil
 	}
 
 	// Verify root directory is writable.
