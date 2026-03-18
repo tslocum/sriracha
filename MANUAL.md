@@ -873,7 +873,7 @@ CREATE TABLE post (
 All fields are plain text except where noted.
 
 You will most likely want to leave the nameblock field of each post blank.
-Sriracha will rebuild blank nameblock fields during import.
+Sriracha will then rebuild each post's nameblock during import.
 
 The above schema describes posts with file attachments. Posts with embed
 attachments use the same fields with the following differences:
@@ -881,6 +881,18 @@ attachments use the same fields with the following differences:
 - `file` contains HTML which will be displayed when the embed is expanded instead of a file name.
 - `filehash` contains embed information in the format `e ServiceName Title of Embedded Content` instead of a hash.
 - `fileoriginal` contains the URL of the embedded content instead of a file name.
+
+The following fields will be automatically filled when left blank:
+
+- When `bumped` is less than or equal to zero, it will be set to `timestamp`.
+- When `nameblock` is blank, it will be rebuilt based on the other fields of the post.
+- When `filemime` is blank, and the post has a file attachment, it will be set to the detected MIME type.
+- When `filehash` is blank, and the post has a file attachment, it will be set to a newly calculated file hash.
+- When `filesize` is blank, and the post has a file attachment, it will be set to the size of the file.
+- When `filewidth` is less than or equal to zero, and the post has an image or video attachment, it will be set to the width of the attachment.
+- When `fileheight` is less than or equal to zero, and the post has an image or video attachment, it will be set to the height of the attachment.
+- When `thumbwidth` is less than or equal to zero, and the post has a thumbnail, it will be set to the width of the thumbnail.
+- When `thumbheight` is less than or equal to zero, and the post has a thumbnail, it will be set to the height of the thumbnail.
 
 #### Example post with file attachment
 
