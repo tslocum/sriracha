@@ -57,9 +57,15 @@ CREATE TABLE post (
 		return nil, fmt.Errorf("failed to create post schema: %s", err)
 	}
 
+	var hash string
 	var stickied, locked int
 	for _, thread := range threads {
 		for _, p := range db.AllPostsInThread(thread[0], false) {
+			if p.IsEmbed() {
+				hash = p.FileHash
+			} else {
+				hash = ""
+			}
 			if p.Stickied {
 				stickied = 1
 			} else {
@@ -83,7 +89,7 @@ CREATE TABLE post (
 				p.Message,
 				p.File,
 				p.FileMIME,
-				p.FileHash,
+				hash,
 				p.FileOriginal,
 				p.FileSize,
 				p.FileWidth,

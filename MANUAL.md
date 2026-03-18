@@ -879,7 +879,7 @@ be successful.
 Sriracha is capable of importing posts from any software, provided you or
 someone else writes a tool to export the data in a compatible format.
 
-Sriracha supports importing post data which is contained in a SQLite database file with one table:
+Sriracha supports importing post data via SQLite database files containing one table:
 
 ```sql
 CREATE TABLE post (
@@ -910,10 +910,13 @@ CREATE TABLE post (
 
 All fields are plain text except where noted.
 
+You will most likely want to leave the nameblock field of each post blank.
+Sriracha will rebuild blank nameblock fields during import.
+
 The above schema describes posts with file attachments. Posts with embed
 attachments use the following fields differently:
 
-- `file` contains HTML instead of a file name, which will be displayed when the embed is expanded.
+- `file` contains HTML which will be displayed when the embed is expanded instead of a file name.
 - `filehash` contains embed information in the format `e ServiceName Title of Embedded Content` instead of a hash.
 - `fileoriginal` contains the URL of the embedded content instead of a file name.
 
