@@ -25,7 +25,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
         (echo "Building plugin $(basename $dir)..." && cd "$dir" && go build -trimpath -ldflags "-s -w" -buildmode=plugin); \
     done
 
-FROM alpine:3.23.2
+FROM alpine:3.23.3
 
 # Set working directory.
 WORKDIR /usr/share/sriracha

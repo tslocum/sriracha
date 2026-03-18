@@ -817,7 +817,7 @@ copied from TinyIB to the Sriracha root directory.
 
 #### 4. Visit the management panel
 
-Log in to the management panel as a super-administrator.
+Log in to the Sriracha management panel as a super-administrator.
 
 After validating the import configuration, you will be prompted for which board
 to import posts into. You may then start a dry run of the import.

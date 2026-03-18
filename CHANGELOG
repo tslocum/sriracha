@@ -1,3 +1,6 @@
+1.6.1:
+- Fix rewriting reflinks during import
+
 1.6.0:
 - Support importing and exporting posts
 - Support resetting board configuration

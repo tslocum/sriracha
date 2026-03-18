@@ -2046,7 +2046,7 @@ func (s *Server) Run() error {
 	flag.StringVar(&exportPath, "export", "", "export posts to zip file at specified path")
 	flag.StringVar(&importPath, "import", "", "import posts from zip file or sqlite database file at specified path")
 	flag.BoolVar(&devMode, "dev", false, "run in development mode (watch official and custom template files for changes)")
-	flag.BoolVar(&rebuild, "rebuild", false, "rebuild static files before serving any requests")
+	flag.BoolVar(&rebuild, "rebuild", false, "rebuild static files on startup")
 	flag.BoolVar(&printVersion, "version", false, "print version information and exit")
 	flag.Parse()
 
