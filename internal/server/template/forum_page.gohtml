@@ -1,7 +1,4 @@
-{{if .ReplyMode}}
-	{{template "imgboard_page.gohtml" .}}
-{{else}}
-	{{template "forum_begin.gohtml" .}}
+{{if .ReplyMode}}{{template "imgboard_page.gohtml" .}}{{else}}{{template "forum_begin.gohtml" .}}
 	{{if .ReplyMode}}
 		{{if not .ModMode}}
 			<div class="replymode">{{T "Posting mode: Reply"}}</div>

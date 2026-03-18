@@ -1,6 +1,6 @@
+{{if eq .Board.Type 0}}{{template "imgboard_begin.gohtml" .}}{{else}}{{template "forum_begin.gohtml" .}}{{end}}
 {{/* Note: This template is included in forum_page.gohtml when replying to a thread. */}}
 {{/* As a result, all template inclusions in this file must be conditional. */}}
-{{if eq .Board.Type 0}}{{template "imgboard_begin.gohtml" .}}{{else}}{{template "forum_begin.gohtml" .}}{{end}}
 {{if .ReplyMode}}
 	{{if not .ModMode}}
 		<div class="replymode">{{T "Posting mode: Reply"}}</div>
