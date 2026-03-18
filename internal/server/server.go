@@ -395,7 +395,6 @@ func (s *Server) parseConfig(configFile string) error {
 	}
 
 	s.config = config
-	s.config.ImportMode = s.config.Import.Enabled()
 
 	if s.config.MailDomains != "" {
 		s.notificationsPattern, err = regexp.Compile(s.config.MailDomains)
@@ -2167,7 +2166,7 @@ func (s *Server) Run() error {
 	// Import posts.
 	if importPath != "" {
 		s.config.ImportMode = true
-		err := s.importPosts(importPath)
+		err := s.importDatabase(importPath)
 		if err != nil {
 			return fmt.Errorf("failed to import posts: %s", err)
 		}
@@ -2255,7 +2254,7 @@ func (s *Server) Run() error {
 	}
 
 	if s.config.ImportMode {
-		fmt.Println("Import mode enabled. Visitors may not create posts until import mode is disabled.")
+		fmt.Println("Import mode enabled. Visitors are forbidden from posting.")
 	}
 
 	// Initialization complete. Unlock server.

@@ -747,9 +747,9 @@ need a copy of the `src` and `thumb` directories of each board.
 
 Log in to the Sriracha management panel as a super-administrator to complete the import.
 
-### Import TinyIB boards
+### Import TinyIB posts
 
-Sriracha supports migrating boards from [TinyIB](https://codeberg.org/tslocum/tinyib).
+Sriracha supports importing posts from [TinyIB](https://codeberg.org/tslocum/tinyib).
 
 #### Differences
 
@@ -801,8 +801,6 @@ need to share any source code.
 
 #### Instructions
 
-Posts and keywords will be imported into Sriracha. All other data is incompatible.
-
 ##### 1. Back everything up
 
 Before going any further, back everything up on the server. This includes files
@@ -811,50 +809,29 @@ and databases, if an external database like MySQL or PostgreSQL was used.
 Store the backup somewhere other than the server, such as your computer's hard
 drive. Keep this backup handy, even if the migration appears to be successful.
 
-##### 2. Migrate TinyIB to PostgreSQL
+##### 2. Migrate TinyIB to SQLite
 
-If you are already using PostgreSQL as your TinyIB database, you may skip this step.
+If you are already using SQLite as your TinyIB database, you may skip this step.
 
-Use TinyIB's built in database migration tool to migrate your database to PostgreSQL.
-This may require migrating to an intermediate database, depending on which `TINYIB_DBMODE`
-is in use.
-
-###### A. Migrate to SQLite or flat file
-
-If your `TINYIB_DBMODE` is set to `sqlite`, `sqlite3` or `flatfile`, skip to part B.
-
+Use TinyIB's built in database migration tool to migrate your database to SQLite.
 Set `TINYIB_DBMIGRATE` to `sqlite3` and follow the [migration instructions](https://codeberg.org/tslocum/tinyib#migrate).
-If `sqlite3` does not work, try `sqlite`. As a last resort, `flatfile` may be used
-as the intermediate database. Set any relevant database configuration options
-before migrating.
 
-Once you have migrated your database to `sqlite`, `sqlite3` or `flatfile`, proceed to part B.
+If `sqlite3` does not work, try `sqlite`. If neither work, you will need to
+enable SQLite in the configuration of your PHP installation.
 
-###### B. Migrate to PDO
+Once you have migrated your database to `sqlite` or `sqlite3`, proceed to the next step.
 
-Set `TINYIB_DBMIGRATE` to `pdo`, `TINYIB_DBDRIVER` to `pgsql` and follow the [migration instructions](https://codeberg.org/tslocum/tinyib#migrate).
-Set any relevant database configuration options to the new PostgreSQL database.
-This database will be read and imported by Sriracha.
+##### 3. Start Sriracha in import mode
 
-##### 3. Configure Sriracha to run in import mode
+Start sriracha with the --import flag and specify the path to a TinyIB database file:
 
-Add the following to your Sriracha `config.yml`, replacing the example values
-with your TinyIB PostgreSQL database connection info and table names.
-
-```yaml
-# Note: Posting is disabled when running in import mode.
-import:
-  # Connection info.
-  address: "localhost:5432" # Hostname:Port to connect to the database.
-  username: "tinyib"        # Database username.
-  password: "hunter2"       # Database password.
-  dbname: "tinyib"          # Database name.
-  # Table names.
-  posts: "dir_posts"        # Required.
-  keywords: "keywords"      # Optional.
+```bash
+sriracha --import=/home/sriracha/tinyib.db
 ```
 
-##### 4. Start Sriracha and visit the management panel
+Note: Posting is disabled when running in import mode.
+
+##### 4. Visit the management panel
 
 Log in to the management panel as a super-administrator and follow the
 on-screen prompts. After validating the import configuration, you may initiate
@@ -868,8 +845,7 @@ and `thumb` to the root directory and leave the board directory field blank.
 
 ##### 5. Restart Sriracha in normal mode
 
-Remove the import configuration option from `config.yml` and restart Sriracha
-to re-enable posting.
+Restart Sriracha without the --import flag to re-enable posting.
 
 Don't forget to keep the backup handy, even if the migration appears to
 be successful.

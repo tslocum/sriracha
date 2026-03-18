@@ -11,21 +11,6 @@ type UploadType struct {
 	Thumb string
 }
 
-// ImportConfig represents a board import configuration.
-type ImportConfig struct {
-	Address  string // Address:Port to connect to the database.
-	Username string // Database username.
-	Password string // Database password.
-	DBName   string // Database name.
-
-	Posts    string // Posts table.
-	Keywords string // Keywords table.
-}
-
-func (c ImportConfig) Enabled() bool {
-	return c != ImportConfig{}
-}
-
 // Config represents the server configuration.
 type Config struct {
 	Locale string // Default locale. See locale directory for available languages.
@@ -64,8 +49,6 @@ type Config struct {
 	Uploads []string // Supported upload file types.
 
 	Access map[string]string // Specifies which roles may perform each management or moderation action.
-
-	Import ImportConfig // Board import configuration.
 
 	// Calculated fields.
 	cachedUploads  []*UploadType

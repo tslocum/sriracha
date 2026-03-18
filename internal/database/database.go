@@ -219,6 +219,7 @@ func (db *DB) RollBack() {
 		log.Fatalf("failed to rollback transaction: %s", err)
 	}
 	db.conn.Release()
+	db.committed = true
 }
 
 func (db *DB) Commit() {
