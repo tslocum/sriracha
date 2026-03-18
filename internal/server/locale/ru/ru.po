@@ -177,6 +177,12 @@ msgstr ""
 msgid "Board description, which is used by search engines."
 msgstr ""
 
+msgid "Board locked. No new posts may be created."
+msgstr ""
+
+msgid "Board locked. You may only reply to threads."
+msgstr ""
+
 msgid "Boards"
 msgstr "Разделы"
 
@@ -363,6 +369,12 @@ msgid "Duplicate"
 msgstr ""
 
 msgid "Duplicate Board"
+msgstr ""
+
+msgid "Duplicate embed detected."
+msgstr ""
+
+msgid "Duplicate file detected."
 msgstr ""
 
 msgid "Email"
@@ -869,6 +881,24 @@ msgstr ""
 msgid "Please enter an email address at least %d characters long."
 msgstr ""
 
+msgid "Please enter an embed URL."
+msgstr ""
+
+msgid "Please enter an embed URL or enter a message."
+msgstr ""
+
+msgid "Please upload a file or enter a message."
+msgstr ""
+
+msgid "Please upload a file or enter an embed URL."
+msgstr ""
+
+msgid "Please upload a file."
+msgstr ""
+
+msgid "Please upload a file, enter an embed URL or enter a message."
+msgstr ""
+
 msgid "Please wait %s before creating a new post."
 msgstr "Пожалуйста, подождите %s перед созданием новой темы."
 
@@ -952,6 +982,9 @@ msgid "Reset all configuration options?"
 msgstr ""
 
 msgid "Reset all settings?"
+msgstr ""
+
+msgid "Reset board configuration?"
 msgstr ""
 
 msgid "Restrict New Posts"
@@ -1051,6 +1084,12 @@ msgid "Text"
 msgstr ""
 
 msgid "Text to test for a keyword match."
+msgstr ""
+
+msgid "That embed has already been posted."
+msgstr ""
+
+msgid "That file has already been posted."
 msgstr ""
 
 msgid ""

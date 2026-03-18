@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-03-16 15:16+0000\n"
+"PO-Revision-Date: 2026-03-18 09:29+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -176,6 +176,15 @@ msgstr "Subforum"
 
 msgid "Board description, which is used by search engines."
 msgstr "Een beschrijving van het subforum, voor zoekmachines."
+
+msgid "Board locked. No new posts may be created."
+msgstr ""
+"Dit forum is vergrendeld — het plaatsen van nieuwe berichten is "
+"uitgeschakeld."
+
+msgid "Board locked. You may only reply to threads."
+msgstr ""
+"Dit forum is vergrendeld — je mag alleen op bestaande onderwerpen reageren."
 
 msgid "Boards"
 msgstr "Fora"
@@ -371,6 +380,12 @@ msgstr "Klonen"
 
 msgid "Duplicate Board"
 msgstr "Subforum klonen"
+
+msgid "Duplicate embed detected."
+msgstr ""
+
+msgid "Duplicate file detected."
+msgstr ""
 
 msgid "Email"
 msgstr "E-mailen"
@@ -913,6 +928,24 @@ msgstr "Voer een e-mailadres in."
 msgid "Please enter an email address at least %d characters long."
 msgstr "Voer een e-mailadres van ten minste %d tekens in."
 
+msgid "Please enter an embed URL."
+msgstr "Voer een geldige insluit-url in."
+
+msgid "Please enter an embed URL or enter a message."
+msgstr "Voer een insluit-url of bericht in."
+
+msgid "Please upload a file or enter a message."
+msgstr "Upload een bestand of voer een bericht in."
+
+msgid "Please upload a file or enter an embed URL."
+msgstr "Upload een bestand of voer een insluit-url in."
+
+msgid "Please upload a file."
+msgstr "Upload een bestand."
+
+msgid "Please upload a file, enter an embed URL or enter a message."
+msgstr "Upload een bestand of voer een insluit-url of bericht in."
+
 msgid "Please wait %s before creating a new post."
 msgstr "Wacht %s alvorens een nieuw bericht op te stellen."
 
@@ -1002,6 +1035,9 @@ msgstr "Weet je zeker dat je alle instellingen wilt terugzetten?"
 
 msgid "Reset all settings?"
 msgstr "Alle instellingen herstellen?"
+
+msgid "Reset board configuration?"
+msgstr ""
 
 msgid "Restrict New Posts"
 msgstr "Nieuwe berichten beperken"
@@ -1103,6 +1139,12 @@ msgstr "Tekst"
 
 msgid "Text to test for a keyword match."
 msgstr "De tekst waarnaar gezocht moet worden."
+
+msgid "That embed has already been posted."
+msgstr ""
+
+msgid "That file has already been posted."
+msgstr ""
 
 msgid ""
 "This setting is purely cosmetic. To actually prevent access, configure your "

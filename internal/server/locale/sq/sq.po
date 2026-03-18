@@ -175,6 +175,12 @@ msgstr "Bord"
 msgid "Board description, which is used by search engines."
 msgstr "Pershkrimi i bordit, i cili perdoret nga search engines."
 
+msgid "Board locked. No new posts may be created."
+msgstr ""
+
+msgid "Board locked. You may only reply to threads."
+msgstr ""
+
 msgid "Boards"
 msgstr "Bordet"
 
@@ -368,6 +374,12 @@ msgid "Duplicate"
 msgstr ""
 
 msgid "Duplicate Board"
+msgstr ""
+
+msgid "Duplicate embed detected."
+msgstr ""
+
+msgid "Duplicate file detected."
 msgstr ""
 
 msgid "Email"
@@ -906,6 +918,24 @@ msgstr ""
 msgid "Please enter an email address at least %d characters long."
 msgstr ""
 
+msgid "Please enter an embed URL."
+msgstr ""
+
+msgid "Please enter an embed URL or enter a message."
+msgstr ""
+
+msgid "Please upload a file or enter a message."
+msgstr ""
+
+msgid "Please upload a file or enter an embed URL."
+msgstr ""
+
+msgid "Please upload a file."
+msgstr ""
+
+msgid "Please upload a file, enter an embed URL or enter a message."
+msgstr ""
+
 msgid "Please wait %s before creating a new post."
 msgstr "Ju lutem prisni %s para se te krijoni nje postim te ri."
 
@@ -993,6 +1023,9 @@ msgstr "Rikrijoni te gjitha opsionet e konfigurimit?"
 
 msgid "Reset all settings?"
 msgstr "Rikrijoni te gjitha cilesimet?"
+
+msgid "Reset board configuration?"
+msgstr ""
 
 msgid "Restrict New Posts"
 msgstr "Kufizo Postimet e Reja"
@@ -1094,6 +1127,12 @@ msgstr "Teksti"
 
 msgid "Text to test for a keyword match."
 msgstr "Tekst per te testuar a perputhet me nje fjale kyce."
+
+msgid "That embed has already been posted."
+msgstr ""
+
+msgid "That file has already been posted."
+msgstr ""
 
 msgid ""
 "This setting is purely cosmetic. To actually prevent access, configure your "
