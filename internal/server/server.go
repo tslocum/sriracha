@@ -2156,6 +2156,10 @@ func (s *Server) Run() error {
 		db := s.begin()
 		defer db.Commit()
 
+		if !strings.HasSuffix(strings.ToLower(exportPath), ".zip") {
+			exportPath += ".sriracha.zip"
+		}
+
 		err := s.exportPosts(db, exportPath)
 		if err != nil {
 			return fmt.Errorf("failed to export posts: %s", err)

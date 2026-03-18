@@ -320,6 +320,17 @@ func (db *DB) ReplyCount(threadID int) int {
 	return count
 }
 
+func (db *DB) MaxPostID() int {
+	var id int
+	err := db.conn.QueryRow(context.Background(), "SELECT id FROM post ORDER BY id DESC LIMIT 1").Scan(&id)
+	if err == pgx.ErrNoRows {
+		return 0
+	} else if err != nil {
+		log.Fatalf("failed to select maximum post ID: %s", err)
+	}
+	return id
+}
+
 func (db *DB) BumpThread(threadID int, timestamp int64) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE post SET bumped = $1 WHERE id = $2 AND bumped < $1", timestamp, threadID)
 	if err != nil {

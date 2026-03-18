@@ -12,6 +12,8 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
+	"strings"
 
 	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
@@ -24,6 +26,7 @@ var ytEmbedPattern = regexp.MustCompile(`\/\/www\.youtube\.com\/embed\/([0-9A-Za
 type importInfo struct {
 	name  string
 	sqlDB *sql.DB
+	posts []*Post
 }
 
 func (s *Server) _importDatabase(name string, filePath string) error {
@@ -170,7 +173,7 @@ func (s *Server) _importPost(p *Post, tinyIB bool) error {
 	return nil
 }
 
-func (s *Server) importPosts(sqlDB *sql.DB, table string, tinyIB bool, b *Board, commit bool) (int, error) {
+func (s *Server) importPosts(sqlDB *sql.DB, table string, tinyIB bool, b *Board) ([]*Post, error) {
 	// Build query.
 	var query string
 	if tinyIB {
@@ -181,10 +184,10 @@ func (s *Server) importPosts(sqlDB *sql.DB, table string, tinyIB bool, b *Board,
 	query += " ORDER BY id ASC"
 
 	// Query database for posts.
-	var posts int
+	var posts []*Post
 	rows, err := sqlDB.Query(query)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 	for rows.Next() {
 		p := &Post{}
@@ -212,9 +215,13 @@ func (s *Server) importPosts(sqlDB *sql.DB, table string, tinyIB bool, b *Board,
 			&stickied,
 			&locked)
 		if err != nil {
-			return 0, err
+			return nil, err
 		}
-		posts++
+		p.Moderated = ModeratedVisible
+		p.Stickied = stickied == 1
+		p.Locked = locked == 1
+
+		posts = append(posts, p)
 
 		if b == nil {
 			continue
@@ -222,7 +229,7 @@ func (s *Server) importPosts(sqlDB *sql.DB, table string, tinyIB bool, b *Board,
 		p.Board = b
 		err = s._importPost(p, tinyIB)
 		if err != nil {
-			return 0, err
+			return nil, err
 		}
 	}
 	return posts, nil
@@ -312,248 +319,115 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 			data.ManageError(fmt.Sprintf("Failed to locate post table in export %s", info.name))
 			return
 		}
-		postCount, err := s.importPosts(sqlDB, table, tinyIB, importBoards[i], false)
+		posts, err := s.importPosts(sqlDB, table, tinyIB, importBoards[i])
 		if err != nil {
 			data.ManageError(fmt.Sprintf("Failed to load export %s: %s", info.name, err.Error()))
 			return
-		} else if postCount == 0 {
+		} else if len(posts) == 0 {
 			data.ManageError(fmt.Sprintf("No posts were found in export %s.", info.name))
 			return
 		} else if !haveMapping {
-			data.Message += template.HTML(fmt.Sprintf("<b>Found %d posts</b> in export %s.<br>", postCount, html.EscapeString(info.name)))
+			data.Message += template.HTML(fmt.Sprintf("<b>Found %d posts</b> in export %s.<br>", len(posts), html.EscapeString(info.name)))
 		}
+		s.importDatabases[i].posts = posts
 	}
 
-	if !haveMapping {
-		data.Message += template.HTML("<br><b>Export files loaded.</b><br>Ready to start dry run.<br>")
-	} else if !commit {
-		data.Message += template.HTML("<b>Dry run complete.</b><br>Ready to import posts.<br>")
-	} else {
-		s.config.ImportComplete = true
-		s.rebuildAll(db, false)
-		return
-	}
+	if !haveMapping || !commit {
+		if !haveMapping {
+			data.Message += template.HTML("<br><b>Export files loaded.</b><br>Ready to start dry run.<br>")
+		} else if !commit {
+			data.Message += template.HTML("<b>Dry run complete.</b><br>Ready to import posts.<br>")
+		}
 
-	data.Message += template.HTML(`<br><fieldset>
+		data.Message += template.HTML(`<br><fieldset>
 		<legend>Boards</legend>
 		<form method="post">
 		<input type="hidden" name="import" value="1">`)
-	if !haveMapping {
-		data.Message += template.HTML(`Choose where to import posts:<br><br>`)
-	} else {
-		data.Message += template.HTML(`<input type="hidden" name="confirm" value="1">`)
-	}
-	data.Message += template.HTML(`<table class="manageform">`)
-	var disabled string
-	if haveMapping {
-		disabled = " disabled"
-	}
-	var selected string
-	for i, info := range s.importDatabases {
-		if haveMapping && importBoards[i] == nil {
-			continue
+		if !haveMapping {
+			data.Message += template.HTML(`Choose where to import posts:<br><br>`)
+		} else {
+			data.Message += template.HTML(`<input type="hidden" name="confirm" value="1">`)
 		}
-		data.Message += template.HTML(fmt.Sprintf(`<tr>
+		data.Message += template.HTML(`<table class="manageform">`)
+		var disabled string
+		if haveMapping {
+			disabled = " disabled"
+		}
+		var selected string
+		for i, info := range s.importDatabases {
+			if haveMapping && importBoards[i] == nil {
+				continue
+			}
+			data.Message += template.HTML(fmt.Sprintf(`<tr>
 				<td class="postblock"><label for="board%d">%s</label></td>
 				<td><select name="board%d"%s>
 					<option value="0">Do not import</option>`, i, info.name, i, disabled))
-		for _, b := range data.Boards {
-			label := b.Path()
-			if b.Name != "" {
-				label += " " + b.Name
+			for _, b := range data.Boards {
+				label := b.Path()
+				if b.Name != "" {
+					label += " " + b.Name
+				}
+				selected = ""
+				if importBoards[i] != nil && b.ID == importBoards[i].ID {
+					selected = " selected"
+				}
+				data.Message += template.HTML(fmt.Sprintf(`<option value="%d"%s>%s</option>`, b.ID, selected, label))
 			}
-			selected = ""
-			if importBoards[i] != nil && b.ID == importBoards[i].ID {
-				selected = " selected"
-			}
-			data.Message += template.HTML(fmt.Sprintf(`<option value="%d"%s>%s</option>`, b.ID, selected, label))
-		}
-		data.Message += template.HTML(`</select></td>
+			data.Message += template.HTML(`</select></td>
 			</tr>`)
-	}
-	data.Message += template.HTML(`
+		}
+		data.Message += template.HTML(`
 				<tr>
 					<td style="vertical-align: middle;">&nbsp;`)
-	if !haveMapping {
-		data.Message += template.HTML(`[<a href="/sriracha/board/">Manage Boards</a>]`)
-	}
-	label := "Start Dry Run"
-	if haveMapping {
-		label = "Start Import"
-	}
-	data.Message += template.HTML(`</td>
+		if !haveMapping {
+			data.Message += template.HTML(`[<a href="/sriracha/board/">Manage Boards</a>]`)
+		}
+		label := "Start Dry Run"
+		if haveMapping {
+			label = "Start Import"
+		}
+		data.Message += template.HTML(`</td>
                     <td><input type="submit" value="` + label + `"></td>
 					<td></td>
 				</tr>
 			</table>`)
-	if haveMapping {
-		for i := range s.importDatabases {
-			b := importBoards[i]
-			if b != nil {
-				data.Message += template.HTML(fmt.Sprintf(`<input type="hidden" name="board%d" value="%d">`, i, b.ID))
-			}
-		}
-	}
-	data.Message += template.HTML(`</form>
-		</fieldset><br>`)
-	/*
-		// Collect post IDs.
-		data.Message += template.HTML("Collecting post IDs...<br>")
-		rows, err := conn.Query(context.Background(), "SELECT id FROM "+c.Posts+" ORDER BY id ASC")
-		if err != nil {
-			data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to select posts in table %s: %s", html.EscapeString(c.Posts), err))
-			return
-		}
-		var postIDs []int
-		for rows.Next() {
-			var postID int
-			err := rows.Scan(&postID)
-			if err != nil {
-				data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to select posts in table %s: %s", html.EscapeString(c.Posts), err))
-				return
-			}
-			postIDs = append(postIDs, postID)
-		}
-		data.Message += template.HTML("<b>Post IDs collected.</b><br><br>")
-
-		data.Message += template.HTML("Verifying board directories...<br>")
-		dirs := []string{b.Dir, filepath.Join(b.Dir, "src"), filepath.Join(b.Dir, "thumb"), filepath.Join(b.Dir, "res")}
-		for _, dir := range dirs {
-			dirPath := filepath.Join(s.config.Root, dir)
-			_, err := os.Stat(dirPath)
-			if os.IsNotExist(err) {
-				data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Board directory %s does not exist.", html.EscapeString(dirPath)))
-				return
-			}
-			if unix.Access(dirPath, unix.W_OK) != nil {
-				data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Board directory %s is not writable.", html.EscapeString(dirPath)))
-				return
-			}
-		}
-		data.Message += template.HTML("<b>Board directories exist and are writable.</b><br><br>")
-
-		type importPost struct {
-			ID                int
-			Parent            int
-			Timestamp         int64
-			Bumped            int64
-			IP                string
-			Name              string
-			Tripcode          string
-			Email             string
-			NameBlock         string
-			Subject           string
-			Message           string
-			Password          string
-			File              string
-			FileHash          string
-			FileOriginal      string
-			FileSize          int64
-			FileSizeFormatted string
-			FileWidth         int
-			FileHeight        int
-			Thumb             string
-			ThumbWidth        int
-			ThumbHeight       int
-			Moderated         int
-			Stickied          int
-			Locked            int
-		}
-
-		data.Message += template.HTML("Importing posts...<br>")
-		newIDs := make(map[int]int)
-		var lastPostID int
-		for _, postID := range postIDs {
-			var p importPost
-			err := conn.QueryRow(context.Background(), "SELECT * FROM "+c.Posts+" WHERE id = $1", postID).Scan(
-				&p.ID,
-				&p.Parent,
-				&p.Timestamp,
-				&p.Bumped,
-				&p.IP,
-				&p.Name,
-				&p.Tripcode,
-				&p.Email,
-				&p.NameBlock,
-				&p.Subject,
-				&p.Message,
-				&p.Password,
-				&p.File,
-				&p.FileHash,
-				&p.FileOriginal,
-				&p.FileSize,
-				&p.FileSizeFormatted,
-				&p.FileWidth,
-				&p.FileHeight,
-				&p.Thumb,
-				&p.ThumbWidth,
-				&p.ThumbHeight,
-				&p.Moderated,
-				&p.Stickied,
-				&p.Locked)
-			if err != nil {
-				data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to select posts in table %s: %s", html.EscapeString(c.Posts), err))
-				return
-			}
-			pp := &Post{
-				ID:           p.ID,
-				Board:        b,
-				Parent:       p.Parent,
-				Timestamp:    p.Timestamp,
-				Bumped:       p.Bumped,
-				IP:           "",
-				Name:         p.Name,
-				Tripcode:     p.Tripcode,
-				Email:        p.Email,
-				NameBlock:    p.NameBlock,
-				Subject:      p.Subject,
-				Message:      p.Message,
-				Password:     "",
-				File:         p.File,
-				FileHash:     "",
-				FileOriginal: "",
-				FileSize:     p.FileSize,
-				FileWidth:    p.FileWidth,
-				FileHeight:   p.FileHeight,
-				Thumb:        p.Thumb,
-				ThumbWidth:   p.ThumbWidth,
-				ThumbHeight:  p.ThumbHeight,
-				Moderated:    PostModerated(p.Moderated),
-				Stickied:     p.Stickied == 1,
-				Locked:       p.Locked == 1,
-			}
-			hashLen := len(p.FileHash)
-			isEmbed := hashLen != 0 && hashLen < 32
-			if isEmbed {
-				pp.FileHash = fmt.Sprintf("e %s %s", p.FileHash, p.FileOriginal)
-			} else {
-				pp.FileOriginal = p.FileOriginal
-				if p.File != "" {
-					srcPath := filepath.Join(s.config.Root, b.Dir, "src", p.File)
-
-					buf, err := os.ReadFile(srcPath)
-					if err != nil {
-						data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> File not found at %s", html.EscapeString(srcPath)))
-						return
-					}
-
-					pp.FileMIME = mimetype.Detect(buf).String()
-
-					pp.FileHash = s.hashBytes(buf, "")
-
-					if p.Thumb != "" {
-						thumbPath := filepath.Join(s.config.Root, b.Dir, "thumb", p.Thumb)
-						_, err := os.Stat(thumbPath)
-						if os.IsNotExist(err) {
-							data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Thumbnail not found at %s", html.EscapeString(srcPath)))
-							return
-						}
-					}
+		if haveMapping {
+			for i := range s.importDatabases {
+				b := importBoards[i]
+				if b != nil {
+					data.Message += template.HTML(fmt.Sprintf(`<input type="hidden" name="board%d" value="%d">`, i, b.ID))
 				}
 			}
+		}
+		data.Message += template.HTML(`</form>
+		</fieldset><br>`)
+		return
+	}
 
+	var lastPostID int
+	for i, info := range s.importDatabases {
+		b := importBoards[i]
+		if b == nil {
+			continue
+		}
+
+		var rewriteIDs bool
+		for _, p := range info.posts {
+			if p.ID <= 0 {
+				data.ManageError(fmt.Sprintf("Invalid post: no post ID: %+v", *p))
+				return
+			}
+			dbPost := db.PostByID(p.ID)
+			if dbPost != nil {
+				rewriteIDs = true
+				break
+			}
+		}
+
+		newIDs := make(map[int]int)
+		for _, p := range info.posts {
 			carriageReturn := regexp.MustCompile(`(?s)\r.?`)
-			pp.Message = carriageReturn.ReplaceAllStringFunc(pp.Message, func(s string) string {
+			p.Message = carriageReturn.ReplaceAllStringFunc(p.Message, func(s string) string {
 				if len(s) == 1 || s[1] == '\n' {
 					return "\n"
 				}
@@ -561,79 +435,86 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 			})
 
 			resPattern := regexp.MustCompile(`<a href="res\/([0-9]+).html#([0-9]+)" class="([A-Aa-z]+)">&gt;&gt;([0-9]+)</a>`)
-			pp.Message = resPattern.ReplaceAllStringFunc(pp.Message, func(s string) string {
+			p.Message = resPattern.ReplaceAllStringFunc(p.Message, func(s string) string {
 				match := resPattern.FindStringSubmatch(s)
 				threadID := ParseInt(match[1])
 				postID := ParseInt(match[2])
 				return fmt.Sprintf(`<a href="%sres/%d.html#%d" class="%s">&gt;&gt;%d</a>`, b.Path(), newIDs[threadID], newIDs[postID], match[3], newIDs[postID])
 			})
 
-			if pp.Parent != 0 {
-				pp.Parent = newIDs[pp.Parent]
+			p.Message = strings.TrimSuffix(p.Message, "<br>")
+
+			if p.Parent != 0 {
+				p.Parent = newIDs[p.Parent]
 			}
+			oldID := p.ID
 			if rewriteIDs {
-				db.AddPost(pp)
+				db.AddPost(p)
 			} else {
 				var parent *int
-				if pp.Parent != 0 {
-					parent = &pp.Parent
+				if p.Parent != 0 {
+					parent = &p.Parent
 				}
 				var fileHash *string
-				if pp.FileHash != "" {
-					fileHash = &pp.FileHash
+				if p.FileHash != "" {
+					fileHash = &p.FileHash
 				}
 				var stickied int
-				if pp.Stickied {
+				if p.Stickied {
 					stickied = 1
 				}
 				var locked int
-				if pp.Locked {
+				if p.Locked {
 					locked = 1
 				}
-				err = db.QueryRow("INSERT INTO post VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26) RETURNING id",
-					pp.ID,
+				_, err := db.Exec("INSERT INTO post VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26)",
+					p.ID,
 					parent,
-					pp.Board.ID,
-					pp.Timestamp,
-					pp.Bumped,
-					pp.IP,
-					pp.Name,
-					pp.Tripcode,
-					pp.Email,
-					pp.NameBlock,
-					pp.Subject,
-					pp.Message,
-					pp.Password,
-					pp.File,
+					p.Board.ID,
+					p.Timestamp,
+					p.Bumped,
+					p.IP,
+					p.Name,
+					p.Tripcode,
+					p.Email,
+					p.NameBlock,
+					p.Subject,
+					p.Message,
+					p.Password,
+					p.File,
 					fileHash,
-					pp.FileOriginal,
-					pp.FileSize,
-					pp.FileWidth,
-					pp.FileHeight,
-					pp.Thumb,
-					pp.ThumbWidth,
-					pp.ThumbHeight,
-					pp.Moderated,
+					p.FileOriginal,
+					p.FileSize,
+					p.FileWidth,
+					p.FileHeight,
+					p.Thumb,
+					p.ThumbWidth,
+					p.ThumbHeight,
+					p.Moderated,
 					stickied,
 					locked,
-					pp.FileMIME,
-				).Scan(&pp.ID)
-				if err != nil || pp.ID == 0 {
-					data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to insert post: %s", err))
+					p.FileMIME,
+				)
+				if err != nil {
+					data.ManageError(fmt.Sprintf("Failed to insert post: %s.", err))
 					return
 				}
 			}
-			lastPostID = pp.ID
-			newIDs[p.ID] = pp.ID
+			newIDs[oldID] = p.ID
+			if p.ID > lastPostID {
+				lastPostID = p.ID
+			}
 		}
-		data.Message += template.HTML(fmt.Sprintf("<b>Imported %d posts.</b><br><br>", len(postIDs)))
 
-		if lastPostID != 0 {
-			_, err := db.Exec("ALTER SEQUENCE post_id_seq RESTART WITH " + strconv.Itoa(lastPostID+1))
+		if rewriteIDs {
+			_, err := db.Exec("ALTER SEQUENCE post_id_seq RESTART WITH " + strconv.Itoa(db.MaxPostID()+1))
 			if err != nil {
-				data.Message += template.HTML(fmt.Sprintf("<b>Error:</b> Failed to update post auto-increment value: %s", html.EscapeString(err.Error())))
+				data.ManageError(fmt.Sprintf("Failed to update post auto-increment value: %s.", err))
 				return
 			}
 		}
-	*/
+	}
+
+	s.config.ImportComplete = true
+	s.rebuildAll(db, false)
 }
