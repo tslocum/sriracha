@@ -173,6 +173,6 @@ func (s *Server) exportPosts(db *database.DB, exportPath string) error {
 	}
 
 	fmt.Printf("Exported post data to %s\n", exportPath)
-	fmt.Printf("Warning: Attachment files are not included in the export. To import posts later, you will also need a copy of the src and thumb directories of each board.\n")
+	fmt.Printf("Warning: Attachment files are not included within the export. To import posts later, you will also need a copy of the src and thumb directories of each board.\n")
 	return nil
 }

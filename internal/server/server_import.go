@@ -255,7 +255,7 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 				data.ManageError("Failed to commit changes: " + err.Error())
 				return
 			} else {
-				data.Message += template.HTML("<br>" + completeMessage)
+				data.Message += template.HTML(completeMessage)
 			}
 		} else {
 			db.RollBack()
@@ -264,11 +264,7 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 
 	var haveMapping bool
 	importBoards := make([]*Board, len(s.importDatabases))
-
-	// Validate table.
-	for i, info := range s.importDatabases {
-		sqlDB := info.sqlDB
-
+	for i := range s.importDatabases {
 		boardID := FormInt(r, fmt.Sprintf("board%d", i))
 		if boardID > 0 {
 			importBoards[i] = db.BoardByID(boardID)
@@ -276,6 +272,15 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 				haveMapping = true
 			}
 		}
+	}
+
+	if !haveMapping {
+		data.Message += template.HTML("Loading export files...<br>")
+	}
+
+	// Validate table.
+	for i, info := range s.importDatabases {
+		sqlDB := info.sqlDB
 
 		// Locate post table.
 		var table string
@@ -309,19 +314,20 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 		}
 		postCount, err := s.importPosts(sqlDB, table, tinyIB, importBoards[i], false)
 		if err != nil {
-			data.ManageError(fmt.Sprintf("Failed to query post table in export %s: %s", info.name, err.Error()))
+			data.ManageError(fmt.Sprintf("Failed to load export %s: %s", info.name, err.Error()))
 			return
 		} else if postCount == 0 {
 			data.ManageError(fmt.Sprintf("No posts were found in export %s.", info.name))
 			return
+		} else if !haveMapping {
+			data.Message += template.HTML(fmt.Sprintf("<b>Found %d posts</b> in export %s.<br>", postCount, html.EscapeString(info.name)))
 		}
-		data.Message += template.HTML(fmt.Sprintf("<b>Found %d posts</b> in export %s.<br>", postCount, html.EscapeString(info.name)))
 	}
 
 	if !haveMapping {
 		data.Message += template.HTML("<br><b>Export files loaded.</b><br>Ready to start dry run.<br>")
 	} else if !commit {
-		data.Message += template.HTML("<br><b>Dry run successful.</b><br>Ready to import posts.<br>")
+		data.Message += template.HTML("<b>Dry run complete.</b><br>Ready to import posts.<br>")
 	} else {
 		s.config.ImportComplete = true
 		s.rebuildAll(db, false)
@@ -344,6 +350,9 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 	}
 	var selected string
 	for i, info := range s.importDatabases {
+		if haveMapping && importBoards[i] == nil {
+			continue
+		}
 		data.Message += template.HTML(fmt.Sprintf(`<tr>
 				<td class="postblock"><label for="board%d">%s</label></td>
 				<td><select name="board%d"%s>

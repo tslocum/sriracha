@@ -677,7 +677,7 @@ Before going any further, back everything up on the server. This includes files
 and PostgreSQL databases.
 
 Store the backup somewhere other than the server, such as your computer's hard
-drive. Keep this backup handy, even if the upgrade appears to be successful.
+drive. Keep this backup handy, even if the upgrade appears successful.
 
 ### 2. Download Sriracha
 
@@ -728,7 +728,7 @@ export ZIP archive will be written:
 sriracha --export=/home/sriracha/export.zip
 ```
 
-Attachment files are not included in the export. To import posts later, you
+Attachment files are not included within the export. To import posts later, you
 will also need a copy of the `src` and `thumb` directories of each board.
 
 ### Import posts
@@ -742,8 +742,8 @@ sriracha --import=/home/sriracha/export.zip
 
 Note: Posting is disabled when running in import mode.
 
-Attachment files are not included in the export. To import posts, you will also
-need a copy of the `src` and `thumb` directories of each board.
+Attachment files are not included within the export. To import posts, you will
+also need a copy of the `src` and `thumb` directories of each board.
 
 Log in to the Sriracha management panel as a super-administrator to complete the import.
 
@@ -782,17 +782,15 @@ If you run an unmodified official release [archive](https://codeberg.org/tslocum
 using only the unmodified source code of an official release, then you do not
 need to share any source code.
 
-#### Instructions
-
-##### 1. Back everything up
+#### 1. Back everything up
 
 Before going any further, back everything up on the server. This includes files
 and databases, if an external database like MySQL or PostgreSQL was used.
 
 Store the backup somewhere other than the server, such as your computer's hard
-drive. Keep this backup handy, even if the migration appears to be successful.
+drive. Keep this backup handy, even if the migration appears successful.
 
-##### 2. Migrate TinyIB to SQLite
+#### 2. Migrate TinyIB to SQLite
 
 If you are already using SQLite as your TinyIB database, you may skip this step.
 
@@ -804,7 +802,7 @@ enable SQLite in the configuration of your PHP installation.
 
 Once you have migrated your TinyIB database to `sqlite3` or `sqlite`, proceed to the next step.
 
-##### 3. Start Sriracha in import mode
+#### 3. Start Sriracha in import mode
 
 Start sriracha with the --import flag and specify the path to a TinyIB database file:
 
@@ -815,21 +813,24 @@ sriracha --import=/home/sriracha/tinyib.db
 Note: Posting is disabled when running in import mode.
 
 The `src` and `thumb` directories, which contain post attachment files, must be
-copied from TinyIB to the Sriracha root directory. When performing a dry run,
-Sriracha will verify the presence of all expected attachment files.
+copied from TinyIB to the Sriracha root directory.
 
-##### 4. Visit the management panel
+#### 4. Visit the management panel
 
-Log in to the management panel as a super-administrator. After validating the
-import configuration, you may initiate a dry run of the import.
+Log in to the management panel as a super-administrator.
+
+After validating the import configuration, you will be prompted for which board
+to import posts into. You may then start a dry run of the import.
+
+To migrate a single board installation, create a board with a blank directory
+and copy `src` and `thumb` to the root directory.
+
+When performing a dry run of the import, Sriracha will verify the presence of
+all expected attachment files.
 
 If the dry run is successful, you may then initiate the actual import.
-You will be prompted for where the TinyIB posts should be imported to.
 
-To migrate a single board, and continue running with only one board, copy `src`
-and `thumb` to the root directory and leave the board directory field blank.
-
-##### 5. Restart Sriracha in normal mode
+#### 5. Restart Sriracha in normal mode
 
 Restart Sriracha without the --import flag to re-enable posting.
 
@@ -882,17 +883,17 @@ attachments use the same fields with the following differences:
 - `filehash` contains embed information in the format `e ServiceName Title of Embedded Content` instead of a hash.
 - `fileoriginal` contains the URL of the embedded content instead of a file name.
 
-The following fields will be automatically filled when left blank:
+The following fields may be left blank and will be filled during import:
 
 - When `bumped` is less than or equal to zero, it will be set to `timestamp`.
-- When `nameblock` is blank, it will be rebuilt based on the other fields of the post.
+- When `nameblock` is blank, it will be rebuilt based on other fields.
 - When `filemime` is blank, and the post has a file attachment, it will be set to the detected MIME type.
 - When `filehash` is blank, and the post has a file attachment, it will be set to a newly calculated file hash.
 - When `filesize` is blank, and the post has a file attachment, it will be set to the size of the file.
-- When `filewidth` is less than or equal to zero, and the post has an image or video attachment, it will be set to the width of the attachment.
-- When `fileheight` is less than or equal to zero, and the post has an image or video attachment, it will be set to the height of the attachment.
-- When `thumbwidth` is less than or equal to zero, and the post has a thumbnail, it will be set to the width of the thumbnail.
-- When `thumbheight` is less than or equal to zero, and the post has a thumbnail, it will be set to the height of the thumbnail.
+- When `filewidth` is less than or equal to zero, and the post has a JPG, PNG or GIF attachment, it will be set to the width of the attachment.
+- When `fileheight` is less than or equal to zero, and the post has a JPG, PNG or GIF attachment, it will be set to the height of the attachment.
+- When `thumbwidth` is less than or equal to zero, and the post has a JPG, PNG or GIF thumbnail, it will be set to the width of the thumbnail.
+- When `thumbheight` is less than or equal to zero, and the post has a JPG, PNG or GIF thumbnail, it will be set to the height of the thumbnail.
 
 #### Example post with file attachment
 
