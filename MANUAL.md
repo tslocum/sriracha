@@ -747,45 +747,29 @@ need a copy of the `src` and `thumb` directories of each board.
 
 Log in to the Sriracha management panel as a super-administrator to complete the import.
 
-### Import TinyIB posts
+### Import posts from TinyIB
 
-Sriracha supports importing posts from [TinyIB](https://codeberg.org/tslocum/tinyib).
+Sriracha supports importing posts from [TinyIB](https://codeberg.org/tslocum/tinyib). Differences between Sriracha and TinyIB:
 
-#### Differences
-
-##### Only PostgreSQL is supported
-
-Sriracha only supports the [PostgreSQL](https://www.postgresql.org) database system.
-
-##### Account roles have different capabilities
-
-See the administrator and moderator [guides](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#guides)
+- **Only PostgreSQL is supported**
+  - Sriracha only supports the [PostgreSQL](https://www.postgresql.org) database system.
+- **Account roles have different capabilities**
+  - See the administrator and moderator [guides](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#guides)
 for a list of role capabilities.
-
-##### Single auto-increment post ID
-
-Sriracha uses one auto-incrementing post ID for all boards. When only one board
+- **Single auto-increment post ID**
+  - Sriracha uses one auto-incrementing post ID for all boards. When only one board
 is migrated, post IDs will remain unchanged. Migrating more than one board will
 cause post IDs to be renumbered. Reference links inside post messages will be
 updated, but external links to old res pages will break.
-
-##### IP address and file hashes are incompatible
-
-Sriracha hashes IP addresses and files by generating a salted [SHA384](https://en.wikipedia.org/wiki/SHA-2)
-checksum of the data. TinyIB hashes IP addresses and files using [crypt](https://www.php.net/manual/en/function.crypt.php).
-Because of this, bans are not imported, and posts will have their IP address
-field blanked. File hashes are recalculated and corrected during import.
-
-##### All keywords are regular expressions
-
-Sriracha keywords are always [regular expressions](https://en.wikipedia.org/wiki/Regular_expression).
-During migration, plain text keywords are escaped to allow them to be parsed as
-regular expressions. You may still need to update some keywords for them to
-continue to function.
-
-##### Licensed under GNU LGPL
-
-Sriracha is licensed under [GNU LGPL](https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE).
+- **IP address and file hashes are incompatible**
+  - Sriracha hashes IP addresses and files by generating a [SHA384](https://en.wikipedia.org/wiki/SHA-2)
+hash of the data. TinyIB hashes IP addresses and files using [crypt](https://www.php.net/manual/en/function.crypt.php).
+Because of this, posts will have their IP address field blanked.
+File hashes are recalculated and corrected during import.
+- **All keywords are regular expressions**
+  - Sriracha keywords are always [regular expressions](https://en.wikipedia.org/wiki/Regular_expression).
+- **Licensed under GNU LGPL**
+  - Sriracha is licensed under [GNU LGPL](https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE).
 If you modify the source code of this application, you must share the full
 source code of your changes publicly for free. You may, however, link with this
 application using proprietary shared libraries, so long as the base application
@@ -793,7 +777,6 @@ application using proprietary shared libraries, so long as the base application
 shared libraries, and these librarires would work with other installations of
 Sriracha because you did not make any modifications to Sriracha's source code,
 then you do not need to release the source code of your shared libraries.
-
 If you run an unmodified official release [archive](https://codeberg.org/tslocum/sriracha/releases) or
 [image](https://hub.docker.com/r/tslocum/sriracha), or if you compile Sriracha
 using only the unmodified source code of an official release, then you do not
@@ -819,7 +802,7 @@ Set `TINYIB_DBMIGRATE` to `sqlite3` and follow the [migration instructions](http
 If `sqlite3` does not work, try `sqlite`. If neither work, you will need to
 enable SQLite in the configuration of your PHP installation.
 
-Once you have migrated your database to `sqlite` or `sqlite3`, proceed to the next step.
+Once you have migrated your TinyIB database to `sqlite3` or `sqlite`, proceed to the next step.
 
 ##### 3. Start Sriracha in import mode
 
@@ -831,14 +814,17 @@ sriracha --import=/home/sriracha/tinyib.db
 
 Note: Posting is disabled when running in import mode.
 
+The `src` and `thumb` directories, which contain post attachment files, must be
+copied from TinyIB to the Sriracha root directory. When performing a dry run,
+Sriracha will verify the presence of all expected attachment files.
+
 ##### 4. Visit the management panel
 
-Log in to the management panel as a super-administrator and follow the
-on-screen prompts. After validating the import configuration, you may initiate
-a dry run of the import. If the dry run is successful, you may then initiate
-the actual import. You will be prompted for a board directory and name. The
-`src` and `thumb` directories, containing all of the uploaded files, must exist
-in the chosen board directory.
+Log in to the management panel as a super-administrator. After validating the
+import configuration, you may initiate a dry run of the import.
+
+If the dry run is successful, you may then initiate the actual import.
+You will be prompted for where the TinyIB posts should be imported to.
 
 To migrate a single board, and continue running with only one board, copy `src`
 and `thumb` to the root directory and leave the board directory field blank.
@@ -853,7 +839,7 @@ be successful.
 ### Import posts from other software
 
 Sriracha is capable of importing posts from any software, provided you or
-someone else writes a tool to export the data in a compatible format.
+someone else export the data in a compatible format.
 
 Sriracha supports importing post data via SQLite database files containing one table:
 
