@@ -1715,11 +1715,11 @@ func (s *Server) serveManage(db *database.DB, w http.ResponseWriter, r *http.Req
 			data.ManageError("Sriracha is running in import mode. Only super-administrators may log in.")
 			data.execute(w)
 			return
-		} else if !strings.HasPrefix(r.URL.Path, "/sriracha/import/") {
+		} else if !strings.HasPrefix(r.URL.Path, "/sriracha/import/") && !strings.HasPrefix(r.URL.Path, "/sriracha/board/") {
 			data.Redirect(w, r, "/sriracha/import/")
 			return
 		}
-		data.Info = "IMPORT MODE"
+		data.Info = "Import mode enabled. Visitors are forbidden from posting."
 	}
 
 	switch {
