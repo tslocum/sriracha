@@ -910,6 +910,13 @@ CREATE TABLE post (
 
 All fields are plain text except where noted.
 
+The above schema describes posts with file attachments. Posts with embed
+attachments use the following fields differently:
+
+- `file` contains HTML instead of a file name, which will be displayed when the embed is expanded.
+- `filehash` contains embed information in the format `e ServiceName Title of Embedded Content` instead of a hash.
+- `fileoriginal` contains the URL of the embedded content instead of a file name.
+
 ## Guides
 
 [Go to top](#sections)
