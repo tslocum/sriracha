@@ -914,11 +914,73 @@ You will most likely want to leave the nameblock field of each post blank.
 Sriracha will rebuild blank nameblock fields during import.
 
 The above schema describes posts with file attachments. Posts with embed
-attachments use the following fields differently:
+attachments use the same fields with the following differences:
 
 - `file` contains HTML which will be displayed when the embed is expanded instead of a file name.
 - `filehash` contains embed information in the format `e ServiceName Title of Embedded Content` instead of a hash.
 - `fileoriginal` contains the URL of the embedded content instead of a file name.
+
+#### Example post with file attachment
+
+```json
+{
+  "id": 3,
+  "parent": 2,
+  "timestamp": 1623399789,
+  "bumped": 1623399789,
+  "name": "Maecenas",
+  "tripcode": "",
+  "email": "",
+  "nameblock": "<span class=\"postername\">Maecenas</span> 2021/06/11<wbr>(Fri)<wbr>01:23:09",
+  "subject": "",
+  "message": "Integer neque lacus, posuere ac massa et, feugiat rhoncus elit. Phasellus aliquet turpis a magna vehicula placerat. Praesent finibus massa enim, ac vestibulum metus dignissim ac. Proin cursus nisi et dui facilisis efficitur. Integer blandit est ac turpis laoreet, vitae interdum orci rhoncus. Phasellus faucibus vitae massa id rhoncus. Nam est lorem, ornare eu magna quis, tristique elementum sem. Nunc aliquet metus nunc, quis rutrum leo vehicula a. Morbi ut augue erat. Nam nec tempor enim. Morbi quis vestibulum libero. Sed molestie est sapien. Morbi tellus sapien, facilisis eget eleifend a, dignissim id justo. Maecenas ut tortor nibh.",
+  "file": "1623399789642.jpg",
+  "filemime": "image/jpeg",
+  "filehash": "",
+  "fileoriginal": "kaikaku.jpg",
+  "filesize": 17767,
+  "filewidth": 474,
+  "fileheight": 353,
+  "thumb": "1623399789642s.jpg",
+  "thumbwidth": 250,
+  "thumbheight": 186,
+  "stickied": 0,
+  "locked": 0
+}
+```
+
+> [>>3](https://sriracha.rocket9labs.com/img/res/2.html#3)
+
+#### Example post with embed attachment
+
+```json
+{
+  "id": 7,
+  "parent": 2,
+  "timestamp": 1623401066,
+  "bumped": 1623401066,
+  "name": "Nullam",
+  "tripcode": "",
+  "email": "",
+  "nameblock": "<span class=\"postername\">Nullam</span> 2021/06/11<wbr>(Fri)<wbr>01:44:26",
+  "subject": "",
+  "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin interdum, eros in mollis placerat, risus lorem laoreet odio, sit amet faucibus erat libero ut risus. Nullam quis ipsum eu libero convallis aliquet mattis sollicitudin nisi. Morbi nec vulputate nisi. Maecenas sagittis sodales efficitur. Maecenas volutpat ipsum quis est congue, in faucibus ante efficitur. Quisque vestibulum mattis metus eu aliquet. Vestibulum eu tincidunt arcu.\n<br>\n<br>In non aliquam dui, sit amet ullamcorper magna. Nunc id enim ac felis volutpat varius. Aenean auctor orci quam, et vehicula nunc placerat id. Duis quis purus eu urna semper facilisis nec ut sapien. Curabitur porta in diam non volutpat. Proin congue nibh at commodo mattis. Quisque pharetra arcu at nulla finibus consectetur. Ut efficitur vestibulum quam vitae molestie. Ut rhoncus rutrum dignissim.\n<br>\n<br>Sed sed tellus pulvinar, hendrerit orci nec, elementum dui. Cras at neque risus. Fusce elit nisl, sollicitudin eget pulvinar eu, pretium a neque. Donec eleifend convallis tortor at pharetra. Vestibulum nec nibh diam. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Aliquam quis mauris quis nisi ornare commodo. Nunc malesuada sem vel diam ullamcorper sodales. Maecenas tempus, tortor ac molestie gravida, neque nunc egestas lorem, elementum commodo velit lorem eget dolor. Sed consequat condimentum velit vehicula blandit. Proin ut ipsum sit amet elit consectetur sollicitudin. Cras lacinia vehicula orci vitae fermentum.",
+  "file": "<iframe width=\"200\" height=\"113\" src=\"//www.youtube.com/embed/6_NeqMAAsBk?feature=oembed\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
+  "filemime": "",
+  "filehash": "e YouTube 10/20/1984",
+  "fileoriginal": "https://www.youtube.com/watch?v=6_NeqMAAsBk",
+  "filesize": 0,
+  "filewidth": 480,
+  "fileheight": 360,
+  "thumb": "1623401066680.jpg",
+  "thumbwidth": 250,
+  "thumbheight": 188,
+  "stickied": 0,
+  "locked": 0
+}
+```
+
+> [>>7](https://sriracha.rocket9labs.com/img/res/2.html#7)
 
 ## Guides
 
