@@ -171,6 +171,8 @@ type Server struct {
 	dbPool *pgxpool.Pool
 	opt    ServerOptions
 
+	importDatabases []*importInfo
+
 	tpl             *template.Template
 	original        *template.Template
 	customTemplates []string
@@ -2036,12 +2038,14 @@ func (s *Server) Run() error {
 	var (
 		configFile   string
 		exportPath   string
+		importPath   string
 		devMode      bool
 		rebuild      bool
 		printVersion bool
 	)
 	flag.StringVar(&configFile, "config", "", "path to configuration file (default: ~/.config/sriracha/config.yml)")
-	flag.StringVar(&exportPath, "export", "", "export board data to zip file at specified path")
+	flag.StringVar(&exportPath, "export", "", "export posts to zip file at specified path")
+	flag.StringVar(&importPath, "import", "", "import posts from zip file or sqlite database file at specified path")
 	flag.BoolVar(&devMode, "dev", false, "run in development mode (watch official and custom template files for changes)")
 	flag.BoolVar(&rebuild, "rebuild", false, "rebuild static files before serving any requests")
 	flag.BoolVar(&printVersion, "version", false, "print version information and exit")
@@ -2148,16 +2152,25 @@ func (s *Server) Run() error {
 		return fmt.Errorf("failed to parse template files: %s", err)
 	}
 
-	// Export board data.
+	// Export posts.
 	if exportPath != "" {
 		db := s.begin()
 		defer db.Commit()
 
 		err := s.exportPosts(db, exportPath)
 		if err != nil {
-			return fmt.Errorf("failed to export board data: %s", err)
+			return fmt.Errorf("failed to export posts: %s", err)
 		}
 		return nil
+	}
+
+	// Import posts.
+	if importPath != "" {
+		s.config.ImportMode = true
+		err := s.importPosts(importPath)
+		if err != nil {
+			return fmt.Errorf("failed to import posts: %s", err)
+		}
 	}
 
 	// Verify root directory is writable.
@@ -2239,6 +2252,10 @@ func (s *Server) Run() error {
 	if s.config.MailAddress != "" {
 		s.notificationsWaitGroup.Add(1)
 		go s.handleNotifications()
+	}
+
+	if s.config.ImportMode {
+		fmt.Println("Import mode enabled. Visitors may not create posts until import mode is disabled.")
 	}
 
 	// Initialization complete. Unlock server.

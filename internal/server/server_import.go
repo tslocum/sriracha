@@ -1,10 +1,14 @@
 package server
 
 import (
+	"archive/zip"
 	"context"
+	"database/sql"
 	"fmt"
 	"html"
 	"html/template"
+	"io"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -20,11 +24,155 @@ import (
 	"golang.org/x/sys/unix"
 )
 
+// load db func, pass buffer?
+
+type importInfo struct {
+	name  string
+	sqlDB *sql.DB
+}
+
+func (s *Server) _importPosts(name string, filePath string) error {
+	sqlDB, err := sql.Open("sqlite", filePath)
+	if err != nil {
+		log.Fatalf("failed to open file %s: expected SQLite database file", filePath)
+	}
+	info := &importInfo{
+		name:  name,
+		sqlDB: sqlDB,
+	}
+	s.importDatabases = append(s.importDatabases, info)
+	return nil
+}
+
+func (s *Server) importPosts(importPath string) error {
+	_, err := os.Stat(importPath)
+	if os.IsNotExist(err) {
+		return fmt.Errorf("file %s does not exist", importPath)
+	}
+	z, err := zip.OpenReader(importPath)
+	if err != nil {
+		return s._importPosts(filepath.Base(importPath), importPath)
+	}
+	for _, f := range z.File {
+		tmpFile, err := os.CreateTemp("", "*.db")
+		if err != nil {
+			return fmt.Errorf("failed to create temporary file: %s", err)
+		}
+		zf, err := f.Open()
+		if err != nil {
+			return fmt.Errorf("failed to open file %s in archive: %s", f.Name, err)
+		}
+		_, err = io.Copy(tmpFile, zf)
+		if err != nil {
+			return fmt.Errorf("failed to extract file %s from archive: %s", f.Name, err)
+		}
+		err = s._importPosts(f.Name, tmpFile.Name())
+		if err != nil {
+			return fmt.Errorf("failed to import file %s: %s", f.Name, err)
+		}
+	}
+	return nil
+}
+
 func (s *Server) serveImport(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
+	data.Template = "manage_info"
+
+	const completeMessage = "<b>Import complete.</b><br>Please remove the --import flag and restart Sriracha.<br>"
+	if data.forbidden(w, RoleSuperAdmin) {
+		return
+	} else if !s.config.ImportMode {
+		data.ManageError("Sriracha is not running in import mode.")
+		return
+	} else if s.config.ImportComplete {
+		data.Message += template.HTML(completeMessage)
+		return
+	}
+
+	ytEmbed := regexp.MustCompile(`\/\/www\.youtube\.com\/embed\/([0-9A-Za-z_\-]+)`)
+	for _, info := range s.importDatabases {
+		sqlDB := info.sqlDB
+
+		// Locate post table.
+		var tinyIB string
+		var query string
+		rows, err := sqlDB.Query("SELECT DISTINCT name FROM sqlite_master WHERE sql LIKE '%file_size%'")
+		if err != nil {
+			data.ManageError(err.Error())
+			return
+		}
+		for rows.Next() {
+			err = rows.Scan(&tinyIB)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+
+		// Build query.
+		if tinyIB != "" {
+			query = "SELECT id, parent, timestamp, bumped, name, tripcode, email, nameblock, subject, message, file, '' AS file_mime, file_hex, file_original, file_size, image_width, image_height, thumb, thumb_width, thumb_height, stickied, locked FROM " + tinyIB
+		} else {
+			query = "SELECT * FROM post"
+		}
+		query += " ORDER BY id ASC"
+
+		// Query database for posts.
+		rows, err = sqlDB.Query(query)
+		if err != nil {
+			data.ManageError(err.Error())
+			return
+		}
+		for rows.Next() {
+			p := &Post{}
+			var stickied, locked int
+			err = rows.Scan(&p.ID,
+				&p.Parent,
+				&p.Timestamp,
+				&p.Bumped,
+				&p.Name,
+				&p.Tripcode,
+				&p.Email,
+				&p.NameBlock,
+				&p.Subject,
+				&p.Message,
+				&p.File,
+				&p.FileMIME,
+				&p.FileHash,
+				&p.FileOriginal,
+				&p.FileSize,
+				&p.FileWidth,
+				&p.FileHeight,
+				&p.Thumb,
+				&p.ThumbWidth,
+				&p.ThumbHeight,
+				&stickied,
+				&locked)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			// Import TinyIB embed attachments.
+			if tinyIB != "" && (p.FileHash == "YouTube" || p.FileHash == "Vimeo" || p.FileHash == "SoundCloud") {
+				ytVideo := p.FileHash == "YouTube"
+
+				// Fix file hash.
+				p.FileHash = "e " + p.FileHash + " " + p.FileOriginal
+				p.FileOriginal = ""
+
+				// Extract video URL from embed HTML.
+				if ytVideo {
+					m := ytEmbed.FindStringSubmatch(p.File)
+					if len(m) > 1 {
+						p.FileOriginal = "https://www.youtube.com/watch?v=" + m[1]
+					}
+				}
+			}
+		}
+	}
+	return // TODO migrate prompts to SQLite databases
+
 	data.Template = "manage_info"
 	data.Message = `<h2 class="managetitle">Import</h2><b>Warning:</b> Backup all files and databases before importing a board.<br><br>`
 
-	const completeMessage = "<b>Import complete.</b><br>Please remove the import option from config.yml and restart Sriracha.<br>"
 	if data.forbidden(w, RoleSuperAdmin) {
 		return
 	} else if !s.config.ImportMode {
