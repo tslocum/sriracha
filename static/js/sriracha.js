@@ -293,28 +293,35 @@ function previewPost(el) {
                 }
                 refpost = post;
             } else {
-                // Check if thread res page is already cached.
                 var thread = postCache['thread' + threadID];
-                if (thread) {
+                var fetching = postCache['fetch' + threadID];
+                if (thread || fetching) {
                     if (verbose) {
-                        console.log('thread page is cached');
+                        if (thread) {
+                            console.log('thread page already cached');
+                        }
+                        if (fetching) {
+                            console.log('fetch already in progress');
+                        }
+                    }
+
+                    var msg = "Loading...";
+                    var fetched = postCache['fetched' + threadID];
+                    if (fetched) {
+                        msg = '<span style="color: red;font-weight: bold;">Post deleted.</span>';
                     }
 
                     var preview = document.createElement('div');
                     preview.id = 'ref' + el.getAttribute('refID');
                     preview.setAttribute('refID', el.getAttribute('refID'));
                     preview.className = 'hoverpost';
-                    preview.innerHTML = '<span style="color: red;font-weight: bold;">Post deleted.</span>';
+                    preview.innerHTML = msg;
                     preview.style.left = vl + rect.left + 'px';
                     preview.style.top = vt + rect.bottom + 'px';
                     document.body.append(preview);
                     return;
                 }
-                var fetching = postCache['fetch' + threadID];
                 if (fetching) {
-                    if (verbose) {
-                        console.log('fetch already in progress');
-                    }
                     return;
                 }
                 // Fetch thread res page.
@@ -339,6 +346,7 @@ function previewPost(el) {
                 postCache['thread' + threadID] = true;
                 postCache['fetch' + threadID] = true;
                 fetchPosts(url, false).then(function() {
+                    postCache['fetched' + threadID] = true;
                     post = postCache[postID];
                     if (post && post.innerHTML) {
                         // Preview fetched post.
