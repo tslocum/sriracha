@@ -1107,6 +1107,24 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			return
 		}
 
+		if db.FileBanned(p.FileHash) {
+			cancel()
+
+			ban := &Ban{
+				IP:        p.IP,
+				Timestamp: time.Now().Unix(),
+				Reason:    Get(nil, nil, "Detected banned file."),
+			}
+			db.AddBan(ban)
+
+			s.log(db, nil, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info()+" File hash: "+p.FileHash)
+			s.deletePostFiles(p)
+
+			data := s.buildData(db, w, r)
+			data.BoardError(w, Get(b, data.Account, "Detected banned file."))
+			return
+		}
+
 		db.AddPost(p)
 		posts = append(posts, p)
 	}

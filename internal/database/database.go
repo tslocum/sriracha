@@ -208,6 +208,10 @@ func (db *DB) SoftRollBack() {
 	if err != nil {
 		log.Fatalf("failed to rollback transaction: %s", err)
 	}
+	_, err = db.conn.Exec(context.Background(), "BEGIN")
+	if err != nil {
+		log.Fatalf("failed to begin transaction: %s", err)
+	}
 }
 
 func (db *DB) RollBack() {
