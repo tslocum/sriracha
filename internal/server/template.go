@@ -22,8 +22,6 @@ import (
 //go:embed template
 var templateFS embed.FS
 
-var templateBuf = &bytes.Buffer{}
-
 type manageData struct {
 	Account  *Account
 	Accounts []*Account
@@ -76,6 +74,7 @@ type templateData struct {
 	// Calculated fields.
 	IndexBoards []*Board
 	tpl         *template.Template
+	buf         *bytes.Buffer
 }
 
 func (data *templateData) Style() string {
@@ -171,18 +170,18 @@ func (data *templateData) executeWithError(w io.Writer) error {
 		funcMap = templateFuncMaps[""]
 	}
 
-	templateBuf.Reset()
+	data.buf.Reset()
 
 	tplName := data.Template + ".gohtml"
 	if data.Template == "line" {
 		tplName = data.Template
 	}
-	err := data.tpl.Funcs(funcMap).ExecuteTemplate(templateBuf, tplName, data)
+	err := data.tpl.Funcs(funcMap).ExecuteTemplate(data.buf, tplName, data)
 	if err != nil {
 		return err
 	}
 
-	io.Copy(w, templateBuf)
+	io.Copy(w, data.buf)
 	return nil
 }
 
@@ -311,11 +310,14 @@ func newTemplateFuncMap(locale string) template.FuncMap {
 }
 
 func (s *Server) newTemplateData() *templateData {
+	const initialBufferSize = 128000 // 128 Kilobytes.
+	writeBuf := bytes.NewBuffer(make([]byte, initialBufferSize))
 	return &templateData{
 		Manage: &manageData{
 			Plugins: allPluginInfo,
 		},
 		Opt: &s.opt,
 		tpl: s.tpl,
+		buf: writeBuf,
 	}
 }
