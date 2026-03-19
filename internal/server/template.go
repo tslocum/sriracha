@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bytes"
 	"embed"
 	"fmt"
 	"html/template"
@@ -20,6 +21,8 @@ import (
 
 //go:embed template
 var templateFS embed.FS
+
+var templateBuf = &bytes.Buffer{}
 
 type manageData struct {
 	Account  *Account
@@ -168,11 +171,19 @@ func (data *templateData) executeWithError(w io.Writer) error {
 		funcMap = templateFuncMaps[""]
 	}
 
+	templateBuf.Reset()
+
 	tplName := data.Template + ".gohtml"
 	if data.Template == "line" {
 		tplName = data.Template
 	}
-	return data.tpl.Funcs(funcMap).ExecuteTemplate(w, tplName, data)
+	err := data.tpl.Funcs(funcMap).ExecuteTemplate(templateBuf, tplName, data)
+	if err != nil {
+		return err
+	}
+
+	io.Copy(w, templateBuf)
+	return nil
 }
 
 func (data *templateData) execute(w io.Writer) {
