@@ -146,7 +146,7 @@ hr {
 }
 
 .forumpost:target, .reply:target {
-	border: 3px ridge #005b97;
+	border: 2px ridge #005b97;
 }
 
 .replyhl {
