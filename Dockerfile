@@ -23,7 +23,9 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     go build -trimpath -ldflags "-s -w -X 'codeberg.org/tslocum/sriracha.SrirachaVersion=${version:-DEV}'" && \
     for dir in /usr/src/sriracha/plugin/*; do \
         (echo "Building plugin $(basename $dir)..." && cd "$dir" && go build -trimpath -ldflags "-s -w" -buildmode=plugin); \
-    done
+    done && \
+    cd /usr/src/sriracha && \
+    find . -type f -name '*.go' -delete
 
 FROM alpine:3.23.3
 
