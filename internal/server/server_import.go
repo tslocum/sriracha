@@ -238,13 +238,13 @@ func (s *Server) importPosts(sqlDB *sql.DB, table string, tinyIB bool, b *Board)
 func (s *Server) serveImport(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_info"
 	data.Boards = db.AllBoards()
-	data.Message = `<h2 class="managetitle">Import</h2>`
+	data.Message = `<h2 class="managetitle">` + GetHTML(nil, data.Account, "Import") + `</h2>`
 
-	const completeMessage = "<b>Import complete.</b><br>Please restart Sriracha without the --import flag.<br>"
+	completeMessage := "<b>" + Get(nil, data.Account, "Import complete.") + "</b><br>" + Get(nil, data.Account, "Please restart Sriracha without the %s flag.", "--import") + "<br>"
 	if data.forbidden(w, RoleSuperAdmin) {
 		return
 	} else if !s.config.ImportMode {
-		data.ManageError("Sriracha is not running in import mode.")
+		data.ManageError(Get(nil, data.Account, "Sriracha is not running in import mode."))
 		return
 	} else if s.config.ImportComplete {
 		data.Message += template.HTML(completeMessage)
@@ -252,7 +252,7 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 	}
 
 	data.Template = "manage_info"
-	data.Message += `<b>Warning:</b> Backup all files and databases before importing posts.<br><br>`
+	data.Message += `<b>` + GetHTML(nil, data.Account, "Warning") + `:</b> ` + GetHTML(nil, data.Account, "Backup all files and databases before importing posts.") + `<br><br>`
 
 	commit := FormBool(r, "import") && FormBool(r, "confirm")
 	defer func() {
@@ -279,10 +279,6 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 				haveMapping = true
 			}
 		}
-	}
-
-	if !haveMapping {
-		data.Message += template.HTML("Loading export files...<br>")
 	}
 
 	// Validate table.
@@ -326,34 +322,46 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 		} else if len(posts) == 0 {
 			data.ManageError(fmt.Sprintf("No posts were found in export %s.", info.name))
 			return
-		} else if !haveMapping {
+		}
+		s.importDatabases[i].posts = posts
+	}
+
+	if !haveMapping {
+		data.Message += `<table class="managetable"><tbody>
+		<tr>
+			<th>` + GetHTML(nil, data.Account, "Export") + `</th>
+			<th>` + GetHTML(nil, data.Account, "Threads") + `</th>
+			<th>` + GetHTML(nil, data.Account, "Replies") + `</th>
+			<th>` + GetHTML(nil, data.Account, "Posts") + `</th>
+		</tr>`
+		for _, info := range s.importDatabases {
 			name := strings.TrimSuffix(strings.TrimSuffix(info.name, ".db"), ".sriracha")
 			var threads, replies int
-			for _, p := range posts {
+			for _, p := range info.posts {
 				if p.Parent == 0 {
 					threads++
 				} else {
 					replies++
 				}
 			}
-			data.Message += template.HTML(fmt.Sprintf("&nbsp; %s contains %d threads and %d replies.<br>", html.EscapeString(name), threads, replies))
+			data.Message += template.HTML(s.msgPrinter.Sprintf("<tr><td>%s</td><td>%d</td><td>%d</td><td>%d</td></tr>", html.EscapeString(name), threads, replies, threads+replies))
 		}
-		s.importDatabases[i].posts = posts
+		data.Message += `</tbody></table>`
 	}
 
 	if !haveMapping || !commit {
 		if !haveMapping {
-			data.Message += template.HTML("<br><b>Export files loaded.</b><br>Ready to start dry run.<br>")
+			data.Message += template.HTML("<br><b>" + Get(nil, data.Account, "Export files loaded.") + "</b><br>" + Get(nil, data.Account, "Ready to start dry run.") + "<br>")
 		} else if !commit {
-			data.Message += template.HTML("<b>Dry run complete.</b><br>Ready to import posts.<br>")
+			data.Message += template.HTML("<b>" + Get(nil, data.Account, "Dry run complete.") + "</b><br>" + Get(nil, data.Account, "Ready to import posts.") + "<br>")
 		}
 
 		data.Message += template.HTML(`<br><fieldset>
-		<legend>Boards</legend>
+		<legend>` + Get(nil, data.Account, "Boards") + `</legend>
 		<form method="post">
 		<input type="hidden" name="import" value="1">`)
 		if !haveMapping {
-			data.Message += template.HTML(`Choose where to import posts:<br><br>`)
+			data.Message += template.HTML(Get(nil, data.Account, "Choose where to import posts") + `:<br><br>`)
 		} else {
 			data.Message += template.HTML(`<input type="hidden" name="confirm" value="1">`)
 		}
@@ -371,7 +379,7 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 			data.Message += template.HTML(fmt.Sprintf(`<tr>
 				<td class="postblock"><label for="board%d">%s</label></td>
 				<td><select name="board%d"%s>
-					<option value="0">Do not import</option>`, i, name, i, disabled))
+					<option value="0">`+Get(nil, data.Account, "Do not import")+`</option>`, i, name, i, disabled))
 			for _, b := range data.Boards {
 				label := b.Path()
 				if b.Name != "" {
@@ -390,14 +398,14 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 				<tr>
 					<td style="vertical-align: middle;">&nbsp;`)
 		if !haveMapping {
-			data.Message += template.HTML(`[<a href="/sriracha/board/">Manage Boards</a>]`)
+			data.Message += template.HTML(`[<a href="/sriracha/board/">` + Get(nil, data.Account, "Manage Boards") + `</a>]`)
 		}
 		label := "Start Dry Run"
 		if haveMapping {
 			label = "Start Import"
 		}
 		data.Message += template.HTML(`</td>
-                    <td><input type="submit" value="` + label + `"></td>
+                    <td><input type="submit" value="` + Get(nil, data.Account, label) + `"></td>
 					<td></td>
 				</tr>
 			</table>`)

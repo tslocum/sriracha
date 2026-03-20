@@ -45,6 +45,7 @@ import (
 	"golang.org/x/sys/unix"
 	"golang.org/x/text/language"
 	"golang.org/x/text/language/display"
+	"golang.org/x/text/message"
 	"gopkg.in/yaml.v3"
 )
 
@@ -190,6 +191,8 @@ type Server struct {
 
 	httpServer *http.Server
 
+	msgPrinter *message.Printer
+
 	lock sync.Mutex
 }
 
@@ -207,6 +210,7 @@ func NewServer() *Server {
 		shutdownNotifications: make(chan struct{}),
 		rebuildQueue:          make(chan *rebuildInfo),
 		httpClient:            httpClient,
+		msgPrinter:            message.NewPrinter(language.English),
 	}
 }
 
@@ -657,6 +661,10 @@ func (s *Server) loadServerConfig() error {
 			tagName := english.Name(tag)
 			if tagName != "" {
 				name = tagName
+			}
+
+			if s.opt.Locale == id {
+				s.msgPrinter = message.NewPrinter(tag)
 			}
 		}
 
@@ -1708,7 +1716,7 @@ func (s *Server) serveManage(db *database.DB, w http.ResponseWriter, r *http.Req
 			data.Redirect(w, r, "/sriracha/import/")
 			return
 		}
-		data.Info = "Import mode enabled. Visitors are forbidden from posting."
+		data.Info = Get(nil, data.Account, "Import mode enabled. Visitors are forbidden from posting.")
 	}
 
 	switch {
@@ -1834,7 +1842,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 
 	if s.config.ImportMode && action != "" {
 		data := s.buildData(db, w, r)
-		data.BoardError(w, "Sriracha is running in import mode. All boards are currently locked. Please wait and try again.")
+		data.BoardError(w, "All boards are locked because Sriracha is running in import mode. Please try again later.")
 	} else {
 		switch action {
 		case "post":

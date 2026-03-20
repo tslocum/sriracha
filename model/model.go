@@ -1,7 +1,11 @@
 // Package model provides Sriracha data types.
 package model
 
-import "github.com/leonelquinteros/gotext"
+import (
+	"html/template"
+
+	"github.com/leonelquinteros/gotext"
+)
 
 func Get(board *Board, account *Account, str string, vars ...interface{}) string {
 	var locale string
@@ -13,6 +17,10 @@ func Get(board *Board, account *Account, str string, vars ...interface{}) string
 		locale = "sriracha"
 	}
 	return gotext.GetD(locale, str, vars...)
+}
+
+func GetHTML(board *Board, account *Account, str string, vars ...interface{}) template.HTML {
+	return template.HTML(Get(board, account, str, vars...))
 }
 
 func GetN(board *Board, account *Account, singular string, plural string, v int) string {
