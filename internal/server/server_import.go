@@ -314,11 +314,11 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 				break
 			}
 		}
-
 		if table == "" {
 			data.ManageError(fmt.Sprintf("Failed to locate post table in export %s", info.name))
 			return
 		}
+
 		posts, err := s.importPosts(sqlDB, table, tinyIB, importBoards[i])
 		if err != nil {
 			data.ManageError(fmt.Sprintf("Failed to load export %s: %s", info.name, err.Error()))
@@ -327,6 +327,7 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 			data.ManageError(fmt.Sprintf("No posts were found in export %s.", info.name))
 			return
 		} else if !haveMapping {
+			name := strings.TrimSuffix(strings.TrimSuffix(info.name, ".db"), ".sriracha")
 			var threads, replies int
 			for _, p := range posts {
 				if p.Parent == 0 {
@@ -335,7 +336,7 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 					replies++
 				}
 			}
-			data.Message += template.HTML(fmt.Sprintf("%s contains %d posts. (%d threads and %d replies)<br>", html.EscapeString(info.name), threads+replies, threads, replies))
+			data.Message += template.HTML(fmt.Sprintf("&nbsp; %s contains %d threads and %d replies.<br>", html.EscapeString(name), threads, replies))
 		}
 		s.importDatabases[i].posts = posts
 	}
@@ -366,10 +367,11 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 			if haveMapping && importBoards[i] == nil {
 				continue
 			}
+			name := strings.TrimSuffix(strings.TrimSuffix(info.name, ".db"), ".sriracha")
 			data.Message += template.HTML(fmt.Sprintf(`<tr>
 				<td class="postblock"><label for="board%d">%s</label></td>
 				<td><select name="board%d"%s>
-					<option value="0">Do not import</option>`, i, info.name, i, disabled))
+					<option value="0">Do not import</option>`, i, name, i, disabled))
 			for _, b := range data.Boards {
 				label := b.Path()
 				if b.Name != "" {
