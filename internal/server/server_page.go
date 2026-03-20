@@ -1,7 +1,9 @@
 package server
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -19,7 +21,7 @@ func (s *Server) loadPageForm(db *database.DB, r *http.Request, p *Page) error {
 
 	p.Path = strings.TrimSuffix(p.Path, ".html")
 
-	return s.writePages(db, []*Page{p}, true)
+	return s.writePage(db, nil, nil, p, io.Discard)
 }
 
 func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
@@ -45,7 +47,7 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 			pages = db.AllPages()
 			data.Info = Get(nil, data.Account, "Rebuilt all pages.")
 		}
-		s.writePages(db, pages, false)
+		s.writePages(db, pages)
 	}
 
 	deletePageID := PathInt(r, "/sriracha/page/delete/")
@@ -96,17 +98,30 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 			return
 		}
 
+		if FormString(r, "preview") != "" {
+			buf := &bytes.Buffer{}
+			err = s.writePage(db, nil, nil, data.Manage.Page, buf)
+			if err != nil {
+				data.ManageError(err.Error())
+				return
+			}
+			data.Template = ""
+			io.Copy(w, buf)
+			return
+		}
+
 		if data.Manage.Page.Path != oldPath {
 			match := db.PageByPath(data.Manage.Page.Path)
 			if match != nil {
 				data.ManageError("Page with that path already exists")
 				return
 			}
+
 			os.Remove(filepath.Join(s.config.Root, oldPath+".html"))
 		}
 
 		db.UpdatePage(data.Manage.Page)
-		s.writePages(db, []*Page{data.Manage.Page}, false)
+		s.writePages(db, []*Page{data.Manage.Page})
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/page/%d", data.Manage.Page.ID), "")
 
@@ -143,8 +158,20 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 			return
 		}
 
+		if FormString(r, "preview") != "" {
+			buf := &bytes.Buffer{}
+			err = s.writePage(db, nil, nil, p, buf)
+			if err != nil {
+				data.ManageError(err.Error())
+				return
+			}
+			data.Template = ""
+			io.Copy(w, buf)
+			return
+		}
+
 		db.AddPage(p)
-		s.writePages(db, []*Page{p}, false)
+		s.writePages(db, []*Page{p})
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/page/%d", p.ID), "")
 

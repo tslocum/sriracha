@@ -1,3 +1,6 @@
+1.6.3:
+- Support previewing pages before adding or updating
+
 1.6.2:
 - Fix post preview displaying 'Post deleted' until thread page is fetched
 

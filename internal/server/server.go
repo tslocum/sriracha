@@ -1369,75 +1369,64 @@ func (s *Server) newPageTemplate(db *database.DB) *template.Template {
 	})
 }
 
+func (s *Server) writePage(db *database.DB, data *templateData, tpl *template.Template, p *Page, w io.Writer) error {
+	err := p.Validate()
+	if err != nil {
+		return err
+	}
+
+	dir := filepath.Dir(p.Path)
+	if dir != "" {
+		dirPath := filepath.Join(s.config.Root, dir)
+		_, err := os.Stat(dirPath)
+		if os.IsNotExist(err) {
+			os.MkdirAll(dirPath, NewDirPermission)
+		}
+	}
+
+	if data == nil {
+		data = s.newTemplateData()
+		data.Boards = db.AllBoards()
+		data.Template = "page"
+	}
+	if tpl == nil {
+		tpl = s.newPageTemplate(db)
+	}
+
+	data.tpl, err = tpl.Clone()
+	if err != nil {
+		log.Fatal(err)
+	}
+	data.tpl, err = data.tpl.New("line").Parse(p.Content)
+	if err != nil {
+		return err
+	}
+
+	if strings.HasPrefix(p.Content, doctypePrefx) {
+		data.Template = "line"
+	} else {
+		data.Template = "page"
+	}
+	return data.executeWithError(w)
+}
+
 // writePages writes custom pages to disk.
-func (s *Server) writePages(db *database.DB, pages []*Page, dryRun bool) error {
+func (s *Server) writePages(db *database.DB, pages []*Page) error {
 	data := s.newTemplateData()
 	data.Boards = db.AllBoards()
 	data.Template = "page"
 
 	tpl := s.newPageTemplate(db)
 	for _, p := range pages {
-		err := p.Validate()
-		if err != nil {
-			if dryRun {
-				return err
-			}
-			log.Printf("Warning: skipped invalid page %s: %s", p.Path, err)
-			continue
-		}
-
-		dir := filepath.Dir(p.Path)
-		if dir != "" {
-			dirPath := filepath.Join(s.config.Root, dir)
-			_, err := os.Stat(dirPath)
-			if os.IsNotExist(err) {
-				os.MkdirAll(dirPath, NewDirPermission)
-			}
-		}
-
-		var w io.Writer
-		var pageFile *os.File
-		if dryRun {
-			w = io.Discard
-		} else {
-			pageFile, err = os.OpenFile(filepath.Join(s.config.Root, p.Path+".html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
-			if err != nil {
-				log.Fatal(err)
-			}
-			w = pageFile
-		}
-
-		data.tpl, err = tpl.Clone()
+		pageFile, err := os.OpenFile(filepath.Join(s.config.Root, p.Path+".html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 		if err != nil {
 			log.Fatal(err)
 		}
-		data.tpl, err = data.tpl.New("line").Parse(p.Content)
-		if err != nil {
-			if dryRun {
-				return err
-			}
-			log.Printf("Warning: failed to parse content of page %s: %s", p.Path, err)
-			pageFile.Close()
-			continue
-		}
 
-		if strings.HasPrefix(p.Content, doctypePrefx) {
-			data.Template = "line"
-		} else {
-			data.Template = "page"
-		}
-		err = data.executeWithError(w)
+		err = s.writePage(db, data, tpl, p, pageFile)
+		pageFile.Close()
 		if err != nil {
-			if dryRun {
-				return err
-			}
-			log.Printf("Warning: failed to render page %s: %s", p.Path, err)
-			pageFile.Close()
-			continue
-		}
-
-		if !dryRun {
-			pageFile.Close()
+			return err
 		}
 	}
 	return nil
@@ -1467,7 +1456,7 @@ func (s *Server) rebuildAll(db *database.DB, verbose bool) {
 		if verbose {
 			fmt.Println("Rebuilding pages...")
 		}
-		s.writePages(db, allPages, false)
+		s.writePages(db, allPages)
 	}
 	published := len(db.AllNews(true))
 	if published > 0 {

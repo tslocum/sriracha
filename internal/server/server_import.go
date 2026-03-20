@@ -327,7 +327,15 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 			data.ManageError(fmt.Sprintf("No posts were found in export %s.", info.name))
 			return
 		} else if !haveMapping {
-			data.Message += template.HTML(fmt.Sprintf("<b>Found %d posts</b> in export %s.<br>", len(posts), html.EscapeString(info.name)))
+			var threads, replies int
+			for _, p := range posts {
+				if p.Parent == 0 {
+					threads++
+				} else {
+					replies++
+				}
+			}
+			data.Message += template.HTML(fmt.Sprintf("%s contains %d posts. (%d threads and %d replies)<br>", html.EscapeString(info.name), threads+replies, threads, replies))
 		}
 		s.importDatabases[i].posts = posts
 	}

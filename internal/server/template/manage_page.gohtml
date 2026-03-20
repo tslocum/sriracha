@@ -60,7 +60,18 @@
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if or (eq .Manage.Page nil) (eq .Manage.Page.ID 0)}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
+                <td align="right">
+                    <table width="100%" style="border: 0px none;">
+                        <tr>
+                            <td width="50%">
+                                <input type="submit" class="managebutton" name="preview" value="{{T "Preview"}}">
+                            </td>
+                            <td width="50%">
+                                <input type="submit" class="managebutton" value="{{if or (eq .Manage.Page nil) (eq .Manage.Page.ID 0)}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
                 <td>&nbsp;</td>
             </tr>
         </table>
