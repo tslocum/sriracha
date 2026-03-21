@@ -1,7 +1,7 @@
 {{$ := index . 0}}
 {{$thread := index . 1}}
 {{$post := index . 2}}
-<label>
+<label class="postinfo">
     <input type="checkbox" name="delete[]" value="{{$post.ID}}">
     {{if ne $post.Subject ""}}<span class="filetitle">{{$post.Subject}}</span>{{end}}
     {{$post.NameBlock | HTML}}
