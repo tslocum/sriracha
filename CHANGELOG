@@ -1,5 +1,6 @@
 1.6.3:
 - Support previewing pages before adding or updating
+- Write static pages to separate files before renaming
 
 1.6.2:
 - Fix post preview displaying 'Post deleted' until thread page is fetched

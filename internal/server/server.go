@@ -1180,7 +1180,10 @@ func (s *Server) writeThread(db *database.DB, board *Board, postID int) {
 		board.Unique = db.UniqueUserPosts(board)
 	}
 
-	f, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "res", fmt.Sprintf("%d.html", postID)), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	writePath := filepath.Join(s.config.Root, board.Dir, "res", fmt.Sprintf("_%d.html", postID))
+	filePath := filepath.Join(s.config.Root, board.Dir, "res", fmt.Sprintf("%d.html", postID))
+
+	f, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -1192,6 +1195,12 @@ func (s *Server) writeThread(db *database.DB, board *Board, postID int) {
 	data.ReplyMode = postID
 	data.Template = "board_page"
 	data.execute(f)
+
+	f.Close()
+	err = os.Rename(writePath, filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // writeBoardIndexes writes board index pages to disk.
@@ -1210,7 +1219,10 @@ func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 
 	// Write catalog.
 	if board.Type == TypeImageboard {
-		catalogFile, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, "catalog.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+		writePath := filepath.Join(s.config.Root, board.Dir, "_catalog.html")
+		filePath := filepath.Join(s.config.Root, board.Dir, "catalog.html")
+
+		catalogFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -1223,6 +1235,10 @@ func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 		data.execute(catalogFile)
 
 		catalogFile.Close()
+		err = os.Rename(writePath, filePath)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	// Write indexes.
@@ -1236,7 +1252,10 @@ func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 			fileName = fmt.Sprintf("%d.html", page)
 		}
 
-		indexFile, err := os.OpenFile(filepath.Join(s.config.Root, board.Dir, fileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+		writePath := filepath.Join(s.config.Root, board.Dir, "_"+fileName)
+		filePath := filepath.Join(s.config.Root, board.Dir, fileName)
+
+		indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -1261,6 +1280,10 @@ func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 		data.execute(indexFile)
 
 		indexFile.Close()
+		err = os.Rename(writePath, filePath)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 
@@ -1290,7 +1313,10 @@ func (s *Server) writeOverboard(db *database.DB) {
 
 	// Write catalog.
 	if overboard.Type == TypeImageboard {
-		catalogFile, err := os.OpenFile(filepath.Join(s.config.Root, overboardDir, "catalog.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+		writePath := filepath.Join(s.config.Root, overboardDir, "_catalog.html")
+		filePath := filepath.Join(s.config.Root, overboardDir, "catalog.html")
+
+		catalogFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -1303,6 +1329,10 @@ func (s *Server) writeOverboard(db *database.DB) {
 		data.execute(catalogFile)
 
 		catalogFile.Close()
+		err = os.Rename(writePath, filePath)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	// Write indexes.
@@ -1316,7 +1346,10 @@ func (s *Server) writeOverboard(db *database.DB) {
 			fileName = fmt.Sprintf("%d.html", page)
 		}
 
-		indexFile, err := os.OpenFile(filepath.Join(s.config.Root, overboardDir, fileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+		writePath := filepath.Join(s.config.Root, overboardDir, "_"+fileName)
+		filePath := filepath.Join(s.config.Root, overboardDir, fileName)
+
+		indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -1341,6 +1374,10 @@ func (s *Server) writeOverboard(db *database.DB) {
 		data.execute(indexFile)
 
 		indexFile.Close()
+		err = os.Rename(writePath, filePath)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 
@@ -1426,13 +1463,20 @@ func (s *Server) writePages(db *database.DB, pages []*Page) error {
 
 	tpl := s.newPageTemplate(db)
 	for _, p := range pages {
-		pageFile, err := os.OpenFile(filepath.Join(s.config.Root, p.Path+".html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+		writePath := filepath.Join(s.config.Root, p.Path+"_.html")
+		filePath := filepath.Join(s.config.Root, p.Path+".html")
+
+		pageFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		err = s.writePage(db, data, tpl, p, pageFile)
 		pageFile.Close()
+		if err != nil {
+			return err
+		}
+		err = os.Rename(writePath, filePath)
 		if err != nil {
 			return err
 		}
@@ -1502,12 +1546,19 @@ func (s *Server) writeNewsItem(db *database.DB, n *News) {
 	data.Pages = 1
 	data.Extra = "view"
 
-	itemFile, err := os.OpenFile(filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", n.ID)), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	writePath := filepath.Join(s.config.Root, fmt.Sprintf("_news-%d.html", n.ID))
+	filePath := filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", n.ID))
+
+	itemFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
 	data.execute(itemFile)
 	itemFile.Close()
+	err = os.Rename(writePath, filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // writeNewsIndexes writes news index pages to disk.
@@ -1528,7 +1579,10 @@ func (s *Server) writeNewsIndexes(db *database.DB) {
 			fileName = fmt.Sprintf("news-p%d.html", page)
 		}
 
-		indexFile, err := os.OpenFile(filepath.Join(s.config.Root, fileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+		writePath := filepath.Join(s.config.Root, "_"+fileName)
+		filePath := filepath.Join(s.config.Root, fileName)
+
+		indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -1544,6 +1598,10 @@ func (s *Server) writeNewsIndexes(db *database.DB) {
 		data.execute(indexFile)
 
 		indexFile.Close()
+		err = os.Rename(writePath, filePath)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 
@@ -1567,12 +1625,19 @@ func (s *Server) writeVisitorGuide(db *database.DB) {
 	data.Template = "guide"
 	data.Boards = db.AllBoards()
 
-	file, err := os.OpenFile(filepath.Join(s.config.Root, "guide.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	writePath := filepath.Join(s.config.Root, "_guide.html")
+	filePath := filepath.Join(s.config.Root, "guide.html")
+
+	file, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
 	data.execute(file)
 	file.Close()
+	err = os.Rename(writePath, filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // writeSiteIndex writes the site index page to disk.
@@ -1608,12 +1673,19 @@ func (s *Server) writeSiteIndex(db *database.DB) {
 
 	s.refreshRecentPosts(db)
 
-	indexFile, err := os.OpenFile(filepath.Join(s.config.Root, "index.html"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	writePath := filepath.Join(s.config.Root, "_index.html")
+	filePath := filepath.Join(s.config.Root, "index.html")
+
+	indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
 	data.execute(indexFile)
 	indexFile.Close()
+	err = os.Rename(writePath, filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // removeInvalidBoardOptions removes invalid board options from the database.

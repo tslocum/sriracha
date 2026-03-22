@@ -131,6 +131,8 @@ func (s *Server) exportPosts(db *database.DB, exportPath string) error {
 	if err != nil {
 		return fmt.Errorf("failed to open zip file %s: %s", exportPath, err)
 	}
+	defer zipFile.Close()
+
 	zip := zip.NewWriter(zipFile)
 
 	date := time.Now().Format("20060102")
