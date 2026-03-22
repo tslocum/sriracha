@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-03-18 09:29+0000\n"
+"PO-Revision-Date: 2026-03-21 19:30+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -159,6 +159,9 @@ msgstr ""
 msgid "Backlinks"
 msgstr "Links"
 
+msgid "Backup all files and databases before importing posts."
+msgstr "Maak vooraf een reservekopie van alle bestanden en databanken."
+
 msgid "Ban"
 msgstr "Verbannen"
 
@@ -215,6 +218,9 @@ msgstr "Wachtwoord wĳzigen"
 
 msgid "Change Style"
 msgstr "Stijl aanpassen"
+
+msgid "Choose where to import posts"
+msgstr "Kies de locatie van de te importeren berichten"
 
 msgid "Click 'Delete'."
 msgstr "Klik op verwijderen."
@@ -369,11 +375,17 @@ msgstr "Geen onderwerpen toestaan van bezoekers"
 msgid "Displayed in site index."
 msgstr "Wordt getoond op de overzichtspagina."
 
+msgid "Do not import"
+msgstr "Niet importeren"
+
 msgid "Do not share with staff"
 msgstr "Niet delen met staf"
 
 msgid "Documentation"
 msgstr "Documentatie"
+
+msgid "Dry run complete."
+msgstr "De proef is geslaagd."
 
 msgid "Duplicate"
 msgstr "Klonen"
@@ -382,10 +394,10 @@ msgid "Duplicate Board"
 msgstr "Subforum klonen"
 
 msgid "Duplicate embed detected."
-msgstr ""
+msgstr "Duplicaat in bijlagen ontdekt."
 
 msgid "Duplicate file detected."
-msgstr ""
+msgstr "Duplicaatbestand ontdekt."
 
 msgid "Email"
 msgstr "E-mailen"
@@ -419,6 +431,12 @@ msgstr "Uitklappen"
 
 msgid "Expires"
 msgstr "Vervalt op"
+
+msgid "Export"
+msgstr "Exporteren"
+
+msgid "Export files loaded."
+msgstr "De exportbestanden zijn geladen."
 
 msgid "Failed to create thumbnail: %s"
 msgstr "De miniatuur kan niet worden samengesteld: %s"
@@ -529,6 +547,16 @@ msgstr ""
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
 msgstr "Afbeeldingen groter dan %[1]dx%[2]d worden van een miniatuur voorzien."
 
+msgid "Import"
+msgstr "Importeren"
+
+msgid "Import complete."
+msgstr "Het importeren is voltooid."
+
+msgid "Import mode enabled. Visitors are forbidden from posting."
+msgstr ""
+"De importmodus is ingeschakeld — bezoekers mogen geen berichten plaatsen."
+
 msgid "Index Replies"
 msgstr "Antwoordoverzicht"
 
@@ -601,6 +629,9 @@ msgstr "Beheren"
 
 msgid "Manage Banners"
 msgstr "Banieren beheren"
+
+msgid "Manage Boards"
+msgstr "Subfora beheren"
 
 msgid "Manage Categories"
 msgstr "Categorieën beheren"
@@ -991,6 +1022,12 @@ msgstr "Vorige"
 msgid "Quote"
 msgstr "Citeren"
 
+msgid "Ready to import posts."
+msgstr "Berichten kunnen worden geïmporteerd."
+
+msgid "Ready to start dry run."
+msgstr "Het proefdraaien kan beginnen."
+
 msgid "Reason"
 msgstr "Reden"
 
@@ -1037,7 +1074,7 @@ msgid "Reset all settings?"
 msgstr "Alle instellingen herstellen?"
 
 msgid "Reset board configuration?"
-msgstr ""
+msgstr "Foruminstellingen terugzetten?"
 
 msgid "Restrict New Posts"
 msgstr "Nieuwe berichten beperken"
@@ -1104,6 +1141,15 @@ msgstr "Sitenaam"
 msgid "Site News"
 msgstr "Sitenieuws"
 
+msgid "Sriracha is not running in import mode."
+msgstr "De importmodus van Sriracha is inactief."
+
+msgid "Start Dry Run"
+msgstr "Beginnen met proefdraaien"
+
+msgid "Start Import"
+msgstr "Beginnen met importeren"
+
 msgid "Status"
 msgstr "Status"
 
@@ -1141,10 +1187,10 @@ msgid "Text to test for a keyword match."
 msgstr "De tekst waarnaar gezocht moet worden."
 
 msgid "That embed has already been posted."
-msgstr ""
+msgstr "Deze bijlage is al geplaatst."
 
 msgid "That file has already been posted."
-msgstr ""
+msgstr "Dit bestand is al geplaatst."
 
 msgid ""
 "This setting is purely cosmetic. To actually prevent access, configure your "
@@ -1261,6 +1307,9 @@ msgstr "Bezoekers kunnen deze bestandstypen uploaden."
 
 msgid "visitor guide"
 msgstr "bezoekersgids"
+
+msgid "Warning"
+msgstr "Waarschuwing"
 
 msgid "When %s is mentioned."
 msgstr "Als %s vermeld wordt."

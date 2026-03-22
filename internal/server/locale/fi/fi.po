@@ -155,6 +155,9 @@ msgstr ""
 msgid "Backlinks"
 msgstr ""
 
+msgid "Backup all files and databases before importing posts."
+msgstr ""
+
 msgid "Ban"
 msgstr "Kiellä"
 
@@ -207,6 +210,9 @@ msgid "Change Password"
 msgstr "Vaihda salasana"
 
 msgid "Change Style"
+msgstr ""
+
+msgid "Choose where to import posts"
 msgstr ""
 
 msgid "Click 'Delete'."
@@ -354,10 +360,16 @@ msgstr ""
 msgid "Displayed in site index."
 msgstr ""
 
+msgid "Do not import"
+msgstr ""
+
 msgid "Do not share with staff"
 msgstr ""
 
 msgid "Documentation"
+msgstr ""
+
+msgid "Dry run complete."
 msgstr ""
 
 msgid "Duplicate"
@@ -403,6 +415,12 @@ msgid "Expand"
 msgstr ""
 
 msgid "Expires"
+msgstr ""
+
+msgid "Export"
+msgstr ""
+
+msgid "Export files loaded."
 msgstr ""
 
 msgid "Failed to create thumbnail: %s"
@@ -506,6 +524,15 @@ msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
 msgstr ""
 "Kuvat, joiden koko on suurempi kuin %[1]dx%[2]d, näytetään pienoiskuvina."
 
+msgid "Import"
+msgstr ""
+
+msgid "Import complete."
+msgstr ""
+
+msgid "Import mode enabled. Visitors are forbidden from posting."
+msgstr ""
+
 msgid "Index Replies"
 msgstr ""
 
@@ -575,6 +602,9 @@ msgid "Manage"
 msgstr "Hallinnoi"
 
 msgid "Manage Banners"
+msgstr ""
+
+msgid "Manage Boards"
 msgstr ""
 
 msgid "Manage Categories"
@@ -936,6 +966,12 @@ msgstr "Edellinen"
 msgid "Quote"
 msgstr ""
 
+msgid "Ready to import posts."
+msgstr ""
+
+msgid "Ready to start dry run."
+msgstr ""
+
 msgid "Reason"
 msgstr ""
 
@@ -1043,6 +1079,15 @@ msgid "Site Name"
 msgstr ""
 
 msgid "Site News"
+msgstr ""
+
+msgid "Sriracha is not running in import mode."
+msgstr ""
+
+msgid "Start Dry Run"
+msgstr ""
+
+msgid "Start Import"
 msgstr ""
 
 msgid "Status"
@@ -1192,6 +1237,9 @@ msgid "Visitors may upload the selected types of files."
 msgstr ""
 
 msgid "visitor guide"
+msgstr ""
+
+msgid "Warning"
 msgstr ""
 
 msgid "When %s is mentioned."
