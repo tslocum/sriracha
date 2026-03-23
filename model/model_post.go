@@ -175,12 +175,14 @@ func (p *Post) FileSizeLabel() string {
 }
 
 func (p *Post) TimestampLabel() template.HTML {
-	return `<time datetime="` + template.HTML(time.Unix(p.Timestamp, 0).In(time.UTC).Format(dateTimeFormat)) + `">` + FormatTimestamp(p.Timestamp) + `</time>`
+	utcDate := template.HTML(time.Unix(p.Timestamp, 0).In(time.UTC).Format(dateTimeFormat))
+	return `<time datetime="` + utcDate + `" title="` + utcDate + `">` + FormatTimestamp(p.Timestamp) + `</time>`
 }
 
 func (p *Post) BumpLabel() template.HTML {
 	if p.Bumped != 0 {
-		return `<time datetime="` + template.HTML(time.Unix(p.Bumped, 0).In(time.UTC).Format(dateTimeFormat)) + `">` + FormatTimestamp(p.Bumped) + `</time>`
+		utcDate := template.HTML(time.Unix(p.Bumped, 0).In(time.UTC).Format(dateTimeFormat))
+		return `<time datetime="` + utcDate + `" title="` + utcDate + `">` + FormatTimestamp(p.Bumped) + `</time>`
 	}
 	return p.TimestampLabel()
 }

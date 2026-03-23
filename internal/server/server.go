@@ -29,7 +29,6 @@ import (
 	"regexp"
 	"runtime/debug"
 	"slices"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -1756,8 +1755,6 @@ func (s *Server) serveManage(db *database.DB, w http.ResponseWriter, r *http.Req
 		data.Message2 = template.HTML(`
 		<script type="text/javascript">
 		Tegaki.open({
-			width: ` + strconv.Itoa(s.opt.OekakiWidth) + `,
-			height: ` + strconv.Itoa(s.opt.OekakiHeight) + `,
 			replayMode: true,
 			replayURL: '` + post.Board.Path() + `src/` + post.File + `'
 		});
