@@ -112,12 +112,9 @@ func createPostThumbnail(p *Post, file io.Reader, mimeType string, mediaOverlay 
 	return nil
 }
 
-func setFileAndThumb(p *Post, fileExt string, thumbExt string) {
+func setFileAndThumb(p *Post, rootDir string, fileExt string, thumbExt string) {
 	postUploadFileLock.Lock()
 	defer postUploadFileLock.Unlock()
-
-	fileID := time.Now().UnixNano()
-	fileIDString := fmt.Sprintf("%d", fileID)
 
 	if thumbExt == "" {
 		switch fileExt {
@@ -130,8 +127,25 @@ func setFileAndThumb(p *Post, fileExt string, thumbExt string) {
 		}
 	}
 
-	p.File = fileIDString + "." + fileExt
-	p.Thumb = fileIDString + "s." + thumbExt
+	fileID := time.Now().UnixMilli()
+	for {
+		fileIDString := fmt.Sprintf("%d", fileID)
+
+		fileName := fileIDString + "." + fileExt
+		thumbName := fileIDString + "s." + thumbExt
+
+		_, err := os.Stat(filepath.Join(rootDir, p.Board.Dir, "src", fileName))
+		if err != nil {
+			if os.IsNotExist(err) {
+				p.File = fileName
+				p.Thumb = thumbName
+				return
+			}
+			log.Fatal(err)
+		}
+
+		fileID++
+	}
 }
 
 func (s *Server) loadPostForm(db *database.DB, r *http.Request, p *Post) error {
@@ -311,7 +325,7 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 		thumbExt = MIMEToExt(mimetype.Detect(thumbData).String())
 	}
 
-	setFileAndThumb(p, fileExt, thumbExt)
+	setFileAndThumb(p, s.config.Root, fileExt, thumbExt)
 
 	p.FileSize = fileHeader.Size
 	if oekakiPost && FormBool(r, "oekaki") {
