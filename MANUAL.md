@@ -501,6 +501,10 @@ type Plugin interface {
 }
 ```
 
+A plugin's `About` method is only called once.
+
+Plugins may subscribe to receive and handle [events](#plugin-events) by implementing additional interfaces.
+
 ### Plugin configuration
 
 Plugins may optionally specify any number of configuration options:
@@ -512,7 +516,7 @@ type PluginWithConfig interface {
 }
 ```
 
-These options may be viewed and modified in the management panel.
+A plugin's `Config` method is only called once.
 
 The following configuration option types are available:
 
@@ -524,6 +528,8 @@ The following configuration option types are available:
 - Board
 
 Boolean options may only have one value. Options of any other type may have one or multiple values.
+
+Plugin configuration options may be viewed and modified in 'Plugins' page of the management panel.
 
 An example how to implement a plugin with configuration options is available in
 the [Fortune](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/fortune/fortune.go) plugin.
