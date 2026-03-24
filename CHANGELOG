@@ -1,3 +1,6 @@
+1.6.4:
+- Serve oekaki replays via static HTML page
+
 1.6.3:
 - Support previewing pages before adding or updating
 - Write static pages to separate files before renaming

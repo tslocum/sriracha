@@ -1742,31 +1742,6 @@ func (s *Server) serveManage(db *database.DB, w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	if strings.HasPrefix(r.URL.Path, "/sriracha/oekaki/") {
-		postID := PathInt(r, "/sriracha/oekaki/")
-		post := db.PostByID(postID)
-		if post == nil || !post.IsOekaki() {
-			data.BoardError(w, "invalid or deleted post")
-			return
-		}
-
-		data := s.buildData(db, w, r)
-		data.Template = "oekaki"
-		data.Message2 = template.HTML(`
-		<script type="text/javascript">
-		Tegaki.open({
-			replayMode: true,
-			replayURL: '` + post.Board.Path() + `src/` + post.File + `'
-		});
-		document.getElementById('tegaki-finish-btn').addEventListener('click', function(e) {
-			window.close();
-			return false;
-		});
-		</script>`)
-		data.execute(w)
-		return
-	}
-
 	if data.Account != nil {
 		db.UpdateAccountLastActive(data.Account.ID)
 	}

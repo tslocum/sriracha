@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,user-scalable=no">
+	<title>Oekaki</title>
+	<script src="/static/tegaki/tegaki.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/tegaki/tegaki.css">
+	<style>
+	body {
+		user-select: none;
+		-webkit-user-select: none;
+	}
+	</style>
+</head>
+<body>
+	<script type="text/javascript">
+	function onCancel() {
+		history.go(-1);
+	}
+	</script>
+	<script type="text/javascript">
+	var path = "";
+	if (window.location && window.location.hash) {
+		path = window.location.hash;
+	}
+	path = path.trim();
+	if (!path) {
+		alert("Failed to load oekaki: No file path was specified in window hash. Expected file path after hash: oekaki.html#/board/src/file.tkgr");
+	}
+	if (path.substring(0, 1) == "#") {
+		path = path.substring(1);
+	}
+	if (path.substring(0, 1) == "%") {
+		path = decodeURIComponent(path);
+	}
+	if (path.substring(0, 1) == "/" && !path.includes(":")) {
+		document.title = path;
+		Tegaki.open({
+			replayMode: true,
+			replayURL: path
+		});
+		document.getElementById('tegaki-finish-btn').addEventListener('click', function(e) {
+			window.close();
+			return false;
+		});
+	}
+	</script>
+</body>
+</html>
