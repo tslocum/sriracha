@@ -130,21 +130,30 @@ func setFileAndThumb(p *Post, rootDir string, fileExt string, thumbExt string) {
 	fileID := time.Now().UnixMilli()
 	for {
 		fileIDString := fmt.Sprintf("%d", fileID)
-
 		fileName := fileIDString + "." + fileExt
 		thumbName := fileIDString + "s." + thumbExt
 
+		// Check whether file already exists.
 		_, err := os.Stat(filepath.Join(rootDir, p.Board.Dir, "src", fileName))
-		if err != nil {
-			if os.IsNotExist(err) {
-				p.File = fileName
-				p.Thumb = thumbName
-				return
-			}
+		if err == nil {
+			fileID++
+			continue
+		} else if !os.IsNotExist(err) {
 			log.Fatal(err)
 		}
 
-		fileID++
+		// Check whether thumbnail already exists.
+		_, err = os.Stat(filepath.Join(rootDir, p.Board.Dir, "thumb", thumbName))
+		if err == nil {
+			fileID++
+			continue
+		} else if !os.IsNotExist(err) {
+			log.Fatal(err)
+		}
+
+		p.File = fileName
+		p.Thumb = thumbName
+		return
 	}
 }
 
