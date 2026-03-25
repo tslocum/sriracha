@@ -177,9 +177,11 @@ func (s *Server) importPosts(sqlDB *sql.DB, table string, tinyIB bool, b *Board)
 	// Build query.
 	var query string
 	if tinyIB {
+		// Import from TinyIB database.
 		query = "SELECT id, parent, timestamp, bumped, name, tripcode, email, nameblock, subject, message, file, '' AS file_mime, file_hex, file_original, file_size, image_width, image_height, thumb, thumb_width, thumb_height, stickied, locked FROM " + table
 	} else {
-		query = "SELECT * FROM " + table
+		// Import from Sriracha-compatible export.
+		query = "SELECT id, parent, timestamp, bumped, name, tripcode, email, nameblock, subject, message, file, filemime, filehash, fileoriginal, filesize, filewidth, fileheight, thumb, thumbwidth, thumbheight, stickied, locked FROM " + table
 	}
 	query += " ORDER BY id ASC"
 

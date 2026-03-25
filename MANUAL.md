@@ -529,7 +529,7 @@ The following configuration option types are available:
 
 Boolean options may only have one value. Options of any other type may have one or multiple values.
 
-Plugin configuration options may be viewed and modified in 'Plugins' page of the management panel.
+Plugin configuration options may be viewed and modified in the 'Plugins' page of the management panel.
 
 An example how to implement a plugin with configuration options is available in
 the [Fortune](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/fortune/fortune.go) plugin.

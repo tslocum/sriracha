@@ -1,4 +1,5 @@
 1.6.4:
+- Display UTC date/time on hover
 - Serve oekaki replays via static HTML page
 
 1.6.3:
