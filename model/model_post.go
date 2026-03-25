@@ -265,11 +265,11 @@ func (p *Post) MessageTruncated(lines int, account *Account) template.HTML {
 	return template.HTML(truncated)
 }
 
-func (p *Post) ExpandHTML() template.HTML {
+func (p *Post) ExpandHTML() string {
 	if p.File == "" {
 		return ""
 	} else if p.IsEmbed() {
-		return template.HTML(url.PathEscape(p.File))
+		return p.File
 	}
 	srcPath := fmt.Sprintf("%ssrc/%s", p.Board.Path(), p.File)
 
@@ -283,7 +283,7 @@ func (p *Post) ExpandHTML() template.HTML {
 			loop = " loop"
 		}
 		const expandFormat = `<%s width="%d" height="%d" style="pointer-events: inherit;" controls autoplay%s><source src="%s"></source></%s>`
-		return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, element, p.FileWidth, p.FileHeight, loop, srcPath, element)))
+		return fmt.Sprintf(expandFormat, element, p.FileWidth, p.FileHeight, loop, srcPath, element)
 	}
 
 	isImage := strings.HasPrefix(p.FileMIME, "image/")
@@ -291,7 +291,7 @@ func (p *Post) ExpandHTML() template.HTML {
 		return ""
 	}
 	const expandFormat = `<a href="%s" onclick="return expandFile(event, '%d');"><img src="%s" width="%d" height="%d" style="pointer-events: inherit;"></a>`
-	return template.HTML(url.PathEscape(fmt.Sprintf(expandFormat, srcPath, p.ID, srcPath, p.FileWidth, p.FileHeight)))
+	return fmt.Sprintf(expandFormat, srcPath, p.ID, srcPath, p.FileWidth, p.FileHeight)
 }
 
 func (p *Post) Identifier(identifiers bool, force bool) string {

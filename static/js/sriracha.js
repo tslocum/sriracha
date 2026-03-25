@@ -225,11 +225,11 @@ function expandFile(e, id) {
     if (e == undefined || e.which == undefined || e.which == 1) {
         var srcFile = document.querySelector("#file" + id);
         var thumbFile = document.querySelector("#thumbfile" + id);
-        if (!srcFile || !thumbFile) {
+        if (!srcFile || !thumbFile || !srcFile.dataset) {
             return true;
         }
 
-        var expandHTML = document.querySelector("#expand" + id).innerHTML;
+        var expandHTML = srcFile.dataset.expand;
         if (!expandHTML) {
             return true;
         }
