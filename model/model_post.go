@@ -17,14 +17,11 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/PuerkitoBio/goquery"
 
 	. "codeberg.org/tslocum/sriracha/util"
 )
-
-const dateTimeFormat = "2006-01-02T15:04:05Z"
 
 var (
 	adler    = adler32.New()
@@ -175,16 +172,14 @@ func (p *Post) FileSizeLabel() string {
 }
 
 func (p *Post) TimestampLabel() template.HTML {
-	utcDate := template.HTML(time.Unix(p.Timestamp, 0).In(time.UTC).Format(dateTimeFormat))
-	return `<time datetime="` + utcDate + `" title="` + utcDate + `">` + FormatTimestamp(p.Timestamp) + `</time>`
+	return FormatTimestamp(p.Timestamp)
 }
 
 func (p *Post) BumpLabel() template.HTML {
 	if p.Bumped != 0 {
-		utcDate := template.HTML(time.Unix(p.Bumped, 0).In(time.UTC).Format(dateTimeFormat))
-		return `<time datetime="` + utcDate + `" title="` + utcDate + `">` + FormatTimestamp(p.Bumped) + `</time>`
+		return FormatTimestamp(p.Bumped)
 	}
-	return p.TimestampLabel()
+	return FormatTimestamp(p.Timestamp)
 }
 
 func (p *Post) IsOekaki() bool {

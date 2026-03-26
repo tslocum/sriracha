@@ -164,7 +164,8 @@ func MIMEToExt(mimeType string) string {
 }
 
 func FormatTimestamp(timestamp int64) template.HTML {
-	return template.HTML(time.Unix(timestamp, 0).Format("2006/01/02<wbr>(Mon)<wbr>15:04:05"))
+	utcDate := template.HTML(time.Unix(timestamp, 0).In(time.UTC).Format("2006-01-02T15:04:05Z"))
+	return `<time datetime="` + utcDate + `" title="` + utcDate + `">` + template.HTML(time.Unix(timestamp, 0).Format("2006/01/02<wbr>(Mon)<wbr>15:04:05")) + `</time>`
 }
 
 func FormatRawTimestamp(timestamp int64) string {
