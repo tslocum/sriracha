@@ -29,20 +29,18 @@
 				{{if ne .Opt.Overboard ""}}
 					[<a href="/{{if ne .Opt.Overboard "/"}}{{.Opt.Overboard}}/{{end}}" style="text-decoration: underline;">{{T "Overboard"}}</a>]
 				{{end}}
-				{{if ne .Template "index"}}
-					{{range $i, $category := .Opt.Categories}}
-						{{if eq (len $category.Boards) 0}}
-							{{continue}}
-						{{end}}
-						{{if or (ne $i 0) (ne $.Opt.Overboard "")}}
-							&middot;
-						{{end}}
-						{{range $i, $board := .Boards}}
-							{{if not $.ModMode}}
-								[<a href="{{.Path}}" title="{{.Name}}" style="text-decoration: underline;">{{if ne .Dir ""}}{{.Dir}}{{else}}{{if eq .Type 0}}{{T "Imageboard"}}{{else}}{{T "Forum"}}{{end}}{{end}}</a>]
-							{{else}}
-								[<a href="/sriracha/board/mod/{{.ID}}" title="{{.Name}}" style="text-decoration: underline;">{{if ne .Dir ""}}{{.Dir}}{{else}}/{{end}}</a>]
-							{{end}}
+				{{range $i, $category := .Opt.Categories}}
+					{{if eq (len $category.Boards) 0}}
+						{{continue}}
+					{{end}}
+					{{if or (ne $i 0) (ne $.Opt.Overboard "")}}
+						&middot;
+					{{end}}
+					{{range $i, $board := .Boards}}
+						{{if not $.ModMode}}
+							[<a href="{{.Path}}" title="{{.Name}}" style="text-decoration: underline;">{{if ne .Dir ""}}{{.Dir}}{{else}}{{if eq .Type 0}}{{T "Imageboard"}}{{else}}{{T "Forum"}}{{end}}{{end}}</a>]
+						{{else}}
+							[<a href="/sriracha/board/mod/{{.ID}}" title="{{.Name}}" style="text-decoration: underline;">{{if ne .Dir ""}}{{.Dir}}{{else}}/{{end}}</a>]
 						{{end}}
 					{{end}}
 				{{end}}
