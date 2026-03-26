@@ -1,3 +1,6 @@
+1.6.5:
+- Improve layout for text-based web browsers such as Lynx
+
 1.6.4:
 - Display UTC date/time on hover
 - Serve oekaki replays via static HTML page
