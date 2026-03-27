@@ -1905,7 +1905,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-var cachePattern = regexp.MustCompile(`^.*\.(aac|avi|css|flac|gif|ico|jpg|js|mp3|mp4|ogg|opus|png|svg|swf|wasm|wav|webm|webp|woff)$`)
+var cachePattern = regexp.MustCompile(`^/static/.*$`)
 
 func withCacheHeader(fs http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

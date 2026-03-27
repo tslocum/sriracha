@@ -433,7 +433,7 @@ zoopz.org, www.zoopz.org {
 
   # Cache static files.
   @cachedFiles {
-    path *.aac *.avi *.css *.flac *.gif *.ico *.jpg *.js *.mp3 *.mp4 *.ogg *.opus *.png *.svg *.swf *.wasm *.wav *.webm *.webp *.woff
+    path /static/* *.aac *.apng *.avi *.avif *.bmp *.flac *.gif *.jpg *.m4a *.midi *.mkv *.mp3 *.mp4 *.mpeg *.ogg *.ogv *.png *.svg *.swf *.tiff *.wav *.weba *.webm
   }
   header @cachedFiles Cache-Control "public, max-age=1209600, immutable"
 
