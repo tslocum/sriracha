@@ -268,8 +268,8 @@ func (p *Post) ExpandHTML() string {
 	}
 	srcPath := fmt.Sprintf("%ssrc/%s", p.Board.Path(), p.File)
 
-	isAudio := strings.HasPrefix(p.FileMIME, "audio/")
-	isVideo := strings.HasPrefix(p.FileMIME, "video/")
+	isAudio := strings.HasPrefix(p.FileMIME, "audio/") && p.FileMIME != "audio/midi"
+	isVideo := strings.HasPrefix(p.FileMIME, "video/") && p.FileMIME != "video/mpeg" && p.FileMIME != "video/ogg" && p.FileMIME != "video/x-matroska" && p.FileMIME != "video/x-msvideo"
 	if isAudio || isVideo {
 		element := "audio"
 		loop := ""
