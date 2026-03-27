@@ -319,7 +319,12 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 				}
 			}
 			db.Plugin = ""
-			return errors.New(Get(p.Board, nil, "Unsupported file format."))
+
+			var extra string
+			if s.opt.DevMode && p.FileMIME != "" {
+				extra = " (" + p.FileMIME + ")"
+			}
+			return errors.New(Get(p.Board, nil, "Unsupported file format.") + extra)
 		}
 	}
 
