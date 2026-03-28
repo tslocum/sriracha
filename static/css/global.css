@@ -66,6 +66,10 @@ img, audio, video {
 	margin: 4px 20px 2px 20px;
 }
 
+.doubledash::before {
+	content: "¨";
+}
+
 .reply .thumb {
 	margin-bottom: 4px;
 }

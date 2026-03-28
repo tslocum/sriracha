@@ -161,7 +161,6 @@ function fetchPosts(url, append) {
 
                     var td = doc.createElement('td');
                     td.classList.add('doubledash');
-                    td.innerHTML = "&#0168;";
 
                     tr.appendChild(td);
                     tr.appendChild(post);
