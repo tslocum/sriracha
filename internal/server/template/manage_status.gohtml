@@ -1,5 +1,10 @@
 {{template "manage_begin.gohtml" .}}
 <h2 class="managetitle">{{T "Status"}}</h2>
+<style type="text/css">
+.postui, .threadui {
+    display: none;
+}
+</style>
 {{if ne .Message ""}}
     <fieldset>
         <legend>{{T "Reports"}}</legend>
@@ -8,7 +13,7 @@
 {{end}}
 {{if ne .Message2 ""}}
     <fieldset>
-        <legend>{{T "Posts"}}</legend>
+        <legend>{{T "New Posts"}}</legend>
         <div>{{.Message2}}</div>
     </fieldset><br>
 {{end}}
