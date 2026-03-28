@@ -62,7 +62,7 @@ function fetchPosts(url, append) {
         console.log('fetching ' + url + '...');
     }
     var deleted = false;
-    return fetch(url).then(function(response) {
+    return fetch(url, {cache: 'no-cache'}).then(function(response) {
         if (response.status == 404) {
             deleted = true;
             return;
