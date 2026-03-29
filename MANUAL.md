@@ -130,8 +130,7 @@ someone last created a post, static files are not immediately updated.
 Once either a full second passes without any new posts being created, or ten
 seconds pass, static files are updated and visitors are redirected.
 
-This batching is invisible to visitors and allows the server to handle an influx
-of posts without wasting resources writing and immediately overwriting pages.
+Post batching conserves system resources and is invisible to visitors.
 
 ### Embed services
 
