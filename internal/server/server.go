@@ -1804,9 +1804,6 @@ func (s *Server) serveManage(db *database.DB, w http.ResponseWriter, r *http.Req
 
 // serve serves web requests.
 func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
-	s.lock.Lock()
-	defer s.lock.Unlock()
-
 	w.Header().Set("Server", "Sriracha GNU LGPL")
 
 	if r.Method == http.MethodPost {
@@ -1840,6 +1837,9 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	} else if strings.HasPrefix(r.URL.Path, "/sriracha/captcha/") {
 		action = "captcha"
 	}
+
+	s.lock.Lock()
+	defer s.lock.Unlock()
 
 	db := s.begin()
 	defer db.Commit()
