@@ -3,13 +3,17 @@
 
 ## Layout
 
-- [sriracha](https://codeberg.org/tslocum/sriracha) (root package) - Imported by plugins to interact with the database.
-- [internal/database](https://codeberg.org/tslocum/sriracha/src/branch/main/internal/database) - Provides methods for interacting with the database.
-- [internal/server](https://codeberg.org/tslocum/sriracha/src/branch/main/internal/server) - Sriracha web server.
-- [internal/server/locale](https://codeberg.org/tslocum/sriracha/src/branch/main/internal/server/locale) - [Gettext](https://en.wikipedia.org/wiki/Gettext) locale files.
-- [internal/server/template](https://codeberg.org/tslocum/sriracha/src/branch/main/internal/server/template) - [Go HTML](https://pkg.go.dev/html/template) template files.
-- [model](https://codeberg.org/tslocum/sriracha/src/branch/main/model) - Sriracha data types.
-- [util](https://codeberg.org/tslocum/sriracha/src/branch/main/util) - Sriracha utility functions and variables.
+The source code of Sriracha is organized as follows:
+
+| Directory | Synopsis |
+| --        | --       |
+| [sriracha](https://codeberg.org/tslocum/sriracha) (root) | Imported by plugins to interact with the database. |
+| [internal/database](https://codeberg.org/tslocum/sriracha/src/branch/main/internal/database) | Provides methods for interacting with the database. |
+| [internal/server](https://codeberg.org/tslocum/sriracha/src/branch/main/internal/server) | Sriracha web server. |
+| [internal/server/locale](https://codeberg.org/tslocum/sriracha/src/branch/main/internal/server/locale) | [Gettext](https://en.wikipedia.org/wiki/Gettext) locale files. |
+| [internal/server/template](https://codeberg.org/tslocum/sriracha/src/branch/main/internal/server/template) | [Go HTML](https://pkg.go.dev/html/template) template files.
+| [model](https://codeberg.org/tslocum/sriracha/src/branch/main/model) | Sriracha data types. |
+| [util](https://codeberg.org/tslocum/sriracha/src/branch/main/util) | Sriracha utility functions and variables. |
 
 ## Design
 
