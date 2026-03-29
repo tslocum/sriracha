@@ -133,6 +133,16 @@ seconds pass, static files are updated and visitors are redirected.
 This batching is invisible to visitors and allows the server to handle an influx
 of posts without wasting resources writing and immediately overwriting pages.
 
+### Embed services
+
+Sriracha supports embedding remote content via [oEmbed](https://en.wikipedia.org/wiki/OEmbed).
+When a URL is embedded within a post, Sriracha will make an oEmbed request to
+the first service listed. If the first embed service does not recognize the
+embed URL, the second service is tried, and so on.
+
+Manage the available embed services by visiting the 'Settings' page.
+Embed services may then be enabled per-board, just like upload file types.
+
 ### Email notifications
 
 Sriracha may optionally allow visitors to subscribe to receive email notifications
