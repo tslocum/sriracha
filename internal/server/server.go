@@ -41,6 +41,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/leonelquinteros/gotext"
 	"github.com/r3labs/diff/v3"
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
 	"golang.org/x/sys/unix"
 	"golang.org/x/text/language"
 	"golang.org/x/text/language/display"
@@ -1978,12 +1980,23 @@ func (s *Server) listen(httpErrors chan error) {
 	mux.HandleFunc("/sriracha/", s.serve)
 	mux.Handle("/", withCacheHeader(http.FileServer(http.Dir(s.config.Root))))
 
+	p := &http.Protocols{}
+	p.SetHTTP1(true)
+	p.SetHTTP2(true)
+	p.SetUnencryptedHTTP2(true)
+
+	http2Server := &http2.Server{
+		IdleTimeout:      1 * time.Minute,
+		WriteByteTimeout: 1 * time.Minute,
+	}
 	s.httpServer = &http.Server{
 		Addr:              s.config.Serve,
-		Handler:           mux,
+		Handler:           h2c.NewHandler(mux, http2Server),
 		ReadHeaderTimeout: 1 * time.Minute,
 		IdleTimeout:       1 * time.Minute,
+		Protocols:         p,
 	}
+
 	httpErrors <- s.httpServer.ListenAndServe()
 }
 
