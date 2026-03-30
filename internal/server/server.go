@@ -190,6 +190,8 @@ type Server struct {
 
 	httpServer *http.Server
 
+	httpMaxRequestSize int64
+
 	msgPrinter *message.Printer
 
 	lock sync.Mutex
@@ -946,6 +948,33 @@ func (s *Server) refreshBannerCache(db *database.DB) {
 			delete(banners, id)
 		}
 	}
+}
+
+// refreshMaxRequestSize refreshes the maximum HTTP request size.
+func (s *Server) refreshMaxRequestSize(db *database.DB) {
+	const megabyte = 1048576 // 1 MB.
+	var fileSize int64
+	var messageSize int64
+	for _, b := range db.AllBoards() {
+		if b.Files <= 0 {
+			continue
+		}
+		files := int64(b.Files)
+		if b.MaxSizeThread*files > fileSize {
+			fileSize = b.MaxSizeThread * files
+		}
+		if b.MaxSizeReply*files > fileSize {
+			fileSize = b.MaxSizeReply * files
+		}
+		msg := int64(b.MaxMessage)
+		if msg <= 0 {
+			msg = megabyte
+		}
+		if msg > messageSize {
+			messageSize = msg
+		}
+	}
+	s.httpMaxRequestSize = 10*megabyte + messageSize + fileSize // 10 MB + maximum message size + maximum total size of uploaded files.
 }
 
 // refreshRulesCache refreshes the board rules cache.
@@ -1804,13 +1833,28 @@ func (s *Server) serveManage(db *database.DB, w http.ResponseWriter, r *http.Req
 
 // serve serves web requests.
 func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
+	// Set Server header.
 	w.Header().Set("Server", "Sriracha GNU LGPL")
 
+	// Check Content-Length header.
+	if r.ContentLength > s.httpMaxRequestSize {
+		http.Error(w, fmt.Sprintf("Exceeded maximum request size (%s)", FormatFileSize(s.httpMaxRequestSize)), http.StatusBadRequest)
+		return
+	}
+
+	// Limit request size.
+	r.Body = http.MaxBytesReader(w, r.Body, s.httpMaxRequestSize)
+
+	// Parse form.
 	if r.Method == http.MethodPost {
 		const maxMemory = 32 << 20 // 32 megabytes.
-		r.ParseMultipartForm(maxMemory)
+		err := r.ParseMultipartForm(maxMemory)
 		if r.MultipartForm != nil {
 			defer r.MultipartForm.RemoveAll()
+		}
+		if err != nil && err != http.ErrNotMultipart {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
 
 		var modified bool
@@ -1827,6 +1871,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// Parse action from path.
 	var action string
 	if r.URL.Path == "/sriracha/" || r.URL.Path == "/sriracha" {
 		action = r.FormValue("action")
@@ -2255,12 +2300,14 @@ func (s *Server) Run() error {
 	// Lock server until initialization is complete.
 	s.lock.Lock()
 
+	db := s.begin()
+	s.refreshMaxRequestSize(db)
+
 	// Start listening for HTTP connections.
 	httpErrors := make(chan error)
 	go s.listen(httpErrors)
 
 	// Rebuild everything on startup when explicitly requested and after upgrading.
-	db := s.begin()
 	s.refreshBannerCache(db)
 	s.refreshRulesCache(db)
 	s.refreshCategoryCache(db)

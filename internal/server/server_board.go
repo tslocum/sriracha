@@ -189,6 +189,8 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 		bb.Description = b.Description
 		db.UpdateBoard(bb)
 
+		s.refreshMaxRequestSize(db)
+		s.refreshBannerCache(db)
 		s.refreshRulesCache(db)
 		s.refreshCategoryCache(db)
 		s.refreshKeywordCache(db)
@@ -255,6 +257,8 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 			}
 		}
 
+		s.refreshMaxRequestSize(db)
+		s.refreshBannerCache(db)
 		s.refreshRulesCache(db)
 		s.refreshCategoryCache(db)
 		s.refreshKeywordCache(db)
@@ -372,6 +376,8 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 				}
 			}
 
+			s.refreshMaxRequestSize(db)
+			s.refreshBannerCache(db)
 			s.refreshRulesCache(db)
 			s.refreshCategoryCache(db)
 			s.refreshKeywordCache(db)
@@ -466,6 +472,8 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 
 		db.AddBoard(b)
 
+		s.refreshMaxRequestSize(db)
+		s.refreshBannerCache(db)
 		s.refreshRulesCache(db)
 		s.refreshCategoryCache(db)
 		s.refreshKeywordCache(db)
