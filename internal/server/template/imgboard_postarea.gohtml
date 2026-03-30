@@ -1,5 +1,6 @@
 <div class="postarea">
     <form name="postform" id="postform" action="/sriracha/" method="post" enctype="multipart/form-data">
+        <input type="hidden" id="maxFileCount" name="MAX_FILE_COUNT" value="{{.Board.Files}}">
         <input type="hidden" id="maxFileSize" name="MAX_FILE_SIZE" value="{{if eq .ReplyMode 0}}{{.Board.MaxSizeThread}}{{else}}{{.Board.MaxSizeReply}}{{end}}">
         <input type="hidden" name="action" value="post">
         <input type="hidden" name="board" value="{{.Board.Dir}}">

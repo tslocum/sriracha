@@ -547,6 +547,11 @@ function setStyle(style) {
     stylesheet.href = '/static/css/' + style + '.css';
 }
 
+function formatFileSize(size) {
+    var i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
+    return +((size / Math.pow(1024, i)).toFixed(2)) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i];
+}
+
 function onFocus(e) {
     newRepliesCount = 0;
     blinkTitle = false;
@@ -588,6 +593,45 @@ function onDrop(e) {
     fileInputs[0].files = e.dataTransfer.files;
 }
 
+function onSubmit(e) {
+    var maxSizeElement = document.getElementById("maxFileSize");
+    if (!maxSizeElement) {
+        return true;
+    }
+    var maxFileSize = parseInt(maxSizeElement.value);
+    if (maxFileSize <= 0) {
+        return true;
+    }
+    var maxCountElement = document.getElementById("maxFileCount");
+    if (!maxCountElement) {
+        return true;
+    }
+    var maxFileCount = parseInt(maxCountElement.value);
+    if (maxFileCount <= 0) {
+        return true;
+    }
+    var fileInputs = document.getElementsByName("file");
+    if (!fileInputs || fileInputs.length == 0) {
+        return true;
+    } else if (fileInputs[0].files && fileInputs[0].files.length > maxFileCount) {
+        e.preventDefault();
+        var info = maxFileCount + " file";
+        if (maxFileCount != 1) {
+            info += "s";
+        }
+        alert("Error: Only " + info + " may be uploaded at once.");
+        return false;
+    }
+    for (const file of fileInputs[0].files) {
+        if (file.size > maxFileSize) {
+            e.preventDefault();
+            alert("Error: " + file.name + " (" + formatFileSize(file.size) + ") is too large. Please upload a file " + formatFileSize(maxFileSize) + " or smaller.");
+            return false;
+        }
+    }
+    return true;
+}
+
 function onDOMContentLoaded(e) {
     var style = getCookie("sriracha_style");
     if (style) {
@@ -624,27 +668,7 @@ function onDOMContentLoaded(e) {
 
     var postForm = document.getElementById("postform");
     if (postForm) {
-        var el = document.getElementById("maxFileSize");
-        if (el) {
-            var maxFileSize = parseInt(el.value);
-            if (maxFileSize > 0) {
-                postForm.addEventListener("submit", function(e) {
-                    console.log(e);
-                    var fileInputs = document.getElementsByName("file");
-                    if (!fileInputs || fileInputs.length == 0) {
-                        return true;
-                    }
-                    for (const file of fileInputs[0].files) {
-                        if (file.size > maxFileSize) {
-                            e.preventDefault();
-                            alert("Error: " + file.name + " exceeds the maximum file size allowed. Please compress it or upload a different file.");
-                            return false;
-                        }
-                    }
-                    return true;
-                })
-            }
-        }
+        postForm.addEventListener("submit", onSubmit)
     }
 
     if (typeof autoRefreshDelay === 'undefined' || viewThreadID == 0) {
