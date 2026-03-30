@@ -1,6 +1,7 @@
 package util
 
 import (
+	"log"
 	"strings"
 	"time"
 )
@@ -64,14 +65,15 @@ func (c *Config) UploadTypes() []*UploadType {
 	uploads := []*UploadType{}
 	for _, upload := range c.Uploads {
 		fields := strings.Fields(upload)
-		if len(fields) < 2 {
-			continue
+		l := len(fields)
+		if l != 2 && l != 3 {
+			log.Fatalf("error: invalid entry in uploads configuration: expected 2 or 3 fields, found %d: %s\nexpected format: ext mime optional_thumb", l, upload)
 		}
 		u := &UploadType{
 			Ext:  strings.ToLower(fields[0]),
 			MIME: strings.ToLower(fields[1]),
 		}
-		if len(fields) > 2 {
+		if l == 3 {
 			u.Thumb = fields[2]
 		}
 		uploads = append(uploads, u)

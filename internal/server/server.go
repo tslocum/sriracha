@@ -953,9 +953,16 @@ func (s *Server) refreshBannerCache(db *database.DB) {
 // refreshMaxRequestSize refreshes the maximum HTTP request size.
 func (s *Server) refreshMaxRequestSize(db *database.DB) {
 	const megabyte = 1048576 // 1 MB.
-	var fileSize int64
 	var messageSize int64
+	var fileSize int64
 	for _, b := range db.AllBoards() {
+		msg := int64(b.MaxMessage)
+		if msg <= 0 {
+			msg = megabyte
+		}
+		if msg > messageSize {
+			messageSize = msg
+		}
 		if b.Files <= 0 {
 			continue
 		}
@@ -965,13 +972,6 @@ func (s *Server) refreshMaxRequestSize(db *database.DB) {
 		}
 		if b.MaxSizeReply*files > fileSize {
 			fileSize = b.MaxSizeReply * files
-		}
-		msg := int64(b.MaxMessage)
-		if msg <= 0 {
-			msg = megabyte
-		}
-		if msg > messageSize {
-			messageSize = msg
 		}
 	}
 	s.httpMaxRequestSize = 10*megabyte + messageSize + fileSize // 10 MB + maximum message size + maximum total size of uploaded files.
