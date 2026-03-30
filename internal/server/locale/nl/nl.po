@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-03-21 19:30+0000\n"
+"PO-Revision-Date: 2026-03-29 16:57+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -814,6 +814,9 @@ msgstr "Nieuw"
 
 msgid "New (confirm)"
 msgstr "Nieuw (bevestigen)"
+
+msgid "New Posts"
+msgstr "Nieuwe berichten"
 
 msgid "New drawing..."
 msgstr "Nieuwe tekening…"

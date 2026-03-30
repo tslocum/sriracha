@@ -804,6 +804,9 @@ msgstr "I ri"
 msgid "New (confirm)"
 msgstr "I ri (konfirmo)"
 
+msgid "New Posts"
+msgstr ""
+
 msgid "New drawing..."
 msgstr "Vizatim i ri..."
 

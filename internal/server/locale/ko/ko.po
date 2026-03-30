@@ -769,6 +769,9 @@ msgstr ""
 msgid "New (confirm)"
 msgstr ""
 
+msgid "New Posts"
+msgstr ""
+
 msgid "New drawing..."
 msgstr ""
 
