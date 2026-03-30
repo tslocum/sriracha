@@ -622,6 +622,31 @@ function onDOMContentLoaded(e) {
 
     setPostAttributes(document);
 
+    var postForm = document.getElementById("postform");
+    if (postForm) {
+        var el = document.getElementById("maxFileSize");
+        if (el) {
+            var maxFileSize = parseInt(el.value);
+            if (maxFileSize > 0) {
+                postForm.addEventListener("submit", function(e) {
+                    console.log(e);
+                    var fileInputs = document.getElementsByName("file");
+                    if (!fileInputs || fileInputs.length == 0) {
+                        return true;
+                    }
+                    for (const file of fileInputs[0].files) {
+                        if (file.size > maxFileSize) {
+                            e.preventDefault();
+                            alert("Error: " + file.name + " exceeds the maximum file size allowed. Please compress it or upload a different file.");
+                            return false;
+                        }
+                    }
+                    return true;
+                })
+            }
+        }
+    }
+
     if (typeof autoRefreshDelay === 'undefined' || viewThreadID == 0) {
         return;
     }
