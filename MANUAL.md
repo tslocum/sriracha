@@ -447,7 +447,7 @@ zoopz.org, www.zoopz.org {
   header @cachedFiles Cache-Control "public, max-age=1209600, immutable"
 
   # Forward /sriracha requests to Sriracha.
-  reverse_proxy /sriracha* http://localhost:8080
+  reverse_proxy /sriracha* h2c://localhost:8080
 
   # Serve root directory.
   root * /home/sriracha/public_html
