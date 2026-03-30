@@ -1,3 +1,6 @@
+1.6.8:
+- Timeout excessively slow HTTP requests
+
 1.6.7:
 - Reject excessively large HTTP requests
 

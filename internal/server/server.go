@@ -1979,8 +1979,10 @@ func (s *Server) listen(httpErrors chan error) {
 	mux.Handle("/", withCacheHeader(http.FileServer(http.Dir(s.config.Root))))
 
 	s.httpServer = &http.Server{
-		Addr:    s.config.Serve,
-		Handler: mux,
+		Addr:              s.config.Serve,
+		Handler:           mux,
+		ReadHeaderTimeout: 1 * time.Minute,
+		IdleTimeout:       1 * time.Minute,
 	}
 	httpErrors <- s.httpServer.ListenAndServe()
 }
