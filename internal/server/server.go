@@ -1981,7 +1981,7 @@ func (s *Server) listen(httpErrors chan error) {
 	mux.Handle("/", withCacheHeader(http.FileServer(http.Dir(s.config.Root))))
 
 	p := &http.Protocols{}
-	p.SetHTTP1(true)
+	p.SetHTTP1(!s.config.RejectHTTP1)
 	p.SetHTTP2(true)
 	p.SetUnencryptedHTTP2(true)
 

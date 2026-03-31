@@ -297,10 +297,18 @@ root: "/home/sriracha/public_html"
 # Hostname:Port to listen for HTTP connections on.
 serve: "localhost:8080"
 
-# Client IP address header. Must be set when running behind a reverse proxy.
+# Client IP address header. Must be set when running behind a frontend.
 # When running behind CloudFlare, use CF-Connecting-IP. When running without
-# a proxy, leave blank.
+# a frontend, leave blank.
 #header: "X-Forwarded-For"
+
+# Whether the server should reject HTTP/1 connections. When enabled, the server
+# will only accept HTTP/2 connections. You should enable this option if possible,
+# because HTTP/1 suffers from flaws which can allow attackers to hijack requests.
+# If you are using a frontend such as Caddy with Sriracha, you should enable this,
+# because the frontend will translate incoming HTTP/1 requests to HTTP/2.
+# If you are using Sriracha without a frontend, leave this option disabled.
+#rejecthttp1: false
 
 # Hash algorithm. Supported algorithms are sha-3 (recommended) and sha-2. Must not change once set.
 algorithm: "sha-3"

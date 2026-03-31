@@ -1,5 +1,6 @@
 1.6.9:
-- Support unencrypted HTTP/2 requests
+- Support accepting unencrypted HTTP/2 requests
+- Support rejecting HTTP/1 requests
 
 1.6.8:
 - Timeout excessively slow HTTP requests

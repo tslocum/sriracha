@@ -14,10 +14,11 @@ type UploadType struct {
 
 // Config represents the server configuration.
 type Config struct {
-	Locale string // Default locale. See locale directory for available languages.
-	Root   string // Directory where board files are written to.
-	Serve  string // Address:Port to listen for HTTP connections on.
-	Header string // Client IP address header.
+	Locale      string // Default locale. See locale directory for available languages.
+	Root        string // Directory where board files are written to.
+	Serve       string // Address:Port to listen for HTTP connections on.
+	Header      string // Client IP address header.
+	RejectHTTP1 bool   // Whether the server should reject HTTP/1 connections.
 
 	Algorithm string // Hash algorithm. Supported algorithms are sha-2 and sha-3.
 	SaltData  string // Long random string of text used when one-way hashing data. Must not change once set.
