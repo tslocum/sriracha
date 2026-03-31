@@ -1890,13 +1890,14 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 
 	// Parse action from path.
 	var action string
-	if r.URL.Path == "/sriracha/" || r.URL.Path == "/sriracha" {
+	switch r.URL.Path {
+	case "/sriracha/", "/sriracha":
 		action = r.FormValue("action")
 		if action == "" {
 			values := r.URL.Query()
 			action = values.Get("action")
 		}
-	} else if strings.HasPrefix(r.URL.Path, "/sriracha/captcha/") {
+	case "/sriracha/captcha":
 		action = "captcha"
 	}
 
