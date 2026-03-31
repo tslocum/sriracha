@@ -192,6 +192,7 @@ type Server struct {
 
 	httpServer  *http.Server
 	httpsServer *http.Server
+	httpsCert   *tls.Certificate
 
 	httpMaxRequestSize int64
 
@@ -2003,23 +2004,27 @@ func (s *Server) listen(httpErrors chan error) {
 			httpErrors <- fmt.Errorf("failed to load HTTPS certificate %s and key %s: %s", s.config.HTTPSCert, s.config.HTTPSKey, err)
 			return
 		}
+		s.httpsCert = &cert
 
 		tlsConfig := &tls.Config{
-			Certificates:       []tls.Certificate{cert},
+			GetCertificate: func(chi *tls.ClientHelloInfo) (*tls.Certificate, error) {
+				return s.httpsCert, nil
+			},
 			InsecureSkipVerify: s.config.InsecureSkipVerify,
 		}
 
-		p2 := &http.Protocols{}
-		p2.SetHTTP1(!s.config.RejectHTTP1)
-		p2.SetHTTP2(true)
-		p2.SetUnencryptedHTTP2(false)
+		p := &http.Protocols{}
+		p.SetHTTP1(!s.config.RejectHTTP1)
+		p.SetHTTP2(true)
+		p.SetUnencryptedHTTP2(false)
+
 		s.httpsServer = &http.Server{
 			Addr:              s.config.HTTPS,
 			Handler:           mux,
 			TLSConfig:         tlsConfig,
 			ReadHeaderTimeout: 1 * time.Minute,
 			IdleTimeout:       1 * time.Minute,
-			Protocols:         p2,
+			Protocols:         p,
 		}
 
 		go func() {
@@ -2027,20 +2032,22 @@ func (s *Server) listen(httpErrors chan error) {
 		}()
 	}
 
-	p1 := &http.Protocols{}
-	p1.SetHTTP1(!s.config.RejectHTTP1)
-	p1.SetHTTP2(true)
-	p1.SetUnencryptedHTTP2(true)
 	http2Server := &http2.Server{
 		IdleTimeout:      1 * time.Minute,
 		WriteByteTimeout: 1 * time.Minute,
 	}
+
+	p := &http.Protocols{}
+	p.SetHTTP1(!s.config.RejectHTTP1)
+	p.SetHTTP2(true)
+	p.SetUnencryptedHTTP2(true)
+
 	s.httpServer = &http.Server{
 		Addr:              s.config.HTTP,
 		Handler:           h2c.NewHandler(mux, http2Server),
 		ReadHeaderTimeout: 1 * time.Minute,
 		IdleTimeout:       1 * time.Minute,
-		Protocols:         p1,
+		Protocols:         p,
 	}
 
 	httpErrors <- s.httpServer.ListenAndServe()
@@ -2147,9 +2154,21 @@ func (s *Server) _handleSignal(signals chan os.Signal) {
 
 		// Rebuild static files when SIGHUP is received.
 		if sig == unix.SIGHUP {
+			// Rebuild staic files.
 			db := s.begin()
 			s.rebuildAll(db, true)
 			db.Commit()
+
+			// Reload HTTPS certificate files.
+			if s.config.HTTPS != "" {
+				cert, err := tls.LoadX509KeyPair(s.config.HTTPSCert, s.config.HTTPSKey)
+				if err != nil {
+					log.Fatalf("failed to load HTTPS certificate %s and key %s: %s", s.config.HTTPSCert, s.config.HTTPSKey, err)
+				}
+				s.httpsCert = &cert
+				fmt.Printf("HTTPS certificate files reloaded.\n")
+			}
+
 			var extra string
 			if s.config.HTTPS != "" {
 				extra = " and https://" + s.config.HTTPS

@@ -88,7 +88,8 @@ When starting Sriracha for the first time, visit the management panel at
 `admin` as the username and the password. Once you have logged in, visit the
 accounts page and change your username and password.
 
-When Sriracha receives a `SIGHUP` signal, all static files are rebuilt.
+When Sriracha receives a `SIGHUP` signal, all static files are rebuilt and, if
+HTTPS is enabled, certificate files are reloaded.
 
 When Sriracha receives a `SIGINT` or `SIGTERM` signal, new web requests stop
 being served, existing web requests are allowed to finish processing, all
