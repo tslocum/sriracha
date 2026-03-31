@@ -324,9 +324,9 @@ func (s *Server) parseConfig(configFile string) error {
 	if config.HTTPS != "" {
 		switch {
 		case config.HTTPSCert == "":
-			return fmt.Errorf("to serve HTTPS connections, tlscert (lowercase!) must be set in %s to a certificate file path", configFile)
+			return fmt.Errorf("to serve HTTPS connections, httpscert (lowercase!) must be set in %s to a certificate file path", configFile)
 		case config.HTTPSKey == "":
-			return fmt.Errorf("to serve HTTPS connections, tlscertkey (lowercase!) must be set in %s to a private key file path", configFile)
+			return fmt.Errorf("to serve HTTPS connections, httpskey (lowercase!) must be set in %s to a private key file path", configFile)
 		}
 	}
 
