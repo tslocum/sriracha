@@ -2025,6 +2025,9 @@ func (s *Server) listen(httpErrors chan error) {
 			ReadHeaderTimeout: 1 * time.Minute,
 			IdleTimeout:       1 * time.Minute,
 			Protocols:         p,
+			HTTP2: &http.HTTP2Config{
+				WriteByteTimeout: 1 * time.Minute,
+			},
 		}
 
 		go func() {
@@ -2048,6 +2051,9 @@ func (s *Server) listen(httpErrors chan error) {
 		ReadHeaderTimeout: 1 * time.Minute,
 		IdleTimeout:       1 * time.Minute,
 		Protocols:         p,
+		HTTP2: &http.HTTP2Config{
+			WriteByteTimeout: 1 * time.Minute,
+		},
 	}
 
 	httpErrors <- s.httpServer.ListenAndServe()
