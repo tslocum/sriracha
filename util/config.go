@@ -16,9 +16,14 @@ type UploadType struct {
 type Config struct {
 	Locale      string // Default locale. See locale directory for available languages.
 	Root        string // Directory where board files are written to.
-	Serve       string // Address:Port to listen for HTTP connections on.
+	HTTP        string // Address:Port to listen for HTTP connections on.
+	HTTPS       string // Address:Port to listen for HTTPS connections on.
 	Header      string // Client IP address header.
 	RejectHTTP1 bool   // Whether the server should reject HTTP/1 connections.
+
+	HTTPSCert          string // Path to HTTPS certificate file.
+	HTTPSKey           string // Path to HTTPS certificate private key file.
+	InsecureSkipVerify bool   // Whether HTTPS certificate verification is skipped.
 
 	Algorithm string // Hash algorithm. Supported algorithms are sha-2 and sha-3.
 	SaltData  string // Long random string of text used when one-way hashing data. Must not change once set.
@@ -57,6 +62,9 @@ type Config struct {
 	ImportMode     bool
 	ImportComplete bool
 	StartTime      time.Time
+
+	// Obsolete fields.
+	Serve string // Replaced by HTTP option.
 }
 
 func (c *Config) UploadTypes() []*UploadType {

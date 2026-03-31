@@ -71,11 +71,13 @@ Sriracha serves requests at `/`, the root path. It is not currently possible to
 run Sriracha under a subdirectory. Use a domain or subdomain to separate
 Sriracha from other resources.
 
-Only HTTP requests are served by Sriracha. To serve HTTPS requests you must run
-Sriracha behind a web server, such as [caddy](https://caddyserver.com), which
-forwards the HTTPS requests to Sriracha as plain HTTP. When running behind a web
-server, the header server option must be set appropriately. Most web servers use
-`X-Forwarded-For` to specify the client IP address.
+Sriracha supports serving HTTPS requests by specifying a certificate and
+private key pair. However, you should run a frontend such as [caddy](https://caddyserver.com)
+with Sriracha instead, which listens for HTTPS requests and forwards them to
+Sriracha as plain HTTP.
+
+When running behind a frontend, the `header` option must be set appropriately.
+Most web servers use `X-Forwarded-For` to specify the client IP address.
 
 Only requests to `/sriracha/*` need to be served by Sriracha. After copying
 `static` to the root directory, you may handle all requests except `/sriracha/*`
@@ -295,7 +297,18 @@ locale: "en"
 root: "/home/sriracha/public_html"
 
 # Hostname:Port to listen for HTTP connections on.
-serve: "localhost:8080"
+http: "localhost:8080"
+
+# Hostname:Port to listen for HTTPS connections on. Instead of setting this option,
+# you should run a frontend such as Caddy with Sriracha, which will manage HTTPS
+# certificates automatically and will translate HTTPS requests to HTTP.
+#https: ""
+
+# Path to HTTPS certificate file. This option only applies when https is not blank.
+#httpscert: ""
+
+# Path to HTTPS certificate private key file. This option only applies when https is not blank.
+#httpskey: ""
 
 # Client IP address header. Must be set when running behind a frontend.
 # When running behind CloudFlare, use CF-Connecting-IP. When running without

@@ -190,7 +190,8 @@ type Server struct {
 
 	httpClient *http.Client
 
-	httpServer *http.Server
+	httpServer  *http.Server
+	httpsServer *http.Server
 
 	httpMaxRequestSize int64
 
@@ -288,11 +289,16 @@ func (s *Server) parseConfig(configFile string) error {
 		return err
 	}
 
+	// Copy data from obsolete field.
+	if config.HTTP == "" && config.Serve != "" {
+		config.HTTP = config.Serve
+	}
+
 	switch {
 	case config.Root == "":
 		return fmt.Errorf("root (lowercase!) must be set in %s to the root directory (where board files are written)", configFile)
-	case config.Serve == "":
-		return fmt.Errorf("serve (lowercase!) must be set in %s to the HTTP server listen address (hostname:port)", configFile)
+	case config.HTTP == "":
+		return fmt.Errorf("http (lowercase!) must be set in %s to the HTTP server listen address (hostname:port)", configFile)
 	case config.SaltData == "":
 		return fmt.Errorf("saltdata (lowercase!) must be set in %s to the one-way secure data hashing salt (a long string of random data which, once set, never changes)", configFile)
 	case config.SaltPass == "":
@@ -311,6 +317,15 @@ func (s *Server) parseConfig(configFile string) error {
 			return fmt.Errorf("password (lowercase!) must be set in %s to the database password", configFile)
 		case config.DBName == "":
 			return fmt.Errorf("dbname (lowercase!) must be set in %s to the database name", configFile)
+		}
+	}
+
+	if config.HTTPS != "" {
+		switch {
+		case config.HTTPSCert == "":
+			return fmt.Errorf("to serve HTTPS connections, tlscert (lowercase!) must be set in %s to a certificate file path", configFile)
+		case config.HTTPSKey == "":
+			return fmt.Errorf("to serve HTTPS connections, tlscertkey (lowercase!) must be set in %s to a private key file path", configFile)
 		}
 	}
 
@@ -1973,6 +1988,7 @@ func (s *Server) listen(httpErrors chan error) {
 	info, err := os.Stat("static/css/futaba.css")
 	if err != nil || info.IsDir() {
 		httpErrors <- fmt.Errorf("failed to locate static directory, unable to serve CSS and JS files: run sriracha from the directory that contains static as a subdirectory")
+		return
 	}
 
 	mux := http.NewServeMux()
@@ -1980,21 +1996,50 @@ func (s *Server) listen(httpErrors chan error) {
 	mux.HandleFunc("/sriracha/", s.serve)
 	mux.Handle("/", withCacheHeader(http.FileServer(http.Dir(s.config.Root))))
 
-	p := &http.Protocols{}
-	p.SetHTTP1(!s.config.RejectHTTP1)
-	p.SetHTTP2(true)
-	p.SetUnencryptedHTTP2(true)
+	if s.config.HTTPS != "" {
+		cert, err := tls.LoadX509KeyPair(s.config.HTTPSCert, s.config.HTTPSKey)
+		if err != nil {
+			httpErrors <- fmt.Errorf("failed to load HTTPS certificate %s and key %s: %s", s.config.HTTPSCert, s.config.HTTPSKey, err)
+			return
+		}
 
+		tlsConfig := &tls.Config{
+			Certificates:       []tls.Certificate{cert},
+			InsecureSkipVerify: s.config.InsecureSkipVerify,
+		}
+
+		p2 := &http.Protocols{}
+		p2.SetHTTP1(!s.config.RejectHTTP1)
+		p2.SetHTTP2(true)
+		p2.SetUnencryptedHTTP2(false)
+		s.httpsServer = &http.Server{
+			Addr:              s.config.HTTPS,
+			Handler:           mux,
+			TLSConfig:         tlsConfig,
+			ReadHeaderTimeout: 1 * time.Minute,
+			IdleTimeout:       1 * time.Minute,
+			Protocols:         p2,
+		}
+
+		go func() {
+			httpErrors <- s.httpsServer.ListenAndServeTLS("", "")
+		}()
+	}
+
+	p1 := &http.Protocols{}
+	p1.SetHTTP1(!s.config.RejectHTTP1)
+	p1.SetHTTP2(true)
+	p1.SetUnencryptedHTTP2(true)
 	http2Server := &http2.Server{
 		IdleTimeout:      1 * time.Minute,
 		WriteByteTimeout: 1 * time.Minute,
 	}
 	s.httpServer = &http.Server{
-		Addr:              s.config.Serve,
+		Addr:              s.config.HTTP,
 		Handler:           h2c.NewHandler(mux, http2Server),
 		ReadHeaderTimeout: 1 * time.Minute,
 		IdleTimeout:       1 * time.Minute,
-		Protocols:         p,
+		Protocols:         p1,
 	}
 
 	httpErrors <- s.httpServer.ListenAndServe()
@@ -2104,7 +2149,11 @@ func (s *Server) _handleSignal(signals chan os.Signal) {
 			db := s.begin()
 			s.rebuildAll(db, true)
 			db.Commit()
-			fmt.Printf("Serving http://%s\n", s.config.Serve)
+			var extra string
+			if s.config.HTTPS != "" {
+				extra = " and https://" + s.config.HTTPS
+			}
+			fmt.Printf("Serving http://%s%s\n", s.config.HTTP, extra)
 			continue
 		}
 
@@ -2365,7 +2414,11 @@ func (s *Server) Run() error {
 	}
 
 	// Initialization complete. Unlock server.
-	fmt.Printf("Serving http://%s\n", s.config.Serve)
+	var extra string
+	if s.config.HTTPS != "" {
+		extra = " and https://" + s.config.HTTPS
+	}
+	fmt.Printf("Serving http://%s%s\n", s.config.HTTP, extra)
 	s.lock.Unlock()
 
 	// Wait until the HTTP server returns an error.
@@ -2467,7 +2520,9 @@ func (s *Server) Stop() {
 	fmt.Println("Shutting down...")
 
 	// Stop serving new web requests.
-	if s.httpServer != nil {
+	if s.httpsServer != nil {
+		s.httpsServer.Shutdown(context.Background())
+	} else if s.httpServer != nil {
 		s.httpServer.Shutdown(context.Background())
 	}
 
@@ -2483,7 +2538,7 @@ func (s *Server) Stop() {
 	}
 
 	// If the HTTP server hasn't started yet, exit immediately.
-	if s.httpServer == nil {
+	if s.httpServer == nil && s.httpsServer == nil {
 		os.Exit(0)
 	}
 }

@@ -1,4 +1,5 @@
 1.6.9:
+- Support listening for HTTPS connections
 - Support accepting unencrypted HTTP/2 requests
 - Support rejecting HTTP/1 requests
 
