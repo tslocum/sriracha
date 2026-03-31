@@ -71,11 +71,6 @@ Sriracha serves requests at `/`, the root path. It is not currently possible to
 run Sriracha under a subdirectory. Use a domain or subdomain to separate
 Sriracha from other resources.
 
-Sriracha supports serving HTTPS requests by specifying a certificate and
-private key pair. However, you should run a frontend such as [caddy](https://caddyserver.com)
-with Sriracha instead, which listens for HTTPS requests and forwards them to
-Sriracha as plain HTTP.
-
 When running behind a frontend, the `header` option must be set appropriately.
 Most web servers use `X-Forwarded-For` to specify the client IP address.
 
@@ -95,6 +90,27 @@ When Sriracha receives a `SIGINT` or `SIGTERM` signal, new web requests stop
 being served, existing web requests are allowed to finish processing, all
 pending changes to static files are written to disk and all pending
 notifications are sent.
+
+### HTTPS
+
+Sriracha supports serving [HTTPS](https://en.wikipedia.org/wiki/HTTPS) requests
+by specifying a certificate and private key pair.
+
+However, you should run a frontend such as [caddy](https://caddyserver.com) with
+Sriracha instead, which listens for HTTPS requests and forwards them to Sriracha
+as plain [HTTP](https://en.wikipedia.org/wiki/HTTP).
+
+### HTTP/2
+
+[HTTP/2](https://en.wikipedia.org/wiki/HTTP/2) requests are supported. You should use
+HTTP/2 instead of [HTTP/1](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Evolution_of_HTTP)
+whenever possible, because HTTP/1 has [flaws](https://portswigger.net/research/http-desync-attacks-request-smuggling-reborn)
+which allow [request hijacking](https://www.youtube.com/watch?v=FJbuAyxTTWc).
+
+[HTTP/2 cleartext](https://en.wikipedia.org/wiki/HTTP/2#Encryption) (h2c) is also supported.
+You should use h2c when forwarding requests from a frontend to Sriracha,
+because encryption is unnecessary for internal connections. If you are running
+a frontend with Sriracha, you should also enable `rejecthttp1`.
 
 ### Root directory
 
@@ -311,18 +327,18 @@ http: "localhost:8080"
 # Path to HTTPS certificate private key file. This option only applies when https is not blank.
 #httpskey: ""
 
-# Client IP address header. Must be set when running behind a frontend.
-# When running behind CloudFlare, use CF-Connecting-IP. When running without
-# a frontend, leave blank.
-#header: "X-Forwarded-For"
-
 # Whether the server should reject HTTP/1 connections. When enabled, the server
 # will only accept HTTP/2 connections. You should enable this option if possible,
 # because HTTP/1 suffers from flaws which can allow attackers to hijack requests.
 # If you are using a frontend such as Caddy with Sriracha, you should enable this,
-# because the frontend will translate incoming HTTP/1 requests to HTTP/2.
+# because the frontend will translate HTTP/1 requests to HTTP/2 when forwarding.
 # If you are using Sriracha without a frontend, leave this option disabled.
 #rejecthttp1: false
+
+# Client IP address header. Must be set when running behind a frontend.
+# When running behind CloudFlare, use CF-Connecting-IP. When running without
+# a frontend, leave blank.
+#header: "X-Forwarded-For"
 
 # Hash algorithm. Supported algorithms are sha-3 (recommended) and sha-2. Must not change once set.
 algorithm: "sha-3"
