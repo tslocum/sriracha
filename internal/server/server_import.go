@@ -162,11 +162,15 @@ func (s *Server) _importPost(p *Post, tinyIB bool) error {
 				mimeType := mime.String()
 				if mimeType == "image/jpeg" || mimeType == "image/pjpeg" || mimeType == "image/png" || mimeType == "image/gif" {
 					imgWidth, imgHeight := s.imageDimensions(thumbFile)
-					if imgWidth == 0 || imgHeight == 0 {
-						return fmt.Errorf("failed to calculate width and height of attachment %s of post No.%d: %s", p.File, p.ID, err)
+					if imgWidth != 0 && imgHeight != 0 {
+						p.ThumbWidth, p.ThumbHeight = imgWidth, imgHeight
 					}
-					p.ThumbWidth, p.ThumbHeight = imgWidth, imgHeight
 				}
+			}
+			if p.ThumbWidth <= 0 || p.ThumbHeight <= 0 {
+				p.Thumb = ""
+				p.ThumbWidth = 0
+				p.ThumbHeight = 0
 			}
 		}
 	}
