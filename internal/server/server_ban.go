@@ -151,4 +151,7 @@ func (s *Server) serveBan(data *templateData, db *database.DB, w http.ResponseWr
 	}
 
 	data.Manage.Bans = db.AllBans(false)
+	data.Page = PathInt(r, "/sriracha/ban/p")
+	data.Pages = pageCount(len(data.Manage.Bans), entriesPerPage)
+	data.Manage.Bans = pageSlice(data.Manage.Bans, data.Page, entriesPerPage)
 }

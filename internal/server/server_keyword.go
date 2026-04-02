@@ -155,4 +155,7 @@ func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.Respon
 	}
 
 	data.Manage.Keywords = db.AllKeywords()
+	data.Page = PathInt(r, "/sriracha/keyword/p")
+	data.Pages = pageCount(len(data.Manage.Keywords), entriesPerPage)
+	data.Manage.Keywords = pageSlice(data.Manage.Keywords, data.Page, entriesPerPage)
 }

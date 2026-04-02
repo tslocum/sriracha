@@ -1,3 +1,6 @@
+1.7.0:
+- Paginate management panel tables
+
 1.6.9:
 - Support listening for HTTPS connections
 - Support accepting unencrypted HTTP/2 requests

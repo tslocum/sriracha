@@ -161,6 +161,8 @@ type rebuildInfo struct {
 	wg   *sync.WaitGroup
 }
 
+const entriesPerPage = 25
+
 // Server is the Sriracha imageboard and forum server.
 type Server struct {
 	Boards []*Board
@@ -2636,6 +2638,15 @@ func pageCount(items int, pageSize int) int {
 		pages++
 	}
 	return pages
+}
+
+func pageSlice[S ~[]T, T any](slice S, page int, perPage int) S {
+	start := page * perPage
+	end := len(slice)
+	if perPage != 0 && end > start+perPage {
+		end = start + perPage
+	}
+	return slice[start:end]
 }
 
 // doctypePrefx is an HTML prefix which may be used in custom pages to skip

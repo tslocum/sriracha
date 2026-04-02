@@ -131,4 +131,7 @@ func (s *Server) serveNews(data *templateData, db *database.DB, w http.ResponseW
 	}
 
 	data.Manage.AllNews = db.AllNews(false)
+	data.Page = PathInt(r, "/sriracha/news/p")
+	data.Pages = pageCount(len(data.Manage.AllNews), entriesPerPage)
+	data.Manage.AllNews = pageSlice(data.Manage.AllNews, data.Page, entriesPerPage)
 }

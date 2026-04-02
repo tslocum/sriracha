@@ -180,4 +180,7 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 	}
 
 	data.Manage.Pages = db.AllPages()
+	data.Page = PathInt(r, "/sriracha/page/p")
+	data.Pages = pageCount(len(data.Manage.Pages), entriesPerPage)
+	data.Manage.Pages = pageSlice(data.Manage.Pages, data.Page, entriesPerPage)
 }
