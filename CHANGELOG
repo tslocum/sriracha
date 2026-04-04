@@ -1,5 +1,6 @@
 1.7.0:
 - Paginate management panel tables
+- Fix submitting ban form when enter key is pressed
 
 1.6.9:
 - Support listening for HTTPS connections
