@@ -37,10 +37,6 @@ and set a password.
 Download the [latest release](https://codeberg.org/tslocum/sriracha/releases) of
 Sriracha for your platform. Only Linux, FreeBSD and macOS are supported.
 
-Linux release archives for `amd64` include all official plugins. To use plugins
-on FreeBSD or macOS, or on other CPU architectures, compile Sriracha and its
-plugins using the release source code.
-
 #### Docker
 
 To run Sriracha inside a container using [Docker](https://www.docker.com), use an [official image](https://hub.docker.com/r/tslocum/sriracha/tags)

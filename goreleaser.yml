@@ -2,97 +2,6 @@ version: 2
 project_name: sriracha
 builds:
   -
-    id: bbcode
-    buildmode: plugin
-    main: ./plugin/bbcode/
-    binary: ./plugin/bbcode.so
-    flags:
-      - -trimpath
-    ldflags:
-      - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
-    goos:
-      - linux
-    goarch:
-      - amd64
-  -
-    id: fortune
-    buildmode: plugin
-    main: ./plugin/fortune/
-    binary: ./plugin/fortune.so
-    flags:
-      - -trimpath
-    ldflags:
-      - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
-    goos:
-      - linux
-    goarch:
-      - amd64
-  -
-    id: irc
-    buildmode: plugin
-    main: ./plugin/irc/
-    binary: ./plugin/irc.so
-    flags:
-      - -trimpath
-    ldflags:
-      - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
-    goos:
-      - linux
-    goarch:
-      - amd64
-  -
-    id: password
-    buildmode: plugin
-    main: ./plugin/password/
-    binary: ./plugin/password.so
-    flags:
-      - -trimpath
-    ldflags:
-      - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
-    goos:
-      - linux
-    goarch:
-      - amd64
-  -
-    id: robot9000
-    buildmode: plugin
-    main: ./plugin/robot9000/
-    binary: ./plugin/robot9000.so
-    flags:
-      - -trimpath
-    ldflags:
-      - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
-    goos:
-      - linux
-    goarch:
-      - amd64
-  -
-    id: statistics
-    buildmode: plugin
-    main: ./plugin/statistics/
-    binary: ./plugin/statistics.so
-    flags:
-      - -trimpath
-    ldflags:
-      - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
-    goos:
-      - linux
-    goarch:
-      - amd64
-  -
-    id: wordfilter
-    buildmode: plugin
-    main: ./plugin/wordfilter/
-    binary: ./plugin/wordfilter.so
-    flags:
-      - -trimpath
-    ldflags:
-      - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
-    goos:
-      - linux
-    goarch:
-      - amd64
-  -
     id: sriracha
     main: ./cmd/sriracha/
     flags:
@@ -104,27 +13,30 @@ builds:
       - freebsd
       - linux
     goarch:
+      - 386
       - amd64
+      - arm
       - arm64
+      - loong64
+      - ppc64le
       - riscv64
+      - s390x
+    ignore:
+      - goos: freebsd
+        goarch: 386
+      - goos: freebsd
+        goarch: arm
 archives:
   -
     ids:
       - sriracha
-      - bbcode
-      - fortune
-      - irc
-      - password
-      - robot9000
-      - statistics
-      - wordfilter
+    wrap_in_directory: sriracha
     name_template: >-
       {{- .ProjectName }}_
       {{- .Version }}_
       {{- tolower .Os }}_
-      {{- tolower .Arch }}
-    wrap_in_directory: sriracha
-    allow_different_binary_count: true
+      {{- if eq .Arch "386" }}i386{{ else }}
+      {{- tolower .Arch }}{{ end -}}
     files:
       - ./*.md
       - CHANGELOG

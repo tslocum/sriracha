@@ -17,7 +17,7 @@ services:
     volumes:
       - /home/sriracha/etc:/etc/sriracha # Configuration drectory containing config.yml
       - /home/sriracha/public:/public # Root directory containing board files.
-    command: --config /etc/sriracha/config.yml /usr/share/sriracha/plugin # Load all plugins.
+    command: --config /etc/sriracha/config.yml
 
   sriracha_db:
     image: postgres:18.1-alpine # https://hub.docker.com/_/postgres/tags

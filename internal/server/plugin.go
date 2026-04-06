@@ -6,16 +6,25 @@ import (
 	"html/template"
 	"io/fs"
 	"log"
+	"maps"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
 	"plugin"
 	"reflect"
+	"slices"
 	"strings"
 
 	"codeberg.org/tslocum/sriracha"
 	. "codeberg.org/tslocum/sriracha/model"
+	"codeberg.org/tslocum/sriracha/plugin/bbcode/bbcode"
+	"codeberg.org/tslocum/sriracha/plugin/fortune/fortune"
+	"codeberg.org/tslocum/sriracha/plugin/irc/irc"
+	"codeberg.org/tslocum/sriracha/plugin/password/password"
+	"codeberg.org/tslocum/sriracha/plugin/robot9000/robot9000"
+	"codeberg.org/tslocum/sriracha/plugin/statistics/statistics"
+	"codeberg.org/tslocum/sriracha/plugin/wordfilter/wordfilter"
 )
 
 type rulesHandler func(db sriracha.DB, board *Board) (template.HTML, error)
@@ -250,13 +259,60 @@ func (s *Server) loadPlugin(pluginPath string) error {
 	return nil
 }
 
-func (s *Server) loadPlugins() error {
+func (s *Server) loadPlugins(disablePlugins string) error {
+	// Load built-in (official) plugins.
+	disable := strings.Split(disablePlugins, ",")
+	var disableAll bool
+	for i := range disable {
+		disable[i] = strings.ToLower(strings.TrimSpace(disable[i]))
+		if disable[i] == "all" {
+			disableAll = true
+		}
+	}
+	if !disableAll {
+		officialPlugins := map[string]func() any{
+			"bbcode": func() any {
+				return bbcode.NewBBCode()
+			},
+			"fortune": func() any {
+				return fortune.NewFortune()
+			},
+			"irc": func() any {
+				return irc.NewIRC()
+			},
+			"password": func() any {
+				return password.NewPassword()
+			},
+			"robot9000": func() any {
+				return robot9000.NewRobot9000()
+			},
+			"statistics": func() any {
+				return statistics.NewStatistics()
+			},
+			"wordfilter": func() any {
+				return wordfilter.NewWordfilter()
+			},
+		}
+		pluginNames := slices.Collect(maps.Keys(officialPlugins))
+		slices.Sort(pluginNames)
+		for _, pluginName := range pluginNames {
+			if slices.Contains(disable, pluginName) {
+				continue
+			}
+			pluginFunc := officialPlugins[pluginName]
+			s.registerPlugin(pluginFunc())
+		}
+	}
+
+	// Load custom plugins.
 	for _, pluginPath := range flag.Args() {
 		err := s.loadPlugin(pluginPath)
 		if err != nil {
 			return err
 		}
 	}
+
+	// Print plugin information.
 	if len(allPluginInfo) != 0 {
 		var plural string
 		if len(allPluginInfo) != 1 {

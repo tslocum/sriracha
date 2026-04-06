@@ -15,15 +15,17 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 # Copy sriracha source.
 COPY . /usr/src/sriracha
 
-# Build sriracha and plugins.
+# Build sriracha and custom plugins.
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
     cd /usr/src/sriracha/cmd/sriracha && \
     echo "Building sriracha..." && \
     go build -trimpath -ldflags "-s -w -X 'codeberg.org/tslocum/sriracha.SrirachaVersion=${version:-DEV}'" && \
-    for dir in /usr/src/sriracha/plugin/*; do \
-        (echo "Building plugin $(basename $dir)..." && cd "$dir" && go build -trimpath -ldflags "-s -w" -buildmode=plugin); \
-    done && \
+    if [ -d "/usr/src/sriracha/customplugin/" ]; then \
+        for dir in /usr/src/sriracha/customplugin/*; do \
+            (echo "Building custom plugin $(basename $dir)..." && cd "$dir" && go build -trimpath -ldflags "-s -w" -buildmode=plugin); \
+        done; \
+    fi && \
     cd /usr/src/sriracha && \
     find . -type f -name '*.go' -delete
 

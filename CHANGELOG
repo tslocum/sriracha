@@ -1,3 +1,7 @@
+1.7.1:
+- Include official plugins on all supported platforms
+- Add arm, loong64, ppc64le and s390x to supported CPU architectures
+
 1.7.0:
 - Paginate management panel tables
 - Fix submitting ban form when enter key is pressed

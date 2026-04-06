@@ -2213,14 +2213,16 @@ func (s *Server) Run() error {
 		printInfo()
 	}
 	var (
-		configFile   string
-		exportPath   string
-		importPath   string
-		devMode      bool
-		rebuild      bool
-		printVersion bool
+		configFile     string
+		disablePlugins string
+		exportPath     string
+		importPath     string
+		devMode        bool
+		rebuild        bool
+		printVersion   bool
 	)
 	flag.StringVar(&configFile, "config", "", "path to configuration file (default: ~/.config/sriracha/config.yml)")
+	flag.StringVar(&disablePlugins, "disable", "", "comma-separated list of built-in (official) plugins to disable")
 	flag.StringVar(&exportPath, "export", "", "export posts to zip file at specified path")
 	flag.StringVar(&importPath, "import", "", "import posts from zip file or sqlite database file at specified path")
 	flag.BoolVar(&devMode, "dev", false, "run in development mode (watch official and custom template files for changes)")
@@ -2312,7 +2314,7 @@ func (s *Server) Run() error {
 	}
 
 	// Load plugins.
-	err = s.loadPlugins()
+	err = s.loadPlugins(disablePlugins)
 	if err != nil {
 		return fmt.Errorf("failed to load plugins: %s", err)
 	}
