@@ -1924,7 +1924,6 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s.lock.Lock()
-	defer s.lock.Unlock()
 
 	db := s.begin()
 	defer db.Commit()
@@ -1941,6 +1940,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 			data := s.buildData(db, w, r)
 			data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (Ban #%d)", ban.ID))
 			data.execute(w)
+			s.lock.Unlock()
 			return
 		}
 	}
@@ -1951,6 +1951,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		data := s.buildData(db, w, r)
 		data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (Ban #%d)", ban.ID))
 		data.execute(w)
+		s.lock.Unlock()
 		return
 	} else if strings.HasPrefix(r.URL.Path, "/sriracha/post/") {
 		postID := PathInt(r, "/sriracha/post/")
@@ -1961,6 +1962,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		} else {
 			data.Redirect(w, r, fmt.Sprintf("%sres/%d.html#%d", post.Board.Path(), post.Thread(), post.ID))
 		}
+		s.lock.Unlock()
 		return
 	}
 
@@ -1968,13 +1970,14 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		action = "subscribe"
 	}
 
+	var unlocked bool
 	if s.config.ImportMode && action != "" {
 		data := s.buildData(db, w, r)
 		data.BoardError(w, "All boards are locked because Sriracha is running in import mode. Please try again later.")
 	} else {
 		switch action {
 		case "post":
-			s.servePost(db, w, r)
+			unlocked = s.servePost(db, w, r)
 		case "report":
 			s.serveReport(db, w, r)
 		case "delete":
@@ -1986,6 +1989,9 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		default:
 			s.serveManage(db, w, r)
 		}
+	}
+	if !unlocked {
+		s.lock.Unlock()
 	}
 }
 

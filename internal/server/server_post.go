@@ -489,7 +489,7 @@ func (s *Server) checkDuplicateFileHash(db *database.DB, post *Post) *Post {
 	return nil
 }
 
-func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Request) (unlocked bool) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "invalid request", http.StatusInternalServerError)
 		return
@@ -1210,6 +1210,8 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 	wg.Add(1)
 
 	s.lock.Unlock()
+	unlocked = true
+
 	s.rebuildQueue <- &rebuildInfo{post: post, wg: wg}
 	s.rebuildLock.Unlock()
 
@@ -1217,6 +1219,5 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 
 	redir := fmt.Sprintf("%sres/%d.html#%d", b.Path(), post.Thread(), post.ID)
 	data.Redirect(w, r, redir)
-
-	s.lock.Lock()
+	return
 }
