@@ -35,6 +35,23 @@ func (db *DB) GetCAPTCHA(ip string) *CAPTCHA {
 	return c
 }
 
+func (db *DB) AllCAPTCHAs() []*CAPTCHA {
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM captcha")
+	if err != nil {
+		log.Fatalf("failed to select all captcha challenges: %s", err)
+	}
+	var captchas []*CAPTCHA
+	for rows.Next() {
+		c := &CAPTCHA{}
+		err := scanCAPTCHA(c, rows)
+		if err != nil {
+			log.Fatalf("failed to scan captcha challenge: %s", err)
+		}
+		captchas = append(captchas, c)
+	}
+	return captchas
+}
+
 func (db *DB) UpdateCAPTCHA(c *CAPTCHA) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE captcha SET refresh = $1, image = $2, text = $3 WHERE ip = $4", c.Refresh, c.Image, c.Text, c.IP)
 	if err != nil {

@@ -2421,6 +2421,13 @@ func (s *Server) Run() error {
 	db := s.begin()
 	s.refreshMaxRequestSize(db)
 
+	// Cache CAPTCHA challenges.
+	s.captchaCacheLock.Lock()
+	for _, c := range db.AllCAPTCHAs() {
+		s.captchaCache[c.IP] = c.Image
+	}
+	s.captchaCacheLock.Unlock()
+
 	// Start listening for HTTP connections.
 	httpErrors := make(chan error)
 	go s.listen(httpErrors)
