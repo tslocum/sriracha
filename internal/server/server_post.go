@@ -597,9 +597,14 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 		}
 		if s.opt.CAPTCHA {
 			expired := db.ExpiredCAPTCHAs()
-			for _, c := range expired {
-				db.DeleteCAPTCHA(c.IP)
-				os.Remove(filepath.Join(s.config.Root, "captcha", c.Image+".png"))
+			if len(expired) != 0 {
+				s.captchaCacheLock.Lock()
+				for _, c := range expired {
+					delete(s.captchaCache, c.IP)
+					db.DeleteCAPTCHA(c.IP)
+					os.Remove(filepath.Join(s.config.Root, "captcha", c.Image+".png"))
+				}
+				s.captchaCacheLock.Unlock()
 			}
 
 			challenge := db.GetCAPTCHA(post.IP)
@@ -649,6 +654,9 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 		return
 	}
 	if solvedCAPTCHA != nil {
+		s.captchaCacheLock.Lock()
+		delete(s.captchaCache, post.IP)
+		s.captchaCacheLock.Unlock()
 		db.DeleteCAPTCHA(post.IP)
 		os.Remove(filepath.Join(s.config.Root, "captcha", solvedCAPTCHA.Image+".png"))
 	}

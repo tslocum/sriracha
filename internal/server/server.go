@@ -169,6 +169,9 @@ type Server struct {
 
 	rangeBans map[*Ban]*regexp.Regexp
 
+	captchaCache     map[string]string
+	captchaCacheLock sync.Mutex
+
 	keywordCache map[int][]*cachedKeyword
 
 	config *Config
@@ -209,6 +212,7 @@ func NewServer() *Server {
 		Timeout: 15 * time.Second,
 	}
 	return &Server{
+		captchaCache: make(map[string]string),
 		keywordCache: make(map[int][]*cachedKeyword),
 		opt: ServerOptions{
 			Banners: make(map[int][]*Banner),
@@ -1168,6 +1172,9 @@ func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Reque
 						solution := FormString(r, "captcha")
 						if strings.ToLower(solution) == challenge.Text {
 							solved = true
+							s.captchaCacheLock.Lock()
+							delete(s.captchaCache, ipHash)
+							s.captchaCacheLock.Unlock()
 							db.DeleteCAPTCHA(ipHash)
 							os.Remove(filepath.Join(s.config.Root, "captcha", challenge.Image+".png"))
 						}
@@ -1891,6 +1898,9 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	ip := s.requestIP(r)
+	ipHash := s.hashIP(r)
+
 	// Parse action from path.
 	var action string
 	switch r.URL.Path {
@@ -1902,6 +1912,15 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		}
 	case "/sriracha/captcha":
 		action = "captcha"
+		if !r.URL.Query().Has("new") {
+			s.captchaCacheLock.Lock()
+			captchaImage := s.captchaCache[ipHash]
+			s.captchaCacheLock.Unlock()
+			if captchaImage != "" {
+				http.Redirect(w, r, fmt.Sprintf("/captcha/%s.png", captchaImage), http.StatusFound)
+				return
+			}
+		}
 	}
 
 	s.lock.Lock()
@@ -1917,7 +1936,6 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check IP range ban.
-	ip := s.requestIP(r)
 	for ban, pattern := range s.rangeBans {
 		if pattern.MatchString(ip) {
 			data := s.buildData(db, w, r)
@@ -1928,7 +1946,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check static IP ban.
-	ban := db.BanByIP(s.hashIP(r))
+	ban := db.BanByIP(ipHash)
 	if ban != nil {
 		data := s.buildData(db, w, r)
 		data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (Ban #%d)", ban.ID))

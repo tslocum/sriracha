@@ -1,3 +1,6 @@
+1.7.2:
+- Cache CAPTCHA challenges
+
 1.7.1:
 - Include official plugins on all supported platforms
 - Add arm, loong64, ppc64le and s390x to supported CPU architectures

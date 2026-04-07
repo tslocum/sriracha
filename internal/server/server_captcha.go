@@ -81,5 +81,9 @@ func (s *Server) serveCAPTCHA(db *database.DB, w http.ResponseWriter, r *http.Re
 		db.UpdateCAPTCHA(c)
 	}
 
+	s.captchaCacheLock.Lock()
+	s.captchaCache[c.IP] = c.Image
+	s.captchaCacheLock.Unlock()
+
 	http.Redirect(w, r, fmt.Sprintf("/captcha/%s.png", c.Image), http.StatusFound)
 }
