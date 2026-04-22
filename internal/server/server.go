@@ -33,6 +33,8 @@ import (
 	"sync"
 	"time"
 
+	_ "net/http/pprof"
+
 	"codeberg.org/tslocum/sriracha"
 	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
@@ -2243,6 +2245,7 @@ func (s *Server) Run() error {
 		importPath     string
 		devMode        bool
 		rebuild        bool
+		debugAddress   string
 		printVersion   bool
 	)
 	flag.StringVar(&configFile, "config", "", "path to configuration file (default: ~/.config/sriracha/config.yml)")
@@ -2251,6 +2254,7 @@ func (s *Server) Run() error {
 	flag.StringVar(&importPath, "import", "", "import posts from zip file or sqlite database file at specified path")
 	flag.BoolVar(&devMode, "dev", false, "run in development mode (watch official and custom template files for changes)")
 	flag.BoolVar(&rebuild, "rebuild", false, "rebuild static files on startup")
+	flag.StringVar(&debugAddress, "debug", "", "address to serve pprof debug information on (DANGEROUS! Debug information includes hashes, passwords and other sensitive info)")
 	flag.BoolVar(&printVersion, "version", false, "print version information and exit")
 	flag.Parse()
 
@@ -2472,6 +2476,13 @@ func (s *Server) Run() error {
 
 	if s.config.ImportMode {
 		fmt.Println("Import mode enabled. Visitors are forbidden from posting.")
+	}
+
+	if debugAddress != "" {
+		fmt.Printf("Serving debug information at http://%s/debug/pprof/ (WARNING! Debug information includes hashes, passwords and other sensitive info)\n", debugAddress)
+		go func() {
+			log.Fatal(http.ListenAndServe(debugAddress, nil))
+		}()
 	}
 
 	// Initialization complete. Unlock server.
