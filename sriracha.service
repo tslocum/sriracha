@@ -1,0 +1,30 @@
+# Sriracha systemd service configuration
+#
+# Install:
+#   1. Create a new user named sriracha
+#   2. Extract Sriracha to /home/sriracha/sriracha
+#   3. Copy this service file to /etc/systemd/system
+#
+# Before using systemd, confirm Sriracha starts and runs normally:
+#   1. sudo su - sriracha
+#   2. cd /home/sriracha/sriracha
+#   3. ./sriracha
+#
+# Commands:
+#   Start on boot-up: sudo systemctl enable sriracha
+#   Start: sudo systemctl start sriracha
+#   Stop: sudo systemctl stop sriracha
+[Unit]
+Description=Sriracha Imageboard and Forum Server
+After=network.target
+
+[Service]
+PIDFile=/run/sriracha.pid
+WorkingDirectory=/home/sriracha/sriracha
+ExecStart=/home/sriracha/sriracha/sriracha
+User=sriracha
+Group=sriracha
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
