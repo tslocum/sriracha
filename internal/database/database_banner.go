@@ -2,7 +2,7 @@ package database
 
 import (
 	"context"
-	"log"
+	"fmt"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	"github.com/jackc/pgx/v5"
@@ -13,16 +13,19 @@ func (db *DB) fetchBannerBoards(b *Banner) {
 
 	rows, err := db.conn.Query(context.Background(), "SELECT board FROM banner_board WHERE banner = $1", b.ID)
 	if err != nil {
-		log.Fatalf("failed to select banner boards: %s", err)
+		dbErr(fmt.Errorf("failed to select banner boards: %w", err))
 	}
 	var ids []int
 	for rows.Next() {
 		var id int
 		err := rows.Scan(&id)
 		if err != nil {
-			log.Fatalf("failed to select banner boards: %s", err)
+			dbErr(fmt.Errorf("failed to select banner boards: %w", err))
 		}
 		ids = append(ids, id)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select banner boards: %w", rows.Err()))
 	}
 
 	for _, id := range ids {
@@ -34,12 +37,12 @@ func (db *DB) fetchBannerBoards(b *Banner) {
 func (db *DB) updateBannerBoards(b *Banner) {
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM banner_board WHERE banner = $1", b.ID)
 	if err != nil {
-		log.Fatalf("failed to update banner boards: %s", err)
+		dbErr(fmt.Errorf("failed to update banner boards: %w", err))
 	}
 	for _, board := range b.Boards {
 		_, err = db.conn.Exec(context.Background(), "INSERT INTO banner_board VALUES ($1, $2)", b.ID, board.ID)
 		if err != nil {
-			log.Fatalf("failed to update banner boards: %s", err)
+			dbErr(fmt.Errorf("failed to update banner boards: %w", err))
 		}
 	}
 }
@@ -66,13 +69,13 @@ func (db *DB) AddBanner(b *Banner) {
 		pages,
 	)
 	if err != nil {
-		log.Fatalf("failed to insert banner: %s", err)
+		dbErr(fmt.Errorf("failed to insert banner: %w", err))
 	}
 	err = db.conn.QueryRow(context.Background(), "SELECT id FROM banner WHERE name = $1", b.Name).Scan(&b.ID)
 	if err != nil {
-		log.Fatalf("failed to select id of added banner: %s", err)
+		dbErr(fmt.Errorf("failed to select id of added banner: %w", err))
 	} else if b.ID == 0 {
-		log.Fatal("failed to select id of added banner")
+		dbErr(fmt.Errorf("failed to select id of added banner"))
 	}
 	db.updateBannerBoards(b)
 }
@@ -83,7 +86,7 @@ func (db *DB) BannerByID(id int) *Banner {
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {
-		log.Fatalf("failed to select banner: %s", err)
+		dbErr(fmt.Errorf("failed to select banner: %w", err))
 	}
 	db.fetchBannerBoards(b)
 	return b
@@ -95,7 +98,7 @@ func (db *DB) BannerByName(name string) *Banner {
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {
-		log.Fatalf("failed to select banner: %s", err)
+		dbErr(fmt.Errorf("failed to select banner: %w", err))
 	}
 	db.fetchBannerBoards(b)
 	return b
@@ -104,16 +107,19 @@ func (db *DB) BannerByName(name string) *Banner {
 func (db *DB) AllBanners() []*Banner {
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM banner ORDER BY name ASC")
 	if err != nil {
-		log.Fatalf("failed to select all banners: %s", err)
+		dbErr(fmt.Errorf("failed to select all banners: %w", err))
 	}
 	var banners []*Banner
 	for rows.Next() {
 		b := &Banner{}
 		err := scanBanner(b, rows)
 		if err != nil {
-			log.Fatalf("failed to select all banners: %s", err)
+			dbErr(fmt.Errorf("failed to select all banners: %w", err))
 		}
 		banners = append(banners, b)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select all banners: %w", rows.Err()))
 	}
 	for _, b := range banners {
 		db.fetchBannerBoards(b)
@@ -123,7 +129,7 @@ func (db *DB) AllBanners() []*Banner {
 
 func (db *DB) UpdateBanner(b *Banner) {
 	if b.ID <= 0 {
-		log.Fatalf("invalid banner ID %d", b.ID)
+		dbErr(fmt.Errorf("invalid banner ID %d", b.ID))
 	}
 	var overboard int
 	if b.Overboard {
@@ -147,7 +153,7 @@ func (db *DB) UpdateBanner(b *Banner) {
 		b.ID,
 	)
 	if err != nil {
-		log.Fatalf("failed to update banner: %s", err)
+		dbErr(fmt.Errorf("failed to update banner: %w", err))
 	}
 	db.updateBannerBoards(b)
 }
@@ -158,7 +164,7 @@ func (db *DB) DeleteBanner(id int) {
 	}
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM banner WHERE id = $1", id)
 	if err != nil {
-		log.Fatalf("failed to delete banner: %s", err)
+		dbErr(fmt.Errorf("failed to delete banner: %w", err))
 	}
 }
 

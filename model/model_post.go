@@ -66,7 +66,9 @@ type Post struct {
 	Locked       bool
 
 	// Calculated fields.
-	Replies int
+	Replies         int
+	BacklinkSources []int
+	BacklinkBoards  []int
 }
 
 func (p *Post) Copy() *Post {

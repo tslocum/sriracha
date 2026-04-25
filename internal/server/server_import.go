@@ -238,6 +238,9 @@ func (s *Server) importPosts(sqlDB *sql.DB, table string, tinyIB bool, b *Board)
 			return nil, err
 		}
 	}
+	if rows.Err() != nil {
+		return nil, rows.Err()
+	}
 	return posts, nil
 }
 
@@ -310,6 +313,10 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 					data.ManageError(err.Error())
 					return
 				}
+			}
+			if rows.Err() != nil {
+				data.ManageError(rows.Err().Error())
+				return
 			}
 			if table != "" {
 				tinyIB = i == 1

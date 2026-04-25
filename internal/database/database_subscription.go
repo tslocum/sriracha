@@ -2,7 +2,7 @@ package database
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -17,7 +17,7 @@ func (db *DB) AddSubscription(s *Subscription) {
 		s.Board,
 		s.Target).Scan(&s.ID)
 	if err != nil {
-		log.Fatalf("failed to insert subscription: %s", err)
+		dbErr(fmt.Errorf("failed to insert subscription: %w", err))
 	}
 }
 
@@ -27,7 +27,7 @@ func (db *DB) SubscriptionByID(id int) *Subscription {
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {
-		log.Fatalf("failed to select subscription: %s", err)
+		dbErr(fmt.Errorf("failed to select subscription: %w", err))
 	}
 	return s
 }
@@ -38,7 +38,7 @@ func (db *DB) SubscriptionByIP(ip string) *Subscription {
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {
-		log.Fatalf("failed to select subscription: %s", err)
+		dbErr(fmt.Errorf("failed to select subscription: %w", err))
 	}
 	return s
 }
@@ -46,16 +46,19 @@ func (db *DB) SubscriptionByIP(ip string) *Subscription {
 func (db *DB) SubscriptionsByEmail(email string) []*Subscription {
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM subscription WHERE email = $1 ORDER BY board DESC, target ASC", email)
 	if err != nil {
-		log.Fatalf("failed to select subscriptions: %s", err)
+		dbErr(fmt.Errorf("failed to select subscriptions: %w", err))
 	}
 	var subs []*Subscription
 	for rows.Next() {
 		s := &Subscription{}
 		err := scanSubscription(s, rows)
 		if err != nil {
-			log.Fatalf("failed to select subscriptions: %s", err)
+			dbErr(fmt.Errorf("failed to select subscriptions: %w", err))
 		}
 		subs = append(subs, s)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select subscriptions: %w", rows.Err()))
 	}
 	return subs
 }
@@ -78,23 +81,26 @@ func (db *DB) SubscriptionsByPost(p *Post, distinct bool, includeBoard bool) []*
 	query += ") AND confirm = 0 ORDER BY email ASC, target DESC, board ASC"
 	rows, err := db.conn.Query(context.Background(), query, args...)
 	if err != nil {
-		log.Fatalf("failed to select subscriptions: %s", err)
+		dbErr(fmt.Errorf("failed to select subscriptions: %w", err))
 	}
 	var subs []*Subscription
 	for rows.Next() {
 		s := &Subscription{}
 		err := scanSubscription(s, rows)
 		if err != nil {
-			log.Fatalf("failed to select subscriptions: %s", err)
+			dbErr(fmt.Errorf("failed to select subscriptions: %w", err))
 		}
 		subs = append(subs, s)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select subscriptions: %w", rows.Err()))
 	}
 	return subs
 }
 
 func (db *DB) UpdateSubscription(s *Subscription) {
 	if s.ID <= 0 {
-		log.Fatalf("invalid subscription ID %d", s.ID)
+		dbErr(fmt.Errorf("invalid subscription ID %d", s.ID))
 	}
 	_, err := db.conn.Exec(context.Background(), "UPDATE subscription SET ip = $1, confirm = $2, target = $3 WHERE id = $4",
 		s.IP,
@@ -102,7 +108,7 @@ func (db *DB) UpdateSubscription(s *Subscription) {
 		s.Target,
 		s.ID)
 	if err != nil {
-		log.Fatalf("failed to update subscription: %s", err)
+		dbErr(fmt.Errorf("failed to update subscription: %w", err))
 	}
 }
 
@@ -112,7 +118,7 @@ func (db *DB) DeleteSubscription(s *Subscription) {
 	}
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM subscription WHERE id = $1", s.ID)
 	if err != nil {
-		log.Fatalf("failed to delete subscription: %s", err)
+		dbErr(fmt.Errorf("failed to delete subscription: %w", err))
 	}
 }
 
@@ -122,7 +128,7 @@ func (db *DB) DeleteSubscriptionsByBoard(boardID int) {
 	}
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM subscription WHERE board = $1", boardID)
 	if err != nil {
-		log.Fatalf("failed to delete subscription: %s", err)
+		dbErr(fmt.Errorf("failed to delete subscription: %w", err))
 	}
 }
 
@@ -132,7 +138,7 @@ func (db *DB) DeleteSubscriptionsByPost(postID int) {
 	}
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM subscription WHERE target = $1", postID)
 	if err != nil {
-		log.Fatalf("failed to delete subscription: %s", err)
+		dbErr(fmt.Errorf("failed to delete subscription: %w", err))
 	}
 }
 
@@ -141,7 +147,7 @@ func (db *DB) DeleteExpiredSubscriptions() int {
 	expireTime := time.Now().Unix() - 86400 // 24 hours.
 	err := db.conn.QueryRow(context.Background(), "WITH deleted AS (DELETE FROM subscription WHERE confirm != 0 AND confirm <= $1 RETURNING *) SELECT COUNT(*) FROM deleted", expireTime).Scan(&deleted)
 	if err != nil {
-		log.Fatal(err)
+		dbErr(err)
 	}
 	return deleted
 }

@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"fmt"
-	"log"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
@@ -21,20 +20,20 @@ func (db *DB) AddReport(r *Report) {
 		r.IP,
 	)
 	if err != nil {
-		log.Fatalf("failed to insert report: %s", err)
+		dbErr(fmt.Errorf("failed to insert report: %w", err))
 	}
 }
 
 func (db *DB) AllReports() []*Report {
 	rows, err := db.conn.Query(context.Background(), "SELECT DISTINCT(board, post) FROM report")
 	if err != nil {
-		log.Fatalf("failed to select all reports: %s", err)
+		dbErr(fmt.Errorf("failed to select all reports: %w", err))
 	}
 	var distinctIDs [][2]int
 	for rows.Next() {
 		colValues, err := rows.Values()
 		if err != nil {
-			log.Fatal(err)
+			dbErr(err)
 		}
 		var ids [2]int
 		for _, colValue := range colValues {
@@ -43,6 +42,9 @@ func (db *DB) AllReports() []*Report {
 			}
 		}
 		distinctIDs = append(distinctIDs, ids)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select all reports: %w", rows.Err()))
 	}
 
 	reports := make([]*Report, len(distinctIDs))
@@ -65,7 +67,7 @@ func (db *DB) NumReports(p *Post) int {
 	if err == pgx.ErrNoRows {
 		return 0
 	} else if err != nil {
-		log.Fatalf("failed to select report count: %s", err)
+		dbErr(fmt.Errorf("failed to select report count: %w", err))
 	}
 	return count
 }
@@ -76,6 +78,6 @@ func (db *DB) DeleteReports(p *Post) {
 	}
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM report WHERE board = $1 AND post = $2", p.Board.ID, p.ID)
 	if err != nil {
-		log.Fatalf("failed to delete reports: %s", err)
+		dbErr(fmt.Errorf("failed to delete reports: %w", err))
 	}
 }

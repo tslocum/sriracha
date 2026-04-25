@@ -2,7 +2,7 @@ package database
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -32,7 +32,7 @@ func (db *DB) AddLog(l *Log) {
 		l.Changes,
 	)
 	if err != nil {
-		log.Fatalf("failed to insert log: %s", err)
+		dbErr(fmt.Errorf("failed to insert log: %w", err))
 	}
 }
 
@@ -42,7 +42,7 @@ func (db *DB) LogCount() int {
 	if err == pgx.ErrNoRows {
 		return 0
 	} else if err != nil {
-		log.Fatalf("failed to select log count: %s", err)
+		dbErr(fmt.Errorf("failed to select log count: %w", err))
 	}
 	return count
 }
@@ -51,7 +51,7 @@ func (db *DB) LogsByPage(page int) []*Log {
 	offset := page * LogPageSize
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM log ORDER BY id DESC LIMIT $1 OFFSET $2", LogPageSize, offset)
 	if err != nil {
-		log.Fatalf("failed to select all logs: %s", err)
+		dbErr(fmt.Errorf("failed to select all logs: %w", err))
 	}
 	var logs []*Log
 	var accountIDs []int
@@ -62,7 +62,7 @@ func (db *DB) LogsByPage(page int) []*Log {
 		var accountID *int
 		err := rows.Scan(&l.ID, &accountID, &boardID, &l.Timestamp, &l.Message, &l.Changes)
 		if err != nil {
-			log.Fatalf("failed to select all logs: %s", err)
+			dbErr(fmt.Errorf("failed to select all logs: %w", err))
 		}
 		logs = append(logs, l)
 		if accountID == nil {
@@ -75,6 +75,9 @@ func (db *DB) LogsByPage(page int) []*Log {
 		} else {
 			boardIDs = append(boardIDs, *boardID)
 		}
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select all logs: %w", rows.Err()))
 	}
 	for i, l := range logs {
 		accountID := accountIDs[i]

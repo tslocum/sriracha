@@ -2,7 +2,7 @@ package database
 
 import (
 	"context"
-	"log"
+	"fmt"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	"github.com/jackc/pgx/v5"
@@ -14,13 +14,13 @@ func (db *DB) AddKeyword(k *Keyword) {
 		k.Action,
 	)
 	if err != nil {
-		log.Fatalf("failed to insert keyword: %s", err)
+		dbErr(fmt.Errorf("failed to insert keyword: %w", err))
 	}
 	err = db.conn.QueryRow(context.Background(), "SELECT id FROM keyword WHERE text = $1", k.Text).Scan(&k.ID)
 	if err != nil {
-		log.Fatalf("failed to select number of super-administrator accounts: %s", err)
+		dbErr(fmt.Errorf("failed to select number of super-administrator accounts: %w", err))
 	} else if k.ID == 0 {
-		log.Fatal("failed to select id of added keyword")
+		dbErr(fmt.Errorf("failed to select id of added keyword"))
 	}
 	db.updateKeywordBoards(k)
 }
@@ -30,16 +30,19 @@ func (db *DB) fetchKeywordBoards(k *Keyword) {
 
 	rows, err := db.conn.Query(context.Background(), "SELECT board FROM keyword_board WHERE keyword = $1", k.ID)
 	if err != nil {
-		log.Fatalf("failed to select keyword boards: %s", err)
+		dbErr(fmt.Errorf("failed to select keyword boards: %w", err))
 	}
 	var ids []int
 	for rows.Next() {
 		var id int
 		err := rows.Scan(&id)
 		if err != nil {
-			log.Fatalf("failed to select keyword boards: %s", err)
+			dbErr(fmt.Errorf("failed to select keyword boards: %w", err))
 		}
 		ids = append(ids, id)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select keyword boards: %w", rows.Err()))
 	}
 
 	for _, id := range ids {
@@ -51,12 +54,12 @@ func (db *DB) fetchKeywordBoards(k *Keyword) {
 func (db *DB) updateKeywordBoards(k *Keyword) {
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM keyword_board WHERE keyword = $1", k.ID)
 	if err != nil {
-		log.Fatalf("failed to update keyword boards: %s", err)
+		dbErr(fmt.Errorf("failed to update keyword boards: %w", err))
 	}
 	for _, b := range k.Boards {
 		_, err = db.conn.Exec(context.Background(), "INSERT INTO keyword_board VALUES ($1, $2)", k.ID, b.ID)
 		if err != nil {
-			log.Fatalf("failed to update keyword boards: %s", err)
+			dbErr(fmt.Errorf("failed to update keyword boards: %w", err))
 		}
 	}
 }
@@ -67,7 +70,7 @@ func (db *DB) KeywordByID(id int) *Keyword {
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {
-		log.Fatalf("failed to select keyword: %s", err)
+		dbErr(fmt.Errorf("failed to select keyword: %w", err))
 	}
 	db.fetchKeywordBoards(k)
 	return k
@@ -79,7 +82,7 @@ func (db *DB) KeywordByText(text string) *Keyword {
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {
-		log.Fatalf("failed to select keyword: %s", err)
+		dbErr(fmt.Errorf("failed to select keyword: %w", err))
 	}
 	db.fetchKeywordBoards(k)
 	return k
@@ -88,16 +91,19 @@ func (db *DB) KeywordByText(text string) *Keyword {
 func (db *DB) AllKeywords() []*Keyword {
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM keyword ORDER BY text ASC")
 	if err != nil {
-		log.Fatalf("failed to select all keywords: %s", err)
+		dbErr(fmt.Errorf("failed to select all keywords: %w", err))
 	}
 	var keywords []*Keyword
 	for rows.Next() {
 		k := &Keyword{}
 		err := scanKeyword(k, rows)
 		if err != nil {
-			log.Fatalf("failed to select all keywords: %s", err)
+			dbErr(fmt.Errorf("failed to select all keywords: %w", err))
 		}
 		keywords = append(keywords, k)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select all keywords: %w", rows.Err()))
 	}
 	for _, k := range keywords {
 		db.fetchKeywordBoards(k)
@@ -107,7 +113,7 @@ func (db *DB) AllKeywords() []*Keyword {
 
 func (db *DB) UpdateKeyword(k *Keyword) {
 	if k.ID <= 0 {
-		log.Fatalf("invalid keyword ID %d", k.ID)
+		dbErr(fmt.Errorf("invalid keyword ID %d", k.ID))
 	}
 	_, err := db.conn.Exec(context.Background(), "UPDATE keyword SET text = $1, action = $2 WHERE id = $3",
 		k.Text,
@@ -115,7 +121,7 @@ func (db *DB) UpdateKeyword(k *Keyword) {
 		k.ID,
 	)
 	if err != nil {
-		log.Fatalf("failed to update keyword: %s", err)
+		dbErr(fmt.Errorf("failed to update keyword: %w", err))
 	}
 	db.updateKeywordBoards(k)
 }
@@ -126,7 +132,7 @@ func (db *DB) DeleteKeyword(id int) {
 	}
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM keyword WHERE id = $1", id)
 	if err != nil {
-		log.Fatalf("failed to delete keyword: %s", err)
+		dbErr(fmt.Errorf("failed to delete keyword: %w", err))
 	}
 }
 

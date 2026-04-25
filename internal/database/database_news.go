@@ -2,7 +2,7 @@ package database
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -27,7 +27,7 @@ func (db *DB) AddNews(n *News) {
 		n.Subject,
 		n.Message).Scan(&n.ID)
 	if err != nil {
-		log.Fatalf("failed to insert news: %s", err)
+		dbErr(fmt.Errorf("failed to insert news: %w", err))
 	}
 }
 
@@ -37,7 +37,7 @@ func (db *DB) NewsByID(id int) *News {
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {
-		log.Fatalf("failed to select news: %s", err)
+		dbErr(fmt.Errorf("failed to select news: %w", err))
 	} else if accountID != 0 {
 		n.Account = db.AccountByID(accountID)
 	}
@@ -53,7 +53,7 @@ func (db *DB) AllNews(onlyPublished bool) []*News {
 		rows, err = db.conn.Query(context.Background(), "SELECT * FROM news ORDER BY timestamp = 0, timestamp DESC")
 	}
 	if err != nil {
-		log.Fatalf("failed to select all news: %s", err)
+		dbErr(fmt.Errorf("failed to select all news: %w", err))
 	}
 	var news []*News
 	var accountIDs []int
@@ -61,10 +61,13 @@ func (db *DB) AllNews(onlyPublished bool) []*News {
 		n := &News{}
 		accountID, err := scanNews(n, rows)
 		if err != nil {
-			log.Fatalf("failed to select all news: %s", err)
+			dbErr(fmt.Errorf("failed to select all news: %w", err))
 		}
 		news = append(news, n)
 		accountIDs = append(accountIDs, accountID)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select all news: %w", rows.Err()))
 	}
 	for i, n := range news {
 		if accountIDs[i] == 0 {
@@ -77,7 +80,7 @@ func (db *DB) AllNews(onlyPublished bool) []*News {
 
 func (db *DB) UpdateNews(n *News) {
 	if n.ID <= 0 {
-		log.Fatalf("invalid news ID %d", n.ID)
+		dbErr(fmt.Errorf("invalid news ID %d", n.ID))
 	}
 	var share int
 	if n.Share {
@@ -92,7 +95,7 @@ func (db *DB) UpdateNews(n *News) {
 		n.Message,
 		n.ID)
 	if err != nil {
-		log.Fatalf("failed to update news: %s", err)
+		dbErr(fmt.Errorf("failed to update news: %w", err))
 	}
 }
 
@@ -102,7 +105,7 @@ func (db *DB) DeleteNews(id int) {
 	}
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM news WHERE id = $1", id)
 	if err != nil {
-		log.Fatalf("failed to delete news: %s", err)
+		dbErr(fmt.Errorf("failed to delete news: %w", err))
 	}
 }
 

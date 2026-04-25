@@ -2,7 +2,7 @@ package database
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -17,11 +17,11 @@ func (db *DB) AddBan(b *Ban) {
 		b.Reason,
 	)
 	if err != nil {
-		log.Fatalf("failed to insert ban: %s", err)
+		dbErr(fmt.Errorf("failed to insert ban: %w", err))
 	}
 	err = db.conn.QueryRow(context.Background(), "SELECT id FROM ban WHERE ip = $1", b.IP).Scan(&b.ID)
 	if err != nil || b.ID == 0 {
-		log.Fatalf("failed to select id of inserted ban: %s", err)
+		dbErr(fmt.Errorf("failed to select id of inserted ban: %w", err))
 	}
 }
 
@@ -31,7 +31,7 @@ func (db *DB) BanByID(id int) *Ban {
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {
-		log.Fatalf("failed to select ban: %s", err)
+		dbErr(fmt.Errorf("failed to select ban: %w", err))
 	}
 	return b
 }
@@ -42,7 +42,7 @@ func (db *DB) BanByIP(ip string) *Ban {
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {
-		log.Fatalf("failed to select ban: %s", err)
+		dbErr(fmt.Errorf("failed to select ban: %w", err))
 	}
 	return b
 }
@@ -57,7 +57,7 @@ func (db *DB) AllBans(rangeOnly bool) []*Ban {
 	}
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM ban"+extra+" ORDER BY timestamp DESC")
 	if err != nil {
-		log.Fatalf("failed to select all bans: %s", err)
+		dbErr(fmt.Errorf("failed to select all bans: %w", err))
 	}
 	var bans []*Ban
 	for rows.Next() {
@@ -68,12 +68,15 @@ func (db *DB) AllBans(rangeOnly bool) []*Ban {
 		}
 		bans = append(bans, b)
 	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select all bans: %w", rows.Err()))
+	}
 	return bans
 }
 
 func (db *DB) UpdateBan(b *Ban) {
 	if b.ID <= 0 {
-		log.Fatalf("invalid ban ID %d", b.ID)
+		dbErr(fmt.Errorf("invalid ban ID %d", b.ID))
 	}
 	_, err := db.conn.Exec(context.Background(), "UPDATE ban SET expire = $1, reason = $2 WHERE id = $3",
 		b.Expire,
@@ -81,7 +84,7 @@ func (db *DB) UpdateBan(b *Ban) {
 		b.ID,
 	)
 	if err != nil {
-		log.Fatalf("failed to update ban: %s", err)
+		dbErr(fmt.Errorf("failed to update ban: %w", err))
 	}
 }
 
@@ -89,7 +92,7 @@ func (db *DB) DeleteExpiredBans() int {
 	var deleted int
 	err := db.conn.QueryRow(context.Background(), "WITH deleted AS (DELETE FROM ban WHERE expire != 0 AND expire <= $1 RETURNING *) SELECT COUNT(*) FROM deleted", time.Now().Unix()).Scan(&deleted)
 	if err != nil {
-		log.Fatal(err)
+		dbErr(err)
 	}
 	return deleted
 }
@@ -100,7 +103,7 @@ func (db *DB) DeleteBan(id int) {
 	}
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM ban WHERE id = $1", id)
 	if err != nil {
-		log.Fatalf("failed to delete ban: %s", err)
+		dbErr(fmt.Errorf("failed to delete ban: %w", err))
 	}
 }
 
@@ -117,7 +120,7 @@ func scanBan(b *Ban, row pgx.Row) error {
 func (db *DB) AddFileBan(fileHash string) {
 	_, err := db.conn.Exec(context.Background(), "INSERT INTO banfile VALUES ($1) ON CONFLICT DO NOTHING", fileHash)
 	if err != nil {
-		log.Fatalf("failed to ban file: %s", err)
+		dbErr(fmt.Errorf("failed to ban file: %w", err))
 	}
 }
 
@@ -127,7 +130,7 @@ func (db *DB) FileBanned(fileHash string) bool {
 	if err == pgx.ErrNoRows {
 		return false
 	} else if err != nil {
-		log.Fatalf("failed to check if file is banned: %s", err)
+		dbErr(fmt.Errorf("failed to check if file is banned: %w", err))
 	}
 	return banned
 }
@@ -135,6 +138,6 @@ func (db *DB) FileBanned(fileHash string) bool {
 func (db *DB) LiftFileBan(fileHash string) {
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM banfile WHERE hash = $1", fileHash)
 	if err != nil {
-		log.Fatalf("failed to lift file ban: %s", err)
+		dbErr(fmt.Errorf("failed to lift file ban: %w", err))
 	}
 }

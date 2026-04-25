@@ -1474,6 +1474,7 @@ func (s *Server) newPageTemplate(db *database.DB) *template.Template {
 func (s *Server) writePage(db *database.DB, data *templateData, tpl *template.Template, p *Page, w io.Writer) error {
 	err := p.Validate()
 	if err != nil {
+		log.Println("VALIDATE ERR", err)
 		return err
 	}
 
@@ -1565,7 +1566,7 @@ func (s *Server) rebuildAll(db *database.DB, verbose bool) {
 		if verbose {
 			fmt.Println("Rebuilding pages...")
 		}
-		s.writePages(db, allPages)
+		_ = s.writePages(db, allPages) // Ignore non-fatal page errors.
 	}
 	published := len(db.AllNews(true))
 	if published > 0 {

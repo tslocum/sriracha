@@ -56,8 +56,9 @@ func (db *DB) AddPost(p *Post) {
 		p.FileMIME,
 	).Scan(&p.ID)
 	if err != nil || p.ID == 0 {
-		log.Fatalf("failed to insert post: %s", err)
+		dbErr(fmt.Errorf("failed to insert post: %w", err))
 	}
+	// TODO add backlinks
 }
 
 // AllThreads returns all thread IDs and reply counts. When board is nil, only
@@ -89,16 +90,19 @@ func (db *DB) AllThreads(board *Board, moderated bool) [][2]int {
 	}
 	rows, err := db.conn.Query(context.Background(), "SELECT post.id, COUNT(reply.id) as replies FROM post LEFT OUTER JOIN post reply ON reply.parent = post.id"+extraJoin+" WHERE "+boardWhere+" post.parent IS NULL"+extraWhere+" GROUP BY post.id ORDER BY post.stickied DESC, post.bumped DESC")
 	if err != nil {
-		log.Fatalf("failed to select all threads: %s", err)
+		dbErr(fmt.Errorf("failed to select all threads: %w", err))
 	}
 	var threads [][2]int
 	for rows.Next() {
 		var thread [2]int
 		err = rows.Scan(&thread[0], &thread[1])
 		if err != nil {
-			log.Fatal(err)
+			dbErr(err)
 		}
 		threads = append(threads, thread)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select all threads: %w", rows.Err()))
 	}
 	return threads
 }
@@ -107,19 +111,22 @@ func (db *DB) TrimThreads(board *Board) []*Post {
 	if board.MaxThreads == 0 {
 		return nil
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT *, 0 as replies FROM post WHERE board = $1 AND parent IS NULL AND moderated > 0 ORDER BY bumped DESC OFFSET $2", board.ID, board.MaxThreads)
+	rows, err := db.conn.Query(context.Background(), "SELECT post.*, 0 as replies, array_remove(array_agg(bl.source), NULL) as backlink_sources, array_remove(array_agg(bl.board), NULL) as backlink_boards FROM post LEFT OUTER JOIN post_backlink bl ON bl.target = post.id WHERE post.board = $1 AND parent IS NULL AND moderated > 0 GROUP BY post.id, bl.target, bl.source ORDER BY bumped DESC OFFSET $2", board.ID, board.MaxThreads)
 	if err != nil {
-		log.Fatalf("failed to select trim threads: %s", err)
+		dbErr(fmt.Errorf("failed to trim threads: %w", err))
 	}
 	var posts []*Post
 	for rows.Next() {
 		p := &Post{}
 		_, err := scanPost(p, rows)
 		if err != nil {
-			log.Fatal(err)
+			dbErr(err)
 		}
 		p.Board = board
 		posts = append(posts, p)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to trim threads: %w", rows.Err()))
 	}
 	return posts
 }
@@ -129,9 +136,9 @@ func (db *DB) AllPostsInThread(postID int, moderated bool) []*Post {
 	if moderated {
 		extra = " AND moderated > 0"
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT *, 0 as replies FROM post WHERE (id = $1 OR parent = $1)"+extra+" ORDER BY id ASC", postID)
+	rows, err := db.conn.Query(context.Background(), "SELECT post.*, 0 as replies, array_remove(array_agg(bl.source), NULL) as backlink_sources, array_remove(array_agg(bl.board), NULL) as backlink_boards FROM post LEFT OUTER JOIN post_backlink bl ON bl.target = post.id WHERE (id = $1 OR parent = $1)"+extra+" GROUP BY post.id, bl.target, bl.source ORDER BY id ASC", postID)
 	if err != nil {
-		log.Fatalf("failed to select all posts in thread %d: %s", postID, err)
+		dbErr(fmt.Errorf("failed to select all posts in thread %d: %s", postID, err))
 	}
 	var posts []*Post
 	var boardIDs []int
@@ -139,13 +146,19 @@ func (db *DB) AllPostsInThread(postID int, moderated bool) []*Post {
 		p := &Post{}
 		boardID, err := scanPost(p, rows)
 		if err != nil {
-			log.Fatal(err)
+			dbErr(err)
 		}
 		posts = append(posts, p)
 		boardIDs = append(boardIDs, boardID)
 	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select all pages: %w", rows.Err()))
+	}
 	for i := range posts {
 		posts[i].Board = db.BoardByID(boardIDs[i])
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select all posts in thread %d: %s", postID, rows.Err()))
 	}
 	return posts
 }
@@ -164,9 +177,9 @@ func (db *DB) AllReplies(threadID int, limit int, moderated bool) []*Post {
 	if moderated {
 		extraModerated = " AND moderated > 0"
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT *, 0 as replies FROM post WHERE parent = $1"+extraModerated+" ORDER BY id "+sortDir+extraLimit, threadID)
+	rows, err := db.conn.Query(context.Background(), "SELECT post.*, 0 as replies, array_remove(array_agg(bl.source), NULL) as backlink_sources, array_remove(array_agg(bl.board), NULL) as backlink_boards FROM post LEFT OUTER JOIN post_backlink bl ON bl.target = post.id WHERE parent = $1"+extraModerated+" GROUP BY post.id, bl.target, bl.source ORDER BY id "+sortDir+extraLimit, threadID)
 	if err != nil {
-		log.Fatalf("failed to select all replies: %s", err)
+		dbErr(fmt.Errorf("failed to select all replies: %w", err))
 	}
 	var posts []*Post
 	var boardIDs []int
@@ -174,10 +187,13 @@ func (db *DB) AllReplies(threadID int, limit int, moderated bool) []*Post {
 		p := &Post{}
 		boardID, err := scanPost(p, rows)
 		if err != nil {
-			log.Fatal(err)
+			dbErr(err)
 		}
 		posts = append(posts, p)
 		boardIDs = append(boardIDs, boardID)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select all replies: %w", rows.Err()))
 	}
 	for i := range posts {
 		posts[i].Board = db.BoardByID(boardIDs[i])
@@ -189,9 +205,9 @@ func (db *DB) AllReplies(threadID int, limit int, moderated bool) []*Post {
 }
 
 func (db *DB) PendingPosts() []*Post {
-	rows, err := db.conn.Query(context.Background(), "SELECT *, 0 as replies FROM post WHERE moderated = $1 ORDER BY id ASC", ModeratedHidden)
+	rows, err := db.conn.Query(context.Background(), "SELECT post.*, 0 as replies, array_remove(array_agg(bl.source), NULL) as backlink_sources, array_remove(array_agg(bl.board), NULL) as backlink_boards FROM post LEFT OUTER JOIN post_backlink bl ON bl.target = post.id WHERE moderated = $1 GROUP BY post.id, bl.target, bl.source ORDER BY id ASC", ModeratedHidden)
 	if err != nil {
-		log.Fatalf("failed to select pending posts: %s", err)
+		dbErr(fmt.Errorf("failed to select pending posts: %w", err))
 	}
 	var posts []*Post
 	var boardIDs []int
@@ -199,10 +215,13 @@ func (db *DB) PendingPosts() []*Post {
 		p := &Post{}
 		boardID, err := scanPost(p, rows)
 		if err != nil {
-			log.Fatal(err)
+			dbErr(err)
 		}
 		posts = append(posts, p)
 		boardIDs = append(boardIDs, boardID)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select pending posts: %w", rows.Err()))
 	}
 	for i := range posts {
 		posts[i].Board = db.BoardByID(boardIDs[i])
@@ -212,11 +231,11 @@ func (db *DB) PendingPosts() []*Post {
 
 func (db *DB) PostByID(postID int) *Post {
 	p := &Post{}
-	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT *, 0 as replies FROM post WHERE id = $1", postID))
+	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT post.*, 0 as replies, array_remove(array_agg(bl.source), NULL) as backlink_sources, array_remove(array_agg(bl.board), NULL) as backlink_boards FROM post LEFT OUTER JOIN post_backlink bl ON bl.target = post.id WHERE id = $1 GROUP BY post.id, bl.target, bl.source", postID))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil || p.ID == 0 {
-		log.Fatalf("failed to select post: %s", err)
+		dbErr(fmt.Errorf("failed to select post: %w", err))
 	}
 	p.Board = db.BoardByID(boardID)
 	return p
@@ -226,9 +245,9 @@ func (db *DB) PostsByIP(hash string) []*Post {
 	if hash == "" {
 		return nil
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT *, 0 as replies FROM post WHERE ip = $1", hash)
+	rows, err := db.conn.Query(context.Background(), "SELECT post.*, 0 as replies, array_remove(array_agg(bl.source), NULL) as backlink_sources, array_remove(array_agg(bl.board), NULL) as backlink_boards FROM post LEFT OUTER JOIN post_backlink bl ON bl.target = post.id WHERE ip = $1 GROUP BY post.id, bl.target, bl.source", hash)
 	if err != nil {
-		log.Fatalf("failed to select post: %s", err)
+		dbErr(fmt.Errorf("failed to select post: %w", err))
 	}
 	var posts []*Post
 	var boardIDs []int
@@ -236,10 +255,13 @@ func (db *DB) PostsByIP(hash string) []*Post {
 		p := &Post{}
 		boardID, err := scanPost(p, rows)
 		if err != nil {
-			log.Fatalf("failed to scan post: %s", err)
+			dbErr(fmt.Errorf("failed to scan post: %w", err))
 		}
 		posts = append(posts, p)
 		boardIDs = append(boardIDs, boardID)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select post: %w", rows.Err()))
 	}
 	for i, p := range posts {
 		p.Board = db.BoardByID(boardIDs[i])
@@ -250,11 +272,11 @@ func (db *DB) PostsByIP(hash string) []*Post {
 func (db *DB) PostsByFileHash(hash string, filterBoard *Board) []*Post {
 	var extra string
 	if filterBoard != nil {
-		extra = " AND board = " + strconv.Itoa(filterBoard.ID)
+		extra = " AND post.board = " + strconv.Itoa(filterBoard.ID)
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT *, 0 as replies FROM post WHERE filehash = $1"+extra, hash)
+	rows, err := db.conn.Query(context.Background(), "SELECT post.*, 0 as replies, array_remove(array_agg(bl.source), NULL) as backlink_sources, array_remove(array_agg(bl.board), NULL) as backlink_boards FROM post LEFT OUTER JOIN post_backlink bl ON bl.target = post.id WHERE filehash = $1 GROUP BY post.id, bl.target, bl.source "+extra, hash)
 	if err != nil {
-		log.Fatalf("failed to select post: %s", err)
+		dbErr(fmt.Errorf("failed to select post: %w", err))
 	}
 	var posts []*Post
 	var boardIDs []int
@@ -262,10 +284,13 @@ func (db *DB) PostsByFileHash(hash string, filterBoard *Board) []*Post {
 		p := &Post{}
 		boardID, err := scanPost(p, rows)
 		if err != nil {
-			log.Fatalf("failed to scan post: %s", err)
+			dbErr(fmt.Errorf("failed to scan post: %w", err))
 		}
 		posts = append(posts, p)
 		boardIDs = append(boardIDs, boardID)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select post: %w", rows.Err()))
 	}
 	for i, p := range posts {
 		p.Board = db.BoardByID(boardIDs[i])
@@ -275,11 +300,11 @@ func (db *DB) PostsByFileHash(hash string, filterBoard *Board) []*Post {
 
 func (db *DB) PostByField(b *Board, field string, value any) *Post {
 	p := &Post{}
-	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT *, 0 as replies FROM post WHERE board = $1 AND "+field+" = $2 LIMIT 1", b.ID, value))
+	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT post.*, 0 as replies, array_remove(array_agg(bl.source), NULL) as backlink_sources, array_remove(array_agg(bl.board), NULL) as backlink_boards FROM post LEFT OUTER JOIN post_backlink bl ON bl.target = post.id WHERE post.board = $1 AND "+field+" = $2 GROUP BY post.id, bl.target, bl.source LIMIT 1", b.ID, value))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil || p.ID == 0 {
-		log.Fatalf("failed to select post: %s", err)
+		dbErr(fmt.Errorf("failed to select post: %w", err))
 	}
 	p.Board = b
 	return p
@@ -287,11 +312,11 @@ func (db *DB) PostByField(b *Board, field string, value any) *Post {
 
 func (db *DB) LastPostByIP(board *Board, ip string) *Post {
 	p := &Post{}
-	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT *, 0 as replies FROM post WHERE board = $1 AND ip = $2 ORDER BY id DESC LIMIT 1", board.ID, ip))
+	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT post.*, 0 as replies, array_remove(array_agg(bl.source), NULL) as backlink_sources, array_remove(array_agg(bl.board), NULL) as backlink_boards FROM post LEFT OUTER JOIN post_backlink bl ON bl.target = post.id WHERE post.board = $1 AND ip = $2 GROUP BY post.id, bl.target, bl.source ORDER BY id DESC LIMIT 1", board.ID, ip))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil || p.ID == 0 {
-		log.Fatalf("failed to select last post by IP: %s", err)
+		dbErr(fmt.Errorf("failed to select last post by IP: %w", err))
 	}
 	p.Board = db.BoardByID(boardID)
 	return p
@@ -299,11 +324,11 @@ func (db *DB) LastPostByIP(board *Board, ip string) *Post {
 
 func (db *DB) LastPostByBoard(board *Board) *Post {
 	p := &Post{}
-	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT *, 0 as replies FROM post WHERE board = $1 AND moderated> 0 ORDER BY id DESC LIMIT 1", board.ID))
+	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT post.*, 0 as replies, array_remove(array_agg(bl.source), NULL) as backlink_sources, array_remove(array_agg(bl.board), NULL) as backlink_boards FROM post LEFT OUTER JOIN post_backlink bl ON bl.target = post.id WHERE post.board = $1 AND moderated> 0 GROUP BY post.id, bl.target, bl.source ORDER BY id DESC LIMIT 1", board.ID))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil || p.ID == 0 {
-		log.Fatalf("failed to select last post by board: %s", err)
+		dbErr(fmt.Errorf("failed to select last post by board: %w", err))
 	}
 	p.Board = board
 	return p
@@ -315,7 +340,7 @@ func (db *DB) ReplyCount(threadID int) int {
 	if err == pgx.ErrNoRows {
 		return 0
 	} else if err != nil {
-		log.Fatalf("failed to select reply count: %s", err)
+		dbErr(fmt.Errorf("failed to select reply count: %w", err))
 	}
 	return count
 }
@@ -326,7 +351,7 @@ func (db *DB) MaxPostID() int {
 	if err == pgx.ErrNoRows {
 		return 0
 	} else if err != nil {
-		log.Fatalf("failed to select maximum post ID: %s", err)
+		dbErr(fmt.Errorf("failed to select maximum post ID: %w", err))
 	}
 	return id
 }
@@ -334,14 +359,14 @@ func (db *DB) MaxPostID() int {
 func (db *DB) BumpThread(threadID int, timestamp int64) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE post SET bumped = $1 WHERE id = $2 AND bumped < $1", timestamp, threadID)
 	if err != nil {
-		log.Fatalf("failed to bump thread: %s", err)
+		dbErr(fmt.Errorf("failed to bump thread: %w", err))
 	}
 }
 
 func (db *DB) ModeratePost(postID int, moderated PostModerated) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE post SET moderated = $1 WHERE id = $2", moderated, postID)
 	if err != nil {
-		log.Fatalf("failed to moderate post: %s", err)
+		dbErr(fmt.Errorf("failed to moderate post: %w", err))
 	}
 }
 
@@ -352,7 +377,7 @@ func (db *DB) StickyPost(postID int, sticky bool) {
 	}
 	_, err := db.conn.Exec(context.Background(), "UPDATE post SET stickied = $1 WHERE id = $2", stickied, postID)
 	if err != nil {
-		log.Fatalf("failed to sticky post: %s", err)
+		dbErr(fmt.Errorf("failed to sticky post: %w", err))
 	}
 }
 
@@ -363,28 +388,29 @@ func (db *DB) LockPost(postID int, lock bool) {
 	}
 	_, err := db.conn.Exec(context.Background(), "UPDATE post SET locked = $1 WHERE id = $2", locked, postID)
 	if err != nil {
-		log.Fatalf("failed to lock post: %s", err)
+		dbErr(fmt.Errorf("failed to lock post: %w", err))
 	}
 }
 
 func (db *DB) UpdatePostBoard(postID int, boardID int) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE post SET board = $1 WHERE id = $2", boardID, postID)
 	if err != nil {
-		log.Fatalf("failed to update post board: %s", err)
+		dbErr(fmt.Errorf("failed to update post board: %w", err))
 	}
+	// TODO update backlink boards
 }
 
 func (db *DB) UpdatePostNameblock(postID int, nameblock string) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE post SET nameblock = $1 WHERE id = $2", nameblock, postID)
 	if err != nil {
-		log.Fatalf("failed to update post nameblock: %s", err)
+		dbErr(fmt.Errorf("failed to update post nameblock: %w", err))
 	}
 }
 
 func (db *DB) UpdatePostMessage(postID int, message string) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE post SET message = $1 WHERE id = $2", message, postID)
 	if err != nil {
-		log.Fatalf("failed to update post message: %s", err)
+		dbErr(fmt.Errorf("failed to update post message: %w", err))
 	}
 }
 
@@ -395,7 +421,7 @@ func (db *DB) DeletePost(postID int) {
 
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM post WHERE id = $1", postID)
 	if err != nil {
-		log.Fatalf("failed to delete post: %s", err)
+		dbErr(fmt.Errorf("failed to delete post: %w", err))
 	}
 	db.DeleteSubscriptionsByPost(postID)
 }
@@ -436,9 +462,11 @@ func scanPost(p *Post, row pgx.Row) (int, error) {
 		&locked,
 		&p.FileMIME,
 		&p.Replies,
+		&p.BacklinkSources,
+		&p.BacklinkBoards,
 	)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("failed to scan post: %w", err)
 	}
 	if parentID != nil {
 		p.Parent = *parentID
@@ -448,5 +476,8 @@ func scanPost(p *Post, row pgx.Row) (int, error) {
 	}
 	p.Stickied = stickied == 1
 	p.Locked = locked == 1
+	if len(p.BacklinkSources) > 0 {
+		log.Printf("BL %+v %+v", p.BacklinkSources, p.BacklinkBoards)
+	}
 	return boardID, nil
 }

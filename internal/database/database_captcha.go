@@ -4,7 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
-	"log"
+	"fmt"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -20,7 +20,7 @@ func (db *DB) AddCAPTCHA(c *CAPTCHA) {
 		c.Text,
 	)
 	if err != nil {
-		log.Fatalf("failed to insert captcha: %s", err)
+		dbErr(fmt.Errorf("failed to insert captcha: %w", err))
 	}
 }
 
@@ -30,7 +30,7 @@ func (db *DB) GetCAPTCHA(ip string) *CAPTCHA {
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {
-		log.Fatalf("failed to select captcha: %s", err)
+		dbErr(fmt.Errorf("failed to select captcha: %w", err))
 	}
 	return c
 }
@@ -38,16 +38,19 @@ func (db *DB) GetCAPTCHA(ip string) *CAPTCHA {
 func (db *DB) AllCAPTCHAs() []*CAPTCHA {
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM captcha")
 	if err != nil {
-		log.Fatalf("failed to select all captcha challenges: %s", err)
+		dbErr(fmt.Errorf("failed to select all captcha challenges: %w", err))
 	}
 	var captchas []*CAPTCHA
 	for rows.Next() {
 		c := &CAPTCHA{}
 		err := scanCAPTCHA(c, rows)
 		if err != nil {
-			log.Fatalf("failed to scan captcha challenge: %s", err)
+			dbErr(fmt.Errorf("failed to scan captcha challenge: %w", err))
 		}
 		captchas = append(captchas, c)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select all captcha challenges: %w", rows.Err()))
 	}
 	return captchas
 }
@@ -55,7 +58,7 @@ func (db *DB) AllCAPTCHAs() []*CAPTCHA {
 func (db *DB) UpdateCAPTCHA(c *CAPTCHA) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE captcha SET refresh = $1, image = $2, text = $3 WHERE ip = $4", c.Refresh, c.Image, c.Text, c.IP)
 	if err != nil {
-		log.Fatal(err)
+		dbErr(err)
 	}
 }
 
@@ -63,16 +66,19 @@ func (db *DB) ExpiredCAPTCHAs() []*CAPTCHA {
 	const oneDay = 60 * 60 * 24
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM captcha WHERE timestamp <= $1", time.Now().Unix()-oneDay)
 	if err != nil {
-		log.Fatalf("failed to select expired captchas: %s", err)
+		dbErr(fmt.Errorf("failed to select expired captchas: %w", err))
 	}
 	var captchas []*CAPTCHA
 	for rows.Next() {
 		c := &CAPTCHA{}
 		err := scanCAPTCHA(c, rows)
 		if err != nil {
-			log.Fatalf("failed to select expired captchas: %s", err)
+			dbErr(fmt.Errorf("failed to select expired captchas: %w", err))
 		}
 		captchas = append(captchas, c)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select all captcha challenges: %w", rows.Err()))
 	}
 	return captchas
 }
@@ -84,7 +90,7 @@ func (db *DB) DeleteCAPTCHA(ip string) {
 
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM captcha WHERE ip = $1", ip)
 	if err != nil {
-		log.Fatalf("failed to delete captcha: %s", err)
+		dbErr(fmt.Errorf("failed to delete captcha: %w", err))
 	}
 }
 
@@ -101,7 +107,7 @@ func (db *DB) NewCAPTCHAImage() string {
 		var count int
 		err = db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM captcha WHERE image = $1", imageName).Scan(&count)
 		if err != nil {
-			log.Fatalf("failed to select number of accounts with session key: %s", err)
+			dbErr(fmt.Errorf("failed to select number of accounts with session key: %w", err))
 		} else if count == 0 {
 			return imageName
 		}

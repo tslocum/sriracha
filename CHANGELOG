@@ -1,4 +1,5 @@
 1.7.3:
+- Store backlink information in database
 - Support serving pprof debug information
 
 1.7.2:

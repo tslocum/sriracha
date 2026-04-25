@@ -5,9 +5,11 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"log"
 	"path/filepath"
+	"runtime/debug"
 	"strconv"
 	"strings"
 
@@ -44,7 +46,7 @@ func Connect(c *Config) (*pgxpool.Pool, error) {
 
 	config, err := pgxpool.ParseConfig(url)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse database configuration: %s", err)
+		return nil, fmt.Errorf("failed to parse database configuration: %w", err)
 	}
 	config.MinConns = 1
 	config.MinIdleConns = 1
@@ -52,18 +54,18 @@ func Connect(c *Config) (*pgxpool.Pool, error) {
 
 	pool, err := pgxpool.NewWithConfig(context.Background(), config)
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect to database: %s", err)
+		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
 
 	conn, err := pool.Acquire(context.Background())
 	if err != nil {
-		return nil, fmt.Errorf("failed to acquire conn: %s", err)
+		return nil, fmt.Errorf("failed to acquire conn: %w", err)
 	}
 	defer conn.Release()
 
 	_, err = conn.Exec(context.Background(), "BEGIN")
 	if err != nil {
-		return nil, fmt.Errorf("failed to begin transaction: %s", err)
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
 	}
 
 	db := &DB{
@@ -72,19 +74,19 @@ func Connect(c *Config) (*pgxpool.Pool, error) {
 	}
 	err = db.initialize()
 	if err != nil {
-		return nil, fmt.Errorf("failed to initialize database: %s", err)
+		return nil, fmt.Errorf("failed to initialize database: %w", err)
 	}
 
 	err = db.upgrade(c.Root)
 	if err != nil {
-		return nil, fmt.Errorf("failed to upgrade database: %s", err)
+		return nil, fmt.Errorf("failed to upgrade database: %w", err)
 	}
 
 	db.createSuperAdminAccount(c.SaltPass)
 
 	_, err = conn.Exec(context.Background(), "COMMIT")
 	if err != nil {
-		return nil, fmt.Errorf("failed to commit transaction: %s", err)
+		return nil, fmt.Errorf("failed to commit transaction: %w", err)
 	}
 	return pool, nil
 }
@@ -92,13 +94,13 @@ func Connect(c *Config) (*pgxpool.Pool, error) {
 func (db *DB) initialize() error {
 	_, err := db.conn.Exec(context.Background(), "SELECT 1=1")
 	if err != nil {
-		return fmt.Errorf("failed to test database connection: %s", err)
+		return fmt.Errorf("failed to test database connection: %w", err)
 	}
 
 	var tablecount int
 	err = db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'account'").Scan(&tablecount)
 	if err != nil {
-		return fmt.Errorf("failed to select whether account table exists: %s", err)
+		return fmt.Errorf("failed to select whether account table exists: %w", err)
 	} else if tablecount > 0 {
 		return nil
 	}
@@ -106,7 +108,7 @@ func (db *DB) initialize() error {
 	fmt.Printf("Initializing database version 1...\n")
 	_, err = db.conn.Exec(context.Background(), dbSchema[0])
 	if err != nil {
-		return fmt.Errorf("failed to create database: %s", err)
+		return fmt.Errorf("failed to create database: %w", err)
 	}
 	fmt.Printf("Database initialized.\n")
 	return nil
@@ -152,11 +154,11 @@ func (db *DB) upgrade(rootDir string) error {
 	var versionString string
 	err := db.conn.QueryRow(context.Background(), "SELECT value FROM config WHERE name = 'version'").Scan(&versionString)
 	if err != nil {
-		return fmt.Errorf("failed to select database version: %s", err)
+		return fmt.Errorf("failed to select database version: %w", err)
 	}
 	version, err := strconv.Atoi(versionString)
 	if err != nil {
-		return fmt.Errorf("failed to parse database version: %s", err)
+		return fmt.Errorf("failed to parse database version: %w", err)
 	}
 	maxVersion := len(dbSchema)
 	if version == maxVersion {
@@ -185,13 +187,13 @@ func Begin(pool *pgxpool.Pool, config *Config) *DB {
 
 	conn, err := pool.Acquire(context.Background())
 	if err != nil {
-		log.Fatalf("failed to acquire connection from pool: %s", err)
+		dbErr(fmt.Errorf("failed to acquire connection from pool: %w", err))
 	}
 
 	_, err = conn.Exec(context.Background(), "BEGIN")
 	if err != nil {
 		conn.Release()
-		log.Fatalf("failed to begin transaction: %s", err)
+		dbErr(fmt.Errorf("failed to begin transaction: %w", err))
 	}
 
 	return &DB{
@@ -206,11 +208,11 @@ func (db *DB) SoftRollBack() {
 	}
 	_, err := db.conn.Exec(context.Background(), "ROLLBACK")
 	if err != nil {
-		log.Fatalf("failed to rollback transaction: %s", err)
+		dbErr(fmt.Errorf("failed to rollback transaction: %w", err))
 	}
 	_, err = db.conn.Exec(context.Background(), "BEGIN")
 	if err != nil {
-		log.Fatalf("failed to begin transaction: %s", err)
+		dbErr(fmt.Errorf("failed to begin transaction: %w", err))
 	}
 }
 
@@ -220,7 +222,7 @@ func (db *DB) RollBack() {
 	}
 	_, err := db.conn.Exec(context.Background(), "ROLLBACK")
 	if err != nil {
-		log.Fatalf("failed to rollback transaction: %s", err)
+		dbErr(fmt.Errorf("failed to rollback transaction: %w", err))
 	}
 	db.conn.Release()
 	db.committed = true
@@ -232,7 +234,7 @@ func (db *DB) Commit() {
 	}
 	_, err := db.conn.Exec(context.Background(), "COMMIT")
 	if err != nil {
-		log.Fatalf("failed to commit transaction: %s", err)
+		dbErr(fmt.Errorf("failed to commit transaction: %w", err))
 	}
 	db.conn.Release()
 	db.committed = true
@@ -244,7 +246,7 @@ func (db *DB) CommitWithErr() error {
 	}
 	_, err := db.conn.Exec(context.Background(), "COMMIT")
 	if err != nil {
-		return fmt.Errorf("failed to commit transaction: %s", err)
+		return fmt.Errorf("failed to commit transaction: %w", err)
 	}
 	db.conn.Release()
 	db.committed = true
@@ -269,7 +271,7 @@ func (db *DB) HaveConfig(key string) bool {
 	if err == pgx.ErrNoRows {
 		return false
 	} else if err != nil {
-		log.Fatalf("failed to select config count %s: %s", key, err)
+		dbErr(fmt.Errorf("failed to select config count %s: %w", key, err))
 	}
 	return count > 0
 }
@@ -284,7 +286,7 @@ func (db *DB) GetString(key string) string {
 	if err == pgx.ErrNoRows {
 		return ""
 	} else if err != nil {
-		log.Fatalf("failed to get string %s: %s", key, err)
+		dbErr(fmt.Errorf("failed to get string %s: %w", key, err))
 	}
 	return value
 }
@@ -296,7 +298,7 @@ func (db *DB) SaveString(key string, value string) {
 	value = strings.ReplaceAll(value, "\r", "")
 	_, err := db.conn.Exec(context.Background(), "INSERT INTO config VALUES ($1, $2) ON CONFLICT (name) DO UPDATE SET value = $3", db.configKey(key), value, value)
 	if err != nil {
-		log.Fatalf("failed to save string: %s", err)
+		dbErr(fmt.Errorf("failed to save string: %w", err))
 	}
 }
 
@@ -380,7 +382,7 @@ func (db *DB) newSessionKey() string {
 		var numAccounts int
 		err = db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM account WHERE session = $1", sessionKey).Scan(&numAccounts)
 		if err != nil {
-			log.Fatalf("failed to select number of accounts with session key: %s", err)
+			dbErr(fmt.Errorf("failed to select number of accounts with session key: %w", err))
 		} else if numAccounts == 0 {
 			return sessionKey
 		}
@@ -393,6 +395,27 @@ func (db *DB) Exec(sql string, arguments ...any) (pgconn.CommandTag, error) {
 
 func (db *DB) QueryRow(sql string, arguments ...any) pgx.Row {
 	return db.conn.QueryRow(context.Background(), sql, arguments...)
+}
+
+// TestConn is a utility method for testing the database connection.
+// It is useful when debugging uncaught database errors.
+func (db *DB) TestConn() {
+	dummy := db.AccountByUsername("")
+	_ = dummy
+}
+
+func dbErr(err error) {
+	log.Println("STACK TRACE:")
+	debug.PrintStack()
+
+	log.Println("SRIRACHA ENCOUNTERED A FATAL DATABASE ERROR!")
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) {
+		log.Printf("  ERROR CODE: %s", pgErr.Code)
+		log.Printf("  ERROR MESSAGE: %s", pgErr.Message)
+	}
+
+	log.Fatal(err)
 }
 
 // Validate database interface during compilation.

@@ -2,7 +2,7 @@ package database
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"strings"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -15,14 +15,14 @@ var boardCache []*Board
 func (db *DB) setBoardAttributes(b *Board) {
 	rows, err := db.conn.Query(context.Background(), "SELECT upload FROM board_upload WHERE board = $1", b.ID)
 	if err != nil {
-		log.Fatalf("failed to select board uploads: %s", err)
+		dbErr(fmt.Errorf("failed to select board uploads: %w", err))
 	}
 	b.Uploads = nil
 	for rows.Next() {
 		var mimeType string
 		err := rows.Scan(&mimeType)
 		if err != nil {
-			log.Fatalf("failed to select board uploads: %s", err)
+			dbErr(fmt.Errorf("failed to select board uploads: %w", err))
 		}
 		for _, u := range db.config.UploadTypes() {
 			if u.MIME == mimeType {
@@ -31,19 +31,25 @@ func (db *DB) setBoardAttributes(b *Board) {
 			}
 		}
 	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select board uploads: %w", rows.Err()))
+	}
 
 	rows, err = db.conn.Query(context.Background(), "SELECT embed FROM board_embed WHERE board = $1", b.ID)
 	if err != nil {
-		log.Fatalf("failed to select board embeds: %s", err)
+		dbErr(fmt.Errorf("failed to select board embeds: %w", err))
 	}
 	b.Embeds = nil
 	for rows.Next() {
 		var name string
 		err := rows.Scan(&name)
 		if err != nil {
-			log.Fatalf("failed to select board embeds: %s", err)
+			dbErr(fmt.Errorf("failed to select board embeds: %w", err))
 		}
 		b.Embeds = append(b.Embeds, name)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select board embeds: %w", rows.Err()))
 	}
 }
 
@@ -108,22 +114,22 @@ func (db *DB) AddBoard(b *Board) {
 		gallery,
 	)
 	if err != nil {
-		log.Fatalf("failed to insert board: %s", err)
+		dbErr(fmt.Errorf("failed to insert board: %w", err))
 	}
 	err = db.conn.QueryRow(context.Background(), "SELECT id FROM board WHERE dir = $1", b.Dir).Scan(&b.ID)
 	if err != nil || b.ID == 0 {
-		log.Fatalf("failed to select id of inserted board: %s", err)
+		dbErr(fmt.Errorf("failed to select id of inserted board: %w", err))
 	}
 	for _, upload := range b.Uploads {
 		_, err := db.conn.Exec(context.Background(), "INSERT INTO board_upload VALUES ($1, $2)", b.ID, upload)
 		if err != nil {
-			log.Fatalf("failed to insert board uploads: %s", err)
+			dbErr(fmt.Errorf("failed to insert board uploads: %w", err))
 		}
 	}
 	for _, embed := range b.Embeds {
 		_, err := db.conn.Exec(context.Background(), "INSERT INTO board_embed VALUES ($1, $2)", b.ID, embed)
 		if err != nil {
-			log.Fatalf("failed to insert board embeds: %s", err)
+			dbErr(fmt.Errorf("failed to insert board embeds: %w", err))
 		}
 	}
 }
@@ -136,15 +142,18 @@ func (db *DB) AllBoards() []*Board {
 
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM board ORDER BY dir ASC")
 	if err != nil {
-		log.Fatalf("failed to select all boards: %s", err)
+		dbErr(fmt.Errorf("failed to select all boards: %w", err))
 	}
 	for rows.Next() {
 		b := &Board{}
 		err := scanBoard(b, rows)
 		if err != nil {
-			log.Fatalf("failed to select all boards: %s", err)
+			dbErr(fmt.Errorf("failed to select all boards: %w", err))
 		}
 		boardCache = append(boardCache, b)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select all boards: %w", rows.Err()))
 	}
 	for _, b := range boardCache {
 		db.setBoardAttributes(b)
@@ -184,14 +193,14 @@ func (db *DB) UniqueUserPosts(b *Board) int {
 	if err == pgx.ErrNoRows {
 		return 0
 	} else if err != nil {
-		log.Fatalf("failed to select unique user posts: %s", err)
+		dbErr(fmt.Errorf("failed to select unique user posts: %w", err))
 	}
 	return count
 }
 
 func (db *DB) UpdateBoard(b *Board) {
 	if b.ID <= 0 {
-		log.Fatalf("invalid board ID %d", b.ID)
+		dbErr(fmt.Errorf("invalid board ID %d", b.ID))
 	}
 	boardCache = nil
 
@@ -254,28 +263,28 @@ func (db *DB) UpdateBoard(b *Board) {
 		b.ID,
 	)
 	if err != nil {
-		log.Fatalf("failed to update board: %s", err)
+		dbErr(fmt.Errorf("failed to update board: %w", err))
 	}
 
 	_, err = db.conn.Exec(context.Background(), "DELETE FROM board_upload WHERE board = $1", b.ID)
 	if err != nil {
-		log.Fatalf("failed to delete board uploads: %s", err)
+		dbErr(fmt.Errorf("failed to delete board uploads: %w", err))
 	}
 	for _, upload := range b.Uploads {
 		_, err := db.conn.Exec(context.Background(), "INSERT INTO board_upload VALUES ($1, $2)", b.ID, upload)
 		if err != nil {
-			log.Fatalf("failed to insert board uploads: %s", err)
+			dbErr(fmt.Errorf("failed to insert board uploads: %w", err))
 		}
 	}
 
 	_, err = db.conn.Exec(context.Background(), "DELETE FROM board_embed WHERE board = $1", b.ID)
 	if err != nil {
-		log.Fatalf("failed to delete board embeds: %s", err)
+		dbErr(fmt.Errorf("failed to delete board embeds: %w", err))
 	}
 	for _, embed := range b.Embeds {
 		_, err := db.conn.Exec(context.Background(), "INSERT INTO board_embed VALUES ($1, $2)", b.ID, embed)
 		if err != nil {
-			log.Fatalf("failed to insert board embeds: %s", err)
+			dbErr(fmt.Errorf("failed to insert board embeds: %w", err))
 		}
 	}
 }
@@ -288,7 +297,7 @@ func (db *DB) DeleteBoard(id int) {
 
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM board WHERE id = $1", id)
 	if err != nil {
-		log.Fatalf("failed to delete board: %s", err)
+		dbErr(fmt.Errorf("failed to delete board: %w", err))
 	}
 	db.DeleteSubscriptionsByBoard(id)
 }
