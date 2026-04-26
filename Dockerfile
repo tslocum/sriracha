@@ -1,4 +1,4 @@
-FROM alpine:3.23.3 AS build
+FROM alpine:3.23.4 AS build
 
 # Install timezone data and Go compiler.
 RUN apk add --no-cache tzdata go
@@ -29,7 +29,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     cd /usr/src/sriracha && \
     find . -type f -name '*.go' -delete
 
-FROM alpine:3.23.3
+FROM alpine:3.23.4
 
 # Set working directory.
 WORKDIR /usr/share/sriracha
