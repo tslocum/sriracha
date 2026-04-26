@@ -405,6 +405,17 @@ func (db *DB) TestConn() {
 }
 
 func dbErr(err error) {
+	wrappedErr := err
+	for {
+		if wrappedErr == pgx.ErrNoRows {
+			return
+		}
+		wrappedErr = errors.Unwrap(wrappedErr)
+		if wrappedErr == nil {
+			break
+		}
+	}
+
 	log.Println("STACK TRACE:")
 	debug.PrintStack()
 

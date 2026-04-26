@@ -1203,6 +1203,10 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 		}
 	}
 
+	if post.Moderated != ModeratedHidden {
+		db.AddPostBacklinks(post)
+	}
+
 	s.rebuildLock.Lock()
 	db.Commit()
 

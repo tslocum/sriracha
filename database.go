@@ -114,7 +114,7 @@ type DB interface {
 	ModeratePost(postID int, moderated PostModerated)
 	StickyPost(postID int, sticky bool)
 	LockPost(postID int, lock bool)
-	UpdatePostBoard(postID int, boardID int)
+	UpdatePostBoard(postID int, board *Board)
 	UpdatePostNameblock(postID int, nameblock string)
 	UpdatePostMessage(postID int, message string)
 	DeletePost(postID int)

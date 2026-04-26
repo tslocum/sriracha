@@ -9,18 +9,12 @@ import (
 )
 
 func (db *DB) AddKeyword(k *Keyword) {
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO keyword VALUES (DEFAULT, $1, $2)",
+	err := db.conn.QueryRow(context.Background(), "INSERT INTO keyword VALUES (DEFAULT, $1, $2) RETURNING id",
 		k.Text,
 		k.Action,
-	)
+	).Scan(&k.ID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to insert keyword: %w", err))
-	}
-	err = db.conn.QueryRow(context.Background(), "SELECT id FROM keyword WHERE text = $1", k.Text).Scan(&k.ID)
-	if err != nil {
-		dbErr(fmt.Errorf("failed to select number of super-administrator accounts: %w", err))
-	} else if k.ID == 0 {
-		dbErr(fmt.Errorf("failed to select id of added keyword"))
 	}
 	db.updateKeywordBoards(k)
 }

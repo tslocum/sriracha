@@ -9,18 +9,12 @@ import (
 )
 
 func (db *DB) AddPage(p *Page) {
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO page VALUES (DEFAULT, $1, $2)",
+	err := db.conn.QueryRow(context.Background(), "INSERT INTO page VALUES (DEFAULT, $1, $2) RETURNING id",
 		p.Path,
 		p.Content,
-	)
+	).Scan(&p.ID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to insert page: %w", err))
-	}
-	err = db.conn.QueryRow(context.Background(), "SELECT id FROM page WHERE path = $1", p.Path).Scan(&p.ID)
-	if err != nil {
-		dbErr(fmt.Errorf("failed to select id of added page: %w", err))
-	} else if p.ID == 0 {
-		dbErr(fmt.Errorf("failed to select id of added page"))
 	}
 }
 

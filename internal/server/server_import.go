@@ -534,6 +534,7 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 					return
 				}
 			}
+			db.AddPostBacklinks(p)
 			newIDs[oldID] = p.ID
 			if p.ID > lastPostID {
 				lastPostID = p.ID

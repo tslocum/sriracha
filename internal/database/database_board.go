@@ -72,7 +72,7 @@ func (db *DB) AddBoard(b *Board) {
 	if b.Gallery {
 		gallery = 1
 	}
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO board VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39)",
+	err := db.conn.QueryRow(context.Background(), "INSERT INTO board VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39) RETURNING id",
 		b.Dir,
 		b.Name,
 		b.Description,
@@ -112,13 +112,9 @@ func (db *DB) AddBoard(b *Board) {
 		b.Identifiers,
 		b.Files,
 		gallery,
-	)
+	).Scan(&b.ID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to insert board: %w", err))
-	}
-	err = db.conn.QueryRow(context.Background(), "SELECT id FROM board WHERE dir = $1", b.Dir).Scan(&b.ID)
-	if err != nil || b.ID == 0 {
-		dbErr(fmt.Errorf("failed to select id of inserted board: %w", err))
 	}
 	for _, upload := range b.Uploads {
 		_, err := db.conn.Exec(context.Background(), "INSERT INTO board_upload VALUES ($1, $2)", b.ID, upload)

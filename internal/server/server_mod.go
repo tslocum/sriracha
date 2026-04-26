@@ -182,7 +182,7 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 			// Update post board.
 			source := data.Post.Board
 			for _, p := range posts {
-				db.UpdatePostBoard(p.ID, destination.ID)
+				db.UpdatePostBoard(p.ID, destination)
 				p.Board = destination
 				refPath := fmt.Sprintf("res/%d.html#%d", p.Thread(), p.ID)
 				oldPath := source.Path() + refPath

@@ -60,22 +60,16 @@ func (db *DB) AddBanner(b *Banner) {
 	if b.Pages {
 		pages = 1
 	}
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO banner VALUES (DEFAULT, $1, $2, $3, $4, $5, $6)",
+	err := db.conn.QueryRow(context.Background(), "INSERT INTO banner VALUES (DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING id",
 		b.Name,
 		b.Width,
 		b.Height,
 		overboard,
 		news,
 		pages,
-	)
+	).Scan(&b.ID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to insert banner: %w", err))
-	}
-	err = db.conn.QueryRow(context.Background(), "SELECT id FROM banner WHERE name = $1", b.Name).Scan(&b.ID)
-	if err != nil {
-		dbErr(fmt.Errorf("failed to select id of added banner: %w", err))
-	} else if b.ID == 0 {
-		dbErr(fmt.Errorf("failed to select id of added banner"))
 	}
 	db.updateBannerBoards(b)
 }

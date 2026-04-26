@@ -37,6 +37,12 @@ const (
 	ModeratedApproved PostModerated = 2
 )
 
+type PostBacklink struct {
+	Source int
+	Thread int
+	Board  string
+}
+
 type Post struct {
 	ID           int
 	Board        *Board
@@ -64,11 +70,10 @@ type Post struct {
 	Moderated    PostModerated
 	Stickied     bool
 	Locked       bool
+	Backlinks    []int
 
 	// Calculated fields.
-	Replies         int
-	BacklinkSources []int
-	BacklinkBoards  []int
+	Replies int
 }
 
 func (p *Post) Copy() *Post {
@@ -307,27 +312,27 @@ func (p *Post) Identifier(identifiers bool, force bool) string {
 	return string(adlerBuf[:5])
 }
 
-func (p *Post) Backlinks(posts []*Post) template.HTML {
-	if !p.Board.Backlinks {
+func (p *Post) Mentions() []int {
+	var mentions []int
+	matches := RefLinkPattern.FindAll([]byte(p.Message), -1)
+	for _, match := range matches {
+		id, err := strconv.Atoi(string(match)[8:])
+		if err != nil || id <= 0 {
+			continue
+		}
+		mentions = append(mentions, id)
+		continue
+	}
+	return mentions
+}
+
+func (p *Post) BacklinksLabel() template.HTML {
+	if !p.Board.Backlinks || len(p.Backlinks) == 0 {
 		return ""
 	}
 	var out []byte
-BACKLINKS:
-	for _, reply := range posts {
-		matches := RefLinkPattern.FindAll([]byte(reply.Message), -1)
-		for _, match := range matches {
-			id, err := strconv.Atoi(string(match)[8:])
-			if err != nil || id != p.ID {
-				continue
-			} else if out != nil {
-				out = append(out, []byte("<wbr>")...)
-			}
-			out = append(out, FormatRefLink(p.Board.Path(), p.Thread(), reply.ID)...)
-			continue BACKLINKS
-		}
-	}
-	if out == nil {
-		return ""
+	for _, backlinkID := range p.Backlinks {
+		out = append(out, FormatRefLink(p.Board.Path(), p.Thread(), backlinkID)...)
 	}
 	return template.HTML(`<span class="backlink">` + string(out) + `</span>`)
 }

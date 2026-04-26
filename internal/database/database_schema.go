@@ -196,6 +196,7 @@ CREATE TABLE post (
 	stickied smallint NOT NULL default '0',
 	locked smallint NOT NULL default '0'
 	-- v5: filemime varchar(64) NOT NULL default ''
+	-- v16: backlinks integer[] NOT NULL DEFAULT array[]::integer[];
 );
 CREATE INDEX ON post (board);
 CREATE INDEX ON post (parent);
@@ -204,13 +205,6 @@ CREATE INDEX ON post (stickied);
 CREATE INDEX ON post (bumped);
 CREATE UNIQUE INDEX ON post (filehash);
 -- v8: CREATE INDEX ON post (filehash);
-
--- v16: CREATE TABLE post_backlink (
--- v16: 	target integer NOT NULL REFERENCES post (id) ON DELETE CASCADE,
--- v16: 	source integer NOT NULL REFERENCES post (id) ON DELETE CASCADE,
--- v16: 	board integer NOT NULL REFERENCES board (id) ON DELETE CASCADE,
--- v16: 	PRIMARY KEY (target, source)
--- v16: );
 
 CREATE TABLE report (
 	id serial PRIMARY KEY,
@@ -326,11 +320,6 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 	);
 	UPDATE config SET value = '15' WHERE name = 'version';`,
 	// Version 16.
-	`CREATE TABLE post_backlink (
-		target integer NOT NULL REFERENCES post (id) ON DELETE CASCADE,
-		source integer NOT NULL REFERENCES post (id) ON DELETE CASCADE,
-		board integer NOT NULL REFERENCES board (id) ON DELETE CASCADE,
-		PRIMARY KEY (target, source)
-	);
+	`ALTER TABLE post ADD COLUMN backlinks integer[] NOT NULL DEFAULT array[]::integer[];
 	UPDATE config SET value = '16' WHERE name = 'version';`,
 }

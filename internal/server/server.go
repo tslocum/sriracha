@@ -2424,6 +2424,18 @@ func (s *Server) Run() error {
 	s.lock.Lock()
 
 	db := s.begin()
+
+	// Fill missing post backlink data.
+	if !db.HavePostBacklinks() {
+		for _, b := range db.AllBoards() {
+			for _, thread := range db.AllThreads(b, true) {
+				for _, post := range db.AllPostsInThread(thread[0], true) {
+					db.AddPostBacklinks(post)
+				}
+			}
+		}
+	}
+
 	s.refreshMaxRequestSize(db)
 
 	// Cache CAPTCHA challenges.

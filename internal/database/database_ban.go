@@ -10,18 +10,14 @@ import (
 )
 
 func (db *DB) AddBan(b *Ban) {
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO ban VALUES (DEFAULT, $1, $2, $3, $4)",
+	err := db.conn.QueryRow(context.Background(), "INSERT INTO ban VALUES (DEFAULT, $1, $2, $3, $4) RETURNING id",
 		b.IP,
 		time.Now().Unix(),
 		b.Expire,
 		b.Reason,
-	)
+	).Scan(&b.ID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to insert ban: %w", err))
-	}
-	err = db.conn.QueryRow(context.Background(), "SELECT id FROM ban WHERE ip = $1", b.IP).Scan(&b.ID)
-	if err != nil || b.ID == 0 {
-		dbErr(fmt.Errorf("failed to select id of inserted ban: %w", err))
 	}
 }
 

@@ -14,20 +14,16 @@ import (
 
 func (db *DB) AddAccount(a *Account, password string) {
 	sessionKey := db.newSessionKey()
-	_, err := db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4, $5, $6)",
+	err := db.conn.QueryRow(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4, $5, $6) RETURNING id",
 		a.Username,
 		encryptPassword(db.config.SaltPass, password),
 		a.Role,
 		sessionKey,
 		a.Style,
 		a.Locale,
-	)
+	).Scan(&a.ID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to insert account: %w", err))
-	}
-	err = db.conn.QueryRow(context.Background(), "SELECT id FROM account WHERE username = $1", a.Username).Scan(&a.ID)
-	if err != nil || a.ID == 0 {
-		dbErr(fmt.Errorf("failed to select id of inserted account: %w", err))
 	}
 }
 
@@ -74,12 +70,11 @@ func (db *DB) AccountByID(id int) *Account {
 func (db *DB) AccountByUsername(username string) *Account {
 	a := &Account{}
 	err := scanAccount(a, db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE username = $1 AND role != $2", username, RoleDisabled))
-	if err == pgx.ErrNoRows {
-		return nil
-	} else if err != nil {
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil
+		}
 		dbErr(fmt.Errorf("failed to select account: %w", err))
-	} else if a.ID == 0 {
-		return nil
 	}
 	return a
 }
