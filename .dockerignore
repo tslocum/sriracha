@@ -1,5 +1,6 @@
 .git
 .vscode
 **__debug**
+cmd/sriracha/sriracha
 dist
 **.so
