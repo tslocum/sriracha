@@ -475,10 +475,11 @@ zoopz.org, www.zoopz.org {
   header * ?Cache-Control "public, no-cache"
 
   # Cache static files.
-  @cachedFiles {
-    path /static/* *.aac *.apng *.avi *.avif *.bmp *.flac *.gif *.jpg *.m4a *.midi *.mkv *.mp3 *.mp4 *.mpeg *.ogg *.ogv *.png *.svg *.swf *.tiff *.wav *.weba *.webm
+  @staticFiles {
+    path /static/*
+    path_regexp ^.*/(src|thumb)/.*$
   }
-  header @cachedFiles Cache-Control "public, max-age=1209600, immutable"
+  header @staticFiles Cache-Control "public, max-age=1209600, immutable"
 
   # Forward /sriracha requests to Sriracha.
   reverse_proxy /sriracha* h2c://localhost:8080
