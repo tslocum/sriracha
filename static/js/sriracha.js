@@ -593,6 +593,32 @@ function onDrop(e) {
     fileInputs[0].files = e.dataTransfer.files;
 }
 
+function onPaste(e) {
+    var fileInputs = document.getElementsByName("file");
+    if (!fileInputs || fileInputs.length == 0) {
+        return;
+    }
+    var items = (event.clipboardData  || event.originalEvent.clipboardData).items;
+    var dt = new DataTransfer();
+    for (const item of items) {
+        if (item.kind == 'file') {
+            dt.items.add(item.getAsFile());
+        }
+    }
+    if (dt.items.length == 0) {
+        return;
+    }
+    var msg = "Paste file";
+    if (dt.items.length != 1) {
+        msg += "s";
+    }
+    msg += "?";
+    if (!confirm(msg)) {
+        return;
+    }
+    fileInputs[0].files = dt.files;
+}
+
 function onSubmit(e) {
     var maxSizeElement = document.getElementById("maxFileSize");
     if (!maxSizeElement) {
@@ -685,5 +711,9 @@ window.addEventListener("drop", onDrop);
 
 window.addEventListener("focus", onFocus);
 window.addEventListener("blur", onBlur);
+
 window.addEventListener("mousemove", onMouseMove);
+
+document.addEventListener("paste", onPaste);
+
 window.addEventListener("DOMContentLoaded", onDOMContentLoaded);

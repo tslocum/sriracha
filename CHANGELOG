@@ -1,3 +1,6 @@
+1.7.4:
+- Support pasting files and image data into post form
+
 1.7.3:
 - Store backlink information in database
 - Support serving pprof debug information
