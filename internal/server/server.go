@@ -1998,12 +1998,12 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+var staticPattern = regexp.MustCompile(`^/(captcha|static)/.*$`)
 var srcThumbPattern = regexp.MustCompile(`^.*/(src|thumb)/.*$`)
-var staticPattern = regexp.MustCompile(`^/static/.*$`)
 
 func withCacheHeader(fs http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if srcThumbPattern.MatchString(r.URL.Path) || staticPattern.MatchString(r.URL.Path) {
+		if staticPattern.MatchString(r.URL.Path) || srcThumbPattern.MatchString(r.URL.Path) {
 			// Cache static files.
 			w.Header().Set("Cache-Control", "public, max-age=1209600, immutable")
 		} else {
