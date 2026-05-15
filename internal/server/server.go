@@ -191,6 +191,8 @@ type Server struct {
 	notificationsWaitGroup sync.WaitGroup
 	shutdownNotifications  chan struct{}
 
+	indexCache map[int][][]int
+
 	rebuildQueue     chan *rebuildInfo
 	rebuildWaitGroup sync.WaitGroup
 	rebuildLock      sync.Mutex
@@ -221,6 +223,7 @@ func NewServer() *Server {
 			Rules:   make(map[int][]template.HTML),
 		},
 		shutdownNotifications: make(chan struct{}),
+		indexCache:            make(map[int][][]int),
 		rebuildQueue:          make(chan *rebuildInfo),
 		httpClient:            httpClient,
 		msgPrinter:            message.NewPrinter(language.English),
@@ -1314,9 +1317,19 @@ func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 
 	// Write indexes.
 
+	existingIDs := func(page int) []int {
+		cachedBoard := s.indexCache[board.ID]
+		if cachedBoard == nil || page < 0 || page > len(cachedBoard)-1 {
+			return nil
+		}
+		return cachedBoard[page]
+	}
+
 	data.ReplyMode = 0
 	data.Template = "board_page"
 	data.Pages = pageCount(len(threadInfo), board.Threads)
+	allPostIDs := make([][]int, data.Pages)
+	checkCache := len(s.indexCache[board.ID]) > 0
 	for page := 0; page < data.Pages; page++ {
 		if trace {
 			traceT = time.Now()
@@ -1325,14 +1338,6 @@ func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 		fileName := "index.html"
 		if page > 0 {
 			fileName = fmt.Sprintf("%d.html", page)
-		}
-
-		writePath := filepath.Join(s.config.Root, board.Dir, "_"+fileName)
-		filePath := filepath.Join(s.config.Root, board.Dir, fileName)
-
-		indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
-		if err != nil {
-			log.Fatal(err)
 		}
 
 		start := page * board.Threads
@@ -1349,9 +1354,27 @@ func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 			if board.Type == TypeImageboard {
 				posts = append(posts, db.AllReplies(thread.ID, board.Replies, true)...)
 			}
+			for i := range posts {
+				allPostIDs[page] = append(allPostIDs[page], posts[i].ID)
+			}
 			data.Threads = append(data.Threads, posts)
 		}
+		if checkCache && slices.Equal(allPostIDs[page], existingIDs(page)) {
+			if trace {
+				traceD = time.Since(traceT)
+				traceLog(board.Path()+fileName+" (skipped)", traceD)
+			}
+			continue
+		}
 		data.Page = page
+
+		writePath := filepath.Join(s.config.Root, board.Dir, "_"+fileName)
+		filePath := filepath.Join(s.config.Root, board.Dir, fileName)
+
+		indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+		if err != nil {
+			log.Fatal(err)
+		}
 		data.execute(indexFile)
 
 		indexFile.Close()
@@ -1365,6 +1388,7 @@ func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 			traceLog(board.Path()+fileName, traceD)
 		}
 	}
+	s.indexCache[board.ID] = allPostIDs
 }
 
 // writeOverboard writes overboard pages to disk.
@@ -1576,6 +1600,7 @@ func (s *Server) rebuildThread(db *database.DB, post *Post) {
 
 // rebuildBoard rebuilds all pages in a board.
 func (s *Server) rebuildBoard(db *database.DB, board *Board) {
+	s.indexCache[board.ID] = nil
 	for _, info := range db.AllThreads(board, true) {
 		s.writeThread(db, board, info[0])
 	}
