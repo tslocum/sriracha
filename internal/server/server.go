@@ -1329,7 +1329,7 @@ func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 	data.Template = "board_page"
 	data.Pages = pageCount(len(threadInfo), board.Threads)
 	allPostIDs := make([][]int, data.Pages)
-	checkCache := len(s.indexCache[board.ID]) > 0
+	checkCache := board.Type == TypeImageboard && len(s.indexCache[board.ID]) > 0
 	for page := 0; page < data.Pages; page++ {
 		if trace {
 			traceT = time.Now()
@@ -1469,7 +1469,7 @@ func (s *Server) writeOverboard(db *database.DB) {
 	data.Template = "board_page"
 	data.Pages = pageCount(len(threadInfo), overboard.Threads)
 	allPostIDs := make([][]int, data.Pages)
-	checkCache := len(s.indexCache[overboard.ID]) > 0
+	checkCache := overboard.Type == TypeImageboard && len(s.indexCache[overboard.ID]) > 0
 	for page := 0; page < data.Pages; page++ {
 		if trace {
 			traceT = time.Now()
