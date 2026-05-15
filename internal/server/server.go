@@ -1262,6 +1262,11 @@ func (s *Server) writeThread(db *database.DB, board *Board, postID int) {
 
 // writeBoardIndexes writes board index pages to disk.
 func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
+	var (
+		traceT time.Time
+		traceD time.Duration
+	)
+
 	if board.Unique == 0 {
 		board.Unique = db.UniqueUserPosts(board)
 	}
@@ -1276,6 +1281,10 @@ func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 
 	// Write catalog.
 	if board.Type == TypeImageboard {
+		if trace {
+			traceT = time.Now()
+		}
+
 		writePath := filepath.Join(s.config.Root, board.Dir, "_catalog.html")
 		filePath := filepath.Join(s.config.Root, board.Dir, "catalog.html")
 
@@ -1296,6 +1305,11 @@ func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		if trace {
+			traceD = time.Since(traceT)
+			traceLog(board.Path()+"catalog.html", traceD)
+		}
 	}
 
 	// Write indexes.
@@ -1304,6 +1318,10 @@ func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 	data.Template = "board_page"
 	data.Pages = pageCount(len(threadInfo), board.Threads)
 	for page := 0; page < data.Pages; page++ {
+		if trace {
+			traceT = time.Now()
+		}
+
 		fileName := "index.html"
 		if page > 0 {
 			fileName = fmt.Sprintf("%d.html", page)
@@ -1340,6 +1358,11 @@ func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 		err = os.Rename(writePath, filePath)
 		if err != nil {
 			log.Fatal(err)
+		}
+
+		if trace {
+			traceD = time.Since(traceT)
+			traceLog(board.Path()+fileName, traceD)
 		}
 	}
 }
