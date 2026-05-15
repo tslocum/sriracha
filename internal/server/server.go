@@ -1393,9 +1393,16 @@ func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 
 // writeOverboard writes overboard pages to disk.
 func (s *Server) writeOverboard(db *database.DB) {
+	var (
+		traceT time.Time
+		traceD time.Duration
+	)
+
 	var overboardDir string
+	overboardPath := "/"
 	if s.opt.Overboard != "/" {
 		overboardDir = s.opt.Overboard
+		overboardPath += s.opt.Overboard + "/"
 	}
 
 	overboard := &Board{
@@ -1417,6 +1424,10 @@ func (s *Server) writeOverboard(db *database.DB) {
 
 	// Write catalog.
 	if overboard.Type == TypeImageboard {
+		if trace {
+			traceT = time.Now()
+		}
+
 		writePath := filepath.Join(s.config.Root, overboardDir, "_catalog.html")
 		filePath := filepath.Join(s.config.Root, overboardDir, "catalog.html")
 
@@ -1437,25 +1448,36 @@ func (s *Server) writeOverboard(db *database.DB) {
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		if trace {
+			traceD = time.Since(traceT)
+			traceLog(overboardPath+"catalog.html", traceD)
+		}
 	}
 
 	// Write indexes.
 
+	existingIDs := func(page int) []int {
+		cachedBoard := s.indexCache[overboard.ID]
+		if cachedBoard == nil || page < 0 || page > len(cachedBoard)-1 {
+			return nil
+		}
+		return cachedBoard[page]
+	}
+
 	data.ReplyMode = 0
 	data.Template = "board_page"
 	data.Pages = pageCount(len(threadInfo), overboard.Threads)
+	allPostIDs := make([][]int, data.Pages)
+	checkCache := len(s.indexCache[overboard.ID]) > 0
 	for page := 0; page < data.Pages; page++ {
+		if trace {
+			traceT = time.Now()
+		}
+
 		fileName := "index.html"
 		if page > 0 {
 			fileName = fmt.Sprintf("%d.html", page)
-		}
-
-		writePath := filepath.Join(s.config.Root, overboardDir, "_"+fileName)
-		filePath := filepath.Join(s.config.Root, overboardDir, fileName)
-
-		indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
-		if err != nil {
-			log.Fatal(err)
 		}
 
 		start := page * overboard.Threads
@@ -1472,9 +1494,27 @@ func (s *Server) writeOverboard(db *database.DB) {
 			if overboard.Type == TypeImageboard {
 				posts = append(posts, db.AllReplies(thread.ID, overboard.Replies, true)...)
 			}
+			for i := range posts {
+				allPostIDs[page] = append(allPostIDs[page], posts[i].ID)
+			}
 			data.Threads = append(data.Threads, posts)
 		}
+		if checkCache && slices.Equal(allPostIDs[page], existingIDs(page)) {
+			if trace {
+				traceD = time.Since(traceT)
+				traceLog(overboardPath+fileName+" (skipped)", traceD)
+			}
+			continue
+		}
 		data.Page = page
+
+		writePath := filepath.Join(s.config.Root, overboardDir, "_"+fileName)
+		filePath := filepath.Join(s.config.Root, overboardDir, fileName)
+
+		indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+		if err != nil {
+			log.Fatal(err)
+		}
 		data.execute(indexFile)
 
 		indexFile.Close()
@@ -1482,7 +1522,13 @@ func (s *Server) writeOverboard(db *database.DB) {
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		if trace {
+			traceD = time.Since(traceT)
+			traceLog(overboardPath+fileName, traceD)
+		}
 	}
+	s.indexCache[overboard.ID] = allPostIDs
 }
 
 // newPageTemplate returns a new collection of templates with read-only database access.
@@ -1609,6 +1655,9 @@ func (s *Server) rebuildBoard(db *database.DB, board *Board) {
 
 // rebuildAll rebuilds all board, overboard, news and custom pages.
 func (s *Server) rebuildAll(db *database.DB, verbose bool) {
+	for boardID := range s.indexCache {
+		s.indexCache[boardID] = s.indexCache[boardID][:0]
+	}
 	allPages := db.AllPages()
 	if len(allPages) > 0 {
 		if verbose {

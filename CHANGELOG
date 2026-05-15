@@ -1,3 +1,6 @@
+1.7.5:
+- Skip rebuilding unmodified board index pages
+
 1.7.4:
 - Support pasting files and image data into post form
 
