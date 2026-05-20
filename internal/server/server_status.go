@@ -31,6 +31,7 @@ func (s *Server) serveStatus(data *templateData, db *database.DB, w http.Respons
 
 						db.ModeratePost(post.ID, ModeratedApproved)
 						db.DeleteReports(post)
+						s.writeModQueue(db)
 
 						if rebuild {
 							db.AddPostBacklinks(post)

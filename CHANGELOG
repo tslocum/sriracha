@@ -1,3 +1,6 @@
+1.7.6:
+- Support writing status of moderation queue to static file
+
 1.7.5:
 - Skip rebuilding unmodified board index pages
 

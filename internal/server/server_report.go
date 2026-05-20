@@ -44,6 +44,7 @@ func (s *Server) serveReport(db *database.DB, w http.ResponseWriter, r *http.Req
 			IP:        s.hashIP(r),
 		}
 		db.AddReport(report)
+		s.writeModQueue(db)
 	}
 
 	data.Template = "board_info"

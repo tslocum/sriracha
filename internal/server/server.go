@@ -29,6 +29,7 @@ import (
 	"regexp"
 	"runtime/debug"
 	"slices"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -134,6 +135,7 @@ type ServerOptions struct {
 	Banners          map[int][]*Banner
 	Rules            map[int][]template.HTML
 	Categories       []*categoryInfo
+	ModQueue         string
 	Notifications    bool
 	DevMode          bool
 	FuncMaps         map[string]template.FuncMap
@@ -193,6 +195,8 @@ type Server struct {
 
 	indexCache map[int][][]int
 
+	modQueueSize int
+
 	rebuildQueue     chan *rebuildInfo
 	rebuildWaitGroup sync.WaitGroup
 	rebuildLock      sync.Mutex
@@ -224,6 +228,7 @@ func NewServer() *Server {
 		},
 		shutdownNotifications: make(chan struct{}),
 		indexCache:            make(map[int][][]int),
+		modQueueSize:          -1,
 		rebuildQueue:          make(chan *rebuildInfo),
 		httpClient:            httpClient,
 		msgPrinter:            message.NewPrinter(language.English),
@@ -645,6 +650,8 @@ func (s *Server) loadServerConfig() error {
 	} else {
 		s.opt.Refresh = db.GetInt("refresh")
 	}
+
+	s.opt.ModQueue = db.GetString("modqueue")
 
 	s.opt.Overboard = db.GetString("overboard")
 	s.opt.OverboardType = BoardType(db.GetInt("overboardtype"))
@@ -1651,6 +1658,37 @@ func (s *Server) rebuildBoard(db *database.DB, board *Board) {
 		s.writeThread(db, board, info[0])
 	}
 	s.writeBoardIndexes(db, board)
+}
+
+func (s *Server) writeModQueue(db *database.DB) {
+	if s.opt.ModQueue == "" {
+		return
+	}
+
+	queueSize := len(db.PendingPosts()) + len(db.AllReports())
+	if queueSize == s.modQueueSize {
+		return
+	}
+
+	writePath := filepath.Join(s.config.Root, s.opt.ModQueue+"_.html")
+	filePath := filepath.Join(s.config.Root, s.opt.ModQueue+".html")
+
+	file, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = file.WriteString(strconv.Itoa(queueSize))
+	file.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = os.Rename(writePath, filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	s.modQueueSize = queueSize
 }
 
 // rebuildAll rebuilds all board, overboard, news and custom pages.

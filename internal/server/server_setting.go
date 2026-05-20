@@ -49,6 +49,12 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 		s.opt.Refresh = defaultServerRefresh
 		db.SaveInt("refresh", s.opt.Refresh)
 
+		if s.opt.ModQueue != "" {
+			os.Remove(filepath.Join(s.config.Root, s.opt.ModQueue+".html"))
+		}
+		s.opt.ModQueue = ""
+		db.SaveString("modqueue", s.opt.ModQueue)
+
 		s.opt.Overboard = ""
 		db.SaveString("overboard", s.opt.Overboard)
 
@@ -69,8 +75,10 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 			embeds = append(embeds, embedName+" "+embedURL)
 		}
 		db.SaveMultiString("embeds", embeds)
+
 		db.ClearBoardCache()
 		s.removeInvalidBoardOptions(db)
+		s.writeModQueue(db)
 
 		changes := printChanges(oldOpt, s.opt)
 		if changes != "" {
@@ -137,6 +145,16 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 		db.SaveInt("refresh", refresh)
 		s.opt.Refresh = refresh
 
+		modQueue := strings.TrimSuffix(FormString(r, "modqueue"), ".html")
+		if modQueue != "" && (!FilePathPattern.MatchString(modQueue) || strings.Contains(modQueue, "..")) {
+			data.ManageError("Invalid moderation queue status page file path.")
+			return
+		} else if s.opt.ModQueue != modQueue && s.opt.ModQueue != "" {
+			os.Remove(filepath.Join(s.config.Root, s.opt.ModQueue+".html"))
+		}
+		db.SaveString("modqueue", modQueue)
+		s.opt.ModQueue = modQueue
+
 		db.SaveString("overboard", overboard)
 		s.opt.Overboard = overboard
 
@@ -181,8 +199,10 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 			}
 		}
 		db.SaveMultiString("embeds", embeds)
+
 		db.ClearBoardCache()
 		s.removeInvalidBoardOptions(db)
+		s.writeModQueue(db)
 
 		changes := printChanges(oldOpt, s.opt)
 		if changes != "" {
