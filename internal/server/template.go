@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	"github.com/leonelquinteros/gotext"
@@ -195,6 +196,9 @@ func (data *templateData) execute(w io.Writer) {
 var expandableMedia = []string{".bmp", ".gif", ".jpg", ".png", ".svg", ".tif"}
 
 var templateFuncMap = template.FuncMap{
+	"Add64": func(a int64, b int64) int64 {
+		return a + b
+	},
 	"Banner": func(banners []*Banner) *Banner {
 		l := len(banners)
 		switch l {
@@ -207,6 +211,12 @@ var templateFuncMap = template.FuncMap{
 		}
 	},
 	"Contains": strings.Contains,
+	"FormatDateInput": func(timestamp int64) string {
+		if timestamp == 0 {
+			return ""
+		}
+		return time.Unix(timestamp, 0).Format("2006/01/02 15:04")
+	},
 	"Format": func(text string) template.HTML {
 		return template.HTML(strings.ReplaceAll(text, "\n", "<br>\n"))
 	},
@@ -254,6 +264,9 @@ var templateFuncMap = template.FuncMap{
 	},
 	"MinusOne": func(i int) int {
 		return i - 1
+	},
+	"Now": func() int64 {
+		return time.Now().Unix()
 	},
 	"Omitted": func(showReplies int, numReplies int) int {
 		if showReplies == 0 {

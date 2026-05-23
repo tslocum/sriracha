@@ -300,7 +300,11 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 				if s.forbidden(w, data, "ban.lengthen") {
 					return
 				}
-				s.loadBanForm(db, r, data.Manage.Ban)
+				err := s.loadBanForm(db, r, data.Manage.Ban)
+				if err != nil {
+					data.ManageError(err.Error())
+					return
+				}
 				db.UpdateBan(data.Manage.Ban)
 
 				changes := printChanges(oldBan, *data.Manage.Ban)
@@ -310,7 +314,11 @@ func (s *Server) serveMod(data *templateData, db *database.DB, w http.ResponseWr
 					return
 				}
 				ban := &Ban{}
-				s.loadBanForm(db, r, ban)
+				err := s.loadBanForm(db, r, ban)
+				if err != nil {
+					data.ManageError(err.Error())
+					return
+				}
 				ban.IP = data.Post.IP
 				db.AddBan(ban)
 

@@ -7,15 +7,26 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 
 	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-func (s *Server) loadBanForm(db *database.DB, r *http.Request, b *Ban) {
-	b.Expire = FormInt64(r, "expire")
+func (s *Server) loadBanForm(db *database.DB, r *http.Request, b *Ban) error {
+	expire := FormString(r, "expire")
+	if expire == "" {
+		b.Expire = 0
+	} else {
+		timestamp, err := time.ParseInLocation("2006/01/02 15:04", expire, time.Local)
+		if err != nil {
+			return fmt.Errorf("failed to parse expire date and time (format: YYYY/MM/DD HH:MM)")
+		}
+		b.Expire = timestamp.Unix()
+	}
 	b.Reason = FormString(r, "reason")
+	return nil
 }
 
 func (s *Server) serveBan(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
@@ -56,7 +67,11 @@ func (s *Server) serveBan(data *templateData, db *database.DB, w http.ResponseWr
 
 		if data.Manage.Ban != nil && r.Method == http.MethodPost {
 			oldBan := *data.Manage.Ban
-			s.loadBanForm(db, r, data.Manage.Ban)
+			err := s.loadBanForm(db, r, data.Manage.Ban)
+			if err != nil {
+				data.ManageError(err.Error())
+				return
+			}
 
 			shorter := data.Manage.Ban.Expire != 0 && (oldBan.Expire == 0 || data.Manage.Ban.Expire < oldBan.Expire)
 			if shorter && s.forbidden(w, data, "ban.shorten") {
@@ -65,7 +80,7 @@ func (s *Server) serveBan(data *templateData, db *database.DB, w http.ResponseWr
 				return
 			}
 
-			err := data.Manage.Ban.Validate()
+			err = data.Manage.Ban.Validate()
 			if err != nil {
 				data.ManageError(err.Error())
 				return
@@ -111,7 +126,11 @@ func (s *Server) serveBan(data *templateData, db *database.DB, w http.ResponseWr
 		}
 
 		b := &Ban{}
-		s.loadBanForm(db, r, b)
+		err = s.loadBanForm(db, r, b)
+		if err != nil {
+			data.ManageError(err.Error())
+			return
+		}
 
 		ip := FormString(r, "ip")
 		if strings.ContainsRune(ip, '*') {
