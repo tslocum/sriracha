@@ -158,6 +158,9 @@ msgstr ""
 msgid "Ban file"
 msgstr ""
 
+msgid "Banned"
+msgstr ""
+
 msgid "Banners"
 msgstr ""
 

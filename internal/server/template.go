@@ -322,6 +322,11 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 		return gotext.GetND(domain, singular, plural, n, vars...)
 	}
 
+	// Ban.
+	f["AllBans"] = func(rangeOnly bool) []*Ban { return s.tplDB.AllBans(rangeOnly) }
+	f["BanByID"] = func(id int) *Ban { return s.tplDB.BanByID(id) }
+	f["BanByIP"] = func(ip string) *Ban { return s.tplDB.BanByIP(ip) }
+
 	// Board.
 	f["BoardByID"] = func(id int) *Board { return s.tplDB.BoardByID(id) }
 	f["BoardByDir"] = func(dir string) *Board { return s.tplDB.BoardByDir(dir) }

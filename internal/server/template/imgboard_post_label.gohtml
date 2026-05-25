@@ -44,6 +44,10 @@
                 {{if and (May "post.delete" $.Account $.Opt.Access) (May "ban.add" $.Account $.Opt.Access)}}
                     <a href="/sriracha/mod/{{$post.ID}}" title="{{T "Delete & ban"}}">D&amp;B</a>
                 {{end}}
+                {{$ban := BanByIP $post.IP}}
+                {{if ne $ban nil}}
+                    <a href="/sriracha/ban/{{$ban.ID}}">{{T "Banned"}}: {{$ban.Info}}</a>
+                {{end}}
             </span>
         {{end}}
         {{$post.BacklinksLabel}}
