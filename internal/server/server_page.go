@@ -21,7 +21,7 @@ func (s *Server) loadPageForm(db *database.DB, r *http.Request, p *Page) error {
 
 	p.Path = strings.TrimSuffix(p.Path, ".html")
 
-	return s.writePage(db, nil, nil, p, io.Discard)
+	return s.writePage(db, nil, p, io.Discard)
 }
 
 func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
@@ -100,7 +100,7 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 
 		if FormString(r, "preview") != "" {
 			buf := &bytes.Buffer{}
-			err = s.writePage(db, nil, nil, data.Manage.Page, buf)
+			err = s.writePage(db, nil, data.Manage.Page, buf)
 			if err != nil {
 				data.ManageError(err.Error())
 				return
@@ -160,7 +160,7 @@ func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseW
 
 		if FormString(r, "preview") != "" {
 			buf := &bytes.Buffer{}
-			err = s.writePage(db, nil, nil, p, buf)
+			err = s.writePage(db, nil, p, buf)
 			if err != nil {
 				data.ManageError(err.Error())
 				return

@@ -185,8 +185,8 @@ type Server struct {
 	importDatabases []*importInfo
 
 	tpl             *template.Template
-	original        *template.Template
 	customTemplates []string
+	tplDB           *database.DB
 
 	notifications          []notification
 	notificationsPattern   *regexp.Regexp
@@ -717,9 +717,9 @@ func (s *Server) loadServerConfig() error {
 	})
 
 	templateFuncMaps = make(map[string]template.FuncMap)
-	templateFuncMaps[""] = newTemplateFuncMap(s.opt.Locale)
+	templateFuncMaps[""] = s.newTemplateFuncMap(s.opt.Locale)
 	for id := range s.opt.Locales {
-		templateFuncMaps[id] = newTemplateFuncMap(id)
+		templateFuncMaps[id] = s.newTemplateFuncMap(id)
 	}
 
 	s.opt.Access = make(map[string]string)
@@ -815,7 +815,7 @@ func (s *Server) validateTemplateConfig(officialDir string) error {
 // officialDir to load official templates from the embedded file system.
 // Otherwise, official templates are loaded from disk. When customDir is set,
 // custom templates are loaded from disk.
-func (s *Server) parseTemplates(officialDir string, customDir string) error {
+func (s *Server) parseTemplates(officialDir string, customDir string, db *database.DB) error {
 	s.customTemplates = s.customTemplates[:0]
 	wrapError := func(name string, err error) error {
 		var source string
@@ -887,10 +887,7 @@ func (s *Server) parseTemplates(officialDir string, customDir string) error {
 			return err
 		}
 	}
-
-	var err error
-	s.original, err = s.tpl.Clone()
-	return err
+	return nil
 }
 
 func (s *Server) _watchTemplates(officialDir string, watcher *fsnotify.Watcher) {
@@ -902,7 +899,8 @@ func (s *Server) _watchTemplates(officialDir string, watcher *fsnotify.Watcher) 
 			} else if !event.Has(fsnotify.Create) && !event.Has(fsnotify.Write) && !event.Has(fsnotify.Remove) && !event.Has(fsnotify.Rename) {
 				continue
 			}
-			err := s.parseTemplates(officialDir, s.config.Template)
+
+			err := s.parseTemplates(officialDir, s.config.Template, nil)
 			if err != nil {
 				log.Printf("failed to parse template files: %s", err)
 			}
@@ -1165,7 +1163,7 @@ func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Reque
 			Path:  "/",
 		})
 		http.Redirect(w, r, "/sriracha/", http.StatusFound)
-		return s.newTemplateData()
+		return s.newTemplateData(db)
 	}
 
 	if r.URL.Path == "/sriracha/" || r.URL.Path == "/sriracha" {
@@ -1192,7 +1190,7 @@ func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Reque
 						}
 					}
 					if !solved {
-						data := s.newTemplateData()
+						data := s.newTemplateData(db)
 						data.Info = "Invalid CAPTCHA."
 						data.Template = "manage_error"
 						return data
@@ -1207,7 +1205,7 @@ func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Reque
 						Value: account.Session,
 						Path:  "/",
 					})
-					data := s.newTemplateData()
+					data := s.newTemplateData(db)
 					data.Account = account
 					if s.config.ImportMode {
 						data.Redirect(w, r, "/sriracha/import/")
@@ -1217,7 +1215,7 @@ func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Reque
 			}
 		}
 		if failedLogin {
-			data := s.newTemplateData()
+			data := s.newTemplateData(db)
 			data.Info = "Invalid username or password."
 			data.Template = "manage_error"
 			return data
@@ -1228,12 +1226,12 @@ func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Reque
 	if len(cookies) > 0 {
 		account := db.AccountBySessionKey(cookies[0].Value)
 		if account != nil {
-			data := s.newTemplateData()
+			data := s.newTemplateData(db)
 			data.Account = account
 			return data
 		}
 	}
-	return s.newTemplateData()
+	return s.newTemplateData(db)
 }
 
 // writeThread writes a thread res page to disk.
@@ -1255,7 +1253,7 @@ func (s *Server) writeThread(db *database.DB, board *Board, postID int) {
 		log.Fatal(err)
 	}
 
-	data := s.newTemplateData()
+	data := s.newTemplateData(db)
 	data.Board = board
 	data.Boards = db.AllBoards()
 	data.Threads = [][]*Post{posts}
@@ -1281,7 +1279,7 @@ func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 		board.Unique = db.UniqueUserPosts(board)
 	}
 
-	data := s.newTemplateData()
+	data := s.newTemplateData(db)
 	data.Board = board
 	data.Boards = db.AllBoards()
 	data.ReplyMode = 1
@@ -1421,7 +1419,7 @@ func (s *Server) writeOverboard(db *database.DB) {
 		Replies: s.opt.OverboardReplies,
 	}
 
-	data := s.newTemplateData()
+	data := s.newTemplateData(db)
 	data.Board = overboard
 	data.Boards = db.AllBoards()
 	data.ReplyMode = 1
@@ -1538,40 +1536,7 @@ func (s *Server) writeOverboard(db *database.DB) {
 	s.indexCache[overboard.ID] = allPostIDs
 }
 
-// newPageTemplate returns a new collection of templates with read-only database access.
-func (s *Server) newPageTemplate(db *database.DB) *template.Template {
-	tpl, err := s.original.Clone()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return tpl.Funcs(map[string]any{
-		// Board.
-		"BoardByID":       db.BoardByID,
-		"BoardByDir":      db.BoardByDir,
-		"UniqueUserPosts": db.UniqueUserPosts,
-		"AllBoards":       db.AllBoards,
-		// News.
-		"NewsByID": db.NewsByID,
-		"AllNews":  db.AllNews,
-		// Page.
-		"PageByID":   db.PageByID,
-		"PageByPath": db.PageByPath,
-		"AllPages":   db.AllPages,
-		// Post.
-		"AllThreads":       db.AllThreads,
-		"AllPostsInThread": db.AllPostsInThread,
-		"AllReplies":       db.AllReplies,
-		"PendingPosts":     db.PendingPosts,
-		"PostByID":         db.PostByID,
-		"PostsByIP":        db.PostsByIP,
-		"PostsByFileHash":  db.PostsByFileHash,
-		"PostByField":      db.PostByField,
-		"LastPostByIP":     db.LastPostByIP,
-		"ReplyCount":       db.ReplyCount,
-	})
-}
-
-func (s *Server) writePage(db *database.DB, data *templateData, tpl *template.Template, p *Page, w io.Writer) error {
+func (s *Server) writePage(db *database.DB, data *templateData, p *Page, w io.Writer) error {
 	err := p.Validate()
 	if err != nil {
 		log.Println("VALIDATE ERR", err)
@@ -1588,15 +1553,12 @@ func (s *Server) writePage(db *database.DB, data *templateData, tpl *template.Te
 	}
 
 	if data == nil {
-		data = s.newTemplateData()
+		data = s.newTemplateData(db)
 		data.Boards = db.AllBoards()
 		data.Template = "page"
 	}
-	if tpl == nil {
-		tpl = s.newPageTemplate(db)
-	}
 
-	data.tpl, err = tpl.Clone()
+	data.tpl, err = s.tpl.Clone()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -1615,11 +1577,10 @@ func (s *Server) writePage(db *database.DB, data *templateData, tpl *template.Te
 
 // writePages writes custom pages to disk.
 func (s *Server) writePages(db *database.DB, pages []*Page) error {
-	data := s.newTemplateData()
+	data := s.newTemplateData(db)
 	data.Boards = db.AllBoards()
 	data.Template = "page"
 
-	tpl := s.newPageTemplate(db)
 	for _, p := range pages {
 		writePath := filepath.Join(s.config.Root, p.Path+"_.html")
 		filePath := filepath.Join(s.config.Root, p.Path+".html")
@@ -1629,7 +1590,7 @@ func (s *Server) writePages(db *database.DB, pages []*Page) error {
 			log.Fatal(err)
 		}
 
-		err = s.writePage(db, data, tpl, p, pageFile)
+		err = s.writePage(db, data, p, pageFile)
 		pageFile.Close()
 		if err != nil {
 			return err
@@ -1732,7 +1693,7 @@ func (s *Server) writeNewsItem(db *database.DB, n *News) {
 		return
 	}
 
-	data := s.newTemplateData()
+	data := s.newTemplateData(db)
 	data.Boards = db.AllBoards()
 	data.Template = "news"
 	data.AllNews = []*News{n}
@@ -1757,7 +1718,7 @@ func (s *Server) writeNewsItem(db *database.DB, n *News) {
 // writeNewsIndexes writes news index pages to disk.
 func (s *Server) writeNewsIndexes(db *database.DB) {
 	allNews := db.AllNews(true)
-	data := s.newTemplateData()
+	data := s.newTemplateData(db)
 	data.Boards = db.AllBoards()
 	data.Template = "news"
 
@@ -1814,7 +1775,7 @@ func (s *Server) rebuildNews(db *database.DB) {
 
 // writeVisitorGuide writes the visitor guide to disk.
 func (s *Server) writeVisitorGuide(db *database.DB) {
-	data := s.newTemplateData()
+	data := s.newTemplateData(db)
 	data.Template = "guide"
 	data.Boards = db.AllBoards()
 
@@ -1850,7 +1811,7 @@ func (s *Server) writeSiteIndex(db *database.DB) {
 	if len(allBoards) < 2 {
 		return
 	}
-	data := s.newTemplateData()
+	data := s.newTemplateData(db)
 	data.Template = "index"
 
 	data.Boards = allBoards
@@ -2491,7 +2452,7 @@ func (s *Server) Run() error {
 	}
 
 	// Parse template files.
-	err = s.parseTemplates(officialDir, s.config.Template)
+	err = s.parseTemplates(officialDir, s.config.Template, nil)
 	if err != nil {
 		return fmt.Errorf("failed to parse template files: %s", err)
 	}

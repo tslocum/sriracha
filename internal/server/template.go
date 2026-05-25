@@ -16,6 +16,7 @@ import (
 	"strings"
 	"time"
 
+	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	"github.com/leonelquinteros/gotext"
 )
@@ -305,10 +306,11 @@ var templateFuncMap = template.FuncMap{
 
 var templateFuncMaps map[string]template.FuncMap
 
-func newTemplateFuncMap(locale string) template.FuncMap {
+func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	f := make(template.FuncMap)
 	maps.Copy(f, templateFuncMap)
 
+	// Localization.
 	domain := "sriracha"
 	if locale != "" {
 		domain += "-" + locale
@@ -319,10 +321,42 @@ func newTemplateFuncMap(locale string) template.FuncMap {
 	f["TN"] = func(singular string, plural string, n int, vars ...interface{}) string {
 		return gotext.GetND(domain, singular, plural, n, vars...)
 	}
+
+	// Board.
+	f["BoardByID"] = func(id int) *Board { return s.tplDB.BoardByID(id) }
+	f["BoardByDir"] = func(dir string) *Board { return s.tplDB.BoardByDir(dir) }
+	f["UniqueUserPosts"] = func(b *Board) int { return s.tplDB.UniqueUserPosts(b) }
+	f["AllBoards"] = func() []*Board { return s.tplDB.AllBoards() }
+
+	// News.
+	f["NewsByID"] = func(id int) *News { return s.tplDB.NewsByID(id) }
+	f["AllNews"] = func(onlyPublished bool) []*News { return s.tplDB.AllNews(onlyPublished) }
+
+	// Page.
+	f["PageByID"] = func(id int) *Page { return s.tplDB.PageByID(id) }
+	f["PageByPath"] = func(path string) *Page { return s.tplDB.PageByPath(path) }
+	f["AllPages"] = func() []*Page { return s.tplDB.AllPages() }
+
+	// Post.
+	f["AllThreads"] = func(board *Board, moderated bool) [][2]int { return s.tplDB.AllThreads(board, moderated) }
+	f["AllPostsInThread"] = func(postID int, moderated bool) []*Post { return s.tplDB.AllPostsInThread(postID, moderated) }
+	f["AllReplies"] = func(threadID int, limit int, moderated bool) []*Post {
+		return s.tplDB.AllReplies(threadID, limit, moderated)
+	}
+	f["PendingPosts"] = func() []*Post { return s.tplDB.PendingPosts() }
+	f["PostByID"] = func(postID int) *Post { return s.tplDB.PostByID(postID) }
+	f["PostsByIP"] = func(hash string) []*Post { return s.tplDB.PostsByIP(hash) }
+	f["PostsByFileHash"] = func(hash string, filterBoard *Board) []*Post { return s.tplDB.PostsByFileHash(hash, filterBoard) }
+	f["PostByField"] = func(board *Board, field string, value any) *Post { return s.tplDB.PostByField(board, field, value) }
+	f["LastPostByIP"] = func(board *Board, ip string) *Post { return s.tplDB.LastPostByIP(board, ip) }
+	f["ReplyCount"] = func(threadID int) int { return s.tplDB.ReplyCount(threadID) }
 	return f
 }
 
-func (s *Server) newTemplateData() *templateData {
+func (s *Server) newTemplateData(db *database.DB) *templateData {
+	if db != nil {
+		s.tplDB = db
+	}
 	const initialBufferSize = 128000 // 128 Kilobytes.
 	writeBuf := bytes.NewBuffer(make([]byte, initialBufferSize))
 	return &templateData{

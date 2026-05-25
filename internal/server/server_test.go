@@ -46,7 +46,7 @@ func newTestServer() (*Server, error) {
 
 	s.loadServerConfig()
 
-	err := s.parseTemplates("", s.config.Template)
+	err := s.parseTemplates("", s.config.Template, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse template files: %s", err)
 	}
@@ -62,7 +62,7 @@ func BenchmarkBoardIndex(b *testing.B) {
 
 	board := newTestBoard()
 
-	data := s.newTemplateData()
+	data := s.newTemplateData(nil)
 	data.Template = "board_page"
 	data.Board = board
 	data.Boards = []*Board{board}
@@ -96,7 +96,7 @@ func BenchmarkBoardThread(b *testing.B) {
 
 	board := newTestBoard()
 
-	data := s.newTemplateData()
+	data := s.newTemplateData(nil)
 	data.Template = "board_page"
 	data.Board = board
 	data.Boards = []*Board{board}
