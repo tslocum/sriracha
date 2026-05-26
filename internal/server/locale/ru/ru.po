@@ -168,6 +168,9 @@ msgstr "Блокировка"
 msgid "Ban file"
 msgstr ""
 
+msgid "Banned"
+msgstr ""
+
 msgid "Banners"
 msgstr ""
 
@@ -441,6 +444,11 @@ msgid "File Types"
 msgstr ""
 
 msgid "File name."
+msgstr ""
+
+msgid ""
+"File path (excluding .html suffix) of the moderation queue status page. "
+"Leave blank to disable."
 msgstr ""
 
 msgid "File uploads are not allowed."
@@ -734,6 +742,9 @@ msgstr ""
 
 msgid "Mod"
 msgstr "Мод"
+
+msgid "Mod Queue"
+msgstr ""
 
 msgid "Mod mode"
 msgstr "Режим мод"

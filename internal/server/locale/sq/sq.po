@@ -166,6 +166,9 @@ msgstr "Deno"
 msgid "Ban file"
 msgstr "Deno skedarin"
 
+msgid "Banned"
+msgstr ""
+
 msgid "Banners"
 msgstr ""
 
@@ -446,6 +449,11 @@ msgid "File Types"
 msgstr "Llojet e Skedarit"
 
 msgid "File name."
+msgstr ""
+
+msgid ""
+"File path (excluding .html suffix) of the moderation queue status page. "
+"Leave blank to disable."
 msgstr ""
 
 msgid "File uploads are not allowed."
@@ -756,6 +764,9 @@ msgstr "Madhesia minimale e fushes se titullit."
 
 msgid "Mod"
 msgstr "Mod"
+
+msgid "Mod Queue"
+msgstr ""
 
 msgid "Mod mode"
 msgstr "Forma e moderimit"

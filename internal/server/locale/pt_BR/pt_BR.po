@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-03-13 04:53+0000\n"
-"Last-Translator: tslocum <tslocum@noreply.codeberg.org>\n"
+"PO-Revision-Date: 2026-05-07 10:58+0000\n"
+"Last-Translator: Emilly MS <emilly_msh_msh@noreply.codeberg.org>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.codeberg.org/projects/"
 "sriracha/sriracha/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -9,22 +9,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 5.17.1\n"
 
 msgid "%d new post"
 msgid_plural "%d new posts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d postagem nova"
+msgstr[1] "%d postagens novas"
 
 msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d postagem omitida. Clique Responder para visualiza-la."
+msgstr[1] "%d postagens omitidas. Clique Responder para visualiza-las."
 
 msgid "%d report"
 msgid_plural "%d reports"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d denúncia"
+msgstr[1] "%d denúncias"
 
 msgid "%s imageboard and forum server"
 msgstr ""
@@ -33,64 +33,64 @@ msgid "(Mentioned) %s"
 msgstr ""
 
 msgid "1 Day"
-msgstr ""
+msgstr "1 Dia"
 
 msgid "1 Hour"
-msgstr ""
+msgstr "1 Hora"
 
 msgid "1 Month"
-msgstr ""
+msgstr "1 Mês"
 
 msgid "1 Week"
-msgstr ""
+msgstr "1 Semana"
 
 msgid "2 Days"
-msgstr ""
+msgstr "2 Dias"
 
 msgid "2 Weeks"
-msgstr ""
+msgstr "2 Semanas"
 
 msgid "A file %s or larger is required."
 msgstr ""
 
 msgid "A file is required."
-msgstr ""
+msgstr "Um arquivo é necessário."
 
 msgid "Accounts"
-msgstr ""
+msgstr "Contas"
 
 msgid "Action"
-msgstr ""
+msgstr "Ação"
 
 msgid "Action taken when the keyword is detected."
 msgstr ""
 
 msgid "Add"
-msgstr ""
+msgstr "Adicionar"
 
 msgid "Add Account"
-msgstr ""
+msgstr "Adicionar Conta"
 
 msgid "Add Ban"
-msgstr ""
+msgstr "Adicionar Banimento"
 
 msgid "Add Banner"
-msgstr ""
+msgstr "Adicionar Banner"
 
 msgid "Add Board"
 msgstr ""
 
 msgid "Add Category"
-msgstr ""
+msgstr "Adicionar Categoria"
 
 msgid "Add Keyword"
-msgstr ""
+msgstr "Adicionar Palavra-chave"
 
 msgid "Add News"
 msgstr ""
 
 msgid "Add Page"
-msgstr ""
+msgstr "Adicionar Página"
 
 msgid "Add board to %s"
 msgstr ""
@@ -162,6 +162,9 @@ msgid "Ban"
 msgstr ""
 
 msgid "Ban file"
+msgstr ""
+
+msgid "Banned"
 msgstr ""
 
 msgid "Banners"
@@ -436,6 +439,11 @@ msgid "File Types"
 msgstr ""
 
 msgid "File name."
+msgstr ""
+
+msgid ""
+"File path (excluding .html suffix) of the moderation queue status page. "
+"Leave blank to disable."
 msgstr ""
 
 msgid "File uploads are not allowed."
@@ -728,6 +736,9 @@ msgid "Minimum length of the subject field."
 msgstr ""
 
 msgid "Mod"
+msgstr ""
+
+msgid "Mod Queue"
 msgstr ""
 
 msgid "Mod mode"

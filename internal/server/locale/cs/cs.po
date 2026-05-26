@@ -166,6 +166,9 @@ msgstr ""
 msgid "Ban file"
 msgstr ""
 
+msgid "Banned"
+msgstr ""
+
 msgid "Banners"
 msgstr ""
 
@@ -264,13 +267,17 @@ msgstr ""
 msgid "Default oekaki canvas width."
 msgstr ""
 
-msgid "Default page style. Visitors may choose alternative styles in their browser settings."
+msgid ""
+"Default page style. Visitors may choose alternative styles in their browser "
+"settings."
 msgstr ""
 
 msgid "Delay"
 msgstr ""
 
-msgid "Delay (in seconds) visitors must wait before posting again. Set to 0 to disable."
+msgid ""
+"Delay (in seconds) visitors must wait before posting again. Set to 0 to "
+"disable."
 msgstr ""
 
 msgid "Delete"
@@ -327,10 +334,14 @@ msgstr ""
 msgid "Directory"
 msgstr ""
 
-msgid "Directory where the board files are located. Leave blank to place the board at the server root."
+msgid ""
+"Directory where the board files are located. Leave blank to place the board "
+"at the server root."
 msgstr ""
 
-msgid "Directory where the overboard files are located. Leave blank to disable. To write the overboard at the root directory, enter \"/\"."
+msgid ""
+"Directory where the overboard files are located. Leave blank to disable. To "
+"write the overboard at the root directory, enter \"/\"."
 msgstr ""
 
 msgid "Disable"
@@ -432,6 +443,11 @@ msgstr ""
 msgid "File name."
 msgstr ""
 
+msgid ""
+"File path (excluding .html suffix) of the moderation queue status page. "
+"Leave blank to disable."
+msgstr ""
+
 msgid "File uploads are not allowed."
 msgstr ""
 
@@ -450,7 +466,8 @@ msgstr ""
 msgid "Global"
 msgstr ""
 
-msgid "Global tripcodes are the same on all websites. Secure tripcodes are unique."
+msgid ""
+"Global tripcodes are the same on all websites. Secure tripcodes are unique."
 msgstr ""
 
 msgid "Go Back"
@@ -495,7 +512,8 @@ msgstr ""
 msgid "IP Address"
 msgstr ""
 
-msgid "IP address to ban. Wildcards (*) may be used to ban a range of addresses."
+msgid ""
+"IP address to ban. Wildcards (*) may be used to ban a range of addresses."
 msgstr ""
 
 msgid "Idenifiers"
@@ -507,7 +525,9 @@ msgstr ""
 msgid "Imageboard"
 msgstr ""
 
-msgid "Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages."
+msgid ""
+"Imageboards show threads and recent replies on index pages. Forums only show "
+"thread information on index pages."
 msgstr ""
 
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
@@ -549,7 +569,9 @@ msgstr ""
 msgid "Last Active"
 msgstr ""
 
-msgid "Leave blank to hide until a date is set. News items with publish dates in the future are hidden until that date."
+msgid ""
+"Leave blank to hide until a date is set. News items with publish dates in "
+"the future are hidden until that date."
 msgstr ""
 
 msgid "Leave blank to keep current password."
@@ -627,10 +649,13 @@ msgstr ""
 msgid "Max Threads"
 msgstr ""
 
-msgid "Maximum file size (in bytes) when creating a thread. Set to 0 to disable file uploads."
+msgid ""
+"Maximum file size (in bytes) when creating a thread. Set to 0 to disable "
+"file uploads."
 msgstr ""
 
-msgid "Maximum file size (in bytes) when replying. Set to 0 to disable file uploads."
+msgid ""
+"Maximum file size (in bytes) when replying. Set to 0 to disable file uploads."
 msgstr ""
 
 msgid "Maximum file size allowed is %s."
@@ -651,10 +676,14 @@ msgstr ""
 msgid "Maximum length of the subject field."
 msgstr ""
 
-msgid "Maximum number of replies to a thread before the thread stops being bumped to the front. Set to 0 to disable."
+msgid ""
+"Maximum number of replies to a thread before the thread stops being bumped "
+"to the front. Set to 0 to disable."
 msgstr ""
 
-msgid "Maximum number of threads in board. Once this limit is reached, the oldest threads are pruned. Set to 0 to disable."
+msgid ""
+"Maximum number of threads in board. Once this limit is reached, the oldest "
+"threads are pruned. Set to 0 to disable."
 msgstr ""
 
 msgid "Maximum width of thumbnails."
@@ -711,6 +740,9 @@ msgstr ""
 msgid "Mod"
 msgstr ""
 
+msgid "Mod Queue"
+msgstr ""
+
 msgid "Mod mode"
 msgstr ""
 
@@ -723,7 +755,9 @@ msgstr ""
 msgid "Moderator"
 msgstr ""
 
-msgid "Moderators may only perform certain actions. See moderator guide for more info."
+msgid ""
+"Moderators may only perform certain actions. See moderator guide for more "
+"info."
 msgstr ""
 
 msgid "Move"
@@ -735,7 +769,9 @@ msgstr ""
 msgid "Name of the board, which is displayed in the page title and header."
 msgstr ""
 
-msgid "Name shown when no name is entered. Separate multiple names with | (pipe character). May be blank."
+msgid ""
+"Name shown when no name is entered. Separate multiple names with | (pipe "
+"character). May be blank."
 msgstr ""
 
 msgid "Navigation"
@@ -798,22 +834,29 @@ msgstr ""
 msgid "Notify"
 msgstr ""
 
-msgid "Number of files visitors may upload at once. A new post is created for each uploaded file."
+msgid ""
+"Number of files visitors may upload at once. A new post is created for each "
+"uploaded file."
 msgstr ""
 
-msgid "Number of message lines to display in post preview on board index pages. Set to 0 to show all."
+msgid ""
+"Number of message lines to display in post preview on board index pages. Set "
+"to 0 to show all."
 msgstr ""
 
-msgid "Number of replies to show per board index thread. Set to 0 to show none."
+msgid ""
+"Number of replies to show per board index thread. Set to 0 to show none."
 msgstr ""
 
-msgid "Number of replies to show per overboard index page. Set to 0 to show all."
+msgid ""
+"Number of replies to show per overboard index page. Set to 0 to show all."
 msgstr ""
 
 msgid "Number of threads to show per board index page. Set to 0 to show all."
 msgstr ""
 
-msgid "Number of threads to show per overboard index page. Set to 0 to show all."
+msgid ""
+"Number of threads to show per overboard index page. Set to 0 to show all."
 msgstr ""
 
 msgid "Oekaki Height"
@@ -902,7 +945,9 @@ msgstr ""
 msgid "Plugins"
 msgstr ""
 
-msgid "Positive values specify global instances allowed. Negative values specify board-specific instances allowed. Zero allows unlimited instances."
+msgid ""
+"Positive values specify global instances allowed. Negative values specify "
+"board-specific instances allowed. Zero allows unlimited instances."
 msgstr ""
 
 msgid "Post reply"
@@ -960,7 +1005,8 @@ msgstr ""
 msgid "Regular expression to search for when a new post is created."
 msgstr ""
 
-msgid "Relative file path where the page is located, excluding the .html suffix."
+msgid ""
+"Relative file path where the page is located, excluding the .html suffix."
 msgstr ""
 
 msgid "Remove"
@@ -1014,7 +1060,9 @@ msgstr ""
 msgid "Scroll down to the bottom of the page."
 msgstr ""
 
-msgid "Seconds between automatic refreshes when viewing a thread. Set to 0 to disable."
+msgid ""
+"Seconds between automatic refreshes when viewing a thread. Set to 0 to "
+"disable."
 msgstr ""
 
 msgid "Select the checkbox next to your post's ID."
@@ -1099,7 +1147,9 @@ msgstr ""
 msgid "That file has already been posted."
 msgstr ""
 
-msgid "This setting is purely cosmetic. To actually prevent access, configure your HTTPS server to require password authorization."
+msgid ""
+"This setting is purely cosmetic. To actually prevent access, configure your "
+"HTTPS server to require password authorization."
 msgstr ""
 
 msgid "Thread deleted."
@@ -1174,7 +1224,9 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-msgid "Values greater than 75 are not supported when using the default database schema."
+msgid ""
+"Values greater than 75 are not supported when using the default database "
+"schema."
 msgstr ""
 
 msgid "Version"
@@ -1192,7 +1244,8 @@ msgstr ""
 msgid "Visible"
 msgstr ""
 
-msgid "Visitors may embed media from selected services instead of uploading a file."
+msgid ""
+"Visitors may embed media from selected services instead of uploading a file."
 msgstr ""
 
 msgid "Visitors may upload the selected types of files."
@@ -1210,16 +1263,21 @@ msgstr ""
 msgid "When %s receives new replies."
 msgstr ""
 
-msgid "Whether identifiers are displayed for each post. Identifiers are generated based on IP address hashes."
+msgid ""
+"Whether identifiers are displayed for each post. Identifiers are generated "
+"based on IP address hashes."
 msgstr ""
 
-msgid "Whether moderator approval is required before displaying newly created posts."
+msgid ""
+"Whether moderator approval is required before displaying newly created posts."
 msgstr ""
 
 msgid "Whether new posts may be created."
 msgstr ""
 
-msgid "Whether reference links are displayed next to No.## pointing to all visible replies mentioning a post."
+msgid ""
+"Whether reference links are displayed next to No.## pointing to all visible "
+"replies mentioning a post."
 msgstr ""
 
 msgid "Whether the banner is displayed in custom pages."
@@ -1246,7 +1304,9 @@ msgstr ""
 msgid "Word Break"
 msgstr ""
 
-msgid "Write site index page, which contains the most recent news item, links to boards and the most recent posts."
+msgid ""
+"Write site index page, which contains the most recent news item, links to "
+"boards and the most recent posts."
 msgstr ""
 
 msgid "Your post will be shown once it has been approved."
