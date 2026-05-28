@@ -31,6 +31,11 @@
             <td>{{T "Appears in page title and header."}}</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="sitedescription">{{T "Site Description"}}</label></td>
+            <td><input type="text" name="sitedescription" value="{{.Opt.SiteDescription}}"></input></td>
+            <td>{{T "Appears in %s and search results for the site index." "stats.json"}}</td>
+        </tr>
+        <tr>
             <td class="postblock"><label for="sitehome">{{T "Site Home"}}</label></td>
             <td><input type="text" name="sitehome" value="{{.Opt.SiteHome}}"></input></td>
             <td>{{T "Home address. May be a path or URL. Used in return links."}}</td>
@@ -59,6 +64,14 @@
                 <option value="1"{{if .Opt.BoardIndex}} selected{{end}}>{{T "Enable"}}</option>
             </select></td>
             <td>{{T "Link to boards in page header."}}</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="statistics">{{T "Statistics"}}</label></td>
+            <td><select name="statistics" style="width: 100%;">
+                <option value="0"{{if not .Opt.Statistics}} selected{{end}}>{{T "Disable"}}</option>
+                <option value="1"{{if .Opt.Statistics}} selected{{end}}>{{T "Enable"}}</option>
+            </select></td>
+            <td>{{T "Whether per-board and site-wide statistics are written to a file named %s." "stats.json"}}</td>
         </tr>
         <tr>
             <td class="postblock"><label for="captcha">CAPTCHA</label></td>

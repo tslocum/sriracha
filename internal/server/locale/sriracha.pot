@@ -125,6 +125,9 @@ msgstr ""
 msgid "Appearance"
 msgstr ""
 
+msgid "Appears in %s and search results for the site index."
+msgstr ""
+
 msgid "Appears in page title and header."
 msgstr ""
 
@@ -1043,6 +1046,9 @@ msgstr ""
 msgid "Show everywhere"
 msgstr ""
 
+msgid "Site Description"
+msgstr ""
+
 msgid "Site Home"
 msgstr ""
 
@@ -1062,6 +1068,9 @@ msgid "Start Dry Run"
 msgstr ""
 
 msgid "Start Import"
+msgstr ""
+
+msgid "Statistics"
 msgstr ""
 
 msgid "Status"
@@ -1227,6 +1236,9 @@ msgid "Whether moderator approval is required before displaying newly created po
 msgstr ""
 
 msgid "Whether new posts may be created."
+msgstr ""
+
+msgid "Whether per-board and site-wide statistics are written to a file named %s."
 msgstr ""
 
 msgid "Whether reference links are displayed next to No.## pointing to all visible replies mentioning a post."

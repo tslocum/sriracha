@@ -1,5 +1,6 @@
 1.7.7:
 - Support quickly approving all pending and reported posts
+- Support writing per-board and site-wide statistics to stats.json
 
 1.7.6:
 - Support writing status of moderation queue to static file

@@ -25,6 +25,9 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 		s.opt.SiteName = defaultServerSiteName
 		db.SaveString("sitename", s.opt.SiteName)
 
+		s.opt.SiteDescription = ""
+		db.SaveString("sitedescription", s.opt.SiteDescription)
+
 		s.opt.SiteHome = defaultServerSiteHome
 		db.SaveString("sitehome", s.opt.SiteHome)
 
@@ -36,6 +39,9 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 
 		s.opt.BoardIndex = true
 		db.SaveBool("boardindex", s.opt.BoardIndex)
+
+		s.opt.Statistics = false
+		db.SaveBool("statistics", s.opt.Statistics)
 
 		s.opt.CAPTCHA = false
 		db.SaveBool("captcha", s.opt.CAPTCHA)
@@ -108,6 +114,10 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 			s.opt.SiteName = siteName
 		}
 
+		siteDescription := FormString(r, "sitedescription")
+		db.SaveString("sitedescription", siteDescription)
+		s.opt.SiteDescription = siteDescription
+
 		siteHome := FormString(r, "sitehome")
 		if siteHome != "" {
 			if !strings.HasSuffix(siteHome, "/") {
@@ -128,6 +138,10 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 		boardIndex := FormBool(r, "boardindex")
 		db.SaveBool("boardindex", boardIndex)
 		s.opt.BoardIndex = boardIndex
+
+		statistics := FormBool(r, "statistics")
+		db.SaveBool("statistics", statistics)
+		s.opt.Statistics = statistics
 
 		enableCAPTCHA := FormBool(r, "captcha")
 		db.SaveBool("captcha", enableCAPTCHA)

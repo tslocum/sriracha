@@ -9,6 +9,7 @@ import (
 	"crypto/tls"
 	"embed"
 	"encoding/base64"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"hash"
@@ -26,6 +27,7 @@ import (
 	"os/signal"
 	"path"
 	"path/filepath"
+	"reflect"
 	"regexp"
 	"runtime/debug"
 	"slices"
@@ -109,13 +111,34 @@ const (
 
 const HashSize = 48 // Bytes.
 
+type BoardStats struct {
+	Dir         string
+	Name        string
+	Description string
+	Date        int64
+	URL         string
+	Month       int
+	Total       int
+}
+
+type ServerStats struct {
+	Name        string
+	Description string
+	Boards      []BoardStats
+	Month       int
+	Total       int
+	Generated   int64
+}
+
 // ServerOptions represents server configuration options and related data.
 type ServerOptions struct {
 	SiteName         string
+	SiteDescription  string
 	SiteHome         string
 	SiteIndex        bool
 	News             NewsOption
 	BoardIndex       bool
+	Statistics       bool
 	CAPTCHA          bool
 	Refresh          int
 	Uploads          []*UploadType
@@ -184,9 +207,10 @@ type Server struct {
 
 	importDatabases []*importInfo
 
-	tpl             *template.Template
-	customTemplates []string
+	tpl             *template.Template // Template collection used when executing most web requests.
+	tplOriginal     *template.Template // Original template collection. This is needed because a template collection can't be extended once it has been used.
 	tplDB           *database.DB
+	customTemplates []string
 
 	notifications          []notification
 	notificationsPattern   *regexp.Regexp
@@ -194,6 +218,8 @@ type Server struct {
 	shutdownNotifications  chan struct{}
 
 	indexCache map[int][][]int
+
+	statsCache *ServerStats
 
 	modQueueSize int
 
@@ -614,6 +640,8 @@ func (s *Server) loadServerConfig() error {
 	}
 	s.opt.SiteName = siteName
 
+	s.opt.SiteDescription = db.GetString("sitedescription")
+
 	siteHome := db.GetString("sitehome")
 	if siteHome == "" {
 		siteHome = defaultServerSiteHome
@@ -630,6 +658,8 @@ func (s *Server) loadServerConfig() error {
 
 	boardIndex := db.GetString("boardindex")
 	s.opt.BoardIndex = boardIndex == "" || boardIndex == "1"
+
+	s.opt.Statistics = db.GetBool("statistics")
 
 	s.opt.CAPTCHA = db.GetBool("captcha")
 
@@ -887,7 +917,10 @@ func (s *Server) parseTemplates(officialDir string, customDir string, db *databa
 			return err
 		}
 	}
-	return nil
+
+	var err error
+	s.tplOriginal, err = s.tpl.Clone()
+	return err
 }
 
 func (s *Server) _watchTemplates(officialDir string, watcher *fsnotify.Watcher) {
@@ -1558,7 +1591,7 @@ func (s *Server) writePage(db *database.DB, data *templateData, p *Page, w io.Wr
 		data.Template = "page"
 	}
 
-	data.tpl, err = s.tpl.Clone()
+	data.tpl, err = s.tplOriginal.Clone()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -1610,6 +1643,7 @@ func (s *Server) rebuildThread(db *database.DB, post *Post) {
 	if s.opt.Overboard != "" {
 		s.writeOverboard(db)
 	}
+	s.writeStatistics(db)
 }
 
 // rebuildBoard rebuilds all pages in a board.
@@ -1619,6 +1653,68 @@ func (s *Server) rebuildBoard(db *database.DB, board *Board) {
 		s.writeThread(db, board, info[0])
 	}
 	s.writeBoardIndexes(db, board)
+}
+
+func (s *Server) writeStatistics(db *database.DB) {
+	if !s.opt.Statistics {
+		return
+	}
+
+	serverStats := &ServerStats{
+		Name:        s.opt.SiteName,
+		Description: s.opt.SiteDescription,
+		Generated:   time.Now().Unix(),
+	}
+	thirtyDays := serverStats.Generated - 2592000
+	for _, c := range s.opt.Categories {
+		for _, b := range c.Boards {
+			boardStats := BoardStats{
+				Dir:         b.Dir,
+				Name:        b.Name,
+				Description: b.Description,
+				Month:       db.NumPosts(b, thirtyDays),
+				Total:       db.NumPosts(b, 0),
+			}
+			recent := db.LastPostByBoard(b)
+			if recent != nil {
+				boardStats.Date = recent.Timestamp
+				boardStats.URL = recent.URL(s.opt.SiteHome)
+			}
+			serverStats.Boards = append(serverStats.Boards, boardStats)
+
+			serverStats.Month += boardStats.Month
+			serverStats.Total += boardStats.Total
+		}
+	}
+
+	if s.statsCache != nil && reflect.DeepEqual(serverStats, s.statsCache) {
+		return
+	}
+
+	writePath := filepath.Join(s.config.Root, "stats_.json")
+	filePath := filepath.Join(s.config.Root, "stats.json")
+
+	file, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	statsJSON, err := json.MarshalIndent(serverStats, "", "\t")
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = file.Write(statsJSON)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	file.Close()
+
+	err = os.Rename(writePath, filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	s.statsCache = serverStats
 }
 
 func (s *Server) writeModQueue(db *database.DB) {
@@ -1684,6 +1780,7 @@ func (s *Server) rebuildAll(db *database.DB, verbose bool) {
 		s.rebuildBoard(db, b)
 	}
 	s.writeSiteIndex(db)
+	s.writeStatistics(db)
 	s.writeVisitorGuide(db)
 }
 
@@ -2256,6 +2353,7 @@ func (s *Server) handleRebuild() {
 			s.writeOverboard(db)
 		}
 		s.writeSiteIndex(db)
+		s.writeStatistics(db)
 		if s.opt.Notifications {
 			for _, info := range pending {
 				s.queueNotifications(db, info.post)

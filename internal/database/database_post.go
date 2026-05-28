@@ -383,6 +383,24 @@ func (db *DB) LastPostByBoard(board *Board) *Post {
 	return p
 }
 
+func (db *DB) NumPosts(filterBoard *Board, since int64) int {
+	var extraWhere string
+	if filterBoard != nil {
+		extraWhere += fmt.Sprintf("board = %d AND ", filterBoard.ID)
+	}
+	if since > 0 {
+		extraWhere += fmt.Sprintf("timestamp >= %d AND ", since)
+	}
+	var count int
+	err := db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM post WHERE "+extraWhere+"moderated > 0").Scan(&count)
+	if err == pgx.ErrNoRows {
+		return 0
+	} else if err != nil {
+		dbErr(fmt.Errorf("failed to select number of posts: %w", err))
+	}
+	return count
+}
+
 func (db *DB) ReplyCount(threadID int) int {
 	var count int
 	err := db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM post WHERE parent = $1", threadID).Scan(&count)
