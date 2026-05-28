@@ -19,29 +19,40 @@ import (
 
 func (s *Server) serveStatus(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
-		approve := FormInt(r, "approve")
-		if approve > 0 {
-			boardID := FormInt(r, "board")
-			if boardID > 0 {
-				b := db.BoardByID(boardID)
-				if b != nil {
-					post := db.PostByID(approve)
-					if post != nil {
-						rebuild := post.Moderated == ModeratedHidden
-
-						db.ModeratePost(post.ID, ModeratedApproved)
-						db.DeleteReports(post)
-						s.writeModQueue(db)
-
-						if rebuild {
-							db.AddPostBacklinks(post)
-							db.BumpThread(post.Thread(), time.Now().Unix())
-							s.rebuildThread(db, post)
-							s.queueNotifications(db, post)
-						}
-					}
+		var ids []int
+		approveStr := FormString(r, "approve")
+		if strings.ContainsRune(approveStr, ',') {
+			split := strings.Split(approveStr, ",")
+			for _, splitStr := range split {
+				id, err := strconv.Atoi(splitStr)
+				if err != nil {
+					data.ManageError(err.Error())
+					return
 				}
+				ids = append(ids, id)
 			}
+		} else {
+			id := FormInt(r, "approve")
+			ids = append(ids, id)
+		}
+		for _, postID := range ids {
+			post := db.PostByID(postID)
+			if post == nil {
+				continue
+			}
+			rebuild := post.Moderated == ModeratedHidden
+
+			db.ModeratePost(post.ID, ModeratedApproved)
+			db.DeleteReports(post)
+			s.writeModQueue(db)
+
+			if !rebuild {
+				continue
+			}
+			db.AddPostBacklinks(post)
+			db.BumpThread(post.Thread(), time.Now().Unix())
+			s.rebuildThread(db, post)
+			s.queueNotifications(db, post)
 		}
 
 		data.Redirect(w, r, "/sriracha/")
@@ -186,6 +197,16 @@ func (s *Server) serveStatus(data *templateData, db *database.DB, w http.Respons
 		d.Manage.Report = report
 		d.execute(buf)
 	}
+	if len(reports) > 1 {
+		var ids []byte
+		for i := range reports {
+			if i != 0 {
+				ids = append(ids, ',')
+			}
+			ids = append(ids, []byte(strconv.Itoa(reports[i].Post.ID))...)
+		}
+		buf.WriteString(fmt.Sprintf(`<hr><form method="post" action="/sriracha/" style="display: inline-block;"><input type="hidden" name="approve" value="%s"><input type="submit" value="%s"></form>`, ids, Get(nil, data.Account, "Approve all")))
+	}
 	data.Message = template.HTML(buf.String())
 
 	buf.Reset()
@@ -201,6 +222,16 @@ func (s *Server) serveStatus(data *templateData, db *database.DB, w http.Respons
 		d.Post = post
 		d.Threads = [][]*Post{{post}}
 		d.execute(buf)
+	}
+	if len(pending) > 1 {
+		var ids []byte
+		for i := range pending {
+			if i != 0 {
+				ids = append(ids, ',')
+			}
+			ids = append(ids, []byte(strconv.Itoa(pending[i].ID))...)
+		}
+		buf.WriteString(fmt.Sprintf(`<hr><form method="post" action="/sriracha/" style="display: inline-block;"><input type="hidden" name="approve" value="%s"><input type="submit" value="%s"></form>`, ids, Get(nil, data.Account, "Approve all")))
 	}
 	data.Message2 = template.HTML(buf.String())
 }
