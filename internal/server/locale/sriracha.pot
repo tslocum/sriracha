@@ -670,6 +670,9 @@ msgstr ""
 msgid "Message"
 msgstr ""
 
+msgid "Message shown when the visitor attempts to post. Optional."
+msgstr ""
+
 msgid "Middle-click a thumbnail to open an attachment in a new tab."
 msgstr ""
 
@@ -1146,6 +1149,9 @@ msgid "Type ## and some text in the name field to add a secure tripcode:"
 msgstr ""
 
 msgid "Unknown"
+msgstr ""
+
+msgid "Unpublished"
 msgstr ""
 
 msgid "Unsubscribe"

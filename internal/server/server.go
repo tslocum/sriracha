@@ -2779,8 +2779,22 @@ func printChanges(old interface{}, new interface{}) string {
 				if fromValue, ok := from.(int64); ok {
 					from = FormatDateInput(fromValue)
 				}
+				if from == "" {
+					if name == "Timestamp" {
+						from = Get(nil, nil, "Unpublished")
+					} else {
+						from = Get(nil, nil, "Never")
+					}
+				}
 				if toValue, ok := to.(int64); ok {
 					to = FormatDateInput(toValue)
+				}
+				if to == "" {
+					if name == "Timestamp" {
+						to = Get(nil, nil, "Unpublished")
+					} else {
+						to = Get(nil, nil, "Never")
+					}
 				}
 			}
 		}

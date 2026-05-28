@@ -24,7 +24,7 @@
             <tr>
                 <td class="postblock"><label for="reason">{{T "Reason"}}</label></td>
                 <td><input type="text" name="reason" value="{{if ne .Manage.Ban nil}}{{.Manage.Ban.Reason}}{{end}}"></td>
-                <td>{{T "Optional."}}</td>
+                <td>{{T "Message shown when the visitor attempts to post. Optional."}}</td>
             </tr>
             {{if and (May "banfile.add" $.Account $.Opt.Access) (and (and (eq .Manage.Ban nil) (ne .Extra "") (ne .Extra2 "")))}}
                 <tr>
