@@ -45,13 +45,6 @@ func (n *News) MayDelete(a *Account) bool {
 	return a.Role == RoleSuperAdmin || a.Role == RoleAdmin || n.MayUpdate(a)
 }
 
-func (n *News) DateInput() string {
-	if n.Timestamp == 0 {
-		return ""
-	}
-	return time.Unix(n.Timestamp, 0).Format("2006/01/02 15:04")
-}
-
 func (n *News) DateLabel() template.HTML {
 	switch {
 	case n.Timestamp == 0:

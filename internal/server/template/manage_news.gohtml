@@ -72,7 +72,7 @@
     <table class="manageform">
         <tr>
             <td class="postblock"><label for="timestamp">{{T "Date"}}</label></td>
-            <td><input type="text" name="timestamp" value="{{if ne .Manage.News nil}}{{.Manage.News.DateInput}}{{end}}"></td>
+            <td><input type="text" name="timestamp" value="{{if ne .Manage.News nil}}{{FormatDateInput .Manage.News.Timestamp}}{{end}}"></td>
             <td>{{T "Date and time when the news item was published, or will be published."}} Format: <span style="border: 1px solid;padding: 2px;">YYYY/MM/DD HH:MM</span><br>
             {{T "Leave blank to hide until a date is set. News items with publish dates in the future are hidden until that date."}}</td>
         </tr>

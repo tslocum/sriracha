@@ -2771,9 +2771,17 @@ func printChanges(old interface{}, new interface{}) string {
 		var name string
 		if len(change.Path) > 0 {
 			name = change.Path[0]
-			if name == "Password" {
+			switch name {
+			case "Password":
 				from = mask
 				to = mask
+			case "Timestamp", "Expire":
+				if fromValue, ok := from.(int64); ok {
+					from = FormatDateInput(fromValue)
+				}
+				if toValue, ok := to.(int64); ok {
+					to = FormatDateInput(toValue)
+				}
 			}
 		}
 

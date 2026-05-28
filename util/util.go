@@ -172,6 +172,13 @@ func FormatRawTimestamp(timestamp int64) string {
 	return time.Unix(timestamp, 0).Format("2006/01/02(Mon)15:04:05")
 }
 
+func FormatDateInput(timestamp int64) string {
+	if timestamp == 0 {
+		return ""
+	}
+	return time.Unix(timestamp, 0).Format("2006/01/02 15:04")
+}
+
 func FormatFileSize(size int64) string {
 	v := float64(size)
 	for _, unit := range []string{"", "K", "M", "G", "T", "P", "E", "Z"} {

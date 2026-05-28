@@ -18,6 +18,7 @@ import (
 
 	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
+	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/leonelquinteros/gotext"
 )
 
@@ -211,13 +212,8 @@ var templateFuncMap = template.FuncMap{
 			return banners[rand.Intn(l)]
 		}
 	},
-	"Contains": strings.Contains,
-	"FormatDateInput": func(timestamp int64) string {
-		if timestamp == 0 {
-			return ""
-		}
-		return time.Unix(timestamp, 0).Format("2006/01/02 15:04")
-	},
+	"Contains":        strings.Contains,
+	"FormatDateInput": FormatDateInput,
 	"Format": func(text string) template.HTML {
 		return template.HTML(strings.ReplaceAll(text, "\n", "<br>\n"))
 	},
