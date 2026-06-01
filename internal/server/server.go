@@ -112,22 +112,21 @@ const (
 const HashSize = 48 // Bytes.
 
 type BoardStats struct {
-	Dir         string
-	Name        string
-	Description string
-	Date        int64
-	URL         string
-	Month       int
-	Total       int
+	Dir    string
+	Name   string
+	About  string
+	Recent string
+	Month  int
+	Total  int
 }
 
 type ServerStats struct {
-	Name        string
-	Description string
-	Boards      []BoardStats
-	Month       int
-	Total       int
-	Generated   int64
+	Name      string
+	About     string
+	Month     int
+	Total     int
+	Boards    []BoardStats
+	Generated int64
 }
 
 // ServerOptions represents server configuration options and related data.
@@ -1661,24 +1660,23 @@ func (s *Server) writeStatistics(db *database.DB) {
 	}
 
 	serverStats := &ServerStats{
-		Name:        s.opt.SiteName,
-		Description: s.opt.SiteDescription,
-		Generated:   time.Now().Unix(),
+		Name:      s.opt.SiteName,
+		About:     s.opt.SiteDescription,
+		Generated: time.Now().Unix(),
 	}
 	thirtyDays := serverStats.Generated - 2592000
 	for _, c := range s.opt.Categories {
 		for _, b := range c.Boards {
 			boardStats := BoardStats{
-				Dir:         b.Dir,
-				Name:        b.Name,
-				Description: b.Description,
-				Month:       db.NumPosts(b, thirtyDays),
-				Total:       db.NumPosts(b, 0),
+				Dir:   b.Dir,
+				Name:  b.Name,
+				About: b.Description,
+				Month: db.NumPosts(b, thirtyDays),
+				Total: db.NumPosts(b, 0),
 			}
 			recent := db.LastPostByBoard(b)
 			if recent != nil {
-				boardStats.Date = recent.Timestamp
-				boardStats.URL = recent.URL(s.opt.SiteHome)
+				boardStats.Recent = recent.URL(s.opt.SiteHome)
 			}
 			serverStats.Boards = append(serverStats.Boards, boardStats)
 
