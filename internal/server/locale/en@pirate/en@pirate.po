@@ -131,10 +131,16 @@ msgstr ""
 msgid "Appearance"
 msgstr ""
 
+msgid "Appears in %s and search results for the site index."
+msgstr ""
+
 msgid "Appears in page title and header."
 msgstr ""
 
 msgid "Approve"
+msgstr ""
+
+msgid "Approve all"
 msgstr ""
 
 msgid "Artwork title:"
@@ -698,6 +704,9 @@ msgstr ""
 msgid "Message"
 msgstr "Parley"
 
+msgid "Message shown when the visitor attempts to post. Optional."
+msgstr ""
+
 msgid "Middle-click a thumbnail to open an attachment in a new tab."
 msgstr ""
 
@@ -1084,6 +1093,9 @@ msgstr ""
 msgid "Show everywhere"
 msgstr ""
 
+msgid "Site Description"
+msgstr ""
+
 msgid "Site Home"
 msgstr ""
 
@@ -1103,6 +1115,9 @@ msgid "Start Dry Run"
 msgstr ""
 
 msgid "Start Import"
+msgstr ""
+
+msgid "Statistics"
 msgstr ""
 
 msgid "Status"
@@ -1194,6 +1209,9 @@ msgstr ""
 msgid "Unknown"
 msgstr "Dunno"
 
+msgid "Unpublished"
+msgstr ""
+
 msgid "Unsubscribe"
 msgstr ""
 
@@ -1273,6 +1291,10 @@ msgid ""
 msgstr ""
 
 msgid "Whether new posts may be created."
+msgstr ""
+
+msgid ""
+"Whether per-board and site-wide statistics are written to a file named %s."
 msgstr ""
 
 msgid ""

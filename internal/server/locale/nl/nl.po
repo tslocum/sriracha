@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-05-21 10:23+0000\n"
+"PO-Revision-Date: 2026-05-30 10:07+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -133,11 +133,17 @@ msgstr "Er is een bijlage vereist."
 msgid "Appearance"
 msgstr "Vormgeving"
 
+msgid "Appears in %s and search results for the site index."
+msgstr "Komt voor in %s en zoekresultaten van de overzichtspagina."
+
 msgid "Appears in page title and header."
 msgstr "Wordt getoond in de paginatitel en -kop."
 
 msgid "Approve"
 msgstr "Goedkeuren"
+
+msgid "Approve all"
+msgstr "Alles goedkeuren"
 
 msgid "Artwork title:"
 msgstr "Naam van illustraties:"
@@ -169,7 +175,7 @@ msgid "Ban file"
 msgstr "Bestand verbannen"
 
 msgid "Banned"
-msgstr ""
+msgstr "Verbannen"
 
 msgid "Banners"
 msgstr "Banieren"
@@ -733,6 +739,10 @@ msgstr "Geheugen"
 msgid "Message"
 msgstr "Bericht"
 
+msgid "Message shown when the visitor attempts to post. Optional."
+msgstr ""
+"Een optioneel bericht dat wordt getoond bij het plaatsen van een bericht."
+
 msgid "Middle-click a thumbnail to open an attachment in a new tab."
 msgstr ""
 "Middelklik op een miniatuur om de bijlage op een nieuw tabblad te openen."
@@ -1145,6 +1155,9 @@ msgstr "Gedeelde nieuwsitems kunnen worden bijgewerkt door andere stafleden."
 msgid "Show everywhere"
 msgstr "Overal tonen"
 
+msgid "Site Description"
+msgstr "Sitebeschrijving"
+
 msgid "Site Home"
 msgstr "Startpagina"
 
@@ -1165,6 +1178,9 @@ msgstr "Beginnen met proefdraaien"
 
 msgid "Start Import"
 msgstr "Beginnen met importeren"
+
+msgid "Statistics"
+msgstr "Statistieken"
 
 msgid "Status"
 msgstr "Status"
@@ -1260,6 +1276,9 @@ msgstr ""
 msgid "Unknown"
 msgstr "Onbekend"
 
+msgid "Unpublished"
+msgstr "Ongepubliceerd"
+
 msgid "Unsubscribe"
 msgstr "Deabonneren"
 
@@ -1348,6 +1367,12 @@ msgstr ""
 
 msgid "Whether new posts may be created."
 msgstr "Of nieuwe berichten mogen worden gemaakt."
+
+msgid ""
+"Whether per-board and site-wide statistics are written to a file named %s."
+msgstr ""
+"Of fora- en websitestatistieken naar een bestand genaamd ‘%s’ moeten worden "
+"weggeschreven."
 
 msgid ""
 "Whether reference links are displayed next to No.## pointing to all visible "
