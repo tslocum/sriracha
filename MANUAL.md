@@ -365,7 +365,7 @@ password: "hunter2"
 dbname: "sriracha"
 
 # Database connection URL. Allows specifying additional connection options.
-# This option supercedes the address, username, password and dbname options.
+# This option supersedes the address, username, password and dbname options.
 # You probably don't need this. Configure the database options above instead.
 # See https://pkg.go.dev/github.com/jackc/pgx/v5/pgconn#ParseConfig
 #dburl: "postgresql://sriracha:hunter2@localhost:5432/sriracha"
