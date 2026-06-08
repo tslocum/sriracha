@@ -19,12 +19,12 @@
                     </div>
                     <p style="display: none;"></p>
                 </div>
+                {{$omitted := Omitted .Board.Replies .Replies}}
+                {{if and (eq $.ReplyMode 0) (gt $omitted 0)}}
+                    <div class="omittedposts">{{TN "%d post omitted. Click Reply to view." "%d posts omitted. Click Reply to view." $omitted $omitted}}</div>
+                    <p style="display: none;"></p>
+                {{end}}
             </div>
-            {{$omitted := Omitted .Board.Replies .Replies}}
-            {{if and (eq $.ReplyMode 0) (gt $omitted 0)}}
-                <span class="omittedposts">{{TN "%d post omitted. Click Reply to view." "%d posts omitted. Click Reply to view." $omitted $omitted}}</span>
-                <p style="display: none;"></p>
-            {{end}}
         {{else}}
             <table>
                 <tbody>

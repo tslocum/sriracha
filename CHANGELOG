@@ -1,3 +1,6 @@
+1.7.8:
+- Add alternative flexbox layout for each style
+
 1.7.7:
 - Support quickly approving all pending and reported posts
 - Support writing per-board and site-wide statistics to stats.json

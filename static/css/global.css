@@ -96,8 +96,16 @@ img, audio, video {
 	display: table;
 }
 
+.op {
+	flex-basis: 100%;
+}
+
 .op input[type=checkbox] {
 	margin-left: 0;
+}
+
+.omittedposts {
+	clear: both;
 }
 
 .message {

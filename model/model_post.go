@@ -229,7 +229,7 @@ func (p *Post) MessageTruncated(lines int, account *Account) template.HTML {
 
 	blankMessage := template.HTML("…")
 	if showOmitted {
-		blankMessage = template.HTML(`<span class="omittedposts">` + Get(p.Board, account, "Post truncated. Click Reply to view.") + `</span><br>`)
+		blankMessage = template.HTML(`<div class="omittedposts">` + Get(p.Board, account, "Post truncated. Click Reply to view.") + `</div><br>`)
 	}
 
 	buf := bytes.Join(split[:lines], []byte("\n"))

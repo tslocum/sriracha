@@ -1,5 +1,5 @@
 <table {{if eq .ReplyMode 0}} class="managetable forumindex"{{end}}>
-	<tbody class="thread">
+	<tbody{{if ne .ReplyMode 0}} class="thread"{{end}}>
 		{{if eq .ReplyMode 0}}
 			{{range $i, $thread := .Threads}}
 				{{range $i, $post := $thread}}

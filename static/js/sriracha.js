@@ -538,13 +538,27 @@ function getCookie(cname) {
 }
 
 function setStyle(style) {
+    var styleName = style;
+    if (style.endsWith('/flex')) {
+        styleName = style.substring(0, style.length-5);
+
+        var flexStyle = document.createElement('style');
+        flexStyle.id = 'flexStyle';
+        flexStyle.textContent = '.thread { display: flex; flex-wrap: wrap; }';
+        document.head.appendChild(flexStyle);
+    } else {
+        var flexStyle = document.getElementById('flexStyle');
+        if (flexStyle) {
+            flexStyle.remove();
+        }
+    }
     document.cookie = 'sriracha_style=' + style + '; expires=Tue, 19 Jan 2038 03:14:07 UTC; path=/; SameSite=Strict';
 
     var stylesheet = document.getElementById('mainStylesheet');
     if (!stylesheet) {
         return;
     }
-    stylesheet.href = '/static/css/' + style + '.css';
+    stylesheet.href = '/static/css/' + styleName + '.css';
 }
 
 function formatFileSize(size) {
