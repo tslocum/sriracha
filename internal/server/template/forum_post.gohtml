@@ -13,7 +13,7 @@
 		{{else}}
 			{{range $i, $thread := .Threads}}
 				{{range $i, $post := $thread}}
-					<tr>
+					<tr{{if eq $i 0}} style="flex-basis: 100%;"{{end}}>
 						<td id="{{.ID}}" class="op post forumpost"{{if ne $i 0}} style="padding-top: 10px;"{{end}}>
 							<div id="post{{.ID}}">
 								{{template "imgboard_post_label.gohtml" (Slice $ $thread $post)}}
