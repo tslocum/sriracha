@@ -544,7 +544,7 @@ function setStyle(style) {
 
         var flexStyle = document.createElement('style');
         flexStyle.id = 'flexStyle';
-        flexStyle.textContent = '.thread { display: flex; flex-wrap: wrap; }';
+        flexStyle.textContent = '.thread { display: flex; flex-wrap: wrap; row-gap: 4px; }';
         document.head.appendChild(flexStyle);
     } else {
         var flexStyle = document.getElementById('flexStyle');
