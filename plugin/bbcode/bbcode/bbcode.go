@@ -59,7 +59,8 @@ type BBCode struct {
 	rules       template.HTML
 	rulesCached bool
 
-	formatter *htmlformatter.Formatter
+	fmtSingle *htmlformatter.Formatter
+	fmtMulti  *htmlformatter.Formatter
 	style     *chroma.Style
 }
 
@@ -184,14 +185,18 @@ func (f *BBCode) Rules(db sriracha.DB, board *Board) (template.HTML, error) {
 func (f *BBCode) rebuildCompiler() {
 	f.compiler = bbcode.NewCompiler(true, true)
 
-	formatterOptions := []htmlformatter.Option{
+	fmtOptions := []htmlformatter.Option{
 		htmlformatter.Standalone(false),
 		htmlformatter.TabWidth(tabWidth),
 		htmlformatter.WrapLongLines(false),
+	}
+	f.fmtSingle = htmlformatter.New(fmtOptions...)
+
+	fmtOptions = append(fmtOptions, []htmlformatter.Option{
 		htmlformatter.WithLineNumbers(true),
 		htmlformatter.LineNumbersInTable(true),
-	}
-	f.formatter = htmlformatter.New(formatterOptions...)
+	}...)
+	f.fmtMulti = htmlformatter.New(fmtOptions...)
 
 	f.style = styles.Get(codeStyle)
 	if f.style == nil {
@@ -316,7 +321,11 @@ func (f *BBCode) rebuildCompiler() {
 				continue
 			}
 			out.Reset()
-			err = f.formatter.Format(out, f.style, iterator)
+			if !strings.ContainsRune(strValue, '\n') {
+				err = f.fmtSingle.Format(out, f.style, iterator)
+			} else {
+				err = f.fmtMulti.Format(out, f.style, iterator)
+			}
 			if err != nil {
 				continue
 			}
