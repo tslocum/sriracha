@@ -31,6 +31,15 @@ msgstr[2] "%d reportů"
 msgid "%s imageboard and forum server"
 msgstr ""
 
+msgid "%s memory usage."
+msgstr ""
+
+msgid "%s uptime."
+msgstr ""
+
+msgid "%s version."
+msgstr ""
+
 msgid "(Mentioned) %s"
 msgstr "(zmíňky) %s"
 
@@ -1251,6 +1260,9 @@ msgid "Version"
 msgstr ""
 
 msgid "View"
+msgstr ""
+
+msgid "View latest"
 msgstr ""
 
 msgid "View posts by author"

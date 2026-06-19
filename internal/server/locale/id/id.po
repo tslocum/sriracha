@@ -26,6 +26,15 @@ msgstr[0] "%d laporan"
 msgid "%s imageboard and forum server"
 msgstr "%s Server forum dan imageboard"
 
+msgid "%s memory usage."
+msgstr ""
+
+msgid "%s uptime."
+msgstr ""
+
+msgid "%s version."
+msgstr ""
+
 msgid "(Mentioned) %s"
 msgstr "(Disebut) %s"
 
@@ -1244,6 +1253,9 @@ msgid "Version"
 msgstr ""
 
 msgid "View"
+msgstr ""
+
+msgid "View latest"
 msgstr ""
 
 msgid "View posts by author"

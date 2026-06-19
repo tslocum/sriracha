@@ -29,6 +29,15 @@ msgstr[1] ""
 msgid "%s imageboard and forum server"
 msgstr ""
 
+msgid "%s memory usage."
+msgstr ""
+
+msgid "%s uptime."
+msgstr ""
+
+msgid "%s version."
+msgstr ""
+
 msgid "(Mentioned) %s"
 msgstr ""
 
@@ -1302,6 +1311,9 @@ msgstr "Verzioni"
 
 msgid "View"
 msgstr "Shiko"
+
+msgid "View latest"
+msgstr ""
 
 msgid "View posts by author"
 msgstr "Shiko postimet e autorit"
