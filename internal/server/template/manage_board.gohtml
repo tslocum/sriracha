@@ -96,7 +96,7 @@
             <tr>
                 <td class="postblock"><label for="locale">{{T "Locale"}}</label></td>
                 <td><select name="locale" style="width: 100%;">
-                    <option value=""{{if and (ne .Manage.Board nil) (eq .Manage.Board.Locale "")}} selected{{end}}>{{T "Default"}} ({{.Opt.DefaultLocaleName}})</option>
+                    <option value=""{{if and (ne .Manage.Board nil) (eq .Manage.Board.Locale "")}} selected{{end}}>{{T "Default"}} - {{.Opt.DefaultLocaleName}}</option>
                     {{range $i, $localeID := .Opt.LocalesSorted}}
                         <option value="{{$localeID}}"{{if and (ne $.Manage.Board nil) (eq $.Manage.Board.Locale $localeID)}} selected{{end}}>{{index $.Opt.Locales $localeID}}</option>
                     {{end}}

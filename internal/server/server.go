@@ -47,6 +47,7 @@ import (
 	"github.com/leonelquinteros/gotext"
 	"github.com/r3labs/diff/v3"
 	"golang.org/x/sys/unix"
+	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"golang.org/x/text/language/display"
 	"golang.org/x/text/message"
@@ -725,6 +726,13 @@ func (s *Server) loadServerConfig() error {
 			tagName := english.Name(tag)
 			if tagName != "" {
 				name = tagName
+			}
+			namer := display.Languages(tag)
+			if namer != nil {
+				native := namer.Name(tag)
+				if native != "" {
+					name += fmt.Sprintf(" (%s)", cases.Title(tag, cases.NoLower).String(native))
+				}
 			}
 
 			if s.opt.Locale == id {

@@ -40,7 +40,7 @@
                 <td class="postblock">{{T "Locale"}}</td>
                 <td>
                     <select name="locale">
-                        <option value=""{{if eq .Account.Locale ""}} selected{{end}}>{{T "Default"}} ({{.Opt.DefaultLocaleName}})</option>
+                        <option value=""{{if eq .Account.Locale ""}} selected{{end}}>{{T "Default"}} - {{.Opt.DefaultLocaleName}}</option>
                         {{range $i, $localeID := .Opt.LocalesSorted}}
                             <option value="{{$localeID}}"{{if eq $.Account.Locale $localeID}} selected{{end}}>{{index $.Opt.Locales $localeID}}</option>
                         {{end}}
