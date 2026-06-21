@@ -28,9 +28,7 @@
 	{{if ne .ReplyMode 0}}
 		<input type="hidden" name="thread" value="{{.ReplyMode}}">
 	{{end}}
-	{{if ne .Board.ID -1}}
-		<hr>
-	{{end}}
+	<hr>
 	<div>
 		{{if eq .Board.Type 0}}{{template "imgboard_post.gohtml" $}}{{else}}{{template "forum_post.gohtml" $}}{{end}}
 	</div>
