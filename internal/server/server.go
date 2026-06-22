@@ -2449,7 +2449,7 @@ func (s *Server) Run() error {
 	flag.StringVar(&importPath, "import", "", "import posts from zip file or sqlite database file at specified path")
 	flag.BoolVar(&devMode, "dev", false, "run in development mode (watch official and custom template files for changes)")
 	flag.BoolVar(&rebuild, "rebuild", false, "rebuild static files on startup")
-	flag.StringVar(&debugAddress, "debug", "", "address to serve pprof debug information on (DANGEROUS! Debug information includes hashes, passwords and other sensitive info)")
+	flag.StringVar(&debugAddress, "debug", "", "address to serve pprof debug information on (DANGEROUS! Debug information includes hashes, passwords and other sensitive data)")
 	flag.BoolVar(&printVersion, "version", false, "print version information and exit")
 	flag.Parse()
 
@@ -2686,7 +2686,7 @@ func (s *Server) Run() error {
 	}
 
 	if debugAddress != "" {
-		fmt.Printf("Serving debug information at http://%s/debug/pprof/ (WARNING! Debug information includes hashes, passwords and other sensitive info)\n", debugAddress)
+		fmt.Printf("Serving debug information at http://%s/debug/pprof/ (WARNING! Debug information includes hashes, passwords and other sensitive data)\n", debugAddress)
 		go func() {
 			log.Fatal(http.ListenAndServe(debugAddress, nil))
 		}()
