@@ -1,5 +1,6 @@
 1.7.9:
 - Include native names in list of locales
+- Link to homepage from news index and entries
 
 1.7.8:
 - Add alternative flexbox layout for each style
