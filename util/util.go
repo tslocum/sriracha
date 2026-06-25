@@ -172,6 +172,10 @@ func FormatRawTimestamp(timestamp int64) string {
 	return time.Unix(timestamp, 0).Format("2006/01/02(Mon)15:04:05")
 }
 
+func FormatYYYYMMDD(timestamp int64) string {
+	return time.Unix(timestamp, 0).Format("2006/01/02")
+}
+
 func FormatDateInput(timestamp int64) string {
 	if timestamp == 0 {
 		return ""

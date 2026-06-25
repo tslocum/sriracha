@@ -52,7 +52,7 @@ func (n *News) DateLabel() template.HTML {
 	case n.Timestamp > time.Now().Unix():
 		return "Hidden until " + FormatTimestamp(n.Timestamp)
 	default:
-		return FormatTimestamp(n.Timestamp)
+		return template.HTML(FormatYYYYMMDD(n.Timestamp))
 	}
 }
 
