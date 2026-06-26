@@ -116,7 +116,7 @@
                 <tr>
                     <td class="postblock"><label for="identifiers">{{T "Identifiers"}}</label></td>
                     <td><select name="identifiers" style="width: 100%;">
-                        <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 0)}} selected{{end}}>{{T "Disable"}}</option>
+                        <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 0)}} selected{{end}}>✗ {{T "Disable"}}</option>
                         <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 1)}} selected{{end}}>{{T "Board"}}</option>
                         <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 2)}} selected{{end}}>{{T "Global"}}</option>
                     </select></td>
@@ -126,8 +126,8 @@
             <tr>
                 <td class="postblock"><label for="backlinks">{{T "Backlinks"}}</label></td>
                 <td><select name="backlinks" style="width: 100%;">
-                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Backlinks)}} selected{{end}}>{{T "Disable"}}</option>
-                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Backlinks)}} selected{{end}}>{{T "Enable"}}</option>
+                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Backlinks)}} selected{{end}}>✗ {{T "Disable"}}</option>
+                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Backlinks)}} selected{{end}}>✓ {{T "Enable"}}</option>
                 </select></td>
                 <td>{{T "Whether reference links are displayed next to No.## pointing to all visible replies mentioning a post."}}</td>
             </tr>
@@ -186,8 +186,8 @@
             <tr>
                 <td class="postblock"><label for="reports">{{T "Reports"}}</label></td>
                 <td><select name="reports" style="width: 100%;">
-                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Reports)}} selected{{end}}>{{T "Disable"}}</option>
-                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Reports)}} selected{{end}}>{{T "Enable"}}</option>
+                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Reports)}} selected{{end}}>✗ {{T "Disable"}}</option>
+                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Reports)}} selected{{end}}>✓ {{T "Enable"}}</option>
                 </select></td>
                 <td>{{T "Whether visitors may report posts."}}</td>
             </tr>
@@ -333,16 +333,16 @@
             <tr>
                 <td class="postblock"><label for="oekaki">Oekaki</label></td>
                 <td><select name="oekaki" style="width: 100%;">
-                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Oekaki)}} selected{{end}}>{{T "Disable"}}</option>
-                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Oekaki)}} selected{{end}}>{{T "Enable"}}</option>
+                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Oekaki)}} selected{{end}}>✗ {{T "Disable"}}</option>
+                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Oekaki)}} selected{{end}}>✓ {{T "Enable"}}</option>
                 </select></td>
                 <td>{{T "Whether visitors may create and submit drawings."}}</td>
             </tr>
             <tr>
                 <td class="postblock"><label for="gallery">{{T "Gallery"}}</label></td>
                 <td><select name="gallery" style="width: 100%;">
-                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Gallery)}} selected{{end}}>{{T "Disable"}}</option>
-                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Gallery)}} selected{{end}}>{{T "Enable"}}</option>
+                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Gallery)}} selected{{end}}>✗ {{T "Disable"}}</option>
+                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Gallery)}} selected{{end}}>✓ {{T "Enable"}}</option>
                 </select></td>
                 <td>{{T "Whether visitors may browse attachments as an image gallery."}}</td>
             </tr>

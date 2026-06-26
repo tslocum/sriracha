@@ -43,41 +43,41 @@
         <tr>
             <td class="postblock"><label for="news">{{T "Site News"}}</label></td>
             <td><select name="news" style="width: 100%;">
-                <option value="0"{{if eq .Opt.News 0}} selected{{end}}>{{T "Disable"}}</option>
-                <option value="1"{{if eq .Opt.News 1}} selected{{end}}>{{T "Enable - Write to %s" "news.html"}}</option>
-                <option value="2"{{if eq .Opt.News 2}} selected{{end}}>{{T "Enable - Write to %s" "index.html"}}</option>
+                <option value="0"{{if eq .Opt.News 0}} selected{{end}}>✗ {{T "Disable"}}</option>
+                <option value="1"{{if eq .Opt.News 1}} selected{{end}}>✓ {{T "Enable - Write to %s" "news.html"}}</option>
+                <option value="2"{{if eq .Opt.News 2}} selected{{end}}>✓ {{T "Enable - Write to %s" "index.html"}}</option>
             </select></td>
             <td>{{T "Allow moderators to post site news."}}</td>
         </tr>
         <tr>
             <td class="postblock"><label for="siteindex">{{T "Site Index"}}</label></td>
             <td><select name="siteindex" style="width: 100%;">
-                <option value="0"{{if not .Opt.SiteIndex}} selected{{end}}>{{T "Disable"}}</option>
-                <option value="1"{{if .Opt.SiteIndex}} selected{{end}}>{{T "Enable"}}</option>
+                <option value="0"{{if not .Opt.SiteIndex}} selected{{end}}>✗ {{T "Disable"}}</option>
+                <option value="1"{{if .Opt.SiteIndex}} selected{{end}}>✓ {{T "Enable"}}</option>
             </select></td>
             <td>{{T "Write site index page, which contains the most recent news item, links to boards and the most recent posts."}}</td>
         </tr>
         <tr>
             <td class="postblock"><label for="boardindex">{{T "Navigation"}}</label></td>
             <td><select name="boardindex" style="width: 100%;">
-                <option value="0"{{if not .Opt.BoardIndex}} selected{{end}}>{{T "Disable"}}</option>
-                <option value="1"{{if .Opt.BoardIndex}} selected{{end}}>{{T "Enable"}}</option>
+                <option value="0"{{if not .Opt.BoardIndex}} selected{{end}}>✗ {{T "Disable"}}</option>
+                <option value="1"{{if .Opt.BoardIndex}} selected{{end}}>✓ {{T "Enable"}}</option>
             </select></td>
             <td>{{T "Link to boards in page header."}}</td>
         </tr>
         <tr>
             <td class="postblock"><label for="statistics">{{T "Statistics"}}</label></td>
             <td><select name="statistics" style="width: 100%;">
-                <option value="0"{{if not .Opt.Statistics}} selected{{end}}>{{T "Disable"}}</option>
-                <option value="1"{{if .Opt.Statistics}} selected{{end}}>{{T "Enable"}}</option>
+                <option value="0"{{if not .Opt.Statistics}} selected{{end}}>✗ {{T "Disable"}}</option>
+                <option value="1"{{if .Opt.Statistics}} selected{{end}}>✓ {{T "Enable"}}</option>
             </select></td>
             <td>{{T "Whether per-board and site-wide statistics are written to a file named %s." "stats.json"}}</td>
         </tr>
         <tr>
             <td class="postblock"><label for="captcha">CAPTCHA</label></td>
             <td><select name="captcha" style="width: 100%;">
-                <option value="0"{{if not .Opt.CAPTCHA}} selected{{end}}>{{T "Disable"}}</option>
-                <option value="1"{{if .Opt.CAPTCHA}} selected{{end}}>{{T "Enable"}}</option>
+                <option value="0"{{if not .Opt.CAPTCHA}} selected{{end}}>✗ {{T "Disable"}}</option>
+                <option value="1"{{if .Opt.CAPTCHA}} selected{{end}}>✓ {{T "Enable"}}</option>
             </select></td>
             <td>{{T "Whether visitors must pass a CAPTCHA when posting."}}</td>
         </tr>
