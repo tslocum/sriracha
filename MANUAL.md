@@ -479,6 +479,7 @@ zoopz.org, www.zoopz.org {
 
   # Cache static files.
   @staticFiles {
+    path /banner/*
     path /captcha/*
     path /static/*
     path_regexp ^.*/(src|thumb)/.*$

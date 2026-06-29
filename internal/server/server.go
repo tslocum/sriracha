@@ -2195,7 +2195,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-var staticPattern = regexp.MustCompile(`^/(captcha|static)/.*$`)
+var staticPattern = regexp.MustCompile(`^/(banner|captcha|static)/.*$`)
 var srcThumbPattern = regexp.MustCompile(`^.*/(src|thumb)/.*$`)
 
 func withCacheHeader(fs http.Handler) http.HandlerFunc {
