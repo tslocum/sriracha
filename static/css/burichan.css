@@ -58,6 +58,11 @@ hr {
 	color: #FFFFFF;
 }
 
+.globe {
+	color: transparent;
+	text-shadow: 0 0 0 #000000;
+}
+
 .postarea table, .hoverpost, .message .touchreflink {
 	background-color: #e0e4f6;
 	border: 1px solid #c5c8da;

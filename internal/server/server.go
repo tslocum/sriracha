@@ -159,6 +159,7 @@ type ServerOptions struct {
 	ModQueue         string
 	Notifications    bool
 	DevMode          bool
+	Global           []string
 	FuncMaps         map[string]template.FuncMap
 }
 
@@ -2221,8 +2222,8 @@ func (s *Server) listen(httpErrors chan error) {
 	}
 
 	mux := http.NewServeMux()
-	mux.Handle("/static/", withCacheHeader(http.StripPrefix("/static/", http.FileServer(http.Dir("static")))))
 	mux.HandleFunc("/sriracha/", s.serve)
+	mux.Handle("/static/", withCacheHeader(http.StripPrefix("/static/", http.FileServer(http.Dir("static")))))
 	mux.Handle("/", withCacheHeader(http.FileServer(http.Dir(s.config.Root))))
 
 	if s.config.HTTPS != "" {
@@ -2584,16 +2585,6 @@ func (s *Server) Run() error {
 		return fmt.Errorf("configured root directory %s is not writable", s.config.Root)
 	}
 
-	// Create captcha directory.
-	captchaDir := filepath.Join(s.config.Root, "captcha")
-	_, err = os.Stat(captchaDir)
-	if os.IsNotExist(err) {
-		err := os.Mkdir(captchaDir, NewDirPermission)
-		if err != nil {
-			log.Fatalf("failed to create captcha directory: %s", err)
-		}
-	}
-
 	// Create banner directory.
 	bannerDir := filepath.Join(s.config.Root, "banner")
 	_, err = os.Stat(bannerDir)
@@ -2601,6 +2592,16 @@ func (s *Server) Run() error {
 		err := os.Mkdir(bannerDir, NewDirPermission)
 		if err != nil {
 			log.Fatalf("failed to create banner directory: %s", err)
+		}
+	}
+
+	// Create captcha directory.
+	captchaDir := filepath.Join(s.config.Root, "captcha")
+	_, err = os.Stat(captchaDir)
+	if os.IsNotExist(err) {
+		err := os.Mkdir(captchaDir, NewDirPermission)
+		if err != nil {
+			log.Fatalf("failed to create captcha directory: %s", err)
 		}
 	}
 

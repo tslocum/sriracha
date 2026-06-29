@@ -208,6 +208,11 @@ legend {
 	padding: 2px 8px;
 }
 
+.globe {
+	float: right;
+	padding-left: 5px;
+}
+
 .managetitle {
 	margin-top: 5px;
 	margin-bottom: 10px;

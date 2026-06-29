@@ -306,6 +306,14 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	f := make(template.FuncMap)
 	maps.Copy(f, templateFuncMap)
 
+	// Global setting indicator.
+	f["Global"] = func(setting string) template.HTML {
+		if slices.Contains(s.opt.Global, setting) {
+			return template.HTML(`<div class="globe"> <span title="` + Get(nil, nil, "Global") + `">🌐</span></div>`)
+		}
+		return ""
+	}
+
 	// Localization.
 	domain := "sriracha"
 	if locale != "" {
