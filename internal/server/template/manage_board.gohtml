@@ -117,8 +117,8 @@
                     <td class="postblock"><label for="identifiers">{{T "Identifiers"}}</label></td>
                     <td><select name="identifiers" style="width: 100%;">
                         <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 0)}} selected{{end}}>✗ {{T "Disable"}}</option>
-                        <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 1)}} selected{{end}}>{{T "Board"}}</option>
-                        <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 2)}} selected{{end}}>{{T "Global"}}</option>
+                        <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 1)}} selected{{end}}>✓ {{T "Board"}}</option>
+                        <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 2)}} selected{{end}}>✓ {{T "Global"}}</option>
                     </select></td>
                     <td>{{T "Whether identifiers are displayed for each post. Identifiers are generated based on IP address hashes."}}</td>
                 </tr>
