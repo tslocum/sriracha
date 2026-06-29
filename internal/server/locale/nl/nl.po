@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-06-19 09:07+0000\n"
+"PO-Revision-Date: 2026-06-24 09:07+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -534,6 +534,9 @@ msgstr "Verbergen van overzicht"
 
 msgid "Hide until approved"
 msgstr "Verbergen tot aan goedkeuring"
+
+msgid "Home"
+msgstr "Startpagina"
 
 msgid "Home address. May be a path or URL. Used in return links."
 msgstr ""

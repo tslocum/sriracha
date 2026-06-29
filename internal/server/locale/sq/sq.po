@@ -526,6 +526,9 @@ msgstr "Fshihje nga overbordi"
 msgid "Hide until approved"
 msgstr "Fshije derisa te miratohet"
 
+msgid "Home"
+msgstr ""
+
 msgid "Home address. May be a path or URL. Used in return links."
 msgstr ""
 "Adresa e shtepise. Mund te jete nje shteg ose URL. Perdoret ne linqet e "
