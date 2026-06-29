@@ -36,12 +36,12 @@
                                         {{if ne $i 0}}
                                             <br>
                                         {{end}}
-                                        <label><input type="checkbox" name="config_{{$option.Name}}" value="{{$i}}"{{if $.HaveInt $i}} checked{{end}}> {{$value}}</label>
+                                        <label><input type="checkbox" name="config_{{$option.Name}}" value="{{$i}}"{{if $option.HaveInt $i}} checked{{end}}> {{$value}}</label>
                                     {{end}}
                                 {{else}}
                                     <select name="config_{{.Name}}" style="width: 100%;">
                                         {{range $i, $value := .Options}}
-                                            <option value="{{$i}}"{{if $.HaveInt $i}} selected{{end}}>{{$value}}</option>
+                                            <option value="{{$i}}"{{if $option.HaveInt $i}} selected{{end}}>{{$value}}</option>
                                         {{end}}
                                     </select>
                                 {{end}}
