@@ -2,3 +2,4 @@ __debug*
 cmd/sriracha/sriracha
 dist
 *.so
+*.orig
