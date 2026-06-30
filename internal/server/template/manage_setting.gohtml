@@ -142,7 +142,7 @@
             Format: <pre style="display: inline-block;border: 1px solid;padding: 2px;">Name https://service.com/path/to/oembed?url=SRIRACHA_EMBED</pre></td>
         </tr>
         <tr>
-            <th><br>{{T "Board"}}</div><div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td colspan="2"><br>{{T "Local settings are configured individually. Global settings are universal."}}</td>
+            <th><br>{{T "Boards"}}</div><div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td colspan="2"><br>{{T "Local settings are configured individually. Global settings are universal."}}</td>
         </tr>
         <tr>
             <td class="postblock"><label for="board.type">{{T "Type"}}</label></td>
@@ -455,7 +455,7 @@
             <td>{{T "Whether visitors may browse attachments as an image gallery."}}</td>
         </tr>
         <tr>
-            <th><br>{{T "Banner"}}<div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td>&nbsp;</td>
+            <th><br>{{T "Banners"}}<div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td>&nbsp;</td>
         </tr>
         <tr>
             <td class="postblock"><label for="banner.boards">{{T "Boards"}}</label></td>
@@ -466,7 +466,31 @@
             <td>{{T "Boards where the banner is displayed."}}</td>
         </tr>
         <tr>
-            <th><br>{{T "Keyword"}}<div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td>&nbsp;</td>
+            <td class="postblock"><label for="banner.overboard">{{T "Overboard"}}</label></td>
+            <td><select name="banner.overboard" style="width: 100%;">
+                <option value="0"{{if not (Global "banner.overboard")}} selected{{end}}>✗ {{T "Local"}}</option>
+                <option value="1"{{if Global "banner.overboard"}} selected{{end}}>✓ {{T "Global"}}</option>
+            </select></td>
+            <td>{{T "Whether the banner is displayed in overboard pages."}}</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="banner.news">{{T "News"}}</label></td>
+            <td><select name="banner.news" style="width: 100%;">
+                <option value="0"{{if not (Global "banner.news")}} selected{{end}}>✗ {{T "Local"}}</option>
+                <option value="1"{{if Global "banner.news"}} selected{{end}}>✓ {{T "Global"}}</option>
+            </select></td>
+            <td>{{T "Whether the banner is displayed in news pages."}}</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="banner.pages">{{T "Pages"}}</label></td>
+            <td><select name="banner.pages" style="width: 100%;">
+                <option value="0"{{if not (Global "banner.pages")}} selected{{end}}>✗ {{T "Local"}}</option>
+                <option value="1"{{if Global "banner.pages"}} selected{{end}}>✓ {{T "Global"}}</option>
+            </select></td>
+            <td>{{T "Whether the banner is displayed in custom pages."}}</td>
+        </tr>
+        <tr>
+            <th><br>{{T "Keywords"}}<div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td>&nbsp;</td>
         </tr>
         <tr>
             <td class="postblock"><label for="keyword.boards">{{T "Boards"}}</label></td>
