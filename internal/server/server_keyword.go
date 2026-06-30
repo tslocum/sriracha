@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -12,6 +13,38 @@ import (
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
+
+func (s *Server) loadGlobalKeywordSettings(db *database.DB, k *Keyword) {
+	var cachedKeyword *Keyword
+	var fetchedKeyword bool
+	firstKeyword := func() *Keyword {
+		if fetchedKeyword {
+			return cachedKeyword
+		}
+		allKeywords := db.AllKeywords()
+		if len(allKeywords) > 0 {
+			cachedKeyword = allKeywords[0]
+		}
+		fetchedKeyword = true
+		return cachedKeyword
+	}
+	if slices.Contains(s.opt.Global, "keyword.action") {
+		first := firstKeyword()
+		if first != nil {
+			k.Action = first.Action
+		} else {
+			k.Action = "hide"
+		}
+	}
+	if slices.Contains(s.opt.Global, "keyword.boards") {
+		first := firstKeyword()
+		if first != nil {
+			k.Boards = first.Boards
+		} else {
+			k.Boards = nil
+		}
+	}
+}
 
 func (s *Server) loadKeywordForm(db *database.DB, r *http.Request, k *Keyword) {
 	k.Text = FormString(r, "text")
@@ -28,6 +61,40 @@ func (s *Server) loadKeywordForm(db *database.DB, r *http.Request, k *Keyword) {
 			continue
 		}
 		k.Boards = append(k.Boards, b)
+	}
+}
+
+func (s *Server) saveGlobalKeywordSettings(db *database.DB, k *Keyword) {
+	var haveGlobal bool
+	for _, setting := range s.opt.Global {
+		if strings.HasPrefix(setting, "keyword.") {
+			haveGlobal = true
+			break
+		}
+	}
+	if !haveGlobal {
+		return
+	}
+
+	allKeywords := db.AllKeywords()
+	var modified bool
+	for _, kw := range allKeywords {
+		if kw.ID == k.ID {
+			continue
+		}
+		modified = false
+		if slices.Contains(s.opt.Global, "keyword.action") && kw.Action != k.Action {
+			kw.Action = k.Action
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "keyword.boards") && !slices.Equal(kw.Boards, k.Boards) {
+			kw.Boards = k.Boards
+			modified = true
+		}
+		if !modified {
+			continue
+		}
+		db.UpdateKeyword(kw)
 	}
 }
 
@@ -115,6 +182,7 @@ func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.Respon
 			}
 
 			db.UpdateKeyword(data.Manage.Keyword)
+			s.saveGlobalKeywordSettings(db, data.Manage.Keyword)
 			s.refreshKeywordCache(db)
 
 			changes := printChanges(oldKeyword, *data.Manage.Keyword)
@@ -132,6 +200,7 @@ func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.Respon
 		}
 		k := &Keyword{}
 		s.loadKeywordForm(db, r, k)
+		s.loadGlobalKeywordSettings(db, k)
 
 		err := k.Validate()
 		if err != nil {
