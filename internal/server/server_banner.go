@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -17,6 +18,54 @@ import (
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/gabriel-vasile/mimetype"
 )
+
+func (s *Server) loadGlobalBannerSettings(db *database.DB, b *Banner) {
+	var cachedBanner *Banner
+	var fetchedBanner bool
+	firstBanner := func() *Banner {
+		if fetchedBanner {
+			return cachedBanner
+		}
+		allBanners := db.AllBanners()
+		if len(allBanners) > 0 {
+			cachedBanner = allBanners[0]
+		}
+		fetchedBanner = true
+		return cachedBanner
+	}
+	if slices.Contains(s.opt.Global, "banner.boards") {
+		first := firstBanner()
+		if first != nil {
+			b.Boards = first.Boards
+		} else {
+			b.Boards = nil
+		}
+	}
+	if slices.Contains(s.opt.Global, "banner.overboard") {
+		first := firstBanner()
+		if first != nil {
+			b.Overboard = first.Overboard
+		} else {
+			b.Overboard = false
+		}
+	}
+	if slices.Contains(s.opt.Global, "banner.news") {
+		first := firstBanner()
+		if first != nil {
+			b.News = first.News
+		} else {
+			b.News = false
+		}
+	}
+	if slices.Contains(s.opt.Global, "banner.pages") {
+		first := firstBanner()
+		if first != nil {
+			b.Pages = first.Pages
+		} else {
+			b.Pages = false
+		}
+	}
+}
 
 func (s *Server) loadBannerFormFile(db *database.DB, r *http.Request, b *Banner) ([]byte, error) {
 	if r.PostForm == nil {
@@ -92,6 +141,48 @@ func (s *Server) loadBannerForm(db *database.DB, r *http.Request, b *Banner) {
 			continue
 		}
 		b.Boards = append(b.Boards, board)
+	}
+}
+
+func (s *Server) saveGlobalBannerSettings(db *database.DB, b *Banner) {
+	var haveGlobal bool
+	for _, setting := range s.opt.Global {
+		if strings.HasPrefix(setting, "banner.") {
+			haveGlobal = true
+			break
+		}
+	}
+	if !haveGlobal {
+		return
+	}
+
+	allBanners := db.AllBanners()
+	var modified bool
+	for _, banner := range allBanners {
+		if banner.ID == b.ID {
+			continue
+		}
+		modified = false
+		if slices.Contains(s.opt.Global, "banner.boards") && !slices.Equal(banner.Boards, b.Boards) {
+			banner.Boards = b.Boards
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "banner.overboard") && banner.Overboard != b.Overboard {
+			banner.Overboard = b.Overboard
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "banner.news") && banner.News != b.News {
+			banner.News = b.News
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "banner.pages") && banner.Pages != b.Pages {
+			banner.Pages = b.Pages
+			modified = true
+		}
+		if !modified {
+			continue
+		}
+		db.UpdateBanner(banner)
 	}
 }
 
@@ -174,6 +265,7 @@ func (s *Server) serveBanner(data *templateData, db *database.DB, w http.Respons
 			}
 
 			db.UpdateBanner(data.Manage.Banner)
+			s.saveGlobalBannerSettings(db, data.Manage.Banner)
 			s.refreshBannerCache(db)
 			s.rebuildAll(db, false)
 
@@ -199,6 +291,7 @@ func (s *Server) serveBanner(data *templateData, db *database.DB, w http.Respons
 			data.ManageError("upload a file to add a banner")
 			return
 		}
+		s.loadGlobalBannerSettings(db, b)
 
 		err = b.Validate()
 		if err != nil {
