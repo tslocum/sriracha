@@ -586,6 +586,12 @@ msgstr ""
 msgid "Link to boards in page header."
 msgstr ""
 
+msgid "Local"
+msgstr ""
+
+msgid "Local settings are configured individually. Global settings are configured universally."
+msgstr ""
+
 msgid "Locale"
 msgstr ""
 
