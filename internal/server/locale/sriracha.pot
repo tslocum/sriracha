@@ -589,7 +589,7 @@ msgstr ""
 msgid "Local"
 msgstr ""
 
-msgid "Local settings are configured individually. Global settings are configured universally."
+msgid "Local settings are configured individually. Global settings are universal."
 msgstr ""
 
 msgid "Locale"

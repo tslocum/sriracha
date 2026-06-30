@@ -82,6 +82,11 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 		}
 		db.SaveMultiString("embeds", embeds)
 
+		s.opt.Global = nil
+		for _, setting := range allGlobalSettings {
+			db.SaveBool("global."+setting, false)
+		}
+
 		db.ClearBoardCache()
 		s.removeInvalidBoardOptions(db)
 		s.writeModQueue(db)
@@ -213,6 +218,15 @@ func (s *Server) serveSetting(data *templateData, db *database.DB, w http.Respon
 			}
 		}
 		db.SaveMultiString("embeds", embeds)
+
+		s.opt.Global = nil
+		for _, setting := range allGlobalSettings {
+			global := FormBool(r, setting)
+			if global {
+				s.opt.Global = append(s.opt.Global, setting)
+			}
+			db.SaveBool("global."+setting, global)
+		}
 
 		db.ClearBoardCache()
 		s.removeInvalidBoardOptions(db)

@@ -702,6 +702,12 @@ func (s *Server) loadServerConfig() error {
 			s.opt.Embeds = append(s.opt.Embeds, [2]string{split[0], split[1]})
 		}
 	}
+	s.opt.Global = nil
+	for _, setting := range allGlobalSettings {
+		if db.GetBool("global." + setting) {
+			s.opt.Global = append(s.opt.Global, setting)
+		}
+	}
 	db.ClearBoardCache()
 	s.removeInvalidBoardOptions(db)
 
@@ -2618,12 +2624,7 @@ func (s *Server) Run() error {
 	// Lock server until initialization is complete.
 	s.lock.Lock()
 
-	s.opt.Global = []string{
-		"board.identifiers",
-		"keyword.boards",
-		"banner.boards",
-	}
-
+	// Begin transaction.
 	db := s.begin()
 
 	// Fill missing post backlink data.
@@ -2666,6 +2667,8 @@ func (s *Server) Run() error {
 	if rebuild {
 		s.rebuildAll(db, true)
 	}
+
+	// Commit transaction.
 	db.Commit()
 
 	// Watch template directories.
@@ -2927,6 +2930,52 @@ func pageSlice[S ~[]T, T any](slice S, page int, perPage int) S {
 		end = start + perPage
 	}
 	return slice[start:end]
+}
+
+var allGlobalSettings = []string{
+	"board.type",
+	"board.visibility",
+	"board.locale",
+	"board.style",
+	"board.identifiers",
+	"board.backlinks",
+	"board.defaultname",
+	"board.threads",
+	"board.replies",
+	"board.truncate",
+	"board.rules",
+	"board.lock",
+	"board.approval",
+	"board.reports",
+	"board.maxthreads",
+	"board.maxreplies",
+	"board.minname",
+	"board.maxname",
+	"board.minemail",
+	"board.maxemail",
+	"board.minsubject",
+	"board.maxsubject",
+	"board.minmessage",
+	"board.maxmessage",
+	"board.wordbreak",
+	"board.delay",
+	"board.files",
+	"board.instances",
+	"board.minsizethread",
+	"board.maxsizethread",
+	"board.minsizereply",
+	"board.maxsizereply",
+	"board.thumbwidth",
+	"board.thumbheight",
+	"board.uploads",
+	"board.embeds",
+	"board.oekaki",
+	"board.gallery",
+	"banner.boards",
+	"banner.overboard",
+	"banner.news",
+	"banner.pages",
+	"keyword.boards",
 }
 
 // doctypePrefx is an HTML prefix which may be used in custom pages to skip
