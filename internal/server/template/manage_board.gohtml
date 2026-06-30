@@ -85,9 +85,9 @@
                     <td>{{T "Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages."}}</td>
                 </tr>
             {{end}}
-            {{if or (ne .Manage.Board.ID 0) (not (Global "board.visibility"))}}
+            {{if or (ne .Manage.Board.ID 0) (not (Global "board.hide"))}}
                 <tr>
-                    <td class="postblock"><label for="hide">{{T "Visibility"}}{{Globe "board.visibility"}}</label></td>
+                    <td class="postblock"><label for="hide">{{T "Visibility"}}{{Globe "board.hide"}}</label></td>
                     <td><select name="hide" style="width: 100%;">
                         <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Hide 0)}} selected{{end}}>{{T "Show everywhere"}}</option>
                         <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Hide 1)}} selected{{end}}>{{T "Hide from index"}}</option>

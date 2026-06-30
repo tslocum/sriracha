@@ -153,10 +153,10 @@
             <td>{{T "Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages."}}</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="board.visibility">{{T "Visibility"}}</label></td>
-            <td><select name="board.visibility" style="width: 100%;">
-                <option value="0"{{if not (Global "board.visibility")}} selected{{end}}>✗ {{T "Local"}}</option>
-                <option value="1"{{if Global "board.visibility"}} selected{{end}}>✓ {{T "Global"}}</option>
+            <td class="postblock"><label for="board.hide">{{T "Visibility"}}</label></td>
+            <td><select name="board.hide" style="width: 100%;">
+                <option value="0"{{if not (Global "board.hide")}} selected{{end}}>✗ {{T "Local"}}</option>
+                <option value="1"{{if Global "board.hide"}} selected{{end}}>✓ {{T "Global"}}</option>
             </select></td>
             <td>{{T "This setting is purely cosmetic. To actually prevent access, configure your HTTPS server to require password authorization."}}</td>
         </tr>

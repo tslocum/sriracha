@@ -19,6 +19,292 @@ import (
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
+func (s *Server) loadGlobalBoardSettings(db *database.DB, b *Board) {
+	var haveGlobal bool
+	for _, setting := range s.opt.Global {
+		if strings.HasPrefix(setting, "board.") {
+			haveGlobal = true
+			break
+		}
+	}
+	if !haveGlobal {
+		return
+	}
+
+	var first *Board
+	allBoards := db.AllBoards()
+	if len(allBoards) > 0 {
+		first = allBoards[0]
+	}
+
+	if slices.Contains(s.opt.Global, "board.type") {
+		if first != nil {
+			b.Type = first.Type
+		} else {
+			b.Type = TypeImageboard
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.hide") {
+		if first != nil {
+			b.Hide = first.Hide
+		} else {
+			b.Hide = HideNowhere
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.locale") {
+		if first != nil {
+			b.Locale = first.Locale
+		} else {
+			b.Locale = ""
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.style") {
+		if first != nil {
+			b.Style = first.Style
+		} else {
+			b.Style = ""
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.identifiers") {
+		if first != nil {
+			b.Identifiers = first.Identifiers
+		} else {
+			b.Identifiers = IdentifiersDisable
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.backlinks") {
+		if first != nil {
+			b.Backlinks = first.Backlinks
+		} else {
+			b.Backlinks = false
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.defaultname") {
+		if first != nil {
+			b.DefaultName = first.DefaultName
+		} else {
+			b.DefaultName = DefaultBoardDefaultName
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.threads") {
+		if first != nil {
+			b.Threads = first.Threads
+		} else {
+			b.Threads = DefaultBoardThreads
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.replies") {
+		if first != nil {
+			b.Replies = first.Replies
+		} else {
+			b.Replies = DefaultBoardReplies
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.truncate") {
+		if first != nil {
+			b.Truncate = first.Truncate
+		} else {
+			b.Truncate = DefaultBoardTruncate
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.rules") {
+		if first != nil {
+			b.Rules = first.Rules
+		} else {
+			b.Rules = nil
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.lock") {
+		if first != nil {
+			b.Lock = first.Lock
+		} else {
+			b.Lock = LockNone
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.approval") {
+		if first != nil {
+			b.Approval = first.Approval
+		} else {
+			b.Approval = ApprovalNone
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.reports") {
+		if first != nil {
+			b.Reports = first.Reports
+		} else {
+			b.Reports = false
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.maxthreads") {
+		if first != nil {
+			b.MaxThreads = first.MaxThreads
+		} else {
+			b.MaxThreads = 0
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.maxreplies") {
+		if first != nil {
+			b.MaxReplies = first.MaxReplies
+		} else {
+			b.MaxReplies = 0
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.minname") {
+		if first != nil {
+			b.MinName = first.MinName
+		} else {
+			b.MinName = 0
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.maxname") {
+		if first != nil {
+			b.MaxName = first.MaxName
+		} else {
+			b.MaxName = DefaultBoardMaxName
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.minemail") {
+		if first != nil {
+			b.MinEmail = first.MinEmail
+		} else {
+			b.MinEmail = 0
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.maxemail") {
+		if first != nil {
+			b.MaxEmail = first.MaxEmail
+		} else {
+			b.MaxEmail = DefaultBoardMaxEmail
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.minsubject") {
+		if first != nil {
+			b.MinSubject = first.MinSubject
+		} else {
+			b.MinSubject = 0
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.maxsubject") {
+		if first != nil {
+			b.MaxSubject = first.MaxSubject
+		} else {
+			b.MaxSubject = DefaultBoardMaxSubject
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.minmessage") {
+		if first != nil {
+			b.MinMessage = first.MinMessage
+		} else {
+			b.MinMessage = 0
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.maxmessage") {
+		if first != nil {
+			b.MaxMessage = first.MaxMessage
+		} else {
+			b.MaxMessage = DefaultBoardMaxMessage
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.wordbreak") {
+		if first != nil {
+			b.WordBreak = first.WordBreak
+		} else {
+			b.WordBreak = DefaultBoardWordBreak
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.delay") {
+		if first != nil {
+			b.Delay = first.Delay
+		} else {
+			b.Delay = 0
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.files") {
+		if first != nil {
+			b.Files = first.Files
+		} else {
+			b.Files = DefaultBoardFiles
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.instances") {
+		if first != nil {
+			b.Instances = first.Instances
+		} else {
+			b.Instances = DefaultBoardInstances
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.minsizethread") {
+		if first != nil {
+			b.MinSizeThread = first.MinSizeThread
+		} else {
+			b.MinSizeThread = 0
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.maxsizethread") {
+		if first != nil {
+			b.MaxSizeThread = first.MaxSizeThread
+		} else {
+			b.MaxSizeThread = DefaultBoardMaxSize
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.minsizereply") {
+		if first != nil {
+			b.MinSizeReply = first.MinSizeReply
+		} else {
+			b.MinSizeReply = 0
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.maxsizereply") {
+		if first != nil {
+			b.MaxSizeReply = first.MaxSizeReply
+		} else {
+			b.MaxSizeReply = DefaultBoardMaxSize
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.thumbwidth") {
+		if first != nil {
+			b.ThumbWidth = first.ThumbWidth
+		} else {
+			b.ThumbWidth = DefaultBoardThumbWidth
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.thumbheight") {
+		if first != nil {
+			b.ThumbHeight = first.ThumbHeight
+		} else {
+			b.ThumbHeight = DefaultBoardThumbHeight
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.uploads") {
+		if first != nil {
+			b.Uploads = first.Uploads
+		} else {
+			b.Uploads = nil
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.embeds") {
+		if first != nil {
+			b.Embeds = first.Embeds
+		} else {
+			b.Embeds = nil
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.oekaki") {
+		if first != nil {
+			b.Oekaki = first.Oekaki
+		} else {
+			b.Oekaki = false
+		}
+	}
+	if slices.Contains(s.opt.Global, "board.gallery") {
+		if first != nil {
+			b.Gallery = first.Gallery
+		} else {
+			b.Gallery = DefaultBoardGallery
+		}
+	}
+}
+
 func (s *Server) loadBoardForm(db *database.DB, r *http.Request, b *Board) {
 	b.Dir = FormString(r, "dir")
 	b.Name = FormString(r, "name")
@@ -97,6 +383,184 @@ func (s *Server) loadBoardForm(db *database.DB, r *http.Request, b *Board) {
 		if found {
 			b.Embeds = append(b.Embeds, embed)
 		}
+	}
+}
+
+func (s *Server) saveGlobalBoardSettings(db *database.DB, b *Board) {
+	var haveGlobal bool
+	for _, setting := range s.opt.Global {
+		if strings.HasPrefix(setting, "board.") {
+			haveGlobal = true
+			break
+		}
+	}
+	if !haveGlobal {
+		return
+	}
+
+	allBoards := db.AllBoards()
+	var modified bool
+	for _, board := range allBoards {
+		if board.ID == b.ID {
+			continue
+		}
+		modified = false
+		if slices.Contains(s.opt.Global, "board.type") && board.Type != b.Type {
+			board.Type = b.Type
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.hide") && board.Hide != b.Hide {
+			board.Hide = b.Hide
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.locale") && board.Locale != b.Locale {
+			board.Locale = b.Locale
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.style") && board.Style != b.Style {
+			board.Style = b.Style
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.identifiers") && board.Identifiers != b.Identifiers {
+			board.Identifiers = b.Identifiers
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.backlinks") && board.Backlinks != b.Backlinks {
+			board.Backlinks = b.Backlinks
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.defaultname") && board.DefaultName != b.DefaultName {
+			board.DefaultName = b.DefaultName
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.threads") && board.Threads != b.Threads {
+			board.Threads = b.Threads
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.replies") && board.Replies != b.Replies {
+			board.Replies = b.Replies
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.truncate") && board.Truncate != b.Truncate {
+			board.Truncate = b.Truncate
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.rules") && !slices.Equal(board.Rules, b.Rules) {
+			board.Rules = b.Rules
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.lock") && board.Lock != b.Lock {
+			board.Lock = b.Lock
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.approval") && board.Approval != b.Approval {
+			board.Approval = b.Approval
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.reports") && board.Reports != b.Reports {
+			board.Reports = b.Reports
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.maxthreads") && board.MaxThreads != b.MaxThreads {
+			board.MaxThreads = b.MaxThreads
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.maxreplies") && board.MaxReplies != b.MaxReplies {
+			board.MaxReplies = b.MaxReplies
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.minname") && board.MinName != b.MinName {
+			board.MinName = b.MinName
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.maxname") && board.MaxName != b.MaxName {
+			board.MaxName = b.MaxName
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.minemail") && board.MinEmail != b.MinEmail {
+			board.MinEmail = b.MinEmail
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.maxemail") && board.MaxEmail != b.MaxEmail {
+			board.MaxEmail = b.MaxEmail
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.minsubject") && board.MinSubject != b.MinSubject {
+			board.MinSubject = b.MinSubject
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.maxsubject") && board.MaxSubject != b.MaxSubject {
+			board.MaxSubject = b.MaxSubject
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.minmessage") && board.MinMessage != b.MinMessage {
+			board.MinMessage = b.MinMessage
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.maxmessage") && board.MaxMessage != b.MaxMessage {
+			board.MaxMessage = b.MaxMessage
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.wordbreak") && board.WordBreak != b.WordBreak {
+			board.WordBreak = b.WordBreak
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.delay") && board.Delay != b.Delay {
+			board.Delay = b.Delay
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.files") && board.Files != b.Files {
+			board.Files = b.Files
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.instances") && board.Instances != b.Instances {
+			board.Instances = b.Instances
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.minsizethread") && board.MinSizeThread != b.MinSizeThread {
+			board.MinSizeThread = b.MinSizeThread
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.maxsizethread") && board.MaxSizeThread != b.MaxSizeThread {
+			board.MaxSizeThread = b.MaxSizeThread
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.minsizereply") && board.MinSizeReply != b.MinSizeReply {
+			board.MinSizeReply = b.MinSizeReply
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.maxsizereply") && board.MaxSizeReply != b.MaxSizeReply {
+			board.MaxSizeReply = b.MaxSizeReply
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.thumbwidth") && board.ThumbWidth != b.ThumbWidth {
+			board.ThumbWidth = b.ThumbWidth
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.thumbheight") && board.ThumbHeight != b.ThumbHeight {
+			board.ThumbHeight = b.ThumbHeight
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.uploads") && !slices.Equal(board.Uploads, b.Uploads) {
+			board.Uploads = b.Uploads
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.embeds") && !slices.Equal(board.Embeds, b.Embeds) {
+			board.Embeds = b.Embeds
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.oekaki") && board.Oekaki != b.Oekaki {
+			board.Oekaki = b.Oekaki
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.gallery") && board.Gallery != b.Gallery {
+			board.Gallery = b.Gallery
+			modified = true
+		}
+		if !modified {
+			continue
+		}
+		db.UpdateBoard(board)
 	}
 }
 
@@ -188,6 +652,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 		bb.Name = b.Name
 		bb.Description = b.Description
 		db.UpdateBoard(bb)
+		s.saveGlobalBoardSettings(db, bb)
 
 		s.refreshMaxRequestSize(db)
 		s.refreshBannerCache(db)
@@ -308,6 +773,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 			}
 
 			db.UpdateBoard(data.Manage.Board)
+			s.saveGlobalBoardSettings(db, data.Manage.Board)
 
 			if data.Manage.Board.Dir != oldDir {
 				subDirs := []string{"src", "thumb", "res"}
@@ -399,6 +865,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 		}
 		b := &Board{}
 		s.loadBoardForm(db, r, b)
+		s.loadGlobalBoardSettings(db, b)
 
 		if FormBool(r, "duplicate") {
 			duplicateID := FormInt(r, "board")

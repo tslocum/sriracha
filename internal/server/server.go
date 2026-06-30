@@ -2934,7 +2934,7 @@ func pageSlice[S ~[]T, T any](slice S, page int, perPage int) S {
 
 var allGlobalSettings = []string{
 	"board.type",
-	"board.visibility",
+	"board.hide",
 	"board.locale",
 	"board.style",
 	"board.identifiers",
