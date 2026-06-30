@@ -82,22 +82,24 @@
                 <td><input type="text" name="text" value="{{.Manage.Keyword.Text}}"></td>
                 <td>{{T "Regular expression to search for when a new post is created."}}</td>
             </tr>
-            <tr>
-                <td class="postblock"><label for="action">{{T "Action"}}</label></td>
-                <td><select name="action" style="width: 100%;">
-                    <option value="hide"{{if eq .Manage.Keyword.Action "hide"}} selected{{end}}>{{T "Hide until approved"}}</option>
-                    <option value="report"{{if eq .Manage.Keyword.Action "report"}} selected{{end}}>{{T "Report"}}</option>
-                    <option value="delete"{{if eq .Manage.Keyword.Action "delete"}} selected{{end}}>{{T "Delete"}}</option>
-                    <option value="ban1h"{{if eq .Manage.Keyword.Action "ban1h"}} selected{{end}}>{{T "Delete & ban for 1 hour"}}</option>
-                    <option value="ban1d"{{if eq .Manage.Keyword.Action "ban1d"}} selected{{end}}>{{T "Delete & ban for 1 day"}}</option>
-                    <option value="ban2d"{{if eq .Manage.Keyword.Action "ban2d"}} selected{{end}}>{{T "Delete & ban for 2 days"}}</option>
-                    <option value="ban1w"{{if eq .Manage.Keyword.Action "ban1w"}} selected{{end}}>{{T "Delete & ban for 1 week"}}</option>
-                    <option value="ban2w"{{if eq .Manage.Keyword.Action "ban2w"}} selected{{end}}>{{T "Delete & ban for 2 weeks"}}</option>
-                    <option value="ban1m"{{if eq .Manage.Keyword.Action "ban1m"}} selected{{end}}>{{T "Delete & ban for 1 month"}}</option>
-                    <option value="ban0"{{if eq .Manage.Keyword.Action "ban0"}} selected{{end}}>{{T "Delete & ban permanently"}}</option>
-                </select></td>
-                <td>{{T "Action taken when the keyword is detected."}}</td>
-            </tr>
+            {{if or (ne .Manage.Keyword.ID 0) (not (Global "keyword.action"))}}
+                <tr>
+                    <td class="postblock"><label for="action">{{T "Action"}}{{Globe "keyword.action"}}</label></td>
+                    <td><select name="action" style="width: 100%;">
+                        <option value="hide"{{if eq .Manage.Keyword.Action "hide"}} selected{{end}}>{{T "Hide until approved"}}</option>
+                        <option value="report"{{if eq .Manage.Keyword.Action "report"}} selected{{end}}>{{T "Report"}}</option>
+                        <option value="delete"{{if eq .Manage.Keyword.Action "delete"}} selected{{end}}>{{T "Delete"}}</option>
+                        <option value="ban1h"{{if eq .Manage.Keyword.Action "ban1h"}} selected{{end}}>{{T "Delete & ban for 1 hour"}}</option>
+                        <option value="ban1d"{{if eq .Manage.Keyword.Action "ban1d"}} selected{{end}}>{{T "Delete & ban for 1 day"}}</option>
+                        <option value="ban2d"{{if eq .Manage.Keyword.Action "ban2d"}} selected{{end}}>{{T "Delete & ban for 2 days"}}</option>
+                        <option value="ban1w"{{if eq .Manage.Keyword.Action "ban1w"}} selected{{end}}>{{T "Delete & ban for 1 week"}}</option>
+                        <option value="ban2w"{{if eq .Manage.Keyword.Action "ban2w"}} selected{{end}}>{{T "Delete & ban for 2 weeks"}}</option>
+                        <option value="ban1m"{{if eq .Manage.Keyword.Action "ban1m"}} selected{{end}}>{{T "Delete & ban for 1 month"}}</option>
+                        <option value="ban0"{{if eq .Manage.Keyword.Action "ban0"}} selected{{end}}>{{T "Delete & ban permanently"}}</option>
+                    </select></td>
+                    <td>{{T "Action taken when the keyword is detected."}}</td>
+                </tr>
+            {{end}}
             {{if or (ne .Manage.Keyword.ID 0) (not (Global "keyword.boards"))}}
                 <tr>
                     <td class="postblock"><label for="boards">{{T "Boards"}}{{Globe "keyword.boards"}}</label></td>

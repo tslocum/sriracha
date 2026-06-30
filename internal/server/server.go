@@ -2975,6 +2975,7 @@ var allGlobalSettings = []string{
 	"banner.overboard",
 	"banner.news",
 	"banner.pages",
+	"keyword.action",
 	"keyword.boards",
 }
 

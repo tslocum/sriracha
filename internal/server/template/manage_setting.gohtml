@@ -493,6 +493,14 @@
             <th><br>{{T "Keywords"}}<div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td>&nbsp;</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="keyword.action">{{T "Action"}}</label></td>
+            <td><select name="keyword.action" style="width: 100%;">
+                <option value="0"{{if not (Global "keyword.action")}} selected{{end}}>✗ {{T "Local"}}</option>
+                <option value="1"{{if Global "keyword.action"}} selected{{end}}>✓ {{T "Global"}}</option>
+            </select></td>
+            <td>{{T "Action taken when the keyword is detected."}}</td>
+        </tr>
+        <tr>
             <td class="postblock"><label for="keyword.boards">{{T "Boards"}}</label></td>
             <td><select name="keyword.boards" style="width: 100%;">
                 <option value="0"{{if not (Global "keyword.boards")}} selected{{end}}>✗ {{T "Local"}}</option>
