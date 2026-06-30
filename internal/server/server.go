@@ -2618,6 +2618,12 @@ func (s *Server) Run() error {
 	// Lock server until initialization is complete.
 	s.lock.Lock()
 
+	s.opt.Global = []string{
+		"board.identifiers",
+		"keyword.boards",
+		"banner.boards",
+	}
+
 	db := s.begin()
 
 	// Fill missing post backlink data.

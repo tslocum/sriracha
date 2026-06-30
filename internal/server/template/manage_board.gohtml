@@ -75,277 +75,353 @@
             <tr>
                 <th><br>{{T "Appearance"}}</th><td>&nbsp;</td>
             </tr>
-            <tr>
-                <td class="postblock"><label for="type">{{T "Type"}}{{Global "board.type"}}</label></td>
-                <td><select name="type" style="width: 100%;">
-                    <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Type 0)}} selected{{end}}>{{T "Imageboard"}}</option>
-                    <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Type 1)}} selected{{end}}>{{T "Forum"}}</option>
-                </select></td>
-                <td>{{T "Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="hide">{{T "Visibility"}}{{Global "board.visibility"}}</label></td>
-                <td><select name="hide" style="width: 100%;">
-                    <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Hide 0)}} selected{{end}}>{{T "Show everywhere"}}</option>
-                    <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Hide 1)}} selected{{end}}>{{T "Hide from index"}}</option>
-                    <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Hide 2)}} selected{{end}}>{{T "Hide from overboard"}}</option>
-                    <option value="3"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Hide 3)}} selected{{end}}>{{T "Hide everywhere"}}</option>
-                </select></td>
-                <td>{{T "This setting is purely cosmetic. To actually prevent access, configure your HTTPS server to require password authorization."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="locale">{{T "Locale"}}{{Global "board.locale"}}</label></td>
-                <td><select name="locale" style="width: 100%;">
-                    <option value=""{{if and (ne .Manage.Board nil) (eq .Manage.Board.Locale "")}} selected{{end}}>{{T "Default"}} - {{.Opt.DefaultLocaleName}}</option>
-                    {{range $i, $localeID := .Opt.LocalesSorted}}
-                        <option value="{{$localeID}}"{{if and (ne $.Manage.Board nil) (eq $.Manage.Board.Locale $localeID)}} selected{{end}}>{{index $.Opt.Locales $localeID}}</option>
-                    {{end}}
-                </select></td>
-                <td>{{T "Locale used when writing board pages."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="style">{{T "Style"}}{{Global "board.style"}}</label></td>
-                <td><select name="style" style="width: 100%;">
-                    <option value=""{{if and (ne .Manage.Board nil) (eq .Manage.Board.Style "")}} selected{{end}}>Futaba</option>
-                    <option value="burichan"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Style "burichan")}} selected{{end}}>Burichan</option>
-                    <option value="sriracha"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Style "sriracha")}} selected{{end}}>Sriracha</option>
-                </select></td>
-                <td>{{T "Default page style. Visitors may choose alternative styles in their browser settings."}}</td>
-            </tr>
-            {{if .Opt.Identifiers}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.type"))}}
                 <tr>
-                    <td class="postblock"><label for="identifiers">{{T "Identifiers"}}{{Global "board.identifiers"}}</label></td>
-                    <td><select name="identifiers" style="width: 100%;">
-                        <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 0)}} selected{{end}}>✗ {{T "Disable"}}</option>
-                        <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 1)}} selected{{end}}>✓ {{T "Board"}}</option>
-                        <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 2)}} selected{{end}}>✓ {{T "Global"}}</option>
+                    <td class="postblock"><label for="type">{{T "Type"}}{{Global "board.type"}}</label></td>
+                    <td><select name="type" style="width: 100%;">
+                        <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Type 0)}} selected{{end}}>{{T "Imageboard"}}</option>
+                        <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Type 1)}} selected{{end}}>{{T "Forum"}}</option>
                     </select></td>
-                    <td>{{T "Whether identifiers are displayed for each post. Identifiers are generated based on IP address hashes."}}</td>
+                    <td>{{T "Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages."}}</td>
                 </tr>
             {{end}}
-            <tr>
-                <td class="postblock"><label for="backlinks">{{T "Backlinks"}}{{Global "board.backlinks"}}</label></td>
-                <td><select name="backlinks" style="width: 100%;">
-                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Backlinks)}} selected{{end}}>✗ {{T "Disable"}}</option>
-                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Backlinks)}} selected{{end}}>✓ {{T "Enable"}}</option>
-                </select></td>
-                <td>{{T "Whether reference links are displayed next to No.## pointing to all visible replies mentioning a post."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="defaultname">{{T "Default Name"}}{{Global "board.defaultname"}}</label></td>
-                <td><input type="text" name="defaultname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.DefaultName}}{{end}}"></td>
-                <td>{{T "Name shown when no name is entered. Separate multiple names with | (pipe character). May be blank."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="threads">{{T "Index Threads"}}{{Global "board.threads"}}</label></td>
-                <td><input type="text" name="threads" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Threads}}{{end}}"></td>
-                <td>{{T "Number of threads to show per board index page. Set to 0 to show all."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="replies">{{T "Index Replies"}}{{Global "board.replies"}}</label></td>
-                <td><input type="text" name="replies" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Replies}}{{end}}"></td>
-                <td>{{T "Number of replies to show per board index thread. Set to 0 to show none."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="truncate">{{T "Truncate"}}{{Global "board.truncate"}}</label></td>
-                <td><input type="text" name="truncate" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Truncate}}{{end}}"></td>
-                <td>{{T "Number of message lines to display in post preview on board index pages. Set to 0 to show all."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="rules">{{T "Rules"}}{{Global "board.rules"}}</label></td>
-                <td>
-                    {{range $i, $value := .Manage.Board.Rules}}
-                        <textarea name="rules_{{$i}}" rows="4" cols="80" placeholder="Unused">{{$value}}</textarea><br>
-                    {{end}}
-                    <textarea name="rules_{{len .Manage.Board.Rules}}" rows="4" cols="80" placeholder="{{T "Unused"}}"></textarea>
-                </td>
-                <td>{{T "HTML-formatted text shown in the new post form."}}</td>
-            </tr>
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.visibility"))}}
+                <tr>
+                    <td class="postblock"><label for="hide">{{T "Visibility"}}{{Global "board.visibility"}}</label></td>
+                    <td><select name="hide" style="width: 100%;">
+                        <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Hide 0)}} selected{{end}}>{{T "Show everywhere"}}</option>
+                        <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Hide 1)}} selected{{end}}>{{T "Hide from index"}}</option>
+                        <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Hide 2)}} selected{{end}}>{{T "Hide from overboard"}}</option>
+                        <option value="3"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Hide 3)}} selected{{end}}>{{T "Hide everywhere"}}</option>
+                    </select></td>
+                    <td>{{T "This setting is purely cosmetic. To actually prevent access, configure your HTTPS server to require password authorization."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.locale"))}}
+                <tr>
+                    <td class="postblock"><label for="locale">{{T "Locale"}}{{Global "board.locale"}}</label></td>
+                    <td><select name="locale" style="width: 100%;">
+                        <option value=""{{if and (ne .Manage.Board nil) (eq .Manage.Board.Locale "")}} selected{{end}}>{{T "Default"}} - {{.Opt.DefaultLocaleName}}</option>
+                        {{range $i, $localeID := .Opt.LocalesSorted}}
+                            <option value="{{$localeID}}"{{if and (ne $.Manage.Board nil) (eq $.Manage.Board.Locale $localeID)}} selected{{end}}>{{index $.Opt.Locales $localeID}}</option>
+                        {{end}}
+                    </select></td>
+                    <td>{{T "Locale used when writing board pages."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.style"))}}
+                <tr>
+                    <td class="postblock"><label for="style">{{T "Style"}}{{Global "board.style"}}</label></td>
+                    <td><select name="style" style="width: 100%;">
+                        <option value=""{{if and (ne .Manage.Board nil) (eq .Manage.Board.Style "")}} selected{{end}}>Futaba</option>
+                        <option value="burichan"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Style "burichan")}} selected{{end}}>Burichan</option>
+                        <option value="sriracha"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Style "sriracha")}} selected{{end}}>Sriracha</option>
+                    </select></td>
+                    <td>{{T "Default page style. Visitors may choose alternative styles in their browser settings."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.identifiers"))}}
+                {{if .Opt.Identifiers}}
+                    <tr>
+                        <td class="postblock"><label for="identifiers">{{T "Identifiers"}}{{Global "board.identifiers"}}</label></td>
+                        <td><select name="identifiers" style="width: 100%;">
+                            <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 0)}} selected{{end}}>✗ {{T "Disable"}}</option>
+                            <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 1)}} selected{{end}}>✓ {{T "Board"}}</option>
+                            <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Identifiers 2)}} selected{{end}}>✓ {{T "Global"}}</option>
+                        </select></td>
+                        <td>{{T "Whether identifiers are displayed for each post. Identifiers are generated based on IP address hashes."}}</td>
+                    </tr>
+                {{end}}
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.backlinks"))}}
+                <tr>
+                    <td class="postblock"><label for="backlinks">{{T "Backlinks"}}{{Global "board.backlinks"}}</label></td>
+                    <td><select name="backlinks" style="width: 100%;">
+                        <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Backlinks)}} selected{{end}}>✗ {{T "Disable"}}</option>
+                        <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Backlinks)}} selected{{end}}>✓ {{T "Enable"}}</option>
+                    </select></td>
+                    <td>{{T "Whether reference links are displayed next to No.## pointing to all visible replies mentioning a post."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.defaultname"))}}
+                <tr>
+                    <td class="postblock"><label for="defaultname">{{T "Default Name"}}{{Global "board.defaultname"}}</label></td>
+                    <td><input type="text" name="defaultname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.DefaultName}}{{end}}"></td>
+                    <td>{{T "Name shown when no name is entered. Separate multiple names with | (pipe character). May be blank."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.threads"))}}
+                <tr>
+                    <td class="postblock"><label for="threads">{{T "Index Threads"}}{{Global "board.threads"}}</label></td>
+                    <td><input type="text" name="threads" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Threads}}{{end}}"></td>
+                    <td>{{T "Number of threads to show per board index page. Set to 0 to show all."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.replies"))}}
+                <tr>
+                    <td class="postblock"><label for="replies">{{T "Index Replies"}}{{Global "board.replies"}}</label></td>
+                    <td><input type="text" name="replies" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Replies}}{{end}}"></td>
+                    <td>{{T "Number of replies to show per board index thread. Set to 0 to show none."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.truncate"))}}
+                <tr>
+                    <td class="postblock"><label for="truncate">{{T "Truncate"}}{{Global "board.truncate"}}</label></td>
+                    <td><input type="text" name="truncate" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Truncate}}{{end}}"></td>
+                    <td>{{T "Number of message lines to display in post preview on board index pages. Set to 0 to show all."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.rules"))}}
+                <tr>
+                    <td class="postblock"><label for="rules">{{T "Rules"}}{{Global "board.rules"}}</label></td>
+                    <td>
+                        {{range $i, $value := .Manage.Board.Rules}}
+                            <textarea name="rules_{{$i}}" rows="4" cols="80" placeholder="Unused">{{$value}}</textarea><br>
+                        {{end}}
+                        <textarea name="rules_{{len .Manage.Board.Rules}}" rows="4" cols="80" placeholder="{{T "Unused"}}"></textarea>
+                    </td>
+                    <td>{{T "HTML-formatted text shown in the new post form."}}</td>
+                </tr>
+            {{end}}
             <tr>
                 <th><br>{{T "Posts"}}</th><td>&nbsp;</td>
             </tr>
-            <tr>
-                <td class="postblock"><label for="lock">{{T "Restrict New Posts"}}{{Global "board.lock"}}</label></td>
-                <td><select name="lock" style="width: 100%;">
-                    <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 0)}} selected{{end}}>{{T "Allow all"}}</option>
-                    <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 1)}} selected{{end}}>{{T "Disallow visitor threads"}}</option>
-                    <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 2)}} selected{{end}}>{{T "Disallow visitor posts"}}</option>
-                    <option value="3"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 3)}} selected{{end}}>{{T "Disallow visitor and staff posts"}}</option>
-                </select></td>
-                <td>{{T "Whether new posts may be created."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="approval">{{T "Require Approval"}}{{Global "board.approval"}}</label></td>
-                <td><select name="approval" style="width: 100%;">
-                    <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Approval 0)}} selected{{end}}>{{T "Never"}}</option>
-                    <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Approval 1)}} selected{{end}}>{{T "Posts with attachments"}}</option>
-                    <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Approval 2)}} selected{{end}}>{{T "All posts"}}</option>
-                </select></td>
-                <td>{{T "Whether moderator approval is required before displaying newly created posts."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="reports">{{T "Reports"}}{{Global "board.reports"}}</label></td>
-                <td><select name="reports" style="width: 100%;">
-                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Reports)}} selected{{end}}>✗ {{T "Disable"}}</option>
-                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Reports)}} selected{{end}}>✓ {{T "Enable"}}</option>
-                </select></td>
-                <td>{{T "Whether visitors may report posts."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="maxthreads">{{T "Max Threads"}}{{Global "board.maxthreads"}}</label></td>
-                <td><input type="text" name="maxthreads" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxThreads}}{{end}}"></td>
-                <td>{{T "Maximum number of threads in board. Once this limit is reached, the oldest threads are pruned. Set to 0 to disable."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="maxreplies">{{T "Max Replies"}}{{Global "board.maxreplies"}}</label></td>
-                <td><input type="text" name="maxreplies" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxReplies}}{{end}}"></td>
-                <td>{{T "Maximum number of replies to a thread before the thread stops being bumped to the front. Set to 0 to disable."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="minname">{{T "Min Name Length"}}{{Global "board.minname"}}</label></td>
-                <td><input type="text" name="minname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinName}}{{end}}"></td>
-                <td>{{T "Minimum length of the name field."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="maxname">{{T "Max Name Length"}}{{Global "board.maxname"}}</label></td>
-                <td><input type="text" name="maxname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxName}}{{end}}"></td>
-                <td>{{T "Maximum length of the name field."}} {{T "Values greater than 75 are not supported when using the default database schema."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="minemail">{{T "Min Email Length"}}{{Global "board.minemail"}}</label></td>
-                <td><input type="text" name="minemail" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinEmail}}{{end}}"></td>
-                <td>{{T "Minimum length of the email field."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="maxemail">{{T "Max Email Length"}}{{Global "board.maxemail"}}</label></td>
-                <td><input type="text" name="maxemail" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxEmail}}{{end}}"></td>
-                <td>{{T "Maximum length of the email field."}} {{T "Values greater than 75 are not supported when using the default database schema."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="minsubject">{{T "Min Subject Length"}}{{Global "board.minsubject"}}</label></td>
-                <td><input type="text" name="minsubject" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinSubject}}{{end}}"></td>
-                <td>{{T "Minimum length of the subject field."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="maxsubject">{{T "Max Subject Length"}}{{Global "board.maxsubject"}}</label></td>
-                <td><input type="text" name="maxsubject" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSubject}}{{end}}"></td>
-                <td>{{T "Maximum length of the subject field."}} {{T "Values greater than 75 are not supported when using the default database schema."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="minmessage">{{T "Min Message Length"}}{{Global "board.minmessage"}}</label></td>
-                <td><input type="text" name="minmessage" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinMessage}}{{end}}"></td>
-                <td>{{T "Minimum length of the message field."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="maxmessage">{{T "Max Message Length"}}{{Global "board.maxmessage"}}</label></td>
-                <td><input type="text" name="maxmessage" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxMessage}}{{end}}"></td>
-                <td>{{T "Maximum length of the message field."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="wordbreak">{{T "Word Break"}}{{Global "board.wordbreak"}}</label></td>
-                <td><input type="text" name="wordbreak" value="{{if ne .Manage.Board nil}}{{.Manage.Board.WordBreak}}{{end}}"></td>
-                <td>{{T "Maximum word length. Set to 0 to never break long words."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="delay">{{T "Delay"}}{{Global "board.delay"}}</label></td>
-                <td><input type="text" name="delay" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Delay}}{{end}}"></td>
-                <td>{{T "Delay (in seconds) visitors must wait before posting again. Set to 0 to disable."}}</td>
-            </tr>
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.lock"))}}
+                <tr>
+                    <td class="postblock"><label for="lock">{{T "Restrict New Posts"}}{{Global "board.lock"}}</label></td>
+                    <td><select name="lock" style="width: 100%;">
+                        <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 0)}} selected{{end}}>{{T "Allow all"}}</option>
+                        <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 1)}} selected{{end}}>{{T "Disallow visitor threads"}}</option>
+                        <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 2)}} selected{{end}}>{{T "Disallow visitor posts"}}</option>
+                        <option value="3"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Lock 3)}} selected{{end}}>{{T "Disallow visitor and staff posts"}}</option>
+                    </select></td>
+                    <td>{{T "Whether new posts may be created."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.approval"))}}
+                <tr>
+                    <td class="postblock"><label for="approval">{{T "Require Approval"}}{{Global "board.approval"}}</label></td>
+                    <td><select name="approval" style="width: 100%;">
+                        <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Approval 0)}} selected{{end}}>{{T "Never"}}</option>
+                        <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Approval 1)}} selected{{end}}>{{T "Posts with attachments"}}</option>
+                        <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Approval 2)}} selected{{end}}>{{T "All posts"}}</option>
+                    </select></td>
+                    <td>{{T "Whether moderator approval is required before displaying newly created posts."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.reports"))}}
+                <tr>
+                    <td class="postblock"><label for="reports">{{T "Reports"}}{{Global "board.reports"}}</label></td>
+                    <td><select name="reports" style="width: 100%;">
+                        <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Reports)}} selected{{end}}>✗ {{T "Disable"}}</option>
+                        <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Reports)}} selected{{end}}>✓ {{T "Enable"}}</option>
+                    </select></td>
+                    <td>{{T "Whether visitors may report posts."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.maxthreads"))}}
+                <tr>
+                    <td class="postblock"><label for="maxthreads">{{T "Max Threads"}}{{Global "board.maxthreads"}}</label></td>
+                    <td><input type="text" name="maxthreads" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxThreads}}{{end}}"></td>
+                    <td>{{T "Maximum number of threads in board. Once this limit is reached, the oldest threads are pruned. Set to 0 to disable."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.maxreplies"))}}
+                <tr>
+                    <td class="postblock"><label for="maxreplies">{{T "Max Replies"}}{{Global "board.maxreplies"}}</label></td>
+                    <td><input type="text" name="maxreplies" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxReplies}}{{end}}"></td>
+                    <td>{{T "Maximum number of replies to a thread before the thread stops being bumped to the front. Set to 0 to disable."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.minname"))}}
+                <tr>
+                    <td class="postblock"><label for="minname">{{T "Min Name Length"}}{{Global "board.minname"}}</label></td>
+                    <td><input type="text" name="minname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinName}}{{end}}"></td>
+                    <td>{{T "Minimum length of the name field."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.maxname"))}}
+                <tr>
+                    <td class="postblock"><label for="maxname">{{T "Max Name Length"}}{{Global "board.maxname"}}</label></td>
+                    <td><input type="text" name="maxname" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxName}}{{end}}"></td>
+                    <td>{{T "Maximum length of the name field."}} {{T "Values greater than 75 are not supported when using the default database schema."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.minemail"))}}
+                <tr>
+                    <td class="postblock"><label for="minemail">{{T "Min Email Length"}}{{Global "board.minemail"}}</label></td>
+                    <td><input type="text" name="minemail" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinEmail}}{{end}}"></td>
+                    <td>{{T "Minimum length of the email field."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.maxemail"))}}
+                <tr>
+                    <td class="postblock"><label for="maxemail">{{T "Max Email Length"}}{{Global "board.maxemail"}}</label></td>
+                    <td><input type="text" name="maxemail" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxEmail}}{{end}}"></td>
+                    <td>{{T "Maximum length of the email field."}} {{T "Values greater than 75 are not supported when using the default database schema."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.minsubject"))}}
+                <tr>
+                    <td class="postblock"><label for="minsubject">{{T "Min Subject Length"}}{{Global "board.minsubject"}}</label></td>
+                    <td><input type="text" name="minsubject" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinSubject}}{{end}}"></td>
+                    <td>{{T "Minimum length of the subject field."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.maxsubject"))}}
+                <tr>
+                    <td class="postblock"><label for="maxsubject">{{T "Max Subject Length"}}{{Global "board.maxsubject"}}</label></td>
+                    <td><input type="text" name="maxsubject" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSubject}}{{end}}"></td>
+                    <td>{{T "Maximum length of the subject field."}} {{T "Values greater than 75 are not supported when using the default database schema."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.minmessage"))}}
+                <tr>
+                    <td class="postblock"><label for="minmessage">{{T "Min Message Length"}}{{Global "board.minmessage"}}</label></td>
+                    <td><input type="text" name="minmessage" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinMessage}}{{end}}"></td>
+                    <td>{{T "Minimum length of the message field."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.maxmessage"))}}
+                <tr>
+                    <td class="postblock"><label for="maxmessage">{{T "Max Message Length"}}{{Global "board.maxmessage"}}</label></td>
+                    <td><input type="text" name="maxmessage" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxMessage}}{{end}}"></td>
+                    <td>{{T "Maximum length of the message field."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.wordbreak"))}}
+                <tr>
+                    <td class="postblock"><label for="wordbreak">{{T "Word Break"}}{{Global "board.wordbreak"}}</label></td>
+                    <td><input type="text" name="wordbreak" value="{{if ne .Manage.Board nil}}{{.Manage.Board.WordBreak}}{{end}}"></td>
+                    <td>{{T "Maximum word length. Set to 0 to never break long words."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.delay"))}}
+                <tr>
+                    <td class="postblock"><label for="delay">{{T "Delay"}}{{Global "board.delay"}}</label></td>
+                    <td><input type="text" name="delay" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Delay}}{{end}}"></td>
+                    <td>{{T "Delay (in seconds) visitors must wait before posting again. Set to 0 to disable."}}</td>
+                </tr>
+            {{end}}
             <tr>
                 <th><br>{{T "Attachments"}}</th><td>&nbsp;</td>
             </tr>
-            <tr>
-                <td class="postblock"><label for="files">{{T "Files"}}{{Global "board.files"}}</label></td>
-                <td><input type="text" name="files" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Files}}{{else}}1{{end}}"></td>
-                <td>{{T "Number of files visitors may upload at once. A new post is created for each uploaded file."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="instances">{{T "Instance Limit"}}{{Global "board.instances"}}</label></td>
-                <td><input type="text" name="instances" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Instances}}{{else}}1{{end}}"></td>
-                <td>{{T "Positive values specify global instances allowed. Negative values specify board-specific instances allowed. Zero allows unlimited instances."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="minsizethread">{{T "Min Thread File Size"}}{{Global "board.minsizethread"}}</label></td>
-                <td><input type="text" name="minsizethread" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinSizeThread}}{{end}}"></td>
-                <td>{{T "Minimum file size (in bytes) when creating a thread."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="maxsizethread">{{T "Max Thread File Size"}}{{Global "board.maxsizethread"}}</label></td>
-                <td><input type="text" name="maxsizethread" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSizeThread}}{{end}}"></td>
-                <td>{{T "Maximum file size (in bytes) when creating a thread. Set to 0 to disable file uploads."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="minsizereply">{{T "Min Reply File Size"}}{{Global "board.minsizereply"}}</label></td>
-                <td><input type="text" name="minsizereply" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinSizeReply}}{{end}}"></td>
-                <td>{{T "Minimum file size (in bytes) when replying."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="maxsizereply">{{T "Max Reply File Size"}}{{Global "board.maxsizereply"}}</label></td>
-                <td><input type="text" name="maxsizereply" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSizeReply}}{{end}}"></td>
-                <td>{{T "Maximum file size (in bytes) when replying. Set to 0 to disable file uploads."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="thumbwidth">{{T "Thumbnail Width"}}{{Global "board.thumbwidth"}}</label></td>
-                <td><input type="text" name="thumbwidth" value="{{if ne .Manage.Board nil}}{{.Manage.Board.ThumbWidth}}{{end}}"></td>
-                <td>{{T "Maximum width of thumbnails."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="thumbheight">{{T "Thumbnail Height"}}{{Global "board.thumbheight"}}</label></td>
-                <td><input type="text" name="thumbheight" value="{{if ne .Manage.Board nil}}{{.Manage.Board.ThumbHeight}}{{end}}"></td>
-                <td>{{T "Maximum height of thumbnails."}}</td>
-            </tr>
-            {{if ne (len .Opt.Uploads) 0}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.files"))}}
                 <tr>
-                    <td class="postblock">
-                        <label for="uploads">{{T "File Types"}}{{Global "board.uploads"}}</label>
-                        {{if or (and (eq .Manage.Board.ID 0) (May "board.add" $.Account $.Opt.Access)) (and (ne .Manage.Board.ID 0) (May "board.update" $.Account $.Opt.Access))}}
-                            <br>
-                            &nbsp;&nbsp;<a href="#" onclick="return setAllUploads(true);">{{T "Enable All"}}</a><br>
-                            &nbsp;&nbsp;<a href="#" onclick="return setAllUploads(false);">{{T "Disable All"}}</a>
-                        {{end}}
-                    </td>
-                    <td>
-                        {{range $i, $info := .Opt.Uploads}}
-                            {{if ne $i 0}}
-                                <br>
-                            {{end}}
-                            <label><input type="checkbox" name="uploads" value="{{.MIME}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasUpload .MIME)}} checked{{end}}> {{.Ext | ToUpper}} ({{.MIME}})</label>
-                        {{end}}
-                    </td>
-                    <td>{{T "Visitors may upload the selected types of files."}}</td>
+                    <td class="postblock"><label for="files">{{T "Files"}}{{Global "board.files"}}</label></td>
+                    <td><input type="text" name="files" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Files}}{{else}}1{{end}}"></td>
+                    <td>{{T "Number of files visitors may upload at once. A new post is created for each uploaded file."}}</td>
                 </tr>
             {{end}}
-            {{if ne (len .Opt.Embeds) 0}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.instances"))}}
                 <tr>
-                    <td class="postblock"><label for="embeds">{{T "Embed Services"}}{{Global "board.embeds"}}</label></td>
-                    <td>
-                        {{range $i, $info := .Opt.Embeds}}
-                            {{if ne $i 0}}
-                                <br>
-                            {{end}}
-                            {{$name := index $info 0}}
-                            <label><input type="checkbox" name="embeds" value="{{$name}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasEmbed $name)}} checked{{end}}> {{$name}}</label>
-                        {{end}}
-                    </td>
-                    <td>{{T "Visitors may embed media from selected services instead of uploading a file."}}</td>
+                    <td class="postblock"><label for="instances">{{T "Instance Limit"}}{{Global "board.instances"}}</label></td>
+                    <td><input type="text" name="instances" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Instances}}{{else}}1{{end}}"></td>
+                    <td>{{T "Positive values specify global instances allowed. Negative values specify board-specific instances allowed. Zero allows unlimited instances."}}</td>
                 </tr>
             {{end}}
-            <tr>
-                <td class="postblock"><label for="oekaki">Oekaki{{Global "board.oekaki"}}</label></td>
-                <td><select name="oekaki" style="width: 100%;">
-                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Oekaki)}} selected{{end}}>✗ {{T "Disable"}}</option>
-                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Oekaki)}} selected{{end}}>✓ {{T "Enable"}}</option>
-                </select></td>
-                <td>{{T "Whether visitors may create and submit drawings."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="gallery">{{T "Gallery"}}{{Global "board.gallery"}}</label></td>
-                <td><select name="gallery" style="width: 100%;">
-                    <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Gallery)}} selected{{end}}>✗ {{T "Disable"}}</option>
-                    <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Gallery)}} selected{{end}}>✓ {{T "Enable"}}</option>
-                </select></td>
-                <td>{{T "Whether visitors may browse attachments as an image gallery."}}</td>
-            </tr>
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.minsizethread"))}}
+                <tr>
+                    <td class="postblock"><label for="minsizethread">{{T "Min Thread File Size"}}{{Global "board.minsizethread"}}</label></td>
+                    <td><input type="text" name="minsizethread" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinSizeThread}}{{end}}"></td>
+                    <td>{{T "Minimum file size (in bytes) when creating a thread."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.maxsizethread"))}}
+                <tr>
+                    <td class="postblock"><label for="maxsizethread">{{T "Max Thread File Size"}}{{Global "board.maxsizethread"}}</label></td>
+                    <td><input type="text" name="maxsizethread" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSizeThread}}{{end}}"></td>
+                    <td>{{T "Maximum file size (in bytes) when creating a thread. Set to 0 to disable file uploads."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.minsizereply"))}}
+                <tr>
+                    <td class="postblock"><label for="minsizereply">{{T "Min Reply File Size"}}{{Global "board.minsizereply"}}</label></td>
+                    <td><input type="text" name="minsizereply" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MinSizeReply}}{{end}}"></td>
+                    <td>{{T "Minimum file size (in bytes) when replying."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.maxsizereply"))}}
+                <tr>
+                    <td class="postblock"><label for="maxsizereply">{{T "Max Reply File Size"}}{{Global "board.maxsizereply"}}</label></td>
+                    <td><input type="text" name="maxsizereply" value="{{if ne .Manage.Board nil}}{{.Manage.Board.MaxSizeReply}}{{end}}"></td>
+                    <td>{{T "Maximum file size (in bytes) when replying. Set to 0 to disable file uploads."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.thumbwidth"))}}
+                <tr>
+                    <td class="postblock"><label for="thumbwidth">{{T "Thumbnail Width"}}{{Global "board.thumbwidth"}}</label></td>
+                    <td><input type="text" name="thumbwidth" value="{{if ne .Manage.Board nil}}{{.Manage.Board.ThumbWidth}}{{end}}"></td>
+                    <td>{{T "Maximum width of thumbnails."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.thumbheight"))}}
+                <tr>
+                    <td class="postblock"><label for="thumbheight">{{T "Thumbnail Height"}}{{Global "board.thumbheight"}}</label></td>
+                    <td><input type="text" name="thumbheight" value="{{if ne .Manage.Board nil}}{{.Manage.Board.ThumbHeight}}{{end}}"></td>
+                    <td>{{T "Maximum height of thumbnails."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.uploads"))}}
+                {{if ne (len .Opt.Uploads) 0}}
+                    <tr>
+                        <td class="postblock">
+                            <label for="uploads">{{T "File Types"}}{{Global "board.uploads"}}</label>
+                            {{if or (and (eq .Manage.Board.ID 0) (May "board.add" $.Account $.Opt.Access)) (and (ne .Manage.Board.ID 0) (May "board.update" $.Account $.Opt.Access))}}
+                                <br>
+                                &nbsp;&nbsp;<a href="#" onclick="return setAllUploads(true);">{{T "Enable All"}}</a><br>
+                                &nbsp;&nbsp;<a href="#" onclick="return setAllUploads(false);">{{T "Disable All"}}</a>
+                            {{end}}
+                        </td>
+                        <td>
+                            {{range $i, $info := .Opt.Uploads}}
+                                {{if ne $i 0}}
+                                    <br>
+                                {{end}}
+                                <label><input type="checkbox" name="uploads" value="{{.MIME}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasUpload .MIME)}} checked{{end}}> {{.Ext | ToUpper}} ({{.MIME}})</label>
+                            {{end}}
+                        </td>
+                        <td>{{T "Visitors may upload the selected types of files."}}</td>
+                    </tr>
+                {{end}}
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.embeds"))}}
+                {{if ne (len .Opt.Embeds) 0}}
+                    <tr>
+                        <td class="postblock"><label for="embeds">{{T "Embed Services"}}{{Global "board.embeds"}}</label></td>
+                        <td>
+                            {{range $i, $info := .Opt.Embeds}}
+                                {{if ne $i 0}}
+                                    <br>
+                                {{end}}
+                                {{$name := index $info 0}}
+                                <label><input type="checkbox" name="embeds" value="{{$name}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasEmbed $name)}} checked{{end}}> {{$name}}</label>
+                            {{end}}
+                        </td>
+                        <td>{{T "Visitors may embed media from selected services instead of uploading a file."}}</td>
+                    </tr>
+                {{end}}
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.oekaki"))}}
+                <tr>
+                    <td class="postblock"><label for="oekaki">Oekaki{{Global "board.oekaki"}}</label></td>
+                    <td><select name="oekaki" style="width: 100%;">
+                        <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Oekaki)}} selected{{end}}>✗ {{T "Disable"}}</option>
+                        <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Oekaki)}} selected{{end}}>✓ {{T "Enable"}}</option>
+                    </select></td>
+                    <td>{{T "Whether visitors may create and submit drawings."}}</td>
+                </tr>
+            {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (IsGlobal "board.gallery"))}}
+                <tr>
+                    <td class="postblock"><label for="gallery">{{T "Gallery"}}{{Global "board.gallery"}}</label></td>
+                    <td><select name="gallery" style="width: 100%;">
+                        <option value="0"{{if and (ne .Manage.Board nil) (not .Manage.Board.Gallery)}} selected{{end}}>✗ {{T "Disable"}}</option>
+                        <option value="1"{{if and (ne .Manage.Board nil) (.Manage.Board.Gallery)}} selected{{end}}>✓ {{T "Enable"}}</option>
+                    </select></td>
+                    <td>{{T "Whether visitors may browse attachments as an image gallery."}}</td>
+                </tr>
+            {{end}}
             {{if or (and (eq .Manage.Board.ID 0) (May "board.add" $.Account $.Opt.Access)) (and (ne .Manage.Board.ID 0) (May "board.update" $.Account $.Opt.Access))}}
                 <tr>
                     <td style="vertical-align: middle;">{{if ne .Manage.Board.ID 0}}&nbsp;[<a href="/sriracha/board/reset/{{.Manage.Board.ID}}" onclick="return confirm('{{T "Reset board configuration?"}}');">{{T "Reset"}}</a>]{{end}}</td>

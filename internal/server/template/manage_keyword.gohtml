@@ -98,15 +98,17 @@
                 </select></td>
                 <td>{{T "Action taken when the keyword is detected."}}</td>
             </tr>
-            <tr>
-                <td class="postblock"><label for="boards">{{T "Boards"}}{{Global "keyword.boards"}}</label></td>
-                <td>{{template "manage_input_board.gohtml" (Slice .Boards .Manage.Keyword)}}</td>
-                <td>
-                    {{T "Boards where the keyword applies."}}<br>
-                    &nbsp;&nbsp;<a href="#" onclick="return setAllBoards(true);">{{T "Enable All"}}</a><br>
-                    &nbsp;&nbsp;<a href="#" onclick="return setAllBoards(false);">{{T "Disable All"}}</a>
-                </td>
-            </tr>
+            {{if or (ne .Manage.Keyword.ID 0) (not (IsGlobal "keyword.boards"))}}
+                <tr>
+                    <td class="postblock"><label for="boards">{{T "Boards"}}{{Global "keyword.boards"}}</label></td>
+                    <td>{{template "manage_input_board.gohtml" (Slice .Boards .Manage.Keyword)}}</td>
+                    <td>
+                        {{T "Boards where the keyword applies."}}<br>
+                        &nbsp;&nbsp;<a href="#" onclick="return setAllBoards(true);">{{T "Enable All"}}</a><br>
+                        &nbsp;&nbsp;<a href="#" onclick="return setAllBoards(false);">{{T "Disable All"}}</a>
+                    </td>
+                </tr>
+            {{end}}
             <tr>
                 <td>&nbsp;</td>
                 <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.Keyword.ID 0}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
