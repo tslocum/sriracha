@@ -63,9 +63,9 @@
                 <td><input type="file" name="file"></td>
                 <td>{{if or (eq .Manage.Banner nil) (eq .Manage.Banner.ID 0)}}{{T "Required."}}{{else}}{{T "Optional."}}{{end}}</td>
             </tr>
-            {{if or (ne .Manage.Banner.ID 0) (not (IsGlobal "banner.boards"))}}
+            {{if or (ne .Manage.Banner.ID 0) (not (Global "banner.boards"))}}
                 <tr>
-                    <td class="postblock"><label for="boards">{{T "Boards"}}{{Global "banner.boards"}}</label></td>
+                    <td class="postblock"><label for="boards">{{T "Boards"}}{{Globe "banner.boards"}}</label></td>
                     <td>{{template "manage_input_board.gohtml" (Slice .Boards .Manage.Banner)}}</td>
                     <td>
                         {{T "Boards where the banner is displayed."}}<br>
@@ -74,9 +74,9 @@
                     </td>
                 </tr>
             {{end}}
-            {{if or (ne .Manage.Banner.ID 0) (not (IsGlobal "banner.overboard"))}}
+            {{if or (ne .Manage.Banner.ID 0) (not (Global "banner.overboard"))}}
                 <tr>
-                    <td class="postblock"><label for="overboard">{{T "Overboard"}}{{Global "banner.overboard"}}</label></td>
+                    <td class="postblock"><label for="overboard">{{T "Overboard"}}{{Globe "banner.overboard"}}</label></td>
                     <td><select name="overboard" style="width: 100%;">
                         <option value="0"{{if and (ne .Manage.Banner nil) (not .Manage.Banner.Overboard)}} selected{{end}}>✗ {{T "Disable"}}</option>
                         <option value="1"{{if and (ne .Manage.Banner nil) (.Manage.Banner.Overboard)}} selected{{end}}>✓ {{T "Enable"}}</option>
@@ -84,9 +84,9 @@
                     <td>{{T "Whether the banner is displayed in overboard pages."}}</td>
                 </tr>
             {{end}}
-            {{if or (ne .Manage.Banner.ID 0) (not (IsGlobal "banner.news"))}}
+            {{if or (ne .Manage.Banner.ID 0) (not (Global "banner.news"))}}
                 <tr>
-                    <td class="postblock"><label for="news">{{T "News"}}{{Global "banner.news"}}</label></td>
+                    <td class="postblock"><label for="news">{{T "News"}}{{Globe "banner.news"}}</label></td>
                     <td><select name="news" style="width: 100%;">
                         <option value="0"{{if and (ne .Manage.Banner nil) (not .Manage.Banner.News)}} selected{{end}}>✗ {{T "Disable"}}</option>
                         <option value="1"{{if and (ne .Manage.Banner nil) (.Manage.Banner.News)}} selected{{end}}>✓ {{T "Enable"}}</option>
@@ -94,9 +94,9 @@
                     <td>{{T "Whether the banner is displayed in news pages."}}</td>
                 </tr>
             {{end}}
-            {{if or (ne .Manage.Banner.ID 0) (not (IsGlobal "banner.pages"))}}
+            {{if or (ne .Manage.Banner.ID 0) (not (Global "banner.pages"))}}
                 <tr>
-                    <td class="postblock"><label for="pages">{{T "Pages"}}{{Global "banner.pages"}}</label></td>
+                    <td class="postblock"><label for="pages">{{T "Pages"}}{{Globe "banner.pages"}}</label></td>
                     <td><select name="pages" style="width: 100%;">
                         <option value="0"{{if and (ne .Manage.Banner nil) (not .Manage.Banner.Pages)}} selected{{end}}>✗ {{T "Disable"}}</option>
                         <option value="1"{{if and (ne .Manage.Banner nil) (.Manage.Banner.Pages)}} selected{{end}}>✓ {{T "Enable"}}</option>

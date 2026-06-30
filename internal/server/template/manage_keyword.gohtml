@@ -98,9 +98,9 @@
                 </select></td>
                 <td>{{T "Action taken when the keyword is detected."}}</td>
             </tr>
-            {{if or (ne .Manage.Keyword.ID 0) (not (IsGlobal "keyword.boards"))}}
+            {{if or (ne .Manage.Keyword.ID 0) (not (Global "keyword.boards"))}}
                 <tr>
-                    <td class="postblock"><label for="boards">{{T "Boards"}}{{Global "keyword.boards"}}</label></td>
+                    <td class="postblock"><label for="boards">{{T "Boards"}}{{Globe "keyword.boards"}}</label></td>
                     <td>{{template "manage_input_board.gohtml" (Slice .Boards .Manage.Keyword)}}</td>
                     <td>
                         {{T "Boards where the keyword applies."}}<br>

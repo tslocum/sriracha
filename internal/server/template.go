@@ -307,10 +307,10 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	maps.Copy(f, templateFuncMap)
 
 	// Global settings.
-	f["IsGlobal"] = func(setting string) bool {
+	f["Global"] = func(setting string) bool {
 		return slices.Contains(s.opt.Global, setting)
 	}
-	f["Global"] = func(setting string) template.HTML {
+	f["Globe"] = func(setting string) template.HTML {
 		if slices.Contains(s.opt.Global, setting) {
 			return template.HTML(`<div class="globe"> <span title="` + Get(nil, nil, "Global") + `">🌐</span></div>`)
 		}
