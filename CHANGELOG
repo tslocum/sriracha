@@ -1,3 +1,6 @@
+1.8.2:
+- Require additional confirmation when deleting a board
+
 1.8.1:
 - Add global settings
 - Fix post-upgrade statement cache error

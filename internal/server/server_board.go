@@ -692,13 +692,17 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 				</legend>
 				<div>
 					<h1>WARNING!</h1>
-					You are about to <b>PERMANENTLY DELETE</b> ` + b.Path() + ` ` + html.EscapeString(b.Name) + `!<br>
-					` + strconv.Itoa(len(allThreads)) + ` threads in ` + b.Path() + ` will be <b>permanently deleted</b>.<br>
-					This operation cannot be undone.<br><br>
-					<input type="submit" value="Delete ` + b.Path() + `">
+					You are about to <b>PERMANENTLY DELETE <a href="` + b.Path() + `">` + b.Path() + ` ` + html.EscapeString(b.Name) + `</a>!</b><br>
+					` + strconv.Itoa(len(allThreads)) + ` threads in ` + b.Path() + ` will be <b>PERMANENTLY DELETED!</b><br>
+					<b>This operation cannot be undone!</b><br><br>Type <b>` + b.Path() + `</b> to confirm:<br>
+					<input type="text" name="path"><br>
+					<input type="submit" value="Delete ` + b.Path() + ` forever" style="margin-top: 5px;">
 				</div>
 			</fieldset>
 			</form>`)
+			return
+		} else if FormString(r, "path") != b.Path() {
+			data.ManageError(fmt.Sprintf("Type the board path %s to confirm deletion.", b.Path()))
 			return
 		}
 		for _, threadInfo := range allThreads {
