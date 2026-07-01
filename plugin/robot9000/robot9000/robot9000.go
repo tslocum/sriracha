@@ -57,7 +57,7 @@ func (r *Robot9000) Rules(db sriracha.DB, board *Board) (template.HTML, error) {
 	if len(r.boards) == 0 || !slices.Contains(r.boards, board.ID) {
 		return "", nil
 	}
-	return "Robot 9000 mode enabled. Post message must be unique.", nil
+	return template.HTML(Get(board, nil, "Robot 9000 mode enabled. Post message must be unique.")), nil
 }
 
 func (r *Robot9000) Insert(db sriracha.DB, post *Post) error {

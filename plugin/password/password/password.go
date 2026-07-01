@@ -101,7 +101,7 @@ func (v *Password) Rules(db sriracha.DB, board *Board) (template.HTML, error) {
 	if !foundBoard {
 		return "", nil
 	}
-	return "Password protection enabled. You must enter an allowed password to post.", nil
+	return template.HTML(Get(board, nil, "Password protection enabled. You must enter an allowed password to post.")), nil
 }
 
 func (v *Password) Post(db sriracha.DB, post *Post) error {

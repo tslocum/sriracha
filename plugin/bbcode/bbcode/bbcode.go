@@ -153,14 +153,13 @@ func (f *BBCode) Rules(db sriracha.DB, board *Board) (template.HTML, error) {
 		return "", nil
 	}
 	var out strings.Builder
-	out.WriteString("Supported BBCode tags are ")
 	slices.Sort(enabledTags)
 	l := len(enabledTags)
 	configInfo := f.Config()
 	for i, tag := range enabledTags {
 		if i != 0 {
 			if i == l-1 {
-				out.WriteString(" and ")
+				out.WriteString(" " + Get(board, nil, "and") + " ")
 			} else {
 				out.WriteString(", ")
 			}
@@ -176,8 +175,7 @@ func (f *BBCode) Rules(db sriracha.DB, board *Board) (template.HTML, error) {
 			}
 		}
 	}
-	out.WriteRune('.')
-	f.rules = template.HTML(out.String())
+	f.rules = template.HTML(Get(board, nil, "Supported BBCode tags are %s.", out.String()))
 	f.rulesCached = true
 	return f.rules, nil
 }
