@@ -1097,15 +1097,12 @@ As an administrator, in addition to all moderator capabilities, you may:
 Some board, banner and keyword settings may be configured globally. Administrators
 may specify whether settings are local or global via the Settings page.
 
-When a setting is global, a globe icon is displayed after its name.
-
 When a new board, banner or keyword is added, global settings are copied from existing entries.
 
 When a global setting is modified, it is applied to all existing boards, banners or keywords.
 
-After enabling a global setting for the first time, visit the Update page of any board,
-banner or keyword, depending on which setting was just configured as global. Then, scroll
-to the bottom of the page and click Update to apply the newly configured global setting.
+When a setting is newly specified as global, visit the Update page of any board, banner or keyword
+(based on the setting) and click the Update button at the bottom of the page to finish applying it.
 
 ### Super-administrator guide
 
