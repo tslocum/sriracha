@@ -156,6 +156,16 @@ func (i *IRC) onConnect(_ *girc.Client, _ girc.Event) {
 		if cmd == "" {
 			continue
 		}
+		split := strings.Split(cmd, " ")
+		if len(split) > 0 {
+			if split[0] == "msg" {
+				split[0] = "privmsg"
+			}
+			if split[0] == "privmsg" && len(split) > 2 && !strings.HasPrefix(split[2], ":") {
+				split[2] = ":" + split[2]
+			}
+			cmd = strings.Join(split, " ")
+		}
 		i.client.Cmd.SendRawNoSplit(cmd)
 		time.Sleep(commandDelay)
 	}
