@@ -247,13 +247,18 @@ func (f *BBCode) rebuildCompiler() {
 
 	if !f.config[configSpoiler] {
 		f.compiler.SetTag("spoiler", nil)
+		f.compiler.SetTag("!", nil)
+		f.compiler.SetTag("?", nil)
 	} else {
-		f.compiler.SetTag("spoiler", func(node *bbcode.BBCodeNode) (*bbcode.HTMLTag, bool) {
+		spoilerFunc := func(node *bbcode.BBCodeNode) (*bbcode.HTMLTag, bool) {
 			span := bbcode.NewHTMLTag("")
 			span.Name = "span"
 			span.Attrs["class"] = "spoiler"
 			return span, true
-		})
+		}
+		f.compiler.SetTag("spoiler", spoilerFunc)
+		f.compiler.SetTag("!", spoilerFunc)
+		f.compiler.SetTag("?", spoilerFunc)
 	}
 
 	newLineSentinel := "\x85" // Next line (NEL) character
