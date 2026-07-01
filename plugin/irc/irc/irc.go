@@ -42,7 +42,7 @@ const (
 	configAdmin        = "admin"
 	configAdminInfo    = "Channels to notify when an administrator takes action."
 	configCommand      = "command"
-	configCommandInfo  = "Sent before joining channels."
+	configCommandInfo  = "Sent before joining channels. Multiple commands may be specified on multiple lines.\nA two second delay occurs between each line. Blank lines may be used to wait longer.\nSpecify commands in raw format. For example: PRIVMSG #sriracha :Hello, world!"
 	configDebug        = "debug"
 	configDebugInfo    = "Print connection info and events to console."
 
