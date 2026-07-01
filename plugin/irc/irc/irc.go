@@ -154,6 +154,7 @@ func (i *IRC) onConnect(_ *girc.Client, _ girc.Event) {
 	for _, cmd := range strings.Split(i.command, "\n") {
 		cmd = strings.TrimPrefix(cmd, "/")
 		if cmd == "" {
+			time.Sleep(commandDelay)
 			continue
 		}
 		split := strings.Split(cmd, " ")
