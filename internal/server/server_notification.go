@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
+	"codeberg.org/tslocum/gotext"
 	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
-	"github.com/leonelquinteros/gotext"
 )
 
 // notification represents a pending notification. The referenced subscription

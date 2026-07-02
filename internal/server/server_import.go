@@ -418,7 +418,7 @@ func (s *Server) serveImport(data *templateData, db *database.DB, w http.Respons
 			label = "Start Import"
 		}
 		data.Message += template.HTML(`</td>
-                    <td><input type="submit" value="` + Get(nil, data.Account, label) + `"></td>
+                    <td><input type="submit" value="` + G(nil, data.Account, label) + `"></td>
 					<td></td>
 				</tr>
 			</table>`)

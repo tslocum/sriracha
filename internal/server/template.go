@@ -16,10 +16,10 @@ import (
 	"strings"
 	"time"
 
+	"codeberg.org/tslocum/gotext"
 	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
-	"github.com/leonelquinteros/gotext"
 )
 
 //go:embed template

@@ -4,6 +4,7 @@ go 1.25.0
 
 require (
 	codeberg.org/tslocum/bbcode v0.0.0-20260210194643-496280381f96
+	codeberg.org/tslocum/gotext v0.0.0-20260702153535-d0250b83dac7
 	github.com/PuerkitoBio/goquery v1.12.0
 	github.com/alecthomas/chroma/v2 v2.27.0
 	github.com/alexedwards/argon2id v1.0.0
@@ -11,7 +12,6 @@ require (
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/gabriel-vasile/mimetype v1.4.13
 	github.com/jackc/pgx/v5 v5.10.0
-	github.com/leonelquinteros/gotext v1.7.2
 	github.com/lrstanley/girc v1.1.1
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/r3labs/diff/v3 v3.0.2

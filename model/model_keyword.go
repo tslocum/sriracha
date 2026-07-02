@@ -65,5 +65,5 @@ func (k *Keyword) ActionLabel(account *Account) string {
 	default:
 		label = "Unknown"
 	}
-	return Get(nil, account, label)
+	return G(nil, account, label)
 }

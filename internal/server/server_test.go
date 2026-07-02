@@ -19,7 +19,7 @@ func newTestBoard() *Board {
 	}
 }
 
-func newTestThread(size int) []*Post {
+func newTestThread(board *Board, size int) []*Post {
 	var id int
 	newPost := func() *Post {
 		id++
@@ -36,6 +36,8 @@ func newTestThread(size int) []*Post {
 		if i != 0 {
 			posts[i].Parent = 1
 		}
+		posts[i].Board = board
+		posts[i].SetNameBlock("Anonymous", "", false)
 	}
 	return posts
 }
@@ -68,14 +70,7 @@ func BenchmarkBoardIndex(b *testing.B) {
 	data.Boards = []*Board{board}
 
 	for i := 0; i < 10; i++ {
-		data.Threads = append(data.Threads, newTestThread(i+1))
-	}
-
-	for _, thread := range data.Threads {
-		for _, post := range thread {
-			post.Board = board
-			post.SetNameBlock("Anonymous", "", false)
-		}
+		data.Threads = append(data.Threads, newTestThread(board, i+1))
 	}
 
 	// Warm caches.
@@ -100,14 +95,7 @@ func BenchmarkBoardThread(b *testing.B) {
 	data.Template = "board_page"
 	data.Board = board
 	data.Boards = []*Board{board}
-	data.Threads = [][]*Post{newTestThread(100)}
-
-	for _, thread := range data.Threads {
-		for _, post := range thread {
-			post.Board = board
-			post.SetNameBlock("Anonymous", "", false)
-		}
-	}
+	data.Threads = [][]*Post{newTestThread(board, 100)}
 
 	// Warm caches.
 	data.execute(io.Discard)

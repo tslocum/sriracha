@@ -38,13 +38,13 @@ import (
 
 	_ "net/http/pprof"
 
+	"codeberg.org/tslocum/gotext"
 	"codeberg.org/tslocum/sriracha"
 	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/fsnotify/fsnotify"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/leonelquinteros/gotext"
 	"github.com/r3labs/diff/v3"
 	"golang.org/x/sys/unix"
 	"golang.org/x/text/cases"

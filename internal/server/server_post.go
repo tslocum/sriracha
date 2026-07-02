@@ -824,8 +824,8 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 
 		data := s.buildData(db, w, r)
 		data.Template = "board_error"
-		data.Info = Get(post.Board, nil, info)
-		data.Message = template.HTML(fmt.Sprintf(`<div style="text-align: center;">%s%s</div><br>`, Get(post.Board, nil, msg), postLink))
+		data.Info = G(post.Board, nil, info)
+		data.Message = template.HTML(fmt.Sprintf(`<div style="text-align: center;">%s%s</div><br>`, G(post.Board, nil, msg), postLink))
 		data.execute(w)
 		return
 	}
@@ -1048,7 +1048,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			msg = "Board locked. No new posts may be created."
 		}
 		data := s.buildData(db, w, r)
-		data.BoardError(w, Get(post.Board, nil, msg))
+		data.BoardError(w, G(post.Board, nil, msg))
 		return
 	}
 
@@ -1137,8 +1137,8 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 
 			data := s.buildData(db, w, r)
 			data.Template = "board_error"
-			data.Info = Get(p.Board, nil, info)
-			data.Message = template.HTML(fmt.Sprintf(`<div style="text-align: center;">%s%s</div><br>`, Get(p.Board, nil, msg), postLink))
+			data.Info = G(p.Board, nil, info)
+			data.Message = template.HTML(fmt.Sprintf(`<div style="text-align: center;">%s%s</div><br>`, G(p.Board, nil, msg), postLink))
 			data.execute(w)
 			return
 		}
