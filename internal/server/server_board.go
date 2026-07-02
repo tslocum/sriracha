@@ -386,7 +386,7 @@ func (s *Server) loadBoardForm(db *database.DB, r *http.Request, b *Board) {
 	}
 }
 
-func (s *Server) saveGlobalBoardSettings(db *database.DB, b *Board) {
+func (s *Server) saveGlobalBoardSettings(db *database.DB, b *Board) []*Board {
 	var haveGlobal bool
 	for _, setting := range s.opt.Global {
 		if strings.HasPrefix(setting, "board.") {
@@ -395,11 +395,12 @@ func (s *Server) saveGlobalBoardSettings(db *database.DB, b *Board) {
 		}
 	}
 	if !haveGlobal {
-		return
+		return nil
 	}
 
 	allBoards := db.AllBoards()
 	var modified bool
+	var modifiedBoards []*Board
 	for _, board := range allBoards {
 		if board.ID == b.ID {
 			continue
@@ -561,7 +562,9 @@ func (s *Server) saveGlobalBoardSettings(db *database.DB, b *Board) {
 			continue
 		}
 		db.UpdateBoard(board)
+		modifiedBoards = append(modifiedBoards, board)
 	}
+	return modifiedBoards
 }
 
 func (s *Server) serveBoard(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) (skipExecute bool) {
@@ -652,7 +655,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 		bb.Name = b.Name
 		bb.Description = b.Description
 		db.UpdateBoard(bb)
-		s.saveGlobalBoardSettings(db, bb)
+		updated := s.saveGlobalBoardSettings(db, bb)
 
 		s.refreshMaxRequestSize(db)
 		s.refreshBannerCache(db)
@@ -660,6 +663,9 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 		s.refreshCategoryCache(db)
 		s.refreshKeywordCache(db)
 		s.rebuildBoard(db, bb)
+		for _, board := range updated {
+			s.rebuildBoard(db, board)
+		}
 		s.writeSiteIndex(db)
 
 		changes := printChanges(*b, *bb)
@@ -777,7 +783,7 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 			}
 
 			db.UpdateBoard(data.Manage.Board)
-			s.saveGlobalBoardSettings(db, data.Manage.Board)
+			updated := s.saveGlobalBoardSettings(db, data.Manage.Board)
 
 			if data.Manage.Board.Dir != oldDir {
 				subDirs := []string{"src", "thumb", "res"}
@@ -852,6 +858,9 @@ func (s *Server) serveBoard(data *templateData, db *database.DB, w http.Response
 			s.refreshCategoryCache(db)
 			s.refreshKeywordCache(db)
 			s.rebuildBoard(db, data.Manage.Board)
+			for _, board := range updated {
+				s.rebuildBoard(db, board)
+			}
 			s.writeSiteIndex(db)
 
 			changes := printChanges(oldBoard, *data.Manage.Board)
