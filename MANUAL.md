@@ -1081,7 +1081,7 @@ page you were just viewing with mod mode enabled.
 
 ### Administrator guide
 
-As an administrator, in addition to all moderator capabilities, you may:
+As an administrator, in addition to moderator privileges you may:
 
 - Lift bans
 - Add boards
@@ -1101,8 +1101,10 @@ When a new board, banner or keyword is added, global settings are copied from ex
 
 When a global setting is modified, it is applied to all existing boards, banners or keywords.
 
-When a setting is newly specified as global, visit the Update page of any board, banner or keyword
-(based on the setting) and click the Update button at the bottom of the page to finish applying it.
+A globe icon is displayed when configuring a global setting.
+
+To apply a newly specified global setting, visit the 'Update' page of any
+relevant board, banner or keyword, scroll down and click the 'Update' button.
 
 ### Super-administrator guide
 
