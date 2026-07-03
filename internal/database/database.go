@@ -33,7 +33,7 @@ var argon2idParameters = &argon2id.Params{
 // DB represents a database connection.
 type DB struct {
 	conn      *pgxpool.Conn
-	Plugin    string
+	plugin    string
 	config    *Config
 	committed bool
 }
@@ -208,6 +208,10 @@ func Begin(pool *pgxpool.Pool, config *Config) *DB {
 	}
 }
 
+func (db *DB) SetPlugin(name string) {
+	db.plugin = name
+}
+
 func (db *DB) SoftRollBack() {
 	if db.conn == nil {
 		return
@@ -261,8 +265,8 @@ func (db *DB) CommitWithErr() error {
 
 func (db *DB) configKey(key string) string {
 	key = strings.ToLower(key)
-	if len(db.Plugin) != 0 {
-		return db.Plugin + "." + key
+	if len(db.plugin) != 0 {
+		return db.plugin + "." + key
 	}
 	return key
 }

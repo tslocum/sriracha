@@ -10,12 +10,11 @@ import (
 	"strconv"
 	"strings"
 
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-func (s *Server) loadPageForm(db *database.DB, r *http.Request, p *Page) error {
+func (s *Server) loadPageForm(db serverDB, r *http.Request, p *Page) error {
 	p.Path = FormString(r, "path")
 	p.Content = FormString(r, "content")
 
@@ -24,7 +23,7 @@ func (s *Server) loadPageForm(db *database.DB, r *http.Request, p *Page) error {
 	return s.writePage(db, nil, p, io.Discard)
 }
 
-func (s *Server) servePage(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) servePage(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_page"
 	data.Boards = db.AllBoards()
 	data.Manage.Page = &Page{}

@@ -47,6 +47,14 @@ type DB interface {
 	DeleteExpiredBans() int
 	DeleteBan(id int)
 
+	// Banner.
+	AddBanner(b *Banner)
+	BannerByID(id int) *Banner
+	BannerByName(name string) *Banner
+	AllBanners() []*Banner
+	UpdateBanner(b *Banner)
+	DeleteBanner(id int)
+
 	// File ban.
 	AddFileBan(fileHash string)
 	FileBanned(fileHash string) bool
@@ -60,14 +68,24 @@ type DB interface {
 	AllBoards() []*Board
 	DeleteBoard(id int)
 	UpdateBoard(b *Board)
+	ClearBoardCache()
 
 	// CAPTCHA.
 	AddCAPTCHA(c *CAPTCHA)
 	GetCAPTCHA(ip string) *CAPTCHA
+	AllCAPTCHAs() []*CAPTCHA
 	UpdateCAPTCHA(c *CAPTCHA)
 	ExpiredCAPTCHAs() []*CAPTCHA
 	DeleteCAPTCHA(ip string)
 	NewCAPTCHAImage() string
+
+	// Category.
+	AddCategory(c *Category)
+	CategoryByID(id int) *Category
+	ChildCategories(id int) []*Category
+	AllCategories() []*Category
+	UpdateCategory(c *Category)
+	DeleteCategory(id int)
 
 	// Keyword.
 	AddKeyword(k *Keyword)
@@ -109,7 +127,10 @@ type DB interface {
 	PostsByFileHash(hash string, filterBoard *Board) []*Post
 	PostByField(b *Board, field string, value any) *Post
 	LastPostByIP(board *Board, ip string) *Post
+	LastPostByBoard(board *Board) *Post
+	NumPosts(filterBoard *Board, since int64) int
 	ReplyCount(threadID int) int
+	MaxPostID() int
 	BumpThread(threadID int, timestamp int64)
 	ModeratePost(postID int, moderated PostModerated)
 	StickyPost(postID int, sticky bool)
@@ -118,10 +139,25 @@ type DB interface {
 	UpdatePostNameblock(postID int, nameblock string)
 	UpdatePostMessage(postID int, message string)
 	DeletePost(postID int)
+	AddPostBacklink(target *Post, sourceID int)
+	AddPostBacklinks(p *Post)
+	HavePostBacklinks() bool
 
 	// Report.
 	AddReport(r *Report)
 	AllReports() []*Report
 	NumReports(p *Post) int
 	DeleteReports(p *Post)
+
+	// Subscription.
+	AddSubscription(s *Subscription)
+	SubscriptionByID(id int) *Subscription
+	SubscriptionByIP(ip string) *Subscription
+	SubscriptionsByEmail(email string) []*Subscription
+	SubscriptionsByPost(p *Post, distinct bool, includeBoard bool) []*Subscription
+	UpdateSubscription(s *Subscription)
+	DeleteSubscription(s *Subscription)
+	DeleteSubscriptionsByBoard(boardID int)
+	DeleteSubscriptionsByPost(postID int)
+	DeleteExpiredSubscriptions() int
 }

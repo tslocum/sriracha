@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"codeberg.org/tslocum/gotext"
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
@@ -22,7 +21,7 @@ type notification struct {
 	mentioned      bool
 }
 
-func (s *Server) queueNotifications(db *database.DB, p *Post) {
+func (s *Server) queueNotifications(db serverDB, p *Post) {
 	if !s.opt.Notifications {
 		return
 	}

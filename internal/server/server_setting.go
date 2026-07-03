@@ -9,12 +9,11 @@ import (
 	"strings"
 	"time"
 
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-func (s *Server) serveSetting(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
 	if data.forbidden(w, RoleAdmin) {
 		return
 	}

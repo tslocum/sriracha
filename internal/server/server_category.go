@@ -6,12 +6,11 @@ import (
 	"strconv"
 	"strings"
 
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-func (s *Server) loadCategoryForm(db *database.DB, r *http.Request, k *Category) {
+func (s *Server) loadCategoryForm(db serverDB, r *http.Request, k *Category) {
 	parent := FormInt(r, "parent")
 	if parent == 0 {
 		k.Parent = nil
@@ -22,7 +21,7 @@ func (s *Server) loadCategoryForm(db *database.DB, r *http.Request, k *Category)
 	k.Description = FormString(r, "description")
 }
 
-func (s *Server) serveCategory(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_category"
 	data.Boards = db.AllBoards()
 	data.Manage.Category = &Category{}

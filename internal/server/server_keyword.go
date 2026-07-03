@@ -9,12 +9,11 @@ import (
 	"strconv"
 	"strings"
 
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-func (s *Server) loadGlobalKeywordSettings(db *database.DB, k *Keyword) {
+func (s *Server) loadGlobalKeywordSettings(db serverDB, k *Keyword) {
 	var cachedKeyword *Keyword
 	var fetchedKeyword bool
 	firstKeyword := func() *Keyword {
@@ -46,7 +45,7 @@ func (s *Server) loadGlobalKeywordSettings(db *database.DB, k *Keyword) {
 	}
 }
 
-func (s *Server) loadKeywordForm(db *database.DB, r *http.Request, k *Keyword) {
+func (s *Server) loadKeywordForm(db serverDB, r *http.Request, k *Keyword) {
 	k.Text = FormString(r, "text")
 	k.Action = FormString(r, "action")
 	k.Boards = nil
@@ -64,7 +63,7 @@ func (s *Server) loadKeywordForm(db *database.DB, r *http.Request, k *Keyword) {
 	}
 }
 
-func (s *Server) saveGlobalKeywordSettings(db *database.DB, k *Keyword) {
+func (s *Server) saveGlobalKeywordSettings(db serverDB, k *Keyword) {
 	var haveGlobal bool
 	for _, setting := range s.opt.Global {
 		if strings.HasPrefix(setting, "keyword.") {
@@ -98,7 +97,7 @@ func (s *Server) saveGlobalKeywordSettings(db *database.DB, k *Keyword) {
 	}
 }
 
-func (s *Server) serveKeyword(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) serveKeyword(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
 	var err error
 	data.Template = "manage_keyword"
 	data.Boards = db.AllBoards()

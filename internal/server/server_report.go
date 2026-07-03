@@ -5,12 +5,11 @@ import (
 	"net/http"
 	"time"
 
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-func (s *Server) serveReport(db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) serveReport(db serverDB, w http.ResponseWriter, r *http.Request) {
 	data := s.buildData(db, w, r)
 
 	postID := FormInt(r, "post")
@@ -28,13 +27,13 @@ func (s *Server) serveReport(db *database.DB, w http.ResponseWriter, r *http.Req
 		if numReports == 0 {
 			postCopy := post.Copy()
 			for _, info := range allPluginReportHandlers {
-				db.Plugin = info.Name
+				db.SetPlugin(info.Name)
 				err := info.Handler(db, postCopy)
 				if err != nil {
 					log.Fatalf("plugin %s failed to process report event: %s", info.Name, err)
 				}
 			}
-			db.Plugin = ""
+			db.SetPlugin("")
 		}
 
 		report := &Report{

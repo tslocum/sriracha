@@ -7,12 +7,11 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-func (s *Server) serveDelete(db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request) {
 	data := s.buildData(db, w, r)
 
 	boardDir := FormString(r, "board")

@@ -26,7 +26,6 @@ import (
 	"sync"
 	"time"
 
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/aquilax/tripcode"
@@ -157,7 +156,7 @@ func setFileAndThumb(p *Post, rootDir string, fileExt string, thumbExt string) {
 	}
 }
 
-func (s *Server) loadPostForm(db *database.DB, r *http.Request, p *Post) error {
+func (s *Server) loadPostForm(db serverDB, r *http.Request, p *Post) error {
 	limitString := func(v string, limit int) string {
 		if len(v) > limit {
 			return v[:limit]
@@ -246,7 +245,7 @@ func (s *Server) loadPostFiles(r *http.Request, p *Post) ([]*multipart.FileHeade
 	return files, nil
 }
 
-func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHeader *multipart.FileHeader) error {
+func (s *Server) loadPostFile(db serverDB, r *http.Request, p *Post, fileHeader *multipart.FileHeader) error {
 	minSize := p.Board.MinSizeThread
 	maxSize := p.Board.MaxSizeThread
 	if p.Parent != 0 {
@@ -307,18 +306,18 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 			fileExt = "tgkr"
 		} else {
 			for _, info := range allPluginAttachHandlers {
-				db.Plugin = info.Name
+				db.SetPlugin(info.Name)
 				formFile.Seek(0, 0)
 				handled, err := info.Handler(db, p, formFile)
 				if err != nil {
-					db.Plugin = ""
+					db.SetPlugin("")
 					return err
 				} else if handled {
-					db.Plugin = ""
+					db.SetPlugin("")
 					return nil
 				}
 			}
-			db.Plugin = ""
+			db.SetPlugin("")
 
 			var extra string
 			if s.opt.DevMode && p.FileMIME != "" {
@@ -472,7 +471,7 @@ func (s *Server) loadPostFile(db *database.DB, r *http.Request, p *Post, fileHea
 	return nil
 }
 
-func (s *Server) checkDuplicateFileHash(db *database.DB, post *Post) *Post {
+func (s *Server) checkDuplicateFileHash(db serverDB, post *Post) *Post {
 	if post.FileHash == "" || post.Board.Instances == 0 {
 		return nil
 	}
@@ -489,7 +488,7 @@ func (s *Server) checkDuplicateFileHash(db *database.DB, post *Post) *Post {
 	return nil
 }
 
-func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Request) (unlocked bool) {
+func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) (unlocked bool) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "invalid request", http.StatusInternalServerError)
 		return
@@ -767,10 +766,10 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 
 			if post.File == "" {
 				for _, info := range allPluginEmbedHandlers {
-					db.Plugin = info.Name
+					db.SetPlugin(info.Name)
 					handled, err := info.Handler(db, post, embed)
 					if err != nil {
-						db.Plugin = ""
+						db.SetPlugin("")
 						data := s.buildData(db, w, r)
 						data.BoardError(w, err.Error())
 						return
@@ -778,7 +777,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 						break
 					}
 				}
-				db.Plugin = ""
+				db.SetPlugin("")
 
 				if post.File == "" {
 					data := s.buildData(db, w, r)
@@ -951,7 +950,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 		}
 
 		for _, info := range allPluginPostHandlers {
-			db.Plugin = info.Name
+			db.SetPlugin(info.Name)
 			err := info.Handler(db, post)
 			if err != nil {
 				s.deletePostFiles(post)
@@ -963,7 +962,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			post.Message = strings.ReplaceAll(post.Message, "<br>", "\n")
 			post.Message = strings.ReplaceAll(post.Message, "<br/>", "\n")
 		}
-		db.Plugin = ""
+		db.SetPlugin("")
 
 		var foundURL bool
 		post.Message = URLPattern.ReplaceAllStringFunc(post.Message, func(s string) string {
@@ -1076,7 +1075,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 
 	postCopy := post.Copy()
 	for _, info := range allPluginInsertHandlers {
-		db.Plugin = info.Name
+		db.SetPlugin(info.Name)
 		err := info.Handler(db, postCopy)
 		if err != nil {
 			s.deletePostFiles(post)
@@ -1086,7 +1085,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			return
 		}
 	}
-	db.Plugin = ""
+	db.SetPlugin("")
 
 	db.AddPost(post)
 
@@ -1167,7 +1166,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 
 	postCopy = post.Copy()
 	for _, info := range allPluginCreateHandlers {
-		db.Plugin = info.Name
+		db.SetPlugin(info.Name)
 		err := info.Handler(db, postCopy)
 		if err != nil {
 			cancel()
@@ -1175,7 +1174,7 @@ func (s *Server) servePost(db *database.DB, w http.ResponseWriter, r *http.Reque
 			log.Fatalf("plugin %s failed to process create event: %s", info.Name, err)
 		}
 	}
-	db.Plugin = ""
+	db.SetPlugin("")
 
 	if post.Moderated == ModeratedHidden {
 		data.Template = "board_info"

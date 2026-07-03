@@ -9,12 +9,11 @@ import (
 	"strings"
 	"time"
 
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-func (s *Server) loadBanForm(db *database.DB, r *http.Request, b *Ban) error {
+func (s *Server) loadBanForm(db serverDB, r *http.Request, b *Ban) error {
 	expire := FormString(r, "expire")
 	if expire == "" {
 		b.Expire = 0
@@ -29,7 +28,7 @@ func (s *Server) loadBanForm(db *database.DB, r *http.Request, b *Ban) error {
 	return nil
 }
 
-func (s *Server) serveBan(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_ban"
 	data.Boards = db.AllBoards()
 

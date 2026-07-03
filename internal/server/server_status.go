@@ -12,12 +12,11 @@ import (
 	"strings"
 	"time"
 
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-func (s *Server) serveStatus(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		var ids []int
 		approveStr := FormString(r, "approve")

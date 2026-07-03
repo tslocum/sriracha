@@ -15,7 +15,6 @@ import (
 	"strconv"
 	"strings"
 
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/gabriel-vasile/mimetype"
@@ -244,7 +243,7 @@ func (s *Server) importPosts(sqlDB *sql.DB, table string, tinyIB bool, b *Board)
 	return posts, nil
 }
 
-func (s *Server) serveImport(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) serveImport(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_info"
 	data.Boards = db.AllBoards()
 	data.Message = `<h2 class="managetitle">` + GetHTML(nil, data.Account, "Import") + `</h2>`

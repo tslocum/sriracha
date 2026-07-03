@@ -5,17 +5,16 @@ import (
 	"net/http"
 	"strings"
 
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-func (s *Server) loadAccountForm(db *database.DB, r *http.Request, a *Account) {
+func (s *Server) loadAccountForm(db serverDB, r *http.Request, a *Account) {
 	a.Username = FormString(r, "username")
 	a.Role = FormRange(r, "role", RoleSuperAdmin, RoleDisabled)
 }
 
-func (s *Server) serveAccount(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) serveAccount(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
 	if data.forbidden(w, RoleSuperAdmin) {
 		return
 	}

@@ -5,11 +5,10 @@ import (
 	"slices"
 	"strings"
 
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-func (s *Server) servePreference(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) servePreference(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_preference"
 	if r.Method == http.MethodPost {
 		switch FormString(r, "action") {

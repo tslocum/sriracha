@@ -17,7 +17,6 @@ import (
 	"time"
 
 	"codeberg.org/tslocum/gotext"
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
@@ -365,7 +364,7 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	return f
 }
 
-func (s *Server) newTemplateData(db *database.DB) *templateData {
+func (s *Server) newTemplateData(db serverDB) *templateData {
 	if db != nil {
 		s.tplDB = db
 	}

@@ -14,12 +14,11 @@ import (
 	"strconv"
 	"strings"
 
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-func (s *Server) loadGlobalBoardSettings(db *database.DB, b *Board) {
+func (s *Server) loadGlobalBoardSettings(db serverDB, b *Board) {
 	var haveGlobal bool
 	for _, setting := range s.opt.Global {
 		if strings.HasPrefix(setting, "board.") {
@@ -305,7 +304,7 @@ func (s *Server) loadGlobalBoardSettings(db *database.DB, b *Board) {
 	}
 }
 
-func (s *Server) loadBoardForm(db *database.DB, r *http.Request, b *Board) {
+func (s *Server) loadBoardForm(db serverDB, r *http.Request, b *Board) {
 	b.Dir = FormString(r, "dir")
 	b.Name = FormString(r, "name")
 	b.Description = FormString(r, "description")
@@ -386,7 +385,7 @@ func (s *Server) loadBoardForm(db *database.DB, r *http.Request, b *Board) {
 	}
 }
 
-func (s *Server) saveGlobalBoardSettings(db *database.DB, b *Board) []*Board {
+func (s *Server) saveGlobalBoardSettings(db serverDB, b *Board) []*Board {
 	var haveGlobal bool
 	for _, setting := range s.opt.Global {
 		if strings.HasPrefix(setting, "board.") {
@@ -567,7 +566,7 @@ func (s *Server) saveGlobalBoardSettings(db *database.DB, b *Board) []*Board {
 	return modifiedBoards
 }
 
-func (s *Server) serveBoard(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) (skipExecute bool) {
+func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) (skipExecute bool) {
 	data.Template = "manage_board"
 
 	boardID := PathInt(r, "/sriracha/board/rebuild/")

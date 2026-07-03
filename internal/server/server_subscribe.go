@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"codeberg.org/tslocum/gotext"
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
@@ -17,7 +16,7 @@ func (s *Server) subscriptionConfirmKey(sub *Subscription) string {
 	return md5Sum(s.hashData(md5Sum(fmt.Sprintf("%s/%d", sub.Email, sub.Confirm))))
 }
 
-func (s *Server) serveSubscribe(db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) serveSubscribe(db serverDB, w http.ResponseWriter, r *http.Request) {
 	data := s.buildData(db, w, r)
 	data.Boards = db.AllBoards()
 	if !s.opt.Notifications {

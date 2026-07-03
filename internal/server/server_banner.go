@@ -13,13 +13,12 @@ import (
 	"strings"
 	"time"
 
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/gabriel-vasile/mimetype"
 )
 
-func (s *Server) loadGlobalBannerSettings(db *database.DB, b *Banner) {
+func (s *Server) loadGlobalBannerSettings(db serverDB, b *Banner) {
 	var cachedBanner *Banner
 	var fetchedBanner bool
 	firstBanner := func() *Banner {
@@ -67,7 +66,7 @@ func (s *Server) loadGlobalBannerSettings(db *database.DB, b *Banner) {
 	}
 }
 
-func (s *Server) loadBannerFormFile(db *database.DB, r *http.Request, b *Banner) ([]byte, error) {
+func (s *Server) loadBannerFormFile(db serverDB, r *http.Request, b *Banner) ([]byte, error) {
 	if r.PostForm == nil {
 		const maxMemory = 32 << 20 // 32 MB
 		err := r.ParseMultipartForm(maxMemory)
@@ -123,7 +122,7 @@ func (s *Server) loadBannerFormFile(db *database.DB, r *http.Request, b *Banner)
 	return buf, nil
 }
 
-func (s *Server) loadBannerForm(db *database.DB, r *http.Request, b *Banner) {
+func (s *Server) loadBannerForm(db serverDB, r *http.Request, b *Banner) {
 	b.Name = FormString(r, "name")
 	b.Overboard = FormBool(r, "overboard")
 	b.News = FormBool(r, "news")
@@ -144,7 +143,7 @@ func (s *Server) loadBannerForm(db *database.DB, r *http.Request, b *Banner) {
 	}
 }
 
-func (s *Server) saveGlobalBannerSettings(db *database.DB, b *Banner) {
+func (s *Server) saveGlobalBannerSettings(db serverDB, b *Banner) {
 	var haveGlobal bool
 	for _, setting := range s.opt.Global {
 		if strings.HasPrefix(setting, "banner.") {
@@ -186,7 +185,7 @@ func (s *Server) saveGlobalBannerSettings(db *database.DB, b *Banner) {
 	}
 }
 
-func (s *Server) serveBanner(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) serveBanner(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
 	var err error
 	data.Template = "manage_banner"
 	data.Boards = db.AllBoards()

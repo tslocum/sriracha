@@ -8,12 +8,11 @@ import (
 	"strings"
 
 	"codeberg.org/tslocum/sriracha"
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-func (s *Server) servePlugin(data *templateData, db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) servePlugin(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
 	if data.forbidden(w, RoleAdmin) {
 		return
 	}
@@ -38,9 +37,9 @@ func (s *Server) servePlugin(data *templateData, db *database.DB, w http.Respons
 			info.Config[i].Value = defaultValue
 
 			if pUpdate != nil {
-				db.Plugin = info.Name
+				db.SetPlugin(info.Name)
 				pUpdate.Update(db, c.Name)
-				db.Plugin = ""
+				db.SetPlugin("")
 			}
 
 			if c.Sensitive {
@@ -146,9 +145,9 @@ func (s *Server) servePlugin(data *templateData, db *database.DB, w http.Respons
 				changed = true
 
 				if pUpdate != nil {
-					db.Plugin = info.Name
+					db.SetPlugin(info.Name)
 					pUpdate.Update(db, c.Name)
-					db.Plugin = ""
+					db.SetPlugin("")
 				}
 
 				if c.Sensitive {

@@ -10,13 +10,12 @@ import (
 	"strings"
 	"time"
 
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 	_ "modernc.org/sqlite"
 )
 
-func (s *Server) _exportBoardPosts(db *database.DB, b *Board, threads [][2]int) (*os.File, error) {
+func (s *Server) _exportBoardPosts(db serverDB, b *Board, threads [][2]int) (*os.File, error) {
 	f, err := os.CreateTemp("", "*.db")
 	if err != nil {
 		return nil, fmt.Errorf("failed to create temporary file: %s", err)
@@ -107,7 +106,7 @@ CREATE TABLE post (
 	return f, nil
 }
 
-func (s *Server) exportPosts(db *database.DB, exportPath string) error {
+func (s *Server) exportPosts(db serverDB, exportPath string) error {
 	boards := db.AllBoards()
 	if len(boards) == 0 {
 		return fmt.Errorf("no boards available to export")
@@ -152,7 +151,7 @@ func (s *Server) exportPosts(db *database.DB, exportPath string) error {
 		if b.Description != "" {
 			fName += "_" + strings.ReplaceAll(strings.ToLower(b.Name), " ", "_")
 		}
-		fName += ".sriracha.db"
+		fName += ".serverDB"
 
 		boardFile, err := s._exportBoardPosts(db, b, threads)
 		if err != nil {

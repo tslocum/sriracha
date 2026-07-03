@@ -44,6 +44,8 @@ import (
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/fsnotify/fsnotify"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/r3labs/diff/v3"
 	"golang.org/x/sys/unix"
@@ -208,7 +210,7 @@ type Server struct {
 
 	tpl             *template.Template // Template collection used when executing most web requests.
 	tplOriginal     *template.Template // Original template collection. This is needed because a template collection can't be extended once it has been used.
-	tplDB           *database.DB
+	tplDB           serverDB
 	customTemplates []string
 
 	notifications          []notification
@@ -624,7 +626,7 @@ func (s *Server) sendMail(client *smtp.Client, recipient string, subject string,
 }
 
 // begin acquires a database connection from the pool and starts a transaction.
-func (s *Server) begin() *database.DB {
+func (s *Server) begin() serverDB {
 	return database.Begin(s.dbPool, s.config)
 }
 
@@ -775,7 +777,7 @@ func (s *Server) setDefaultPluginConfig() error {
 	defer db.Commit()
 
 	for i, info := range allPluginInfo {
-		db.Plugin = info.Name
+		db.SetPlugin(info.Name)
 
 		for i, config := range info.Config {
 			if !db.HaveConfig(config.Name) {
@@ -802,7 +804,7 @@ func (s *Server) loadPluginConfig() error {
 	defer db.Commit()
 
 	for _, info := range allPluginInfo {
-		db.Plugin = info.Name
+		db.SetPlugin(info.Name)
 		for i, c := range info.Config {
 			v := db.GetString(strings.ToLower(info.Name + "." + c.Name))
 			if v != "" {
@@ -810,7 +812,7 @@ func (s *Server) loadPluginConfig() error {
 			}
 		}
 	}
-	db.Plugin = ""
+	db.SetPlugin("")
 	return nil
 }
 
@@ -857,7 +859,7 @@ func (s *Server) validateTemplateConfig(officialDir string) error {
 // officialDir to load official templates from the embedded file system.
 // Otherwise, official templates are loaded from disk. When customDir is set,
 // custom templates are loaded from disk.
-func (s *Server) parseTemplates(officialDir string, customDir string, db *database.DB) error {
+func (s *Server) parseTemplates(officialDir string, customDir string, db serverDB) error {
 	s.customTemplates = s.customTemplates[:0]
 	wrapError := func(name string, err error) error {
 		var source string
@@ -974,7 +976,7 @@ func (s *Server) watchTemplates(officialDir string) error {
 }
 
 // log adds an entry to the audit log.
-func (s *Server) log(db *database.DB, account *Account, board *Board, action string, info string) {
+func (s *Server) log(db serverDB, account *Account, board *Board, action string, info string) {
 	user := "system"
 	if account != nil && account.ID != 0 {
 		if account.Role == RoleSuperAdmin || account.Role == RoleAdmin {
@@ -984,13 +986,13 @@ func (s *Server) log(db *database.DB, account *Account, board *Board, action str
 		}
 	}
 	for _, handlerInfo := range allPluginAuditHandlers {
-		db.Plugin = handlerInfo.Name
+		db.SetPlugin(handlerInfo.Name)
 		err := handlerInfo.Handler(db, user, action, info)
 		if err != nil {
 			log.Fatalf("plugin %s failed to process audit event: %s", handlerInfo.Name, err)
 		}
 	}
-	db.Plugin = ""
+	db.SetPlugin("")
 
 	db.AddLog(&Log{
 		Account: account,
@@ -1001,7 +1003,7 @@ func (s *Server) log(db *database.DB, account *Account, board *Board, action str
 }
 
 // refreshBannerCache refreshes the banner cache.
-func (s *Server) refreshBannerCache(db *database.DB) {
+func (s *Server) refreshBannerCache(db serverDB) {
 	banners := s.opt.Banners
 	for id := range banners {
 		banners[id] = banners[id][:0]
@@ -1030,7 +1032,7 @@ func (s *Server) refreshBannerCache(db *database.DB) {
 }
 
 // refreshMaxRequestSize refreshes the maximum HTTP request size.
-func (s *Server) refreshMaxRequestSize(db *database.DB) {
+func (s *Server) refreshMaxRequestSize(db serverDB) {
 	const megabyte = 1048576 // 1 MB.
 	var messageSize int64
 	var fileSize int64
@@ -1057,7 +1059,7 @@ func (s *Server) refreshMaxRequestSize(db *database.DB) {
 }
 
 // refreshRulesCache refreshes the board rules cache.
-func (s *Server) refreshRulesCache(db *database.DB) {
+func (s *Server) refreshRulesCache(db serverDB) {
 	rules := s.opt.Rules
 	for id := range rules {
 		rules[id] = rules[id][:0]
@@ -1090,7 +1092,7 @@ func (s *Server) refreshRulesCache(db *database.DB) {
 }
 
 // refreshKeywordCache refreshes the keyword cache.
-func (s *Server) refreshKeywordCache(db *database.DB) {
+func (s *Server) refreshKeywordCache(db serverDB) {
 	for boardID := range s.keywordCache {
 		s.keywordCache[boardID] = s.keywordCache[boardID][:0]
 	}
@@ -1133,7 +1135,7 @@ func (s *Server) _processCategory(c *Category) {
 }
 
 // refreshCategoryCache refreshes the category cache.
-func (s *Server) refreshCategoryCache(db *database.DB) {
+func (s *Server) refreshCategoryCache(db serverDB) {
 	s.opt.Categories = s.opt.Categories[:0]
 	for _, c := range db.AllCategories() {
 		if c.Parent == nil {
@@ -1153,7 +1155,7 @@ func (s *Server) refreshCategoryCache(db *database.DB) {
 	}
 }
 
-func (s *Server) refreshRecentPosts(db *database.DB) {
+func (s *Server) refreshRecentPosts(db serverDB) {
 	for _, info := range s.opt.Categories {
 		info.Recent = info.Recent[:0]
 		for _, b := range info.Boards {
@@ -1184,7 +1186,7 @@ func (s *Server) deletePostFiles(p *Post) {
 }
 
 // deletePost deletes a post from the database as well as any associated files.
-func (s *Server) deletePost(db *database.DB, p *Post) {
+func (s *Server) deletePost(db serverDB, p *Post) {
 	posts := db.AllPostsInThread(p.ID, false)
 	for _, post := range posts {
 		s.deletePostFiles(post)
@@ -1200,7 +1202,7 @@ func (s *Server) httpResponse(r *http.Request) (*http.Response, error) {
 }
 
 // buildData returns a new template data instance.
-func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Request) *templateData {
+func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) *templateData {
 	if strings.HasPrefix(r.URL.Path, "/sriracha/logout") {
 		http.SetCookie(w, &http.Cookie{
 			Name:  "sriracha_session",
@@ -1280,7 +1282,7 @@ func (s *Server) buildData(db *database.DB, w http.ResponseWriter, r *http.Reque
 }
 
 // writeThread writes a thread res page to disk.
-func (s *Server) writeThread(db *database.DB, board *Board, postID int) {
+func (s *Server) writeThread(db serverDB, board *Board, postID int) {
 	posts := db.AllPostsInThread(postID, true)
 	if len(posts) == 0 {
 		return
@@ -1314,7 +1316,7 @@ func (s *Server) writeThread(db *database.DB, board *Board, postID int) {
 }
 
 // writeBoardIndexes writes board index pages to disk.
-func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
+func (s *Server) writeBoardIndexes(db serverDB, board *Board) {
 	var (
 		traceT time.Time
 		traceD time.Duration
@@ -1442,7 +1444,7 @@ func (s *Server) writeBoardIndexes(db *database.DB, board *Board) {
 }
 
 // writeOverboard writes overboard pages to disk.
-func (s *Server) writeOverboard(db *database.DB) {
+func (s *Server) writeOverboard(db serverDB) {
 	var (
 		traceT time.Time
 		traceD time.Duration
@@ -1581,7 +1583,7 @@ func (s *Server) writeOverboard(db *database.DB) {
 	s.indexCache[overboard.ID] = allPostIDs
 }
 
-func (s *Server) writePage(db *database.DB, data *templateData, p *Page, w io.Writer) error {
+func (s *Server) writePage(db serverDB, data *templateData, p *Page, w io.Writer) error {
 	err := p.Validate()
 	if err != nil {
 		log.Println("VALIDATE ERR", err)
@@ -1621,7 +1623,7 @@ func (s *Server) writePage(db *database.DB, data *templateData, p *Page, w io.Wr
 }
 
 // writePages writes custom pages to disk.
-func (s *Server) writePages(db *database.DB, pages []*Page) error {
+func (s *Server) writePages(db serverDB, pages []*Page) error {
 	data := s.newTemplateData(db)
 	data.Boards = db.AllBoards()
 	data.Template = "page"
@@ -1649,7 +1651,7 @@ func (s *Server) writePages(db *database.DB, pages []*Page) error {
 }
 
 // rebuildBoard rebuilds a thread res page and board index pages.
-func (s *Server) rebuildThread(db *database.DB, post *Post) {
+func (s *Server) rebuildThread(db serverDB, post *Post) {
 	s.writeThread(db, post.Board, post.Thread())
 	s.writeBoardIndexes(db, post.Board)
 	if s.opt.Overboard != "" {
@@ -1659,7 +1661,7 @@ func (s *Server) rebuildThread(db *database.DB, post *Post) {
 }
 
 // rebuildBoard rebuilds all pages in a board.
-func (s *Server) rebuildBoard(db *database.DB, board *Board) {
+func (s *Server) rebuildBoard(db serverDB, board *Board) {
 	s.indexCache[board.ID] = nil
 	for _, info := range db.AllThreads(board, true) {
 		s.writeThread(db, board, info[0])
@@ -1667,7 +1669,7 @@ func (s *Server) rebuildBoard(db *database.DB, board *Board) {
 	s.writeBoardIndexes(db, board)
 }
 
-func (s *Server) writeStatistics(db *database.DB) {
+func (s *Server) writeStatistics(db serverDB) {
 	if !s.opt.Statistics {
 		return
 	}
@@ -1728,7 +1730,7 @@ func (s *Server) writeStatistics(db *database.DB) {
 	s.statsCache = serverStats
 }
 
-func (s *Server) writeModQueue(db *database.DB) {
+func (s *Server) writeModQueue(db serverDB) {
 	if s.opt.ModQueue == "" {
 		return
 	}
@@ -1760,7 +1762,7 @@ func (s *Server) writeModQueue(db *database.DB) {
 }
 
 // rebuildAll rebuilds all board, overboard, news and custom pages.
-func (s *Server) rebuildAll(db *database.DB, verbose bool) {
+func (s *Server) rebuildAll(db serverDB, verbose bool) {
 	for boardID := range s.indexCache {
 		s.indexCache[boardID] = s.indexCache[boardID][:0]
 	}
@@ -1796,7 +1798,7 @@ func (s *Server) rebuildAll(db *database.DB, verbose bool) {
 }
 
 // writeNewsItem writes a news entry page to disk.
-func (s *Server) writeNewsItem(db *database.DB, n *News) {
+func (s *Server) writeNewsItem(db serverDB, n *News) {
 	if n.ID <= 0 {
 		return
 	}
@@ -1824,7 +1826,7 @@ func (s *Server) writeNewsItem(db *database.DB, n *News) {
 }
 
 // writeNewsIndexes writes news index pages to disk.
-func (s *Server) writeNewsIndexes(db *database.DB) {
+func (s *Server) writeNewsIndexes(db serverDB) {
 	allNews := db.AllNews(true)
 	data := s.newTemplateData(db)
 	data.Boards = db.AllBoards()
@@ -1868,13 +1870,13 @@ func (s *Server) writeNewsIndexes(db *database.DB) {
 }
 
 // rebuildNewsItem rebuilds a news entry.
-func (s *Server) rebuildNewsItem(db *database.DB, n *News) {
+func (s *Server) rebuildNewsItem(db serverDB, n *News) {
 	s.writeNewsItem(db, n)
 	s.writeNewsIndexes(db)
 }
 
 // rebuildNews rebuilds all news entries.
-func (s *Server) rebuildNews(db *database.DB) {
+func (s *Server) rebuildNews(db serverDB) {
 	for _, n := range db.AllNews(true) {
 		s.writeNewsItem(db, n)
 	}
@@ -1882,7 +1884,7 @@ func (s *Server) rebuildNews(db *database.DB) {
 }
 
 // writeVisitorGuide writes the visitor guide to disk.
-func (s *Server) writeVisitorGuide(db *database.DB) {
+func (s *Server) writeVisitorGuide(db serverDB) {
 	data := s.newTemplateData(db)
 	data.Template = "guide"
 	data.Boards = db.AllBoards()
@@ -1903,7 +1905,7 @@ func (s *Server) writeVisitorGuide(db *database.DB) {
 }
 
 // writeSiteIndex writes the site index page to disk.
-func (s *Server) writeSiteIndex(db *database.DB) {
+func (s *Server) writeSiteIndex(db serverDB) {
 	if !s.opt.SiteIndex || s.opt.News == NewsWriteToIndex || s.opt.Overboard == "/" || db.BoardByDir("") != nil {
 		return
 	}
@@ -1951,7 +1953,7 @@ func (s *Server) writeSiteIndex(db *database.DB) {
 }
 
 // removeInvalidBoardOptions removes invalid board options from the database.
-func (s *Server) removeInvalidBoardOptions(db *database.DB) {
+func (s *Server) removeInvalidBoardOptions(db serverDB) {
 	for _, b := range db.AllBoards() {
 		var keep []string
 		var modified bool
@@ -1977,7 +1979,7 @@ func (s *Server) removeInvalidBoardOptions(db *database.DB) {
 }
 
 // reloadBans refreshes the range ban regular expression cache.
-func (s *Server) reloadBans(db *database.DB) {
+func (s *Server) reloadBans(db serverDB) {
 	var rangeBans = make(map[*Ban]*regexp.Regexp)
 	bans := db.AllBans(true)
 	for _, ban := range bans {
@@ -1992,7 +1994,7 @@ func (s *Server) reloadBans(db *database.DB) {
 }
 
 // serveManage serves management panel web requests.
-func (s *Server) serveManage(db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request) {
 	data := s.buildData(db, w, r)
 	if strings.HasPrefix(r.URL.Path, "/sriracha/logout") {
 		return
@@ -2930,6 +2932,18 @@ func pageSlice[S ~[]T, T any](slice S, page int, perPage int) S {
 		end = start + perPage
 	}
 	return slice[start:end]
+}
+
+type serverDB interface {
+	sriracha.DB
+	TestConn()
+	SetPlugin(name string)
+	Exec(sql string, arguments ...any) (pgconn.CommandTag, error)
+	QueryRow(sql string, arguments ...any) pgx.Row
+	RollBack()
+	SoftRollBack()
+	Commit()
+	CommitWithErr() error
 }
 
 var allGlobalSettings = []string{

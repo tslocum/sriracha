@@ -10,7 +10,6 @@ import (
 	"strings"
 	"time"
 
-	"codeberg.org/tslocum/sriracha/internal/database"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/steambap/captcha"
@@ -20,7 +19,7 @@ var captchaPalette = []color.Color{
 	color.RGBA{0, 0, 0, 255},
 }
 
-func (s *Server) serveCAPTCHA(db *database.DB, w http.ResponseWriter, r *http.Request) {
+func (s *Server) serveCAPTCHA(db serverDB, w http.ResponseWriter, r *http.Request) {
 	const (
 		width, height = 225, 40
 		characters    = "ABCDHKMNSTUVWXYZ"
