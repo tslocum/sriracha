@@ -9,33 +9,13 @@ import (
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-func newTestBoard() *Board {
-	return &Board{
-		ID:          1,
-		Dir:         "test",
-		Name:        "Test",
-		Description: "Test board",
-		Type:        TypeImageboard,
-	}
-}
-
+// newTestServer returns a new Server which is used only for testing.
+// Database methods are mocked.
 func newTestServer() (*Server, error) {
 	s := NewServer()
 	s.config = &Config{}
 
 	s.loadServerConfig()
-
-	db := s.begin()
-	allBoards := db.AllBoards()
-	s.opt.Categories = []*categoryInfo{
-		{Boards: allBoards},
-	}
-	var recent []*Post
-	for _, board := range allBoards {
-		recent = append(recent, db.LastPostByBoard(board))
-	}
-	s.opt.Categories[0].Recent = recent
-	db.Commit()
 
 	err := s.parseTemplates("", s.config.Template, nil)
 	if err != nil {
@@ -83,11 +63,16 @@ func (s *Server) validateTemplates(ts *Server) error {
 			}
 
 			data := ts.newTemplateData(nil)
+			data.Categories = db.AllCategories()
 			data.Template = templateName
 			if c.board {
 				data.Board = board
 			}
 			data.Boards = allBoards
+			if c.post {
+				thread := db.AllThreads(board, true)[0]
+				data.Post = db.AllPostsInThread(thread[0], true)[0]
+			}
 			if c.thread || c.threads {
 				for _, thread := range db.AllThreads(board, true) {
 					data.Threads = append(data.Threads, db.AllPostsInThread(thread[0], true))
@@ -98,6 +83,38 @@ func (s *Server) validateTemplates(ts *Server) error {
 			}
 			if c.thread {
 				data.ReplyMode = 1
+			}
+
+			if strings.HasPrefix(templateName, "manage_") {
+				data.Account = &Account{
+					ID:       1,
+					Username: "admin",
+					Role:     RoleSuperAdmin,
+				}
+			}
+			if c.manageBanner {
+				data.Manage.Banner = &Banner{}
+			}
+			if c.manageBoard {
+				data.Manage.Board = board
+			}
+			if c.manageCategory {
+				data.Manage.Category = data.Categories[0]
+			}
+			if c.manageKeyword {
+				data.Manage.Keyword = &Keyword{
+					ID:     1,
+					Text:   "keyword",
+					Action: "hide",
+					Boards: allBoards,
+				}
+			}
+			if c.managePage {
+				data.Manage.Page = &Page{
+					ID:      1,
+					Path:    "path",
+					Content: "content",
+				}
 			}
 
 			err := data.executeWithError(io.Discard)
@@ -112,13 +129,21 @@ func (s *Server) validateTemplates(ts *Server) error {
 	return nil
 }
 
+// testCase represents a template test case.
 type testCase struct {
-	template string
-	board    bool
-	thread   bool
-	threads  bool
+	template       string
+	board          bool
+	post           bool
+	thread         bool
+	threads        bool
+	manageBanner   bool
+	manageBoard    bool
+	manageCategory bool
+	manageKeyword  bool
+	managePage     bool
 }
 
+// testCases represents all template test cases.
 var testCases = []testCase{
 	{
 		template: "board_error",
@@ -167,5 +192,67 @@ var testCases = []testCase{
 	{
 		template: "subscribe",
 		board:    true,
+	},
+	{
+		template: "manage_account",
+	},
+	{
+		template: "manage_ban",
+	},
+	{
+		template:     "manage_banner",
+		manageBanner: true,
+	},
+	{
+		template:    "manage_board",
+		manageBoard: true,
+	},
+	{
+		template:       "manage_category",
+		manageCategory: true,
+	},
+	{
+		template: "manage_error",
+	},
+	{
+		template: "manage_info",
+	},
+	{
+		template:      "manage_keyword",
+		manageKeyword: true,
+	},
+	{
+		template:      "manage_keyword_test",
+		manageKeyword: true,
+	},
+	{
+		template: "manage_log",
+	},
+	{
+		template: "manage_login",
+	},
+	{
+		template: "manage_mod",
+		board:    true,
+		post:     true,
+	},
+	{
+		template: "manage_news",
+	},
+	{
+		template:   "manage_page",
+		managePage: true,
+	},
+	{
+		template: "manage_plugin",
+	},
+	{
+		template: "manage_preference",
+	},
+	{
+		template: "manage_setting",
+	},
+	{
+		template: "manage_status",
 	},
 }

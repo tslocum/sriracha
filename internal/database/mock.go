@@ -32,35 +32,43 @@ func newTestThread(board *Board, size int) []*Post {
 
 // mockDB represents a mock database.
 type mockDB struct {
-	boards []*Board
-	posts  []*Post
+	boards     []*Board
+	categories []*Category
+	posts      []*Post
 }
 
 func newMockDB() *mockDB {
-	mock := &mockDB{}
+	db := &mockDB{}
 
 	img := NewBoard()
 	img.ID = 1
 	img.Dir = "img"
 	img.Name = "Imageboard"
 	img.Type = TypeImageboard
-	mock.boards = append(mock.boards, img)
+	db.boards = append(db.boards, img)
 
 	forum := NewBoard()
 	forum.ID = 1
 	forum.Dir = "forum"
 	forum.Name = "Forum"
 	forum.Type = TypeForum
-	mock.boards = append(mock.boards, forum)
+	db.boards = append(db.boards, forum)
 
-	mock.posts = append(mock.posts, newTestThread(img, 100)...)
-	mock.posts = append(mock.posts, newTestThread(img, 10)...)
-	mock.posts = append(mock.posts, newTestThread(img, 1)...)
-	mock.posts = append(mock.posts, newTestThread(forum, 100)...)
-	mock.posts = append(mock.posts, newTestThread(forum, 10)...)
-	mock.posts = append(mock.posts, newTestThread(forum, 1)...)
+	db.categories = []*Category{
+		{
+			ID:     1,
+			Boards: db.boards,
+		},
+	}
 
-	return mock
+	db.posts = append(db.posts, newTestThread(img, 100)...)
+	db.posts = append(db.posts, newTestThread(img, 10)...)
+	db.posts = append(db.posts, newTestThread(img, 1)...)
+	db.posts = append(db.posts, newTestThread(forum, 100)...)
+	db.posts = append(db.posts, newTestThread(forum, 10)...)
+	db.posts = append(db.posts, newTestThread(forum, 1)...)
+
+	return db
 }
 
 func (db *mockDB) TestConn()             {}
@@ -164,7 +172,7 @@ func (db *mockDB) NewCAPTCHAImage() string       { return "" }
 func (db *mockDB) AddCategory(c *Category)            {}
 func (db *mockDB) CategoryByID(id int) *Category      { return nil }
 func (db *mockDB) ChildCategories(id int) []*Category { return nil }
-func (db *mockDB) AllCategories() []*Category         { return nil }
+func (db *mockDB) AllCategories() []*Category         { return db.categories }
 func (db *mockDB) UpdateCategory(c *Category)         {}
 func (db *mockDB) DeleteCategory(id int)              {}
 
@@ -197,10 +205,26 @@ func (db *mockDB) UpdatePage(p *Page)           {}
 func (db *mockDB) DeletePage(id int)            {}
 
 // Post.
-func (db *mockDB) AddPost(p *Post)                                            {}
-func (db *mockDB) AllThreads(board *Board, moderated bool) [][2]int           { return nil }
-func (db *mockDB) TrimThreads(board *Board) []*Post                           { return nil }
-func (db *mockDB) AllPostsInThread(postID int, moderated bool) []*Post        { return nil }
+func (db *mockDB) AddPost(p *Post) {}
+func (db *mockDB) AllThreads(board *Board, moderated bool) [][2]int {
+	var threads [][2]int
+	for _, post := range db.posts {
+		if post.Board != board || post.Parent == 0 {
+			threads = append(threads, [2]int{post.ID, db.ReplyCount(post.ID)})
+		}
+	}
+	return threads
+}
+func (db *mockDB) TrimThreads(board *Board) []*Post { return nil }
+func (db *mockDB) AllPostsInThread(postID int, moderated bool) []*Post {
+	var posts []*Post
+	for _, post := range db.posts {
+		if post.ID == postID || post.Parent == postID {
+			posts = append(posts, post)
+		}
+	}
+	return posts
+}
 func (db *mockDB) AllReplies(threadID int, limit int, moderated bool) []*Post { return nil }
 func (db *mockDB) PendingPosts() []*Post                                      { return nil }
 func (db *mockDB) PostByID(postID int) *Post                                  { return nil }
@@ -210,19 +234,27 @@ func (db *mockDB) PostByField(b *Board, field string, value any) *Post        { 
 func (db *mockDB) LastPostByIP(board *Board, ip string) *Post                 { return nil }
 func (db *mockDB) LastPostByBoard(board *Board) *Post                         { return nil }
 func (db *mockDB) NumPosts(filterBoard *Board, since int64) int               { return 0 }
-func (db *mockDB) ReplyCount(threadID int) int                                { return 0 }
-func (db *mockDB) MaxPostID() int                                             { return 0 }
-func (db *mockDB) BumpThread(threadID int, timestamp int64)                   {}
-func (db *mockDB) ModeratePost(postID int, moderated PostModerated)           {}
-func (db *mockDB) StickyPost(postID int, sticky bool)                         {}
-func (db *mockDB) LockPost(postID int, lock bool)                             {}
-func (db *mockDB) UpdatePostBoard(postID int, board *Board)                   {}
-func (db *mockDB) UpdatePostNameblock(postID int, nameblock string)           {}
-func (db *mockDB) UpdatePostMessage(postID int, message string)               {}
-func (db *mockDB) DeletePost(postID int)                                      {}
-func (db *mockDB) AddPostBacklink(target *Post, sourceID int)                 {}
-func (db *mockDB) AddPostBacklinks(p *Post)                                   {}
-func (db *mockDB) HavePostBacklinks() bool                                    { return false }
+func (db *mockDB) ReplyCount(threadID int) int {
+	var replies int
+	for _, post := range db.posts {
+		if post.Parent == threadID {
+			replies++
+		}
+	}
+	return replies
+}
+func (db *mockDB) MaxPostID() int                                   { return 0 }
+func (db *mockDB) BumpThread(threadID int, timestamp int64)         {}
+func (db *mockDB) ModeratePost(postID int, moderated PostModerated) {}
+func (db *mockDB) StickyPost(postID int, sticky bool)               {}
+func (db *mockDB) LockPost(postID int, lock bool)                   {}
+func (db *mockDB) UpdatePostBoard(postID int, board *Board)         {}
+func (db *mockDB) UpdatePostNameblock(postID int, nameblock string) {}
+func (db *mockDB) UpdatePostMessage(postID int, message string)     {}
+func (db *mockDB) DeletePost(postID int)                            {}
+func (db *mockDB) AddPostBacklink(target *Post, sourceID int)       {}
+func (db *mockDB) AddPostBacklinks(p *Post)                         {}
+func (db *mockDB) HavePostBacklinks() bool                          { return false }
 
 // Report.
 func (db *mockDB) AddReport(r *Report)    {}

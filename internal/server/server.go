@@ -2635,6 +2635,7 @@ func (s *Server) Run() error {
 	s.lock.Lock()
 
 	// Validate templates.
+	fmt.Println("Validating templates...")
 	err = s.validateTemplates(nil)
 	if err != nil {
 		return fmt.Errorf("failed to validate templates: %s", err)
