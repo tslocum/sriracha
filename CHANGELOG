@@ -1,4 +1,5 @@
 1.8.2:
+- Validate templates during startup
 - Require additional confirmation when deleting a board
 
 1.8.1:

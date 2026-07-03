@@ -627,6 +627,9 @@ func (s *Server) sendMail(client *smtp.Client, recipient string, subject string,
 
 // begin acquires a database connection from the pool and starts a transaction.
 func (s *Server) begin() serverDB {
+	if s.config.HTTP == "" {
+		return database.MockDB
+	}
 	return database.Begin(s.dbPool, s.config)
 }
 
@@ -950,6 +953,11 @@ func (s *Server) _watchTemplates(officialDir string, watcher *fsnotify.Watcher) 
 			err := s.parseTemplates(officialDir, s.config.Template, nil)
 			if err != nil {
 				log.Printf("failed to parse template files: %s", err)
+			}
+
+			err = s.validateTemplates(nil)
+			if err != nil {
+				log.Printf("failed to execute template files: %s", err)
 			}
 		case err, ok := <-watcher.Errors:
 			if !ok {
@@ -2625,6 +2633,12 @@ func (s *Server) Run() error {
 
 	// Lock server until initialization is complete.
 	s.lock.Lock()
+
+	// Validate templates.
+	err = s.validateTemplates(nil)
+	if err != nil {
+		return fmt.Errorf("failed to validate templates: %s", err)
+	}
 
 	// Begin transaction.
 	db := s.begin()
