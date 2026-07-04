@@ -2437,6 +2437,31 @@ func (s *Server) startSignalHandler() {
 	go s._handleSignal(signals)
 }
 
+func (s *Server) handleCron(info cronHandlerInfo) {
+	for {
+		s.lock.Lock()
+		db := s.begin()
+		delay, err := info.Handler(db)
+		if err != nil {
+			log.Fatalf("failed to handle cron event of plugin %s: %s", info.Name, err)
+		}
+		db.Commit()
+		s.lock.Unlock()
+
+		if delay > 0 {
+			time.Sleep(time.Duration(delay) * time.Second)
+			continue
+		}
+		now := time.Now()
+		midnight := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location()).AddDate(0, 0, 1)
+		untilMidnight := time.Until(midnight)
+		if untilMidnight <= 0 {
+			midnight = midnight.AddDate(0, 0, 1)
+		}
+		time.Sleep(time.Until(midnight))
+	}
+}
+
 // Run initializes the server and starts listening for connections.
 func (s *Server) Run() error {
 	s.parseBuildInfo()
@@ -2726,6 +2751,11 @@ func (s *Server) Run() error {
 	}
 	fmt.Printf("Serving http://%s%s\n", s.config.HTTP, extra)
 	s.lock.Unlock()
+
+	// Setup plugin cron handlers.
+	for _, info := range allPluginCronHandlers {
+		go s.handleCron(info)
+	}
 
 	// Wait until the HTTP server returns an error.
 	err = <-httpErrors

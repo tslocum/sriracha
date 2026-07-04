@@ -191,3 +191,13 @@ type PluginWithServe interface {
 	// write to the http.ResponseWriter directly and return a blank string.
 	Serve(db DB, a *Account, w http.ResponseWriter, r *http.Request) (template.HTML, error)
 }
+
+// PluginWithCron describes the required methods for a plugin subscribing to cron events.
+type PluginWithCron interface {
+	Plugin
+
+	// Cron events are sent once during startup for each plugin. Plugins may return
+	// a positive integer to specify a delay (in seconds) until the next Cron event.
+	// Plugins may return a negative integer or zero instead to delay until midnight.
+	Cron(db DB) (int, error)
+}

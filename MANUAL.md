@@ -731,6 +731,25 @@ type PluginWithServe interface {
 }
 ```
 
+#### Cron event
+
+Cron events are sent once during startup for each plugin. Plugins may return
+a positive integer to specify a delay (in seconds) until the next Cron event.
+Plugins may return a negative integer or zero instead to delay until midnight.
+
+Plugins should use Cron events to perform any polling or processing of Sriracha
+data, because the server does not handle web requests during the Cron event.
+
+Processing of external data should be handled in the background instead. Plugins
+with excessively long Cron events will cause pending web requests to fail.
+
+```go
+// PluginWithCron describes the required methods for a plugin subscribing to cron events.
+type PluginWithCron interface {
+	Cron(db DB) (int, error)
+}
+```
+
 ## Upgrade
 
 [Go to top](#sections)

@@ -90,6 +90,13 @@ type serveHandlerInfo struct {
 	Handler serveHandler
 }
 
+type cronHandler func(db sriracha.DB) (int, error)
+
+type cronHandlerInfo struct {
+	Name    string
+	Handler cronHandler
+}
+
 type pluginInfo struct {
 	ID       int
 	Name     string
@@ -113,6 +120,7 @@ var (
 	allPluginReportHandlers []reportHandlerInfo
 	allPluginAuditHandlers  []auditHandlerInfo
 	allPluginServeHandlers  []serveHandlerInfo
+	allPluginCronHandlers   []cronHandlerInfo
 )
 
 // registerPlugin registers a Sriracha plugin to start receiving events.
@@ -211,6 +219,11 @@ func (s *Server) registerPlugin(plugin any) {
 		info.Events = append(info.Events, "Serve")
 		info.Serve = pServe.Serve
 		allPluginServeHandlers = append(allPluginServeHandlers, serveHandlerInfo{strings.ToLower(info.Name), pServe.Serve})
+	}
+
+	if pCron, ok := plugin.(sriracha.PluginWithCron); ok {
+		info.Events = append(info.Events, "Cron")
+		allPluginCronHandlers = append(allPluginCronHandlers, cronHandlerInfo{strings.ToLower(info.Name), pCron.Cron})
 	}
 
 	if len(info.Events) == 0 {
