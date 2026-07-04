@@ -15,9 +15,12 @@ func newTestServer() (*Server, error) {
 	s := NewServer()
 	s.config = &Config{}
 
-	s.loadServerConfig()
+	err := s.loadServerConfig()
+	if err != nil {
+		return nil, err
+	}
 
-	err := s.parseTemplates("", s.config.Template, nil)
+	err = s.parseTemplates("", s.config.Template, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse template files: %s", err)
 	}

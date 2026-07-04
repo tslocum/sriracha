@@ -14,7 +14,7 @@ func G(board *Board, account *Account, str string) string {
 	} else if board != nil && board.Locale != "" {
 		locale = "sriracha-" + board.Locale
 	} else {
-		locale = "sriracha"
+		return gotext.G(str)
 	}
 	return gotext.GD(locale, str)
 }
@@ -26,7 +26,7 @@ func Get(board *Board, account *Account, str string, vars ...interface{}) string
 	} else if board != nil && board.Locale != "" {
 		locale = "sriracha-" + board.Locale
 	} else {
-		locale = "sriracha"
+		return gotext.Get(str, vars...)
 	}
 	return gotext.GetD(locale, str, vars...)
 }
@@ -42,7 +42,7 @@ func GetN(board *Board, account *Account, singular string, plural string, v int)
 	} else if board != nil && board.Locale != "" {
 		locale = "sriracha-" + board.Locale
 	} else {
-		locale = "sriracha"
+		return gotext.GetN(singular, plural, v, v)
 	}
 	return gotext.GetND(locale, singular, plural, v, v)
 }

@@ -286,7 +286,7 @@ func (b *Board) UploadTypesLabel(uploadTypes []*UploadType) string {
 	for i, t := range types {
 		if i > 0 {
 			if i == len(types)-1 {
-				buf.WriteString(" " + Get(b, nil, "and") + " ")
+				buf.WriteString(" " + G(b, nil, "and") + " ")
 			} else {
 				buf.WriteString(", ")
 			}

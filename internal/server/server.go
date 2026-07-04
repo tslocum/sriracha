@@ -721,10 +721,6 @@ func (s *Server) loadServerConfig() error {
 
 	s.reloadBans(db)
 
-	s.opt.Identifiers = s.config.Identifiers
-
-	s.opt.Locale = s.config.Locale
-
 	s.opt.Locales = make(map[string]string)
 	english := display.English.Languages()
 	fs.WalkDir(localeFS, "locale", func(p string, d fs.DirEntry, err error) error {
@@ -2526,12 +2522,12 @@ func (s *Server) Run() error {
 		return fmt.Errorf("failed to parse configuration %s: %s", configFile, err)
 	}
 	s.config.StartTime = time.Now()
+	s.opt.Identifiers = s.config.Identifiers
+	s.opt.Locale = s.config.Locale
 	s.opt.RootDir = s.config.Root
 
-	// Set default gettext domain.
-	gotext.SetDomain("sriracha")
-
 	// Parse locale files.
+	gotext.SetDomain("sriracha-" + s.opt.Locale)
 	err = s.parseLocales()
 	if err != nil {
 		log.Fatalf("failed to parse locale files: %s", err)
