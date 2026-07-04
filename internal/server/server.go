@@ -161,6 +161,7 @@ type ServerOptions struct {
 	ModQueue         string
 	Notifications    bool
 	DevMode          bool
+	RootDir          string
 	Global           []string
 	FuncMaps         map[string]template.FuncMap
 }
@@ -2523,6 +2524,7 @@ func (s *Server) Run() error {
 		return fmt.Errorf("failed to parse configuration %s: %s", configFile, err)
 	}
 	s.config.StartTime = time.Now()
+	s.opt.RootDir = s.config.Root
 
 	// Set default gettext domain.
 	gotext.SetDomain("sriracha")

@@ -469,6 +469,9 @@ msgstr ""
 msgid "Go Back"
 msgstr ""
 
+msgid "Go back, uncheck '%s' and resubmit to post."
+msgstr ""
+
 msgid "HTML content of the page. Go HTML template actions are supported."
 msgstr ""
 
@@ -855,6 +858,9 @@ msgid_plural "Only %d files may be uploaded at once."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Only thumbnails are displayed."
+msgstr ""
+
 msgid "Optional."
 msgstr ""
 
@@ -943,6 +949,9 @@ msgid "Post thread"
 msgstr ""
 
 msgid "Post truncated. Click Reply to view."
+msgstr ""
+
+msgid "Posting mode: Preview"
 msgstr ""
 
 msgid "Posting mode: Reply"

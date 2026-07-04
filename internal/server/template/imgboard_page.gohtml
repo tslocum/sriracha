@@ -1,7 +1,9 @@
 {{if eq .Board.Type 0}}{{template "imgboard_begin.gohtml" .}}{{else}}{{template "forum_begin.gohtml" .}}{{end}}
 {{/* Note: This template is included in forum_page.gohtml when replying to a thread. */}}
 {{/* As a result, all template inclusions in this file must be conditional. */}}
-{{if .ReplyMode}}
+{{if .Preview}}
+	<div class="replymode">{{T "Posting mode: Preview"}}</div>
+{{else if .ReplyMode}}
 	{{if not .ModMode}}
 		<div class="replymode">{{T "Posting mode: Reply"}}</div>
 	{{else}}
@@ -13,6 +15,8 @@
 {{if ne .Board.ID -1}}
 	{{if ne .Message ""}}
 		{{.Message}}
+	{{else if $.Preview}}
+		{{T "Only thumbnails are displayed."}} {{T "Go back, uncheck '%s' and resubmit to post." (T "Preview")}}
 	{{else}}
 		<details id="postdetails">
 			<summary>{{if eq .ReplyMode 0}}{{T "Post thread"}}{{else}}{{T "Post reply"}}{{end}}</summary>
@@ -33,50 +37,54 @@
 		{{if eq .Board.Type 0}}{{template "imgboard_post.gohtml" $}}{{else}}{{template "forum_post.gohtml" $}}{{end}}
 	</div>
 	<hr>
-	<table class="userdelete">
-		<tbody>
-			<tr>
-				<td>
-					{{T "Delete Post"}} <input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}">&nbsp;<input type="submit" id="deletepost" name="deletepost" value="{{T "Delete"}}">
-				</td>
-			</tr>
-		</tbody>
-	</table>
+	{{if not $.Preview}}
+		<table class="userdelete">
+			<tbody>
+				<tr>
+					<td>
+						{{T "Delete Post"}} <input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}">&nbsp;<input type="submit" id="deletepost" name="deletepost" value="{{T "Delete"}}">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	{{end}}
 {{if eq .ReplyMode 0}}
 	</form>
 {{end}}
-<table class="navtable">
-	<tbody>
-		<tr>
-			{{if eq .ReplyMode 0}}
-				<td>{{if gt .Page 0}}<form method="get" action="{{if not $.ModMode}}{{.Board.Path}}{{if eq .Page 1}}index{{else}}{{.Page | MinusOne}}{{end}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}{{if ne .Page 1}}p{{.Page | MinusOne}}{{end}}{{end}}"><input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
-				<td>
-					{{range $i := Iterate (.Pages | MinusOne)}}
-						[{{if eq $i $.Page}}{{$i}}{{else}}<a href="{{if not $.ModMode}}{{$.Board.Path}}{{if eq $i 0}}index{{else}}{{$i}}{{end}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}{{if ne $i 0}}/p{{$i}}{{end}}{{end}}">{{$i}}</a>{{end}}]
-					{{end}}
-				</td>
-				<td>{{if lt .Page (.Pages | MinusOne)}}<form method="get" action="{{if not $.ModMode}}{{.Board.Path}}{{.Page | PlusOne}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}/p{{.Page | PlusOne}}{{end}}"><input type="submit" value="{{T "Next"}}"></form>{{else}}{{T "Next"}}{{end}}</td>
-			{{end}}
-			{{if and .Opt.Notifications (gt .Board.ID 0)}}
+{{if not $.Preview}}
+	<table class="navtable">
+		<tbody>
+			<tr>
 				{{if eq .ReplyMode 0}}
-					<td style="border: 0px none;">&nbsp;</td>
+					<td>{{if gt .Page 0}}<form method="get" action="{{if not $.ModMode}}{{.Board.Path}}{{if eq .Page 1}}index{{else}}{{.Page | MinusOne}}{{end}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}{{if ne .Page 1}}p{{.Page | MinusOne}}{{end}}{{end}}"><input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
+					<td>
+						{{range $i := Iterate (.Pages | MinusOne)}}
+							[{{if eq $i $.Page}}{{$i}}{{else}}<a href="{{if not $.ModMode}}{{$.Board.Path}}{{if eq $i 0}}index{{else}}{{$i}}{{end}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}{{if ne $i 0}}/p{{$i}}{{end}}{{end}}">{{$i}}</a>{{end}}]
+						{{end}}
+					</td>
+					<td>{{if lt .Page (.Pages | MinusOne)}}<form method="get" action="{{if not $.ModMode}}{{.Board.Path}}{{.Page | PlusOne}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}/p{{.Page | PlusOne}}{{end}}"><input type="submit" value="{{T "Next"}}"></form>{{else}}{{T "Next"}}{{end}}</td>
 				{{end}}
-				<td style="border: 0px none;">
+				{{if and .Opt.Notifications (gt .Board.ID 0)}}
 					{{if eq .ReplyMode 0}}
-						<form method="get" action="/sriracha/subscribe/board/{{.Board.ID}}">
+						<td style="border: 0px none;">&nbsp;</td>
 					{{end}}
-					<input type="submit"{{if ne .ReplyMode 0}} name="subscribe"{{end}} value="{{T "Subscribe"}}">
-					{{if eq .ReplyMode 0}}
-						</form>
-					{{end}}
-				</td>
-			{{end}}
-			{{if and (ne .ReplyMode 0) (ne $.Opt.Refresh 0)}}
-				<td id="postdeleted" style="display: none;border: 0px none;color: red;font-weight: bold;">{{T "Thread deleted."}}</td>
-			{{end}}
-		</tr>
-	</tbody>
-</table>
+					<td style="border: 0px none;">
+						{{if eq .ReplyMode 0}}
+							<form method="get" action="/sriracha/subscribe/board/{{.Board.ID}}">
+						{{end}}
+						<input type="submit"{{if ne .ReplyMode 0}} name="subscribe"{{end}} value="{{T "Subscribe"}}">
+						{{if eq .ReplyMode 0}}
+							</form>
+						{{end}}
+					</td>
+				{{end}}
+				{{if and (ne .ReplyMode 0) (ne $.Opt.Refresh 0)}}
+					<td id="postdeleted" style="display: none;border: 0px none;color: red;font-weight: bold;">{{T "Thread deleted."}}</td>
+				{{end}}
+			</tr>
+		</tbody>
+	</table>
+{{end}}
 {{if ne .ReplyMode 0}}
 	</form>
 {{end}}

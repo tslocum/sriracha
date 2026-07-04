@@ -1,12 +1,20 @@
-{{if ne .File ""}}
-    {{$embed := .EmbedInfo}}
+{{$ := index . 0}}
+{{$post := index . 1}}
+{{if ne $post.File ""}}
+    {{$embed := $post.EmbedInfo}}
     <label class="attachmentinfo">
-        <span class="filesize">{{if not .IsEmbed}}{{T "File"}}{{else}}{{T "Embed"}}{{end}}: <a href="{{if .IsOekaki}}/static/oekaki.html#{{.Board.Path}}src/{{.File}}{{else if .IsSWF}}/static/swf.html#{{.Board.Path}}src/{{.File}}{{else if not .IsEmbed}}{{.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');">{{if not .IsEmbed}}{{.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not .IsEmbed}}({{.FileSizeLabel}}{{if and (ne .FileWidth 0) (ne .FileHeight 0)}}, {{.FileWidth}}x{{.FileHeight}}{{end}}{{if ne .FileOriginal ""}}, {{.FileOriginal}}{{end}}){{else}}{{index $embed 1}}{{end}}</span><br>
+        <span class="filesize">{{if not $post.IsEmbed}}{{T "File"}}{{else}}{{T "Embed"}}{{end}}: <a href="{{if $.Preview}}#{{else if $post.IsOekaki}}/static/oekaki.html#{{$post.Board.Path}}src/{{$post.File}}{{else if $post.IsSWF}}/static/swf.html#{{$post.Board.Path}}src/{{$post.File}}{{else if not $post.IsEmbed}}{{$post.Board.Path}}src/{{$post.File}}{{else}}{{$post.FileOriginal}}{{end}}" {{if not $.Preview}}target="_blank" onclick="return expandFile(event, '{{$post.ID}}');"{{end}}>{{if not $post.IsEmbed}}{{$post.File}}{{else}}{{index $embed 2}}{{end}}</a>&ndash;{{if not $post.IsEmbed}}({{$post.FileSizeLabel}}{{if and (ne $post.FileWidth 0) (ne $post.FileHeight 0)}}, {{$post.FileWidth}}x{{$post.FileHeight}}{{end}}{{if ne $post.FileOriginal ""}}, {{$post.FileOriginal}}{{end}}){{else}}{{index $embed 1}}{{end}}</span><br>
     </label>
-    <div id="thumbfile{{.ID}}">
-        {{if ne .Thumb ""}}
-            <a href="{{if .IsOekaki}}/static/oekaki.html#{{.Board.Path}}src/{{.File}}{{else if .IsSWF}}/static/swf.html#{{.Board.Path}}src/{{.File}}{{else if not .IsEmbed}}{{.Board.Path}}src/{{.File}}{{else}}{{.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{.ID}}');"><img src="{{.Board.Path}}thumb/{{.Thumb}}" alt="{{if .IsEmbed}}{{index .EmbedInfo 2}}{{else}}{{.File}}{{end}}" class="thumb" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
+    <div id="thumbfile{{$post.ID}}">
+        {{if ne $post.Thumb ""}}
+            {{if $.Preview}}
+                {{$post.InlineThumb $.Opt.RootDir}}
+            {{else}}
+                <a href="{{if $post.IsOekaki}}/static/oekaki.html#{{$post.Board.Path}}src/{{$post.File}}{{else if $post.IsSWF}}/static/swf.html#{{$post.Board.Path}}src/{{$post.File}}{{else if not $post.IsEmbed}}{{$post.Board.Path}}src/{{$post.File}}{{else}}{{$post.FileOriginal}}{{end}}" target="_blank" onclick="return expandFile(event, '{{$post.ID}}');"><img src="{{$post.Board.Path}}thumb/{{$post.Thumb}}" alt="{{if $post.IsEmbed}}{{index $post.EmbedInfo 2}}{{else}}{{$post.File}}{{end}}" class="thumb" id="thumbnail{{$post.ID}}" width="{{$post.ThumbWidth}}" height="{{$post.ThumbHeight}}"></a>
+            {{end}}
         {{end}}
     </div>
-    <div id="file{{.ID}}" class="thumb" style="display: none;" data-expand="{{.ExpandHTML}}"></div>
+    {{if not $.Preview}}
+        <div id="file{{$post.ID}}" class="thumb" style="display: none;" data-expand="{{$post.ExpandHTML}}"></div>
+    {{end}}
 {{end}}

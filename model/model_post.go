@@ -10,6 +10,7 @@ import (
 	"image"
 	"image/draw"
 	"image/png"
+	"io"
 	"log"
 	"math/rand"
 	"net/url"
@@ -265,6 +266,37 @@ func (p *Post) MessageTruncated(lines int, account *Account) template.HTML {
 		truncated += string(blankMessage)
 	}
 	return template.HTML(truncated)
+}
+
+func (p *Post) InlineThumb(rootDir string) template.HTML {
+	if p.Thumb == "" {
+		return ""
+	}
+	out := &bytes.Buffer{}
+	out.WriteString("data:")
+	switch filepath.Ext(p.Thumb) {
+	case ".jpg":
+		out.WriteString("image/jpeg")
+	case ".png":
+		out.WriteString("image/png")
+	case ".gif":
+		out.WriteString("image/gif")
+	default:
+		return ""
+	}
+	out.WriteString(";base64,")
+	f, err := os.Open(filepath.Join(rootDir, p.Board.Dir, "thumb", p.Thumb))
+	if err != nil {
+		log.Fatal(err)
+	}
+	encoder := base64.NewEncoder(base64.StdEncoding, out)
+	_, err = io.Copy(encoder, f)
+	if err != nil {
+		log.Fatal(err)
+	}
+	encoder.Close()
+	f.Close()
+	return template.HTML(fmt.Sprintf(`<img src="%s" class="thumb" width="%d" height="%d">`, out.Bytes(), p.ThumbWidth, p.ThumbHeight))
 }
 
 func (p *Post) ExpandHTML() string {

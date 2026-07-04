@@ -1087,7 +1087,10 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 	}
 	db.SetPlugin("")
 
-	db.AddPost(post)
+	preview := FormBool(r, "preview") && !oekakiPost
+	if !preview {
+		db.AddPost(post)
+	}
 
 	posts := []*Post{post}
 	cancel := func() {
@@ -1160,8 +1163,32 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 			return
 		}
 
-		db.AddPost(p)
+		if !preview {
+			db.AddPost(p)
+		}
 		posts = append(posts, p)
+	}
+
+	if preview {
+		lastID := db.MaxPostID()
+		previewThread := lastID + 1
+		for i, p := range posts {
+			lastID++
+			p.ID = lastID
+			if i == 0 {
+				continue
+			}
+			p.Parent = previewThread
+		}
+		data.Template = "board_page"
+		data.Board = post.Board
+		data.Threads = [][]*Post{posts}
+		data.Preview = true
+		data.ReplyMode = previewThread
+		data.execute(w)
+
+		cancel()
+		return
 	}
 
 	postCopy = post.Copy()

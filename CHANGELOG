@@ -1,5 +1,6 @@
 1.8.2:
 - Add Cron plugin event
+- Support previewing posts
 - Validate templates during startup
 - Require additional confirmation when deleting a board
 

@@ -87,7 +87,7 @@
                             Oekaki
                         </td>
                         <td colspan="2">
-                            <button type="submit" name="oekaki" value="1">{{T "New drawing..."}}</button> <small>{{T "Create a new drawing."}}</small>
+                            <button type="submit" name="oekaki" value="1" accesskey="o">{{T "New drawing..."}}</button> <small>{{T "Create a new drawing."}}</small>
                         </td>
                     </tr>
                 {{end}}
@@ -114,7 +114,7 @@
                         {{T "Submit"}}
                     </td>
                     <td colspan="2">
-                        <input type="submit" value="{{T "Submit"}}" accesskey="z"> &nbsp;<label for="preview"><input type="checkbox" id="preview" name="preview" value="1" accesskey="a">{{T "Preview"}}</label>
+                        <input type="submit" value="{{T "Submit"}}" accesskey="z"> &nbsp;<label for="preview"><input type="checkbox" id="preview" name="preview" value="1" accesskey="a"{{if $.Preview}} checked{{end}}>{{T "Preview"}}</label>
                     </td>
                 </tr>
                 <tr>

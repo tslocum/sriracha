@@ -66,6 +66,7 @@ type templateData struct {
 	Threads       [][]*Post
 	ReplyMode     int
 	ModMode       bool
+	Preview       bool
 	Extra         string
 	Extra2        string
 	Extra3        string
