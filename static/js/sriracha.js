@@ -85,10 +85,10 @@ function fetchPosts(url, append) {
             if (verbose) {
                 console.log('detected forum board');
             }
-            threadElements = document.getElementsByClassName('thread');
-            if (threadElements.length > 0) {
-                container = threadElements[0];
-            }
+        }
+        threadElements = document.getElementsByClassName('thread');
+        if (threadElements.length > 0) {
+            container = threadElements[0];
         }
         if (!container) {
             var ops = document.getElementsByClassName('op');
