@@ -40,7 +40,6 @@ func (s *Server) validateTemplates(ts *Server) error {
 	allBoards := db.AllBoards()
 	img := db.BoardByDir("img")
 	forum := db.BoardByDir("forum")
-	db.Commit()
 
 	var board *Board
 	for _, c := range testCases {
@@ -62,7 +61,7 @@ func (s *Server) validateTemplates(ts *Server) error {
 				board = img
 			}
 
-			data := ts.newTemplateData(nil)
+			data := ts.newTemplateData(db)
 			data.Categories = db.AllCategories()
 			data.Template = templateName
 			if c.board {
@@ -126,6 +125,7 @@ func (s *Server) validateTemplates(ts *Server) error {
 			}
 		}
 	}
+	db.Commit()
 	return nil
 }
 
