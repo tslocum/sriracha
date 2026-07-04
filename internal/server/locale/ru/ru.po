@@ -491,6 +491,9 @@ msgstr ""
 msgid "Go Back"
 msgstr ""
 
+msgid "Go back, uncheck '%s' and resubmit to post."
+msgstr ""
+
 msgid "HTML content of the page. Go HTML template actions are supported."
 msgstr ""
 
@@ -611,6 +614,13 @@ msgid "Link"
 msgstr ""
 
 msgid "Link to boards in page header."
+msgstr ""
+
+msgid "Local"
+msgstr ""
+
+msgid ""
+"Local settings are configured individually. Global settings are universal."
 msgstr ""
 
 msgid "Locale"
@@ -895,6 +905,9 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
+msgid "Only thumbnails are displayed."
+msgstr ""
+
 msgid "Optional."
 msgstr ""
 
@@ -912,6 +925,10 @@ msgstr ""
 
 msgid "Password"
 msgstr "Пароль"
+
+msgid ""
+"Password protection enabled. You must enter an allowed password to post."
+msgstr ""
 
 msgid "Paste a YouTube URL."
 msgstr "Вставьте URL-адрес на YouTube."
@@ -984,6 +1001,9 @@ msgstr ""
 msgid "Post truncated. Click Reply to view."
 msgstr "Текст сокращен. Нажмите Ответить для просмотра."
 
+msgid "Posting mode: Preview"
+msgstr ""
+
 msgid "Posting mode: Reply"
 msgstr "Режим записи: Ответ"
 
@@ -998,6 +1018,9 @@ msgid "Preferences"
 msgstr "Настройки"
 
 msgid "Prefix a line of text with > (greater-than sign) to quote a message:"
+msgstr ""
+
+msgid "Preview"
 msgstr ""
 
 msgid "Previous"
@@ -1075,6 +1098,9 @@ msgstr ""
 
 msgid "Return"
 msgstr "Вернуться"
+
+msgid "Robot 9000 mode enabled. Post message must be unique."
+msgstr ""
 
 msgid "Role"
 msgstr ""
@@ -1158,6 +1184,9 @@ msgid "Super-administrator"
 msgstr ""
 
 msgid "Super-administrators have full access."
+msgstr ""
+
+msgid "Supported BBCode tags are %s."
 msgstr ""
 
 msgid "Supported file types are %s."
@@ -1352,3 +1381,6 @@ msgstr ""
 
 msgid "Your post will be shown once it has been approved."
 msgstr "Ваше сообщение будет показано после подтверждения."
+
+msgid "and"
+msgstr ""

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-06-24 09:07+0000\n"
+"PO-Revision-Date: 2026-07-01 19:18+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -505,6 +505,9 @@ msgstr ""
 msgid "Go Back"
 msgstr "Ga terug"
 
+msgid "Go back, uncheck '%s' and resubmit to post."
+msgstr ""
+
 msgid "HTML content of the page. Go HTML template actions are supported."
 msgstr "De html-inhoud van de pagina. Html-sjabloonacties zijn toegestaan."
 
@@ -636,6 +639,15 @@ msgstr "Link"
 
 msgid "Link to boards in page header."
 msgstr "Een link naar subfora in de paginakop."
+
+msgid "Local"
+msgstr "Lokaal"
+
+msgid ""
+"Local settings are configured individually. Global settings are universal."
+msgstr ""
+"Lokale instellingen worden apart aangepast; globale instellingen zijn "
+"universeel."
 
 msgid "Locale"
 msgstr "Taal"
@@ -946,6 +958,9 @@ msgid_plural "Only %d files may be uploaded at once."
 msgstr[0] "Je mag slechts %d bestand per keer uploaden."
 msgstr[1] "Je mag slechts %d bestanden per keer uploaden."
 
+msgid "Only thumbnails are displayed."
+msgstr ""
+
 msgid "Optional."
 msgstr "Optioneel."
 
@@ -963,6 +978,12 @@ msgstr "De bovenliggende categorie."
 
 msgid "Password"
 msgstr "Wachtwoord"
+
+msgid ""
+"Password protection enabled. You must enter an allowed password to post."
+msgstr ""
+"Wachtwoordbeveiliging is ingeschakeld. Voer het juiste wachtwoord in om iets "
+"te plaatsen."
 
 msgid "Paste a YouTube URL."
 msgstr "Plak een YouTube-url."
@@ -1037,6 +1058,9 @@ msgstr "Onderwerp plaatsen"
 msgid "Post truncated. Click Reply to view."
 msgstr "Het bericht is ingekort. Klik op beantwoorden om te bekijken."
 
+msgid "Posting mode: Preview"
+msgstr ""
+
 msgid "Posting mode: Reply"
 msgstr "Berichtmodus: beantwoorden"
 
@@ -1053,6 +1077,9 @@ msgstr "Instellingen"
 msgid "Prefix a line of text with > (greater-than sign) to quote a message:"
 msgstr ""
 "Voorzie een tekstregel van > (groter-danteken) om een bericht te citeren:"
+
+msgid "Preview"
+msgstr ""
 
 msgid "Previous"
 msgstr "Vorige"
@@ -1131,6 +1158,9 @@ msgstr "Vereist."
 
 msgid "Return"
 msgstr "Terug"
+
+msgid "Robot 9000 mode enabled. Post message must be unique."
+msgstr "Robot 9000-modus is ingeschakeld. Ieder bericht moet uniek zijn."
 
 msgid "Role"
 msgstr "Rol"
@@ -1217,6 +1247,9 @@ msgstr "Superbeheerder"
 
 msgid "Super-administrators have full access."
 msgstr "Superbeheerders kunnen álles."
+
+msgid "Supported BBCode tags are %s."
+msgstr "Ondersteunde BBCode-tags zijn %s."
 
 msgid "Supported file types are %s."
 msgstr "Ondersteunde bestandstypes: %s."
@@ -1432,3 +1465,6 @@ msgstr ""
 
 msgid "Your post will be shown once it has been approved."
 msgstr "Je bericht wordt na goedkeuring getoond."
+
+msgid "and"
+msgstr "en"

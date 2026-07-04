@@ -486,6 +486,9 @@ msgstr ""
 msgid "Go Back"
 msgstr ""
 
+msgid "Go back, uncheck '%s' and resubmit to post."
+msgstr ""
+
 msgid "HTML content of the page. Go HTML template actions are supported."
 msgstr ""
 
@@ -608,6 +611,13 @@ msgid "Link"
 msgstr ""
 
 msgid "Link to boards in page header."
+msgstr ""
+
+msgid "Local"
+msgstr ""
+
+msgid ""
+"Local settings are configured individually. Global settings are universal."
 msgstr ""
 
 msgid "Locale"
@@ -891,6 +901,9 @@ msgid_plural "Only %d files may be uploaded at once."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Only thumbnails are displayed."
+msgstr ""
+
 msgid "Optional."
 msgstr ""
 
@@ -908,6 +921,10 @@ msgstr ""
 
 msgid "Password"
 msgstr "Secret"
+
+msgid ""
+"Password protection enabled. You must enter an allowed password to post."
+msgstr ""
 
 msgid "Paste a YouTube URL."
 msgstr "Stow a YouTube video."
@@ -980,6 +997,9 @@ msgstr ""
 msgid "Post truncated. Click Reply to view."
 msgstr "Post apportioned. Swab Reply to view."
 
+msgid "Posting mode: Preview"
+msgstr ""
+
 msgid "Posting mode: Reply"
 msgstr "Posting mode: Yap"
 
@@ -994,6 +1014,9 @@ msgid "Preferences"
 msgstr "Quarters"
 
 msgid "Prefix a line of text with > (greater-than sign) to quote a message:"
+msgstr ""
+
+msgid "Preview"
 msgstr ""
 
 msgid "Previous"
@@ -1071,6 +1094,9 @@ msgstr ""
 
 msgid "Return"
 msgstr "Come About"
+
+msgid "Robot 9000 mode enabled. Post message must be unique."
+msgstr ""
 
 msgid "Role"
 msgstr ""
@@ -1154,6 +1180,9 @@ msgid "Super-administrator"
 msgstr ""
 
 msgid "Super-administrators have full access."
+msgstr ""
+
+msgid "Supported BBCode tags are %s."
 msgstr ""
 
 msgid "Supported file types are %s."
@@ -1348,3 +1377,6 @@ msgstr ""
 
 msgid "Your post will be shown once it has been approved."
 msgstr "Avast! Yer post will be shown after the captain inspects it."
+
+msgid "and"
+msgstr ""

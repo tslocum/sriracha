@@ -496,6 +496,9 @@ msgstr ""
 msgid "Go Back"
 msgstr ""
 
+msgid "Go back, uncheck '%s' and resubmit to post."
+msgstr ""
+
 msgid "HTML content of the page. Go HTML template actions are supported."
 msgstr ""
 
@@ -625,6 +628,13 @@ msgstr ""
 
 msgid "Link to boards in page header."
 msgstr "Linqet per bordet ne krye te faqes."
+
+msgid "Local"
+msgstr ""
+
+msgid ""
+"Local settings are configured individually. Global settings are universal."
+msgstr ""
 
 msgid "Locale"
 msgstr "Vendodhje"
@@ -932,6 +942,9 @@ msgid_plural "Only %d files may be uploaded at once."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Only thumbnails are displayed."
+msgstr ""
+
 msgid "Optional."
 msgstr "Opcionale."
 
@@ -949,6 +962,10 @@ msgstr ""
 
 msgid "Password"
 msgstr "Fjalekalimi"
+
+msgid ""
+"Password protection enabled. You must enter an allowed password to post."
+msgstr ""
 
 msgid "Paste a YouTube URL."
 msgstr "Ngjit nje URL te YouTube-it."
@@ -1024,6 +1041,9 @@ msgstr ""
 msgid "Post truncated. Click Reply to view."
 msgstr "Postimi u shkurtua. Klikoni te \"Repliko\" per ta pare."
 
+msgid "Posting mode: Preview"
+msgstr ""
+
 msgid "Posting mode: Reply"
 msgstr "Forma e postimit: Replike"
 
@@ -1038,6 +1058,9 @@ msgid "Preferences"
 msgstr "Preferencat"
 
 msgid "Prefix a line of text with > (greater-than sign) to quote a message:"
+msgstr ""
+
+msgid "Preview"
 msgstr ""
 
 msgid "Previous"
@@ -1115,6 +1138,9 @@ msgstr "E detyrueshme."
 
 msgid "Return"
 msgstr "Kthehu"
+
+msgid "Robot 9000 mode enabled. Post message must be unique."
+msgstr ""
 
 msgid "Role"
 msgstr "Roli"
@@ -1201,6 +1227,9 @@ msgstr "Super-administratori"
 
 msgid "Super-administrators have full access."
 msgstr "Super-administratoret kane akses te plote."
+
+msgid "Supported BBCode tags are %s."
+msgstr ""
 
 msgid "Supported file types are %s."
 msgstr "Llojet e skedareve te lejuara jane %s."
@@ -1407,3 +1436,6 @@ msgstr ""
 
 msgid "Your post will be shown once it has been approved."
 msgstr "Postimi juaj do te shfaqet pasi te jete miratuar."
+
+msgid "and"
+msgstr ""
