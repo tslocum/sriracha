@@ -35,7 +35,6 @@ func (s *Server) validateTemplates(ts *Server) error {
 		ts.tpl = s.tpl
 		ts.tplOriginal = s.tplOriginal
 	}
-
 	db := ts.begin()
 	allBoards := db.AllBoards()
 	img := db.BoardByDir("img")

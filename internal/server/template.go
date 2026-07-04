@@ -75,9 +75,10 @@ type templateData struct {
 	Template      string
 
 	// Calculated fields.
-	IndexBoards []*Board
-	tpl         *template.Template
-	buf         *bytes.Buffer
+	IndexBoards      []*Board
+	tpl              *template.Template
+	buf              *bytes.Buffer
+	templateFuncMaps map[string]template.FuncMap
 }
 
 func (data *templateData) Style() string {
@@ -159,7 +160,7 @@ func (data *templateData) executeWithError(w io.Writer) error {
 
 	var funcMap template.FuncMap
 	if strings.HasPrefix(data.Template, "manage_") && data.Account != nil && data.Account.Locale != "" {
-		funcMap = templateFuncMaps[data.Account.Locale]
+		funcMap = data.templateFuncMaps[data.Account.Locale]
 	} else if boardTemplate {
 		var locale string
 		if data.Account != nil {
@@ -167,10 +168,10 @@ func (data *templateData) executeWithError(w io.Writer) error {
 		} else if data.Board != nil {
 			locale = data.Board.Locale
 		}
-		funcMap = templateFuncMaps[locale]
+		funcMap = data.templateFuncMaps[locale]
 	}
 	if funcMap == nil {
-		funcMap = templateFuncMaps[""]
+		funcMap = data.templateFuncMaps[""]
 	}
 
 	data.buf.Reset()
@@ -300,8 +301,6 @@ var templateFuncMap = template.FuncMap{
 	},
 }
 
-var templateFuncMaps map[string]template.FuncMap
-
 func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	f := make(template.FuncMap)
 	maps.Copy(f, templateFuncMap)
@@ -375,8 +374,9 @@ func (s *Server) newTemplateData(db serverDB) *templateData {
 		Manage: &manageData{
 			Plugins: allPluginInfo,
 		},
-		Opt: &s.opt,
-		tpl: s.tpl,
-		buf: writeBuf,
+		Opt:              &s.opt,
+		tpl:              s.tpl,
+		buf:              writeBuf,
+		templateFuncMaps: s.templateFuncMaps,
 	}
 }

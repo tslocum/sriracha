@@ -239,6 +239,8 @@ type Server struct {
 
 	msgPrinter *message.Printer
 
+	templateFuncMaps map[string]template.FuncMap
+
 	lock sync.Mutex
 }
 
@@ -764,10 +766,10 @@ func (s *Server) loadServerConfig() error {
 		return strings.Compare(s.opt.Locales[s1], s.opt.Locales[s2])
 	})
 
-	templateFuncMaps = make(map[string]template.FuncMap)
-	templateFuncMaps[""] = s.newTemplateFuncMap(s.opt.Locale)
+	s.templateFuncMaps = make(map[string]template.FuncMap)
+	s.templateFuncMaps[""] = s.newTemplateFuncMap(s.opt.Locale)
 	for id := range s.opt.Locales {
-		templateFuncMaps[id] = s.newTemplateFuncMap(id)
+		s.templateFuncMaps[id] = s.newTemplateFuncMap(id)
 	}
 
 	s.opt.Access = make(map[string]string)
@@ -899,7 +901,7 @@ func (s *Server) parseTemplates(officialDir string, customDir string, db serverD
 		return nil
 	}
 	if officialDir == "" {
-		s.tpl = template.New("sriracha").Funcs(templateFuncMaps[""])
+		s.tpl = template.New("sriracha").Funcs(s.templateFuncMaps[""])
 
 		entries, err := templateFS.ReadDir("template")
 		if err != nil {
@@ -921,7 +923,7 @@ func (s *Server) parseTemplates(officialDir string, customDir string, db serverD
 			}
 		}
 	} else {
-		s.tpl = template.New("sriracha").Funcs(templateFuncMaps[""])
+		s.tpl = template.New("sriracha").Funcs(s.templateFuncMaps[""])
 
 		err := parseDir(officialDir, false)
 		if err != nil {
