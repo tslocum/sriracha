@@ -961,6 +961,9 @@ msgstr ""
 msgid "Prefix a line of text with > (greater-than sign) to quote a message:"
 msgstr ""
 
+msgid "Preview"
+msgstr ""
+
 msgid "Previous"
 msgstr ""
 
