@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-07-01 19:18+0000\n"
+"PO-Revision-Date: 2026-07-05 21:57+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -506,7 +506,7 @@ msgid "Go Back"
 msgstr "Ga terug"
 
 msgid "Go back, uncheck '%s' and resubmit to post."
-msgstr ""
+msgstr "Ga terug, schakel ‘%s’ uit en dien opnieuw in."
 
 msgid "HTML content of the page. Go HTML template actions are supported."
 msgstr "De html-inhoud van de pagina. Html-sjabloonacties zijn toegestaan."
@@ -959,7 +959,7 @@ msgstr[0] "Je mag slechts %d bestand per keer uploaden."
 msgstr[1] "Je mag slechts %d bestanden per keer uploaden."
 
 msgid "Only thumbnails are displayed."
-msgstr ""
+msgstr "Er worden alleen miniaturen getoond."
 
 msgid "Optional."
 msgstr "Optioneel."
@@ -1059,7 +1059,7 @@ msgid "Post truncated. Click Reply to view."
 msgstr "Het bericht is ingekort. Klik op beantwoorden om te bekijken."
 
 msgid "Posting mode: Preview"
-msgstr ""
+msgstr "Berichtmodus: voorvertoning"
 
 msgid "Posting mode: Reply"
 msgstr "Berichtmodus: beantwoorden"
@@ -1079,7 +1079,7 @@ msgstr ""
 "Voorzie een tekstregel van > (groter-danteken) om een bericht te citeren:"
 
 msgid "Preview"
-msgstr ""
+msgstr "Voorvertonen"
 
 msgid "Previous"
 msgstr "Vorige"
