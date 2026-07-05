@@ -168,6 +168,47 @@ func (p *Post) SetNameBlock(defaultName string, capcode string, identifiers bool
 	p.NameBlock = out.String()
 }
 
+func (p *Post) PlainNameBlock(defaultName string, capcode string, identifiers bool) template.HTML {
+	var out strings.Builder
+
+	if p.Name != "" || p.Tripcode == "" {
+		name := p.Name
+		if name == "" {
+			if strings.ContainsRune(defaultName, '|') {
+				split := strings.Split(defaultName, "|")
+				name = split[rand.Intn(len(split))]
+			} else {
+				name = defaultName
+			}
+		}
+		out.WriteString(`<span class="postername">`)
+		out.WriteString(html.EscapeString(name))
+		out.WriteString(`</span>`)
+	}
+	if p.Tripcode != "" {
+		out.WriteString(`<span class="postertrip">!`)
+		out.WriteString(html.EscapeString(p.Tripcode))
+		out.WriteString(`</span>`)
+	}
+
+	if capcode != "" {
+		spanColor := "red"
+		if capcode == "Admin" {
+			spanColor = "purple"
+		}
+		out.WriteString(` <span style="color: ` + spanColor + `;">## ` + capcode + `</span>`)
+	}
+
+	identifier := p.Identifier(identifiers, false)
+	if identifier != "" {
+		out.WriteString(" " + identifier)
+	}
+
+	out.WriteString(" " + string(p.TimestampLabel()))
+
+	return template.HTML(out.String())
+}
+
 func (p *Post) Thread() int {
 	if p.Parent == 0 {
 		return p.ID
