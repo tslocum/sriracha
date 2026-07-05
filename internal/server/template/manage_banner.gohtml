@@ -20,7 +20,7 @@
             <tr>
                 <td><a href="/banner/{{$banner.Name}}">{{$banner.Name}}</a></td>
                 <td>{{$banner.Width}}x{{$banner.Height}}</td>
-                <td>{{template "manage_print_board.gohtml" $banner.Boards}}</td>
+                <td>{{template "manage_print_board.gohtml" (Slice $ $banner.Boards)}}</td>
                 <td>{{if $banner.Overboard}}{{T "Visible"}}{{else}}{{T "Hidden"}}{{end}}</td>
                 <td>{{if $banner.News}}{{T "Visible"}}{{else}}{{T "Hidden"}}{{end}}</td>
                 <td>{{if $banner.Pages}}{{T "Visible"}}{{else}}{{T "Hidden"}}{{end}}</td>

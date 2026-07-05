@@ -1,5 +1,9 @@
-{{if eq (len .) 0}}
+{{$ := index . 0}}
+{{$boards := index . 1}}
+{{if eq (len $boards) 0}}
     {{T "None"}}
+{{else if and (gt (len $boards) 1) (eq (len $boards) (len $.Boards))}}
+    {{T "All"}}
 {{else}}
-    {{range $i, $board := .}}{{if ne $i 0}}, {{end}}<span title="{{$board.Name}}">{{$board.Path}}</span>{{end}}
+    {{range $i, $board := $boards}}{{if ne $i 0}}, {{end}}<span title="{{$board.Name}}">{{$board.Path}}</span>{{end}}
 {{end}}
