@@ -43,7 +43,6 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 
 			db.ModeratePost(post.ID, ModeratedApproved)
 			db.DeleteReports(post)
-			s.writeModQueue(db)
 
 			if !rebuild {
 				continue
@@ -53,6 +52,8 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 			s.rebuildThread(db, post)
 			s.queueNotifications(db, post)
 		}
+		s.writeModQueue(db)
+		s.writeSiteIndex(db)
 
 		data.Redirect(w, r, "/sriracha/")
 		return
