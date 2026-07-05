@@ -491,7 +491,7 @@ func (s *Server) parseLocales() error {
 
 		po := gotext.NewPo()
 		po.Parse(buf)
-		gotext.GetStorage().AddTranslator(fmt.Sprintf("sriracha-%s", id), po)
+		gotext.GetStorage().AddTranslator(Locale(id), po)
 		return nil
 	})
 }
@@ -1072,8 +1072,8 @@ func (s *Server) refreshRulesCache(db serverDB) {
 		rules[id] = rules[id][:0]
 	}
 
-	for _, board := range db.AllBoards() {
-		for _, info := range allPluginRulesHandlers {
+	for _, info := range allPluginRulesHandlers {
+		for _, board := range db.AllBoards() {
 			rulesHTML, err := info.Handler(db, board)
 			if err != nil {
 				log.Fatalf("failed to refresh rules cache: plugin %s encountered an error: %s", info.Name, err)
@@ -2527,7 +2527,7 @@ func (s *Server) Run() error {
 	s.opt.RootDir = s.config.Root
 
 	// Parse locale files.
-	gotext.SetDomain("sriracha-" + s.opt.Locale)
+	gotext.SetDomain(Locale(s.opt.Locale))
 	err = s.parseLocales()
 	if err != nil {
 		log.Fatalf("failed to parse locale files: %s", err)

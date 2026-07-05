@@ -20,8 +20,8 @@
 - Thread catalog
 - Oekaki (drawings)
 - Fetch new replies automatically
-- Send [email notifications](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#email-notifications)
 - Extend with [plugins](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#plugins)
+- Send [email notifications](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#email-notifications)
 - Customize [HTML templates](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#custom-templates)
 - Translate into [additional languages](https://translate.codeberg.org/projects/sriracha/sriracha/)
 - Play SWF files with the included [ruffle emulator](https://ruffle.rs)

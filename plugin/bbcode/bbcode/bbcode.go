@@ -56,9 +56,6 @@ type BBCode struct {
 
 	compiler bbcode.Compiler
 
-	rules       template.HTML
-	rulesCached bool
-
 	fmtSingle *htmlformatter.Formatter
 	fmtMulti  *htmlformatter.Formatter
 	style     *chroma.Style
@@ -134,14 +131,10 @@ func (f *BBCode) Config() []sriracha.PluginConfig {
 func (f *BBCode) Update(db sriracha.DB, key string) error {
 	f.config[key] = db.GetBool(key)
 	f.updated = true
-	f.rulesCached = false
 	return nil
 }
 
 func (f *BBCode) Rules(db sriracha.DB, board *Board) (template.HTML, error) {
-	if f.rulesCached {
-		return f.rules, nil
-	}
 	var enabledTags []string
 	for tag, enabled := range f.config {
 		if !enabled {
@@ -175,9 +168,7 @@ func (f *BBCode) Rules(db sriracha.DB, board *Board) (template.HTML, error) {
 			}
 		}
 	}
-	f.rules = template.HTML(Get(board, nil, "Supported BBCode tags are %s.", out.String()))
-	f.rulesCached = true
-	return f.rules, nil
+	return template.HTML(Get(board, nil, "Supported BBCode tags are %s.", out.String())), nil
 }
 
 func (f *BBCode) rebuildCompiler() {
