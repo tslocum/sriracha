@@ -41,13 +41,15 @@
         </table>
         </fieldset>
     </form><br>
-    <script type="text/javascript">
-    {{if eq .Manage.Ban nil}}
-        document.sriracha.ip.focus();
-    {{else}}
-        document.sriracha.expire.focus();
+    {{if or (ne .Manage.Ban nil) (ne .Template "manage_ban")}}
+        <script type="text/javascript">
+            if (document.sriracha.ip) {
+                document.sriracha.ip.focus();
+            } else {
+                document.sriracha.expire.focus();
+            }
+        </script>
     {{end}}
-    </script>
 {{end}}
 {{if and (May "banfile.delete" $.Account $.Opt.Access) (and (eq .Manage.Ban nil) (eq .Extra ""))}}{{/* Admin */}}
     <br>
