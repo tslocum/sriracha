@@ -1,6 +1,7 @@
 1.8.3:
 - Add board setting to require an attachment
 - Generate checksums using CRC-32 instead of Adler-32
+- Display ban appeal verification ID to banned visitors
 
 1.8.2:
 - Add Cron plugin event

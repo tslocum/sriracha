@@ -2154,7 +2154,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	for ban, pattern := range s.rangeBans {
 		if pattern.MatchString(ip) {
 			data := s.buildData(db, w, r)
-			data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (Ban ID: %s_%d)", ban.AppealID(), ban.ID))
+			data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (%s: %s_%d)", Get(nil, data.Account, "Ban ID"), ban.AppealID(), ban.ID))
 			data.execute(w)
 			s.lock.Unlock()
 			return
@@ -2165,7 +2165,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	ban := db.BanByIP(ipHash)
 	if ban != nil {
 		data := s.buildData(db, w, r)
-		data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (Ban ID: %s_%d)", ban.AppealID(), ban.ID))
+		data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (%s: %s_%d)", Get(nil, data.Account, "Ban ID"), ban.AppealID(), ban.ID))
 		data.execute(w)
 		s.lock.Unlock()
 		return

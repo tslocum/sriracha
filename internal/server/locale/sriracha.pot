@@ -170,6 +170,9 @@ msgstr ""
 msgid "Ban"
 msgstr ""
 
+msgid "Ban ID"
+msgstr ""
+
 msgid "Ban file"
 msgstr ""
 
@@ -1064,6 +1067,9 @@ msgid "Rules"
 msgstr ""
 
 msgid "Scroll down to the bottom of the page."
+msgstr ""
+
+msgid "Search"
 msgstr ""
 
 msgid "Seconds between automatic refreshes when viewing a thread. Set to 0 to disable."

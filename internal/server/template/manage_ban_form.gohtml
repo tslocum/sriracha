@@ -34,7 +34,13 @@
                 </tr>
             {{end}}
             <tr>
-                <td>&nbsp;</td>
+                <td>
+                    {{if and (May "ban.shorten" $.Account $.Opt.Access) (ne .Manage.Ban nil)}}
+                        &nbsp;[<a href="/sriracha/ban/delete/{{.Manage.Ban.ID}}">{{T "Lift"}}</a>]
+                    {{else}}
+                        &nbsp;
+                    {{end}}
+                </td>
                 <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.Ban nil}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
                 <td>&nbsp;</td>
             </tr>
@@ -65,6 +71,27 @@
             <tr>
                 <td>&nbsp;</td>
                 <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Lift"}}"></td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        </fieldset>
+    </form><br>
+{{end}}
+{{if and (May "ban.shorten" $.Account $.Opt.Access) (and (eq .Manage.Ban nil) (eq .Extra ""))}}{{/* Admin */}}
+    <br>
+    <form method="post" enctype="multipart/form-data">
+        <input type="hidden" name="search" value="1">
+        <fieldset>
+        <legend>{{T "Search"}}</legend>
+        <table class="manageform">
+            <tr>
+                <td class="postblock"><label for="id">{{T "Ban ID"}}</label></td>
+                <td><input type="text" name="id"></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Search"}}"></td>
                 <td>&nbsp;</td>
             </tr>
         </table>

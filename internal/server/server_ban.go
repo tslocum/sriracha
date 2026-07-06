@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -102,6 +103,7 @@ func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter
 
 	if r.Method == http.MethodPost {
 		r.ParseForm()
+
 		f, _, err := r.FormFile("liftfile")
 		if err == nil && f != nil {
 			if s.forbidden(w, data, "banfile.delete") {
@@ -119,6 +121,35 @@ func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter
 			} else {
 				data.ManageError("File is not banned.")
 			}
+			return
+		} else if FormBool(r, "search") {
+			if s.forbidden(w, data, "ban.shorten") {
+				return
+			}
+			id := FormString(r, "id")
+			if id == "" {
+				data.ManageError("Enter a ban ID to search for.")
+				return
+			}
+			lastUnderscore := strings.LastIndex(id, "_")
+			if lastUnderscore <= 0 {
+				data.ManageError("Invalid ban ID.")
+				return
+			}
+			searchID, err := strconv.Atoi(id[lastUnderscore+1:])
+			if err != nil || searchID <= 0 {
+				data.ManageError("Invalid ban ID.")
+				return
+			}
+			ban := db.BanByID(searchID)
+			if ban == nil {
+				data.ManageError("No bans matching that ID were found.")
+				return
+			} else if id[:lastUnderscore] != ban.AppealID() {
+				data.ManageError(fmt.Sprintf("Ban #%d exists, but the provided verification prefix does not match.", ban.ID))
+				return
+			}
+			data.Redirect(w, r, fmt.Sprintf("/sriracha/ban/%d", ban.ID))
 			return
 		} else if s.forbidden(w, data, "ban.add") {
 			return
