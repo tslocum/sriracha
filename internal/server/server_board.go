@@ -701,22 +701,24 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		allThreads := db.AllThreads(b, false)
 		if !FormBool(r, "confirmation") {
 			data.Template = "manage_info"
-			data.Message = template.HTML(`<form method="post">
+			data.Message = template.HTML(`<h2 class="managetitle">` + Get(b, data.Account, "Boards") + `</h2>
+			[<a href="/sriracha/board/">` + Get(b, data.Account, "Return") + `</a>]<br>
+			<form method="post">
 			<input type="hidden" name="confirmation" value="1">
 			<fieldset>
 				<legend>
 					Delete ` + b.Path() + ` ` + html.EscapeString(b.Name) + `
 				</legend>
 				<div>
-					<h1>WARNING!</h1>
+					<h1 style="margin: 0;">WARNING!</h1>
 					You are about to <b>PERMANENTLY DELETE <a href="` + b.Path() + `">` + b.Path() + ` ` + html.EscapeString(b.Name) + `</a>!</b><br>
 					` + strconv.Itoa(len(allThreads)) + ` threads in ` + b.Path() + ` will be <b>PERMANENTLY DELETED!</b><br>
-					<b>This operation cannot be undone!</b><br><br>Type <b>` + b.Path() + `</b> to confirm:<br>
-					<input type="text" name="path"><br>
-					<input type="submit" value="Delete ` + b.Path() + ` forever" style="margin-top: 5px;">
+					<b>THIS OPERATION CANNOT BE UNDONE!</b><br><br>
+					Type <b>` + b.Path() + `</b> to confirm:
+					<input type="text" name="path"> <input type="submit" value="Delete ` + b.Path() + ` forever" style="margin-top: 5px;">
 				</div>
 			</fieldset>
-			</form>`)
+			</form><br>`)
 			return
 		} else if FormString(r, "path") != b.Path() {
 			data.ManageError(fmt.Sprintf("Type the board path %s to confirm deletion.", b.Path()))

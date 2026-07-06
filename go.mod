@@ -18,7 +18,7 @@ require (
 	github.com/steambap/captcha v1.4.1
 	golang.org/x/exp v0.0.0-20260611194520-c48552f49976
 	golang.org/x/sys v0.46.0
-	golang.org/x/text v0.38.0
+	golang.org/x/text v0.39.0
 	gopkg.in/yaml.v3 v3.0.1
 	modernc.org/sqlite v1.53.0
 )
