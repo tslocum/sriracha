@@ -7,7 +7,7 @@
         {{end}}
         <input type="submit" hidden>
         <fieldset>
-        <legend>{{if eq .Manage.Ban nil}}{{T "Add Ban"}}{{else}}{{T "Update"}} #{{.Manage.Ban.ID}}{{if HasPrefix .Manage.Ban.IP "r "}} - {{.Manage.Ban.TypeLabel}}{{end}}{{end}}</legend>
+        <legend>{{if eq .Manage.Ban nil}}{{T "Add Ban"}}{{else}}{{T "Update"}} #{{.Manage.Ban.ID}} - {{.Manage.Ban.TypeLabel}}{{end}}</legend>
         <table class="manageform">
             {{if and (eq .Manage.Ban nil) (eq .Extra "")}}
                 <tr>
