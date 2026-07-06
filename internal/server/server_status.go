@@ -163,7 +163,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		}
 		data.Message += template.HTML(fmt.Sprintf("&nbsp; Scanned %d files", scanned))
 		if len(found) == 0 {
-			data.Message += template.HTML(" and only found expected files.")
+			data.Message += template.HTML(". All files validated.")
 		} else {
 			data.Message += template.HTML(fmt.Sprintf(" and found %d unexpected files:<ul>", len(found)))
 			for _, filePath := range found {

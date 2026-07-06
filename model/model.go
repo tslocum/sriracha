@@ -2,9 +2,16 @@
 package model
 
 import (
+	"hash/crc32"
 	"html/template"
 
 	"codeberg.org/tslocum/gotext"
+)
+
+var (
+	crcHash = crc32.NewIEEE()
+	crcBuf  = make([]byte, 8)
+	crcSum  []byte
 )
 
 func Locale(identifier string) string {

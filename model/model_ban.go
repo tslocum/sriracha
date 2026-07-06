@@ -1,6 +1,7 @@
 package model
 
 import (
+	"encoding/base64"
 	"fmt"
 	"strings"
 	"time"
@@ -38,6 +39,19 @@ func (b *Ban) ExpireDate() string {
 		return "Never"
 	}
 	return time.Unix(b.Expire, 0).Format("2006-01-02 15:04:05 MST")
+}
+
+func (b *Ban) AppealID() string {
+	if b.IP == "" {
+		return ""
+	}
+	crcHash.Reset()
+	crcHash.Write([]byte("appeal"))
+	crcHash.Write([]byte(b.IP))
+
+	crcSum = crcHash.Sum(crcSum[:0])
+	base64.RawURLEncoding.Encode(crcBuf, crcSum)
+	return string(crcBuf[:5])
 }
 
 func (b *Ban) Info() string {

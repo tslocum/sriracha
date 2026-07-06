@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
-	"hash/adler32"
 	"html"
 	"html/template"
 	"image"
@@ -22,12 +21,6 @@ import (
 	"github.com/PuerkitoBio/goquery"
 
 	. "codeberg.org/tslocum/sriracha/util"
-)
-
-var (
-	adler    = adler32.New()
-	adlerBuf = make([]byte, 8)
-	adlerSum []byte
 )
 
 type PostModerated int
@@ -373,16 +366,16 @@ func (p *Post) Identifier(identifiers bool, force bool) string {
 	if p.IP == "" || !identifiers || (p.Board.Identifiers == IdentifiersDisable && !force) {
 		return ""
 	}
-	adler.Reset()
+	crcHash.Reset()
 	if p.Board.Identifiers == IdentifiersBoard {
-		adler.Write([]byte(strconv.Itoa(p.Board.ID)))
+		crcHash.Write([]byte(strconv.Itoa(p.Board.ID)))
 	}
-	adler.Write([]byte(p.IP))
+	crcHash.Write([]byte(p.IP))
 
-	adlerSum = adler.Sum(adlerSum[:0])
+	crcSum = crcHash.Sum(crcSum[:0])
 
-	base64.RawURLEncoding.Encode(adlerBuf, adlerSum)
-	return string(adlerBuf[:5])
+	base64.RawURLEncoding.Encode(crcBuf, crcSum)
+	return string(crcBuf[:5])
 }
 
 func (p *Post) Mentions() []int {
