@@ -74,7 +74,7 @@ func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request
 				for _, post := range posts {
 					w.Write([]byte(`<input type="hidden" name="delete[]" value="` + strconv.Itoa(post.ID) + `">`))
 				}
-				w.Write([]byte(`<input type="submit" name="bulkd" value="` + G(nil, data.Account, "Delete") + `" onclick="return confirm('` + GetN(nil, data.Account, "Delete %d post?", "Delete %d posts?", len(posts)) + `')"> <input type="submit" name="bulkb" value="` + G(nil, data.Account, "Ban") + `"> <input type="submit" name="bulkdb" value="` + G(nil, data.Account, "Delete & ban") + `">
+				w.Write([]byte(`<input type="submit" name="bulkd" value="` + G(nil, data.Account, "Delete") + `" onclick="return confirm('` + GetN(nil, data.Account, "Delete %d post", "Delete %d posts", len(posts)) + `?')"> <input type="submit" name="bulkb" value="` + G(nil, data.Account, "Ban") + `"> <input type="submit" name="bulkdb" value="` + G(nil, data.Account, "Delete & ban") + `">
 				</form><br>
 				<hr><br>`))
 				for _, post := range posts {
