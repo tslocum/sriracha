@@ -42,7 +42,11 @@
 			<tbody>
 				<tr>
 					<td>
-						{{T "Delete Post"}} <input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}">&nbsp;<input type="submit" id="deletepost" name="deletepost" value="{{T "Delete"}}">
+						{{if $.ModMode}}
+							<input type="submit" name="bulkd" value="{{T "Delete"}}"> <input type="submit" name="bulkb" value="{{T "Ban"}}"> <input type="submit" name="bulkdb" value="{{T "Delete & ban"}}">
+						{{else}}
+							{{T "Delete Post"}} <input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}">&nbsp;<input type="submit" id="deletepost" name="deletepost" value="{{T "Delete"}}">
+						{{end}}
 					</td>
 				</tr>
 			</tbody>

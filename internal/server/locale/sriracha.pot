@@ -289,6 +289,11 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+msgid "Delete %d post"
+msgid_plural "Delete %d posts"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Delete %s"
 msgstr ""
 
@@ -753,6 +758,11 @@ msgstr ""
 
 msgid "Moderate"
 msgstr ""
+
+msgid "Moderate %d post"
+msgid_plural "Moderate %d posts"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Moderator"
 msgstr ""
