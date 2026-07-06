@@ -117,6 +117,30 @@ func FormatBoardIdentifiers(i BoardIdentifiers) string {
 	}
 }
 
+type BoardRequire int
+
+const (
+	RequireNever   BoardRequire = 0
+	RequireThreads BoardRequire = 1
+	RequireReplies BoardRequire = 2
+	RequireAll     BoardRequire = 3
+)
+
+func FormatBoardRequire(i BoardRequire) string {
+	switch i {
+	case RequireNever:
+		return "Never"
+	case RequireThreads:
+		return "Threads"
+	case RequireReplies:
+		return "Replies"
+	case RequireAll:
+		return "All posts"
+	default:
+		return "Unknown"
+	}
+}
+
 type Board struct {
 	ID            int
 	Dir           string
@@ -157,6 +181,7 @@ type Board struct {
 	Instances     int
 	Identifiers   BoardIdentifiers
 	Gallery       bool
+	Require       BoardRequire
 
 	// Calculated fields.
 	Uploads []string

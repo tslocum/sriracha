@@ -1,3 +1,6 @@
+1.8.3:
+- Add board setting to require an attachment
+
 1.8.2:
 - Add Cron plugin event
 - Support previewing posts

@@ -1042,6 +1042,12 @@ msgstr ""
 msgid "Require Approval"
 msgstr ""
 
+msgid "Require Attachment"
+msgstr ""
+
+msgid "Require visitors to include an attachment when posting."
+msgstr ""
+
 msgid "Required."
 msgstr ""
 

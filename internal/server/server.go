@@ -2904,6 +2904,8 @@ func FormatValue(v interface{}) interface{} {
 		return FormatBoardApproval(t)
 	} else if t, ok := v.(BoardIdentifiers); ok {
 		return FormatBoardIdentifiers(t)
+	} else if t, ok := v.(BoardRequire); ok {
+		return FormatBoardRequire(t)
 	}
 	return v
 }
@@ -3029,6 +3031,7 @@ var allGlobalSettings = []string{
 	"board.uploads",
 	"board.embeds",
 	"board.oekaki",
+	"board.require",
 	"board.gallery",
 	"banner.boards",
 	"banner.overboard",

@@ -422,6 +422,18 @@
                     <td>{{T "Whether visitors may browse attachments as an image gallery."}}</td>
                 </tr>
             {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (Global "board.require"))}}
+                <tr>
+                    <td class="postblock"><label for="require">{{T "Require Attachment"}}{{Globe "board.require"}}</label></td>
+                    <td><select name="require" style="width: 100%;">
+                        <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Require 0)}} selected{{end}}>{{T "Never"}}</option>
+                        <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Require 1)}} selected{{end}}>{{T "Threads"}}</option>
+                        <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Require 2)}} selected{{end}}>{{T "Replies"}}</option>
+                        <option value="3"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Require 3)}} selected{{end}}>{{T "All posts"}}</option>
+                    </select></td>
+                    <td>{{T "Require visitors to include an attachment when posting."}}</td>
+                </tr>
+            {{end}}
             {{if or (and (eq .Manage.Board.ID 0) (May "board.add" $.Account $.Opt.Access)) (and (ne .Manage.Board.ID 0) (May "board.update" $.Account $.Opt.Access))}}
                 <tr>
                     <td style="vertical-align: middle;">{{if ne .Manage.Board.ID 0}}&nbsp;[<a href="/sriracha/board/reset/{{.Manage.Board.ID}}" onclick="return confirm('{{T "Reset board configuration?"}}');">{{T "Reset"}}</a>]{{end}}</td>

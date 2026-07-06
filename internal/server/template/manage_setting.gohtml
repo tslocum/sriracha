@@ -455,6 +455,14 @@
             <td>{{T "Whether visitors may browse attachments as an image gallery."}}</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="board.require">{{T "Require Attachment"}}</label></td>
+            <td><select name="board.require" style="width: 100%;">
+                <option value="0"{{if not (Global "board.require")}} selected{{end}}>✗ {{T "Local"}}</option>
+                <option value="1"{{if Global "board.require"}} selected{{end}}>✓ {{T "Global"}}</option>
+            </select></td>
+            <td>{{T "Require visitors to include an attachment when posting."}}</td>
+        </tr>
+        <tr>
             <th><br>{{T "Banners"}}<div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td>&nbsp;</td>
         </tr>
         <tr>

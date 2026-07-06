@@ -829,6 +829,12 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	if (b.Require == RequireAll || (b.Require == RequireThreads && post.Parent == 0) || (b.Require == RequireReplies && post.Parent != 0)) && post.File == "" {
+		data := s.buildData(db, w, r)
+		data.BoardError(w, Get(b, data.Account, "An attachment is required."))
+		return
+	}
+
 	if rawHTML {
 		post.Message = html.UnescapeString(post.Message)
 	}

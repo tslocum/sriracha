@@ -85,6 +85,7 @@ CREATE TABLE board (
 	-- v9: identifiers smallint NOT NULL DEFAULT 0
 	-- v10: files smallint NOT NULL DEFAULT 1
 	-- v11: gallery smallint NOT NULL DEFAULT 1
+	-- v17: require smallint NOT NULL DEFAULT 0
 );
 CREATE UNIQUE INDEX ON board (dir);
 
@@ -322,4 +323,7 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 	// Version 16.
 	`ALTER TABLE post ADD COLUMN backlinks integer[] NOT NULL DEFAULT array[]::integer[];
 	UPDATE config SET value = '16' WHERE name = 'version';`,
+	// Version 17.
+	`ALTER TABLE board ADD COLUMN require smallint NOT NULL DEFAULT 0;
+	UPDATE config SET value = '17' WHERE name = 'version';`,
 }
