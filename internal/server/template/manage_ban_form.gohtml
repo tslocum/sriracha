@@ -1,13 +1,21 @@
 {{$mayAdd := May "ban.add" $.Account $.Opt.Access}}
 {{$mayUpdate := or (May "ban.shorten" $.Account $.Opt.Access) (May "ban.lengthen" $.Account $.Opt.Access)}}
 {{if or (and (eq .Manage.Ban nil) $mayAdd) (and (ne .Manage.Ban nil) $mayUpdate)}}
+        <fieldset style="position: relative;">
+        <legend>
+            {{if eq .Manage.Ban nil}}{{T "Add Ban"}}{{else}}{{T "Update"}} #{{.Manage.Ban.ID}} - {{.Manage.Ban.TypeLabel}}{{end}}
+            {{if and (May "ban.shorten" $.Account $.Opt.Access) (ne .Manage.Ban nil)}}
+                <form method="post" action="/sriracha/ban/delete/{{.Manage.Ban.ID}}" onsubmit="javascript:return liftBan('{{.Manage.Ban.ID}}')">
+                    <input type="hidden" name="reason" id="reason{{.Manage.Ban.ID}}">
+                    &nbsp; <input type="submit" value="{{T "Lift"}}" style="position: absolute;right: 10px;">
+                </form>
+            {{end}}
+        </legend>
     <form name="sriracha" method="post">
         {{if ne .Extra ""}}
         <input type="hidden" name="confirmation" value="1">
         {{end}}
         <input type="submit" hidden>
-        <fieldset>
-        <legend>{{if eq .Manage.Ban nil}}{{T "Add Ban"}}{{else}}{{T "Update"}} #{{.Manage.Ban.ID}} - {{.Manage.Ban.TypeLabel}}{{end}}</legend>
         <table class="manageform">
             {{if and (eq .Manage.Ban nil) (eq .Extra "")}}
                 <tr>
@@ -34,13 +42,7 @@
                 </tr>
             {{end}}
             <tr>
-                <td>
-                    {{if and (May "ban.shorten" $.Account $.Opt.Access) (ne .Manage.Ban nil)}}
-                        &nbsp;[<a href="/sriracha/ban/delete/{{.Manage.Ban.ID}}">{{T "Lift"}}</a>]
-                    {{else}}
-                        &nbsp;
-                    {{end}}
-                </td>
+                <td>&nbsp;</td>
                 <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.Ban nil}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
                 <td>&nbsp;</td>
             </tr>

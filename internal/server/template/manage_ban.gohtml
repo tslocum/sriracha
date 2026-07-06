@@ -25,7 +25,7 @@
                             <form method="get" action="/sriracha/ban/{{$ban.ID}}"><input type="submit" value="{{T "Update"}}"></form>
                         {{end}}
                         {{if $mayDelete}}
-                            <form method="get" action="/sriracha/ban/delete/{{$ban.ID}}" onsubmit="javascript:return liftBan('{{$ban.ID}}')">
+                            <form method="post" action="/sriracha/ban/delete/{{$ban.ID}}" onsubmit="javascript:return liftBan('{{$ban.ID}}')">
                                 <input type="hidden" name="reason" id="reason{{$ban.ID}}">
                                 <input type="submit" value="{{T "Lift"}}">
                             </form>
