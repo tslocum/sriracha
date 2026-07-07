@@ -43,7 +43,7 @@
             {{end}}
             <tr>
                 <td>&nbsp;</td>
-                <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.Ban nil}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
+                <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.Ban nil}}{{if eq .Template "manage_mod"}}{{if eq .Extra "db"}}{{T "Delete & ban"}}{{else}}{{T "Ban"}}{{end}}{{else}}{{T "Add"}}{{end}}{{else}}{{T "Update"}}{{end}}"></td>
                 <td>&nbsp;</td>
             </tr>
         </table>

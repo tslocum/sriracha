@@ -13,31 +13,22 @@
         {{if $single}}{{T "Moderate"}} {{$first.RefLink}}{{else}}{{TN "Moderate %d post" "Moderate %d posts" $count $count}}{{end}}
     {{end}}
 </h2>
+{{if ne .Message ""}}
+    {{.Message}}<br><br>
+{{end}}
 {{if eq .Extra ""}}
-    {{if ne .Message ""}}
-        {{.Message}}<br><br>
-    {{end}}
     <form method="post" action="/sriracha/mod/delete/{{.Extra3}}">
         <input type="hidden" name="confirmation" value="1">
         <input type="submit" value="{{T "Delete"}}" onclick="javascript:return confirm('{{TN "Delete %d post" "Delete %d posts" $count $count}}?');"></input>
     </form>
     <form method="post" action="/sriracha/mod/ban/{{.Extra3}}">
-        <input type="hidden" name="confirmation" value="1">
         <input type="submit" value="{{T "Ban"}}"></input>
     </form>
     <form method="post" action="/sriracha/mod/{{.Extra3}}">
-        <input type="hidden" name="confirmation" value="1">
         <input type="submit" value="{{T "Delete & ban"}}"></input>
     </form><br>
-{{else}}
-    {{if or (eq .Extra "b") (eq .Extra "db") }}
+{{else if or (eq .Extra "b") (eq .Extra "db") }}
     {{template "manage_ban_form.gohtml" .}}
-    {{else}}
-        <form method="post" action="/sriracha/mod/delete/{{.Extra3}}">
-            <input type="hidden" name="confirmation" value="1">
-            <input type="submit" value="{{TN "Delete %d post" "Delete %d posts" $count $count}}"></input>
-        </form><br>
-    {{end}}
 {{end}}
 <hr>
 <br>

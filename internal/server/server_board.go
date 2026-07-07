@@ -645,6 +645,10 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 				data.Threads = append(data.Threads, posts)
 			}
 		}
+		if len(data.Threads) == 0 || len(data.Threads[0]) == 0 {
+			data.ManageError("Invalid or deleted post")
+			return false
+		}
 		return false
 	}
 

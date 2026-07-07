@@ -47,6 +47,7 @@ func (b *Ban) AppealID() string {
 	}
 	crcHash.Reset()
 	crcHash.Write([]byte("appeal"))
+	crcHash.Write([]byte(fmt.Sprintf("%d", b.Timestamp)))
 	crcHash.Write([]byte(b.IP))
 
 	crcSum = crcHash.Sum(crcSum[:0])

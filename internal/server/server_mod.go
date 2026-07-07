@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -35,7 +36,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		return out
 	}
 	var action string
-	if FormBool(r, "confirmation") {
+	if r.Method == http.MethodPost {
 		action = "db"
 	}
 	modInfo := PathString(r, "/sriracha/mod/")
@@ -292,40 +293,43 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 	}
 	data.Board = selected[0].Board
 	data.Threads = [][]*Post{selected}
-	//data.Manage.Ban = db.BanByIP(post.IP)
 	if r.FormValue("confirmation") == "1" {
+		if s.forbidden(w, data, "ban.add") || s.forbidden(w, data, "ban.lengthen") || s.forbidden(w, data, "post.delete") {
+			return
+		}
+		banFile := FormBool(r, "banfile")
+		if banFile && s.forbidden(w, data, "banfile.add") {
+			return
+		}
+		var rebuild []int
 		for _, post := range selected {
-			banFile := FormString(r, "banfile")
-			if banFile != "" && !db.FileBanned(banFile) {
-				if s.forbidden(w, data, "banfile.add") {
-					return
-				}
-				db.AddFileBan(banFile)
+			if banFile && post.FileHash != "" && !db.FileBanned(post.FileHash) {
+				db.AddFileBan(post.FileHash)
 				s.log(db, data.Account, nil, "Banned file", "")
 			}
 
 			var oldBan Ban
-			if data.Manage.Ban != nil {
-				oldBan = *data.Manage.Ban
+			ban := db.BanByIP(post.IP)
+			if ban != nil {
+				oldBan = *ban
 			}
 			if action == "b" || action == "db" {
-				if data.Manage.Ban != nil {
-					if s.forbidden(w, data, "ban.lengthen") {
-						return
+				if ban != nil {
+					if oldBan.Expire == 0 {
+						continue
 					}
-					err := s.loadBanForm(db, r, data.Manage.Ban)
+					err := s.loadBanForm(db, r, ban)
 					if err != nil {
 						data.ManageError(err.Error())
 						return
+					} else if ban.Expire != 0 && ban.Expire <= oldBan.Expire {
+						continue
 					}
-					db.UpdateBan(data.Manage.Ban)
+					db.UpdateBan(ban)
 
-					changes := printChanges(oldBan, *data.Manage.Ban)
-					s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/ban/%d", data.Manage.Ban.ID), changes)
+					changes := printChanges(oldBan, *ban)
+					s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/ban/%d", ban.ID), changes)
 				} else {
-					if s.forbidden(w, data, "ban.add") {
-						return
-					}
 					ban := &Ban{}
 					err := s.loadBanForm(db, r, ban)
 					if err != nil {
@@ -339,16 +343,41 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				}
 			}
 			if action == "d" || action == "db" {
-				if s.forbidden(w, data, "post.delete") {
-					return
-				}
 				s.deletePost(db, post)
 
 				s.log(db, data.Account, data.Board, fmt.Sprintf("Deleted >>%d", post.ID), "")
 
-				s.rebuildThread(db, post)
+				threadID := post.Thread()
+				if !slices.Contains(rebuild, threadID) {
+					rebuild = append(rebuild, threadID)
+				}
 			}
 		}
+
+		var boards []int
+		for _, postID := range rebuild {
+			post := db.PostByID(postID)
+			if post == nil {
+				continue
+			}
+			s.writeThread(db, post.Board, postID)
+			if !slices.Contains(boards, post.Board.ID) {
+				boards = append(boards, post.Board.ID)
+			}
+		}
+		for _, boardID := range boards {
+			board := db.BoardByID(boardID)
+			if board == nil {
+				continue
+			}
+			s.writeBoardIndexes(db, board)
+		}
+		if s.opt.Overboard != "" {
+			s.writeOverboard(db)
+		}
+		s.writeSiteIndex(db)
+		s.writeStatistics(db)
+		s.writeModQueue(db)
 
 		data.Template = "manage_info"
 		switch action {
@@ -393,7 +422,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			data.Message += post.RefLink()
 		}
 		data.Message += `</td>
-		<td>` + template.HTML(ban.Info()) + `</td><td>[<a href="/sriracha/ban/` + template.HTML(strconv.Itoa(banID)) + `">` + template.HTML(G(nil, data.Account, "Update")) + `</a>]`
+		<td>` + template.HTML(ban.Info()) + `</td><td><form method="get" action="/sriracha/ban/` + template.HTML(strconv.Itoa(banID)) + `"><input type="submit" value="` + template.HTML(G(nil, data.Account, "Update")) + `"></form>`
 		var ids []int
 		for _, post := range selected {
 			var found bool
@@ -408,21 +437,24 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			}
 		}
 		if len(ids) > 0 {
-			data.Message += ` [<a href="/sriracha/mod/`
+			data.Message += ` <form method="post" action="/sriracha/mod/`
+			switch action {
+			case "d":
+				data.Message += "delete/"
+			case "b":
+				data.Message += "ban/"
+			}
 			for i, id := range ids {
 				if i != 0 {
 					data.Message += ","
 				}
 				data.Message += template.HTML(strconv.Itoa(id))
 			}
-			data.Message += `">` + template.HTML(G(nil, data.Account, "Deselect")) + `</a>]`
+			data.Message += `"><input type="submit" value="` + template.HTML(G(nil, data.Account, "Deselect")) + `"></form>`
 		}
 		data.Message += `</td></tr>`
 	}
 	if len(existing) > 0 {
 		data.Message = `<fieldset><legend>` + template.HTML(GetN(nil, data.Account, "%d existing ban", "%d existing bans", len(existing))) + `</legend><table>` + data.Message + `</table></fieldset>`
 	}
-	//if post != nil {
-	//		data.Extra2 = post.FileHash
-	//	}
 }
