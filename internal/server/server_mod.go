@@ -20,8 +20,24 @@ import (
 func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_mod"
 
-	var postID int
-	var action = "db"
+	var selected []*Post
+	parsePosts := func(ids string) []*Post {
+		var out []*Post
+		for _, id := range strings.Split(ids, ",") {
+			postID, err := strconv.Atoi(id)
+			if err == nil && postID > 0 {
+				post := db.PostByID(postID)
+				if post != nil {
+					out = append(out, post)
+				}
+			}
+		}
+		return out
+	}
+	var action string
+	if FormBool(r, "confirmation") {
+		action = "db"
+	}
 	modInfo := PathString(r, "/sriracha/mod/")
 	if modInfo != "" {
 		split := strings.Split(modInfo, "/")
@@ -47,17 +63,12 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				data.ManageError("Unknown mod action")
 				return
 			}
-			postID = ParseInt(split[1])
+			selected = parsePosts(split[1])
 		} else if len(split) == 1 {
-			postID = ParseInt(split[0])
+			selected = parsePosts(split[0])
 		}
 	}
-	if postID == 0 {
-		data.ManageError("Unknown post")
-		return
-	}
-	data.Post = db.PostByID(postID)
-	if data.Post == nil {
+	if len(selected) == 0 {
 		data.ManageError("Unknown post")
 		return
 	}
@@ -69,8 +80,8 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		data.Template = "board_page"
 		data.ModMode = true
 		data.ReplyMode = 1
-		data.Board = data.Post.Board
-		posts := db.PostsByIP(data.Post.IP)
+		data.Board = selected[0].Board
+		posts := db.PostsByIP(selected[0].IP)
 		if r.FormValue("confirmation") == "1" {
 			if s.forbidden(w, data, "post.delete") {
 				return
@@ -92,15 +103,16 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		if s.forbidden(w, data, "post.move") {
 			return
 		}
-		if data.Post.Parent != 0 {
+		post := selected[0]
+		if post.Parent != 0 {
 			data.ManageError("Only threads may be moved")
 			return
 		}
 		data.Template = "board_page"
 		data.ModMode = true
 		data.ReplyMode = 1
-		data.Board = data.Post.Board
-		data.Threads = append(data.Threads, []*Post{data.Post})
+		data.Board = post.Board
+		data.Threads = append(data.Threads, []*Post{post})
 		if r.FormValue("confirmation") == "1" {
 			boardID := FormInt(r, "board")
 			destination := db.BoardByID(boardID)
@@ -111,7 +123,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				data.ManageError("Failed to move thread: Thread is already located in selected board")
 				return
 			}
-			posts := db.AllPostsInThread(data.Post.ID, false)
+			posts := db.AllPostsInThread(post.ID, false)
 			// Verify attachments do not already exist at destination board.
 			for _, p := range posts {
 				if p.File != "" && !p.IsEmbed() {
@@ -131,7 +143,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			}
 			// Copy attachments.
 			copyFile := func(dirName string, fileName string) error {
-				srcPath := filepath.Join(s.config.Root, data.Post.Board.Path(), dirName, fileName)
+				srcPath := filepath.Join(s.config.Root, post.Board.Path(), dirName, fileName)
 				dstPath := filepath.Join(s.config.Root, destination.Path(), dirName, fileName)
 
 				srcFile, err := os.Open(srcPath)
@@ -170,16 +182,16 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			// Remove source attachments.
 			for _, p := range posts {
 				if p.File != "" && !p.IsEmbed() {
-					os.Remove(filepath.Join(s.config.Root, data.Post.Board.Path(), "src", p.File))
+					os.Remove(filepath.Join(s.config.Root, post.Board.Path(), "src", p.File))
 				}
 				if p.Thumb != "" {
-					os.Remove(filepath.Join(s.config.Root, data.Post.Board.Path(), "thumb", p.Thumb))
+					os.Remove(filepath.Join(s.config.Root, post.Board.Path(), "thumb", p.Thumb))
 				}
 			}
 			// Delete thread page.
-			os.Remove(filepath.Join(s.config.Root, data.Post.Board.Path(), "res", fmt.Sprintf("%d.html", data.Post.ID)))
+			os.Remove(filepath.Join(s.config.Root, post.Board.Path(), "res", fmt.Sprintf("%d.html", post.ID)))
 			// Update post board.
-			source := data.Post.Board
+			source := post.Board
 			for _, p := range posts {
 				db.UpdatePostBoard(p.ID, destination)
 				p.Board = destination
@@ -191,11 +203,11 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 					log.Fatalf("failed to move thread: failed to update reflinks: %s", err)
 				}
 			}
-			data.Post = db.PostByID(data.Post.ID)
+			post = db.PostByID(post.ID)
 			data.Board = destination
-			data.Threads = [][]*Post{{data.Post}}
-			data.Message = template.HTML(fmt.Sprintf("Moved No.%d to %s.", data.Post.ID, destination.Path()))
-			s.log(db, data.Account, data.Post.Board, fmt.Sprintf("Moved >>/post/%d to >>/board/%d", data.Post.ID, data.Board.ID), "")
+			data.Threads = [][]*Post{{post}}
+			data.Message = template.HTML(fmt.Sprintf("Moved No.%d to %s.", post.ID, destination.Path()))
+			s.log(db, data.Account, post.Board, fmt.Sprintf("Moved >>/post/%d to >>/board/%d", post.ID, data.Board.ID), "")
 			// Add notice.
 			if FormInt(r, "notice") == 1 {
 				const linkFormat = `<a href="%s">&gt;&gt;&gt;%s</a>`
@@ -204,7 +216,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				now := time.Now().Unix()
 				p := &Post{
 					Board:     destination,
-					Parent:    data.Post.ID,
+					Parent:    post.ID,
 					Timestamp: now,
 					Bumped:    now,
 					Message:   Get(destination, nil, "Thread moved from %[1]s to %[2]s.", sourceLink, destinationLink),
@@ -214,12 +226,12 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				db.AddPost(p)
 			}
 			// Rebuild static files.
-			s.rebuildThread(db, data.Post)
+			s.rebuildThread(db, post)
 			s.writeBoardIndexes(db, source)
 		} else {
 			moveLabel := Get(data.Board, data.Account, "Move")
 			boardLabel := Get(data.Board, data.Account, "Board")
-			data.Message = `<br><fieldset><legend>` + template.HTML(html.EscapeString(moveLabel)) + ` No.` + template.HTML(strconv.Itoa(data.Post.ID)) + `</legend><form method="post"><table class="manageform"><input type="hidden" name="confirmation" value="1"><tr><td class="postblock">` + template.HTML(html.EscapeString(boardLabel)) + `</td><td><select name="board">`
+			data.Message = `<br><fieldset><legend>` + template.HTML(html.EscapeString(moveLabel)) + ` No.` + template.HTML(strconv.Itoa(post.ID)) + `</legend><form method="post"><table class="manageform"><input type="hidden" name="confirmation" value="1"><tr><td class="postblock">` + template.HTML(html.EscapeString(boardLabel)) + `</td><td><select name="board">`
 			for _, b := range db.AllBoards() {
 				var extra string
 				if data.Board.ID == b.ID {
@@ -235,123 +247,133 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 	}
 	threadAction := action == "s" || action == "us" || action == "l" || action == "ul"
 	if threadAction {
-		if data.Post.Parent != 0 {
+		post := selected[0]
+		if post.Parent != 0 {
 			data.ManageError("Invalid post")
 			return
 		}
 
 		var skipRebuild bool
 		switch {
-		case action == "s" && !data.Post.Stickied:
+		case action == "s" && !post.Stickied:
 			if s.forbidden(w, data, "post.sticky") {
 				return
 			}
-			db.StickyPost(data.Post.ID, true)
-			s.log(db, data.Account, nil, fmt.Sprintf("Stickied >>/post/%d", data.Post.ID), "")
-		case action == "us" && data.Post.Stickied:
+			db.StickyPost(post.ID, true)
+			s.log(db, data.Account, nil, fmt.Sprintf("Stickied >>/post/%d", post.ID), "")
+		case action == "us" && post.Stickied:
 			if s.forbidden(w, data, "post.sticky") {
 				return
 			}
-			db.StickyPost(data.Post.ID, false)
-			s.log(db, data.Account, nil, fmt.Sprintf("Unstickied >>/post/%d", data.Post.ID), "")
-		case action == "l" && !data.Post.Locked:
+			db.StickyPost(post.ID, false)
+			s.log(db, data.Account, nil, fmt.Sprintf("Unstickied >>/post/%d", post.ID), "")
+		case action == "l" && !post.Locked:
 			if s.forbidden(w, data, "post.lock") {
 				return
 			}
-			db.LockPost(data.Post.ID, true)
-			s.log(db, data.Account, nil, fmt.Sprintf("Locked >>/post/%d", data.Post.ID), "")
-		case action == "ul" && data.Post.Locked:
+			db.LockPost(post.ID, true)
+			s.log(db, data.Account, nil, fmt.Sprintf("Locked >>/post/%d", post.ID), "")
+		case action == "ul" && post.Locked:
 			if s.forbidden(w, data, "post.lock") {
 				return
 			}
-			db.LockPost(data.Post.ID, false)
-			s.log(db, data.Account, nil, fmt.Sprintf("Unlocked >>/post/%d", data.Post.ID), "")
+			db.LockPost(post.ID, false)
+			s.log(db, data.Account, nil, fmt.Sprintf("Unlocked >>/post/%d", post.ID), "")
 		default:
 			skipRebuild = true
 		}
 		if !skipRebuild {
-			s.rebuildThread(db, data.Post)
+			s.rebuildThread(db, post)
 		}
 
 		data.Template = "manage_info"
-		data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", data.Post.Board.ID, data.Post.ID))
+		data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", post.Board.ID, post.ID))
 		return
 	}
-	data.Board = data.Post.Board
-	data.Threads = [][]*Post{{data.Post}}
-	data.Manage.Ban = db.BanByIP(data.Post.IP)
+	data.Board = selected[0].Board
+	data.Threads = [][]*Post{selected}
+	//data.Manage.Ban = db.BanByIP(post.IP)
 	if r.FormValue("confirmation") == "1" {
-		banFile := FormString(r, "banfile")
-		if banFile != "" && !db.FileBanned(banFile) {
-			if s.forbidden(w, data, "banfile.add") {
-				return
+		for _, post := range selected {
+			banFile := FormString(r, "banfile")
+			if banFile != "" && !db.FileBanned(banFile) {
+				if s.forbidden(w, data, "banfile.add") {
+					return
+				}
+				db.AddFileBan(banFile)
+				s.log(db, data.Account, nil, "Banned file", "")
 			}
-			db.AddFileBan(banFile)
-			s.log(db, data.Account, nil, "Banned file", "")
-		}
 
-		var oldBan Ban
-		if data.Manage.Ban != nil {
-			oldBan = *data.Manage.Ban
-		}
-		if action == "b" || action == "db" {
+			var oldBan Ban
 			if data.Manage.Ban != nil {
-				if s.forbidden(w, data, "ban.lengthen") {
-					return
-				}
-				err := s.loadBanForm(db, r, data.Manage.Ban)
-				if err != nil {
-					data.ManageError(err.Error())
-					return
-				}
-				db.UpdateBan(data.Manage.Ban)
-
-				changes := printChanges(oldBan, *data.Manage.Ban)
-				s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/ban/%d", data.Manage.Ban.ID), changes)
-			} else {
-				if s.forbidden(w, data, "ban.add") {
-					return
-				}
-				ban := &Ban{}
-				err := s.loadBanForm(db, r, ban)
-				if err != nil {
-					data.ManageError(err.Error())
-					return
-				}
-				ban.IP = data.Post.IP
-				db.AddBan(ban)
-
-				s.log(db, data.Account, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info())
+				oldBan = *data.Manage.Ban
 			}
-		}
-		if action == "d" || action == "db" {
-			if s.forbidden(w, data, "post.delete") {
-				return
+			if action == "b" || action == "db" {
+				if data.Manage.Ban != nil {
+					if s.forbidden(w, data, "ban.lengthen") {
+						return
+					}
+					err := s.loadBanForm(db, r, data.Manage.Ban)
+					if err != nil {
+						data.ManageError(err.Error())
+						return
+					}
+					db.UpdateBan(data.Manage.Ban)
+
+					changes := printChanges(oldBan, *data.Manage.Ban)
+					s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/ban/%d", data.Manage.Ban.ID), changes)
+				} else {
+					if s.forbidden(w, data, "ban.add") {
+						return
+					}
+					ban := &Ban{}
+					err := s.loadBanForm(db, r, ban)
+					if err != nil {
+						data.ManageError(err.Error())
+						return
+					}
+					ban.IP = post.IP
+					db.AddBan(ban)
+
+					s.log(db, data.Account, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info())
+				}
 			}
-			s.deletePost(db, data.Post)
+			if action == "d" || action == "db" {
+				if s.forbidden(w, data, "post.delete") {
+					return
+				}
+				s.deletePost(db, post)
 
-			s.log(db, data.Account, data.Board, fmt.Sprintf("Deleted >>%d", data.Post.ID), "")
+				s.log(db, data.Account, data.Board, fmt.Sprintf("Deleted >>%d", post.ID), "")
 
-			s.rebuildThread(db, data.Post)
-		}
-
-		label := "Deleted"
-		switch action {
-		case "b":
-			label = "Banned"
-		case "db":
-			label = "Deleted and banned"
+				s.rebuildThread(db, post)
+			}
 		}
 
 		data.Template = "manage_info"
-		data.Info = fmt.Sprintf("%s No.%d", label, data.Post.ID)
+		switch action {
+		case "d":
+			data.Info = GetN(nil, data.Account, "Deleted %d post", "Deleted %d posts", len(selected))
+		case "b":
+			data.Info = GetN(nil, data.Account, "Banned %d post", "Banned %d posts", len(selected))
+		default:
+			data.Info = GetN(nil, data.Account, "Deleted & banned %d post", "Deleted & banned %d posts", len(selected))
+		}
 		return
 	}
 
 	data.ModMode = true
 	data.ReplyMode = 1
 	data.Extra = action
-	if data.Post != nil {
-		data.Extra2 = data.Post.FileHash
+	for _, thread := range data.Threads {
+		for _, post := range thread {
+			if data.Extra3 != "" {
+				data.Extra3 += ","
+			}
+			data.Extra3 += strconv.Itoa(post.ID)
+		}
 	}
+	//if post != nil {
+	//		data.Extra2 = post.FileHash
+	//	}
 }

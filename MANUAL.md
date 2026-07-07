@@ -1098,6 +1098,14 @@ or thread page normally, scroll to the bottom of the page and click the delete
 button. If you are logged in to a staff account, you will be redirected to the
 page you were just viewing with mod mode enabled.
 
+#### Bulk moderation
+
+To moderate multiple posts, select the checkboxes of any relevant posts and then
+scroll to the bottom of the page. When browsing normally, click 'Delete' without
+entering a password. When browsing in mod mode, click on the 'Moderate' button.
+
+Any visitors already banned for a shorter duration will have their ban lengthened.
+
 ### Administrator guide
 
 As an administrator, in addition to moderator privileges you may:

@@ -170,6 +170,11 @@ msgstr ""
 msgid "Ban"
 msgstr ""
 
+msgid "Ban %d post"
+msgid_plural "Ban %d posts"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Ban ID"
 msgstr ""
 
@@ -178,6 +183,11 @@ msgstr ""
 
 msgid "Banned"
 msgstr ""
+
+msgid "Banned %d post"
+msgid_plural "Banned %d posts"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Banners"
 msgstr ""
@@ -300,6 +310,11 @@ msgstr ""
 msgid "Delete & ban"
 msgstr ""
 
+msgid "Delete & ban %d post"
+msgid_plural "Delete & ban %d posts"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Delete & ban for 1 hour"
 msgstr ""
 
@@ -323,6 +338,16 @@ msgstr ""
 
 msgid "Delete Post"
 msgstr ""
+
+msgid "Deleted %d post"
+msgid_plural "Deleted %d posts"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Deleted & banned %d post"
+msgid_plural "Deleted & banned %d posts"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Description"
 msgstr ""

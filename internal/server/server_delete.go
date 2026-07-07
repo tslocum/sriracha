@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"html/template"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -53,72 +52,23 @@ func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request
 		data.Redirect(w, r, url)
 		return
 	} else if data.Account != nil {
-		if len(posts) > 1 {
-			var actionDelete, actionBan bool
-			switch {
-			case FormString(r, "bulkd") != "":
-				actionDelete = true
-			case FormString(r, "bulkb") != "":
-				actionBan = true
-			case FormString(r, "bulkdb") != "":
-				actionDelete = true
-				actionBan = true
+		if len(posts) > 0 {
+			url := "/sriracha/mod/"
+			for i, post := range posts {
+				if i != 0 {
+					url += ","
+				}
+				url += strconv.Itoa(post.ID)
 			}
-			if !actionDelete && !actionBan {
-				data.Template = "manage_begin"
-				data.execute(w)
-				w.Write([]byte(`<h2 class="managetitle">` + GetN(nil, data.Account, "Moderate %d post", "Moderate %d posts", len(posts)) + `</h2>
-				<form method="post" action="/sriracha/">
-				<input type="hidden" name="action" value="delete">
-				<input type="hidden" name="board" value="` + template.HTMLEscapeString(posts[0].Board.Dir) + `">`))
-				for _, post := range posts {
-					w.Write([]byte(`<input type="hidden" name="delete[]" value="` + strconv.Itoa(post.ID) + `">`))
-				}
-				w.Write([]byte(`<input type="submit" name="bulkd" value="` + G(nil, data.Account, "Delete") + `" onclick="return confirm('` + GetN(nil, data.Account, "Delete %d post", "Delete %d posts", len(posts)) + `?')"> <input type="submit" name="bulkb" value="` + G(nil, data.Account, "Ban") + `"> <input type="submit" name="bulkdb" value="` + G(nil, data.Account, "Delete & ban") + `">
-				</form><br>
-				<hr><br>`))
-				for _, post := range posts {
-					if post.Board.Type == TypeImageboard {
-						data.Template = "imgboard_post"
-					} else {
-						data.Template = "forum_post"
-					}
-					data.ReplyMode = post.Thread()
-					data.Board = post.Board
-					data.Threads = [][]*Post{{post}}
-					data.execute(w)
-				}
-				data.Template = "manage_end"
-				data.execute(w)
-				return
-			} else if !actionBan {
-				for _, post := range posts {
-					s.deletePost(db, post)
-					if post.Parent == 0 {
-						os.Remove(filepath.Join(s.config.Root, post.Board.Dir, "res", fmt.Sprintf("%d.html", post.ID)))
-					} else {
-						s.writeThread(db, post.Board, post.Thread())
-					}
-				}
-				s.writeBoardIndexes(db, posts[0].Board)
-				s.writeSiteIndex(db)
-
-				data.Template = "board_info"
-				data.Info = fmt.Sprintf("Deleted %d posts", len(posts))
-				data.execute(w)
-				return
-			}
-			// Ban
+			data.Redirect(w, r, url)
 			return
 		}
 
-		if len(posts) == 0 {
-			threadID := FormInt(r, "thread")
-			if threadID > 0 {
-				post := db.PostByID(threadID)
-				if post != nil {
-					posts = append(posts, post)
-				}
+		threadID := FormInt(r, "thread")
+		if threadID > 0 {
+			post := db.PostByID(threadID)
+			if post != nil {
+				posts = append(posts, post)
 			}
 		}
 		url := fmt.Sprintf("/sriracha/board/mod/%d", b.ID)

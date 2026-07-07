@@ -70,10 +70,6 @@ func (s *Server) validateTemplates(ts *Server) error {
 				data.Board = board
 			}
 			data.Boards = allBoards
-			if c.post {
-				thread := db.AllThreads(board, true)[0]
-				data.Post = db.AllPostsInThread(thread[0], true)[0]
-			}
 			if c.thread || c.threads {
 				for _, thread := range db.AllThreads(board, true) {
 					data.Threads = append(data.Threads, db.AllPostsInThread(thread[0], true))
@@ -135,7 +131,6 @@ func (s *Server) validateTemplates(ts *Server) error {
 type testCase struct {
 	template       string
 	board          bool
-	post           bool
 	thread         bool
 	threads        bool
 	manageBanner   bool
@@ -236,7 +231,7 @@ var testCases = []testCase{
 	{
 		template: "manage_mod",
 		board:    true,
-		post:     true,
+		threads:  true,
 	},
 	{
 		template: "manage_news",

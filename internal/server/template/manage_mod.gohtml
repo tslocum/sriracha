@@ -1,17 +1,44 @@
 {{template "manage_begin.gohtml" .}}
-<h2 class="managetitle">{{if eq .Extra "d"}}{{T "Delete"}}{{else if eq .Extra "db"}}{{T "Delete & Ban"}}{{else}}{{T "Ban"}}{{end}} <a href="{{.Board.Path}}res/{{.Post.Thread}}.html#{{.Post.ID}}">&gt;&gt;{{.Post.ID}}</a></h2>
-{{if or (eq .Extra "b") (eq .Extra "db") }}
-    {{template "manage_ban_form.gohtml" .}}
-{{else}}
-    <form method="post" action="/sriracha/mod/delete/{{.Post.ID}}">
+{{$count := len (index .Threads 0)}}
+{{$single := eq $count 1}}
+{{$first := (index (index .Threads 0) 0)}}
+<h2 class="managetitle">
+    {{if eq .Extra "d"}}
+        {{if $single}}{{T "Delete"}} {{$first.RefLink}}{{else}}{{TN "Delete %d post" "Delete %d posts" $count $count}}{{end}}
+    {{else if eq .Extra "b"}}
+        {{if $single}}{{T "Ban"}} {{$first.RefLink}}{{else}}{{TN "Ban %d post" "Ban %d posts" $count $count}}{{end}}
+    {{else if eq .Extra "db"}}
+        {{if $single}}{{T "Delete & ban"}} {{$first.RefLink}}{{else}}{{TN "Delete & ban %d post" "Delete & ban %d posts" $count $count}}{{end}}
+    {{else}}
+        {{if $single}}{{T "Moderate"}} {{$first.RefLink}}{{else}}{{TN "Moderate %d post" "Moderate %d posts" $count $count}}{{end}}
+    {{end}}
+</h2>
+{{if eq .Extra ""}}
+    <form method="post" action="/sriracha/mod/delete/{{.Extra3}}">
         <input type="hidden" name="confirmation" value="1">
-        <input type="submit" value="Delete {{if eq .Post.Parent 0}}Thread{{else}}Reply{{end}}"></input>
+        <input type="submit" value="{{T "Delete"}}" onclick="javascript:return confirm('{{TN "Delete %d post" "Delete %d posts" $count $count}}?');"></input>
+    </form>
+    <form method="post" action="/sriracha/mod/ban/{{.Extra3}}">
+        <input type="hidden" name="confirmation" value="1">
+        <input type="submit" value="{{T "Ban"}}"></input>
+    </form>
+    <form method="post" action="/sriracha/mod/{{.Extra3}}">
+        <input type="hidden" name="confirmation" value="1">
+        <input type="submit" value="{{T "Delete & ban"}}"></input>
     </form><br>
+{{else}}
+    {{if or (eq .Extra "b") (eq .Extra "db") }}
+    {{template "manage_ban_form.gohtml" .}}
+    {{else}}
+        <form method="post" action="/sriracha/mod/delete/{{.Extra3}}">
+            <input type="hidden" name="confirmation" value="1">
+            <input type="submit" value="{{TN "Delete %d post" "Delete %d posts" $count $count}}"></input>
+        </form><br>
+    {{end}}
 {{end}}
-<br>
 <hr>
 <br>
-{{if eq .Post.Board.Type 0}}
+{{if and (gt (len .Threads) 0) (eq (index (index .Threads 0) 0).Board.Type 0)}}
     {{template "imgboard_post.gohtml" $}}
 {{else}}
     {{template "forum_post.gohtml" $}}
