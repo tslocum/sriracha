@@ -14,6 +14,9 @@
     {{end}}
 </h2>
 {{if eq .Extra ""}}
+    {{if ne .Message ""}}
+        {{.Message}}<br><br>
+    {{end}}
     <form method="post" action="/sriracha/mod/delete/{{.Extra3}}">
         <input type="hidden" name="confirmation" value="1">
         <input type="submit" value="{{T "Delete"}}" onclick="javascript:return confirm('{{TN "Delete %d post" "Delete %d posts" $count $count}}?');"></input>
@@ -26,9 +29,6 @@
         <input type="hidden" name="confirmation" value="1">
         <input type="submit" value="{{T "Delete & ban"}}"></input>
     </form><br>
-    {{if ne .Message ""}}
-        {{.Message}}<br>
-    {{end}}
 {{else}}
     {{if or (eq .Extra "b") (eq .Extra "db") }}
     {{template "manage_ban_form.gohtml" .}}

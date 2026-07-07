@@ -62,6 +62,9 @@ func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request
 			}
 			data.Redirect(w, r, url)
 			return
+		} else if FormString(r, "moderate") != "" {
+			data.BoardError(w, Get(b, data.Account, "No post selected."))
+			return
 		}
 
 		threadID := FormInt(r, "thread")

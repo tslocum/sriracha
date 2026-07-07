@@ -419,7 +419,9 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		}
 		data.Message += `</td></tr>`
 	}
-	data.Message = `<fieldset><legend>` + template.HTML(GetN(nil, data.Account, "%d existing ban", "%d existing bans", len(existing))) + `</legend><table>` + data.Message + `</table></fieldset>`
+	if len(existing) > 0 {
+		data.Message = `<fieldset><legend>` + template.HTML(GetN(nil, data.Account, "%d existing ban", "%d existing bans", len(existing))) + `</legend><table>` + data.Message + `</table></fieldset>`
+	}
 	//if post != nil {
 	//		data.Extra2 = post.FileHash
 	//	}
