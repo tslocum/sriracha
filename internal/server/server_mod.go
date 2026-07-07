@@ -446,7 +446,11 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			}
 		}
 		if len(ids) > 0 {
-			data.Message += ` <form method="post" action="/sriracha/mod/`
+			method := template.HTML("get")
+			if action == "db" {
+				method = "post"
+			}
+			data.Message += ` <form method="` + method + `" action="/sriracha/mod/`
 			switch action {
 			case "d":
 				data.Message += "delete/"
