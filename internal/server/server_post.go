@@ -1191,6 +1191,12 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		data.Threads = [][]*Post{posts}
 		data.Preview = true
 		data.ReplyMode = previewThread
+		for _, post := range posts {
+			if post.Thumb != "" {
+				data.Extra = "thumb"
+				break
+			}
+		}
 		data.execute(w)
 
 		cancel()

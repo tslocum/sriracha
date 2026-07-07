@@ -1100,11 +1100,11 @@ page you were just viewing with mod mode enabled.
 
 #### Bulk moderation
 
-To moderate multiple posts, select the checkboxes of any relevant posts and then
-scroll to the bottom of the page. When browsing normally, click 'Delete' without
-entering a password. When browsing in mod mode, click on the 'Moderate' button.
+To moderate multiple posts, select the checkboxes of any relevant posts and scroll
+to the bottom of the page. When browsing normally, click the 'Delete' button without
+entering a password. When browsing in mod mode, click the 'Moderate' button.
 
-Any visitors already banned for a shorter duration will have their ban lengthened.
+Any existing bans for a shorter duration will be replaced.
 
 ### Administrator guide
 

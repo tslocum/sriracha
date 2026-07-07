@@ -16,7 +16,8 @@
 	{{if ne .Message ""}}
 		{{.Message}}
 	{{else if $.Preview}}
-		{{T "Only thumbnails are displayed."}} {{T "Go back, uncheck '%s' and resubmit to post." (T "Preview")}}
+		{{if eq .Extra "thumb"}}{{T "Only thumbnails are displayed."}}{{end}}
+		{{T "Go back, uncheck '%s' and resubmit to post." (T "Preview")}}
 	{{else}}
 		<details id="postdetails">
 			<summary>{{if eq .ReplyMode 0}}{{T "Post thread"}}{{else}}{{T "Post reply"}}{{end}}</summary>
