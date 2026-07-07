@@ -142,7 +142,7 @@
             Format: <pre style="display: inline-block;border: 1px solid;padding: 2px;">Name https://service.com/path/to/oembed?url=SRIRACHA_EMBED</pre></td>
         </tr>
         <tr>
-            <th><br>{{T "Boards"}}</div><div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td colspan="2"><br>{{T "Local settings are configured individually. Global settings are universal."}}</td>
+            <th><br>{{T "Boards"}}: {{T "Appearance"}}</div><div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td colspan="2"><br>{{T "Local settings are configured individually. Global settings are universal."}}</td>
         </tr>
         <tr>
             <td class="postblock"><label for="board.type">{{T "Type"}}</label></td>
@@ -233,6 +233,9 @@
                 <option value="1"{{if Global "board.rules"}} selected{{end}}>✓ {{T "Global"}}</option>
             </select></td>
             <td>{{T "HTML-formatted text shown in the new post form."}}</td>
+        </tr>
+        <tr>
+            <th>{{T "Boards"}}: {{T "Posts"}}</div><div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td colspan="2">&nbsp;</td>
         </tr>
         <tr>
             <td class="postblock"><label for="board.lock">{{T "Restrict New Posts"}}</label></td>
@@ -353,6 +356,9 @@
                 <option value="1"{{if Global "board.delay"}} selected{{end}}>✓ {{T "Global"}}</option>
             </select></td>
             <td>{{T "Delay (in seconds) visitors must wait before posting again. Set to 0 to disable."}}</td>
+        </tr>
+        <tr>
+            <th>{{T "Boards"}}: {{T "Attachments"}}</div><div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td colspan="2">&nbsp;</td>
         </tr>
         <tr>
             <td class="postblock"><label for="board.files">{{T "Files"}}</label></td>
