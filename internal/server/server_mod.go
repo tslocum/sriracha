@@ -73,6 +73,14 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		data.ManageError("Unknown post")
 		return
 	}
+	slices.SortFunc(selected, func(a *Post, b *Post) int {
+		if a.ID < b.ID {
+			return -1
+		} else if a.ID > b.ID {
+			return 1
+		}
+		return 0
+	})
 	if action == "v" {
 		if !s.opt.Identifiers {
 			data.ManageError("Identifiers are not enabled")
@@ -302,6 +310,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			return
 		}
 		var rebuild []int
+		slices.Reverse(selected)
 		for _, post := range selected {
 			if banFile && post.FileHash != "" && !db.FileBanned(post.FileHash) {
 				db.AddFileBan(post.FileHash)
