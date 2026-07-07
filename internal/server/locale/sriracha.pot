@@ -5,6 +5,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "%d existing ban"
+msgid_plural "%d existing bans"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d new post"
 msgid_plural "%d new posts"
 msgstr[0] ""
@@ -350,6 +355,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Description"
+msgstr ""
+
+msgid "Deselect"
 msgstr ""
 
 msgid "Details"

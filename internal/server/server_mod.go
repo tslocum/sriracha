@@ -365,14 +365,61 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 	data.ModMode = true
 	data.ReplyMode = 1
 	data.Extra = action
+	existing := make(map[int][]*Post)
 	for _, thread := range data.Threads {
 		for _, post := range thread {
 			if data.Extra3 != "" {
 				data.Extra3 += ","
 			}
 			data.Extra3 += strconv.Itoa(post.ID)
+
+			ban := db.BanByIP(post.IP)
+			if ban == nil {
+				continue
+			}
+			existing[ban.ID] = append(existing[ban.ID], post)
 		}
 	}
+	for banID, posts := range existing {
+		ban := db.BanByID(banID)
+		if ban == nil {
+			continue
+		}
+		data.Message += `<tr><td align="right">`
+		for i, post := range posts {
+			if i != 0 {
+				data.Message += ", "
+			}
+			data.Message += post.RefLink()
+		}
+		data.Message += `</td>
+		<td>` + template.HTML(ban.Info()) + `</td><td>[<a href="/sriracha/ban/` + template.HTML(strconv.Itoa(banID)) + `">` + template.HTML(G(nil, data.Account, "Update")) + `</a>]`
+		var ids []int
+		for _, post := range selected {
+			var found bool
+			for _, p := range posts {
+				if p.ID == post.ID {
+					found = true
+					break
+				}
+			}
+			if !found {
+				ids = append(ids, post.ID)
+			}
+		}
+		if len(ids) > 0 {
+			data.Message += ` [<a href="/sriracha/mod/`
+			for i, id := range ids {
+				if i != 0 {
+					data.Message += ","
+				}
+				data.Message += template.HTML(strconv.Itoa(id))
+			}
+			data.Message += `">` + template.HTML(G(nil, data.Account, "Deselect")) + `</a>]`
+		}
+		data.Message += `</td></tr>`
+	}
+	data.Message = `<fieldset><legend>` + template.HTML(GetN(nil, data.Account, "%d existing ban", "%d existing bans", len(existing))) + `</legend><table>` + data.Message + `</table></fieldset>`
 	//if post != nil {
 	//		data.Extra2 = post.FileHash
 	//	}
