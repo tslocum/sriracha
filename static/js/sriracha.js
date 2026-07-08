@@ -1,7 +1,4 @@
-var mouseX = 0;
-var mouseY = 0;
 var haveFocus = false;
-var highlightedPost = null;
 var blinkTitle = false;
 var originalTitle = "";
 var viewThreadID = 0;
@@ -584,11 +581,6 @@ function onBlur(e) {
     haveFocus = false;
 }
 
-function onMouseMove(e) {
-    mouseX = e.pageX;
-    mouseY = e.pageY;
-}
-
 function onDragOver(e) {
     const files = [...e.dataTransfer.items].filter(
         (item) => item.kind === "file",
@@ -725,8 +717,6 @@ window.addEventListener("drop", onDrop);
 
 window.addEventListener("focus", onFocus);
 window.addEventListener("blur", onBlur);
-
-window.addEventListener("mousemove", onMouseMove);
 
 document.addEventListener("paste", onPaste);
 
