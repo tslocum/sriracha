@@ -295,7 +295,7 @@ func (b *Board) HasEmbed(name string) bool {
 	return false
 }
 
-func (b *Board) UploadTypesLabel(uploadTypes []*UploadType) string {
+func (b *Board) UploadTypesLabel(uploadTypes []*UploadType, account *Account) string {
 	if len(b.Uploads) == 0 {
 		return ""
 	}
@@ -311,7 +311,7 @@ func (b *Board) UploadTypesLabel(uploadTypes []*UploadType) string {
 	for i, t := range types {
 		if i > 0 {
 			if i == len(types)-1 {
-				buf.WriteString(" " + G(b, nil, "and") + " ")
+				buf.WriteString(" " + G(b, account, "and") + " ")
 			} else {
 				buf.WriteString(", ")
 			}

@@ -125,7 +125,7 @@
                                 {{if gt .Board.Unique 2}}{{TN "Currently %d unique user post." "Currently %d unique user posts." .Board.Unique .Board.Unique}}{{end}}
                             </li>
                             {{if and (or (and (eq .ReplyMode 0) (ne .Board.MaxSizeThread 0)) (and (ne .ReplyMode 0) (ne .Board.MaxSizeReply 0))) (ne (len .Board.Uploads) 0)}}
-                                <li>{{T "Supported file types are %s." (.Board.UploadTypesLabel $.Opt.Uploads)}}</li>
+                                <li>{{T "Supported file types are %s." (.Board.UploadTypesLabel $.Opt.Uploads $.Account)}}</li>
                                 <li>{{T "Maximum file size allowed is %s." (.Board.MaxSizeLabel (eq .ReplyMode 0))}}</li>
                             {{end}}
                             {{if or (ne (len .Board.Uploads) 0) (ne (len .Board.Embeds) 0)}}
