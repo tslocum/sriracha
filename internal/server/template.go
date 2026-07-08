@@ -126,6 +126,22 @@ func (data *templateData) Redirect(w http.ResponseWriter, r *http.Request, desti
 	http.Redirect(w, r, destination, http.StatusFound)
 }
 
+func (data *templateData) G(str string) string {
+	return G(data.Board, data.Account, str)
+}
+
+func (data *templateData) Get(board *Board, account *Account, str string, vars ...interface{}) string {
+	return Get(data.Board, data.Account, str, vars...)
+}
+
+func (data *templateData) GetHTML(board *Board, account *Account, str string, vars ...interface{}) template.HTML {
+	return GetHTML(data.Board, data.Account, str, vars...)
+}
+
+func (data *templateData) GetN(board *Board, account *Account, singular string, plural string, v int) string {
+	return GetN(data.Board, data.Account, singular, plural, v)
+}
+
 func (data *templateData) executeWithError(w io.Writer) error {
 	if data.Template == "" {
 		return nil
@@ -305,22 +321,20 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	f := make(template.FuncMap)
 	maps.Copy(f, templateFuncMap)
 
+	domain := Locale(locale)
+
 	// Global settings.
 	f["Global"] = func(setting string) bool {
 		return slices.Contains(s.opt.Global, setting)
 	}
 	f["Globe"] = func(setting string) template.HTML {
 		if slices.Contains(s.opt.Global, setting) {
-			return template.HTML(`<div class="globe"> <span title="` + Get(nil, nil, "Global") + `">🌐</span></div>`)
+			return template.HTML(`<div class="globe"> <span title="` + gotext.GetD(domain, "Global") + `">🌐</span></div>`)
 		}
 		return ""
 	}
 
 	// Localization.
-	domain := "sriracha"
-	if locale != "" {
-		domain += "-" + locale
-	}
 	f["T"] = func(message string, vars ...interface{}) string {
 		return gotext.GetD(domain, message, vars...)
 	}
