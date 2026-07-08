@@ -321,7 +321,7 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	f := make(template.FuncMap)
 	maps.Copy(f, templateFuncMap)
 
-	domain := Locale(locale)
+	domain := Domain(locale)
 
 	// Global settings.
 	f["Global"] = func(setting string) bool {

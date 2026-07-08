@@ -491,7 +491,7 @@ func (s *Server) parseLocales() error {
 
 		po := gotext.NewPo()
 		po.Parse(buf)
-		gotext.GetStorage().AddTranslator(Locale(id), po)
+		gotext.GetStorage().AddTranslator(Domain(id), po)
 		return nil
 	})
 }
@@ -2527,7 +2527,7 @@ func (s *Server) Run() error {
 	s.opt.RootDir = s.config.Root
 
 	// Parse locale files.
-	gotext.SetDomain(Locale(s.opt.Locale))
+	gotext.SetDomain(Domain(s.opt.Locale))
 	err = s.parseLocales()
 	if err != nil {
 		log.Fatalf("failed to parse locale files: %s", err)

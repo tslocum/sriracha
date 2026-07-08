@@ -14,35 +14,36 @@ var (
 	crcSum  []byte
 )
 
-func Locale(identifier string) string {
-	if identifier == "" {
+// Domain returns the gettext domain name corresponding to the specified locale.
+func Domain(locale string) string {
+	if locale == "" {
 		return "sriracha-en"
 	}
-	return "sriracha-" + identifier
+	return "sriracha-" + locale
 }
 
 func G(board *Board, account *Account, str string) string {
-	var locale string
+	var domain string
 	if account != nil && account.Locale != "" {
-		locale = Locale(account.Locale)
+		domain = Domain(account.Locale)
 	} else if board != nil && board.Locale != "" {
-		locale = Locale(board.Locale)
+		domain = Domain(board.Locale)
 	} else {
 		return gotext.G(str)
 	}
-	return gotext.GD(locale, str)
+	return gotext.GD(domain, str)
 }
 
 func Get(board *Board, account *Account, str string, vars ...interface{}) string {
-	var locale string
+	var domain string
 	if account != nil && account.Locale != "" {
-		locale = Locale(account.Locale)
+		domain = Domain(account.Locale)
 	} else if board != nil && board.Locale != "" {
-		locale = Locale(board.Locale)
+		domain = Domain(board.Locale)
 	} else {
 		return gotext.Get(str, vars...)
 	}
-	return gotext.GetD(locale, str, vars...)
+	return gotext.GetD(domain, str, vars...)
 }
 
 func GetHTML(board *Board, account *Account, str string, vars ...interface{}) template.HTML {
@@ -50,13 +51,13 @@ func GetHTML(board *Board, account *Account, str string, vars ...interface{}) te
 }
 
 func GetN(board *Board, account *Account, singular string, plural string, v int) string {
-	var locale string
+	var domain string
 	if account != nil && account.Locale != "" {
-		locale = Locale(account.Locale)
+		domain = Domain(account.Locale)
 	} else if board != nil && board.Locale != "" {
-		locale = Locale(board.Locale)
+		domain = Domain(board.Locale)
 	} else {
 		return gotext.GetN(singular, plural, v, v)
 	}
-	return gotext.GetND(locale, singular, plural, v, v)
+	return gotext.GetND(domain, singular, plural, v, v)
 }
