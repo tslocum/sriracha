@@ -84,7 +84,12 @@
 					</td>
 				{{end}}
 				{{if and (ne .ReplyMode 0) (ne $.Opt.Refresh 0)}}
-					<td id="postdeleted" style="display: none;border: 0px none;color: red;font-weight: bold;">{{T "Thread deleted."}}</td>
+					<td id="threadstatus" style="display: none;border: 0px none;">
+						<span id="threadstatusnormal" style="cursor: pointer;" title="{{TN "Refreshing thread every %d second. Click to pause." "Refreshing thread every %d seconds. Click to pause." $.Opt.Refresh}}">🟢</span>
+						<span id="threadstatusdelayed" style="cursor: pointer;" title="{{T "Failed to refresh thread. Retrying..."}}">🟠</span>
+						<span id="threadstatuspaused" style="cursor: pointer;" title="{{T "Refreshing paused. Click to resume."}}">🔴</span>
+						<span id="threadstatusdeleted" style="color: red;font-weight: bold;" title="{{T "Thread deleted."}}">🔴 {{T "Thread deleted."}}</span>
+					</td>
 				{{end}}
 			</tr>
 		</tbody>

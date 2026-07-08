@@ -474,6 +474,9 @@ msgstr ""
 msgid "Failed to embed media."
 msgstr ""
 
+msgid "Failed to refresh thread. Retrying..."
+msgstr ""
+
 msgid "File"
 msgstr ""
 
@@ -1045,6 +1048,14 @@ msgstr ""
 
 msgid "Rebuilt all pages."
 msgstr ""
+
+msgid "Refreshing paused. Click to resume."
+msgstr ""
+
+msgid "Refreshing thread every %d second. Click to pause."
+msgid_plural "Refreshing thread every %d seconds. Click to pause."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Regular expression to search for when a new post is created."
 msgstr ""

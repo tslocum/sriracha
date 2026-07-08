@@ -6,6 +6,11 @@ var newRepliesCount = 0;
 var newReplyID = 0;
 var postCache = {};
 
+var threadStatusNormal = 0;
+var threadStatusDelayed = 1;
+var threadStatusPaused = 2;
+var threadStatusDeleted = 3;
+
 // verbose is a flag which enables verbose logging.
 const verbose = false;
 
@@ -54,6 +59,58 @@ function unsubscribeAll() {
     return false;
 }
 
+function setStatusIndicator(status) {
+    var showNormal = false;
+    var showDelayed = false;
+    var showPaused = false;
+    var showDeleted = false;
+    if (status == threadStatusNormal) {
+        showNormal = true;
+    } else if (status == threadStatusDelayed) {
+        showDelayed = true;
+    } else if (status == threadStatusPaused) {
+        showPaused = true;
+    } else {
+        showDeleted = true;
+    }
+    var threadStatus = document.getElementById("threadstatus");
+    if (threadStatus) {
+        threadStatus.style.display = "table-cell";
+    }
+    var statusNormal = document.getElementById("threadstatusnormal");
+    if (statusNormal) {
+        if (showNormal) {
+            statusNormal.style.display = "inline";
+        } else {
+            statusNormal.style.display = "none";
+        }
+    }
+    var statusDelayed = document.getElementById("threadstatusdelayed");
+    if (statusDelayed) {
+        if (showDelayed) {
+            statusDelayed.style.display = "inline";
+        } else {
+            statusDelayed.style.display = "none";
+        }
+    }
+    var statusPaused = document.getElementById("threadstatuspaused");
+    if (statusPaused) {
+        if (showPaused) {
+            statusPaused.style.display = "inline";
+        } else {
+            statusPaused.style.display = "none";
+        }
+    }
+    var statusDeleted = document.getElementById("threadstatusdeleted");
+    if (statusDeleted) {
+        if (showDeleted) {
+            statusDeleted.style.display = "inline";
+        } else {
+            statusDeleted.style.display = "none";
+        }
+    }
+}
+
 function fetchPosts(url, append) {
     if (verbose) {
         console.log('fetching ' + url + '...');
@@ -73,6 +130,8 @@ function fetchPosts(url, append) {
         }
         if (body == "") {
             return;
+        } else if (append) {
+            setStatusIndicator(threadStatusNormal);
         }
 
         var container;
@@ -179,13 +238,13 @@ function fetchPosts(url, append) {
         }
     }).catch(function(err) {
         console.log('Failed to fetch thread (' + url + '):', err);
+        if (append) {
+            setStatusIndicator(threadStatusDelayed);
+        }
     }).finally(function() {
         if (deleted) {
             if (append) {
-                var postdeleted = document.getElementById("postdeleted");
-                if (postdeleted) {
-                    postdeleted.style.display = "table-cell";
-                }
+                setStatusIndicator(threadStatusDeleted);
             }
             return;
         }
@@ -706,6 +765,7 @@ function onDOMContentLoaded(e) {
     if (typeof autoRefreshDelay === 'undefined' || viewThreadID == 0) {
         return;
     }
+    setStatusIndicator(threadStatusNormal);
     setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
 }
 

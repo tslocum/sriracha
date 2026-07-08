@@ -338,8 +338,8 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	f["T"] = func(message string, vars ...interface{}) string {
 		return gotext.GetD(domain, message, vars...)
 	}
-	f["TN"] = func(singular string, plural string, n int, vars ...interface{}) string {
-		return gotext.GetND(domain, singular, plural, n, vars...)
+	f["TN"] = func(singular string, plural string, n int) string {
+		return gotext.GetND(domain, singular, plural, n, n)
 	}
 
 	// Ban.

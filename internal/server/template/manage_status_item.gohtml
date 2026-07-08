@@ -14,7 +14,7 @@
         <input type="submit" value="{{T "Delete & ban"}}"> &nbsp;
     </form>
     {{if ne .Manage.Report nil}}
-        {{TN "%d report" "%d reports" .Manage.Report.Count .Manage.Report.Count}}
+        {{TN "%d report" "%d reports" .Manage.Report.Count}}
     {{end}}
 </div>
 {{template "imgboard_post.gohtml" $}}

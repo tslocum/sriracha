@@ -4,13 +4,13 @@
 {{$first := (index (index .Threads 0) 0)}}
 <h2 class="managetitle">
     {{if eq .Extra "d"}}
-        {{if $single}}{{T "Delete"}} {{$first.RefLink}}{{else}}{{TN "Delete %d post" "Delete %d posts" $count $count}}{{end}}
+        {{if $single}}{{T "Delete"}} {{$first.RefLink}}{{else}}{{TN "Delete %d post" "Delete %d posts" $count}}{{end}}
     {{else if eq .Extra "b"}}
-        {{if $single}}{{T "Ban"}} {{$first.RefLink}}{{else}}{{TN "Ban %d post" "Ban %d posts" $count $count}}{{end}}
+        {{if $single}}{{T "Ban"}} {{$first.RefLink}}{{else}}{{TN "Ban %d post" "Ban %d posts" $count}}{{end}}
     {{else if eq .Extra "db"}}
-        {{if $single}}{{T "Delete & ban"}} {{$first.RefLink}}{{else}}{{TN "Delete & ban %d post" "Delete & ban %d posts" $count $count}}{{end}}
+        {{if $single}}{{T "Delete & ban"}} {{$first.RefLink}}{{else}}{{TN "Delete & ban %d post" "Delete & ban %d posts" $count}}{{end}}
     {{else}}
-        {{if $single}}{{T "Moderate"}} {{$first.RefLink}}{{else}}{{TN "Moderate %d post" "Moderate %d posts" $count $count}}{{end}}
+        {{if $single}}{{T "Moderate"}} {{$first.RefLink}}{{else}}{{TN "Moderate %d post" "Moderate %d posts" $count}}{{end}}
     {{end}}
 </h2>
 {{if ne .Message ""}}
@@ -19,7 +19,7 @@
 {{if eq .Extra ""}}
     <form method="post" action="/sriracha/mod/delete/{{.Extra3}}">
         <input type="hidden" name="confirmation" value="1">
-        <input type="submit" value="{{T "Delete"}}" onclick="javascript:return confirm('{{TN "Delete %d post" "Delete %d posts" $count $count}}?');"></input>
+        <input type="submit" value="{{T "Delete"}}" onclick="javascript:return confirm('{{TN "Delete %d post" "Delete %d posts" $count}}?');"></input>
     </form>
     <form method="post" action="/sriracha/mod/ban/{{.Extra3}}">
         <input type="submit" value="{{T "Ban"}}"></input>
