@@ -36,9 +36,6 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		return out
 	}
 	var action string
-	if r.Method == http.MethodPost {
-		action = "db"
-	}
 	modInfo := PathString(r, "/sriracha/mod/")
 	if modInfo != "" {
 		split := strings.Split(modInfo, "/")
@@ -48,6 +45,8 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				action = "d"
 			case "ban":
 				action = "b"
+			case "deleteban":
+				action = "db"
 			case "sticky":
 				action = "s"
 			case "unsticky":
@@ -309,7 +308,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		if banFile && s.forbidden(w, data, "banfile.add") {
 			return
 		}
-		var rebuild []int
+		var rebuild [][2]int
 		slices.Reverse(selected)
 		for _, post := range selected {
 			if banFile && post.FileHash != "" && !db.FileBanned(post.FileHash) {
@@ -356,22 +355,21 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 
 				s.log(db, data.Account, data.Board, fmt.Sprintf("Deleted >>%d", post.ID), "")
 
-				threadID := post.Thread()
-				if !slices.Contains(rebuild, threadID) {
-					rebuild = append(rebuild, threadID)
+				info := [2]int{post.Board.ID, post.Thread()}
+				if !slices.Contains(rebuild, info) {
+					rebuild = append(rebuild, info)
 				}
 			}
 		}
 
 		var boards []int
-		for _, postID := range rebuild {
-			post := db.PostByID(postID)
-			if post == nil {
-				continue
+		for _, info := range rebuild {
+			post := db.PostByID(info[1])
+			if post != nil {
+				s.writeThread(db, post.Board, post.ID)
 			}
-			s.writeThread(db, post.Board, postID)
-			if !slices.Contains(boards, post.Board.ID) {
-				boards = append(boards, post.Board.ID)
+			if !slices.Contains(boards, info[0]) {
+				boards = append(boards, info[0])
 			}
 		}
 		for _, boardID := range boards {
@@ -456,6 +454,8 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				data.Message += "delete/"
 			case "b":
 				data.Message += "ban/"
+			case "db":
+				data.Message += "deleteban/"
 			}
 			for i, id := range ids {
 				if i != 0 {

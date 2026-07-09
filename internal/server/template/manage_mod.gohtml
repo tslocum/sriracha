@@ -24,9 +24,14 @@
     <form method="post" action="/sriracha/mod/ban/{{.Extra3}}">
         <input type="submit" value="{{T "Ban"}}"></input>
     </form>
-    <form method="post" action="/sriracha/mod/{{.Extra3}}">
+    <form method="post" action="/sriracha/mod/deleteban/{{.Extra3}}">
         <input type="submit" value="{{T "Delete & ban"}}"></input>
     </form><br>
+{{else if or (eq .Extra "d") }}
+    <form method="post" action="/sriracha/mod/delete/{{.Extra3}}">
+        <input type="hidden" name="confirmation" value="1">
+        <input type="submit" value="{{T "Delete"}}" onclick="javascript:return confirm('{{TN "Delete %d post" "Delete %d posts" $count}}?');"></input>
+    </form>
 {{else if or (eq .Extra "b") (eq .Extra "db") }}
     {{template "manage_ban_form.gohtml" .}}
 {{end}}

@@ -10,7 +10,7 @@
     <form method="get" action="/sriracha/mod/ban/{{.Post.ID}}" style="display: inline-block;">
         <input type="submit" value="{{T "Ban"}}">
     </form>
-    <form method="get" action="/sriracha/mod/{{.Post.ID}}" style="display: inline-block;">
+    <form method="get" action="/sriracha/mod/deleteban/{{.Post.ID}}" style="display: inline-block;">
         <input type="submit" value="{{T "Delete & ban"}}"> &nbsp;
     </form>
     {{if ne .Manage.Report nil}}
