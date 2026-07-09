@@ -85,7 +85,7 @@ function setStatusIndicator(status) {
     var statusNormal = document.getElementById("threadstatusnormal");
     if (statusNormal) {
         if (showNormal) {
-            statusNormal.style.display = "inline";
+            statusNormal.style.display = "inline-block";
         } else {
             statusNormal.style.display = "none";
         }
@@ -93,7 +93,7 @@ function setStatusIndicator(status) {
     var statusDelayed = document.getElementById("threadstatusdelayed");
     if (statusDelayed) {
         if (showDelayed) {
-            statusDelayed.style.display = "inline";
+            statusDelayed.style.display = "inline-block";
         } else {
             statusDelayed.style.display = "none";
         }
@@ -101,7 +101,7 @@ function setStatusIndicator(status) {
     var statusPaused = document.getElementById("threadstatuspaused");
     if (statusPaused) {
         if (showPaused) {
-            statusPaused.style.display = "inline";
+            statusPaused.style.display = "inline-block";
         } else {
             statusPaused.style.display = "none";
         }
@@ -109,7 +109,7 @@ function setStatusIndicator(status) {
     var statusDeleted = document.getElementById("threadstatusdeleted");
     if (statusDeleted) {
         if (showDeleted) {
-            statusDeleted.style.display = "inline";
+            statusDeleted.style.display = "inline-block";
             var notificationsOff = document.getElementById("notificationsoff");
             if (notificationsOff) {
                 notificationsOff.remove();
@@ -159,7 +159,7 @@ function toggleNotifications() {
     var notificationsOff = document.getElementById("notificationsoff");
     if (notificationsOff) {
         if (showDisable) {
-            notificationsOff.style.display = "inline";
+            notificationsOff.style.display = "inline-block";
         } else {
             notificationsOff.style.display = "none";
         }
@@ -167,7 +167,7 @@ function toggleNotifications() {
     var notificationsOn = document.getElementById("notificationson");
     if (notificationsOn) {
         if (showEnable) {
-            notificationsOn.style.display = "inline";
+            notificationsOn.style.display = "inline-block";
         } else {
             notificationsOn.style.display = "none";
         }
@@ -869,12 +869,12 @@ function onDOMContentLoaded(e) {
                 enableNotifications = true;
                 var notificationsOn = document.getElementById("notificationson");
                 if (notificationsOn) {
-                    notificationsOn.style.display = "inline";
+                    notificationsOn.style.display = "inline-block";
                 }
             } else {
                 var notificationsOff = document.getElementById("notificationsoff");
                 if (notificationsOff) {
-                    notificationsOff.style.display = "inline";
+                    notificationsOff.style.display = "inline-block";
                 }
             }
         }

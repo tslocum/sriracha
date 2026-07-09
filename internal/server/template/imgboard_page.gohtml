@@ -89,8 +89,8 @@
 						<span id="threadstatusdelayed" onclick="return toggleAutoRefresh();" style="cursor: pointer;" title="{{T "Failed to refresh thread. Retrying..."}}">🟠</span>
 						<span id="threadstatuspaused" onclick="return toggleAutoRefresh();" style="cursor: pointer;" title="{{T "Refresh paused. Click to resume."}}">🔴</span>
 						<span id="threadstatusdeleted" style="color: red;font-weight: bold;">{{T "Thread deleted."}}</span>
-						<span id="notificationsoff" onclick="return toggleNotifications();" style="display: none;cursor: pointer;" title="{{T "Notifications are disabled. Click to enable."}}">🗞️</span>
-						<span id="notificationson" onclick="return toggleNotifications();" style="display: none;cursor: pointer;" title="{{T "Notifications are enabled. Click to disable."}}">📰</span>
+						<span id="notificationsoff" onclick="return toggleNotifications();" style="display: none;cursor: pointer;transform: scale(-1, 1);" title="{{T "Notifications are disabled. Click to enable."}}">🗨️</span>
+						<span id="notificationson" onclick="return toggleNotifications();" style="display: none;cursor: pointer;" title="{{T "Notifications are enabled. Click to disable."}}">💬</span>
 					</td>
 				{{end}}
 			</tr>
