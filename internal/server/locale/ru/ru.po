@@ -12,6 +12,12 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 5.15.2\n"
 
+msgid "%d existing ban"
+msgid_plural "%d existing bans"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
 msgid "%d new post"
 msgid_plural "%d new posts"
 msgstr[0] ""
@@ -180,11 +186,26 @@ msgstr ""
 msgid "Ban"
 msgstr "Блокировка"
 
+msgid "Ban %d post"
+msgid_plural "Ban %d posts"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "Ban ID"
+msgstr ""
+
 msgid "Ban file"
 msgstr ""
 
 msgid "Banned"
 msgstr ""
+
+msgid "Banned %d post"
+msgid_plural "Banned %d posts"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 msgid "Banners"
 msgstr ""
@@ -301,11 +322,23 @@ msgstr ""
 msgid "Delete"
 msgstr "Удалить"
 
+msgid "Delete %d post"
+msgid_plural "Delete %d posts"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
 msgid "Delete %s"
 msgstr "Удалить %s"
 
 msgid "Delete & ban"
 msgstr "Удалить и заблокировать"
+
+msgid "Delete & ban %d post"
+msgid_plural "Delete & ban %d posts"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 msgid "Delete & ban for 1 hour"
 msgstr "Удалить и заблокировать на 1 час"
@@ -331,7 +364,22 @@ msgstr "Удалить и заблокировать навсегда"
 msgid "Delete Post"
 msgstr "Удалить сообщение"
 
+msgid "Deleted %d post"
+msgid_plural "Deleted %d posts"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "Deleted & banned %d post"
+msgid_plural "Deleted & banned %d posts"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
 msgid "Description"
+msgstr ""
+
+msgid "Deselect"
 msgstr ""
 
 msgid "Details"
@@ -451,6 +499,9 @@ msgstr ""
 
 msgid "Failed to embed media."
 msgstr "Не удалось встроить медиа."
+
+msgid "Failed to refresh thread. Retrying..."
+msgstr ""
 
 msgid "File"
 msgstr "Файл"
@@ -786,6 +837,12 @@ msgstr ""
 msgid "Moderate"
 msgstr ""
 
+msgid "Moderate %d post"
+msgid_plural "Moderate %d posts"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
 msgid "Moderator"
 msgstr ""
 
@@ -863,6 +920,12 @@ msgid "None"
 msgstr "Нету"
 
 msgid "Notice"
+msgstr ""
+
+msgid "Notifications are disabled. Click to enable."
+msgstr ""
+
+msgid "Notifications are enabled. Click to disable."
 msgstr ""
 
 msgid "Notify"
@@ -1050,6 +1113,15 @@ msgstr ""
 msgid "Rebuilt all pages."
 msgstr ""
 
+msgid "Refresh paused. Click to resume."
+msgstr ""
+
+msgid "Refreshing thread every %d second. Click to pause."
+msgid_plural "Refreshing thread every %d seconds. Click to pause."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
 msgid "Regular expression to search for when a new post is created."
 msgstr ""
 
@@ -1093,6 +1165,12 @@ msgstr "Отправлена жалоба № %d"
 msgid "Require Approval"
 msgstr ""
 
+msgid "Require Attachment"
+msgstr ""
+
+msgid "Require visitors to include an attachment when posting."
+msgstr ""
+
 msgid "Required."
 msgstr ""
 
@@ -1109,6 +1187,9 @@ msgid "Rules"
 msgstr ""
 
 msgid "Scroll down to the bottom of the page."
+msgstr ""
+
+msgid "Search"
 msgstr ""
 
 msgid ""

@@ -11,6 +11,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.17.1\n"
 
+msgid "%d existing ban"
+msgid_plural "%d existing bans"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d new post"
 msgid_plural "%d new posts"
 msgstr[0] "%d postagem nova"
@@ -176,11 +181,24 @@ msgstr ""
 msgid "Ban"
 msgstr ""
 
+msgid "Ban %d post"
+msgid_plural "Ban %d posts"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Ban ID"
+msgstr ""
+
 msgid "Ban file"
 msgstr ""
 
 msgid "Banned"
 msgstr ""
+
+msgid "Banned %d post"
+msgid_plural "Banned %d posts"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Banners"
 msgstr ""
@@ -296,11 +314,21 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+msgid "Delete %d post"
+msgid_plural "Delete %d posts"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Delete %s"
 msgstr ""
 
 msgid "Delete & ban"
 msgstr ""
+
+msgid "Delete & ban %d post"
+msgid_plural "Delete & ban %d posts"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Delete & ban for 1 hour"
 msgstr ""
@@ -326,7 +354,20 @@ msgstr ""
 msgid "Delete Post"
 msgstr ""
 
+msgid "Deleted %d post"
+msgid_plural "Deleted %d posts"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Deleted & banned %d post"
+msgid_plural "Deleted & banned %d posts"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Description"
+msgstr ""
+
+msgid "Deselect"
 msgstr ""
 
 msgid "Details"
@@ -445,6 +486,9 @@ msgid "Failed to create thumbnail: %s"
 msgstr ""
 
 msgid "Failed to embed media."
+msgstr ""
+
+msgid "Failed to refresh thread. Retrying..."
 msgstr ""
 
 msgid "File"
@@ -781,6 +825,11 @@ msgstr ""
 msgid "Moderate"
 msgstr ""
 
+msgid "Moderate %d post"
+msgid_plural "Moderate %d posts"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Moderator"
 msgstr ""
 
@@ -858,6 +907,12 @@ msgid "None"
 msgstr ""
 
 msgid "Notice"
+msgstr ""
+
+msgid "Notifications are disabled. Click to enable."
+msgstr ""
+
+msgid "Notifications are enabled. Click to disable."
 msgstr ""
 
 msgid "Notify"
@@ -1044,6 +1099,14 @@ msgstr ""
 msgid "Rebuilt all pages."
 msgstr ""
 
+msgid "Refresh paused. Click to resume."
+msgstr ""
+
+msgid "Refreshing thread every %d second. Click to pause."
+msgid_plural "Refreshing thread every %d seconds. Click to pause."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Regular expression to search for when a new post is created."
 msgstr ""
 
@@ -1087,6 +1150,12 @@ msgstr ""
 msgid "Require Approval"
 msgstr ""
 
+msgid "Require Attachment"
+msgstr ""
+
+msgid "Require visitors to include an attachment when posting."
+msgstr ""
+
 msgid "Required."
 msgstr ""
 
@@ -1103,6 +1172,9 @@ msgid "Rules"
 msgstr ""
 
 msgid "Scroll down to the bottom of the page."
+msgstr ""
+
+msgid "Search"
 msgstr ""
 
 msgid ""
