@@ -1,3 +1,5 @@
+var refreshPaused = false;
+var refreshTimeout = {};
 var haveFocus = false;
 var blinkTitle = false;
 var originalTitle = "";
@@ -109,6 +111,19 @@ function setStatusIndicator(status) {
             statusDeleted.style.display = "none";
         }
     }
+}
+
+function toggleAutoRefresh() {
+    refreshPaused = !refreshPaused;
+
+    if (refreshPaused) {
+        clearTimeout(refreshTimeout);
+        setStatusIndicator(threadStatusPaused);
+    } else {
+        setStatusIndicator(threadStatusNormal);
+        fetchPosts(window.location.href, true);
+    }
+    return false;
 }
 
 function fetchPosts(url, append) {
@@ -249,7 +264,7 @@ function fetchPosts(url, append) {
             return;
         }
         if (append) {
-            setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
+           refreshTimeout = setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
         }
     });
 }
@@ -766,7 +781,7 @@ function onDOMContentLoaded(e) {
         return;
     }
     setStatusIndicator(threadStatusNormal);
-    setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
+    refreshTimeout = setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
 }
 
 document.addEventListener("dragover", onDragOver);
