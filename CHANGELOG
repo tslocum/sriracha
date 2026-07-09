@@ -1,6 +1,7 @@
 1.8.4:
 - Add auto-refresh status indicator
 - Support pausing and resuming auto-refresh
+- Support receiving notifications for new replies
 
 1.8.3:
 - Add board setting to require an attachment

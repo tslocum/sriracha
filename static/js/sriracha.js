@@ -1,5 +1,7 @@
 var refreshPaused = false;
 var refreshTimeout = {};
+var enableNotifications = false;
+var currentNotification = null;
 var haveFocus = false;
 var blinkTitle = false;
 var originalTitle = "";
@@ -107,6 +109,14 @@ function setStatusIndicator(status) {
     if (statusDeleted) {
         if (showDeleted) {
             statusDeleted.style.display = "inline";
+            var notificationsOff = document.getElementById("notificationsoff");
+            if (notificationsOff) {
+                notificationsOff.remove();
+            }
+            var notificationsOn = document.getElementById("notificationson");
+            if (notificationsOn) {
+                notificationsOn.remove();
+            }
         } else {
             statusDeleted.style.display = "none";
         }
@@ -122,6 +132,52 @@ function toggleAutoRefresh() {
     } else {
         setStatusIndicator(threadStatusNormal);
         fetchPosts(window.location.href, true);
+    }
+    return false;
+}
+
+function toggleNotifications() {
+    var requestPermission = false;
+    if (Notification.permission === "denied") {
+        enableNotifications = false;
+    } else {
+        enableNotifications = !enableNotifications;
+        if (enableNotifications && Notification.permission !== "granted") {
+            enableNotifications = false;
+            requestPermission = true;
+        }
+    }
+
+    var showDisable = false;
+    var showEnable = false;
+    if (enableNotifications) {
+        showEnable = true;
+    } else {
+        showDisable = true;
+    }
+    var notificationsOff = document.getElementById("notificationsoff");
+    if (notificationsOff) {
+        if (showDisable) {
+            notificationsOff.style.display = "inline";
+        } else {
+            notificationsOff.style.display = "none";
+        }
+    }
+    var notificationsOn = document.getElementById("notificationson");
+    if (notificationsOn) {
+        if (showEnable) {
+            notificationsOn.style.display = "inline";
+        } else {
+            notificationsOn.style.display = "none";
+        }
+    }
+
+    if (requestPermission) {
+        Notification.requestPermission().then((permission) => {
+            if (permission === "granted") {
+                toggleNotifications();
+            }
+        });
     }
     return false;
 }
@@ -244,6 +300,21 @@ function fetchPosts(url, append) {
         if (append && !haveFocus) {
             if (newReplyID == 0) {
                 newReplyID = newPosts[0].id;
+                if (enableNotifications && Notification.permission === "granted") {
+                    if (currentNotification) {
+                        currentNotification.close();
+                    }
+                    const options = {
+                        body: window.location.pathname,
+                        renotify: true,
+                        requireInteraction: false,
+                    };
+                    var title = newPosts.length + " new post"
+                    if (newPosts.length != 1) {
+                        title += "s";
+                    }
+                    currentNotification = new Notification(title, options);
+                }
             }
             newRepliesCount += newPosts.length;
             if (!blinkTitle) {
@@ -648,6 +719,9 @@ function onFocus(e) {
         window.location.hash = newReplyID;
         newReplyID = 0;
     }
+    if (currentNotification) {
+        currentNotification.close();
+    }
 }
 
 function onBlur(e) {
@@ -780,6 +854,25 @@ function onDOMContentLoaded(e) {
     if (typeof autoRefreshDelay === 'undefined' || viewThreadID == 0) {
         return;
     }
+
+    if ("Notification" in window) {
+        var permission = Notification.permission;
+        if (permission !== "denied") {
+            if (permission === "granted") {
+                enableNotifications = true;
+                var notificationsOn = document.getElementById("notificationson");
+                if (notificationsOn) {
+                    notificationsOn.style.display = "inline";
+                }
+            } else {
+                var notificationsOff = document.getElementById("notificationsoff");
+                if (notificationsOff) {
+                    notificationsOff.style.display = "inline";
+                }
+            }
+        }
+    }
+
     setStatusIndicator(threadStatusNormal);
     refreshTimeout = setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
 }

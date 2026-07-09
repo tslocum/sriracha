@@ -875,6 +875,12 @@ msgstr ""
 msgid "Notice"
 msgstr ""
 
+msgid "Notifications are disabled. Click to enable."
+msgstr ""
+
+msgid "Notifications are enabled. Click to disable."
+msgstr ""
+
 msgid "Notify"
 msgstr ""
 
