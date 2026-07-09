@@ -15,6 +15,11 @@ msgid_plural "%d new posts"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d pending moderation request"
+msgid_plural "%d pending moderation requests"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] ""

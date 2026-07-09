@@ -2,6 +2,7 @@ var refreshPaused = false;
 var refreshTimeout = {};
 var enableNotifications = false;
 var currentNotification = null;
+var setUnloadHandler = false;
 var haveFocus = false;
 var blinkTitle = false;
 var originalTitle = "";
@@ -314,6 +315,12 @@ function fetchPosts(url, append) {
                         title += "s";
                     }
                     currentNotification = new Notification(title, options);
+                    if (!setUnloadHandler) {
+                        window.addEventListener('unload', function(e) {
+                            currentNotification.close();
+                        });
+                        setUnloadHandler = true;
+                    }
                 }
             }
             newRepliesCount += newPosts.length;

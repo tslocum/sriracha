@@ -130,15 +130,15 @@ func (data *templateData) G(str string) string {
 	return G(data.Board, data.Account, str)
 }
 
-func (data *templateData) Get(board *Board, account *Account, str string, vars ...interface{}) string {
+func (data *templateData) Get(str string, vars ...interface{}) string {
 	return Get(data.Board, data.Account, str, vars...)
 }
 
-func (data *templateData) GetHTML(board *Board, account *Account, str string, vars ...interface{}) template.HTML {
+func (data *templateData) GetHTML(str string, vars ...interface{}) template.HTML {
 	return GetHTML(data.Board, data.Account, str, vars...)
 }
 
-func (data *templateData) GetN(board *Board, account *Account, singular string, plural string, v int) string {
+func (data *templateData) GetN(singular string, plural string, v int) string {
 	return GetN(data.Board, data.Account, singular, plural, v)
 }
 

@@ -234,4 +234,8 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		buf.WriteString(fmt.Sprintf(`<hr><form method="post" action="/sriracha/" style="display: inline-block;"><input type="hidden" name="approve" value="%s"><input type="submit" value="%s"></form>`, ids, Get(nil, data.Account, "Approve all")))
 	}
 	data.Message2 = template.HTML(buf.String())
+	total := len(reports) + len(pending)
+	if total > 0 {
+		data.Extra3 = data.GetN("%d pending moderation request", "%d pending moderation requests", total)
+	}
 }

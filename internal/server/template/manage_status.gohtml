@@ -27,6 +27,25 @@
         title = "Sriracha";
     }
     document.title = "/!\\ " + title;
+    window.addEventListener('DOMContentLoaded', function(e) {
+         // Wait before checking focus to prevent false positives.
+        setTimeout(function() {
+            if (!document.hasFocus() && "Notification" in window && Notification.permission === "granted") {
+                const options = {
+                    body: window.location.hostname,
+                    renotify: true,
+                    requireInteraction: false,
+                };
+                var n = new Notification("{{.Extra3}}", options);
+                window.addEventListener('focus', function(e) {
+                    n.close();
+                });
+                window.addEventListener('unload', function(e) {
+                    n.close();
+                });
+            }
+        }, 500);
+    });
     </script>
 {{end}}
 {{template "manage_end.gohtml" .}}
