@@ -820,11 +820,42 @@ function onSubmit(e) {
 }
 
 function onDOMContentLoaded(e) {
+    // Apply style.
     var style = getCookie("sriracha_style");
     if (style) {
         setStyle(style);
     }
 
+    // Parse thread ID.
+    var result = window.location.pathname.match(/.*\/res\/([0-9]+)\.html$/);
+    if (result && result.length == 2) {
+        viewThreadID = result[1];
+    }
+
+    // Display thread status icons.
+    if (autoRefreshDelay && autoRefreshDelay > 0 && viewThreadID > 0) {
+        if ("Notification" in window) {
+            var permission = Notification.permission;
+            if (permission !== "denied") {
+                if (permission === "granted") {
+                    enableNotifications = true;
+                    var notificationsOn = document.getElementById("notificationson");
+                    if (notificationsOn) {
+                        notificationsOn.style.display = "inline-block";
+                    }
+                } else {
+                    var notificationsOff = document.getElementById("notificationsoff");
+                    if (notificationsOff) {
+                        notificationsOff.style.display = "inline-block";
+                    }
+                }
+            }
+        }
+        setStatusIndicator(threadStatusNormal);
+        refreshTimeout = setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
+    }
+
+    // Handle style change.
     var switchStyle = document.getElementById('switchStyle');
     if (switchStyle) {
         switchStyle.addEventListener("change", function(e) {
@@ -836,6 +867,7 @@ function onDOMContentLoaded(e) {
         });
     }
 
+    // Quote post.
     if (window.location.hash) {
         var match = window.location.hash.match(/^#q[0-9]+$/i);
         if (match !== null) {
@@ -846,42 +878,14 @@ function onDOMContentLoaded(e) {
         }
     }
 
-    var result = window.location.pathname.match(/.*\/res\/([0-9]+)\.html$/);
-    if (result && result.length == 2) {
-        viewThreadID = result[1];
-    }
-
+    // Set post attributes and handle reflink hover previews.
     setPostAttributes(document);
 
+    // Validate posts before they are submitted.
     var postForm = document.getElementById("postform");
     if (postForm) {
         postForm.addEventListener("submit", onSubmit)
     }
-
-    if (typeof autoRefreshDelay === 'undefined' || viewThreadID == 0) {
-        return;
-    }
-
-    if ("Notification" in window) {
-        var permission = Notification.permission;
-        if (permission !== "denied") {
-            if (permission === "granted") {
-                enableNotifications = true;
-                var notificationsOn = document.getElementById("notificationson");
-                if (notificationsOn) {
-                    notificationsOn.style.display = "inline-block";
-                }
-            } else {
-                var notificationsOff = document.getElementById("notificationsoff");
-                if (notificationsOff) {
-                    notificationsOff.style.display = "inline-block";
-                }
-            }
-        }
-    }
-
-    setStatusIndicator(threadStatusNormal);
-    refreshTimeout = setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
 }
 
 document.addEventListener("dragover", onDragOver);
