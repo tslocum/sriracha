@@ -80,7 +80,7 @@ function setStatusIndicator(status) {
     }
     var threadStatus = document.getElementById("threadstatus");
     if (threadStatus) {
-        threadStatus.style.display = "table-cell";
+        threadStatus.style.display = "inline-block";
     }
     var statusNormal = document.getElementById("threadstatusnormal");
     if (statusNormal) {
@@ -109,7 +109,7 @@ function setStatusIndicator(status) {
     var statusDeleted = document.getElementById("threadstatusdeleted");
     if (statusDeleted) {
         if (showDeleted) {
-            statusDeleted.style.display = "inline-block";
+            statusDeleted.style.display = "table-cell";
             var notificationsOff = document.getElementById("notificationsoff");
             if (notificationsOff) {
                 notificationsOff.remove();

@@ -127,6 +127,19 @@ img, audio, video {
 	border: 0px none !important;
 }
 
+#threadstatus {
+	float: right;
+	text-align: right;
+}
+
+#notificationsoff {
+	transform: scale(-1, 1);
+}
+
+.postbutton {
+	cursor: pointer;
+}
+
 .hoverpost .touchreflink {
 	display: inline;
 	background-color: inherit;

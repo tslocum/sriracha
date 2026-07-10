@@ -4,11 +4,22 @@
 {{if .Preview}}
 	<div class="replymode">{{T "Posting mode: Preview"}}</div>
 {{else if .ReplyMode}}
-	{{if not .ModMode}}
-		<div class="replymode">{{T "Posting mode: Reply"}}</div>
-	{{else}}
-		<div class="replymode">{{T "Mod mode: Reply"}}</div>
-	{{end}}
+	<div class="replymode">
+		{{if not .ModMode}}
+			{{T "Posting mode: Reply"}}
+		{{else}}
+			{{T "Mod mode: Reply"}}
+		{{end}}
+		{{if and (ne .ReplyMode 0) (ne .Opt.Refresh 0)}}
+			<div id="threadstatus" style="display: none;">
+				<span id="threadstatusnormal" onclick="return toggleAutoRefresh();" class="postbutton" title="{{TN "Refreshing thread every %d second. Click to pause." "Refreshing thread every %d seconds. Click to pause." .Opt.Refresh}}">🟢</span>
+				<span id="threadstatusdelayed" onclick="return toggleAutoRefresh();" class="postbutton" title="{{T "Failed to refresh thread. Retrying..."}}">🟠</span>
+				<span id="threadstatuspaused" onclick="return toggleAutoRefresh();" class="postbutton" title="{{T "Refresh paused. Click to resume."}}">🔴</span>
+				<span id="notificationsoff" onclick="return toggleNotifications();" class="postbutton" style="display: none;" title="{{T "Notifications are disabled. Click to enable."}}">🗨️</span>
+				<span id="notificationson" onclick="return toggleNotifications();" class="postbutton" style="display: none;" title="{{T "Notifications are enabled. Click to disable."}}">💬</span>
+			</div>
+		{{end}}
+	</div>
 {{else if .ModMode}}
 	<div class="replymode">{{T "Mod mode"}}</div>
 {{end}}
@@ -83,14 +94,9 @@
 						{{end}}
 					</td>
 				{{end}}
-				{{if and (ne .ReplyMode 0) (ne $.Opt.Refresh 0)}}
-					<td id="threadstatus" style="display: none;border: 0px none;">
-						<span id="threadstatusnormal" onclick="return toggleAutoRefresh();" style="cursor: pointer;" title="{{TN "Refreshing thread every %d second. Click to pause." "Refreshing thread every %d seconds. Click to pause." $.Opt.Refresh}}">🟢</span>
-						<span id="threadstatusdelayed" onclick="return toggleAutoRefresh();" style="cursor: pointer;" title="{{T "Failed to refresh thread. Retrying..."}}">🟠</span>
-						<span id="threadstatuspaused" onclick="return toggleAutoRefresh();" style="cursor: pointer;" title="{{T "Refresh paused. Click to resume."}}">🔴</span>
-						<span id="threadstatusdeleted" style="color: red;font-weight: bold;">{{T "Thread deleted."}}</span>
-						<span id="notificationsoff" onclick="return toggleNotifications();" style="display: none;cursor: pointer;transform: scale(-1, 1);" title="{{T "Notifications are disabled. Click to enable."}}">🗨️</span>
-						<span id="notificationson" onclick="return toggleNotifications();" style="display: none;cursor: pointer;" title="{{T "Notifications are enabled. Click to disable."}}">💬</span>
+				{{if ne .ReplyMode 0}}
+					<td id="threadstatusdeleted" style="display: none;border: 0px none;color: red;font-weight: bold;">
+						{{T "Thread deleted."}}
 					</td>
 				{{end}}
 			</tr>
