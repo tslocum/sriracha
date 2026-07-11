@@ -707,6 +707,9 @@ msgstr ""
 msgid "Manage Subscriptions"
 msgstr ""
 
+msgid "Manage Thresholds"
+msgstr ""
+
 msgid "Manage mode"
 msgstr ""
 

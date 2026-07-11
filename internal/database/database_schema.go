@@ -233,7 +233,11 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 -- v18: 	anywhere smallint NOT NULL,
 -- v18: 	duration integer NOT NULL,
 -- v18: 	action text NOT NULL
--- v18: );`,
+-- v18: );
+-- v18: INSERT INTO threshold VALUES
+-- v18: 	(default, 0,  1, 0, 1,   30, 'delete'),
+-- v18: 	(default, 0,  1, 1, 1,  300, 'delete'),
+-- v18: 	(default, 0, 10, 2, 1, 3600, 'delete');`,
 	// Version 2.
 	`ALTER TABLE account ADD COLUMN style varchar(64) NOT NULL DEFAULT '';
 	UPDATE config SET value = '2' WHERE name = 'version';`,
@@ -347,8 +351,8 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 		action text NOT NULL
 	);
 	INSERT INTO threshold VALUES
-		(default, 0, 1, 0, 1, 30, 'delete'),
-		(default, 0, 1, 1, 1, 300, 'delete'),
+		(default, 0,  1, 0, 1,   30, 'delete'),
+		(default, 0,  1, 1, 1,  300, 'delete'),
 		(default, 0, 10, 2, 1, 3600, 'delete');
 	ALTER TABLE board DROP COLUMN delay;
 	UPDATE config SET value = '18' WHERE name = 'version';`,
