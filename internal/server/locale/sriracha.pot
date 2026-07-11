@@ -78,6 +78,9 @@ msgstr ""
 msgid "Action taken when the keyword is detected."
 msgstr ""
 
+msgid "Action taken when the threshold amount is exceeded."
+msgstr ""
+
 msgid "Add"
 msgstr ""
 
@@ -103,6 +106,9 @@ msgid "Add News"
 msgstr ""
 
 msgid "Add Page"
+msgstr ""
+
+msgid "Add Threshold"
 msgstr ""
 
 msgid "Add board to %s"
@@ -136,6 +142,9 @@ msgid "Allow all"
 msgstr ""
 
 msgid "Allow moderators to post site news."
+msgstr ""
+
+msgid "Amount"
 msgstr ""
 
 msgid "An attachment is required."
@@ -434,6 +443,12 @@ msgstr ""
 msgid "Duplicate file detected."
 msgstr ""
 
+msgid "Duration"
+msgstr ""
+
+msgid "Duration (in seconds) of recent events to match against."
+msgstr ""
+
 msgid "Email"
 msgstr ""
 
@@ -456,6 +471,15 @@ msgid "Enter your password."
 msgstr ""
 
 msgid "Error: %s"
+msgstr ""
+
+msgid "Event"
+msgstr ""
+
+msgid "Everyone"
+msgstr ""
+
+msgid "Everywhere"
 msgstr ""
 
 msgid "Exit"
@@ -602,6 +626,12 @@ msgstr ""
 msgid "Incorrect password."
 msgstr ""
 
+msgid "Individual board"
+msgstr ""
+
+msgid "Individual visitor"
+msgstr ""
+
 msgid "Info"
 msgstr ""
 
@@ -648,6 +678,9 @@ msgid "Locale"
 msgstr ""
 
 msgid "Locale used when writing board pages."
+msgstr ""
+
+msgid "Location"
 msgstr ""
 
 msgid "Log In"
@@ -1002,6 +1035,9 @@ msgstr ""
 msgid "Positive values specify global instances allowed. Negative values specify board-specific instances allowed. Zero allows unlimited instances."
 msgstr ""
 
+msgid "Post(s)"
+msgstr ""
+
 msgid "Post reply"
 msgstr ""
 
@@ -1086,6 +1122,9 @@ msgstr ""
 msgid "Report"
 msgstr ""
 
+msgid "Report(s)"
+msgstr ""
+
 msgid "Reset"
 msgstr ""
 
@@ -1129,6 +1168,9 @@ msgid "Role"
 msgstr ""
 
 msgid "Rules"
+msgstr ""
+
+msgid "Scale"
 msgstr ""
 
 msgid "Scroll down to the bottom of the page."
@@ -1234,6 +1276,9 @@ msgstr ""
 msgid "This setting is purely cosmetic. To actually prevent access, configure your HTTPS server to require password authorization."
 msgstr ""
 
+msgid "Thread(s)"
+msgstr ""
+
 msgid "Thread deleted."
 msgstr ""
 
@@ -1241,6 +1286,12 @@ msgid "Thread moved from %[1]s to %[2]s."
 msgstr ""
 
 msgid "Threads"
+msgstr ""
+
+msgid "Threshold"
+msgstr ""
+
+msgid "Thresholds"
 msgstr ""
 
 msgid "Thumbnail Height"
@@ -1348,6 +1399,9 @@ msgstr ""
 msgid "When %s receives new replies."
 msgstr ""
 
+msgid "When this amount is exceeded the selected action is taken."
+msgstr ""
+
 msgid "Whether identifiers are displayed for each post. Identifiers are generated based on IP address hashes."
 msgstr ""
 
@@ -1372,6 +1426,12 @@ msgstr ""
 msgid "Whether the banner is displayed in overboard pages."
 msgstr ""
 
+msgid "Whether the threshold is for individual boards or everywhere."
+msgstr ""
+
+msgid "Whether the threshold is for individual visitors or everyone."
+msgstr ""
+
 msgid "Whether visitors may browse attachments as an image gallery."
 msgstr ""
 
@@ -1382,6 +1442,9 @@ msgid "Whether visitors may report posts."
 msgstr ""
 
 msgid "Whether visitors must pass a CAPTCHA when posting."
+msgstr ""
+
+msgid "Which type of visitor interaction the threshold monitors."
 msgstr ""
 
 msgid "Word Break"
