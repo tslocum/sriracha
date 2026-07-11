@@ -37,6 +37,11 @@
 {{end}}
 <hr>
 <br>
+<style type="text/css">
+.thread > div, .thread > table {
+    clear: both;
+}
+</style>
 {{if and (gt (len .Threads) 0) (eq (index (index .Threads 0) 0).Board.Type 0)}}
     {{template "imgboard_post.gohtml" $}}
 {{else}}
