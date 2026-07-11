@@ -8,10 +8,10 @@
         </tr>
         {{range $i, $threshold := .Manage.Thresholds}}
             <tr>
-                <td>{{$threshold.Label}}</td>
+                <td>{{$threshold.Label $.Account}}</td>
                 <td>
                     <form method="get" action="/sriracha/threshold/{{$threshold.ID}}"><input type="submit" value="{{T "Update"}}"></form>
-                    <form method="get" action="/sriracha/threshold/delete/{{$threshold.ID}}" onsubmit="javascript:return confirm('Delete {{$threshold.Name}}?');"><input type="submit" value="{{T "Delete"}}"></form>
+                    <form method="get" action="/sriracha/threshold/delete/{{$threshold.ID}}" onsubmit="javascript:return confirm('Delete #{{$threshold.ID}}?');"><input type="submit" value="{{T "Delete"}}"></form>
                 </td>
             </tr>
         {{end}}
@@ -47,19 +47,19 @@
             <tr>
                 <td class="postblock"><label for="event">{{T "Event"}}</label></td>
                 <td><select name="event" style="width: 100%;">
-                    <option value="0"{{if eq .Manage.Threshold.Event 0}} selected{{end}}>{{T "Post(s)"}}</option>
-                    <option value="1"{{if eq .Manage.Threshold.Event 1}} selected{{end}}>{{T "Thread(s)"}}</option>
-                    <option value="2"{{if eq .Manage.Threshold.Event 2}} selected{{end}}>{{T "Report(s)"}}</option>
+                    <option value="0"{{if eq .Manage.Threshold.Event 0}} selected{{end}}>{{T "Post"}}</option>
+                    <option value="1"{{if eq .Manage.Threshold.Event 1}} selected{{end}}>{{T "Thread"}}</option>
+                    <option value="2"{{if eq .Manage.Threshold.Event 2}} selected{{end}}>{{T "Report"}}</option>
                 </select></td>
                 <td>{{T "Which type of visitor interaction the threshold monitors."}}</td>
             </tr>
             <tr>
-                <td class="postblock"><label for="everywhere">{{T "Location"}}</label></td>
-                <td><select name="everywhere" style="width: 100%;">
-                    <option value="0"{{if not .Manage.Threshold.Everywhere}} selected{{end}}>{{T "Individual board"}}</option>
-                    <option value="1"{{if .Manage.Threshold.Everywhere}} selected{{end}}>{{T "Everywhere"}}</option>
+                <td class="postblock"><label for="anywhere">{{T "Location"}}</label></td>
+                <td><select name="anywhere" style="width: 100%;">
+                    <option value="0"{{if not .Manage.Threshold.Anywhere}} selected{{end}}>{{T "Individual board"}}</option>
+                    <option value="1"{{if .Manage.Threshold.Anywhere}} selected{{end}}>{{T "Anywhere"}}</option>
                 </select></td>
-                <td>{{T "Whether the threshold is for individual boards or everywhere."}}</td>
+                <td>{{T "Whether the threshold is for individual boards or anywhere."}}</td>
             </tr>
             <tr>
                 <td class="postblock"><label for="duration">{{T "Duration"}}</label></td>

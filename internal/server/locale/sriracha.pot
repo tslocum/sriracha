@@ -150,6 +150,9 @@ msgstr ""
 msgid "An attachment is required."
 msgstr ""
 
+msgid "Anywhere"
+msgstr ""
+
 msgid "Appearance"
 msgstr ""
 
@@ -477,9 +480,6 @@ msgid "Event"
 msgstr ""
 
 msgid "Everyone"
-msgstr ""
-
-msgid "Everywhere"
 msgstr ""
 
 msgid "Exit"
@@ -1035,7 +1035,7 @@ msgstr ""
 msgid "Positive values specify global instances allowed. Negative values specify board-specific instances allowed. Zero allows unlimited instances."
 msgstr ""
 
-msgid "Post(s)"
+msgid "Post"
 msgstr ""
 
 msgid "Post reply"
@@ -1122,24 +1122,6 @@ msgstr ""
 msgid "Report"
 msgstr ""
 
-msgid "Report(s)"
-msgstr ""
-
-msgid "Reset"
-msgstr ""
-
-msgid "Reset all configuration options?"
-msgstr ""
-
-msgid "Reset all settings?"
-msgstr ""
-
-msgid "Reset board configuration?"
-msgstr ""
-
-msgid "Restrict New Posts"
-msgstr ""
-
 msgid "Reports"
 msgstr ""
 
@@ -1156,6 +1138,21 @@ msgid "Require visitors to include an attachment when posting."
 msgstr ""
 
 msgid "Required."
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Reset all configuration options?"
+msgstr ""
+
+msgid "Reset all settings?"
+msgstr ""
+
+msgid "Reset board configuration?"
+msgstr ""
+
+msgid "Restrict New Posts"
 msgstr ""
 
 msgid "Return"
@@ -1276,7 +1273,7 @@ msgstr ""
 msgid "This setting is purely cosmetic. To actually prevent access, configure your HTTPS server to require password authorization."
 msgstr ""
 
-msgid "Thread(s)"
+msgid "Thread"
 msgstr ""
 
 msgid "Thread deleted."
@@ -1393,6 +1390,9 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
+msgid "When %[1]s adds more than %[2]d %[3]s %[4]s within %[5]s, %[6]s."
+msgstr ""
+
 msgid "When %s is mentioned."
 msgstr ""
 
@@ -1456,5 +1456,11 @@ msgstr ""
 msgid "Your post will be shown once it has been approved."
 msgstr ""
 
+msgid "an individual visitor"
+msgstr ""
+
 msgid "and"
+msgstr ""
+
+msgid "in an individual board"
 msgstr ""

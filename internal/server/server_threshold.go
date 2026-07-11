@@ -14,7 +14,7 @@ func (s *Server) loadThresholdForm(db serverDB, r *http.Request, t *Threshold) {
 	t.Everyone = FormBool(r, "everyone")
 	t.Amount = FormInt(r, "amount")
 	t.Event = FormRange(r, "event", EventPost, EventReport)
-	t.Everywhere = FormBool(r, "board")
+	t.Anywhere = FormBool(r, "board")
 	t.Duration = FormInt(r, "duration")
 	t.Action = FormString(r, "action")
 }

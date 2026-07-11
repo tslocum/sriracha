@@ -13,15 +13,15 @@ func (db *DB) AddThreshold(t *Threshold) {
 	if t.Everyone {
 		everyone = 1
 	}
-	var everywhere int
-	if t.Everywhere {
-		everywhere = 1
+	var anywhere int
+	if t.Anywhere {
+		anywhere = 1
 	}
 	err := db.conn.QueryRow(context.Background(), "INSERT INTO threshold VALUES (DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING id",
 		everyone,
 		t.Amount,
 		t.Event,
-		everywhere,
+		anywhere,
 		t.Duration,
 		t.Action).Scan(&t.ID)
 	if err != nil {
@@ -41,7 +41,7 @@ func (db *DB) ThresholdByID(id int) *Threshold {
 }
 
 func (db *DB) AllThresholds() []*Threshold {
-	rows, err := db.conn.Query(context.Background(), "SELECT * FROM threshold ORDER BY everyone ASC, amount ASC, event ASC, everywhere ASC, duration ASC, action ASC")
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM threshold ORDER BY everyone ASC, amount ASC, event ASC, anywhere ASC, duration ASC, action ASC")
 	if err != nil {
 		dbErr(fmt.Errorf("failed to select all thresholds: %w", err))
 	}
@@ -64,18 +64,18 @@ func (db *DB) UpdateThreshold(t *Threshold) {
 	if t.ID <= 0 {
 		dbErr(fmt.Errorf("invalid threshold ID %d", t.ID))
 	}
-	var everyone, everywhere int
+	var everyone, anywhere int
 	if t.Everyone {
 		everyone = 1
 	}
-	if t.Everywhere {
-		everywhere = 1
+	if t.Anywhere {
+		anywhere = 1
 	}
-	_, err := db.conn.Exec(context.Background(), "UPDATE threshold SET everyone = $1, amount = $2, event = $3, everywhere = $4, duration = $5, action = $6 WHERE id = $7",
+	_, err := db.conn.Exec(context.Background(), "UPDATE threshold SET everyone = $1, amount = $2, event = $3, anywhere = $4, duration = $5, action = $6 WHERE id = $7",
 		everyone,
 		t.Amount,
 		t.Event,
-		everywhere,
+		anywhere,
 		t.Duration,
 		t.Action,
 		t.ID,
@@ -96,13 +96,13 @@ func (db *DB) DeleteThreshold(id int) {
 }
 
 func scanThreshold(t *Threshold, row pgx.Row) error {
-	var everyone, everywhere int
+	var everyone, anywhere int
 	err := row.Scan(
 		&t.ID,
 		&everyone,
 		&t.Amount,
 		&t.Event,
-		&everywhere,
+		&anywhere,
 		&t.Duration,
 		&t.Action,
 	)
@@ -113,6 +113,6 @@ func scanThreshold(t *Threshold, row pgx.Row) error {
 		return fmt.Errorf("failed to scan threshold: %w", err)
 	}
 	t.Everyone = everyone == 1
-	t.Everywhere = everywhere == 1
+	t.Anywhere = anywhere == 1
 	return nil
 }

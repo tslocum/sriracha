@@ -14,6 +14,9 @@ var (
 	crcSum  []byte
 )
 
+// AllActions is a list of all automated moderation actions.
+var AllActions = []string{"hide", "report", "delete", "ban1h", "ban1d", "ban2d", "ban1w", "ban2w", "ban1m", "ban0"}
+
 // Domain returns the gettext domain name corresponding to the specified locale.
 func Domain(locale string) string {
 	if locale == "" {

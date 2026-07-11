@@ -113,6 +113,14 @@ func (s *Server) validateTemplates(ts *Server) error {
 					Content: "content",
 				}
 			}
+			if c.manageThreshold {
+				data.Manage.Threshold = &Threshold{
+					ID:       1,
+					Amount:   1,
+					Duration: 30,
+					Action:   "delete",
+				}
+			}
 
 			err := data.executeWithError(io.Discard)
 			if err != nil {
@@ -129,15 +137,16 @@ func (s *Server) validateTemplates(ts *Server) error {
 
 // testCase represents a template test case.
 type testCase struct {
-	template       string
-	board          bool
-	thread         bool
-	threads        bool
-	manageBanner   bool
-	manageBoard    bool
-	manageCategory bool
-	manageKeyword  bool
-	managePage     bool
+	template        string
+	board           bool
+	thread          bool
+	threads         bool
+	manageBanner    bool
+	manageBoard     bool
+	manageCategory  bool
+	manageKeyword   bool
+	managePage      bool
+	manageThreshold bool
 }
 
 // testCases represents all template test cases.
@@ -251,5 +260,9 @@ var testCases = []testCase{
 	},
 	{
 		template: "manage_status",
+	},
+	{
+		template:        "manage_threshold",
+		manageThreshold: true,
 	},
 }

@@ -230,7 +230,7 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 -- v18: 	everyone smallint NOT NULL,
 -- v18: 	amount integer NOT NULL,
 -- v18: 	event smallint NOT NULL,
--- v18: 	everywhere smallint NOT NULL,
+-- v18: 	anywhere smallint NOT NULL,
 -- v18: 	duration integer NOT NULL,
 -- v18: 	action text NOT NULL
 -- v18: );`,
@@ -342,10 +342,14 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 		everyone smallint NOT NULL,
 		amount integer NOT NULL,
 		event smallint NOT NULL,
-		everywhere smallint NOT NULL,
+		anywhere smallint NOT NULL,
 		duration integer NOT NULL,
 		action text NOT NULL
 	);
+	INSERT INTO threshold VALUES
+		(default, 0, 1, 0, 1, 30, 'delete'),
+		(default, 0, 1, 1, 1, 300, 'delete'),
+		(default, 0, 10, 2, 1, 3600, 'delete');
 	ALTER TABLE board DROP COLUMN delay;
 	UPDATE config SET value = '18' WHERE name = 'version';`,
 }

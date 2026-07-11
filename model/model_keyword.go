@@ -3,7 +3,10 @@ package model
 import (
 	"fmt"
 	"regexp"
+	"slices"
 	"strings"
+
+	. "codeberg.org/tslocum/sriracha/util"
 )
 
 type Keyword struct {
@@ -17,10 +20,7 @@ func (k *Keyword) Validate() error {
 	switch {
 	case strings.TrimSpace(k.Text) == "":
 		return fmt.Errorf("text must be set")
-	case k.Action != "hide" && k.Action != "report" && k.Action != "delete" &&
-		k.Action != "ban1h" && k.Action != "ban1d" && k.Action != "ban2d" &&
-		k.Action != "ban1w" && k.Action != "ban2w" && k.Action != "ban1m" &&
-		k.Action != "ban0":
+	case !slices.Contains(AllActions, k.Action):
 		return fmt.Errorf("action must be set")
 	}
 	_, err := regexp.Compile(k.Text)
@@ -40,30 +40,5 @@ func (k *Keyword) HasBoard(id int) bool {
 }
 
 func (k *Keyword) ActionLabel(account *Account) string {
-	var label string
-	switch k.Action {
-	case "hide":
-		label = "Hide until approved"
-	case "report":
-		label = "Report"
-	case "delete":
-		label = "Delete"
-	case "ban1h":
-		label = "Delete & ban for 1 hour"
-	case "ban1d":
-		label = "Delete & ban for 1 day"
-	case "ban2d":
-		label = "Delete & ban for 2 days"
-	case "ban1w":
-		label = "Delete & ban for 1 week"
-	case "ban2w":
-		label = "Delete & ban for 2 weeks"
-	case "ban1m":
-		label = "Delete & ban for 1 month"
-	case "ban0":
-		label = "Delete & ban permanently"
-	default:
-		label = "Unknown"
-	}
-	return G(nil, account, label)
+	return G(nil, account, FormatAction(k.Action))
 }

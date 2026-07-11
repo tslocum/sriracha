@@ -220,3 +220,32 @@ func FormatDuration(d time.Duration) string {
 		return out + fmt.Sprintf("%ds", seconds)
 	}
 }
+
+func FormatAction(action string) string {
+	var label string
+	switch action {
+	case "hide":
+		label = "Hide until approved"
+	case "report":
+		label = "Report"
+	case "delete":
+		label = "Delete"
+	case "ban1h":
+		label = "Delete & ban for 1 hour"
+	case "ban1d":
+		label = "Delete & ban for 1 day"
+	case "ban2d":
+		label = "Delete & ban for 2 days"
+	case "ban1w":
+		label = "Delete & ban for 1 week"
+	case "ban2w":
+		label = "Delete & ban for 2 weeks"
+	case "ban1m":
+		label = "Delete & ban for 1 month"
+	case "ban0":
+		label = "Delete & ban permanently"
+	default:
+		label = "Unknown"
+	}
+	return label
+}
