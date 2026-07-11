@@ -153,7 +153,6 @@ type Board struct {
 	Reports       bool
 	Style         string
 	Locale        string
-	Delay         int
 	MinName       int
 	MaxName       int
 	MinEmail      int

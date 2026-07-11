@@ -549,10 +549,12 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 
 	post.IP = s.hashIP(r)
 
-	if b.Delay != 0 {
+	delay := 30 // TODO replace with threshold
+	// calculate next valid post time
+	if delay != 0 {
 		lastPost := db.LastPostByIP(post.Board, post.IP)
 		if lastPost != nil {
-			nextPost := lastPost.Timestamp + int64(b.Delay)
+			nextPost := lastPost.Timestamp + int64(delay)
 			if time.Now().Unix() < nextPost {
 				waitTime := time.Until(time.Unix(nextPost, 0)) // This should be rounded to the nearest second. Oh well.
 				data := s.buildData(db, w, r)

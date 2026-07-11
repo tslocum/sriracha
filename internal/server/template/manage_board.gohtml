@@ -296,13 +296,6 @@
                     <td>{{T "Maximum word length. Set to 0 to never break long words."}}</td>
                 </tr>
             {{end}}
-            {{if or (ne .Manage.Board.ID 0) (not (Global "board.delay"))}}
-                <tr>
-                    <td class="postblock"><label for="delay">{{T "Delay"}}{{Globe "board.delay"}}</label></td>
-                    <td><input type="text" name="delay" value="{{if ne .Manage.Board nil}}{{.Manage.Board.Delay}}{{end}}"></td>
-                    <td>{{T "Delay (in seconds) visitors must wait before posting again. Set to 0 to disable."}}</td>
-                </tr>
-            {{end}}
             <tr>
                 <th><br>{{T "Attachments"}}</th><td>&nbsp;</td>
             </tr>

@@ -211,13 +211,6 @@ func (s *Server) loadGlobalBoardSettings(db serverDB, b *Board) {
 			b.WordBreak = DefaultBoardWordBreak
 		}
 	}
-	if slices.Contains(s.opt.Global, "board.delay") {
-		if first != nil {
-			b.Delay = first.Delay
-		} else {
-			b.Delay = 0
-		}
-	}
 	if slices.Contains(s.opt.Global, "board.files") {
 		if first != nil {
 			b.Files = first.Files
@@ -322,7 +315,6 @@ func (s *Server) loadBoardForm(db serverDB, r *http.Request, b *Board) {
 	b.Reports = FormBool(r, "reports")
 	b.Style = FormString(r, "style")
 	b.Locale = FormString(r, "locale")
-	b.Delay = FormInt(r, "delay")
 	b.MinName = FormInt(r, "minname")
 	b.MaxName = FormInt(r, "maxname")
 	b.MinEmail = FormInt(r, "minemail")
@@ -511,10 +503,6 @@ func (s *Server) saveGlobalBoardSettings(db serverDB, b *Board) []*Board {
 		}
 		if slices.Contains(s.opt.Global, "board.wordbreak") && board.WordBreak != b.WordBreak {
 			board.WordBreak = b.WordBreak
-			modified = true
-		}
-		if slices.Contains(s.opt.Global, "board.delay") && board.Delay != b.Delay {
-			board.Delay = b.Delay
 			modified = true
 		}
 		if slices.Contains(s.opt.Global, "board.files") && board.Files != b.Files {
@@ -911,7 +899,6 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 			b.Reports = d.Reports
 			b.Style = d.Style
 			b.Locale = d.Locale
-			b.Delay = d.Delay
 			b.MinName = d.MinName
 			b.MaxName = d.MaxName
 			b.MinEmail = d.MinEmail

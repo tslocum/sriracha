@@ -179,7 +179,7 @@ func (db *DB) upgrade(rootDir string) error {
 		return fmt.Errorf("failed to deallocate prepared statements after migration")
 	}
 
-	fmt.Printf("Database upgraded.\n")
+	fmt.Printf("Database upgraded successfully.\n")
 	return nil
 }
 

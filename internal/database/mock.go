@@ -276,6 +276,13 @@ func (db *mockDB) DeleteSubscriptionsByBoard(boardID int) {}
 func (db *mockDB) DeleteSubscriptionsByPost(postID int)   {}
 func (db *mockDB) DeleteExpiredSubscriptions() int        { return 0 }
 
+// Threshold.
+func (db *mockDB) AddThreshold(t *Threshold)       {}
+func (db *mockDB) ThresholdByID(id int) *Threshold { return nil }
+func (db *mockDB) AllThresholds() []*Threshold     { return nil }
+func (db *mockDB) UpdateThreshold(t *Threshold)    {}
+func (db *mockDB) DeleteThreshold(id int)          {}
+
 var MockDB = newMockDB()
 
 // Validate mock database interface during compilation.

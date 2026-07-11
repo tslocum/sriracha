@@ -55,7 +55,7 @@ CREATE TABLE board (
 	reports smallint NOT NULL,
 	style varchar(64) NOT NULL,
 	locale varchar(64) NOT NULL,
-	delay integer NOT NULL,
+	delay integer NOT NULL, -- v18: Removed. Superseded by threshold table.
 	minname smallint NOT NULL,
 	maxname smallint NOT NULL,
 	minemail smallint NOT NULL,
@@ -223,7 +223,17 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 -- v14: 	email text NOT NULL,
 -- v14: 	board int NOT NULL,
 -- v14: 	target int NOT NULL
--- v14: );`,
+-- v14: );
+
+-- v18: CREATE TABLE threshold (
+-- v18: 	id serial PRIMARY KEY,
+-- v18: 	everyone smallint NOT NULL,
+-- v18: 	amount integer NOT NULL,
+-- v18: 	event smallint NOT NULL,
+-- v18: 	everywhere smallint NOT NULL,
+-- v18: 	duration integer NOT NULL,
+-- v18: 	action text NOT NULL
+-- v18: );`,
 	// Version 2.
 	`ALTER TABLE account ADD COLUMN style varchar(64) NOT NULL DEFAULT '';
 	UPDATE config SET value = '2' WHERE name = 'version';`,
@@ -326,4 +336,16 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 	// Version 17.
 	`ALTER TABLE board ADD COLUMN require smallint NOT NULL DEFAULT 0;
 	UPDATE config SET value = '17' WHERE name = 'version';`,
+	// Version 18.
+	`CREATE TABLE threshold (
+		id serial PRIMARY KEY,
+		everyone smallint NOT NULL,
+		amount integer NOT NULL,
+		event smallint NOT NULL,
+		everywhere smallint NOT NULL,
+		duration integer NOT NULL,
+		action text NOT NULL
+	);
+	ALTER TABLE board DROP COLUMN delay;
+	UPDATE config SET value = '18' WHERE name = 'version';`,
 }

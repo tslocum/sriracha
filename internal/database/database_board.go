@@ -82,7 +82,6 @@ func (db *DB) AddBoard(b *Board) {
 		reports,
 		b.Style,
 		b.Locale,
-		b.Delay,
 		b.MinName,
 		b.MaxName,
 		b.MinEmail,
@@ -217,7 +216,7 @@ func (db *DB) UpdateBoard(b *Board) {
 	if b.Gallery {
 		gallery = 1
 	}
-	_, err := db.conn.Exec(context.Background(), "UPDATE board SET dir = $1, name = $2, description = $3, type = $4, lock = $5, approval = $6, reports = $7, style = $8, locale = $9, delay = $10, minname = $11, maxname = $12, minemail = $13, maxemail = $14, minsubject = $15, maxsubject = $16, minmessage = $17, maxmessage = $18, minsizethread = $19, maxsizethread = $20, minsizereply = $21, maxsizereply = $22, thumbwidth = $23, thumbheight = $24, defaultname = $25, wordbreak = $26, truncate = $27, threads = $28, replies = $29, maxthreads = $30, maxreplies = $31, oekaki = $32, rules = $33, hide = $34, backlinks = $35, instances = $36, identifiers = $37, files = $38, gallery = $39, require = $40 WHERE id = $41",
+	_, err := db.conn.Exec(context.Background(), "UPDATE board SET dir = $1, name = $2, description = $3, type = $4, lock = $5, approval = $6, reports = $7, style = $8, locale = $9, minname = $10, maxname = $11, minemail = $12, maxemail = $13, minsubject = $14, maxsubject = $15, minmessage = $16, maxmessage = $17, minsizethread = $18, maxsizethread = $19, minsizereply = $20, maxsizereply = $21, thumbwidth = $22, thumbheight = $23, defaultname = $24, wordbreak = $25, truncate = $26, threads = $27, replies = $28, maxthreads = $29, maxreplies = $30, oekaki = $31, rules = $32, hide = $33, backlinks = $34, instances = $35, identifiers = $36, files = $37, gallery = $38, require = $39 WHERE id = $40",
 		b.Dir,
 		b.Name,
 		b.Description,
@@ -227,7 +226,6 @@ func (db *DB) UpdateBoard(b *Board) {
 		reports,
 		b.Style,
 		b.Locale,
-		b.Delay,
 		b.MinName,
 		b.MaxName,
 		b.MinEmail,
@@ -323,7 +321,6 @@ func scanBoard(b *Board, row pgx.Row) error {
 		&reports,
 		&b.Style,
 		&b.Locale,
-		&b.Delay,
 		&b.MinName,
 		&b.MaxName,
 		&b.MinEmail,

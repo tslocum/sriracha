@@ -25,27 +25,29 @@ import (
 var templateFS embed.FS
 
 type manageData struct {
-	Account  *Account
-	Accounts []*Account
-	Ban      *Ban
-	Bans     []*Ban
-	Banner   *Banner
-	Banners  []*Banner
-	Board    *Board
-	Boards   []*Board
-	Category *Category
-	Keyword  *Keyword
-	Keywords []*Keyword
-	Log      *Log
-	Logs     []*Log
-	News     *News
-	AllNews  []*News
-	Page     *Page
-	Pages    []*Page
-	Plugin   *pluginInfo
-	Plugins  []*pluginInfo
-	Report   *Report
-	Reports  []*Report
+	Account    *Account
+	Accounts   []*Account
+	Ban        *Ban
+	Bans       []*Ban
+	Banner     *Banner
+	Banners    []*Banner
+	Board      *Board
+	Boards     []*Board
+	Category   *Category
+	Keyword    *Keyword
+	Keywords   []*Keyword
+	Log        *Log
+	Logs       []*Log
+	News       *News
+	AllNews    []*News
+	Page       *Page
+	Pages      []*Page
+	Plugin     *pluginInfo
+	Plugins    []*pluginInfo
+	Report     *Report
+	Reports    []*Report
+	Threshold  *Threshold
+	Thresholds []*Threshold
 }
 
 type templateData struct {

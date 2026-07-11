@@ -1126,6 +1126,11 @@ func (s *Server) refreshKeywordCache(db serverDB) {
 	}
 }
 
+// refreshThresholdCache refreshes the threshold cache.
+func (s *Server) refreshThresholdCache(db serverDB) {
+	// TODO
+}
+
 func (s *Server) _processCategory(c *Category) {
 	for _, cat := range c.Categories {
 		s._processCategory(cat)
@@ -2064,6 +2069,8 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 		s.servePlugin(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/setting"):
 		s.serveSetting(data, db, w, r)
+	case strings.HasPrefix(r.URL.Path, "/sriracha/threshold"):
+		s.serveThreshold(data, db, w, r)
 	default:
 		s.serveStatus(data, db, w, r)
 	}
@@ -3019,7 +3026,6 @@ var allGlobalSettings = []string{
 	"board.minmessage",
 	"board.maxmessage",
 	"board.wordbreak",
-	"board.delay",
 	"board.files",
 	"board.instances",
 	"board.minsizethread",

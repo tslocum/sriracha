@@ -160,4 +160,11 @@ type DB interface {
 	DeleteSubscriptionsByBoard(boardID int)
 	DeleteSubscriptionsByPost(postID int)
 	DeleteExpiredSubscriptions() int
+
+	// Threshold.
+	AddThreshold(t *Threshold)
+	ThresholdByID(id int) *Threshold
+	AllThresholds() []*Threshold
+	UpdateThreshold(t *Threshold)
+	DeleteThreshold(id int)
 }
