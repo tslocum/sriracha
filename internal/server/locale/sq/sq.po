@@ -21,6 +21,11 @@ msgid_plural "%d new posts"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d pending moderation request"
+msgid_plural "%d pending moderation requests"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] "%d postim i fshehur. Kliko Pergjigju per ta pare."
@@ -79,6 +84,9 @@ msgstr "Veprim"
 msgid "Action taken when the keyword is detected."
 msgstr "Veprimi i ndermarre kur zbulohet fjala kyce."
 
+msgid "Action taken when the threshold amount is exceeded."
+msgstr ""
+
 msgid "Add"
 msgstr "Shto"
 
@@ -104,6 +112,9 @@ msgid "Add News"
 msgstr "Shto Lajm"
 
 msgid "Add Page"
+msgstr ""
+
+msgid "Add Threshold"
 msgstr ""
 
 msgid "Add board to %s"
@@ -139,7 +150,13 @@ msgstr "Lejo te gjitha"
 msgid "Allow moderators to post site news."
 msgstr "Lejoni moderatoret te postojne lajme ne faqe."
 
+msgid "Amount"
+msgstr ""
+
 msgid "An attachment is required."
+msgstr ""
+
+msgid "Anywhere"
 msgstr ""
 
 msgid "Appearance"
@@ -453,6 +470,12 @@ msgstr ""
 msgid "Duplicate file detected."
 msgstr ""
 
+msgid "Duration"
+msgstr ""
+
+msgid "Duration (in seconds) of recent events to match against."
+msgstr ""
+
 msgid "Email"
 msgstr "Posta Elektronike"
 
@@ -476,6 +499,12 @@ msgstr ""
 
 msgid "Error: %s"
 msgstr "Gabim: %s"
+
+msgid "Event"
+msgstr ""
+
+msgid "Everyone"
+msgstr ""
 
 msgid "Exit"
 msgstr "Dalje"
@@ -633,6 +662,12 @@ msgstr "Tekst i pasakte CAPTCHA. Ju lutemi provoni perseri."
 msgid "Incorrect password."
 msgstr "Fjalekalim i pasakte."
 
+msgid "Individual board"
+msgstr ""
+
+msgid "Individual visitor"
+msgstr ""
+
 msgid "Info"
 msgstr "Info"
 
@@ -686,6 +721,9 @@ msgstr "Vendodhje"
 msgid "Locale used when writing board pages."
 msgstr "Informacioni vendodhjes perdorur gjate shkrimit te faqeve te bordeve."
 
+msgid "Location"
+msgstr ""
+
 msgid "Log In"
 msgstr "Hyni ne sistem"
 
@@ -708,6 +746,9 @@ msgid "Manage Categories"
 msgstr ""
 
 msgid "Manage Subscriptions"
+msgstr ""
+
+msgid "Manage Thresholds"
 msgstr ""
 
 msgid "Manage mode"
@@ -1087,6 +1128,9 @@ msgstr ""
 "percaktojne instancat specifike te bordit te lejuara. Zero lejon instanca te "
 "pakufizuara."
 
+msgid "Post"
+msgstr ""
+
 msgid "Post reply"
 msgstr ""
 
@@ -1172,21 +1216,6 @@ msgstr "Repliko"
 msgid "Report"
 msgstr "Raporto"
 
-msgid "Reset"
-msgstr "Rivendos"
-
-msgid "Reset all configuration options?"
-msgstr "Rikrijoni te gjitha opsionet e konfigurimit?"
-
-msgid "Reset all settings?"
-msgstr "Rikrijoni te gjitha cilesimet?"
-
-msgid "Reset board configuration?"
-msgstr ""
-
-msgid "Restrict New Posts"
-msgstr "Kufizo Postimet e Reja"
-
 msgid "Reports"
 msgstr "Raportimet"
 
@@ -1205,6 +1234,21 @@ msgstr ""
 msgid "Required."
 msgstr "E detyrueshme."
 
+msgid "Reset"
+msgstr "Rivendos"
+
+msgid "Reset all configuration options?"
+msgstr "Rikrijoni te gjitha opsionet e konfigurimit?"
+
+msgid "Reset all settings?"
+msgstr "Rikrijoni te gjitha cilesimet?"
+
+msgid "Reset board configuration?"
+msgstr ""
+
+msgid "Restrict New Posts"
+msgstr "Kufizo Postimet e Reja"
+
 msgid "Return"
 msgstr "Kthehu"
 
@@ -1216,6 +1260,9 @@ msgstr "Roli"
 
 msgid "Rules"
 msgstr "Rregullat"
+
+msgid "Scale"
+msgstr ""
 
 msgid "Scroll down to the bottom of the page."
 msgstr ""
@@ -1328,6 +1375,9 @@ msgstr ""
 "Ky cilesim eshte thjesht kozmetik. Per te parandaluar aksesin, konfiguroni "
 "serverin tuaj HTTPS qe te kerkoje autorizim me fjalekalim."
 
+msgid "Thread"
+msgstr ""
+
 msgid "Thread deleted."
 msgstr ""
 
@@ -1336,6 +1386,12 @@ msgstr "Tema eshte zhvendosur nga %[1]s ne %[2]s."
 
 msgid "Threads"
 msgstr "Temat"
+
+msgid "Threshold"
+msgstr ""
+
+msgid "Thresholds"
+msgstr ""
 
 msgid "Thumbnail Height"
 msgstr "Gjatesia e Thumbnail"
@@ -1443,10 +1499,16 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
+msgid "When %[1]s adds more than %[2]d %[3]s %[4]s within %[5]s, %[6]s."
+msgstr ""
+
 msgid "When %s is mentioned."
 msgstr ""
 
 msgid "When %s receives new replies."
+msgstr ""
+
+msgid "When this amount is exceeded the selected action is taken."
 msgstr ""
 
 msgid ""
@@ -1485,6 +1547,12 @@ msgstr ""
 msgid "Whether the banner is displayed in overboard pages."
 msgstr ""
 
+msgid "Whether the threshold is for individual boards or everywhere."
+msgstr ""
+
+msgid "Whether the threshold is for individual visitors or everyone."
+msgstr ""
+
 msgid "Whether visitors may browse attachments as an image gallery."
 msgstr ""
 "Nese vizitoret mund te shfletojne bashkangjitjet si nje galeri imazhesh."
@@ -1498,6 +1566,9 @@ msgstr "Nese vizitoret mund te raportojne postimet."
 msgid "Whether visitors must pass a CAPTCHA when posting."
 msgstr "Nese vizitoret duhet te kalojne nje CAPTCHA kur postojne."
 
+msgid "Which type of visitor interaction the threshold monitors."
+msgstr ""
+
 msgid "Word Break"
 msgstr "Thyerja e Fjaleve"
 
@@ -1509,5 +1580,11 @@ msgstr ""
 msgid "Your post will be shown once it has been approved."
 msgstr "Postimi juaj do te shfaqet pasi te jete miratuar."
 
+msgid "an individual visitor"
+msgstr ""
+
 msgid "and"
+msgstr ""
+
+msgid "in an individual board"
 msgstr ""

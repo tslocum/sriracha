@@ -30,6 +30,15 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
+msgid "%d pending moderation request"
+msgid_plural "%d pending moderation requests"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
 msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] ""
@@ -96,6 +105,9 @@ msgstr ""
 msgid "Action taken when the keyword is detected."
 msgstr ""
 
+msgid "Action taken when the threshold amount is exceeded."
+msgstr ""
+
 msgid "Add"
 msgstr ""
 
@@ -121,6 +133,9 @@ msgid "Add News"
 msgstr ""
 
 msgid "Add Page"
+msgstr ""
+
+msgid "Add Threshold"
 msgstr ""
 
 msgid "Add board to %s"
@@ -156,7 +171,13 @@ msgstr ""
 msgid "Allow moderators to post site news."
 msgstr ""
 
+msgid "Amount"
+msgstr ""
+
 msgid "An attachment is required."
+msgstr ""
+
+msgid "Anywhere"
 msgstr ""
 
 msgid "Appearance"
@@ -488,6 +509,12 @@ msgstr ""
 msgid "Duplicate file detected."
 msgstr ""
 
+msgid "Duration"
+msgstr ""
+
+msgid "Duration (in seconds) of recent events to match against."
+msgstr ""
+
 msgid "Email"
 msgstr ""
 
@@ -510,6 +537,12 @@ msgid "Enter your password."
 msgstr ""
 
 msgid "Error: %s"
+msgstr ""
+
+msgid "Event"
+msgstr ""
+
+msgid "Everyone"
 msgstr ""
 
 msgid "Exit"
@@ -662,6 +695,12 @@ msgstr ""
 msgid "Incorrect password."
 msgstr ""
 
+msgid "Individual board"
+msgstr ""
+
+msgid "Individual visitor"
+msgstr ""
+
 msgid "Info"
 msgstr ""
 
@@ -713,6 +752,9 @@ msgstr ""
 msgid "Locale used when writing board pages."
 msgstr ""
 
+msgid "Location"
+msgstr ""
+
 msgid "Log In"
 msgstr ""
 
@@ -735,6 +777,9 @@ msgid "Manage Categories"
 msgstr ""
 
 msgid "Manage Subscriptions"
+msgstr ""
+
+msgid "Manage Thresholds"
 msgstr ""
 
 msgid "Manage mode"
@@ -1094,6 +1139,9 @@ msgid ""
 "board-specific instances allowed. Zero allows unlimited instances."
 msgstr ""
 
+msgid "Post"
+msgstr ""
+
 msgid "Post reply"
 msgstr ""
 
@@ -1183,21 +1231,6 @@ msgstr ""
 msgid "Report"
 msgstr ""
 
-msgid "Reset"
-msgstr ""
-
-msgid "Reset all configuration options?"
-msgstr ""
-
-msgid "Reset all settings?"
-msgstr ""
-
-msgid "Reset board configuration?"
-msgstr ""
-
-msgid "Restrict New Posts"
-msgstr ""
-
 msgid "Reports"
 msgstr ""
 
@@ -1216,6 +1249,21 @@ msgstr ""
 msgid "Required."
 msgstr ""
 
+msgid "Reset"
+msgstr ""
+
+msgid "Reset all configuration options?"
+msgstr ""
+
+msgid "Reset all settings?"
+msgstr ""
+
+msgid "Reset board configuration?"
+msgstr ""
+
+msgid "Restrict New Posts"
+msgstr ""
+
 msgid "Return"
 msgstr ""
 
@@ -1226,6 +1274,9 @@ msgid "Role"
 msgstr ""
 
 msgid "Rules"
+msgstr ""
+
+msgid "Scale"
 msgstr ""
 
 msgid "Scroll down to the bottom of the page."
@@ -1335,6 +1386,9 @@ msgid ""
 "HTTPS server to require password authorization."
 msgstr ""
 
+msgid "Thread"
+msgstr ""
+
 msgid "Thread deleted."
 msgstr ""
 
@@ -1342,6 +1396,12 @@ msgid "Thread moved from %[1]s to %[2]s."
 msgstr ""
 
 msgid "Threads"
+msgstr ""
+
+msgid "Threshold"
+msgstr ""
+
+msgid "Thresholds"
 msgstr ""
 
 msgid "Thumbnail Height"
@@ -1446,10 +1506,16 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
+msgid "When %[1]s adds more than %[2]d %[3]s %[4]s within %[5]s, %[6]s."
+msgstr ""
+
 msgid "When %s is mentioned."
 msgstr ""
 
 msgid "When %s receives new replies."
+msgstr ""
+
+msgid "When this amount is exceeded the selected action is taken."
 msgstr ""
 
 msgid ""
@@ -1482,6 +1548,12 @@ msgstr ""
 msgid "Whether the banner is displayed in overboard pages."
 msgstr ""
 
+msgid "Whether the threshold is for individual boards or everywhere."
+msgstr ""
+
+msgid "Whether the threshold is for individual visitors or everyone."
+msgstr ""
+
 msgid "Whether visitors may browse attachments as an image gallery."
 msgstr ""
 
@@ -1492,6 +1564,9 @@ msgid "Whether visitors may report posts."
 msgstr ""
 
 msgid "Whether visitors must pass a CAPTCHA when posting."
+msgstr ""
+
+msgid "Which type of visitor interaction the threshold monitors."
 msgstr ""
 
 msgid "Word Break"
@@ -1505,5 +1580,11 @@ msgstr ""
 msgid "Your post will be shown once it has been approved."
 msgstr ""
 
+msgid "an individual visitor"
+msgstr ""
+
 msgid "and"
+msgstr ""
+
+msgid "in an individual board"
 msgstr ""

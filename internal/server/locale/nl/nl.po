@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-07-09 14:33+0000\n"
+"PO-Revision-Date: 2026-07-12 18:19+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -20,6 +20,11 @@ msgid "%d new post"
 msgid_plural "%d new posts"
 msgstr[0] "%d nieuw bericht"
 msgstr[1] "%d nieuwe berichten"
+
+msgid "%d pending moderation request"
+msgid_plural "%d pending moderation requests"
+msgstr[0] "%d moderatieverzoek"
+msgstr[1] "%d moderatieverzoeken"
 
 msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
@@ -80,6 +85,9 @@ msgid "Action taken when the keyword is detected."
 msgstr ""
 "De actie die moet worden uitgevoerd na het detecteren van een trefwoord."
 
+msgid "Action taken when the threshold amount is exceeded."
+msgstr "Er wordt actie ondernomen zodra de drempelwaarde is overschreden."
+
 msgid "Add"
 msgstr "Toevoegen"
 
@@ -106,6 +114,9 @@ msgstr "Nieuws toevoegen"
 
 msgid "Add Page"
 msgstr "Pagina toevoegen"
+
+msgid "Add Threshold"
+msgstr "Drempelwaarde toevoegen"
 
 msgid "Add board to %s"
 msgstr "Forum toevoegen aan %s"
@@ -141,8 +152,14 @@ msgstr "Alles toestaan"
 msgid "Allow moderators to post site news."
 msgstr "Sta toe dat moderators nieuws mogen plaatsen."
 
+msgid "Amount"
+msgstr "Hoeveelheid"
+
 msgid "An attachment is required."
 msgstr "Er is een bijlage vereist."
+
+msgid "Anywhere"
+msgstr "Overal"
 
 msgid "Appearance"
 msgstr "Vormgeving"
@@ -458,6 +475,12 @@ msgstr "Duplicaat in bijlagen ontdekt."
 msgid "Duplicate file detected."
 msgstr "Duplicaatbestand ontdekt."
 
+msgid "Duration"
+msgstr "Duur"
+
+msgid "Duration (in seconds) of recent events to match against."
+msgstr "De duur (in seconden) van recente gebeurtenissen."
+
 msgid "Email"
 msgstr "E-mailen"
 
@@ -481,6 +504,12 @@ msgstr "Voer je wachtwoord in."
 
 msgid "Error: %s"
 msgstr "Foutmelding: %s"
+
+msgid "Event"
+msgstr "Gebeurtenis"
+
+msgid "Everyone"
+msgstr "Iedereen"
 
 msgid "Exit"
 msgstr "Afsluiten"
@@ -644,6 +673,12 @@ msgstr "Ongeldige CAPTCHA-tekst - probeer het opnieuw."
 msgid "Incorrect password."
 msgstr "Het wachtwoord is onjuist."
 
+msgid "Individual board"
+msgstr "Specifiek subforum"
+
+msgid "Individual visitor"
+msgstr "Specifieke bezoeker"
+
 msgid "Info"
 msgstr "Informatie"
 
@@ -699,6 +734,9 @@ msgstr "Taal"
 msgid "Locale used when writing board pages."
 msgstr "De te gebruiken taal op subfora."
 
+msgid "Location"
+msgstr "Locatie"
+
 msgid "Log In"
 msgstr "Inloggen"
 
@@ -722,6 +760,9 @@ msgstr "Categorieën beheren"
 
 msgid "Manage Subscriptions"
 msgstr "Abonnementen beheren"
+
+msgid "Manage Thresholds"
+msgstr "Drempelwaarden beheren"
 
 msgid "Manage mode"
 msgstr "Beheermodus"
@@ -1104,6 +1145,9 @@ msgstr ""
 "Positieve waarden staan voor globale instanties; negatieve voor subfora. 0 = "
 "onbeperkt aantal instanties."
 
+msgid "Post"
+msgstr "Bericht"
+
 msgid "Post reply"
 msgstr "Antwoord plaatsen"
 
@@ -1169,7 +1213,8 @@ msgstr "Herladen is onderbroken — klik om te hervatten."
 msgid "Refreshing thread every %d second. Click to pause."
 msgid_plural "Refreshing thread every %d seconds. Click to pause."
 msgstr[0] "Het bericht wordt elke %d seconde herladen. Klik om te onderbreken."
-msgstr[1] "Het bericht wordt elke %d seconden herladen. Klik om te onderbreken."
+msgstr[1] ""
+"Het bericht wordt elke %d seconden herladen. Klik om te onderbreken."
 
 msgid "Regular expression to search for when a new post is created."
 msgstr ""
@@ -1192,21 +1237,6 @@ msgstr "Beantwoorden"
 msgid "Report"
 msgstr "Melden"
 
-msgid "Reset"
-msgstr "Standaardwaarden"
-
-msgid "Reset all configuration options?"
-msgstr "Weet je zeker dat je alle instellingen wilt terugzetten?"
-
-msgid "Reset all settings?"
-msgstr "Alle instellingen herstellen?"
-
-msgid "Reset board configuration?"
-msgstr "Foruminstellingen terugzetten?"
-
-msgid "Restrict New Posts"
-msgstr "Nieuwe berichten beperken"
-
 msgid "Reports"
 msgstr "Meldingen"
 
@@ -1225,6 +1255,21 @@ msgstr "Vereis dat bezoekers altijd een bijlage toevoegen aan hun berichten."
 msgid "Required."
 msgstr "Vereist."
 
+msgid "Reset"
+msgstr "Standaardwaarden"
+
+msgid "Reset all configuration options?"
+msgstr "Weet je zeker dat je alle instellingen wilt terugzetten?"
+
+msgid "Reset all settings?"
+msgstr "Alle instellingen herstellen?"
+
+msgid "Reset board configuration?"
+msgstr "Foruminstellingen terugzetten?"
+
+msgid "Restrict New Posts"
+msgstr "Nieuwe berichten beperken"
+
 msgid "Return"
 msgstr "Terug"
 
@@ -1236,6 +1281,9 @@ msgstr "Rol"
 
 msgid "Rules"
 msgstr "Regels"
+
+msgid "Scale"
+msgstr "Schaal"
 
 msgid "Scroll down to the bottom of the page."
 msgstr "Ga naar de onderkant van de pagina."
@@ -1348,6 +1396,9 @@ msgstr ""
 "Deze instelling is louter cosmetisch. Als je toegang expliciet wilt "
 "voorkomen, stel dan wachtwoordverificatie in op je https-server."
 
+msgid "Thread"
+msgstr "Gesprek"
+
 msgid "Thread deleted."
 msgstr "Het onderwerp is verwijderd."
 
@@ -1356,6 +1407,12 @@ msgstr "Het onderwerp is verplaatst van %[1]s naar %[2]s."
 
 msgid "Threads"
 msgstr "Onderwerpen"
+
+msgid "Threshold"
+msgstr "Drempelwaarde"
+
+msgid "Thresholds"
+msgstr "Drempelwaarden"
 
 msgid "Thumbnail Height"
 msgstr "Miniatuurhoogte"
@@ -1466,11 +1523,17 @@ msgstr "bezoekersgids"
 msgid "Warning"
 msgstr "Waarschuwing"
 
+msgid "When %[1]s adds more than %[2]d %[3]s %[4]s within %[5]s, %[6]s."
+msgstr "Als %[1]s meer dan %[2]d %[3]s %[4]s binnen %[5]s, %[6]s toevoegt."
+
 msgid "When %s is mentioned."
 msgstr "Als %s vermeld wordt."
 
 msgid "When %s receives new replies."
 msgstr "Als %s nieuwe antwoorden ontvangt."
+
+msgid "When this amount is exceeded the selected action is taken."
+msgstr "Er wordt actie ondernomen zodra deze drempelwaarde is overschreden."
 
 msgid ""
 "Whether identifiers are displayed for each post. Identifiers are generated "
@@ -1510,6 +1573,13 @@ msgstr "Of de banier moet worden getoond op nieuwspagina's."
 msgid "Whether the banner is displayed in overboard pages."
 msgstr "Of de banier moet worden getoond op overzichtspagina's."
 
+msgid "Whether the threshold is for individual boards or everywhere."
+msgstr "Of de drempelwaarde van toepassing is op specifieke subfora of overal."
+
+msgid "Whether the threshold is for individual visitors or everyone."
+msgstr ""
+"Of de drempelwaarde van toepassing is op specifieke bezoekers of iedereen."
+
 msgid "Whether visitors may browse attachments as an image gallery."
 msgstr ""
 "Geef aan of bezoekers bijlagen mogen bekijken in de vorm van een galerij."
@@ -1525,6 +1595,9 @@ msgstr ""
 "Of bezoekers een captcha moeten invullen voorafgaand aan het indienen van "
 "berichten."
 
+msgid "Which type of visitor interaction the threshold monitors."
+msgstr "Welk type interactie moet worden gevolgd."
+
 msgid "Word Break"
 msgstr "Woorden afbreken"
 
@@ -1538,5 +1611,11 @@ msgstr ""
 msgid "Your post will be shown once it has been approved."
 msgstr "Je bericht wordt na goedkeuring getoond."
 
+msgid "an individual visitor"
+msgstr "een individuele bezoeker"
+
 msgid "and"
 msgstr "en"
+
+msgid "in an individual board"
+msgstr "een individueel subforum"
