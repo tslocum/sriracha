@@ -147,6 +147,7 @@ type DB interface {
 	AddReport(r *Report)
 	AllReports() []*Report
 	NumReports(p *Post) int
+	PostReported(p *Post, ipHash string) bool
 	DeleteReports(p *Post)
 
 	// Subscription.

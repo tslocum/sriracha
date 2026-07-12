@@ -257,10 +257,11 @@ func (db *mockDB) AddPostBacklinks(p *Post)                         {}
 func (db *mockDB) HavePostBacklinks() bool                          { return false }
 
 // Report.
-func (db *mockDB) AddReport(r *Report)    {}
-func (db *mockDB) AllReports() []*Report  { return nil }
-func (db *mockDB) NumReports(p *Post) int { return 0 }
-func (db *mockDB) DeleteReports(p *Post)  {}
+func (db *mockDB) AddReport(r *Report)                      {}
+func (db *mockDB) AllReports() []*Report                    { return nil }
+func (db *mockDB) NumReports(p *Post) int                   { return 0 }
+func (db *mockDB) PostReported(p *Post, ipHash string) bool { return false }
+func (db *mockDB) DeleteReports(p *Post)                    {}
 
 // Subscription.
 func (db *mockDB) AddSubscription(s *Subscription)                   {}

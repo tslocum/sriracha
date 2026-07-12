@@ -25,14 +25,15 @@ func (s *Server) serveReport(db serverDB, w http.ResponseWriter, r *http.Request
 	} else if post.Moderated == ModeratedVisible {
 		ipHash := s.hashIP(r)
 
-		timeout := s.checkThresholds(db, time.Now().Unix(), ipHash, EventReport)
-		if timeout != 0 {
-			data := s.buildData(db, w, r)
-			data.BoardError(w, Get(post.Board, data.Account, "Please wait %s before reporting a post.", FormatDuration(time.Duration(timeout)*time.Second)))
-			return
-		}
-
 		numReports := db.NumReports(post)
+		if numReports == 0 || !db.PostReported(post, ipHash) {
+			timeout := s.checkThresholds(db, time.Now().Unix(), ipHash, EventReport)
+			if timeout != 0 {
+				data := s.buildData(db, w, r)
+				data.BoardError(w, Get(post.Board, data.Account, "Please wait %s before reporting a post.", FormatDuration(time.Duration(timeout)*time.Second)))
+				return
+			}
+		}
 		if numReports == 0 {
 			postCopy := post.Copy()
 			for _, info := range allPluginReportHandlers {

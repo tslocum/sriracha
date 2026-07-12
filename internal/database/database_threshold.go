@@ -91,7 +91,7 @@ func (db *DB) ThresholdTimeout(t *Threshold, ipHash string, now int64) int {
 	if !t.Anywhere {
 		query += " board,"
 	}
-	query += " COUNT(*) AS num, MIN(timestamp) AS earliest FROM"
+	query += " COUNT(*), MIN(timestamp) FROM"
 	if t.Event == EventPost || t.Event == EventThread {
 		query += " post"
 	} else {

@@ -72,6 +72,17 @@ func (db *DB) NumReports(p *Post) int {
 	return count
 }
 
+func (db *DB) PostReported(p *Post, ipHash string) bool {
+	var count int
+	err := db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM report WHERE board = $1 AND post = $2 AND ip = $3", p.Board.ID, p.ID, ipHash).Scan(&count)
+	if err == pgx.ErrNoRows {
+		return false
+	} else if err != nil {
+		dbErr(fmt.Errorf("failed to select report count: %w", err))
+	}
+	return count > 0
+}
+
 func (db *DB) DeleteReports(p *Post) {
 	if p.ID == 0 || p.Board == nil {
 		return
