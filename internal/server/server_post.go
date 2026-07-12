@@ -549,15 +549,11 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 
 	post.IP = s.hashIP(r)
 
-	var timeout int
-	for _, t := range s.thresholdCache {
-		if t.Event == EventPost || t.Event == EventThread {
-			duration := db.PostThresholdTimeout(t, post.IP, now)
-			if duration > timeout {
-				timeout = duration
-			}
-		}
+	events := []ThresholdEvent{EventPost}
+	if post.Parent == 0 {
+		events = append(events, EventThread)
 	}
+	timeout := s.checkThresholds(db, now, post.IP, events...)
 	if timeout != 0 {
 		var typeLabel string
 		if post.Parent == 0 {

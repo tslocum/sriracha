@@ -1032,6 +1032,9 @@ msgstr ""
 msgid "Please wait %[1]s before creating a new %[2]s."
 msgstr ""
 
+msgid "Please wait %s before reporting a post."
+msgstr ""
+
 msgid "Plugins"
 msgstr ""
 

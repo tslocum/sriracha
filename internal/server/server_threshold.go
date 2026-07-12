@@ -10,6 +10,19 @@ import (
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
+func (s *Server) checkThresholds(db serverDB, now int64, ipHash string, events ...ThresholdEvent) int {
+	var duration, timeout int
+	for _, event := range events {
+		for _, t := range s.thresholdCache[event] {
+			duration = db.ThresholdTimeout(t, ipHash, now)
+			if duration > timeout {
+				timeout = duration
+			}
+		}
+	}
+	return timeout
+}
+
 func (s *Server) loadThresholdForm(db serverDB, r *http.Request, t *Threshold) {
 	t.Everyone = FormBool(r, "everyone")
 	t.Amount = FormInt(r, "amount")
@@ -17,6 +30,9 @@ func (s *Server) loadThresholdForm(db serverDB, r *http.Request, t *Threshold) {
 	t.Anywhere = FormBool(r, "board")
 	t.Duration = FormInt(r, "duration")
 	t.Action = FormString(r, "action")
+	if t.Event == EventReport && (t.Action == "hide" || t.Action == "report") {
+		t.Action = "delete"
+	}
 }
 
 func (s *Server) serveThreshold(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {

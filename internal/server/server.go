@@ -203,7 +203,7 @@ type Server struct {
 
 	keywordCache map[int][]*cachedKeyword
 
-	thresholdCache []*Threshold
+	thresholdCache map[ThresholdEvent][]*Threshold
 
 	config *Config
 	dbPool *pgxpool.Pool
@@ -252,8 +252,9 @@ func NewServer() *Server {
 		Timeout: 15 * time.Second,
 	}
 	return &Server{
-		captchaCache: make(map[string]string),
-		keywordCache: make(map[int][]*cachedKeyword),
+		captchaCache:   make(map[string]string),
+		keywordCache:   make(map[int][]*cachedKeyword),
+		thresholdCache: make(map[ThresholdEvent][]*Threshold),
 		opt: ServerOptions{
 			Banners: make(map[int][]*Banner),
 			Rules:   make(map[int][]template.HTML),
@@ -1130,7 +1131,17 @@ func (s *Server) refreshKeywordCache(db serverDB) {
 
 // refreshThresholdCache refreshes the threshold cache.
 func (s *Server) refreshThresholdCache(db serverDB) {
-	s.thresholdCache = db.AllThresholds()
+	for event := range s.thresholdCache {
+		s.thresholdCache[event] = s.thresholdCache[event][:0]
+	}
+	for _, t := range db.AllThresholds() {
+		s.thresholdCache[t.Event] = append(s.thresholdCache[t.Event], t)
+	}
+	for event := range s.thresholdCache {
+		if len(s.thresholdCache[event]) == 0 {
+			delete(s.thresholdCache, event)
+		}
+	}
 }
 
 func (s *Server) _processCategory(c *Category) {

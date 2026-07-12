@@ -131,7 +131,6 @@ type DB interface {
 	NumPosts(filterBoard *Board, since int64) int
 	ReplyCount(threadID int) int
 	MaxPostID() int
-	PostThresholdTimeout(t *Threshold, ipHash string, now int64) int
 	BumpThread(threadID int, timestamp int64)
 	ModeratePost(postID int, moderated PostModerated)
 	StickyPost(postID int, sticky bool)
@@ -167,5 +166,6 @@ type DB interface {
 	ThresholdByID(id int) *Threshold
 	AllThresholds() []*Threshold
 	UpdateThreshold(t *Threshold)
+	ThresholdTimeout(t *Threshold, ipHash string, now int64) int
 	DeleteThreshold(id int)
 }

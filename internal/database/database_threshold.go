@@ -85,6 +85,74 @@ func (db *DB) UpdateThreshold(t *Threshold) {
 	}
 }
 
+// ThresholdTimeout returns the number of seconds remaining until the provided threshold no longer applies, or zero.
+func (db *DB) ThresholdTimeout(t *Threshold, ipHash string, now int64) int {
+	query := "SELECT"
+	if !t.Anywhere {
+		query += " board,"
+	}
+	query += " COUNT(*) AS num, MIN(timestamp) AS earliest FROM"
+	if t.Event == EventPost || t.Event == EventThread {
+		query += " post"
+	} else {
+		query += " report"
+	}
+	query += " WHERE"
+	var extra []string
+	var args []any
+	if !t.Everyone {
+		extra = append(extra, fmt.Sprintf(" ip = $%d", len(args)+1))
+		args = append(args, ipHash)
+	}
+	extra = append(extra, fmt.Sprintf(" timestamp >= $%d", len(args)+1))
+	args = append(args, now-int64(t.Duration))
+	if t.Event == EventThread {
+		extra = append(extra, " parent IS NULL")
+	}
+	for i, e := range extra {
+		if i != 0 {
+			query += " AND"
+		}
+		query += e
+	}
+	if !t.Anywhere {
+		query += " GROUP BY BOARD"
+	}
+	rows, err := db.conn.Query(context.Background(), query, args...)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return 0
+		}
+		dbErr(fmt.Errorf("failed to select threshold count: %w", err))
+	}
+	var results []thresholdResult
+	for rows.Next() {
+		var r thresholdResult
+		var earliest *int64
+		if t.Anywhere {
+			err = rows.Scan(&r.amount, &earliest)
+		} else {
+			err = rows.Scan(&r.board, &r.amount, &earliest)
+		}
+		if err != nil {
+			dbErr(fmt.Errorf("failed to scan threshold count: %w", err))
+		}
+		if earliest != nil {
+			r.earliest = *earliest
+		}
+		results = append(results, r)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select threshold count: %w", rows.Err()))
+	}
+	for _, r := range results {
+		if r.amount >= t.Amount {
+			return max(t.Duration-int(now-r.earliest), 1)
+		}
+	}
+	return 0
+}
+
 func (db *DB) DeleteThreshold(id int) {
 	if id <= 0 {
 		return
@@ -119,6 +187,6 @@ func scanThreshold(t *Threshold, row pgx.Row) error {
 
 type thresholdResult struct {
 	board    int
-	posts    int
+	amount   int
 	earliest int64
 }

@@ -423,68 +423,6 @@ func (db *DB) MaxPostID() int {
 	return id
 }
 
-// PostThresholdTimeout returns the number of seconds until another post may be added.
-func (db *DB) PostThresholdTimeout(t *Threshold, ipHash string, now int64) int {
-	query := "SELECT"
-	if !t.Anywhere {
-		query += " board,"
-	}
-	query += " COUNT(*) AS num, MIN(timestamp) AS earliest FROM post WHERE"
-	var extra []string
-	var args []any
-	if !t.Everyone {
-		extra = append(extra, fmt.Sprintf(" ip = $%d", len(args)+1))
-		args = append(args, ipHash)
-	}
-	extra = append(extra, fmt.Sprintf(" timestamp >= $%d", len(args)+1))
-	args = append(args, now-int64(t.Duration))
-	if t.Event == EventThread {
-		extra = append(extra, " parent IS NULL")
-	}
-	for i, e := range extra {
-		if i != 0 {
-			query += " AND"
-		}
-		query += e
-	}
-	if !t.Anywhere {
-		query += " GROUP BY BOARD"
-	}
-	rows, err := db.conn.Query(context.Background(), query, args...)
-	if err != nil {
-		if err == pgx.ErrNoRows {
-			return 0
-		}
-		dbErr(fmt.Errorf("failed to select post count: %w", err))
-	}
-	var results []thresholdResult
-	for rows.Next() {
-		var r thresholdResult
-		var earliest *int64
-		if t.Anywhere {
-			err = rows.Scan(&r.posts, &earliest)
-		} else {
-			err = rows.Scan(&r.board, &r.posts, &earliest)
-		}
-		if err != nil {
-			dbErr(fmt.Errorf("failed to scan post count: %w", err))
-		}
-		if earliest != nil {
-			r.earliest = *earliest
-		}
-		results = append(results, r)
-	}
-	if rows.Err() != nil {
-		dbErr(fmt.Errorf("failed to select post count: %w", rows.Err()))
-	}
-	for _, r := range results {
-		if r.posts >= t.Amount {
-			return max(t.Duration-int(now-r.earliest), 1)
-		}
-	}
-	return 0
-}
-
 func (db *DB) BumpThread(threadID int, timestamp int64) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE post SET bumped = $1 WHERE id = $2 AND bumped < $1", timestamp, threadID)
 	if err != nil {

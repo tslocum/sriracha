@@ -23,6 +23,15 @@ func (s *Server) serveReport(db serverDB, w http.ResponseWriter, r *http.Request
 		data.BoardError(w, Get(nil, data.Account, "No post selected."))
 		return
 	} else if post.Moderated == ModeratedVisible {
+		ipHash := s.hashIP(r)
+
+		timeout := s.checkThresholds(db, time.Now().Unix(), ipHash, EventReport)
+		if timeout != 0 {
+			data := s.buildData(db, w, r)
+			data.BoardError(w, Get(post.Board, data.Account, "Please wait %s before reporting a post.", FormatDuration(time.Duration(timeout)*time.Second)))
+			return
+		}
+
 		numReports := db.NumReports(post)
 		if numReports == 0 {
 			postCopy := post.Copy()
@@ -40,7 +49,7 @@ func (s *Server) serveReport(db serverDB, w http.ResponseWriter, r *http.Request
 			Board:     post.Board,
 			Post:      post,
 			Timestamp: time.Now().Unix(),
-			IP:        s.hashIP(r),
+			IP:        ipHash,
 		}
 		db.AddReport(report)
 		s.writeModQueue(db)
