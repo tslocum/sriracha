@@ -549,19 +549,27 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 
 	post.IP = s.hashIP(r)
 
-	delay := 30 // TODO replace with threshold
-	// calculate next valid post time
-	if delay != 0 {
-		lastPost := db.LastPostByIP(post.Board, post.IP)
-		if lastPost != nil {
-			nextPost := lastPost.Timestamp + int64(delay)
-			if time.Now().Unix() < nextPost {
-				waitTime := time.Until(time.Unix(nextPost, 0)) // This should be rounded to the nearest second. Oh well.
-				data := s.buildData(db, w, r)
-				data.BoardError(w, Get(b, data.Account, "Please wait %s before creating a new post.", waitTime))
-				return
+	var timeout int
+	var matchedThreshold *Threshold
+	for _, t := range s.thresholdCache {
+		if t.Event == EventPost || t.Event == EventThread {
+			duration := db.PostThresholdTimeout(t, post.IP, now)
+			if duration > timeout {
+				timeout = duration
+				matchedThreshold = t
 			}
 		}
+	}
+	if timeout != 0 {
+		var typeLabel string
+		if matchedThreshold.Event == EventThread {
+			typeLabel = G(b, data.Account, "Thread")
+		} else {
+			typeLabel = G(b, data.Account, "Post")
+		}
+		data := s.buildData(db, w, r)
+		data.BoardError(w, Get(b, data.Account, "Please wait %s before creating a new %s.", FormatDuration(time.Duration(timeout)*time.Second), strings.ToLower(typeLabel)))
+		return
 	}
 
 	err := s.loadPostForm(db, r, post)

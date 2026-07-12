@@ -243,18 +243,19 @@ func (db *mockDB) ReplyCount(threadID int) int {
 	}
 	return replies
 }
-func (db *mockDB) MaxPostID() int                                   { return 0 }
-func (db *mockDB) BumpThread(threadID int, timestamp int64)         {}
-func (db *mockDB) ModeratePost(postID int, moderated PostModerated) {}
-func (db *mockDB) StickyPost(postID int, sticky bool)               {}
-func (db *mockDB) LockPost(postID int, lock bool)                   {}
-func (db *mockDB) UpdatePostBoard(postID int, board *Board)         {}
-func (db *mockDB) UpdatePostNameblock(postID int, nameblock string) {}
-func (db *mockDB) UpdatePostMessage(postID int, message string)     {}
-func (db *mockDB) DeletePost(postID int)                            {}
-func (db *mockDB) AddPostBacklink(target *Post, sourceID int)       {}
-func (db *mockDB) AddPostBacklinks(p *Post)                         {}
-func (db *mockDB) HavePostBacklinks() bool                          { return false }
+func (db *mockDB) MaxPostID() int                                                  { return 0 }
+func (db *mockDB) PostThresholdTimeout(t *Threshold, ipHash string, now int64) int { return 0 }
+func (db *mockDB) BumpThread(threadID int, timestamp int64)                        {}
+func (db *mockDB) ModeratePost(postID int, moderated PostModerated)                {}
+func (db *mockDB) StickyPost(postID int, sticky bool)                              {}
+func (db *mockDB) LockPost(postID int, lock bool)                                  {}
+func (db *mockDB) UpdatePostBoard(postID int, board *Board)                        {}
+func (db *mockDB) UpdatePostNameblock(postID int, nameblock string)                {}
+func (db *mockDB) UpdatePostMessage(postID int, message string)                    {}
+func (db *mockDB) DeletePost(postID int)                                           {}
+func (db *mockDB) AddPostBacklink(target *Post, sourceID int)                      {}
+func (db *mockDB) AddPostBacklinks(p *Post)                                        {}
+func (db *mockDB) HavePostBacklinks() bool                                         { return false }
 
 // Report.
 func (db *mockDB) AddReport(r *Report)    {}

@@ -1029,7 +1029,7 @@ msgstr ""
 msgid "Please upload a file, enter an embed URL or enter a message."
 msgstr ""
 
-msgid "Please wait %s before creating a new post."
+msgid "Please wait %s before creating a new %s."
 msgstr ""
 
 msgid "Plugins"

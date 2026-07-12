@@ -116,3 +116,9 @@ func scanThreshold(t *Threshold, row pgx.Row) error {
 	t.Anywhere = anywhere == 1
 	return nil
 }
+
+type thresholdResult struct {
+	board    int
+	posts    int
+	earliest int64
+}

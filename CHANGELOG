@@ -2,6 +2,7 @@
 - Add auto-refresh status indicator
 - Support pausing and resuming auto-refresh
 - Support receiving notifications for new replies
+- Replace board delay setting with configurable thresholds
 
 1.8.3:
 - Add board setting to require an attachment

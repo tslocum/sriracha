@@ -203,6 +203,8 @@ type Server struct {
 
 	keywordCache map[int][]*cachedKeyword
 
+	thresholdCache []*Threshold
+
 	config *Config
 	dbPool *pgxpool.Pool
 	opt    ServerOptions
@@ -1128,7 +1130,7 @@ func (s *Server) refreshKeywordCache(db serverDB) {
 
 // refreshThresholdCache refreshes the threshold cache.
 func (s *Server) refreshThresholdCache(db serverDB) {
-	// TODO
+	s.thresholdCache = db.AllThresholds()
 }
 
 func (s *Server) _processCategory(c *Category) {
@@ -2705,6 +2707,7 @@ func (s *Server) Run() error {
 	s.refreshRulesCache(db)
 	s.refreshCategoryCache(db)
 	s.refreshKeywordCache(db)
+	s.refreshThresholdCache(db)
 	sv := db.GetString("sv") // Sriracha version.
 	if sv != SrirachaVersion {
 		if sv != "" {
