@@ -439,7 +439,7 @@ func (db *DB) PostThresholdTimeout(t *Threshold, ipHash string, now int64) int {
 	extra = append(extra, fmt.Sprintf(" timestamp >= $%d", len(args)+1))
 	args = append(args, now-int64(t.Duration))
 	if t.Event == EventThread {
-		extra = append(extra, " parent = 0")
+		extra = append(extra, " parent IS NULL")
 	}
 	for i, e := range extra {
 		if i != 0 {

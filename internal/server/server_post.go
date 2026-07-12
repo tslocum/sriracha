@@ -550,25 +550,23 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 	post.IP = s.hashIP(r)
 
 	var timeout int
-	var matchedThreshold *Threshold
 	for _, t := range s.thresholdCache {
 		if t.Event == EventPost || t.Event == EventThread {
 			duration := db.PostThresholdTimeout(t, post.IP, now)
 			if duration > timeout {
 				timeout = duration
-				matchedThreshold = t
 			}
 		}
 	}
 	if timeout != 0 {
 		var typeLabel string
-		if matchedThreshold.Event == EventThread {
+		if post.Parent == 0 {
 			typeLabel = G(b, data.Account, "Thread")
 		} else {
 			typeLabel = G(b, data.Account, "Post")
 		}
 		data := s.buildData(db, w, r)
-		data.BoardError(w, Get(b, data.Account, "Please wait %s before creating a new %s.", FormatDuration(time.Duration(timeout)*time.Second), strings.ToLower(typeLabel)))
+		data.BoardError(w, Get(b, data.Account, "Please wait %[1]s before creating a new %[2]s.", FormatDuration(time.Duration(timeout)*time.Second), strings.ToLower(typeLabel)))
 		return
 	}
 
