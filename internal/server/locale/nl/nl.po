@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-07-12 18:19+0000\n"
+"PO-Revision-Date: 2026-07-13 14:35+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -510,6 +510,9 @@ msgstr "Gebeurtenis"
 
 msgid "Everyone"
 msgstr "Iedereen"
+
+msgid "Exceeded %s threshold."
+msgstr "De drempelwaarde van %s is overschreden."
 
 msgid "Exit"
 msgstr "Afsluiten"
@@ -1132,8 +1135,11 @@ msgstr "Upload een bestand."
 msgid "Please upload a file, enter an embed URL or enter a message."
 msgstr "Upload een bestand of voer een insluit-url of bericht in."
 
-msgid "Please wait %s before creating a new post."
-msgstr "Wacht %s alvorens een nieuw bericht op te stellen."
+msgid "Please wait %[1]s before creating a new %[2]s."
+msgstr "Wacht %[1]s voordat je een nieuw %[2]s maakt."
+
+msgid "Please wait %s before reporting a post."
+msgstr "Wacht %s voordat je een bericht meldt."
 
 msgid "Plugins"
 msgstr "Plug-ins"
@@ -1502,6 +1508,9 @@ msgstr "Recentste bekijken"
 msgid "View posts by author"
 msgstr "Berichten van auteur bekijken"
 
+msgid "View Sriracha manual subsection"
+msgstr "Relevant hoofdstuk in Sriracha-handleiding bekijken"
+
 msgid "Visibility"
 msgstr "Zichtbaarheid"
 
@@ -1619,3 +1628,6 @@ msgstr "en"
 
 msgid "in an individual board"
 msgstr "een individueel subforum"
+
+#~ msgid "Please wait %s before creating a new post."
+#~ msgstr "Wacht %s alvorens een nieuw bericht op te stellen."

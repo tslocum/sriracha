@@ -509,6 +509,9 @@ msgstr ""
 msgid "Everyone"
 msgstr ""
 
+msgid "Exceeded %s threshold."
+msgstr ""
+
 msgid "Exit"
 msgstr "Выход"
 
@@ -1086,8 +1089,11 @@ msgstr ""
 msgid "Please upload a file, enter an embed URL or enter a message."
 msgstr ""
 
-msgid "Please wait %s before creating a new post."
-msgstr "Пожалуйста, подождите %s перед созданием новой темы."
+msgid "Please wait %[1]s before creating a new %[2]s."
+msgstr ""
+
+msgid "Please wait %s before reporting a post."
+msgstr ""
 
 msgid "Plugins"
 msgstr "Плагины"
@@ -1442,6 +1448,9 @@ msgstr ""
 msgid "View posts by author"
 msgstr ""
 
+msgid "View Sriracha manual subsection"
+msgstr ""
+
 msgid "Visibility"
 msgstr ""
 
@@ -1543,3 +1552,6 @@ msgstr ""
 
 msgid "in an individual board"
 msgstr ""
+
+#~ msgid "Please wait %s before creating a new post."
+#~ msgstr "Пожалуйста, подождите %s перед созданием новой темы."

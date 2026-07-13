@@ -545,6 +545,9 @@ msgstr ""
 msgid "Everyone"
 msgstr ""
 
+msgid "Exceeded %s threshold."
+msgstr ""
+
 msgid "Exit"
 msgstr ""
 
@@ -1128,7 +1131,10 @@ msgstr ""
 msgid "Please upload a file, enter an embed URL or enter a message."
 msgstr ""
 
-msgid "Please wait %s before creating a new post."
+msgid "Please wait %[1]s before creating a new %[2]s."
+msgstr ""
+
+msgid "Please wait %s before reporting a post."
 msgstr ""
 
 msgid "Plugins"
@@ -1485,6 +1491,9 @@ msgid "View latest"
 msgstr ""
 
 msgid "View posts by author"
+msgstr ""
+
+msgid "View Sriracha manual subsection"
 msgstr ""
 
 msgid "Visibility"

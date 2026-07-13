@@ -506,6 +506,9 @@ msgstr ""
 msgid "Everyone"
 msgstr ""
 
+msgid "Exceeded %s threshold."
+msgstr ""
+
 msgid "Exit"
 msgstr "Dalje"
 
@@ -1114,8 +1117,11 @@ msgstr ""
 msgid "Please upload a file, enter an embed URL or enter a message."
 msgstr ""
 
-msgid "Please wait %s before creating a new post."
-msgstr "Ju lutem prisni %s para se te krijoni nje postim te ri."
+msgid "Please wait %[1]s before creating a new %[2]s."
+msgstr ""
+
+msgid "Please wait %s before reporting a post."
+msgstr ""
 
 msgid "Plugins"
 msgstr "Plugins"
@@ -1478,6 +1484,9 @@ msgstr ""
 msgid "View posts by author"
 msgstr "Shiko postimet e autorit"
 
+msgid "View Sriracha manual subsection"
+msgstr ""
+
 msgid "Visibility"
 msgstr "Shikueshmeria"
 
@@ -1588,3 +1597,6 @@ msgstr ""
 
 msgid "in an individual board"
 msgstr ""
+
+#~ msgid "Please wait %s before creating a new post."
+#~ msgstr "Ju lutem prisni %s para se te krijoni nje postim te ri."
