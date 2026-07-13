@@ -2020,7 +2020,12 @@ func (s *Server) reloadBans(db serverDB) {
 
 // handleBanAction handles banning a visitor when the provided action specifies
 // it and returns "delete". Otherwise, the provided action is returned.
-func (s *Server) handleBanAction(db serverDB, action string, ipHash string, reason string, info string) string {
+func (s *Server) handleBanAction(db serverDB, account *Account, action string, ipHash string, reason string, info string) string {
+	// Exempt staff members.
+	if account != nil {
+		return "delete"
+	}
+
 	// Parse action.
 	var banExpire int64
 	switch action {

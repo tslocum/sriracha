@@ -1,8 +1,10 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -27,8 +29,9 @@ func (s *Server) serveReport(db serverDB, w http.ResponseWriter, r *http.Request
 
 		numReports := db.NumReports(post)
 		if numReports == 0 || !db.PostReported(post, ipHash) {
-			timeout := s.checkThresholds(db, time.Now().Unix(), ipHash, EventReport)
+			timeout, threshold := s.checkThresholds(db, time.Now().Unix(), ipHash, EventReport)
 			if timeout != 0 {
+				s.handleBanAction(db, data.Account, threshold.Action, post.IP, Get(nil, nil, "Exceeded %s threshold.", strings.ToLower(Get(nil, nil, "Report"))), fmt.Sprintf("Exceeded >>/threshold/%d", threshold.ID))
 				data := s.buildData(db, w, r)
 				data.BoardError(w, Get(post.Board, data.Account, "Please wait %s before reporting a post.", FormatDuration(time.Duration(timeout)*time.Second)))
 				return

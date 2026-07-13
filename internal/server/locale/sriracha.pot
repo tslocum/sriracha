@@ -482,6 +482,9 @@ msgstr ""
 msgid "Everyone"
 msgstr ""
 
+msgid "Exceeded %s threshold."
+msgstr ""
+
 msgid "Exit"
 msgstr ""
 

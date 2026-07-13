@@ -10,17 +10,18 @@ import (
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-func (s *Server) checkThresholds(db serverDB, now int64, ipHash string, events ...ThresholdEvent) int {
-	var duration, timeout int
+func (s *Server) checkThresholds(db serverDB, now int64, ipHash string, events ...ThresholdEvent) (timeout int, match *Threshold) {
+	var duration int
 	for _, event := range events {
 		for _, t := range s.thresholdCache[event] {
 			duration = db.ThresholdTimeout(t, ipHash, now)
 			if duration > timeout {
 				timeout = duration
+				match = t
 			}
 		}
 	}
-	return timeout
+	return timeout, match
 }
 
 func (s *Server) loadThresholdForm(db serverDB, r *http.Request, t *Threshold) {

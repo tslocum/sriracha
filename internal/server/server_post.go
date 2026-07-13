@@ -549,23 +549,6 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 
 	post.IP = s.hashIP(r)
 
-	events := []ThresholdEvent{EventPost}
-	if post.Parent == 0 {
-		events = append(events, EventThread)
-	}
-	timeout := s.checkThresholds(db, now, post.IP, events...)
-	if timeout != 0 {
-		var typeLabel string
-		if post.Parent == 0 {
-			typeLabel = G(b, data.Account, "Thread")
-		} else {
-			typeLabel = G(b, data.Account, "Post")
-		}
-		data := s.buildData(db, w, r)
-		data.BoardError(w, Get(b, data.Account, "Please wait %[1]s before creating a new %[2]s.", FormatDuration(time.Duration(timeout)*time.Second), strings.ToLower(typeLabel)))
-		return
-	}
-
 	err := s.loadPostForm(db, r, post)
 	if err != nil {
 		s.deletePostFiles(post)
@@ -589,6 +572,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 
 	oekakiPost := b.Oekaki && FormBool(r, "oekaki")
 
+	var addReport bool
 	var solvedCAPTCHA *CAPTCHA
 	if !staffPost {
 		if b.Lock == LockThread && parentPost == nil {
@@ -598,6 +582,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 			data.BoardError(w, Get(b, data.Account, "Board locked. You may only reply to threads."))
 			return
 		}
+
 		if s.opt.CAPTCHA {
 			expired := db.ExpiredCAPTCHAs()
 			if len(expired) != 0 {
@@ -622,6 +607,34 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 
 				data := s.buildData(db, w, r)
 				data.BoardError(w, Get(b, data.Account, "Incorrect CAPTCHA text. Please try again."))
+				return
+			}
+		}
+
+		events := []ThresholdEvent{EventPost}
+		if post.Parent == 0 {
+			events = append(events, EventThread)
+		}
+		timeout, threshold := s.checkThresholds(db, now, post.IP, events...)
+		if timeout != 0 {
+			data := s.buildData(db, w, r)
+			action := s.handleBanAction(db, data.Account, threshold.Action, post.IP, Get(nil, nil, "Exceeded %s threshold.", strings.ToLower(Get(nil, nil, "Post"))), fmt.Sprintf("Exceeded >>/threshold/%d", threshold.ID))
+			switch action {
+			case "hide":
+				post.Moderated = 0
+			case "report":
+				addReport = true
+			case "delete":
+				s.deletePostFiles(post)
+
+				var typeLabel string
+				if post.Parent == 0 {
+					typeLabel = G(b, data.Account, "Thread")
+				} else {
+					typeLabel = G(b, data.Account, "Post")
+				}
+				data := s.buildData(db, w, r)
+				data.BoardError(w, Get(b, data.Account, "Please wait %[1]s before creating a new %[2]s.", FormatDuration(time.Duration(timeout)*time.Second), strings.ToLower(typeLabel)))
 				return
 			}
 		}
@@ -843,7 +856,6 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		post.Message = html.UnescapeString(post.Message)
 	}
 
-	var addReport bool
 	if !staffPost {
 		if parentPost != nil && parentPost.Locked {
 			s.deletePostFiles(post)
@@ -859,7 +871,8 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 			}
 
 			// Keyword matched. Handle action.
-			action := s.handleBanAction(db, k.a, post.IP, Get(nil, nil, "Detected banned keyword."), fmt.Sprintf("Detected >>/keyword/%d", k.id))
+			data := s.buildData(db, w, r)
+			action := s.handleBanAction(db, data.Account, k.a, post.IP, Get(nil, nil, "Detected banned keyword."), fmt.Sprintf("Detected >>/keyword/%d", k.id))
 			switch action {
 			case "hide":
 				post.Moderated = 0
