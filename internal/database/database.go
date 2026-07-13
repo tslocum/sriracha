@@ -110,7 +110,6 @@ func (db *DB) initialize() error {
 	if err != nil {
 		return fmt.Errorf("failed to create database: %w", err)
 	}
-	fmt.Printf("Database initialized.\n")
 	return nil
 }
 
@@ -178,8 +177,6 @@ func (db *DB) upgrade(rootDir string) error {
 	if err = db.conn.Conn().DeallocateAll(context.Background()); err != nil {
 		return fmt.Errorf("failed to deallocate prepared statements after migration")
 	}
-
-	fmt.Printf("Database upgraded successfully.\n")
 	return nil
 }
 
