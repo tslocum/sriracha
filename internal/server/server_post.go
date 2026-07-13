@@ -617,7 +617,6 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		}
 		timeout, threshold := s.checkThresholds(db, now, post.IP, events...)
 		if timeout != 0 {
-			data := s.buildData(db, w, r)
 			action := s.handleBanAction(db, data.Account, threshold.Action, post.IP, Get(nil, nil, "Exceeded %s threshold.", strings.ToLower(Get(nil, nil, "Post"))), fmt.Sprintf("Exceeded >>/threshold/%d", threshold.ID))
 			switch action {
 			case "hide":

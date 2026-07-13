@@ -66,6 +66,15 @@ func (s *Server) serveThreshold(data *templateData, db serverDB, w http.Response
 		return
 	}
 
+	thresholdExists := func(t *Threshold) bool {
+		for _, th := range db.AllThresholds() {
+			if t.ID != th.ID && t.Everyone == th.Everyone && t.Amount == th.Amount && t.Event == th.Event && t.Anywhere == th.Anywhere && t.Duration == th.Duration {
+				return true
+			}
+		}
+		return false
+	}
+
 	thresholdID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/threshold/"))
 	if err == nil && thresholdID > 0 {
 		data.Manage.Threshold = db.ThresholdByID(thresholdID)
@@ -79,7 +88,10 @@ func (s *Server) serveThreshold(data *templateData, db serverDB, w http.Response
 				return
 			}
 
-			// TODO check existing
+			if thresholdExists(data.Manage.Threshold) {
+				data.ManageError("A threshold with that configuration already exists.")
+				return
+			}
 
 			db.UpdateThreshold(data.Manage.Threshold)
 			s.refreshThresholdCache(db)
@@ -102,7 +114,10 @@ func (s *Server) serveThreshold(data *templateData, db serverDB, w http.Response
 			return
 		}
 
-		// TODO check existing
+		if thresholdExists(t) {
+			data.ManageError("A threshold with that configuration already exists.")
+			return
+		}
 
 		db.AddThreshold(t)
 		s.refreshThresholdCache(db)
