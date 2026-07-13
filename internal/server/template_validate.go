@@ -63,69 +63,90 @@ func (s *Server) validateTemplates(ts *Server) error {
 				board = img
 			}
 
-			data := ts.newTemplateData(db)
-			data.Categories = db.AllCategories()
-			data.Template = templateName
-			if c.board {
-				data.Board = board
-			}
-			data.Boards = allBoards
-			if c.thread || c.threads {
-				for _, thread := range db.AllThreads(board, true) {
-					data.Threads = append(data.Threads, db.AllPostsInThread(thread[0], true))
-					if c.thread {
-						break
+			for j := 0; j < 3; j++ {
+				data := ts.newTemplateData(db)
+				data.Categories = db.AllCategories()
+				data.Template = templateName
+				if c.board {
+					data.Board = board
+				}
+				data.Boards = allBoards
+				if c.thread || c.threads {
+					for _, thread := range db.AllThreads(board, true) {
+						data.Threads = append(data.Threads, db.AllPostsInThread(thread[0], true))
+						if c.thread {
+							break
+						}
 					}
 				}
-			}
-			if c.thread {
-				data.ReplyMode = 1
+				if c.thread {
+					data.ReplyMode = 1
+				}
+
+				if strings.HasPrefix(templateName, "manage_") {
+					data.Account = &Account{
+						ID:       1,
+						Username: "admin",
+						Role:     RoleSuperAdmin,
+					}
+				}
+				if c.manageBanner {
+					data.Manage.Banner = &Banner{}
+					for add := 0; add < j; add++ {
+						data.Manage.Banners = append(data.Manage.Banners, data.Manage.Banner)
+					}
+				}
+				if c.manageBoard {
+					data.Manage.Board = board
+					for add := 0; add < j; add++ {
+						data.Manage.Boards = append(data.Manage.Boards, data.Manage.Board)
+					}
+				}
+				if c.manageCategory {
+					data.Manage.Category = data.Categories[0]
+					for add := 0; add < j; add++ {
+						data.Categories = append(data.Categories, data.Manage.Category)
+					}
+				}
+				if c.manageKeyword {
+					data.Manage.Keyword = &Keyword{
+						ID:     1,
+						Text:   "keyword",
+						Action: "hide",
+						Boards: allBoards,
+					}
+					for add := 0; add < j; add++ {
+						data.Manage.Keywords = append(data.Manage.Keywords, data.Manage.Keyword)
+					}
+				}
+				if c.managePage {
+					data.Manage.Page = &Page{
+						ID:      1,
+						Path:    "path",
+						Content: "content",
+					}
+					for add := 0; add < j; add++ {
+						data.Manage.Pages = append(data.Manage.Pages, data.Manage.Page)
+					}
+				}
+				if c.manageThreshold {
+					data.Manage.Threshold = &Threshold{
+						ID:       1,
+						Amount:   1,
+						Duration: 30,
+						Action:   "delete",
+					}
+					for add := 0; add < j; add++ {
+						data.Manage.Thresholds = append(data.Manage.Thresholds, data.Manage.Threshold)
+					}
+				}
+
+				err := data.executeWithError(io.Discard)
+				if err != nil {
+					return fmt.Errorf("failed to execute template %s: %s", data.Template, err)
+				}
 			}
 
-			if strings.HasPrefix(templateName, "manage_") {
-				data.Account = &Account{
-					ID:       1,
-					Username: "admin",
-					Role:     RoleSuperAdmin,
-				}
-			}
-			if c.manageBanner {
-				data.Manage.Banner = &Banner{}
-			}
-			if c.manageBoard {
-				data.Manage.Board = board
-			}
-			if c.manageCategory {
-				data.Manage.Category = data.Categories[0]
-			}
-			if c.manageKeyword {
-				data.Manage.Keyword = &Keyword{
-					ID:     1,
-					Text:   "keyword",
-					Action: "hide",
-					Boards: allBoards,
-				}
-			}
-			if c.managePage {
-				data.Manage.Page = &Page{
-					ID:      1,
-					Path:    "path",
-					Content: "content",
-				}
-			}
-			if c.manageThreshold {
-				data.Manage.Threshold = &Threshold{
-					ID:       1,
-					Amount:   1,
-					Duration: 30,
-					Action:   "delete",
-				}
-			}
-
-			err := data.executeWithError(io.Discard)
-			if err != nil {
-				return fmt.Errorf("failed to execute template %s: %s", data.Template, err)
-			}
 			if !boardTemplate {
 				break
 			}
