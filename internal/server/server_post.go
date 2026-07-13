@@ -858,62 +858,14 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 				continue
 			}
 
-			// Keyword matched. Parse action.
-			var action string
-			var banExpire int64
-			switch k.a {
-			case "hide":
-				action = "hide"
-			case "report":
-				action = "report"
-			case "delete":
-				action = "delete"
-			case "ban1h":
-				action = "ban"
-				banExpire = time.Now().Add(1 * time.Hour).Unix()
-			case "ban1d":
-				action = "ban"
-				banExpire = time.Now().Add(24 * time.Hour).Unix()
-			case "ban2d":
-				action = "ban"
-				banExpire = time.Now().Add(2 * 24 * time.Hour).Unix()
-			case "ban1w":
-				action = "ban"
-				banExpire = time.Now().Add(7 * 24 * time.Hour).Unix()
-			case "ban2w":
-				action = "ban"
-				banExpire = time.Now().Add(14 * 24 * time.Hour).Unix()
-			case "ban1m":
-				action = "ban"
-				banExpire = time.Now().Add(28 * 24 * time.Hour).Unix()
-			case "ban0":
-				action = "ban"
-			default:
-				s.deletePostFiles(post)
-				log.Fatalf("unknown keyword action: %s", k.a)
-			}
-
-			// Apply action.
+			// Keyword matched. Handle action.
+			action := s.handleBanAction(db, k.a, post.IP, Get(nil, nil, "Detected banned keyword."), fmt.Sprintf("Detected >>/keyword/%d", k.id))
 			switch action {
 			case "hide":
 				post.Moderated = 0
 			case "report":
 				addReport = true
-			case "ban":
-				existing := db.BanByIP(post.IP)
-				if existing == nil {
-					ban := &Ban{
-						IP:        post.IP,
-						Timestamp: time.Now().Unix(),
-						Expire:    banExpire,
-						Reason:    Get(nil, nil, "Detected banned keyword."),
-					}
-					db.AddBan(ban)
-
-					s.log(db, nil, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info()+fmt.Sprintf(" Detected >>/keyword/%d", k.id))
-				}
-			}
-			if action == "delete" || action == "ban" {
+			case "delete":
 				s.deletePostFiles(post)
 
 				data := s.buildData(db, w, r)

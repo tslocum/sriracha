@@ -2018,6 +2018,51 @@ func (s *Server) reloadBans(db serverDB) {
 	s.rangeBans = rangeBans
 }
 
+// handleBanAction handles banning a visitor when the provided action specifies
+// it and returns "delete". Otherwise, the provided action is returned.
+func (s *Server) handleBanAction(db serverDB, action string, ipHash string, reason string, info string) string {
+	// Parse action.
+	var banExpire int64
+	switch action {
+	case "ban1h":
+		action = "ban"
+		banExpire = time.Now().Add(1 * time.Hour).Unix()
+	case "ban1d":
+		action = "ban"
+		banExpire = time.Now().Add(24 * time.Hour).Unix()
+	case "ban2d":
+		action = "ban"
+		banExpire = time.Now().Add(2 * 24 * time.Hour).Unix()
+	case "ban1w":
+		action = "ban"
+		banExpire = time.Now().Add(7 * 24 * time.Hour).Unix()
+	case "ban2w":
+		action = "ban"
+		banExpire = time.Now().Add(14 * 24 * time.Hour).Unix()
+	case "ban1m":
+		action = "ban"
+		banExpire = time.Now().Add(28 * 24 * time.Hour).Unix()
+	case "ban0":
+		action = "ban"
+	default:
+		return action
+	}
+
+	// Ban visitor.
+	existing := db.BanByIP(ipHash)
+	if existing == nil {
+		ban := &Ban{
+			IP:        ipHash,
+			Timestamp: time.Now().Unix(),
+			Expire:    banExpire,
+			Reason:    reason,
+		}
+		db.AddBan(ban)
+		s.log(db, nil, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info()+" "+info)
+	}
+	return "delete"
+}
+
 // serveManage serves management panel web requests.
 func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request) {
 	data := s.buildData(db, w, r)
