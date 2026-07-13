@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"embed"
 	"fmt"
+	"html"
 	"html/template"
 	"io"
 	"log"
@@ -342,6 +343,11 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	}
 	f["TN"] = func(singular string, plural string, n int) string {
 		return gotext.GetND(domain, singular, plural, n, n)
+	}
+
+	// Help icon and link.
+	f["Help"] = func(anchor string) template.HTML {
+		return template.HTML(fmt.Sprintf(`<div class="managehelp" title="%s"><a href="https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#%s" target="_blank">📖</a></div>`, html.EscapeString(gotext.GetD(domain, "View Sriracha manual subsection")), html.EscapeString(anchor)))
 	}
 
 	// Ban.

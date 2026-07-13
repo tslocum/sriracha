@@ -1,5 +1,5 @@
 {{template "manage_begin.gohtml" .}}
-<h2 class="managetitle">{{T "Settings"}}</h2>
+<h2 class="managetitle">{{T "Settings"}}{{Help "global-settings"}}</h2>
 {{if Contains .Extra "DEV"}}<b>Warning:</b> You are running an unsupported version of Sriracha. Install an <a href="https://codeberg.org/tslocum/sriracha/releases">official version</a> to receive support.<br>{{end}}
 <fieldset>
 <legend>{{T "Status"}}</legend>

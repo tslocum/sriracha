@@ -2,7 +2,7 @@
 {{$mayAdd := May "page.add" $.Account $.Opt.Access}}
 {{$mayUpdate := May "page.update" $.Account $.Opt.Access}}
 {{$mayDelete := May "page.delete" $.Account $.Opt.Access}}
-<h2 class="managetitle">{{T "Pages"}}</h2>
+<h2 class="managetitle">{{T "Pages"}}{{Help "custom-pages"}}</h2>
 {{if ne (len .Manage.Pages) 0}}
     <table class="managetable">
         <tr>

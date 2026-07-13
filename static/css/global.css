@@ -127,7 +127,7 @@ img, audio, video {
 	border: 0px none !important;
 }
 
-#threadstatus {
+#threadstatus, .managehelp {
 	float: right;
 	text-align: right;
 }
@@ -138,6 +138,10 @@ img, audio, video {
 
 .postbutton {
 	cursor: pointer;
+}
+
+.managehelp a {
+	text-decoration: none;
 }
 
 .hoverpost .touchreflink {

@@ -1,5 +1,5 @@
 {{template "manage_begin.gohtml" .}}
-<h2 class="managetitle">{{T "Boards"}}</h2>
+<h2 class="managetitle">{{T "Boards"}}{{Help "board-types"}}</h2>
 {{if ne (len .Manage.Boards) 0}}
     <table class="managetable">
         <tr>

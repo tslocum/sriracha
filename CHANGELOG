@@ -3,6 +3,7 @@
 - Support pausing and resuming auto-refresh
 - Support receiving notifications for new replies
 - Replace board delay setting with configurable thresholds
+- Link to relevant Sriracha manual subsections from management panel
 
 1.8.3:
 - Add board setting to require an attachment

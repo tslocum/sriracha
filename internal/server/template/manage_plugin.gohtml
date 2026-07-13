@@ -1,5 +1,5 @@
 {{template "manage_begin.gohtml" .}}
-<h2 class="managetitle">{{T "Plugins"}}</h2>
+<h2 class="managetitle">{{T "Plugins"}}{{Help "plugins"}}</h2>
 {{if ne .Manage.Plugin nil}}
     [<a href="/sriracha/plugin/">{{T "Return"}}</a>]<br>
     <form method="post">

@@ -1378,6 +1378,9 @@ msgstr ""
 msgid "View posts by author"
 msgstr ""
 
+msgid "View Sriracha manual subsection"
+msgstr ""
+
 msgid "Visibility"
 msgstr ""
 

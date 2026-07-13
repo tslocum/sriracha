@@ -1141,9 +1141,11 @@ a specific amount of new posts or reports within a specific duration.
 Thresholds may only apply to individual visitors, or they may apply to all visitors.
 Likewise, they may only apply to individual boards, or the entire site.
 
-Only new posts and reports which exceed a threshold are effected. Existing posts and reports are preserved.
+Only new posts and reports which exceed a threshold are effected. Existing posts
+and reports are preserved.
 
-To configure post and report thresholds, click 'Manage Thresholds' at the bottom of the Settings page.
+To configure post and report thresholds, click 'Manage Thresholds' at the bottom
+of the Settings page.
 
 The following thresholds are configured by default:
 
