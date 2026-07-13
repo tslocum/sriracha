@@ -28,7 +28,7 @@ func (s *Server) loadThresholdForm(db serverDB, r *http.Request, t *Threshold) {
 	t.Everyone = FormBool(r, "everyone")
 	t.Amount = FormInt(r, "amount")
 	t.Event = FormRange(r, "event", EventPost, EventReport)
-	t.Anywhere = FormBool(r, "board")
+	t.Anywhere = FormBool(r, "anywhere")
 	t.Duration = FormInt(r, "duration")
 	t.Action = FormString(r, "action")
 	if t.Event == EventReport && (t.Action == "hide" || t.Action == "report") {
@@ -80,6 +80,7 @@ func (s *Server) serveThreshold(data *templateData, db serverDB, w http.Response
 		data.Manage.Threshold = db.ThresholdByID(thresholdID)
 
 		if data.Manage.Threshold != nil && r.Method == http.MethodPost {
+			oldThreshold := *data.Manage.Threshold
 			s.loadThresholdForm(db, r, data.Manage.Threshold)
 
 			err = data.Manage.Threshold.Validate()
@@ -96,7 +97,10 @@ func (s *Server) serveThreshold(data *templateData, db serverDB, w http.Response
 			db.UpdateThreshold(data.Manage.Threshold)
 			s.refreshThresholdCache(db)
 
-			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/threshold/%d", data.Manage.Threshold.ID), "")
+			changes := printChanges(oldThreshold, *data.Manage.Threshold)
+			if changes != "" {
+				s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/threshold/%d", data.Manage.Threshold.ID), changes)
+			}
 
 			data.Redirect(w, r, "/sriracha/threshold/")
 			return
