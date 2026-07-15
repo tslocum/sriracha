@@ -70,7 +70,7 @@ func (s *Server) servePlugin(data *templateData, db serverDB, w http.ResponseWri
 		}
 
 		if changes != "" {
-			s.log(db, data.Account, nil, fmt.Sprintf("Reset plugin %s", info.Name), changes)
+			s.log(db, data.Account, nil, "Reset >>/plugin/"+info.Name, changes)
 		}
 		data.Redirect(w, r, fmt.Sprintf("/sriracha/plugin/%s", strings.ToLower(info.Name)))
 		return
@@ -178,7 +178,7 @@ func (s *Server) servePlugin(data *templateData, db serverDB, w http.ResponseWri
 			}
 
 			if changed {
-				s.log(db, data.Account, nil, fmt.Sprintf("Updated plugin %s", info.Name), changes)
+				s.log(db, data.Account, nil, "Updated >>/plugin/"+info.Name, changes)
 			}
 			data.Redirect(w, r, "/sriracha/plugin")
 		}

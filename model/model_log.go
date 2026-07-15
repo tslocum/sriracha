@@ -32,11 +32,19 @@ func (l *Log) formatLabel(message string) template.HTML {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return template.HTML(rgxp.ReplaceAllStringFunc(message, func(s string) string {
+	message = rgxp.ReplaceAllStringFunc(message, func(s string) string {
 		if strings.HasPrefix(s, "&gt;&gt;/post/") {
 			return rgxp.ReplaceAllString(s, `<a href="/sriracha/$1/$2">&gt;&gt;$2</a>`)
 		}
 		return rgxp.ReplaceAllString(s, `<a href="/sriracha/$1/$2">$1 #$2</a>`)
+	})
+
+	rgxp, err = regexp.Compile(`&gt;&gt;/([0-9A-Za-z_-]+)/([0-9A-Za-z_-]+)`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return template.HTML(rgxp.ReplaceAllStringFunc(message, func(s string) string {
+		return rgxp.ReplaceAllString(s, `<a href="/sriracha/$1/$2">$1 $2</a>`)
 	}))
 }
 
