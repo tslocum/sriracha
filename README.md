@@ -35,7 +35,7 @@
 
 Most features do not require JavaScript and will degrade gracefully when necessary.
 
-Sriracha requires very little processing power, and will typically use less than 50 MB of memory.
+Sriracha requires very little processing power and will typically use less than 250 MB of memory.
 
 ## Documentation
 
