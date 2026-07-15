@@ -3,7 +3,9 @@ package server
 import (
 	"fmt"
 	"io"
+	"runtime"
 	"strings"
+	"sync"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
@@ -27,24 +29,9 @@ func newTestServer() (*Server, error) {
 	return s, nil
 }
 
-// validateTemplates executes loaded templates using dummy data.
-func (s *Server) validateTemplates(ts *Server) error {
-	if ts == nil {
-		var err error
-		ts, err = newTestServer()
-		if err != nil {
-			return err
-		}
-		ts.tpl = s.tpl
-		ts.tplOriginal = s.tplOriginal
-	}
-	db := ts.begin()
-	allBoards := db.AllBoards()
-	img := db.BoardByDir("img")
-	forum := db.BoardByDir("forum")
-
+func (s *Server) _validateTemplates(db serverDB, allBoards []*Board, img *Board, forum *Board, testCases chan testCase, wg *sync.WaitGroup, errors chan error) {
 	var board *Board
-	for _, c := range testCases {
+	for c := range testCases {
 		boardTemplate := strings.HasPrefix(c.template, "board_")
 		for i := 0; i < 2; i++ {
 			templateName := c.template
@@ -64,7 +51,7 @@ func (s *Server) validateTemplates(ts *Server) error {
 			}
 
 			for j := 0; j < 3; j++ {
-				data := ts.newTemplateData(db)
+				data := s.newTemplateData(db)
 				data.Categories = db.AllCategories()
 				data.Template = templateName
 				if c.board {
@@ -156,7 +143,8 @@ func (s *Server) validateTemplates(ts *Server) error {
 
 				err := data.executeWithError(io.Discard)
 				if err != nil {
-					return fmt.Errorf("failed to execute template %s: %s", data.Template, err)
+					errors <- fmt.Errorf("failed to execute template %s: %s", data.Template, err)
+					return
 				}
 			}
 
@@ -164,8 +152,56 @@ func (s *Server) validateTemplates(ts *Server) error {
 				break
 			}
 		}
+		wg.Done()
+	}
+}
+
+// validateTemplates executes loaded templates using dummy data.
+func (s *Server) validateTemplates(ts *Server) error {
+	if ts == nil {
+		var err error
+		ts, err = newTestServer()
+		if err != nil {
+			return err
+		}
+		ts.tpl = s.tpl
+		ts.tplOriginal = s.tplOriginal
+	}
+
+	process := make(chan testCase)
+	errors := make(chan error)
+	wg := &sync.WaitGroup{}
+	db := ts.begin()
+	allBoards := db.AllBoards()
+	img := db.BoardByDir("img")
+	forum := db.BoardByDir("forum")
+
+	numCPU := runtime.NumCPU()
+	for i := 0; i < numCPU; i++ {
+		go ts._validateTemplates(db, allBoards, img, forum, process, wg, errors)
+	}
+
+	wg.Add(len(testCases))
+	for _, c := range testCases {
+		select {
+		case process <- c:
+		case err := <-errors:
+			return err
+		}
+	}
+
+	done := make(chan struct{})
+	go func() {
+		wg.Wait()
+		done <- struct{}{}
+	}()
+	select {
+	case <-done:
+	case err := <-errors:
+		return err
 	}
 	db.Commit()
+	close(process)
 	return nil
 }
 
