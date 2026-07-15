@@ -10,6 +10,7 @@ var dbSchema = []string{ // Version 1.
 	session varchar(64) NOT NULL
 	-- v2: style varchar(64) NOT NULL DEFAULT ''
 	-- v6: locale varchar(64) NOT NULL DEFAULT ''
+	-- v19: scratchcodes text[] NOT NULL DEFAULT array[]::text[];
 );
 CREATE UNIQUE INDEX ON account (username);
 CREATE UNIQUE INDEX ON account (session);
@@ -237,7 +238,16 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 -- v18: INSERT INTO threshold VALUES
 -- v18: 	(default, 0,  1, 0, 1,   30, 'delete'),
 -- v18: 	(default, 0,  1, 1, 1,  300, 'delete'),
--- v18: 	(default, 0, 10, 2, 1, 3600, 'delete');`,
+-- v18: 	(default, 0, 10, 2, 1, 3600, 'delete');
+
+-- v19: CREATE TABLE twofactor (
+-- v19: 	id serial PRIMARY KEY,
+-- v19: 	account smallint NOT NULL REFERENCES account (id) ON DELETE CASCADE,
+-- v19: 	timestamp bigint NOT NULL,
+-- v19: 	lastactive bigint NOT NULL,
+-- v19: 	secret char(32) NOT NULL,
+-- v19: 	name varchar(64) NOT NULL
+-- v19: );`,
 	// Version 2.
 	`ALTER TABLE account ADD COLUMN style varchar(64) NOT NULL DEFAULT '';
 	UPDATE config SET value = '2' WHERE name = 'version';`,
@@ -356,4 +366,15 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 		(default, 0, 10, 2, 1, 3600, 'delete');
 	ALTER TABLE board DROP COLUMN delay;
 	UPDATE config SET value = '18' WHERE name = 'version';`,
+	// Version 19.
+	`CREATE TABLE twofactor (
+		id serial PRIMARY KEY,
+		account smallint NOT NULL REFERENCES account (id) ON DELETE CASCADE,
+		timestamp bigint NOT NULL,
+		lastactive bigint NOT NULL,
+		secret char(32) NOT NULL,
+		name varchar(64) NOT NULL
+	);
+	ALTER TABLE account ADD COLUMN scratchcodes text[] NOT NULL DEFAULT array[]::text[];
+	UPDATE config SET value = '19' WHERE name = 'version';`,
 }

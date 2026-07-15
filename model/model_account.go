@@ -34,14 +34,15 @@ func FormatRole(role AccountRole) string {
 }
 
 type Account struct {
-	ID         int
-	Username   string
-	Password   string
-	Role       AccountRole
-	LastActive int64
-	Session    string
-	Style      string
-	Locale     string
+	ID           int
+	Username     string
+	Password     string
+	Role         AccountRole
+	LastActive   int64
+	Session      string
+	Style        string
+	Locale       string
+	ScratchCodes []string
 }
 
 func (a *Account) Validate() error {

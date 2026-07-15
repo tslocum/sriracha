@@ -14,7 +14,7 @@ import (
 
 func (db *DB) AddAccount(a *Account, password string) {
 	sessionKey := db.newSessionKey()
-	err := db.conn.QueryRow(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4, $5, $6) RETURNING id",
+	err := db.conn.QueryRow(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4, $5, $6, DEFAULT) RETURNING id",
 		a.Username,
 		encryptPassword(db.config.SaltPass, password),
 		a.Role,
@@ -204,6 +204,7 @@ func scanAccount(a *Account, row pgx.Row) error {
 		&a.Session,
 		&a.Style,
 		&a.Locale,
+		&a.ScratchCodes,
 	)
 }
 
