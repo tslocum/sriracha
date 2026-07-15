@@ -190,6 +190,14 @@ type rebuildInfo struct {
 	wg   *sync.WaitGroup
 }
 
+// twoFactorSession represents a pending or completed two-factor authentication session.
+type twoFactorSession struct {
+	key       []byte
+	account   int
+	timestamp int64
+	complete  bool
+}
+
 const entriesPerPage = 25
 
 // Server is the Sriracha imageboard and forum server.
@@ -238,6 +246,8 @@ type Server struct {
 	httpsCert   *tls.Certificate
 
 	httpMaxRequestSize int64
+
+	twoFactorSessions []twoFactorSession
 
 	msgPrinter *message.Printer
 

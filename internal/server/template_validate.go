@@ -140,6 +140,19 @@ func (s *Server) validateTemplates(ts *Server) error {
 						data.Manage.Thresholds = append(data.Manage.Thresholds, data.Manage.Threshold)
 					}
 				}
+				if c.manageTwoFactor {
+					data.Manage.TwoFactor = &TwoFactor{
+						ID:         1,
+						Account:    1,
+						Timestamp:  1,
+						LastActive: 1,
+						Secret:     "secret",
+						Name:       "name",
+					}
+					for add := 0; add < j; add++ {
+						data.Manage.TwoFactors = append(data.Manage.TwoFactors, data.Manage.TwoFactor)
+					}
+				}
 
 				err := data.executeWithError(io.Discard)
 				if err != nil {
@@ -168,6 +181,7 @@ type testCase struct {
 	manageKeyword   bool
 	managePage      bool
 	manageThreshold bool
+	manageTwoFactor bool
 }
 
 // testCases represents all template test cases.
@@ -285,5 +299,9 @@ var testCases = []testCase{
 	{
 		template:        "manage_threshold",
 		manageThreshold: true,
+	},
+	{
+		template:        "manage_twofactor",
+		manageTwoFactor: true,
 	},
 }

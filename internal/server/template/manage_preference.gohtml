@@ -4,10 +4,10 @@
     <fieldset>
         <legend>{{T "Security"}}</legend>
         <table class="manageform">
-            <form method="post">
+            <form method="post" action="/sriracha/preference/2fa">
                 <input type="hidden" name="action" value="twofactor">
-                <tr><th colspan="2">{{T "Manage Two-Factor Authentication"}}</th></tr>
-                <tr><td class="postblock">{{T "Password"}}</td><td><input type="password" name="old"></td></tr>
+                <tr><th colspan="2">{{T "Manage %s Devices" "2FA"}}</th></tr>
+                <tr><td class="postblock">{{T "Password"}}</td><td><input type="password" name="password"></td></tr>
                 <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Manage %s" "2FA"}}"></td></tr>
             </form>
             <form method="post">

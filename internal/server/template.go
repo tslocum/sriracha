@@ -49,6 +49,8 @@ type manageData struct {
 	Reports    []*Report
 	Threshold  *Threshold
 	Thresholds []*Threshold
+	TwoFactor  *TwoFactor
+	TwoFactors []*TwoFactor
 }
 
 type templateData struct {

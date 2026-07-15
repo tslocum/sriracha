@@ -9,6 +9,11 @@ import (
 )
 
 func (s *Server) servePreference(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
+	if strings.HasPrefix(r.URL.Path, "/sriracha/preference/2fa") {
+		s.serveTwoFactor(data, db, w, r)
+		return
+	}
+
 	data.Template = "manage_preference"
 	if r.Method == http.MethodPost {
 		switch FormString(r, "action") {
