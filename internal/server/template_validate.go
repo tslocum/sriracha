@@ -186,9 +186,11 @@ func (s *Server) validateTemplates(ts *Server) error {
 		select {
 		case process <- c:
 		case err := <-errors:
+			close(process)
 			return err
 		}
 	}
+	close(process)
 
 	done := make(chan struct{})
 	go func() {
@@ -201,7 +203,6 @@ func (s *Server) validateTemplates(ts *Server) error {
 		return err
 	}
 	db.Commit()
-	close(process)
 	return nil
 }
 

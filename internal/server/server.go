@@ -961,6 +961,7 @@ func (s *Server) _watchTemplates(officialDir string, watcher *fsnotify.Watcher) 
 			} else if !event.Has(fsnotify.Create) && !event.Has(fsnotify.Write) && !event.Has(fsnotify.Remove) && !event.Has(fsnotify.Rename) {
 				continue
 			}
+			s.lock.Lock()
 
 			err := s.parseTemplates(officialDir, s.config.Template, nil)
 			if err != nil {
@@ -971,6 +972,8 @@ func (s *Server) _watchTemplates(officialDir string, watcher *fsnotify.Watcher) 
 			if err != nil {
 				log.Printf("failed to execute template files: %s", err)
 			}
+
+			s.lock.Unlock()
 		case err, ok := <-watcher.Errors:
 			if !ok {
 				return
