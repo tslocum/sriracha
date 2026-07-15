@@ -1,72 +1,78 @@
 {{template "manage_begin.gohtml" .}}
 <h2 class="managetitle">{{T "Preferences"}}</h2>
-<form method="post">
-    <input type="hidden" name="action" value="password">
-	<fieldset>
-        <legend>{{T "Change Password"}}</legend>
+<div style="display: flex;flex-wrap: wrap;row-gap: 15px;column-gap: 15px;">
+    <fieldset>
+        <legend>{{T "Security"}}</legend>
         <table class="manageform">
-            <tr><td class="postblock">{{T "Current"}}</td><td><input type="password" name="old"></td></tr>
-            <tr><td class="postblock">{{T "New"}}</td><td><input type="password" name="new"></td></tr>
-            <tr><td class="postblock">{{T "New (confirm)"}}</td><td><input type="password" name="confirmation"></td></tr>
-            <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 100%;" value="{{T "Change Password"}}"></td></tr>
+            <form method="post">
+                <input type="hidden" name="action" value="twofactor">
+                <tr><th colspan="2">{{T "Manage Two-Factor Authentication"}}</th></tr>
+                <tr><td class="postblock">{{T "Password"}}</td><td><input type="password" name="old"></td></tr>
+                <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Manage %s" "2FA"}}"></td></tr>
+            </form>
+            <form method="post">
+                <input type="hidden" name="action" value="password">
+                <tr><th colspan="2"><br>{{T "Change Password"}}</th></tr>
+                <tr><td class="postblock">{{T "Current"}}</td><td><input type="password" name="old"></td></tr>
+                <tr><td class="postblock">{{T "New"}}</td><td><input type="password" name="new"></td></tr>
+                <tr><td class="postblock">{{T "New (confirm)"}}</td><td><input type="password" name="confirmation"></td></tr>
+                <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Change Password"}}"></td></tr>
+            </form>
         </table>
-	</fieldset>
-</form><br><br>
-<form method="post">
-    <input type="hidden" name="action" value="style">
-	<fieldset>
-        <legend>{{T "Change Style"}}</legend>
+    </fieldset>
+    <fieldset>
+        <legend>{{T "Appearance"}}</legend>
         <table class="manageform">
-            <tr>
-                <td class="postblock">{{T "Style"}}</td>
-                <td>
-                    <select name="style">
-                        <option value=""{{if eq .Account.Style ""}} selected{{end}}>Futaba</option>
-                        <option value="burichan"{{if eq .Account.Style "burichan"}} selected{{end}}>Burichan</option>
-                        <option value="sriracha"{{if eq .Account.Style "sriracha"}} selected{{end}}>Sriracha</option>
-                    </select>
-                </td>
-            </tr>
-            <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 100%;" value="{{T "Change Style"}}"></td></tr>
-        </table>
-	</fieldset>
-</form><br><br>
-<form method="post">
-    <input type="hidden" name="action" value="locale">
-	<fieldset>
-        <legend>{{T "Change Locale"}}</legend>
-        <table class="manageform">
-            <tr>
-                <td class="postblock">{{T "Locale"}}</td>
-                <td>
-                    <select name="locale">
-                        <option value=""{{if eq .Account.Locale ""}} selected{{end}}>{{T "Default"}} - {{.Opt.DefaultLocaleName}}</option>
-                        {{range $i, $localeID := .Opt.LocalesSorted}}
-                            <option value="{{$localeID}}"{{if eq $.Account.Locale $localeID}} selected{{end}}>{{index $.Opt.Locales $localeID}}</option>
-                        {{end}}
-                    </select>
-                </td>
-                {{if or (and (ne .Account.Locale "") (ne .Account.Locale "en")) (and (ne .Opt.Locale "en") (eq .Account.Locale ""))}}
+            <form method="post">
+                <input type="hidden" name="action" value="style">
+                <tr><th colspan="2">{{T "Change Style"}}</th></tr>
+                <tr>
+                    <td class="postblock">{{T "Style"}}</td>
                     <td>
-                        <a href="https://translate.codeberg.org/projects/sriracha/sriracha/" target="_blank">{{T "Help translate Sriracha"}}</a>
+                        <select name="style">
+                            <option value=""{{if eq .Account.Style ""}} selected{{end}}>Futaba</option>
+                            <option value="burichan"{{if eq .Account.Style "burichan"}} selected{{end}}>Burichan</option>
+                            <option value="sriracha"{{if eq .Account.Style "sriracha"}} selected{{end}}>Sriracha</option>
+                        </select>
                     </td>
-                {{end}}
-            </tr>
-            <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: 100%;" value="{{T "Change Locale"}}"></td></tr>
+                </tr>
+                <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Change Style"}}"></td></tr>
+            </form>
+            <form method="post">
+                <input type="hidden" name="action" value="locale">
+                <tr><th colspan="2"><br>{{T "Change Locale"}}</th></tr>
+                <tr>
+                    <td class="postblock">{{T "Locale"}}</td>
+                    <td>
+                        <select name="locale">
+                            <option value=""{{if eq .Account.Locale ""}} selected{{end}}>{{T "Default"}} - {{.Opt.DefaultLocaleName}}</option>
+                            {{range $i, $localeID := .Opt.LocalesSorted}}
+                                <option value="{{$localeID}}"{{if eq $.Account.Locale $localeID}} selected{{end}}>{{index $.Opt.Locales $localeID}}</option>
+                            {{end}}
+                        </select>
+                    </td>
+                    {{if or (and (ne .Account.Locale "") (ne .Account.Locale "en")) (and (ne .Opt.Locale "en") (eq .Account.Locale ""))}}
+                        <td>
+                            <a href="https://translate.codeberg.org/projects/sriracha/sriracha/" target="_blank">{{T "Help translate Sriracha"}}</a>
+                        </td>
+                    {{end}}
+                </tr>
+                <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Change Locale"}}"></td></tr>
+            </form>
         </table>
 	</fieldset>
-</form><br><br>
-<fieldset>
-    <legend>{{T "Documentation"}}</legend>
-    <div>
-        <ul style="margin: 0;">
-            <li><a href="https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md" target="_blank">Sriracha Manual</a></li>
-            <ul>
-                <li><a href="https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#moderator-guide" target="_blank">Moderator Guide</a></li>
-                <li><a href="https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#administrator-guide" target="_blank">Administrator Guide</a></li>
-                <li><a href="https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#super-administrator-guide" target="_blank">Super-administrator Guide</a></li>
+    <fieldset style="align-self: flex-start;">
+        <legend>{{T "Documentation"}}</legend>
+        <div>
+            <ul style="margin: 0;">
+                <li><a href="https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md" target="_blank">Sriracha Manual</a></li>
+                <ul>
+                    <li><a href="https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#moderator-guide" target="_blank">Moderator Guide</a></li>
+                    <li><a href="https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#administrator-guide" target="_blank">Administrator Guide</a></li>
+                    <li><a href="https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#super-administrator-guide" target="_blank">Super-administrator Guide</a></li>
+                </ul>
             </ul>
-        </ul>
-    </div>
-</fieldset><br>
+        </div>
+    </fieldset>
+</div>
 {{template "manage_end.gohtml" .}}

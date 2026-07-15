@@ -698,6 +698,9 @@ msgstr ""
 msgid "Manage"
 msgstr ""
 
+msgid "Manage %s"
+msgstr ""
+
 msgid "Manage Banners"
 msgstr ""
 
@@ -1188,6 +1191,9 @@ msgstr ""
 msgid "Seconds between automatic refreshes when viewing a thread. Set to 0 to disable."
 msgstr ""
 
+msgid "Security"
+msgstr ""
+
 msgid "Select the checkbox next to your post's ID."
 msgstr ""
 
@@ -1313,6 +1319,9 @@ msgid "Tripcode"
 msgstr ""
 
 msgid "Truncate"
+msgstr ""
+
+msgid "Manage Two-Factor Authentication"
 msgstr ""
 
 msgid "Type"
