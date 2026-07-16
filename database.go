@@ -37,6 +37,7 @@ type DB interface {
 	UpdateAccountStyle(id int, style string)
 	UpdateAccountLocale(id int, locale string)
 	LoginAccount(username string, password string) *Account
+	CheckAccountPassword(username string, password string) *Account
 
 	// Ban.
 	AddBan(b *Ban)

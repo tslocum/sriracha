@@ -4,6 +4,7 @@ package server
 import (
 	"context"
 	"crypto/md5"
+	"crypto/rand"
 	"crypto/sha3"
 	"crypto/sha512"
 	"crypto/tls"
@@ -195,6 +196,7 @@ type twoFactorSession struct {
 	key       []byte
 	account   int
 	timestamp int64
+	secret    string
 	complete  bool
 }
 
@@ -247,7 +249,7 @@ type Server struct {
 
 	httpMaxRequestSize int64
 
-	twoFactorSessions []twoFactorSession
+	twoFactorSessions []*twoFactorSession
 
 	msgPrinter *message.Printer
 
@@ -3063,6 +3065,20 @@ func pageSlice[S ~[]T, T any](slice S, page int, perPage int) S {
 		end = start + perPage
 	}
 	return slice[start:end]
+}
+
+func randomBytes(n int) []byte {
+	buf := make([]byte, n)
+	_, err := rand.Read(buf)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return buf
+}
+
+func randomString(n int) string {
+	buf := randomBytes(n)
+	return base64.URLEncoding.EncodeToString(buf)
 }
 
 type serverDB interface {

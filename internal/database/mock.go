@@ -100,18 +100,19 @@ func (db *mockDB) GetFloat(key string) float64                { return 0 }
 func (db *mockDB) SaveFloat(key string, value float64)        {}
 
 // Account.
-func (db *mockDB) AddAccount(a *Account, password string)                 {}
-func (db *mockDB) AccountByID(id int) *Account                            { return nil }
-func (db *mockDB) AccountByUsername(username string) *Account             { return nil }
-func (db *mockDB) AccountBySessionKey(sessionKey string) *Account         { return nil }
-func (db *mockDB) AllAccounts() []*Account                                { return nil }
-func (db *mockDB) UpdateAccountUsername(a *Account)                       {}
-func (db *mockDB) UpdateAccountRole(a *Account)                           {}
-func (db *mockDB) UpdateAccountPassword(id int, password string)          {}
-func (db *mockDB) UpdateAccountLastActive(id int)                         {}
-func (db *mockDB) UpdateAccountStyle(id int, style string)                {}
-func (db *mockDB) UpdateAccountLocale(id int, locale string)              {}
-func (db *mockDB) LoginAccount(username string, password string) *Account { return nil }
+func (db *mockDB) AddAccount(a *Account, password string)                         {}
+func (db *mockDB) AccountByID(id int) *Account                                    { return nil }
+func (db *mockDB) AccountByUsername(username string) *Account                     { return nil }
+func (db *mockDB) AccountBySessionKey(sessionKey string) *Account                 { return nil }
+func (db *mockDB) AllAccounts() []*Account                                        { return nil }
+func (db *mockDB) UpdateAccountUsername(a *Account)                               {}
+func (db *mockDB) UpdateAccountRole(a *Account)                                   {}
+func (db *mockDB) UpdateAccountPassword(id int, password string)                  {}
+func (db *mockDB) UpdateAccountLastActive(id int)                                 {}
+func (db *mockDB) UpdateAccountStyle(id int, style string)                        {}
+func (db *mockDB) UpdateAccountLocale(id int, locale string)                      {}
+func (db *mockDB) LoginAccount(username string, password string) *Account         { return nil }
+func (db *mockDB) CheckAccountPassword(username string, password string) *Account { return nil }
 
 // Ban.
 func (db *mockDB) AddBan(b *Ban)                 {}

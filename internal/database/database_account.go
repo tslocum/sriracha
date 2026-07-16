@@ -194,6 +194,19 @@ func (db *DB) LoginAccount(username string, password string) *Account {
 	return a
 }
 
+func (db *DB) CheckAccountPassword(username string, password string) *Account {
+	a := &Account{}
+	err := scanAccount(a, db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE username = $1 AND role != $2", username, RoleDisabled))
+	if err == pgx.ErrNoRows {
+		return nil
+	} else if err != nil {
+		dbErr(fmt.Errorf("failed to select account: %w", err))
+	} else if a.ID == 0 || !comparePassword(db.config.SaltPass, password, a.Password) {
+		return nil
+	}
+	return a
+}
+
 func scanAccount(a *Account, row pgx.Row) error {
 	return row.Scan(
 		&a.ID,
