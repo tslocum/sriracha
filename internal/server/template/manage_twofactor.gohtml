@@ -1,6 +1,6 @@
 {{template "manage_begin.gohtml" .}}
 <h2 class="managetitle">{{T "Two-Factor Authentication"}}</h2>
-{{if ne .Manage.TwoFactor.Timestamp 0}}
+{{if ne .Manage.TwoFactor.Secret ""}}
     [<a href="/sriracha/preference/2fa">{{T "Return"}}</a>]<br>
     {{if eq .Manage.TwoFactor.ID 0}}
         <fieldset>
@@ -18,11 +18,14 @@
                     <table class="manageform" style="width: 100%;">
                         <tr>
                             <td class="postblock">{{T "Passcode"}}</td>
-                            <td><input type="text" name="passcode" autocomplete="off"></td>
+                            <td><input type="text" id="passcode" name="passcode" autocomplete="off"></td>
                             <td><input type="submit" value="{{T "Add %s Device" "2FA"}}" style="width: 100%;"></td>
                         </tr>
                     </table>
                 </form>
+                <script type="text/javascript">
+                document.getElementById("passcode").focus();
+                </script>
             </div>
         </fieldset><br>
     {{else}}
