@@ -14,6 +14,7 @@ require (
 	github.com/jackc/pgx/v5 v5.10.0
 	github.com/lrstanley/girc v1.1.1
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
+	github.com/pquerna/otp v1.5.0
 	github.com/r3labs/diff/v3 v3.0.2
 	github.com/steambap/captcha v1.4.1
 	golang.org/x/exp v0.0.0-20260611194520-c48552f49976
@@ -25,6 +26,7 @@ require (
 
 require (
 	github.com/andybalholm/cascadia v1.3.4 // indirect
+	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc // indirect
 	github.com/dlclark/regexp2/v2 v2.2.2 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect

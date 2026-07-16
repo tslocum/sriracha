@@ -996,6 +996,9 @@ msgstr ""
 msgid "Parent category."
 msgstr ""
 
+msgid "Passcode"
+msgstr ""
+
 msgid "Password"
 msgstr ""
 
@@ -1200,6 +1203,9 @@ msgstr ""
 msgid "Scale"
 msgstr ""
 
+msgid "Scan the following QR code using an authenticator application:"
+msgstr ""
+
 msgid "Scroll down to the bottom of the page."
 msgstr ""
 
@@ -1226,6 +1232,9 @@ msgid "Share with staff"
 msgstr ""
 
 msgid "Shared news items may be updated by other staff members."
+msgstr ""
+
+msgid "Show %s secret"
 msgstr ""
 
 msgid "Show everywhere"
