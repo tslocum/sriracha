@@ -36,6 +36,9 @@ msgid_plural "%d reports"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%s Devices"
+msgstr ""
+
 msgid "%s imageboard and forum server"
 msgstr ""
 
@@ -90,6 +93,9 @@ msgstr ""
 msgid "Add"
 msgstr "Shto"
 
+msgid "Add %s Device"
+msgstr ""
+
 msgid "Add Account"
 msgstr "Shto Llogarine"
 
@@ -122,6 +128,9 @@ msgstr ""
 
 msgid "Add notice"
 msgstr "Shto njoftimin"
+
+msgid "Added"
+msgstr ""
 
 msgid "Admin"
 msgstr "Admin"
@@ -401,6 +410,9 @@ msgstr "U zbulua nje skedar i ndaluar."
 
 msgid "Detected banned keyword."
 msgstr "U zbulua nje fjale kyce e ndaluar."
+
+msgid "Device"
+msgstr ""
 
 msgid "Dimensions"
 msgstr ""
@@ -739,6 +751,12 @@ msgstr "Logs"
 msgid "Manage"
 msgstr "Menaxho"
 
+msgid "Manage %s"
+msgstr ""
+
+msgid "Manage %s Devices"
+msgstr ""
+
 msgid "Manage Banners"
 msgstr ""
 
@@ -978,6 +996,9 @@ msgstr "Nuk eshte dhene asnje arsye."
 msgid "No subject"
 msgstr "Nuk ka titull"
 
+msgid "No two-factor authentication devices."
+msgstr ""
+
 msgid "None"
 msgstr "Asnje"
 
@@ -1057,6 +1078,9 @@ msgid "Parent"
 msgstr ""
 
 msgid "Parent category."
+msgstr ""
+
+msgid "Passcode"
 msgstr ""
 
 msgid "Password"
@@ -1270,6 +1294,9 @@ msgstr "Rregullat"
 msgid "Scale"
 msgstr ""
 
+msgid "Scan the following QR code using an authenticator application:"
+msgstr ""
+
 msgid "Scroll down to the bottom of the page."
 msgstr ""
 
@@ -1282,6 +1309,9 @@ msgid ""
 msgstr ""
 "Sekonda midis rifreskimeve automatike gjate shikimit te nje teme diskutimi. "
 "Vendoseni ne 0 per ta caktivizuar."
+
+msgid "Security"
+msgstr ""
 
 msgid "Select the checkbox next to your post's ID."
 msgstr ""
@@ -1298,6 +1328,9 @@ msgstr "Shperndaj me stafin"
 
 msgid "Shared news items may be updated by other staff members."
 msgstr "Lajmet e ndara mund te perditesohen nga anetare te tjere te stafit."
+
+msgid "Show %s secret"
+msgstr ""
 
 msgid "Show everywhere"
 msgstr "Shfaq kudo"
@@ -1414,6 +1447,9 @@ msgstr ""
 msgid "Truncate"
 msgstr "Shkurto"
 
+msgid "Two-Factor Authentication"
+msgstr ""
+
 msgid "Type"
 msgstr "Tipi"
 
@@ -1455,6 +1491,9 @@ msgstr "Pergjitheso Cilesimet"
 
 msgid "Uptime"
 msgstr "Kohezgjatja"
+
+msgid "Used"
+msgstr ""
 
 msgid "Used to log in and audit actions."
 msgstr "Perdoret per t'u identifikuar dhe per te audituar veprimet."

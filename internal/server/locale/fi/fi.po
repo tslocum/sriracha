@@ -36,6 +36,9 @@ msgid_plural "%d reports"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%s Devices"
+msgstr ""
+
 msgid "%s imageboard and forum server"
 msgstr ""
 
@@ -90,6 +93,9 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
+msgid "Add %s Device"
+msgstr ""
+
 msgid "Add Account"
 msgstr ""
 
@@ -121,6 +127,9 @@ msgid "Add board to %s"
 msgstr ""
 
 msgid "Add notice"
+msgstr ""
+
+msgid "Added"
 msgstr ""
 
 msgid "Admin"
@@ -395,6 +404,9 @@ msgstr ""
 
 msgid "Detected banned keyword."
 msgstr "Kielletty avainsana havaittu."
+
+msgid "Device"
+msgstr ""
 
 msgid "Dimensions"
 msgstr ""
@@ -722,6 +734,12 @@ msgstr "Lokit"
 msgid "Manage"
 msgstr "Hallinnoi"
 
+msgid "Manage %s"
+msgstr ""
+
+msgid "Manage %s Devices"
+msgstr ""
+
 msgid "Manage Banners"
 msgstr ""
 
@@ -948,6 +966,9 @@ msgstr ""
 msgid "No subject"
 msgstr ""
 
+msgid "No two-factor authentication devices."
+msgstr ""
+
 msgid "None"
 msgstr "Ei mitään"
 
@@ -1015,6 +1036,9 @@ msgid "Parent"
 msgstr ""
 
 msgid "Parent category."
+msgstr ""
+
+msgid "Passcode"
 msgstr ""
 
 msgid "Password"
@@ -1225,6 +1249,9 @@ msgstr ""
 msgid "Scale"
 msgstr ""
 
+msgid "Scan the following QR code using an authenticator application:"
+msgstr ""
+
 msgid "Scroll down to the bottom of the page."
 msgstr ""
 
@@ -1234,6 +1261,9 @@ msgstr ""
 msgid ""
 "Seconds between automatic refreshes when viewing a thread. Set to 0 to "
 "disable."
+msgstr ""
+
+msgid "Security"
 msgstr ""
 
 msgid "Select the checkbox next to your post's ID."
@@ -1250,6 +1280,9 @@ msgid "Share with staff"
 msgstr ""
 
 msgid "Shared news items may be updated by other staff members."
+msgstr ""
+
+msgid "Show %s secret"
 msgstr ""
 
 msgid "Show everywhere"
@@ -1365,6 +1398,9 @@ msgstr ""
 msgid "Truncate"
 msgstr ""
 
+msgid "Two-Factor Authentication"
+msgstr ""
+
 msgid "Type"
 msgstr ""
 
@@ -1405,6 +1441,9 @@ msgid "Update Settings"
 msgstr ""
 
 msgid "Uptime"
+msgstr ""
+
+msgid "Used"
 msgstr ""
 
 msgid "Used to log in and audit actions."

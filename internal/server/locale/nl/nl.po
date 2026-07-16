@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-07-13 14:35+0000\n"
+"PO-Revision-Date: 2026-07-16 18:58+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -35,6 +35,9 @@ msgid "%d report"
 msgid_plural "%d reports"
 msgstr[0] "%d melding"
 msgstr[1] "%d meldingen"
+
+msgid "%s Devices"
+msgstr "%s apparaten"
 
 msgid "%s imageboard and forum server"
 msgstr "%s: afbeeldingsforum en forumserver"
@@ -91,6 +94,9 @@ msgstr "Er wordt actie ondernomen zodra de drempelwaarde is overschreden."
 msgid "Add"
 msgstr "Toevoegen"
 
+msgid "Add %s Device"
+msgstr "Apparaat ‘%s’ toevoegen"
+
 msgid "Add Account"
 msgstr "Account toevoegen"
 
@@ -123,6 +129,9 @@ msgstr "Forum toevoegen aan %s"
 
 msgid "Add notice"
 msgstr "Opmerking toevoegen"
+
+msgid "Added"
+msgstr "Toegevoegd"
 
 msgid "Admin"
 msgstr "Beheerder"
@@ -406,6 +415,9 @@ msgstr "Er is een verbannen bestand aangetroffen."
 
 msgid "Detected banned keyword."
 msgstr "Verbannen trefwoord aangetroffen."
+
+msgid "Device"
+msgstr "Apparaat"
 
 msgid "Dimensions"
 msgstr "Afmetingen"
@@ -752,6 +764,12 @@ msgstr "Logboeken"
 msgid "Manage"
 msgstr "Beheren"
 
+msgid "Manage %s"
+msgstr "%s beheren"
+
+msgid "Manage %s Devices"
+msgstr "%s-apparaten beheren"
+
 msgid "Manage Banners"
 msgstr "Banieren beheren"
 
@@ -994,6 +1012,9 @@ msgstr "Er is geen reden opgegeven."
 msgid "No subject"
 msgstr "Geen onderwerp"
 
+msgid "No two-factor authentication devices."
+msgstr "Er zijn geen apparaten voor verificatie in twee stappen."
+
 msgid "None"
 msgstr "Geen"
 
@@ -1074,6 +1095,9 @@ msgstr "Bovenliggend"
 
 msgid "Parent category."
 msgstr "De bovenliggende categorie."
+
+msgid "Passcode"
+msgstr "Toegangscode"
 
 msgid "Password"
 msgstr "Wachtwoord"
@@ -1291,6 +1315,9 @@ msgstr "Regels"
 msgid "Scale"
 msgstr "Schaal"
 
+msgid "Scan the following QR code using an authenticator application:"
+msgstr "Scan de QR-code met een app voor verificatie in twee stappen:"
+
 msgid "Scroll down to the bottom of the page."
 msgstr "Ga naar de onderkant van de pagina."
 
@@ -1303,6 +1330,9 @@ msgid ""
 msgstr ""
 "Het aantal seconden tussen automatische herladingen tijdens het bekijken van "
 "een draadje. Stel in op 0 om uit te schakelen."
+
+msgid "Security"
+msgstr "Beveiliging"
 
 msgid "Select the checkbox next to your post's ID."
 msgstr "Kruis het vakje naast de bericht-id aan."
@@ -1319,6 +1349,9 @@ msgstr "Delen met staf"
 
 msgid "Shared news items may be updated by other staff members."
 msgstr "Gedeelde nieuwsitems kunnen worden bijgewerkt door andere stafleden."
+
+msgid "Show %s secret"
+msgstr "%s-geheim tonen"
 
 msgid "Show everywhere"
 msgstr "Overal tonen"
@@ -1435,6 +1468,9 @@ msgstr "Toegangscode"
 msgid "Truncate"
 msgstr "Inkorten"
 
+msgid "Two-Factor Authentication"
+msgstr "Verificatie in twee stappen"
+
 msgid "Type"
 msgstr "Type"
 
@@ -1479,6 +1515,9 @@ msgstr "Instellingen bijwerken"
 
 msgid "Uptime"
 msgstr "Uptime"
+
+msgid "Used"
+msgstr "Gebruikt"
 
 msgid "Used to log in and audit actions."
 msgstr "Wordt gebruikt om in te logen en acties te controleren."
