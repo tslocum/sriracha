@@ -110,6 +110,7 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 	data.Manage.TwoFactor = &TwoFactor{}
 	key := []byte(FormString(r, "key"))
 	session := s.twoFactorSession(data.Account, key)
+	data.Extra3 = string(session.key)
 	password := FormString(r, "password")
 	if password != "" {
 		match := db.CheckAccountPassword(data.Account.Username, password)
@@ -117,20 +118,45 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 			data.ManageError("Incorrect password")
 			return
 		}
-		session.timestamp = time.Now().Unix()
-		session.complete = true
+		session.loggedIn = true
+		data.Extra2 = "passcode"
+		return
 	}
-	if !session.complete {
+	if !session.loggedIn {
+		data.ManageError("Incorrect password")
+		return
+	}
+	allDevices := db.TwoFactorsByAccount(data.Account.ID)
+	if !session.validated && len(allDevices) > 0 {
+		passcode := FormString(r, "passcode")
+		if passcode == "" {
+			data.Extra2 = "passcode"
+			return
+		}
+		now := time.Now()
+		for _, device := range allDevices {
+			ok, err := totp.ValidateCustom(passcode, device.Secret, now, twoFactorValidateOptions)
+			if err == nil && ok {
+				session.validated = true
+				break
+			}
+		}
+		if !session.validated {
+			data.ManageError("Incorrect passcode")
+			return
+		}
+		session.validated = true
+	}
+	if !session.loggedIn {
 		data.Redirect(w, r, "/sriracha/preference")
 		return
-	} else if data.Manage.TwoFactor.Secret == "" && session.secret != "" {
-		data.Manage.TwoFactor.Secret = session.secret
 	}
-	data.Extra3 = string(session.key)
 	if strings.HasPrefix(r.URL.Path, "/sriracha/preference/2fa/add") {
 		if len(db.TwoFactorsByAccount(data.Account.ID)) >= totpMaxDevices {
 			data.ManageError(data.Get("Sorry, only %d devices may be added. Remove a device before adding another.", totpMaxDevices))
 			return
+		} else if data.Manage.TwoFactor.Secret == "" && session.secret != "" {
+			data.Manage.TwoFactor.Secret = session.secret
 		}
 		passcode := FormString(r, "passcode")
 		if passcode != "" && session.secret != "" {
@@ -147,6 +173,7 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 				Secret:     session.secret,
 			}
 			db.AddTwoFactor(t)
+			session.validated = true
 			session.secret = ""
 			data.Template = "manage_info"
 			data.Info = data.Get("Added %s device.", "2FA")
@@ -164,6 +191,7 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 		}
 		return
 	}
+	session.secret = ""
 
 	// Rename device.
 	deviceID := PathInt(r, "/sriracha/preference/2fa/")

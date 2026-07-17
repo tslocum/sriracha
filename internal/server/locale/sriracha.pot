@@ -39,6 +39,9 @@ msgstr ""
 msgid "%s memory usage."
 msgstr ""
 
+msgid "%s passcode"
+msgstr ""
+
 msgid "%s uptime."
 msgstr ""
 
@@ -1153,6 +1156,9 @@ msgid "Relative file path where the page is located, excluding the .html suffix.
 msgstr ""
 
 msgid "Remove"
+msgstr ""
+
+msgid "Remove device?"
 msgstr ""
 
 msgid "Replies"

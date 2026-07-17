@@ -197,7 +197,8 @@ type twoFactorSession struct {
 	account   int
 	timestamp int64
 	secret    string
-	complete  bool
+	loggedIn  bool
+	validated bool
 }
 
 const entriesPerPage = 25
