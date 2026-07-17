@@ -24,6 +24,7 @@ const (
 	totpKeySize         = 48
 	totpAlgorithm       = otp.AlgorithmSHA512
 	totpSessionDuration = 600 // 10 minutes.
+	totpMaxDevices      = 5
 )
 
 var b32NoPadding = base32.StdEncoding.WithPadding(base32.NoPadding)
@@ -41,7 +42,7 @@ func (s *Server) twoFactorOptions(a *Account, t *TwoFactor) totp.GenerateOpts {
 		AccountName: a.Username,
 		Period:      totpPeriod,
 		Digits:      totpDigits,
-		Algorithm:   otp.AlgorithmSHA512,
+		Algorithm:   totpAlgorithm,
 		Rand:        rand.Reader,
 	}
 	if t.Secret != "" {
@@ -120,7 +121,10 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 	}
 	data.Extra3 = string(session.key)
 	if strings.HasPrefix(r.URL.Path, "/sriracha/preference/2fa/add") {
-		options := s.twoFactorOptions(data.Account, data.Manage.TwoFactor)
+		if len(db.TwoFactorsByAccount(data.Account.ID)) >= totpMaxDevices {
+			data.ManageError(data.Get("Sorry, only %d devices may be added. Remove a device before adding another.", totpMaxDevices))
+			return
+		}
 		passcode := FormString(r, "passcode")
 		if passcode != "" && session.secret != "" {
 			ok, err := totp.ValidateCustom(passcode, session.secret, time.Now(), twoFactorValidateOptions)
@@ -131,6 +135,7 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 			// TODO Valid, add to DB and redirect
 		}
 		data.Manage.TwoFactor.Timestamp = time.Now().Unix()
+		options := s.twoFactorOptions(data.Account, data.Manage.TwoFactor)
 		key, err := totp.Generate(options)
 		if err != nil {
 			log.Fatal(err)

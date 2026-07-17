@@ -973,6 +973,9 @@ msgstr ""
 msgid "Oekaki Width"
 msgstr ""
 
+msgid "Only %d devices may be added. Remove a device before adding another."
+msgstr ""
+
 msgid "Only %d file may be uploaded at once."
 msgid_plural "Only %d files may be uploaded at once."
 msgstr[0] ""

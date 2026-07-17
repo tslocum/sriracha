@@ -170,4 +170,11 @@ type DB interface {
 	UpdateThreshold(t *Threshold)
 	ThresholdTimeout(t *Threshold, ipHash string, now int64) int
 	DeleteThreshold(id int)
+
+	// Two-factor.
+	AddTwoFactor(t *TwoFactor)
+	TwoFactorByID(id int) *TwoFactor
+	TwoFactorsByAccount(accountID int) []*TwoFactor
+	UpdateTwoFactor(t *TwoFactor)
+	DeleteTwoFactor(id int)
 }

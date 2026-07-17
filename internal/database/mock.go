@@ -286,6 +286,13 @@ func (db *mockDB) UpdateThreshold(t *Threshold)                                {
 func (db *mockDB) ThresholdTimeout(t *Threshold, ipHash string, now int64) int { return 0 }
 func (db *mockDB) DeleteThreshold(id int)                                      {}
 
+// Two-factor.
+func (db *mockDB) AddTwoFactor(t *TwoFactor)                      {}
+func (db *mockDB) TwoFactorByID(id int) *TwoFactor                { return nil }
+func (db *mockDB) TwoFactorsByAccount(accountID int) []*TwoFactor { return nil }
+func (db *mockDB) UpdateTwoFactor(t *TwoFactor)                   {}
+func (db *mockDB) DeleteTwoFactor(id int)                         {}
+
 var MockDB = newMockDB()
 
 // Validate mock database interface during compilation.
