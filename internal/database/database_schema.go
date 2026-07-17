@@ -245,7 +245,7 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 -- v19: 	account smallint NOT NULL REFERENCES account (id) ON DELETE CASCADE,
 -- v19: 	timestamp bigint NOT NULL,
 -- v19: 	lastactive bigint NOT NULL,
--- v19: 	secret char(32) NOT NULL,
+-- v19: 	secret char(52) NOT NULL,
 -- v19: 	name varchar(64) NOT NULL
 -- v19: );`,
 	// Version 2.
@@ -372,7 +372,7 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 		account smallint NOT NULL REFERENCES account (id) ON DELETE CASCADE,
 		timestamp bigint NOT NULL,
 		lastactive bigint NOT NULL,
-		secret char(32) NOT NULL,
+		secret char(52) NOT NULL,
 		name varchar(64) NOT NULL
 	);
 	ALTER TABLE account ADD COLUMN scratchcodes text[] NOT NULL DEFAULT array[]::text[];

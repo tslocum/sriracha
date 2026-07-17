@@ -132,7 +132,18 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 				data.ManageError("Incorrect passcode")
 				return
 			}
-			// TODO Valid, add to DB and redirect
+			now := time.Now().Unix()
+			t := &TwoFactor{
+				Account:    data.Account.ID,
+				Timestamp:  now,
+				LastActive: now,
+				Secret:     session.secret,
+			}
+			db.AddTwoFactor(t)
+			session.secret = ""
+			data.Template = "manage_info"
+			data.Info = data.Get("Device added.")
+			return
 		}
 		data.Manage.TwoFactor.Timestamp = time.Now().Unix()
 		options := s.twoFactorOptions(data.Account, data.Manage.TwoFactor)
@@ -144,5 +155,7 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 			data.Manage.TwoFactor.Secret = key.Secret()
 			session.secret = data.Manage.TwoFactor.Secret
 		}
+		return
 	}
+	data.Manage.TwoFactors = db.TwoFactorsByAccount(data.Account.ID)
 }

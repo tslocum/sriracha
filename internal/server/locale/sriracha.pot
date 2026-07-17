@@ -398,6 +398,9 @@ msgstr ""
 msgid "Device"
 msgstr ""
 
+msgid "Device added."
+msgstr ""
+
 msgid "Dimensions"
 msgstr ""
 

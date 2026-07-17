@@ -39,12 +39,12 @@
             {{if gt (len .Manage.TwoFactors) 0}}
                 <tr><th>{{T "Device"}}</th><th>{{T "Added"}}</th><th>{{T "Used"}}</th><th>{{T "Action"}}</th></tr>
                 {{range $i, $twoFactor := .Manage.TwoFactors}}
-                    <tr><td class="postblock">{{if ne $twoFactor.Name ""}}{{$twoFactor.Name}}{{else}}#{{$twoFactor.ID}}{{end}}</td><td>2026/07/15</td><td>2026/07/15</td><td>[Rename] [Delete]</td></tr>
+                    <tr><td class="postblock">{{if ne $twoFactor.Name ""}}{{$twoFactor.Name}}{{else}}#{{$twoFactor.ID}}{{end}}</td><td>{{$twoFactor.TimestampLabel}}</td><td>{{$twoFactor.LastActiveLabel}}</td><td>[Rename] [Delete]</td></tr>
                 {{end}}
             {{else}}
-                <tr><td colspan="3">{{T "No two-factor authentication devices."}}</td></tr>
+                <tr><td colspan="4">{{T "No two-factor authentication devices."}}</td></tr>
             {{end}}
-            <tr><td colspan="3" align="right">
+            <tr><td colspan="4" align="right">
                 <form method="post" action="/sriracha/preference/2fa/add">
                     <input type="hidden" name="key" value="{{.Extra3}}">
                     <input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Add %s Device" "2FA"}}">
