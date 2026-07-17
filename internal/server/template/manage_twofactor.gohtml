@@ -1,5 +1,5 @@
 {{template "manage_begin.gohtml" .}}
-<h2 class="managetitle">{{T "Two-Factor Authentication"}}</h2>
+<h2 class="managetitle">{{T "Two-Factor Authentication"}}{{Help "two-factor-authentication"}}</h2>
 {{if ne .Manage.TwoFactor.Secret ""}}
     {{if eq .Manage.TwoFactor.ID 0}}
         <fieldset>

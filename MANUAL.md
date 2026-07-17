@@ -157,6 +157,27 @@ embed URL, the second service is tried, and so on.
 Manage the available embed services by visiting the 'Settings' page.
 Embed services may then be enabled per-board, just like upload file types.
 
+### Two-factor authentication
+
+Staff may add up to five [TOTP](https://en.wikipedia.org/wiki/Time-based_one-time_password)
+two-factor authentication devices.
+
+A phone or tablet may be used as a two-factor authentication device by
+installing a free and open source TOTP authentication application.
+
+When at least one two-factor device has been added, logging in will require
+entering a 2FA passcode after entering the correct username and password.
+
+Ideally, the passcodes are generated using a completely separate device which
+is never used to access the management panel.
+
+In practice, generating codes using a phone or other secondary device provides
+reasonable security.
+
+Generating and validating two-factor authentication passcodes requires accurate
+timekeeping from staff devices and the server. Passcodes will fail validation
+when the difference in time between the two is greater than one minute.
+
 ### Email notifications
 
 Sriracha may optionally allow visitors to subscribe to receive email notifications

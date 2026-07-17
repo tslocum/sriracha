@@ -1,3 +1,6 @@
+1.8.5:
+- Support two-factor authentication
+
 1.8.4:
 - Add auto-refresh status indicator
 - Support pausing and resuming auto-refresh
