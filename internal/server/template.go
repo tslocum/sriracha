@@ -355,27 +355,6 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 		return template.HTML(fmt.Sprintf(`<div class="managehelp" title="%s"><a href="https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#%s" target="_blank">📖</a></div>`, html.EscapeString(gotext.GetD(domain, "View Sriracha manual subsection")), html.EscapeString(anchor)))
 	}
 
-	f["TOTPImage"] = func(a *Account, t *TwoFactor) template.HTML {
-		buf := &bytes.Buffer{}
-		buf.WriteString(`<img src="data:image/png;base64,`)
-		encoder := base64.NewEncoder(base64.StdEncoding, buf)
-		key, err := totp.Generate(s.twoFactorOptions(a, t))
-		if err != nil {
-			log.Fatal(err)
-		}
-		img, err := key.Image(totpImageSize, totpImageSize)
-		if err != nil {
-			log.Fatal(err)
-		}
-		err = png.Encode(encoder, img)
-		if err != nil {
-			log.Fatal(err)
-		}
-		encoder.Close()
-		buf.WriteString(`" alt="QR code">`)
-		return template.HTML(buf.String())
-	}
-
 	// Ban.
 	f["AllBans"] = func(rangeOnly bool) []*Ban { return s.tplDB.AllBans(rangeOnly) }
 	f["BanByID"] = func(id int) *Ban { return s.tplDB.BanByID(id) }
@@ -409,6 +388,28 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	f["PostByField"] = func(board *Board, field string, value any) *Post { return s.tplDB.PostByField(board, field, value) }
 	f["LastPostByIP"] = func(board *Board, ip string) *Post { return s.tplDB.LastPostByIP(board, ip) }
 	f["ReplyCount"] = func(threadID int) int { return s.tplDB.ReplyCount(threadID) }
+
+	// Two-factor authentication.
+	f["TOTPImage"] = func(a *Account, t *TwoFactor) template.HTML {
+		buf := &bytes.Buffer{}
+		buf.WriteString(`<img src="data:image/png;base64,`)
+		encoder := base64.NewEncoder(base64.StdEncoding, buf)
+		key, err := totp.Generate(s.twoFactorOptions(a, t))
+		if err != nil {
+			log.Fatal(err)
+		}
+		img, err := key.Image(totpImageSize, totpImageSize)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = png.Encode(encoder, img)
+		if err != nil {
+			log.Fatal(err)
+		}
+		encoder.Close()
+		fmt.Fprintf(buf, `" width="%d" height="%d" alt="QR code">`, totpImageSize, totpImageSize)
+		return template.HTML(buf.String())
+	}
 	return f
 }
 

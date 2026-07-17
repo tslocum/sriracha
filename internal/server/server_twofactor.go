@@ -98,6 +98,13 @@ func (s *Server) twoFactorSession(a *Account, key []byte) *twoFactorSession {
 	return session
 }
 
+func (s *Server) addTwoFactorNotice(data *templateData, db serverDB) {
+	if !s.config.Require2FA || len(db.TwoFactorsByAccount(data.Account.ID)) > 0 || data.Info != "" {
+		return
+	}
+	data.Info = data.Get("Two-factor authentication is required. You may only access your preferences until a %s device is added.", "2FA")
+}
+
 func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
 	data.Template = "manage_twofactor"
 	data.Manage.TwoFactor = &TwoFactor{}
@@ -142,7 +149,7 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 			db.AddTwoFactor(t)
 			session.secret = ""
 			data.Template = "manage_info"
-			data.Info = data.Get("Device added.")
+			data.Info = data.Get("Added %s device.", "2FA")
 			return
 		}
 		data.Manage.TwoFactor.Timestamp = time.Now().Unix()
@@ -157,5 +164,29 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 		}
 		return
 	}
+
+	// Rename device.
+	deviceID := PathInt(r, "/sriracha/preference/2fa/")
+	if deviceID > 0 {
+		device := db.TwoFactorByID(deviceID)
+		if device == nil || device.Account != data.Account.ID {
+			data.ManageError("Invalid or removed device.")
+			return
+		}
+		data.Manage.TwoFactor = device
+	}
+
+	// Delete device.
+	deviceID = FormInt(r, "delete")
+	if deviceID > 0 {
+		device := db.TwoFactorByID(deviceID)
+		if device == nil || device.Account != data.Account.ID {
+			data.ManageError("Invalid or removed device.")
+			return
+		}
+		db.DeleteTwoFactor(device.ID)
+		s.addTwoFactorNotice(data, db)
+	}
+
 	data.Manage.TwoFactors = db.TwoFactorsByAccount(data.Account.ID)
 }

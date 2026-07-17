@@ -9,9 +9,7 @@ import (
 )
 
 func (s *Server) servePreference(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
-	if s.config.Require2FA && len(db.TwoFactorsByAccount(data.Account.ID)) == 0 && data.Info == "" {
-		data.Info = data.Get("Two-factor authentication is required. You may only access your preferences until a %s device is added.", "2FA")
-	}
+	s.addTwoFactorNotice(data, db)
 
 	if strings.HasPrefix(r.URL.Path, "/sriracha/preference/2fa") {
 		s.serveTwoFactor(data, db, w, r)

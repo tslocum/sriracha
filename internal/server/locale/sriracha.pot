@@ -126,6 +126,9 @@ msgstr ""
 msgid "Added"
 msgstr ""
 
+msgid "Added %s device."
+msgstr ""
+
 msgid "Admin"
 msgstr ""
 
@@ -396,9 +399,6 @@ msgid "Detected banned keyword."
 msgstr ""
 
 msgid "Device"
-msgstr ""
-
-msgid "Device added."
 msgstr ""
 
 msgid "Dimensions"
