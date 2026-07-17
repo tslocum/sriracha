@@ -175,8 +175,8 @@ In practice, generating codes using a phone or other secondary device provides
 reasonable security.
 
 Generating and validating two-factor authentication passcodes requires accurate
-timekeeping from staff devices and the server. Passcodes will fail validation
-when the difference in time between the two is greater than one minute.
+timekeeping. Passcodes will fail validation when time difference between a
+device and the server is greater than one minute.
 
 ### Email notifications
 
@@ -416,6 +416,10 @@ dbname: "sriracha"
 # Notification batch durations. These options only apply when a mail server is configured.
 #mentions:      60   # Duration (in minutes) mention notifications are batched together.
 #notifications: 1440 # Duration (in minutes) all other notifications are batched together.
+
+# Require two-factor authentication. When enabled, staff must enter a TOTP passcode in
+# addition to their username and password. Enabling this option increases security.
+#require2fa: false
 
 # Access required to perform an action. Default values for all actions are listed below.
 #
