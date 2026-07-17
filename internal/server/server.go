@@ -2116,6 +2116,9 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 			return
 		}
 		data.Info = Get(nil, data.Account, "Import mode enabled. Visitors are forbidden from posting.")
+	} else if s.config.Require2FA && len(db.TwoFactorsByAccount(data.Account.ID)) == 0 && !strings.HasPrefix(r.URL.Path, "/sriracha/preference") {
+		data.Redirect(w, r, "/sriracha/preference/")
+		return
 	}
 
 	switch {

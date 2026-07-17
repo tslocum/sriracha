@@ -1360,6 +1360,9 @@ msgstr ""
 msgid "Two-Factor Authentication"
 msgstr ""
 
+msgid "Two-factor authentication is required. You may only access your preferences until a %s device is added."
+msgstr ""
+
 msgid "Type"
 msgstr ""
 

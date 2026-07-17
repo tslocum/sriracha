@@ -51,6 +51,8 @@ type Config struct {
 
 	Template string // Custom template directory.
 
+	Require2FA bool // Require two-factor authentication.
+
 	Identifiers bool // Whether staff may browse posts by IP hashes and boards may display identifier hashes.
 
 	Uploads []string // Supported upload file types.
