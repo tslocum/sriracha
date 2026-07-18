@@ -2,6 +2,7 @@
 package server
 
 import (
+	"bytes"
 	"context"
 	"crypto/md5"
 	"crypto/rand"
@@ -35,6 +36,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 
 	_ "net/http/pprof"
@@ -51,6 +53,7 @@ import (
 	"github.com/pquerna/otp/totp"
 	"github.com/r3labs/diff/v3"
 	"golang.org/x/sys/unix"
+	"golang.org/x/term"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"golang.org/x/text/language/display"
@@ -2633,6 +2636,7 @@ func (s *Server) Run() error {
 		importPath     string
 		devMode        bool
 		rebuild        bool
+		recoverAccount string
 		debugAddress   string
 		printVersion   bool
 	)
@@ -2642,6 +2646,7 @@ func (s *Server) Run() error {
 	flag.StringVar(&importPath, "import", "", "import posts from zip file or sqlite database file at specified path")
 	flag.BoolVar(&devMode, "dev", false, "run in development mode (watch official and custom template files for changes)")
 	flag.BoolVar(&rebuild, "rebuild", false, "rebuild static files on startup")
+	flag.StringVar(&recoverAccount, "recover", "", "update account password and remove all 2FA devices")
 	flag.StringVar(&debugAddress, "debug", "", "address to serve pprof debug information on (DANGEROUS! Debug information includes hashes, passwords and other sensitive data)")
 	flag.BoolVar(&printVersion, "version", false, "print version information and exit")
 	flag.Parse()
@@ -2722,6 +2727,40 @@ func (s *Server) Run() error {
 	err = s.loadServerConfig()
 	if err != nil {
 		return fmt.Errorf("failed to set default server configuration: %s", err)
+	}
+
+	// Recover account.
+	if recoverAccount != "" {
+		db := s.begin()
+		account := db.AccountByUsername(recoverAccount)
+		if account == nil {
+			return fmt.Errorf("invalid account (specify a username)")
+		}
+		fmt.Printf("Recovering account %s...\n", account.Username)
+		fmt.Print("Password: ")
+		password, err := term.ReadPassword(int(syscall.Stdin))
+		if err != nil {
+			return err
+		}
+		fmt.Print("\nConfirm: ")
+		confirm, err := term.ReadPassword(int(syscall.Stdin))
+		if err != nil {
+			return err
+		}
+		fmt.Print("\n")
+		if len(password) == 0 || len(confirm) == 0 {
+			return fmt.Errorf("Error: A new password is required.")
+		} else if !bytes.Equal(password, confirm) {
+			return fmt.Errorf("Error: Passwords do not match.")
+		}
+		db.UpdateAccountPassword(account, string(password))
+		for _, device := range db.TwoFactorsByAccount(account.ID) {
+			db.DeleteTwoFactor(device.ID)
+		}
+		s.log(db, nil, nil, fmt.Sprintf("Recovered >>/account/%d via terminal", account.ID), "")
+		fmt.Println("Password updated. All 2FA devices have been removed.")
+		db.Commit()
+		return nil
 	}
 
 	// Load plugin configuration.

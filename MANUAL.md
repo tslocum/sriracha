@@ -178,6 +178,10 @@ Generating and validating two-factor authentication passcodes requires accurate
 timekeeping. Passcodes will fail validation when time difference between a
 device and the server is greater than one minute.
 
+If you lose access to all of your 2FA devices, ask a super-administrator to
+reset your password. All existing 2FA devices will be removed from your account.
+If you are the only super-administrator, use the `--recover` flag instead.
+
 ### Email notifications
 
 Sriracha may optionally allow visitors to subscribe to receive email notifications
