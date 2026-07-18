@@ -1251,6 +1251,11 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 			Value: "",
 			Path:  "/",
 		})
+		http.SetCookie(w, &http.Cookie{
+			Name:  "sriracha_totp",
+			Value: "",
+			Path:  "/",
+		})
 		http.Redirect(w, r, "/sriracha/", http.StatusFound)
 		return s.newTemplateData(db)
 	}
@@ -1262,6 +1267,51 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 			data := s.newTemplateData(db)
 			data.Account = account
 			return data
+		}
+	}
+
+	cookies = r.CookiesNamed("sriracha_totp")
+	if len(cookies) > 0 {
+		session := s.twoFactorSession(0, []byte(cookies[0].Value))
+		if session.account != 0 && !session.validated && len(db.TwoFactorsByAccount(session.account)) > 0 {
+			key := []byte(FormString(r, "key"))
+			if len(key) == 0 {
+				cookie, err := r.Cookie("sriracha_totp")
+				if err == nil && cookie != nil {
+					key = []byte(cookie.Value)
+				}
+			}
+			if !session.validated {
+				account := db.AccountByID(session.account)
+				if account != nil {
+					passcode := FormString(r, "passcode")
+					if passcode != "" {
+						now := time.Now()
+						for _, device := range db.TwoFactorsByAccount(session.account) {
+							ok, err := totp.ValidateCustom(passcode, device.Secret, now, twoFactorValidateOptions)
+							if err == nil && ok {
+								session.validated = true
+								break
+							}
+						}
+						if !session.validated {
+							session.timestamp = 0
+							http.Redirect(w, r, "/sriracha/", http.StatusFound)
+							return s.newTemplateData(db)
+						}
+						http.SetCookie(w, &http.Cookie{
+							Name:  "sriracha_session",
+							Value: account.Session,
+							Path:  "/",
+						})
+						http.Redirect(w, r, "/sriracha/", http.StatusFound)
+						return s.newTemplateData(db)
+					}
+				}
+			}
+			if !session.validated {
+				return s.newTemplateData(db)
+			}
 		}
 	}
 	return s.newTemplateData(db)
@@ -2082,16 +2132,8 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 				// Verify username and password.
 				account := db.LoginAccount(username, password)
 				if account != nil {
-					http.SetCookie(w, &http.Cookie{
-						Name:  "sriracha_session",
-						Value: account.Session,
-						Path:  "/",
-					})
-					data := s.newTemplateData(db)
-					data.Account = account
-					data.execute(w)
 					if len(db.TwoFactorsByAccount(account.ID)) > 0 {
-						session := s.twoFactorSession(account, nil)
+						session := s.twoFactorSession(account.ID, nil)
 						http.SetCookie(w, &http.Cookie{
 							Name:  "sriracha_totp",
 							Value: string(session.key),
@@ -2103,7 +2145,17 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 						data.Extra2 = "passcode"
 						data.Extra3 = string(session.key)
 						data.execute(w)
+						return
 					}
+					http.SetCookie(w, &http.Cookie{
+						Name:  "sriracha_session",
+						Value: account.Session,
+						Path:  "/",
+					})
+					data := s.newTemplateData(db)
+					data.Template = "manage_status"
+					data.Account = account
+					data.execute(w)
 					return
 				}
 			}
@@ -2118,43 +2170,7 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 	if data.Account == nil {
 		data.execute(w)
 		return
-	} else if len(db.TwoFactorsByAccount(data.Account.ID)) > 0 {
-		key := []byte(FormString(r, "key"))
-		if len(key) == 0 {
-			cookie, err := r.Cookie("sriracha_totp")
-			if err == nil && cookie != nil {
-				key = []byte(cookie.Value)
-			}
-		}
-		session := s.twoFactorSession(data.Account, key)
-		if !session.validated {
-			passcode := FormString(r, "passcode")
-			if passcode != "" {
-				now := time.Now()
-				for _, device := range db.TwoFactorsByAccount(data.Account.ID) {
-					ok, err := totp.ValidateCustom(passcode, device.Secret, now, twoFactorValidateOptions)
-					if err == nil && ok {
-						session.validated = true
-						break
-					}
-				}
-				if !session.validated {
-					session.timestamp = 0
-					data.Redirect(w, r, "/sriracha/")
-					return
-				}
-			}
-		}
-		if !session.validated {
-			data.Account = nil
-			data.Template = "manage_login"
-			data.execute(w)
-			session.timestamp = 0
-			return
-		}
-	}
-
-	if s.config.ImportMode {
+	} else if s.config.ImportMode {
 		if data.Account.Role != RoleSuperAdmin {
 			data.ManageError("Sriracha is running in import mode. Only super-administrators may log in.")
 			data.execute(w)

@@ -6,6 +6,7 @@ import (
 	"encoding/base32"
 	"log"
 	"net/http"
+	"slices"
 	"strings"
 	"time"
 
@@ -16,15 +17,15 @@ import (
 )
 
 const (
-	totpPeriod          = 30
-	totpSecretSize      = 32
-	totpDigits          = 6
-	totpSkew            = 1
-	totpImageSize       = 250
-	totpKeySize         = 48
-	totpAlgorithm       = otp.AlgorithmSHA512
-	totpSessionDuration = 600 // 10 minutes.
-	totpMaxDevices      = 5
+	totpPeriod         = 30
+	totpSecretSize     = 32
+	totpDigits         = 6
+	totpSkew           = 1
+	totpImageSize      = 250
+	totpKeySize        = 48
+	totpAlgorithm      = otp.AlgorithmSHA512
+	totpSessionTimeout = 600 // 10 minutes.
+	totpMaxDevices     = 5
 )
 
 var b32NoPadding = base32.StdEncoding.WithPadding(base32.NoPadding)
@@ -70,29 +71,31 @@ TWOFACTORKEY:
 	}
 }
 
-func (s *Server) twoFactorSession(a *Account, key []byte) *twoFactorSession {
-	if a.ID == 0 {
-		return &twoFactorSession{}
-	}
+func (s *Server) twoFactorSession(accountID int, key []byte) *twoFactorSession {
 	var existing *twoFactorSession
-	var index int
-	for i, session := range s.twoFactorSessions {
-		if session.account == a.ID {
-			existing = s.twoFactorSessions[i]
-			index = i
-			break
+	now := time.Now().Unix()
+	s.twoFactorSessions = slices.DeleteFunc(s.twoFactorSessions, func(twoFactor *twoFactorSession) bool {
+		return now-twoFactor.timestamp > totpSessionTimeout
+	})
+	if len(key) > 0 {
+		for _, session := range s.twoFactorSessions {
+			if bytes.Equal(session.key, key) {
+				existing = session
+				break
+			}
 		}
 	}
+	s.twoFactorSessions = slices.DeleteFunc(s.twoFactorSessions, func(twoFactor *twoFactorSession) bool {
+		return (twoFactor != existing && twoFactor.account == accountID) || (twoFactor == existing && twoFactor.account != accountID)
+	})
 	if existing != nil {
-		if bytes.Equal(existing.key, key) && time.Now().Unix()-existing.timestamp <= totpSessionDuration {
-			return existing
-		}
-		s.twoFactorSessions = append(s.twoFactorSessions[:index], s.twoFactorSessions[index+1:]...)
+		existing.timestamp = now
+		return existing
 	}
 	session := &twoFactorSession{
 		key:       s.twoFactorKey(),
-		account:   a.ID,
-		timestamp: time.Now().Unix(),
+		account:   accountID,
+		timestamp: now,
 	}
 	s.twoFactorSessions = append(s.twoFactorSessions, session)
 	return session
@@ -109,7 +112,7 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 	data.Template = "manage_twofactor"
 	data.Manage.TwoFactor = &TwoFactor{}
 	key := []byte(FormString(r, "key"))
-	session := s.twoFactorSession(data.Account, key)
+	session := s.twoFactorSession(data.Account.ID, key)
 	data.Extra3 = string(session.key)
 	password := FormString(r, "password")
 	if password != "" {
