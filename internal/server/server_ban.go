@@ -40,7 +40,7 @@ func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter
 		}
 		b := db.BanByID(deleteBanID)
 		if b == nil {
-			data.ManageError("Invalid ban.")
+			data.ManageError("Invalid or expired ban.")
 			return
 		}
 		db.DeleteBan(b.ID)
@@ -64,6 +64,10 @@ func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter
 	banID := PathInt(r, "/sriracha/ban/")
 	if banID > 0 {
 		data.Manage.Ban = db.BanByID(banID)
+		if data.Manage.Ban == nil {
+			data.ManageError("Invalid or expired ban.")
+			return
+		}
 
 		if data.Manage.Ban != nil && r.Method == http.MethodPost {
 			oldBan := *data.Manage.Ban
