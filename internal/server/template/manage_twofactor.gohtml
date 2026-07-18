@@ -45,6 +45,24 @@
                 </div>
             </fieldset><br>
         {{else}}
+            <fieldset>
+                <legend>{{T "Rename Device"}} {{if ne .Manage.TwoFactor.Name ""}}{{.Manage.TwoFactor.Name}}{{else}}#{{.Manage.TwoFactor.ID}}{{end}}</legend>
+                <div>
+                    <form method="post">
+                        <input type="hidden" name="key" value="{{$.Extra3}}">
+                        <table class="manageform" style="width: 100%;">
+                            <tr>
+                                <td class="postblock">{{T "Name"}}</td>
+                                <td><input type="text" id="name" name="name" value="{{.Manage.TwoFactor.Name}}" autocomplete="off"></td>
+                                <td><input type="submit" name="rename" value="{{T "Rename"}}" style="width: 100%;"></td>
+                            </tr>
+                        </table>
+                    </form>
+                    <script type="text/javascript">
+                    document.getElementById("name").focus();
+                    </script>
+                </div>
+            </fieldset><br>
         {{end}}
     {{else}}
         {{if eq (len .Manage.TwoFactors) 0}}
@@ -60,9 +78,8 @@
                         <td>{{$twoFactor.TimestampLabel}}</td>
                         <td>{{$twoFactor.LastActiveLabel}}</td>
                         <td>
-                            <form method="post" action="/sriracha/preference/2fa">
+                            <form method="post" action="/sriracha/preference/2fa/{{$twoFactor.ID}}">
                                 <input type="hidden" name="key" value="{{$.Extra3}}">
-                                <input type="hidden" name="rename" value="{{$twoFactor.ID}}">
                                 <input type="submit" value="{{T "Rename"}}">
                             </form>
                             <form method="post" action="/sriracha/preference/2fa">

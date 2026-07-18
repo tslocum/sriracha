@@ -1161,6 +1161,12 @@ msgstr ""
 msgid "Remove device?"
 msgstr ""
 
+msgid "Rename"
+msgstr ""
+
+msgid "Rename Device"
+msgstr ""
+
 msgid "Replies"
 msgstr ""
 

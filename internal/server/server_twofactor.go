@@ -112,6 +112,12 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 	data.Template = "manage_twofactor"
 	data.Manage.TwoFactor = &TwoFactor{}
 	key := []byte(FormString(r, "key"))
+	if len(key) == 0 {
+		cookies := r.CookiesNamed("sriracha_totp")
+		if len(cookies) > 0 {
+			key = []byte(cookies[0].Value)
+		}
+	}
 	session := s.twoFactorSession(data.Account.ID, key)
 	data.Extra3 = string(session.key)
 	password := FormString(r, "password")
@@ -205,6 +211,13 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 			return
 		}
 		data.Manage.TwoFactor = device
+		if FormString(r, "rename") != "" {
+			data.Manage.TwoFactor.Name = FormString(r, "name")
+			db.UpdateTwoFactor(data.Manage.TwoFactor)
+			data.Template = "manage_info"
+			data.Info = "Renamed device"
+			return
+		}
 	}
 
 	// Delete device.

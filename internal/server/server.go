@@ -970,11 +970,11 @@ func (s *Server) _watchTemplates(officialDir string, watcher *fsnotify.Watcher) 
 			err := s.parseTemplates(officialDir, s.config.Template, nil)
 			if err != nil {
 				log.Printf("failed to parse template files: %s", err)
-			}
-
-			err = s.validateTemplates(nil)
-			if err != nil {
-				log.Printf("failed to execute template files: %s", err)
+			} else {
+				err = s.validateTemplates(nil)
+				if err != nil {
+					log.Printf("failed to execute template files: %s", err)
+				}
 			}
 
 			s.lock.Unlock()
