@@ -32,7 +32,7 @@ type DB interface {
 	AllAccounts() []*Account
 	UpdateAccountUsername(a *Account)
 	UpdateAccountRole(a *Account)
-	UpdateAccountPassword(id int, password string)
+	UpdateAccountPassword(a *Account, password string)
 	UpdateAccountLastActive(id int)
 	UpdateAccountStyle(id int, style string)
 	UpdateAccountLocale(id int, locale string)

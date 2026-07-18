@@ -107,7 +107,7 @@ func (db *mockDB) AccountBySessionKey(sessionKey string) *Account               
 func (db *mockDB) AllAccounts() []*Account                                        { return nil }
 func (db *mockDB) UpdateAccountUsername(a *Account)                               {}
 func (db *mockDB) UpdateAccountRole(a *Account)                                   {}
-func (db *mockDB) UpdateAccountPassword(id int, password string)                  {}
+func (db *mockDB) UpdateAccountPassword(a *Account, password string)              {}
 func (db *mockDB) UpdateAccountLastActive(id int)                                 {}
 func (db *mockDB) UpdateAccountStyle(id int, style string)                        {}
 func (db *mockDB) UpdateAccountLocale(id int, locale string)                      {}

@@ -57,7 +57,7 @@ func (s *Server) servePreference(data *templateData, db serverDB, w http.Respons
 				return
 			}
 
-			db.UpdateAccountPassword(match.ID, newPass)
+			db.UpdateAccountPassword(match, newPass)
 
 			data.Redirect(w, r, "/sriracha/")
 			return

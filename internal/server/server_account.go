@@ -54,7 +54,10 @@ func (s *Server) serveAccount(data *templateData, db serverDB, w http.ResponseWr
 
 			password := r.FormValue("password")
 			if strings.TrimSpace(password) != "" {
-				db.UpdateAccountPassword(data.Manage.Account.ID, password)
+				db.UpdateAccountPassword(data.Manage.Account, password)
+				for _, device := range db.TwoFactorsByAccount(data.Manage.Account.ID) {
+					db.DeleteTwoFactor(device.ID)
+				}
 			}
 
 			changes := printChanges(oldAccount, *data.Manage.Account)

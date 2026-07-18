@@ -3081,6 +3081,8 @@ func printChanges(old interface{}, new interface{}) string {
 		if len(change.Path) > 0 {
 			name = change.Path[0]
 			switch name {
+			case "Session":
+				continue
 			case "Password":
 				from = mask
 				to = mask

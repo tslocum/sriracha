@@ -118,8 +118,8 @@ func (db *DB) UpdateAccountUsername(a *Account) {
 	if a == nil || a.ID <= 0 {
 		dbErr(fmt.Errorf("invalid account: %v", a))
 	}
-	sessionKey := db.newSessionKey()
-	_, err := db.conn.Exec(context.Background(), "UPDATE account SET username = $1, session = $2 WHERE id = $3", a.Username, sessionKey, a.ID)
+	a.Session = db.newSessionKey()
+	_, err := db.conn.Exec(context.Background(), "UPDATE account SET username = $1, session = $2 WHERE id = $3", a.Username, a.Session, a.ID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to update account: %w", err))
 	}
@@ -135,12 +135,13 @@ func (db *DB) UpdateAccountRole(a *Account) {
 	}
 }
 
-func (db *DB) UpdateAccountPassword(id int, password string) {
-	if id <= 0 {
-		dbErr(fmt.Errorf("invalid account ID %d", id))
+func (db *DB) UpdateAccountPassword(a *Account, password string) {
+	if a.ID <= 0 {
+		dbErr(fmt.Errorf("invalid account ID %d", a.ID))
 	}
-	sessionKey := db.newSessionKey()
-	_, err := db.conn.Exec(context.Background(), "UPDATE account SET password = $1, session = $2 WHERE id = $3", encryptPassword(db.config.SaltPass, password), sessionKey, id)
+	a.Password = encryptPassword(db.config.SaltPass, password)
+	a.Session = db.newSessionKey()
+	_, err := db.conn.Exec(context.Background(), "UPDATE account SET password = $1, session = $2 WHERE id = $3", a.Password, a.Session, a.ID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to update account: %w", err))
 	}
