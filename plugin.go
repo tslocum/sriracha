@@ -32,7 +32,7 @@ type PluginConfig struct {
 	Info      string
 	Value     string
 	Default   string
-	Sensitive bool // Sensitive options are excluded from the audit log.
+	Sensitive bool // Sensitive options are masked in the audit log.
 }
 
 func (c PluginConfig) Validate() error {

@@ -117,6 +117,7 @@ func (s *Server) servePlugin(data *templateData, db serverDB, w http.ResponseWri
 				})
 			}
 
+			const mask = "***"
 			pUpdate, _ := plugin.(sriracha.PluginWithUpdate)
 			var changed bool
 			var changes string
@@ -150,21 +151,22 @@ func (s *Server) servePlugin(data *templateData, db serverDB, w http.ResponseWri
 					db.SetPlugin("")
 				}
 
+				var oldLabel, newLabel string
 				if c.Sensitive {
-					continue
-				}
-				oldLabel := oldValue
-				newLabel := newValue
-				if c.Type == sriracha.TypeBoolean {
-					if oldValue != "1" {
-						oldLabel = "false"
-					} else {
-						oldLabel = "true"
-					}
-					if newValue != "1" {
-						newLabel = "false"
-					} else {
-						newLabel = "true"
+					oldLabel, newLabel = mask, mask
+				} else {
+					oldLabel, newLabel = oldValue, newValue
+					if c.Type == sriracha.TypeBoolean {
+						if oldValue != "1" {
+							oldLabel = "false"
+						} else {
+							oldLabel = "true"
+						}
+						if newValue != "1" {
+							newLabel = "false"
+						} else {
+							newLabel = "true"
+						}
 					}
 				}
 				if changes != "" {
