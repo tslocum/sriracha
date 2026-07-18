@@ -310,7 +310,7 @@ func (db *DB) SaveString(key string, value string) {
 }
 
 func (db *DB) GetMultiString(key string) []string {
-	return strings.Split(db.GetString(key), "|||")
+	return strings.Split(db.GetString(key), sriracha.Divider)
 }
 
 func (db *DB) GetBool(key string) bool {
@@ -326,7 +326,7 @@ func (db *DB) SaveBool(key string, value bool) {
 }
 
 func (db *DB) SaveMultiString(key string, value []string) {
-	db.SaveString(key, strings.Join(value, "|||"))
+	db.SaveString(key, strings.Join(value, sriracha.Divider))
 }
 
 func (db *DB) GetInt(key string) int {
@@ -351,7 +351,7 @@ func (db *DB) GetMultiInt(key string) []int {
 		return nil
 	}
 	var values []int
-	for _, v := range strings.Split(s, "|||") {
+	for _, v := range strings.Split(s, sriracha.Divider) {
 		values = append(values, ParseInt(v))
 	}
 	return values
@@ -361,7 +361,7 @@ func (db *DB) SaveMultiInt(key string, values []int) {
 	var out string
 	for i, v := range values {
 		if i != 0 {
-			out += "|||"
+			out += sriracha.Divider
 		}
 		out += strconv.Itoa(v)
 	}

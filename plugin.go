@@ -11,6 +11,9 @@ import (
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
+// Divider is a sentinel value used to split a single string into multiple strings.
+const Divider = "|||"
+
 // PluginConfigType represents the type of a plugin configuration option.
 type PluginConfigType int
 
@@ -53,7 +56,7 @@ func (c PluginConfig) Options() []string {
 	if c.Type != TypeEnum {
 		return nil
 	}
-	return strings.Split(c.Default, "|||")
+	return strings.Split(c.Default, Divider)
 }
 
 // Values returns the value of the provided configuration option as a collection of strings.
@@ -63,7 +66,7 @@ func (c PluginConfig) Values() []string {
 	} else if !c.Multiple {
 		return []string{c.Value}
 	}
-	return strings.Split(c.Value, "|||")
+	return strings.Split(c.Value, Divider)
 }
 
 // HaveInt returns whether an integer value is selected.

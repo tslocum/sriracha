@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"codeberg.org/tslocum/sriracha"
 	. "codeberg.org/tslocum/sriracha/model"
 	"github.com/jackc/pgx/v5"
 )
@@ -104,7 +105,7 @@ func (db *DB) AddBoard(b *Board) {
 		b.MaxThreads,
 		b.MaxReplies,
 		oekaki,
-		strings.Join(b.Rules, "|||"),
+		strings.Join(b.Rules, sriracha.Divider),
 		b.Hide,
 		backlinks,
 		b.Instances,
@@ -248,7 +249,7 @@ func (db *DB) UpdateBoard(b *Board) {
 		b.MaxThreads,
 		b.MaxReplies,
 		oekaki,
-		strings.Join(b.Rules, "|||"),
+		strings.Join(b.Rules, sriracha.Divider),
 		b.Hide,
 		backlinks,
 		b.Instances,
@@ -358,7 +359,7 @@ func scanBoard(b *Board, row pgx.Row) error {
 	b.Reports = reports == 1
 	b.Oekaki = oekaki == 1
 	if rules != "" {
-		b.Rules = strings.Split(rules, "|||")
+		b.Rules = strings.Split(rules, sriracha.Divider)
 	}
 	b.Backlinks = backlinks == 1
 	b.Gallery = gallery == 1

@@ -130,7 +130,7 @@ func (s *Server) servePlugin(data *templateData, db serverDB, w http.ResponseWri
 							if strings.TrimSpace(v) == "" {
 								continue
 							} else if newValue != "" {
-								newValue += "|||"
+								newValue += sriracha.Divider
 							}
 							newValue += v
 						}
