@@ -4,19 +4,32 @@
     <div class="login">
         <br>
         <fieldset>
-            <legend align="center">{{T "Log In"}}</legend>
-            <div>
-                <input type="text" id="manage_username" name="username" placeholder="{{T "Username"}}"><br>
-                <input type="password" name="password" placeholder="{{T "Password"}}" style="margin-top: 7px;"><br>
-                {{if not .Opt.DevMode}}
-                    <input type="text" name="captcha" placeholder="CAPTCHA" autocomplete="off" style="margin-top: 7px;"><br>
-                    <a href="#" onclick="javascript:document.getElementById('captchaimage').src = '/sriracha/captcha?new=' + new Date().getTime();"><img src="/sriracha/captcha" alt="CAPTCHA Challenge" title="{{T "Click to refresh."}}" id="captchaimage" width="225" height="40" style="border: 0;margin-top: 7px;vertical-align: middle;"></a><br>
-                {{end}}
-                <input type="submit" value="{{T "Log In"}}" class="managebutton" style="margin-top: 7px;">
-                <script type="text/javascript">
-                document.getElementById("manage_username").focus();
-                </script>
-            </div>
+            {{if eq .Extra2 "passcode"}}
+                <legend align="center">{{T "Log In"}}</legend>
+                <div>
+                    <input type="hidden" name="key" value="{{.Extra3}}">
+                    <input type="text" id="passcode" name="passcode" size="12" placeholder="{{T "Passcode"}}" autocomplete="off"><br>
+                    <input type="submit" value="{{T "Log In"}}" class="managebutton" style="margin-top: 7px;">
+                    <script type="text/javascript">
+                    document.getElementById('passcode').focus();
+                    </script>
+                </div>
+            {{else}}
+                <legend align="center">{{T "Log In"}}</legend>
+                <div>
+                    <input type="hidden" name="login" value="1">
+                    <input type="text" id="manage_username" name="username" placeholder="{{T "Username"}}"><br>
+                    <input type="password" name="password" placeholder="{{T "Password"}}" style="margin-top: 7px;"><br>
+                    {{if not .Opt.DevMode}}
+                        <input type="text" name="captcha" placeholder="CAPTCHA" autocomplete="off" style="margin-top: 7px;"><br>
+                        <a href="#" onclick="javascript:document.getElementById('captchaimage').src = '/sriracha/captcha?new=' + new Date().getTime();"><img src="/sriracha/captcha" alt="CAPTCHA Challenge" title="{{T "Click to refresh."}}" id="captchaimage" width="225" height="40" style="border: 0;margin-top: 7px;vertical-align: middle;"></a><br>
+                    {{end}}
+                    <input type="submit" value="{{T "Log In"}}" class="managebutton" style="margin-top: 7px;">
+                    <script type="text/javascript">
+                    document.getElementById("manage_username").focus();
+                    </script>
+                </div>
+            {{end}}
         </fieldset>
     </div>
 </form>

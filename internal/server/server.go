@@ -48,6 +48,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/pquerna/otp/totp"
 	"github.com/r3labs/diff/v3"
 	"golang.org/x/sys/unix"
 	"golang.org/x/text/cases"
@@ -1254,62 +1255,6 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 		return s.newTemplateData(db)
 	}
 
-	if r.URL.Path == "/sriracha/" || r.URL.Path == "/sriracha" {
-		var failedLogin bool
-		username := r.FormValue("username")
-		if len(username) != 0 {
-			failedLogin = true
-			password := r.FormValue("password")
-			if len(password) != 0 {
-				if !s.opt.DevMode {
-					// Verify CAPTCHA.
-					var solved bool
-					ipHash := s.hashIP(r)
-					challenge := db.GetCAPTCHA(ipHash)
-					if challenge != nil {
-						solution := FormString(r, "captcha")
-						if strings.ToLower(solution) == challenge.Text {
-							solved = true
-							s.captchaCacheLock.Lock()
-							delete(s.captchaCache, ipHash)
-							s.captchaCacheLock.Unlock()
-							db.DeleteCAPTCHA(ipHash)
-							os.Remove(filepath.Join(s.config.Root, "captcha", challenge.Image+".png"))
-						}
-					}
-					if !solved {
-						data := s.newTemplateData(db)
-						data.Info = "Invalid CAPTCHA."
-						data.Template = "manage_error"
-						return data
-					}
-				}
-
-				// Verify username and password.
-				account := db.LoginAccount(username, password)
-				if account != nil {
-					http.SetCookie(w, &http.Cookie{
-						Name:  "sriracha_session",
-						Value: account.Session,
-						Path:  "/",
-					})
-					data := s.newTemplateData(db)
-					data.Account = account
-					if s.config.ImportMode {
-						data.Redirect(w, r, "/sriracha/import/")
-					}
-					return data
-				}
-			}
-		}
-		if failedLogin {
-			data := s.newTemplateData(db)
-			data.Info = "Invalid username or password."
-			data.Template = "manage_error"
-			return data
-		}
-	}
-
 	cookies := r.CookiesNamed("sriracha_session")
 	if len(cookies) > 0 {
 		account := db.AccountBySessionKey(cookies[0].Value)
@@ -2104,10 +2049,112 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 
 	data.Template = "manage_login"
 
+	if FormBool(r, "login") {
+		var failedLogin bool
+		username := r.FormValue("username")
+		if len(username) != 0 {
+			failedLogin = true
+			password := r.FormValue("password")
+			if len(password) != 0 {
+				if !s.opt.DevMode {
+					// Verify CAPTCHA.
+					var solved bool
+					ipHash := s.hashIP(r)
+					challenge := db.GetCAPTCHA(ipHash)
+					if challenge != nil {
+						solution := FormString(r, "captcha")
+						if strings.ToLower(solution) == challenge.Text {
+							solved = true
+							s.captchaCacheLock.Lock()
+							delete(s.captchaCache, ipHash)
+							s.captchaCacheLock.Unlock()
+							db.DeleteCAPTCHA(ipHash)
+							os.Remove(filepath.Join(s.config.Root, "captcha", challenge.Image+".png"))
+						}
+					}
+					if !solved {
+						data.ManageError("Invalid CAPTCHA.")
+						data.execute(w)
+						return
+					}
+				}
+
+				// Verify username and password.
+				account := db.LoginAccount(username, password)
+				if account != nil {
+					http.SetCookie(w, &http.Cookie{
+						Name:  "sriracha_session",
+						Value: account.Session,
+						Path:  "/",
+					})
+					data := s.newTemplateData(db)
+					data.Account = account
+					data.execute(w)
+					if len(db.TwoFactorsByAccount(account.ID)) > 0 {
+						session := s.twoFactorSession(account, nil)
+						http.SetCookie(w, &http.Cookie{
+							Name:  "sriracha_totp",
+							Value: string(session.key),
+							Path:  "/",
+						})
+						data := s.newTemplateData(db)
+						data.Account = nil
+						data.Template = "manage_login"
+						data.Extra2 = "passcode"
+						data.Extra3 = string(session.key)
+						data.execute(w)
+					}
+					return
+				}
+			}
+		}
+		if failedLogin {
+			data.ManageError("Invalid username or password.")
+			data.execute(w)
+			return
+		}
+	}
+
 	if data.Account == nil {
 		data.execute(w)
 		return
-	} else if s.config.ImportMode {
+	} else if len(db.TwoFactorsByAccount(data.Account.ID)) > 0 {
+		key := []byte(FormString(r, "key"))
+		if len(key) == 0 {
+			cookie, err := r.Cookie("sriracha_totp")
+			if err == nil && cookie != nil {
+				key = []byte(cookie.Value)
+			}
+		}
+		session := s.twoFactorSession(data.Account, key)
+		if !session.validated {
+			passcode := FormString(r, "passcode")
+			if passcode != "" {
+				now := time.Now()
+				for _, device := range db.TwoFactorsByAccount(data.Account.ID) {
+					ok, err := totp.ValidateCustom(passcode, device.Secret, now, twoFactorValidateOptions)
+					if err == nil && ok {
+						session.validated = true
+						break
+					}
+				}
+				if !session.validated {
+					session.timestamp = 0
+					data.Redirect(w, r, "/sriracha/")
+					return
+				}
+			}
+		}
+		if !session.validated {
+			data.Account = nil
+			data.Template = "manage_login"
+			data.execute(w)
+			session.timestamp = 0
+			return
+		}
+	}
+
+	if s.config.ImportMode {
 		if data.Account.Role != RoleSuperAdmin {
 			data.ManageError("Sriracha is running in import mode. Only super-administrators may log in.")
 			data.execute(w)
