@@ -199,7 +199,7 @@ const (
 	DefaultBoardWordBreak   = 200
 	DefaultBoardDefaultName = "Anonymous"
 	DefaultBoardTruncate    = 15
-	DefaultBoardMaxSize     = 2097152
+	DefaultBoardMaxSize     = 2000000
 	DefaultBoardThumbWidth  = 250
 	DefaultBoardThumbHeight = 250
 	DefaultBoardFiles       = 1

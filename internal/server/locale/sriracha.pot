@@ -767,10 +767,10 @@ msgstr ""
 msgid "Max Threads"
 msgstr ""
 
-msgid "Maximum file size (in bytes) when creating a thread. Set to 0 to disable file uploads."
+msgid "Maximum file size (in megabytes) when creating a thread. Set to 0 to disable file uploads."
 msgstr ""
 
-msgid "Maximum file size (in bytes) when replying. Set to 0 to disable file uploads."
+msgid "Maximum file size (in megabytes) when replying. Set to 0 to disable file uploads."
 msgstr ""
 
 msgid "Maximum file size allowed is %s."
@@ -833,10 +833,10 @@ msgstr ""
 msgid "Min Thread File Size"
 msgstr ""
 
-msgid "Minimum file size (in bytes) when creating a thread."
+msgid "Minimum file size (in megabytes) when creating a thread."
 msgstr ""
 
-msgid "Minimum file size (in bytes) when replying."
+msgid "Minimum file size (in megabytes) when replying."
 msgstr ""
 
 msgid "Minimum length of the email field."

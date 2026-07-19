@@ -237,7 +237,10 @@ var templateFuncMap = template.FuncMap{
 			return banners[rand.Intn(l)]
 		}
 	},
-	"Contains":        strings.Contains,
+	"Contains": strings.Contains,
+	"Div": func(i int64, j int64) float64 {
+		return float64(i) / float64(j)
+	},
 	"FormatDateInput": FormatDateInput,
 	"Format": func(text string) template.HTML {
 		return template.HTML(strings.ReplaceAll(text, "\n", "<br>\n"))

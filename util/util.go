@@ -112,6 +112,14 @@ func FormNegInt(r *http.Request, key string) int {
 	return 0
 }
 
+func FormFloat64(r *http.Request, key string) float64 {
+	v, err := strconv.ParseFloat(FormString(r, key), 64)
+	if err == nil {
+		return v
+	}
+	return 0
+}
+
 func FormBool(r *http.Request, key string) bool {
 	return FormInt(r, key) == 1
 }
@@ -186,10 +194,10 @@ func FormatDateInput(timestamp int64) string {
 func FormatFileSize(size int64) string {
 	v := float64(size)
 	for _, unit := range []string{"", "K", "M", "G", "T", "P", "E", "Z"} {
-		if math.Abs(v) < 1024.0 {
+		if math.Abs(v) < 1000.0 {
 			return fmt.Sprintf("%.0f%sB", v, unit)
 		}
-		v /= 1024.0
+		v /= 1000.0
 	}
 	return fmt.Sprintf("%.0fYB", v)
 }

@@ -23,7 +23,7 @@ import (
 )
 
 var argon2idParameters = &argon2id.Params{
-	Memory:      128 * 1024,
+	Memory:      128 * 1000,
 	Iterations:  2,
 	Parallelism: 2,
 	SaltLength:  16,

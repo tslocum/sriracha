@@ -374,7 +374,7 @@
                 <option value="0"{{if not (Global "board.minsizethread")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.minsizethread"}} selected{{end}}>✓ {{T "Global"}}</option>
             </select></td>
-            <td>{{T "Minimum file size (in bytes) when creating a thread."}}</td>
+            <td>{{T "Minimum file size (in megabytes) when creating a thread."}}</td>
         </tr>
         <tr>
             <td class="postblock"><label for="board.maxsizethread">{{T "Max Thread File Size"}}</label></td>
@@ -382,7 +382,7 @@
                 <option value="0"{{if not (Global "board.maxsizethread")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.maxsizethread"}} selected{{end}}>✓ {{T "Global"}}</option>
             </select></td>
-            <td>{{T "Maximum file size (in bytes) when creating a thread. Set to 0 to disable file uploads."}}</td>
+            <td>{{T "Maximum file size (in megabytes) when creating a thread. Set to 0 to disable file uploads."}}</td>
         </tr>
         <tr>
             <td class="postblock"><label for="board.minsizereply">{{T "Min Reply File Size"}}</label></td>
@@ -390,7 +390,7 @@
                 <option value="0"{{if not (Global "board.minsizereply")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.minsizereply"}} selected{{end}}>✓ {{T "Global"}}</option>
             </select></td>
-            <td>{{T "Minimum file size (in bytes) when replying."}}</td>
+            <td>{{T "Minimum file size (in megabytes) when replying."}}</td>
         </tr>
         <tr>
             <td class="postblock"><label for="board.maxsizereply">{{T "Max Reply File Size"}}</label></td>
@@ -398,7 +398,7 @@
                 <option value="0"{{if not (Global "board.maxsizereply")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.maxsizereply"}} selected{{end}}>✓ {{T "Global"}}</option>
             </select></td>
-            <td>{{T "Maximum file size (in bytes) when replying. Set to 0 to disable file uploads."}}</td>
+            <td>{{T "Maximum file size (in megabytes) when replying. Set to 0 to disable file uploads."}}</td>
         </tr>
         <tr>
             <td class="postblock"><label for="board.thumbwidth">{{T "Thumbnail Width"}}</label></td>
