@@ -69,3 +69,10 @@ func (b *Ban) Info() string {
 	}
 	return info
 }
+
+func (b *Ban) Duration() string {
+	if b.LiftedTimestamp == 0 {
+		return ""
+	}
+	return FormatDuration(time.Duration(b.LiftedTimestamp-b.Timestamp) * time.Second)
+}

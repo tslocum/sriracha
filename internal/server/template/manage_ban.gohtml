@@ -72,9 +72,24 @@
 {{end}}
 {{template "manage_ban_form.gohtml" .}}
 {{if gt (len .Manage.LiftedBans) 0}}
-    {{TN "%d previous ban" "%d previous bans" (len .Manage.LiftedBans)}}
-    {{range $i, $ban := .Manage.LiftedBans}}
-        {{$ban}}
-    {{end}}
+    <br><table class="managetable">
+        <tr><th colspan="5" style="border: 0px none;">{{TN "%d previous ban" "%d previous bans" (len .Manage.LiftedBans)}}</th></tr>
+        <tr>
+            <th>{{T "Added"}}</th>
+            <th>{{T "Reason"}}</th>
+            <th>{{T "Lifted"}}</th>
+            <th>{{T "Reason"}}</th>
+            <th>{{T "Duration"}}</th>
+        </tr>
+        {{range $i, $ban := .Manage.LiftedBans}}
+            <tr>
+                <td>{{FormatYYMMDD $ban.Timestamp}}</td>
+                <td>{{$ban.Reason}}</td>
+                <td>{{FormatYYMMDD $ban.LiftedTimestamp}}</td>
+                <td>{{$ban.LiftedReason}}</td>
+                <td>{{$ban.Duration}}</td>
+            </tr>
+        {{end}}
+    </table>
 {{end}}
 {{template "manage_end.gohtml" .}}

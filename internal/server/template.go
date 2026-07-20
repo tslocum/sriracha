@@ -243,6 +243,7 @@ var templateFuncMap = template.FuncMap{
 		return float64(i) / float64(j)
 	},
 	"FormatDateInput": FormatDateInput,
+	"FormatYYMMDD":    FormatYYYYMMDD,
 	"Format": func(text string) template.HTML {
 		return template.HTML(strings.ReplaceAll(text, "\n", "<br>\n"))
 	},

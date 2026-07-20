@@ -694,6 +694,9 @@ msgstr ""
 msgid "Lift File Ban"
 msgstr ""
 
+msgid "Lifted"
+msgstr ""
+
 msgid "Link"
 msgstr ""
 

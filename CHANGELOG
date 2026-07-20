@@ -1,4 +1,5 @@
 1.8.5:
+- Display IP address ban history
 - Specify file sizes in megabytes
 - Support two-factor authentication
 - Support recovering accounts via terminal
