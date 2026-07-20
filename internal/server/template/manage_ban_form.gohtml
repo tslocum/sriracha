@@ -1,7 +1,7 @@
 {{$mayAdd := May "ban.add" $.Account $.Opt.Access}}
 {{$mayUpdate := or (May "ban.shorten" $.Account $.Opt.Access) (May "ban.lengthen" $.Account $.Opt.Access)}}
 {{if or (and (eq .Manage.Ban nil) $mayAdd) (and (ne .Manage.Ban nil) $mayUpdate)}}
-        <fieldset style="position: relative;">
+    <fieldset style="position: relative;">
         <legend>
             {{if eq .Manage.Ban nil}}{{T "Add Ban"}}{{else}}{{T "Update"}} #{{.Manage.Ban.ID}} - {{.Manage.Ban.TypeLabel}}{{end}}
             {{if and (May "ban.shorten" $.Account $.Opt.Access) (ne .Manage.Ban nil)}}
@@ -11,7 +11,7 @@
                 </form>
             {{end}}
         </legend>
-    <form name="sriracha" method="post">
+        <form name="sriracha" method="post">
         {{if ne .Extra ""}}
         <input type="hidden" name="confirmation" value="1">
         {{end}}
@@ -47,8 +47,8 @@
                 <td>&nbsp;</td>
             </tr>
         </table>
-        </fieldset>
-    </form><br>
+        </form>
+    </fieldset><br>
     {{if or (ne .Manage.Ban nil) (ne .Template "manage_ban")}}
         <script type="text/javascript">
             if (document.sriracha.ip) {
@@ -59,9 +59,29 @@
         </script>
     {{end}}
 {{end}}
+{{if gt (len .Manage.LiftedBans) 0}}
+    <br><table class="managetable">
+        <tr><th colspan="5" style="border: 0px none;">{{TN "%d previous ban" "%d previous bans" (len .Manage.LiftedBans)}}</th></tr>
+        <tr>
+            <th>{{T "Added"}}</th>
+            <th>{{T "Reason"}}</th>
+            <th>{{T "Lifted"}}</th>
+            <th>{{T "Reason"}}</th>
+            <th>{{T "Duration"}}</th>
+        </tr>
+        {{range $i, $ban := .Manage.LiftedBans}}
+            <tr>
+                <td>{{FormatYYMMDD $ban.Timestamp}}</td>
+                <td>{{$ban.Reason}}</td>
+                <td>{{FormatYYMMDD $ban.LiftedTimestamp}}</td>
+                <td>{{$ban.LiftedReason}}</td>
+                <td>{{$ban.Duration}}</td>
+            </tr>
+        {{end}}
+    </table>
+{{end}}
 {{if and (May "banfile.lift" $.Account $.Opt.Access) (and (eq .Manage.Ban nil) (eq .Extra ""))}}{{/* Admin */}}
-    <br>
-    <form method="post" enctype="multipart/form-data">
+    <br><form method="post" enctype="multipart/form-data">
         <fieldset>
         <legend>{{T "Lift File Ban"}}</legend>
         <table class="manageform">

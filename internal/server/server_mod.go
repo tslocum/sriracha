@@ -402,12 +402,22 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 	data.ReplyMode = 1
 	data.Extra = action
 	existing := make(map[int][]*Post)
+	var lastAddress string
+	var multipleAddresses bool
 	for _, thread := range data.Threads {
 		for _, post := range thread {
 			if data.Extra3 != "" {
 				data.Extra3 += ","
 			}
 			data.Extra3 += strconv.Itoa(post.ID)
+
+			if post.IP != lastAddress {
+				if lastAddress == "" {
+					lastAddress = post.IP
+				} else {
+					multipleAddresses = true
+				}
+			}
 
 			ban := db.BanByIP(post.IP)
 			if ban == nil {
@@ -469,5 +479,8 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 	}
 	if len(existing) > 0 {
 		data.Message = `<fieldset><legend>` + template.HTML(GetN(nil, data.Account, "%d existing ban", "%d existing bans", len(existing))) + `</legend><table>` + data.Message + `</table></fieldset>`
+	}
+	if !multipleAddresses {
+		data.Manage.LiftedBans = db.LiftedBansByIP(data.Threads[0][0].IP)
 	}
 }
