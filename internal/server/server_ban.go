@@ -33,9 +33,9 @@ func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter
 	data.Template = "manage_ban"
 	data.Boards = db.AllBoards()
 
-	deleteBanID := PathInt(r, "/sriracha/ban/delete/")
+	deleteBanID := PathInt(r, "/sriracha/ban/lift/")
 	if deleteBanID > 0 {
-		if s.forbidden(w, data, "ban.delete") {
+		if s.forbidden(w, data, "ban.lift") {
 			return
 		}
 		b := db.BanByID(deleteBanID)
@@ -110,7 +110,7 @@ func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter
 
 		f, _, err := r.FormFile("liftfile")
 		if err == nil && f != nil {
-			if s.forbidden(w, data, "banfile.delete") {
+			if s.forbidden(w, data, "banfile.lift") {
 				return
 			}
 			buf, err := io.ReadAll(f)

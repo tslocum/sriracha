@@ -2,7 +2,7 @@
 <h2 class="managetitle">{{T "Bans"}}{{Help "banning-ip-addresses"}}</h2>
 {{if ne (len .Manage.Bans) 0}}
     {{$mayUpdate := or (May "ban.shorten" $.Account $.Opt.Access) (May "ban.lengthen" $.Account $.Opt.Access)}}
-    {{$mayDelete := May "ban.delete" $.Account $.Opt.Access}}
+    {{$mayDelete := May "ban.lift" $.Account $.Opt.Access}}
     <table class="managetable">
         <tr>
             <th>{{T "ID"}}</th>
@@ -25,7 +25,7 @@
                             <form method="get" action="/sriracha/ban/{{$ban.ID}}"><input type="submit" value="{{T "Update"}}"></form>
                         {{end}}
                         {{if $mayDelete}}
-                            <form method="post" action="/sriracha/ban/delete/{{$ban.ID}}" onsubmit="javascript:return liftBan('{{$ban.ID}}')">
+                            <form method="post" action="/sriracha/ban/lift/{{$ban.ID}}" onsubmit="javascript:return liftBan('{{$ban.ID}}')">
                                 <input type="hidden" name="reason" id="reason{{$ban.ID}}">
                                 <input type="submit" value="{{T "Lift"}}">
                             </form>
