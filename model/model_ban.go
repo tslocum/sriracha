@@ -10,11 +10,13 @@ import (
 )
 
 type Ban struct {
-	ID        int
-	IP        string
-	Timestamp int64
-	Expire    int64
-	Reason    string
+	ID              int
+	IP              string
+	Timestamp       int64
+	Expire          int64
+	Reason          string
+	LiftedTimestamp int64
+	LiftedReason    string
 }
 
 func (b *Ban) Validate() error {

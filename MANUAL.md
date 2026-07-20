@@ -175,7 +175,7 @@ In practice, generating codes using a phone or other secondary device provides
 reasonable security.
 
 Generating and validating two-factor authentication passcodes requires accurate
-timekeeping. Passcodes will fail validation when time difference between a
+timekeeping. Passcodes will fail validation when the time difference between a
 device and the server is greater than one minute.
 
 If you lose access to all of your 2FA devices, ask a super-administrator to

@@ -2301,7 +2301,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 
 	db.DeleteExpiredSubscriptions()
 
-	if db.DeleteExpiredBans() > 0 {
+	if db.LiftExpiredBans() > 0 {
 		s.reloadBans(db)
 	}
 

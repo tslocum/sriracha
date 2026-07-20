@@ -218,7 +218,6 @@ func scanAccount(a *Account, row pgx.Row) error {
 		&a.Session,
 		&a.Style,
 		&a.Locale,
-		&a.ScratchCodes,
 	)
 }
 

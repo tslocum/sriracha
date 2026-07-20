@@ -10,11 +10,13 @@ import (
 )
 
 func (db *DB) AddBan(b *Ban) {
-	err := db.conn.QueryRow(context.Background(), "INSERT INTO ban VALUES (DEFAULT, $1, $2, $3, $4) RETURNING id",
+	err := db.conn.QueryRow(context.Background(), "INSERT INTO ban VALUES (DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING id",
 		b.IP,
 		time.Now().Unix(),
 		b.Expire,
 		b.Reason,
+		b.LiftedTimestamp,
+		b.LiftedReason,
 	).Scan(&b.ID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to insert ban: %w", err))
@@ -34,7 +36,7 @@ func (db *DB) BanByID(id int) *Ban {
 
 func (db *DB) BanByIP(ip string) *Ban {
 	b := &Ban{}
-	err := scanBan(b, db.conn.QueryRow(context.Background(), "SELECT * FROM ban WHERE ip = $1", ip))
+	err := scanBan(b, db.conn.QueryRow(context.Background(), "SELECT * FROM ban WHERE ip = $1 AND liftedtimestamp = 0", ip))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {
@@ -49,9 +51,9 @@ func (db *DB) AllBans(rangeOnly bool) []*Ban {
 	}
 	var extra string
 	if rangeOnly {
-		extra = " WHERE ip LIKE 'r %'"
+		extra = " AND ip LIKE 'r %'"
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT * FROM ban"+extra+" ORDER BY timestamp DESC")
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM ban WHERE liftedtimestamp = 0"+extra+" ORDER BY timestamp DESC")
 	if err != nil {
 		dbErr(fmt.Errorf("failed to select all bans: %w", err))
 	}
@@ -74,33 +76,35 @@ func (db *DB) UpdateBan(b *Ban) {
 	if b.ID <= 0 {
 		dbErr(fmt.Errorf("invalid ban ID %d", b.ID))
 	}
-	_, err := db.conn.Exec(context.Background(), "UPDATE ban SET expire = $1, reason = $2 WHERE id = $3",
+	_, err := db.conn.Exec(context.Background(), "UPDATE ban SET expire = $1, reason = $2, liftedtimestamp = $3, liftedreason = $4 WHERE id = $5",
 		b.Expire,
 		b.Reason,
 		b.ID,
+		b.LiftedTimestamp,
+		b.LiftedReason,
 	)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to update ban: %w", err))
 	}
 }
 
-func (db *DB) DeleteExpiredBans() int {
-	var deleted int
-	err := db.conn.QueryRow(context.Background(), "WITH deleted AS (DELETE FROM ban WHERE expire != 0 AND expire <= $1 RETURNING *) SELECT COUNT(*) FROM deleted", time.Now().Unix()).Scan(&deleted)
-	if err != nil {
-		dbErr(err)
-	}
-	return deleted
-}
-
-func (db *DB) DeleteBan(id int) {
+func (db *DB) LiftBan(id int, reason string) {
 	if id == 0 {
 		return
 	}
-	_, err := db.conn.Exec(context.Background(), "DELETE FROM ban WHERE id = $1", id)
+	_, err := db.conn.Exec(context.Background(), "UPDATE ban SET liftedtimestamp = $1, liftedreason = $2 WHERE id = $3 AND liftedtimestamp = 0", time.Now().Unix(), reason, id)
 	if err != nil {
-		dbErr(fmt.Errorf("failed to delete ban: %w", err))
+		dbErr(fmt.Errorf("failed to lift ban: %w", err))
 	}
+}
+
+func (db *DB) LiftExpiredBans() int {
+	var processed int
+	err := db.conn.QueryRow(context.Background(), "WITH processed AS (UPDATE ban SET liftedtimestamp = $1, liftedreason = $2 WHERE liftedtimestamp = 0 AND expire != 0 AND expire <= $1 RETURNING *) SELECT COUNT(*) FROM processed", time.Now().Unix(), Get(nil, nil, "Expired")+".").Scan(&processed)
+	if err != nil {
+		dbErr(err)
+	}
+	return processed
 }
 
 func scanBan(b *Ban, row pgx.Row) error {
@@ -110,6 +114,8 @@ func scanBan(b *Ban, row pgx.Row) error {
 		&b.Timestamp,
 		&b.Expire,
 		&b.Reason,
+		&b.LiftedTimestamp,
+		&b.LiftedReason,
 	)
 }
 

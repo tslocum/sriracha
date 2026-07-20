@@ -45,8 +45,8 @@ type DB interface {
 	BanByIP(ip string) *Ban
 	AllBans(rangeOnly bool) []*Ban
 	UpdateBan(b *Ban)
-	DeleteExpiredBans() int
-	DeleteBan(id int)
+	LiftBan(id int, reason string)
+	LiftExpiredBans() int
 
 	// Banner.
 	AddBanner(b *Banner)

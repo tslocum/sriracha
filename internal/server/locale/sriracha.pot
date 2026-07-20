@@ -512,6 +512,9 @@ msgstr ""
 msgid "Expand"
 msgstr ""
 
+msgid "Expired"
+msgstr ""
+
 msgid "Expires"
 msgstr ""
 

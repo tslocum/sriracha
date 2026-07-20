@@ -10,7 +10,6 @@ var dbSchema = []string{ // Version 1.
 	session varchar(64) NOT NULL
 	-- v2: style varchar(64) NOT NULL DEFAULT ''
 	-- v6: locale varchar(64) NOT NULL DEFAULT ''
-	-- v19: scratchcodes text[] NOT NULL DEFAULT array[]::text[];
 );
 CREATE UNIQUE INDEX ON account (username);
 CREATE UNIQUE INDEX ON account (session);
@@ -21,8 +20,11 @@ CREATE TABLE ban (
 	timestamp bigint NOT NULL,
 	expire bigint NOT NULL,
 	reason text NOT NULL
+-- v19: 	liftedtimestamp bigint NOT NULL
+-- v19: 	liftedreason text NOT NULL
 );
 CREATE UNIQUE INDEX ON ban (ip);
+-- v19: CREATE INDEX ON ban (liftedtimestamp);
 
 -- v9: CREATE TABLE banfile (
 -- v9: 	hash char(64) PRIMARY KEY
@@ -375,6 +377,8 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 		secret char(52) NOT NULL,
 		name varchar(64) NOT NULL
 	);
-	ALTER TABLE account ADD COLUMN scratchcodes text[] NOT NULL DEFAULT array[]::text[];
+	ALTER TABLE ban ADD COLUMN liftedtimestamp bigint NOT NULL;
+	ALTER TABLE ban ADD COLUMN liftedreason text NOT NULL;
+	CREATE INDEX ON ban (liftedtimestamp);
 	UPDATE config SET value = '19' WHERE name = 'version';`,
 }

@@ -43,14 +43,14 @@ func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter
 			data.ManageError("Invalid or expired ban.")
 			return
 		}
-		db.DeleteBan(b.ID)
+		liftReason := FormString(r, "reason")
+		db.LiftBan(b.ID, liftReason)
 
 		if strings.HasPrefix(b.IP, "r ") {
 			s.reloadBans(db)
 		}
 
 		var changes string
-		liftReason := FormString(r, "reason")
 		if strings.TrimSpace(liftReason) != "" {
 			changes = "Reason: " + liftReason
 		}

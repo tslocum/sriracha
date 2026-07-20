@@ -120,8 +120,8 @@ func (db *mockDB) BanByID(id int) *Ban           { return nil }
 func (db *mockDB) BanByIP(ip string) *Ban        { return nil }
 func (db *mockDB) AllBans(rangeOnly bool) []*Ban { return nil }
 func (db *mockDB) UpdateBan(b *Ban)              {}
-func (db *mockDB) DeleteExpiredBans() int        { return 0 }
-func (db *mockDB) DeleteBan(id int)              {}
+func (db *mockDB) LiftBan(id int, reason string) {}
+func (db *mockDB) LiftExpiredBans() int          { return 0 }
 
 // Banner.
 func (db *mockDB) AddBanner(b *Banner)              {}
