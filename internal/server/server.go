@@ -960,6 +960,7 @@ func (s *Server) parseTemplates(officialDir string, customDir string, db serverD
 }
 
 func (s *Server) _watchTemplates(officialDir string, watcher *fsnotify.Watcher) {
+	var haveError bool
 	for {
 		select {
 		case event, ok := <-watcher.Events:
@@ -972,11 +973,16 @@ func (s *Server) _watchTemplates(officialDir string, watcher *fsnotify.Watcher) 
 
 			err := s.parseTemplates(officialDir, s.config.Template, nil)
 			if err != nil {
+				haveError = true
 				log.Printf("failed to parse template files: %s", err)
 			} else {
 				err = s.validateTemplates(nil)
 				if err != nil {
+					haveError = true
 					log.Printf("failed to execute template files: %s", err)
+				} else if haveError {
+					haveError = false
+					fmt.Println("Validated updated template files.")
 				}
 			}
 
