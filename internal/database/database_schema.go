@@ -23,7 +23,9 @@ CREATE TABLE ban (
 -- v19: 	liftedtimestamp bigint NOT NULL
 -- v19: 	liftedreason text NOT NULL
 );
-CREATE UNIQUE INDEX ON ban (ip);
+CREATE UNIQUE INDEX ON ban (ip); -- v19: Removed.
+-- v19: CREATE INDEX ON ban (ip);
+-- v19: CREATE UNIQUE INDEX ON ban (ip) WHERE liftedtimestamp = 0;
 -- v19: CREATE INDEX ON ban (liftedtimestamp);
 
 -- v9: CREATE TABLE banfile (
@@ -379,6 +381,9 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 	);
 	ALTER TABLE ban ADD COLUMN liftedtimestamp bigint NOT NULL;
 	ALTER TABLE ban ADD COLUMN liftedreason text NOT NULL;
+	DROP INDEX ban_ip_idx;
+	CREATE INDEX ON ban (ip);
+	CREATE UNIQUE INDEX ON ban (ip) WHERE liftedtimestamp = 0;
 	CREATE INDEX ON ban (liftedtimestamp);
 	UPDATE config SET value = '19' WHERE name = 'version';`,
 }

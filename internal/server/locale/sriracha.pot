@@ -25,6 +25,11 @@ msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d previous ban"
+msgid_plural "%d previous bans"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d report"
 msgid_plural "%d reports"
 msgstr[0] ""

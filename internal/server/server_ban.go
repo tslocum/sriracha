@@ -102,6 +102,7 @@ func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter
 			data.Redirect(w, r, "/sriracha/ban/")
 			return
 		}
+		data.Manage.LiftedBans = db.LiftedBansByIP(data.Manage.Ban.IP)
 		return
 	}
 
