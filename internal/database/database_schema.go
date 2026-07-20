@@ -379,8 +379,8 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 		secret char(52) NOT NULL,
 		name varchar(64) NOT NULL
 	);
-	ALTER TABLE ban ADD COLUMN liftedtimestamp bigint NOT NULL;
-	ALTER TABLE ban ADD COLUMN liftedreason text NOT NULL;
+	ALTER TABLE ban ADD COLUMN liftedtimestamp bigint NOT NULL DEFAULT 0;
+	ALTER TABLE ban ADD COLUMN liftedreason text NOT NULL DEFAULT 0;
 	DROP INDEX ban_ip_idx;
 	CREATE INDEX ON ban (ip);
 	CREATE UNIQUE INDEX ON ban (ip) WHERE liftedtimestamp = 0;
