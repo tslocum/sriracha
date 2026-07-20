@@ -20,8 +20,8 @@ CREATE TABLE ban (
 	timestamp bigint NOT NULL,
 	expire bigint NOT NULL,
 	reason text NOT NULL
--- v19: 	liftedtimestamp bigint NOT NULL
--- v19: 	liftedreason text NOT NULL
+	-- v19: liftedtimestamp bigint NOT NULL
+	-- v19: liftedreason text NOT NULL
 );
 CREATE UNIQUE INDEX ON ban (ip); -- v19: Removed.
 -- v19: CREATE INDEX ON ban (ip);

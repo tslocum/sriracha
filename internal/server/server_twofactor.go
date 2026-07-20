@@ -128,8 +128,6 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 			return
 		}
 		session.loggedIn = true
-		data.Extra2 = "passcode"
-		return
 	}
 	if !session.loggedIn {
 		data.ManageError("Incorrect password")
