@@ -1303,16 +1303,15 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 								break
 							}
 						}
-						if !session.validated {
+						if session.validated {
+							http.SetCookie(w, &http.Cookie{
+								Name:  "sriracha_session",
+								Value: account.Session,
+								Path:  "/",
+							})
+						} else {
 							session.timestamp = 0
-							http.Redirect(w, r, "/sriracha/", http.StatusFound)
-							return s.newTemplateData(db)
 						}
-						http.SetCookie(w, &http.Cookie{
-							Name:  "sriracha_session",
-							Value: account.Session,
-							Path:  "/",
-						})
 						http.Redirect(w, r, "/sriracha/", http.StatusFound)
 						return s.newTemplateData(db)
 					}
@@ -2161,10 +2160,11 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 						Value: account.Session,
 						Path:  "/",
 					})
-					data := s.newTemplateData(db)
-					data.Template = "manage_status"
-					data.Account = account
-					data.execute(w)
+					if s.config.Require2FA {
+						data.Redirect(w, r, "/sriracha/preference/")
+					} else {
+						data.Redirect(w, r, "/sriracha/")
+					}
 					return
 				}
 			}
