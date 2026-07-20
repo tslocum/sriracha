@@ -45,7 +45,7 @@ func (db *DB) BanByIP(ip string) *Ban {
 	return b
 }
 
-func (db *DB) AllBans(rangeOnly bool) []*Ban {
+func (db *DB) AllActiveBans(rangeOnly bool) []*Ban {
 	if db.conn == nil {
 		return nil
 	}
@@ -55,7 +55,7 @@ func (db *DB) AllBans(rangeOnly bool) []*Ban {
 	}
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM ban WHERE liftedtimestamp = 0"+extra+" ORDER BY timestamp DESC")
 	if err != nil {
-		dbErr(fmt.Errorf("failed to select all bans: %w", err))
+		dbErr(fmt.Errorf("failed to select active bans: %w", err))
 	}
 	var bans []*Ban
 	for rows.Next() {
@@ -67,7 +67,30 @@ func (db *DB) AllBans(rangeOnly bool) []*Ban {
 		bans = append(bans, b)
 	}
 	if rows.Err() != nil {
-		dbErr(fmt.Errorf("failed to select all bans: %w", rows.Err()))
+		dbErr(fmt.Errorf("failed to select active bans: %w", rows.Err()))
+	}
+	return bans
+}
+
+func (db *DB) LiftedBansByIP(ipHash string) []*Ban {
+	if db.conn == nil {
+		return nil
+	}
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM ban WHERE ip = $1 AND liftedtimestamp != 0 ORDER BY timestamp DESC", ipHash)
+	if err != nil {
+		dbErr(fmt.Errorf("failed to select lifted bans: %w", err))
+	}
+	var bans []*Ban
+	for rows.Next() {
+		b := &Ban{}
+		err := scanBan(b, rows)
+		if err != nil {
+			return nil
+		}
+		bans = append(bans, b)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select lifted bans: %w", rows.Err()))
 	}
 	return bans
 }

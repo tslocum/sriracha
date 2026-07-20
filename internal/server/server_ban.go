@@ -203,7 +203,7 @@ func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter
 		return
 	}
 
-	data.Manage.Bans = db.AllBans(false)
+	data.Manage.Bans = db.AllActiveBans(false)
 	data.Page = PathInt(r, "/sriracha/ban/p")
 	data.Pages = pageCount(len(data.Manage.Bans), entriesPerPage)
 	data.Manage.Bans = pageSlice(data.Manage.Bans, data.Page, entriesPerPage)

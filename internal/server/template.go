@@ -40,6 +40,7 @@ type manageData struct {
 	Category   *Category
 	Keyword    *Keyword
 	Keywords   []*Keyword
+	LiftedBans []*Ban
 	Log        *Log
 	Logs       []*Log
 	News       *News
@@ -359,7 +360,8 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	}
 
 	// Ban.
-	f["AllBans"] = func(rangeOnly bool) []*Ban { return s.tplDB.AllBans(rangeOnly) }
+	f["AllActiveBans"] = func(rangeOnly bool) []*Ban { return s.tplDB.AllActiveBans(rangeOnly) }
+	f["LiftedBansByIP"] = func(ip string) []*Ban { return s.tplDB.LiftedBansByIP(ip) }
 	f["BanByID"] = func(id int) *Ban { return s.tplDB.BanByID(id) }
 	f["BanByIP"] = func(ip string) *Ban { return s.tplDB.BanByIP(ip) }
 

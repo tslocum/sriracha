@@ -43,7 +43,8 @@ type DB interface {
 	AddBan(b *Ban)
 	BanByID(id int) *Ban
 	BanByIP(ip string) *Ban
-	AllBans(rangeOnly bool) []*Ban
+	AllActiveBans(rangeOnly bool) []*Ban
+	LiftedBansByIP(ip string) []*Ban
 	UpdateBan(b *Ban)
 	LiftBan(id int, reason string)
 	LiftExpiredBans() int

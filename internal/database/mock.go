@@ -115,13 +115,14 @@ func (db *mockDB) LoginAccount(username string, password string) *Account       
 func (db *mockDB) CheckAccountPassword(username string, password string) *Account { return nil }
 
 // Ban.
-func (db *mockDB) AddBan(b *Ban)                 {}
-func (db *mockDB) BanByID(id int) *Ban           { return nil }
-func (db *mockDB) BanByIP(ip string) *Ban        { return nil }
-func (db *mockDB) AllBans(rangeOnly bool) []*Ban { return nil }
-func (db *mockDB) UpdateBan(b *Ban)              {}
-func (db *mockDB) LiftBan(id int, reason string) {}
-func (db *mockDB) LiftExpiredBans() int          { return 0 }
+func (db *mockDB) AddBan(b *Ban)                       {}
+func (db *mockDB) BanByID(id int) *Ban                 { return nil }
+func (db *mockDB) BanByIP(ip string) *Ban              { return nil }
+func (db *mockDB) AllActiveBans(rangeOnly bool) []*Ban { return nil }
+func (db *mockDB) LiftedBansByIP(ip string) []*Ban     { return nil }
+func (db *mockDB) UpdateBan(b *Ban)                    {}
+func (db *mockDB) LiftBan(id int, reason string)       {}
+func (db *mockDB) LiftExpiredBans() int                { return 0 }
 
 // Banner.
 func (db *mockDB) AddBanner(b *Banner)              {}

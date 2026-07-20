@@ -2020,7 +2020,7 @@ func (s *Server) removeInvalidBoardOptions(db serverDB) {
 // reloadBans refreshes the range ban regular expression cache.
 func (s *Server) reloadBans(db serverDB) {
 	var rangeBans = make(map[*Ban]*regexp.Regexp)
-	bans := db.AllBans(true)
+	bans := db.AllActiveBans(true)
 	for _, ban := range bans {
 		pattern, err := regexp.Compile(ban.IP[2:])
 		if err != nil {

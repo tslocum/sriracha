@@ -263,7 +263,8 @@ Support is not available for creating or modifying custom template files.
 Pages and templates may access the database via the following read-only methods:
 
 - [Ban](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Ban)
-  - `AllBans() []*Ban`
+  - `AllActiveBans() []*Ban`
+  - `LiftedBansByIP() []*Ban`
   - `BanByID(id int) *Ban`
   - `BanByIP(ip string) *Ban`
 - [Board](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Board)
