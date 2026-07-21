@@ -6,9 +6,10 @@
 		<title>{{.Opt.SiteName}} - {{T "Manage mode" | Title}}</title>
 		<link rel="icon" href="data:,">
 		<link rel="stylesheet" type="text/css" href="/static/css/global.css">
-		<link rel="{{if and (ne .Account nil) (ne .Account.Style "")}}alternate {{end}}stylesheet" type="text/css" href="/static/css/futaba.css" title="Futaba" id="mainStylesheet">
-		<link rel="{{if or (eq .Account nil) (ne .Account.Style "burichan")}}alternate {{end}}stylesheet" type="text/css" href="/static/css/burichan.css" title="Burichan">
-		<link rel="{{if or (eq .Account nil) (ne .Account.Style "sriracha")}}alternate {{end}}stylesheet" type="text/css" href="/static/css/sriracha.css" title="Sriracha">
+		{{$defaultStyle := index (index .Opt.Styles 0) 0}}{{if and (ne .Account nil) (ne .Account.Style "")}}{{$defaultStyle = .Account.Style}}{{end}}
+		{{range $style := .Opt.Styles}}
+			<link rel="{{if ne (index $style 0) $defaultStyle}}alternate {{end}}stylesheet" type="text/css" href="/static/css/{{index $style 0}}.css" title="{{index $style 1}}"{{if eq (index $style 0) $defaultStyle}} id="mainStylesheet"{{end}}>
+		{{end}}
 		<script src="/static/js/manage.js"></script>
 	</head>
     <body>

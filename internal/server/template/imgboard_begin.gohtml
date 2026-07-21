@@ -6,9 +6,10 @@
 		<title>{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}</title>
 		<link rel="icon" href="data:,">
 		<link rel="stylesheet" type="text/css" href="/static/css/global.css">
-		<link rel="{{if ne .Style ""}}alternate {{end}}stylesheet" type="text/css" href="/static/css/futaba.css" title="Futaba"{{if eq .Style ""}} id="mainStylesheet"{{end}}>
-		<link rel="{{if ne .Style "burichan"}}alternate {{end}}stylesheet" type="text/css" href="/static/css/burichan.css" title="Burichan"{{if eq .Style "burichan"}} id="mainStylesheet"{{end}}>
-		<link rel="{{if ne .Style "sriracha"}}alternate {{end}}stylesheet" type="text/css" href="/static/css/sriracha.css" title="Sriracha"{{if eq .Style "sriracha"}} id="mainStylesheet"{{end}}>
+		{{$defaultStyle := index (index .Opt.Styles 0) 0}}{{if ne .Style ""}}{{$defaultStyle = .Style}}{{end}}
+		{{range $style := .Opt.Styles}}
+			<link rel="{{if ne (index $style 0) $defaultStyle}}alternate {{end}}stylesheet" type="text/css" href="/static/css/{{index $style 0}}.css" title="{{index $style 1}}"{{if eq (index $style 0) $defaultStyle}} id="mainStylesheet"{{end}}>
+		{{end}}
 		{{if ne .Opt.Refresh 0}}
 			<script type="text/javascript">
 			var autoRefreshDelay = {{.Opt.Refresh}};
@@ -65,12 +66,10 @@
 			{{end}}
 			<select id="switchStyle">
 				<option value="">{{T "Style"}}</option>
-				<option value="futaba">Futaba</option>
-				<option value="futaba/flex">└ Flex</option>
-				<option value="burichan">Burichan</option>
-				<option value="burichan/flex">└ Flex</option>
-				<option value="sriracha">Sriracha</option>
-				<option value="sriracha/flex">└ Flex</option>
+				{{range $style := .Opt.Styles}}
+					<option value="{{index $style 0}}">{{index $style 1}}</option>
+					<option value="{{index $style 0}}/flex">└ {{index $style 1}}</option>
+				{{end}}
 			</select>
 		</div>
 		<span class="header">

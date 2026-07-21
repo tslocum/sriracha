@@ -395,14 +395,20 @@ dbname: "sriracha"
 # See https://pkg.go.dev/github.com/jackc/pgx/v5/pgconn#ParseConfig
 #dburl: "postgresql://sriracha:hunter2@localhost:5432/sriracha"
 
-# Custom template directory. Leave blank to use official templates. Template
-# files in this directory will override official templates of the same name.
-#template: "/home/sriracha/template"
-
 # Whether identifier hashes are enabled. Identifier hashes are generated based
 # on IP hashes. When enabled, staff may view and delete all posts created by an
 # IP address, and boards may optionally display identifier hashes to visitors.
 #identifiers: false
+
+# Available stylesheets. The first listed stylesheet will be the default.
+#styles:
+#  - "futaba"
+#  - "burichan"
+#  - "sriracha"
+
+# Custom template directory. Leave blank to use official templates. Template
+# files in this directory will override official templates of the same name.
+#template: "/home/sriracha/template"
 
 # SMTP mail server configuration. When configured, visitors may subscribe to
 # to receive email notifications when new posts are created. To disable email

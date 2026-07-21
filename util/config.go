@@ -49,15 +49,17 @@ type Config struct {
 	Mentions      int // Duration (in minutes) mention notifications are batched together.
 	Notifications int // Duration (in minutes) non-mention notifications are batched together.
 
+	Identifiers bool // Whether staff may browse posts by IP hashes and boards may display identifier hashes.
+
+	Styles []string // Available stylesheets.
+
 	Template string // Custom template directory.
 
 	Require2FA bool // Require two-factor authentication.
 
-	Identifiers bool // Whether staff may browse posts by IP hashes and boards may display identifier hashes.
+	Access map[string]string // Specifies which roles may perform each management or moderation action.
 
 	Uploads []string // Supported upload file types.
-
-	Access map[string]string // Specifies which roles may perform each management or moderation action.
 
 	// Calculated fields.
 	cachedUploads  []*UploadType

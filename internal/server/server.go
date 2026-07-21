@@ -155,6 +155,7 @@ type ServerOptions struct {
 	OverboardThreads int
 	OverboardReplies int
 	Identifiers      bool
+	Styles           [][2]string
 	Locale           string
 	Locales          map[string]string
 	LocalesSorted    []string
@@ -423,6 +424,10 @@ func (s *Server) parseConfig(configFile string) error {
 	}
 	if config.Notifications <= 0 {
 		config.Notifications = 1440
+	}
+
+	if len(config.Styles) == 0 {
+		config.Styles = []string{"futaba", "burichan", "sriracha"}
 	}
 
 	defaultAccess := map[string]string{
@@ -714,6 +719,17 @@ func (s *Server) loadServerConfig() error {
 	s.opt.OverboardType = BoardType(db.GetInt("overboardtype"))
 	s.opt.OverboardThreads = db.GetInt("overboardthreads")
 	s.opt.OverboardReplies = db.GetInt("overboardreplies")
+
+	for _, style := range s.config.Styles {
+		if len(style) == 0 {
+			continue
+		}
+		label := style
+		if label == strings.ToLower(label) {
+			label = strings.ToUpper(label[0:1]) + label[1:]
+		}
+		s.opt.Styles = append(s.opt.Styles, [2]string{style, label})
+	}
 
 	s.opt.Uploads = s.config.UploadTypes()
 
@@ -2696,22 +2712,6 @@ func (s *Server) Run() error {
 		log.Fatalf("failed to parse locale files: %s", err)
 	}
 
-	// Locate official templates and validate custom template configuration.
-	var officialDir string
-	if devMode {
-		s.opt.DevMode = true
-
-		officialDir = s.officialTemplateDir()
-		if officialDir == "" {
-			return fmt.Errorf("failed to locate official template directory: start sriracha in the same directory as the file README.md")
-		}
-
-		err = s.validateTemplateConfig(officialDir)
-		if err != nil {
-			return fmt.Errorf("invalid custom template directory: %s", err)
-		}
-	}
-
 	// Verify mail server configuration.
 	s.opt.Notifications = s.config.MailAddress != ""
 	if s.opt.Notifications && !devMode {
@@ -2767,6 +2767,22 @@ func (s *Server) Run() error {
 		fmt.Println("Password updated. All 2FA devices have been removed.")
 		db.Commit()
 		return nil
+	}
+
+	// Locate official templates and validate custom template configuration.
+	var officialDir string
+	if devMode {
+		s.opt.DevMode = true
+
+		officialDir = s.officialTemplateDir()
+		if officialDir == "" {
+			return fmt.Errorf("failed to locate official template directory: start sriracha in the same directory as the file README.md")
+		}
+
+		err = s.validateTemplateConfig(officialDir)
+		if err != nil {
+			return fmt.Errorf("invalid custom template directory: %s", err)
+		}
 	}
 
 	// Load plugin configuration.

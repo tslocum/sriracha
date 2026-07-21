@@ -15,7 +15,9 @@ import (
 // Database methods are mocked.
 func newTestServer() (*Server, error) {
 	s := NewServer()
-	s.config = &Config{}
+	s.config = &Config{
+		Styles: []string{"futaba", "burichan", "sriracha"},
+	}
 
 	err := s.loadServerConfig()
 	if err != nil {

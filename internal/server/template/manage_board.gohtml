@@ -113,9 +113,9 @@
                 <tr>
                     <td class="postblock"><label for="style">{{T "Style"}}{{Globe "board.style"}}</label></td>
                     <td><select name="style" style="width: 100%;">
-                        <option value=""{{if and (ne .Manage.Board nil) (eq .Manage.Board.Style "")}} selected{{end}}>Futaba</option>
-                        <option value="burichan"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Style "burichan")}} selected{{end}}>Burichan</option>
-                        <option value="sriracha"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Style "sriracha")}} selected{{end}}>Sriracha</option>
+                        {{range $style := .Opt.Styles}}
+                            <option value="{{index $style 0}}"{{if and (ne $.Manage.Board nil) (eq $.Manage.Board.Style (index $style 0))}} selected{{end}}>{{index $style 1}}</option>
+                        {{end}}
                     </select></td>
                     <td>{{T "Default page style. Visitors may choose alternative styles in their browser settings."}}</td>
                 </tr>
