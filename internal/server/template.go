@@ -361,16 +361,31 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	}
 
 	// Ban.
-	f["AllActiveBans"] = func(rangeOnly bool) []*Ban { return s.tplDB.AllActiveBans(rangeOnly) }
-	f["LiftedBansByIP"] = func(ip string) []*Ban { return s.tplDB.LiftedBansByIP(ip) }
 	f["BanByID"] = func(id int) *Ban { return s.tplDB.BanByID(id) }
 	f["BanByIP"] = func(ip string) *Ban { return s.tplDB.BanByIP(ip) }
+	f["AllActiveBans"] = func(rangeOnly bool) []*Ban { return s.tplDB.AllActiveBans(rangeOnly) }
+	f["LiftedBansByIP"] = func(ip string) []*Ban { return s.tplDB.LiftedBansByIP(ip) }
+
+	// Banner.
+	f["BannerByID"] = func(id int) *Banner { return s.tplDB.BannerByID(id) }
+	f["BannerByName"] = func(name string) *Banner { return s.tplDB.BannerByName(name) }
+	f["AllBanners"] = func() []*Banner { return s.tplDB.AllBanners() }
 
 	// Board.
 	f["BoardByID"] = func(id int) *Board { return s.tplDB.BoardByID(id) }
 	f["BoardByDir"] = func(dir string) *Board { return s.tplDB.BoardByDir(dir) }
 	f["UniqueUserPosts"] = func(b *Board) int { return s.tplDB.UniqueUserPosts(b) }
 	f["AllBoards"] = func() []*Board { return s.tplDB.AllBoards() }
+
+	// Category.
+	f["CategoryByID"] = func(id int) *Category { return s.tplDB.CategoryByID(id) }
+	f["ChildCategories"] = func(id int) []*Category { return s.tplDB.ChildCategories(id) }
+	f["AllCategories"] = func() []*Category { return s.tplDB.AllCategories() }
+
+	//Keyword.
+	f["KeywordByID"] = func(id int) *Keyword { return s.tplDB.KeywordByID(id) }
+	f["KeywordByText"] = func(text string) *Keyword { return s.tplDB.KeywordByText(text) }
+	f["AllKeywords"] = func() []*Keyword { return s.tplDB.AllKeywords() }
 
 	// News.
 	f["NewsByID"] = func(id int) *News { return s.tplDB.NewsByID(id) }
@@ -394,6 +409,19 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	f["PostByField"] = func(board *Board, field string, value any) *Post { return s.tplDB.PostByField(board, field, value) }
 	f["LastPostByIP"] = func(board *Board, ip string) *Post { return s.tplDB.LastPostByIP(board, ip) }
 	f["ReplyCount"] = func(threadID int) int { return s.tplDB.ReplyCount(threadID) }
+
+	// Report.
+	f["NumReports"] = func(p *Post) int { return s.tplDB.NumReports(p) }
+	f["PostReported"] = func(p *Post, ipHash string) bool { return s.tplDB.PostReported(p, ipHash) }
+	f["AllReports"] = func() []*Report { return s.tplDB.AllReports() }
+
+	// Subscription.
+	f["SubscriptionByID"] = func(id int) *Subscription { return s.tplDB.SubscriptionByID(id) }
+	f["SubscriptionByIP"] = func(ip string) *Subscription { return s.tplDB.SubscriptionByIP(ip) }
+	f["SubscriptionsByEmail"] = func(email string) []*Subscription { return s.tplDB.SubscriptionsByEmail(email) }
+	f["SubscriptionsByPost"] = func(p *Post, distinct bool, includeBoard bool) []*Subscription {
+		return s.tplDB.SubscriptionsByPost(p, distinct, includeBoard)
+	}
 
 	// Two-factor authentication.
 	f["TOTPImage"] = func(a *Account, t *TwoFactor) template.HTML {

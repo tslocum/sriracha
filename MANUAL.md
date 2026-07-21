@@ -220,8 +220,8 @@ maildomains: '^(example\.com|example2\.com|example3\.com)$'
 
 ### Custom templates
 
-Sriracha supports overriding official templates with custom templates. This
-section is a short guide on how to use custom templates.
+Sriracha supports overriding official templates with custom templates.
+This section is a guide on how to use custom templates.
 
 Sriracha template files have the extension `.gohtml` and are written in the
 [Go HTML template](https://pkg.go.dev/html/template) language. All official
@@ -291,15 +291,27 @@ version of Sriracha, please [report](https://codeberg.org/tslocum/sriracha/issue
 Pages and templates may access the database via the following read-only methods:
 
 - [Ban](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Ban)
-  - `AllActiveBans() []*Ban`
-  - `LiftedBansByIP() []*Ban`
   - `BanByID(id int) *Ban`
   - `BanByIP(ip string) *Ban`
+  - `AllActiveBans() []*Ban`
+  - `LiftedBansByIP() []*Ban`
+- [Banner](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Banner)
+  - `BannerByID(id int) *Banner`
+  - `BannerByName(name string) *Banner`
+  - `AllBanners() []*Banner`
 - [Board](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Board)
   - `BoardByID(id int) *Board`
   - `BoardByDir(dir string) *Board`
   - `UniqueUserPosts(b *Board) int`
   - `AllBoards() []*Board`
+- [Category](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Category)
+  - `CategoryByID(id int) *Category`
+  - `ChildCategories(id int) []*Category`
+  - `AllCategories() []*Category`
+- [Keyword](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Keyword)
+  - `KeywordByID(id int) *Keyword`
+  - `KeywordByText(text string) *Keyword`
+  - `AllKeywords() []*Keyword`
 - [News](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#News)
   - `NewsByID(id int) *News`
   - `AllNews(onlyPublished bool) []*News`
@@ -318,6 +330,15 @@ Pages and templates may access the database via the following read-only methods:
   - `PostByField(b *Board, field string, value any) *Post`
   - `LastPostByIP(board *Board, ip string) *Post`
   - `ReplyCount(threadID int) int`
+- [Report](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Report)
+  - `NumReports(p *Post) int`
+  - `PostReported(p *Post, ipHash string) bool`
+  - `AllReports() []*Report`
+- [Subscription](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Subscription)
+  - `SubscriptionByID(id int) *Subscription`
+  - `SubscriptionByIP(ip string) *Subscription`
+  - `SubscriptionsByEmail(email string) []*Subscription`
+  - `SubscriptionsByPost(p *Post, distinct bool, includeBoard bool) []*Subscription`
 
 For example, the following custom page will render all moderated posts in the
 board with ID #7 by printing their ID, subject and message:
@@ -355,7 +376,7 @@ The following `locale` configuration options are available:
 | Finnish  | `fi`   |
 | Russian  | `ru`   |
 
-Help translate Sriracha into additional languages [online](https://translate.codeberg.org/projects/sriracha/sriracha/).
+If you are multilingual, please help [translate Sriracha](https://translate.codeberg.org/projects/sriracha/sriracha/).
 
 ### Example configuration (config.yml)
 
