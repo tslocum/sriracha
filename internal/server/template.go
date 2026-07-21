@@ -423,6 +423,11 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 		return s.tplDB.SubscriptionsByPost(p, distinct, includeBoard)
 	}
 
+	// Threshold.
+	f["ThresholdByID"] = func(id int) *Threshold { return s.tplDB.ThresholdByID(id) }
+	f["ThresholdTimeout"] = func(t *Threshold, ipHash string, now int64) int { return s.tplDB.ThresholdTimeout(t, ipHash, now) }
+	f["AllThresholds"] = func() []*Threshold { return s.tplDB.AllThresholds() }
+
 	// Two-factor authentication.
 	f["TOTPImage"] = func(a *Account, t *TwoFactor) template.HTML {
 		buf := &bytes.Buffer{}

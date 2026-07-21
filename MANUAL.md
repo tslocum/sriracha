@@ -339,6 +339,10 @@ Pages and templates may access the database via the following read-only methods:
   - `SubscriptionByIP(ip string) *Subscription`
   - `SubscriptionsByEmail(email string) []*Subscription`
   - `SubscriptionsByPost(p *Post, distinct bool, includeBoard bool) []*Subscription`
+- [Threshold](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Threshold)
+  - `ThresholdByID(id int) *Threshold`
+  - `ThresholdTimeout(t *Threshold, ipHash string, now int64) int`
+  - `AllThresholds() []*Threshold`
 
 For example, the following custom page will render all moderated posts in the
 board with ID #7 by printing their ID, subject and message:
