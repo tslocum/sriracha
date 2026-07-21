@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"runtime"
+	"slices"
 	"strings"
 	"sync"
 
@@ -32,6 +33,15 @@ func newTestServer() (*Server, error) {
 }
 
 func (s *Server) _validateTemplates(db serverDB, allBoards []*Board, img *Board, forum *Board, testCases chan testCase, wg *sync.WaitGroup, errors chan error) {
+	wrapError := func(name string, err error) error {
+		var source string
+		if !slices.Contains(s.customTemplates, name) {
+			source = "official"
+		} else {
+			source = "custom"
+		}
+		return fmt.Errorf("failed to execute %s template file %s: %s", source, name, err)
+	}
 	var board *Board
 	for c := range testCases {
 		boardTemplate := strings.HasPrefix(c.template, "board_")
@@ -145,7 +155,7 @@ func (s *Server) _validateTemplates(db serverDB, allBoards []*Board, img *Board,
 
 				err := data.executeWithError(io.Discard)
 				if err != nil {
-					errors <- fmt.Errorf("failed to execute template %s: %s", data.Template, err)
+					errors <- wrapError(data.Template, err)
 					return
 				}
 			}

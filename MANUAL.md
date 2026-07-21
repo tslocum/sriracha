@@ -258,6 +258,34 @@ Support is not available for Sriracha installations using custom templates.
 
 Support is not available for creating or modifying custom template files.
 
+#### Troubleshooting template errors
+
+If you encounter either of the following errors:
+
+```
+failed to parse template files: failed to parse custom template file <file.gohtml>: template: <file.gohtml>:<line>: <error message>
+```
+
+```
+failed to validate templates: failed to execute custom template <file.gohtml>: template: <file.gohtml>:<line>:<column>: executing <file.gohtml> at <token>: <error message>
+```
+
+A custom template file has failed validation. This may be resolved by fixing
+the custom template or by removing it from the custom template directory.
+
+If you are not using any custom templates and you encounter either of the following errors:
+
+```
+failed to parse template files: failed to parse official template file <file.gohtml>: template: <file.gohtml>:<line>: <error message>
+```
+
+```
+failed to validate templates: failed to execute official template <file.gohtml>: template: <file.gohtml>:<line>:<column>: executing <file.gohtml> at <token>: <error message>
+```
+
+An official template file has failed validation. If you are running the latest
+version of Sriracha, please [report](https://codeberg.org/tslocum/sriracha/issues) the issue.
+
 ### Custom pages
 
 Pages and templates may access the database via the following read-only methods:
