@@ -394,16 +394,12 @@ root: "/home/sriracha/public_html"
 # Hostname:Port to listen for HTTP connections on.
 http: "localhost:8080"
 
-# Hostname:Port to listen for HTTPS connections on. Instead of setting this option,
-# you should run a frontend such as Caddy with Sriracha, which will manage HTTPS
-# certificates automatically and will translate HTTPS requests to HTTP.
-#https: ""
-
-# Path to HTTPS certificate file. This option only applies when https is not blank.
-#httpscert: ""
-
-# Path to HTTPS certificate private key file. This option only applies when https is not blank.
-#httpskey: ""
+# HTTPS server configuration. Instead of setting these options, you should run
+# a frontend such as Caddy with Sriracha, which will manage HTTPS certificates
+# automatically and will translate HTTPS requests to HTTP.
+#https:     "" # Hostname:Port to listen for HTTPS connections on.
+#httpscert: "" # Path to HTTPS certificate file.
+#httpskey:  "" # Path to HTTPS private key file.
 
 # Whether the server should reject HTTP/1 connections. When enabled, the server
 # will only accept HTTP/2 connections. You should enable this option if possible,
