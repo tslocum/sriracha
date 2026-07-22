@@ -515,7 +515,8 @@ dbname: "sriracha"
 # enable uploading files of that type. You may specify an image to use as the
 # thumbnail for all uploads of that type, or 'none' to not create a thumbnail.
 # Otherwise, thumbnails are generated automatically based on the uploaded file.
-# To generate thumbnails for videos or SVG images, ffmpeg must be installed.
+# To generate thumbnails for videos, ffmpeg must be installed. SVG images allow
+# embedded JavaScript, which is dangerous. Do not accept untrusted SVG images.
 # Note: Opus audio files are detected as audio/ogg.
 #
 # Format: ext mime thumbnail
@@ -528,7 +529,6 @@ uploads:
   - "jpg   image/jpeg"
   - "jpg   image/pjpeg"
   - "png   image/png"
-  - "svg   image/svg+xml"
   - "tiff  image/tiff"
   - "aac   audio/aac"
   - "flac  audio/flac"
