@@ -21,7 +21,7 @@ const (
 	totpSecretSize     = 32
 	totpDigits         = 6
 	totpSkew           = 1
-	totpImageSize      = 250
+	totpImageSize      = 300
 	totpKeySize        = 48
 	totpAlgorithm      = otp.AlgorithmSHA512
 	totpSessionTimeout = 600 // 10 minutes.

@@ -168,6 +168,8 @@ type ServerOptions struct {
 	Notifications    bool
 	DevMode          bool
 	RootDir          string
+	IconWidth        int
+	IconHeight       int
 	Global           []string
 	FuncMaps         map[string]template.FuncMap
 }
@@ -2857,6 +2859,21 @@ func (s *Server) Run() error {
 		if err != nil {
 			log.Fatalf("failed to create captcha directory: %s", err)
 		}
+	}
+
+	// Cache site icon dimensions.
+	iconPath := filepath.Join(s.config.Root, "banner", "icon.png")
+	info, err := os.Stat(iconPath)
+	if !os.IsNotExist(err) && !info.IsDir() {
+		f, err := os.Open(iconPath)
+		if err != nil {
+			log.Fatalf("failed to read site icon %s: %s", iconPath, err)
+		}
+		w, h := s.imageDimensions(f)
+		if w > 0 && h > 0 {
+			s.opt.IconWidth, s.opt.IconHeight = w, h
+		}
+		f.Close()
 	}
 
 	// Write default site index file.

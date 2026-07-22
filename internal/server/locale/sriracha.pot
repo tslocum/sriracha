@@ -622,6 +622,9 @@ msgstr ""
 msgid "IP address to ban. Wildcards (*) may be used to ban a range of addresses."
 msgstr ""
 
+msgid "Icon"
+msgstr ""
+
 msgid "Idenifiers"
 msgstr ""
 
@@ -1423,6 +1426,9 @@ msgid "Update %s"
 msgstr ""
 
 msgid "Update Settings"
+msgstr ""
+
+msgid "Upload a %[1]dx%[2]d %[3]s image."
 msgstr ""
 
 msgid "Uptime"

@@ -21,7 +21,7 @@
     </tr>
 </table>
 </fieldset><br><br>
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <fieldset>
     <legend>{{T "Update Settings"}}</legend>
     <table class="manageform">
@@ -90,6 +90,17 @@
             <td class="postblock"><label for="modqueue">{{T "Mod Queue"}}</label></td>
             <td><input type="text" name="modqueue" value="{{.Opt.ModQueue}}"></input></td>
             <td>{{T "File path (excluding .html suffix) of the moderation queue status page. Leave blank to disable."}}</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="icon">{{T "Icon"}}</label></td>
+            <td>
+                {{if ne .Opt.IconWidth 0}}
+                    <img src="/banner/icon.png" width="{{.Opt.IconWidth}}" height="{{.Opt.IconHeight}}">
+                    <label><input type="checkbox" name="deleteicon" value="1"> {{T "Delete"}}</label><br><br>
+                {{end}}
+                <input type="file" name="icon">
+            </td>
+            <td>{{T "Upload a %[1]dx%[2]d %[3]s image." 512 512 "PNG"}}</td>
         </tr>
         <tr>
             <th><br>{{T "Overboard"}}</th><td>&nbsp;</td>

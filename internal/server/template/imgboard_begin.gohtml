@@ -4,7 +4,11 @@
 		<meta http-equiv="content-type" content="text/html;charset=UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1">
 		<title>{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}</title>
-		<link rel="icon" href="data:,">
+		{{if ne .Opt.IconWidth 0}}
+			<link rel="icon" href="/banner/icon.png" type="image/png">
+		{{else}}
+			<link rel="icon" href="data:,">
+		{{end}}
 		<link rel="stylesheet" type="text/css" href="/static/css/global.css">
 		{{$defaultStyle := index (index .Opt.Styles 0) 0}}{{if ne .Style ""}}{{$defaultStyle = .Style}}{{end}}
 		{{range $style := .Opt.Styles}}

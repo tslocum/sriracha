@@ -22,6 +22,7 @@ import (
 	"codeberg.org/tslocum/gotext"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
+	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
 )
 
@@ -436,6 +437,13 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 		key, err := totp.Generate(s.twoFactorOptions(a, t))
 		if err != nil {
 			log.Fatal(err)
+		}
+		if s.opt.IconWidth != 0 && s.opt.SiteHome != "" && !strings.HasPrefix(s.opt.SiteHome, "/") {
+			keyURL := key.URL() + "&image=" + url.QueryEscape(s.opt.SiteHome+"banner/icon.png")
+			key, err = otp.NewKeyFromURL(keyURL)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 		img, err := key.Image(totpImageSize, totpImageSize)
 		if err != nil {

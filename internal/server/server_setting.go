@@ -1,6 +1,10 @@
 package server
 
 import (
+	"bytes"
+	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -11,7 +15,50 @@ import (
 
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
+	"github.com/gabriel-vasile/mimetype"
 )
+
+func (s *Server) loadSettingFormFile(db serverDB, r *http.Request) ([]byte, int, int, error) {
+	if r.PostForm == nil {
+		const maxMemory = 32 << 20 // 32 MB
+		err := r.ParseMultipartForm(maxMemory)
+		if err != nil {
+			return nil, 0, 0, err
+		}
+	}
+	if r.MultipartForm == nil || r.MultipartForm.File == nil {
+		return nil, 0, 0, nil
+	}
+	files := r.MultipartForm.File["icon"]
+	if len(files) == 0 {
+		return nil, 0, 0, nil
+	} else if len(files) > 1 {
+		return nil, 0, 0, fmt.Errorf("too many files: upload a single file")
+	}
+	fileHeader := files[0]
+
+	formFile, err := fileHeader.Open()
+	if err != nil {
+		return nil, 0, 0, err
+	}
+	defer formFile.Close()
+
+	buf, err := io.ReadAll(formFile)
+	if err != nil {
+		return nil, 0, 0, err
+	}
+
+	mimeType := mimetype.Detect(buf).String()
+	if mimeType != "image/png" {
+		return nil, 0, 0, fmt.Errorf("invalid icon image: expected image/png, got %s", mimeType)
+	}
+
+	imgWidth, imgHeight := s.imageDimensions(bytes.NewReader(buf))
+	if imgWidth == 0 || imgHeight == 0 {
+		return nil, 0, 0, fmt.Errorf("invalid icon image")
+	}
+	return buf, imgWidth, imgHeight, nil
+}
 
 func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
 	if data.forbidden(w, RoleAdmin) {
@@ -108,6 +155,24 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 				data.ManageError("Invalid overboard directory.")
 				return
 			}
+		}
+
+		iconPath := filepath.Join(s.config.Root, "banner", "icon.png")
+		if FormString(r, "deleteicon") != "" {
+			os.Remove(iconPath)
+			s.opt.IconWidth, s.opt.IconHeight = 0, 0
+		}
+		icon, iconWidth, iconHeight, err := s.loadSettingFormFile(db, r)
+		if err != nil {
+			data.ManageError(err.Error())
+			return
+		} else if icon != nil {
+			err = os.WriteFile(iconPath, icon, NewFilePermission)
+			if err != nil {
+				log.Fatalf("failed to write icon %s: %s", iconPath, err.Error())
+				return
+			}
+			s.opt.IconWidth, s.opt.IconHeight = iconWidth, iconHeight
 		}
 
 		oldOpt := s.opt
