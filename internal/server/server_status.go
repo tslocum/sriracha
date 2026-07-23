@@ -76,8 +76,8 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 			return
 		}
 		for _, b := range db.AllBoards() {
-			for _, threadInfo := range db.AllThreads(b, false) {
-				for _, p := range db.AllPostsInThread(threadInfo[0], false) {
+			for _, threadInfo := range db.AllThreads(false, b) {
+				for _, p := range db.AllPostsInThread(false, threadInfo[0]) {
 					var capcode string
 					if strings.Contains(p.NameBlock, `<span style="color: red`) {
 						capcode = "Mod"

@@ -208,17 +208,20 @@ func (db *mockDB) DeletePage(id int)            {}
 
 // Post.
 func (db *mockDB) AddPost(p *Post) {}
-func (db *mockDB) AllThreads(board *Board, moderated bool) [][2]int {
+func (db *mockDB) AllThreads(moderated bool, board ...*Board) [][2]int {
 	var threads [][2]int
 	for _, post := range db.posts {
-		if post.Board != board || post.Parent == 0 {
-			threads = append(threads, [2]int{post.ID, db.ReplyCount(post.ID)})
+		for _, b := range board {
+			if post.Board == b && post.Parent == 0 {
+				threads = append(threads, [2]int{post.ID, db.ReplyCount(post.ID)})
+				break
+			}
 		}
 	}
 	return threads
 }
 func (db *mockDB) TrimThreads(board *Board) []*Post { return nil }
-func (db *mockDB) AllPostsInThread(postID int, moderated bool) []*Post {
+func (db *mockDB) AllPostsInThread(moderated bool, postID int) []*Post {
 	var posts []*Post
 	for _, post := range db.posts {
 		if post.ID == postID || post.Parent == postID {

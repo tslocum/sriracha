@@ -3,6 +3,8 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -19,6 +21,7 @@ func (s *Server) loadCategoryForm(db serverDB, r *http.Request, k *Category) {
 	}
 	k.Name = FormString(r, "name")
 	k.Description = FormString(r, "description")
+	k.Overboard = FormString(r, "overboard")
 }
 
 func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
@@ -280,6 +283,17 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 			oldCategory := *data.Manage.Category
 			s.loadCategoryForm(db, r, data.Manage.Category)
 
+			if data.Manage.Category.Overboard != "" && data.Manage.Category.Overboard != oldCategory.Overboard {
+				err = s.dirAvailable(data.Manage.Category.Overboard)
+				if err != nil {
+					data.ManageError(err.Error())
+					return
+				}
+				if data.Manage.Category.Overboard != "/" {
+					os.Mkdir(filepath.Join(s.config.Root, data.Manage.Category.Overboard), NewDirPermission)
+				}
+			}
+
 			db.UpdateCategory(data.Manage.Category)
 
 			var haveRoot bool
@@ -313,6 +327,17 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 		}
 		c := &Category{}
 		s.loadCategoryForm(db, r, c)
+
+		if c.Overboard != "" {
+			err = s.dirAvailable(c.Overboard)
+			if err != nil {
+				data.ManageError(err.Error())
+				return
+			}
+			if c.Overboard != "/" {
+				os.Mkdir(filepath.Join(s.config.Root, c.Overboard), NewDirPermission)
+			}
+		}
 
 		var cSort int
 		if c.Parent != nil {

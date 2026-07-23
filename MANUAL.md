@@ -320,8 +320,8 @@ Pages and templates may access the database via the following read-only methods:
   - `PageByPath(path string) *Page`
   - `AllPages() []*Page`
 - [Post](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Post)
-  - `AllThreads(board *Board, moderated bool) [][2]int`
-  - `AllPostsInThread(postID int, moderated bool) []*Post`
+  - `AllThreads(moderated bool, board ...*Board) [][2]int`
+  - `AllPostsInThread(moderated bool, postID int) []*Post`
   - `AllReplies(threadID int, limit int, moderated bool) []*Post`
   - `PendingPosts() []*Post`
   - `PostByID(postID int) *Post`
@@ -350,7 +350,7 @@ board with ID #7 by printing their ID, subject and message:
 ```gohtml
 {{$onlyShowModerated := true}}
 {{$board := BoardByID 7}}
-{{$threads := AllThreads $board $onlyShowModerated}}
+{{$threads := AllThreads $onlyShowModerated $board}}
 <hr>
 Found {{len $threads}} threads.
 {{range $i, $thread := $threads}}
@@ -358,7 +358,7 @@ Found {{len $threads}} threads.
     {{$threadReplyCount := index $thread 1}}
     <hr>
     Thread No.{{$threadID}} (Replies: {{$threadReplyCount}})
-    {{range $post := AllPostsInThread $threadID $onlyShowModerated}}
+    {{range $post := AllPostsInThread $onlyShowModerated $threadID}}
         <br><br>
         ID: {{$post.ID}}<br>
         Subject: {{$post.Subject}}<br>

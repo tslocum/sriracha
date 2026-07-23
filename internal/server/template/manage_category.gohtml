@@ -71,6 +71,11 @@ li {
                     <td>{{T "Optional."}}</td>
                 </tr>
                 <tr>
+                    <td class="postblock"><label for="overboard">{{T "Overboard"}}</label></td>
+                    <td><input type="text" name="overboard" value="{{.Manage.Category.Overboard}}"></td>
+                    <td>{{T "Directory where the overboard files are located. Leave blank to disable. To write the overboard at the root directory, enter \"/\"."}}</td>
+                </tr>
+                <tr>
                     <td>&nbsp;</td>
                     <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.Category.ID 0}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
                     <td>&nbsp;</td>

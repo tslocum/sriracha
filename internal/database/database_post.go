@@ -11,6 +11,8 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+const postColumns = "post.id, post.parent, post.board, post.timestamp, post.bumped, post.ip, post.name, post.tripcode, post.email, post.nameblock, post.subject, post.message, post.password, post.file, post.filehash, post.fileoriginal, post.filesize, post.filewidth, post.fileheight, post.thumb, post.thumbwidth, post.thumbheight, post.moderated, post.stickied, post.locked, post.filemime, post.backlinks"
+
 func (db *DB) AddPost(p *Post) {
 	var parent *int
 	if p.Parent != 0 {
@@ -28,7 +30,7 @@ func (db *DB) AddPost(p *Post) {
 	if p.Locked {
 		locked = 1
 	}
-	err := db.conn.QueryRow(context.Background(), "INSERT INTO post VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25) RETURNING id",
+	err := db.conn.QueryRow(context.Background(), "INSERT INTO post VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, DEFAULT, to_tsvector($26)) RETURNING id",
 		parent,
 		p.Board.ID,
 		p.Timestamp,
@@ -54,6 +56,7 @@ func (db *DB) AddPost(p *Post) {
 		stickied,
 		locked,
 		p.FileMIME,
+		p.SearchText(),
 	).Scan(&p.ID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to insert post: %w", err))
@@ -62,10 +65,22 @@ func (db *DB) AddPost(p *Post) {
 
 // AllThreads returns all thread IDs and reply counts. When board is nil, only
 // threads belonging to boards included in the overboard are returned.
-func (db *DB) AllThreads(board *Board, moderated bool) [][2]int {
+func (db *DB) AllThreads(moderated bool, board ...*Board) [][2]int {
 	var boardWhere string
-	if board != nil {
-		boardWhere = fmt.Sprintf("post.board = %d AND ", board.ID)
+	l := len(board)
+	if l > 0 && board[0] != nil {
+		if l == 1 {
+			boardWhere = fmt.Sprintf("post.board = %d AND ", board[0].ID)
+		} else {
+			boardWhere = "post.board IN ("
+			for i, b := range board {
+				if i != 0 {
+					boardWhere += ","
+				}
+				boardWhere += strconv.Itoa(b.ID)
+			}
+			boardWhere += ") AND "
+		}
 	} else {
 		var ids []byte
 		for _, b := range db.AllBoards() {
@@ -81,6 +96,7 @@ func (db *DB) AllThreads(board *Board, moderated bool) [][2]int {
 		}
 		boardWhere = fmt.Sprintf("post.board IN (%s) AND post.stickied = 0 AND", ids)
 	}
+
 	var extraJoin string
 	var extraWhere string
 	if moderated {
@@ -110,7 +126,7 @@ func (db *DB) TrimThreads(board *Board) []*Post {
 	if board.MaxThreads == 0 {
 		return nil
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT post.*, 0 as replies FROM post WHERE post.board = $1 AND parent IS NULL AND moderated > 0 ORDER BY bumped DESC, id ASC OFFSET $2", board.ID, board.MaxThreads)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE post.board = $1 AND parent IS NULL AND moderated > 0 ORDER BY bumped DESC, id ASC OFFSET $2", board.ID, board.MaxThreads)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -133,12 +149,12 @@ func (db *DB) TrimThreads(board *Board) []*Post {
 	return posts
 }
 
-func (db *DB) AllPostsInThread(postID int, moderated bool) []*Post {
+func (db *DB) AllPostsInThread(moderated bool, postID int) []*Post {
 	var extra string
 	if moderated {
 		extra = " AND moderated > 0"
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT post.*, 0 as replies FROM post WHERE (id = $1 OR parent = $1)"+extra+" ORDER BY id ASC", postID)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE (id = $1 OR parent = $1)"+extra+" ORDER BY id ASC", postID)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -182,7 +198,7 @@ func (db *DB) AllReplies(threadID int, limit int, moderated bool) []*Post {
 	if moderated {
 		extraModerated = " AND moderated > 0"
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT post.*, 0 as replies FROM post WHERE parent = $1"+extraModerated+" ORDER BY id "+sortDir+extraLimit, threadID)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE parent = $1"+extraModerated+" ORDER BY id "+sortDir+extraLimit, threadID)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -213,7 +229,7 @@ func (db *DB) AllReplies(threadID int, limit int, moderated bool) []*Post {
 }
 
 func (db *DB) PendingPosts() []*Post {
-	rows, err := db.conn.Query(context.Background(), "SELECT post.*, 0 as replies FROM post WHERE moderated = $1 ORDER BY id ASC", ModeratedHidden)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE moderated = $1 ORDER BY id ASC", ModeratedHidden)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -242,7 +258,7 @@ func (db *DB) PendingPosts() []*Post {
 
 func (db *DB) PostByID(postID int) *Post {
 	p := &Post{}
-	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT post.*, 0 as replies FROM post WHERE id = $1", postID))
+	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE id = $1", postID))
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -257,7 +273,7 @@ func (db *DB) PostsByIP(hash string) []*Post {
 	if hash == "" {
 		return nil
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT post.*, 0 as replies FROM post WHERE ip = $1", hash)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE ip = $1", hash)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -289,7 +305,7 @@ func (db *DB) PostsByFileHash(hash string, filterBoard *Board) []*Post {
 	if filterBoard != nil {
 		extra = " AND post.board = " + strconv.Itoa(filterBoard.ID)
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT post.*, 0 as replies FROM post WHERE filehash = $1 "+extra, hash)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE filehash = $1 "+extra, hash)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -317,7 +333,7 @@ func (db *DB) PostsByFileHash(hash string, filterBoard *Board) []*Post {
 }
 
 func (db *DB) PostsByBacklink(targetID int) []*Post {
-	rows, err := db.conn.Query(context.Background(), "SELECT post.*, 0 as replies FROM post WHERE $1 = ANY(backlinks)", targetID)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE $1 = ANY(backlinks)", targetID)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -346,7 +362,7 @@ func (db *DB) PostsByBacklink(targetID int) []*Post {
 
 func (db *DB) PostByField(b *Board, field string, value any) *Post {
 	p := &Post{}
-	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT post.*, 0 as replies FROM post WHERE post.board = $1 AND "+field+" = $2 LIMIT 1", b.ID, value))
+	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE post.board = $1 AND "+field+" = $2 LIMIT 1", b.ID, value))
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -361,7 +377,7 @@ func (db *DB) PostByField(b *Board, field string, value any) *Post {
 
 func (db *DB) LastPostByIP(board *Board, ip string) *Post {
 	p := &Post{}
-	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT post.*, 0 as replies FROM post WHERE post.board = $1 AND ip = $2 ORDER BY id DESC LIMIT 1", board.ID, ip))
+	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE post.board = $1 AND ip = $2 ORDER BY id DESC LIMIT 1", board.ID, ip))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {
@@ -373,7 +389,7 @@ func (db *DB) LastPostByIP(board *Board, ip string) *Post {
 
 func (db *DB) LastPostByBoard(board *Board) *Post {
 	p := &Post{}
-	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT post.*, 0 as replies FROM post WHERE post.board = $1 AND moderated> 0 ORDER BY id DESC LIMIT 1", board.ID))
+	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE post.board = $1 AND moderated> 0 ORDER BY id DESC LIMIT 1", board.ID))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {

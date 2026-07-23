@@ -8,6 +8,7 @@ type Category struct {
 	Description string
 	Boards      []*Board    `diff:"-"`
 	Categories  []*Category `diff:"-"`
+	Overboard   string
 }
 
 func (c *Category) HasBoard(id int) bool {

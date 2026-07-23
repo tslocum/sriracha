@@ -59,7 +59,7 @@ CREATE TABLE post (
 	var hash string
 	var stickied, locked int
 	for _, thread := range threads {
-		for _, p := range db.AllPostsInThread(thread[0], false) {
+		for _, p := range db.AllPostsInThread(false, thread[0]) {
 			if p.IsEmbed() {
 				hash = p.FileHash
 			} else {
@@ -113,7 +113,7 @@ func (s *Server) exportPosts(db serverDB, exportPath string) error {
 	}
 	var havePosts bool
 	for _, b := range boards {
-		if len(db.AllThreads(b, false)) > 0 {
+		if len(db.AllThreads(false, b)) > 0 {
 			havePosts = true
 			continue
 		}
@@ -136,7 +136,7 @@ func (s *Server) exportPosts(db serverDB, exportPath string) error {
 
 	date := time.Now().Format("20060102")
 	for _, b := range boards {
-		threads := db.AllThreads(b, false)
+		threads := db.AllThreads(false, b)
 		if len(threads) == 0 {
 			continue
 		}

@@ -120,6 +120,7 @@ CREATE TABLE captcha (
 -- v15: 	sort smallint NOT NULL,
 -- v15: 	name varchar(255) NOT NULL,
 -- v15: 	description varchar(255) NOT NULL
+-- v20:		overboard varchar(255) NOT NULL DEFAULT ''
 -- v15: );
 
 -- v15: CREATE TABLE category_board (
@@ -203,6 +204,7 @@ CREATE TABLE post (
 	locked smallint NOT NULL default '0'
 	-- v5: filemime varchar(64) NOT NULL default ''
 	-- v16: backlinks integer[] NOT NULL DEFAULT array[]::integer[];
+	-- v20: search tsvector NOT NULL DEFAULT ''::tsvector;
 );
 CREATE INDEX ON post (board);
 CREATE INDEX ON post (parent);
@@ -211,6 +213,7 @@ CREATE INDEX ON post (stickied);
 CREATE INDEX ON post (bumped);
 CREATE UNIQUE INDEX ON post (filehash);
 -- v8: CREATE INDEX ON post (filehash);
+-- v20: CREATE INDEX ON post USING GIN (search);
 
 CREATE TABLE report (
 	id serial PRIMARY KEY,
@@ -386,4 +389,9 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 	CREATE UNIQUE INDEX ON ban (ip) WHERE liftedtimestamp = 0;
 	CREATE INDEX ON ban (liftedtimestamp);
 	UPDATE config SET value = '19' WHERE name = 'version';`,
+	// Version 20.
+	`ALTER TABLE post ADD COLUMN search tsvector NOT NULL DEFAULT ''::tsvector;
+	CREATE INDEX ON post USING GIN (search);
+	ALTER TABLE category ADD COLUMN overboard varchar(255) NOT NULL DEFAULT '';
+	UPDATE config SET value = '20' WHERE name = 'version';`,
 }

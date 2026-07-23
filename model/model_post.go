@@ -431,3 +431,23 @@ func (p *Post) URL(siteHome string) string {
 
 	return fmt.Sprintf(`%s%sres/%d.html#%d`, host, path, p.Thread(), p.ID)
 }
+
+func (p *Post) SearchText() string {
+	subj := strings.TrimSpace(p.Subject)
+	msg := strings.TrimSpace(p.Message)
+	if msg != "" {
+		doc, err := goquery.NewDocumentFromReader(bytes.NewReader([]byte(msg)))
+		if err != nil {
+			log.Fatal(err)
+		}
+		msg = doc.Text()
+	}
+	if subj == "" && msg == "" {
+		return ""
+	} else if subj == "" {
+		return msg
+	} else if msg == "" {
+		return subj
+	}
+	return subj + "\n" + msg
+}

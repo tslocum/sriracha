@@ -102,8 +102,10 @@ const (
 )
 
 type categoryInfo struct {
+	ID          int
 	Name        string
 	Description string
+	Overboard   string
 	Boards      []*Board
 	Recent      []*Post
 }
@@ -1090,6 +1092,17 @@ func (s *Server) refreshBannerCache(db serverDB) {
 	}
 }
 
+func (s *Server) dirAvailable(dir string) error {
+	if dir == "" {
+		return nil
+	}
+	_, err := os.Stat(filepath.Join(s.config.Root, dir))
+	if os.IsNotExist(err) {
+		return nil
+	}
+	return fmt.Errorf("directory %s already exists", dir)
+}
+
 // refreshMaxRequestSize refreshes the maximum HTTP request size.
 func (s *Server) refreshMaxRequestSize(db serverDB) {
 	const megabyte = 1048576 // 1 MB.
@@ -1201,8 +1214,10 @@ func (s *Server) _processCategory(c *Category) {
 		return
 	}
 	info := &categoryInfo{
+		ID:          c.ID,
 		Name:        c.Name,
 		Description: c.Description,
+		Overboard:   c.Overboard,
 		Boards:      c.Boards,
 	}
 	s.opt.Categories = append(s.opt.Categories, info)
@@ -1261,7 +1276,7 @@ func (s *Server) deletePostFiles(p *Post) {
 
 // deletePost deletes a post from the database as well as any associated files.
 func (s *Server) deletePost(db serverDB, p *Post) {
-	posts := db.AllPostsInThread(p.ID, false)
+	posts := db.AllPostsInThread(false, p.ID)
 	for _, post := range posts {
 		s.deletePostFiles(post)
 	}
@@ -1350,7 +1365,7 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 
 // writeThread writes a thread res page to disk.
 func (s *Server) writeThread(db serverDB, board *Board, postID int) {
-	posts := db.AllPostsInThread(postID, true)
+	posts := db.AllPostsInThread(true, postID)
 	if len(posts) == 0 {
 		return
 	}
@@ -1399,7 +1414,7 @@ func (s *Server) writeBoardIndexes(db serverDB, board *Board) {
 	data.ReplyMode = 1
 	data.Template = "board_catalog"
 
-	threadInfo := db.AllThreads(board, true)
+	threadInfo := db.AllThreads(true, board)
 
 	// Write catalog.
 	if board.Type == TypeImageboard {
@@ -1511,23 +1526,38 @@ func (s *Server) writeBoardIndexes(db serverDB, board *Board) {
 }
 
 // writeOverboard writes overboard pages to disk.
-func (s *Server) writeOverboard(db serverDB) {
+func (s *Server) writeOverboard(db serverDB, c *categoryInfo) {
 	var (
 		traceT time.Time
 		traceD time.Duration
 	)
 
+	var id int
+	if c != nil {
+		id = c.ID * -1
+	}
+
+	dir := s.opt.Overboard
+	if c != nil {
+		dir = c.Overboard
+	}
+
+	name := gotext.Get("Overboard")
+	if c != nil && c.Name != "" {
+		name = c.Name
+	}
+
 	var overboardDir string
 	overboardPath := "/"
-	if s.opt.Overboard != "/" {
-		overboardDir = s.opt.Overboard
-		overboardPath += s.opt.Overboard + "/"
+	if dir != "/" {
+		overboardDir = dir
+		overboardPath += dir + "/"
 	}
 
 	overboard := &Board{
-		ID:      -1,
+		ID:      id,
 		Type:    s.opt.OverboardType,
-		Name:    gotext.Get("Overboard"),
+		Name:    name,
 		Dir:     overboardDir,
 		Threads: s.opt.OverboardThreads,
 		Replies: s.opt.OverboardReplies,
@@ -1535,11 +1565,19 @@ func (s *Server) writeOverboard(db serverDB) {
 
 	data := s.newTemplateData(db)
 	data.Board = overboard
-	data.Boards = db.AllBoards()
+	if c != nil {
+		data.Boards = c.Boards
+	} else {
+		data.Boards = db.AllBoards()
+	}
 	data.ReplyMode = 1
 	data.Template = "board_catalog"
 
-	threadInfo := db.AllThreads(nil, true)
+	var boards []*Board
+	if c != nil {
+		boards = c.Boards
+	}
+	threadInfo := db.AllThreads(true, boards...)
 
 	// Write catalog.
 	if overboard.Type == TypeImageboard {
@@ -1650,6 +1688,34 @@ func (s *Server) writeOverboard(db serverDB) {
 	s.indexCache[overboard.ID] = allPostIDs
 }
 
+// writeOverboard writes overboard pages to disk.
+func (s *Server) writeOverboards(db serverDB, boards []*Board) {
+	if s.opt.Overboard != "" {
+		s.writeOverboard(db, nil)
+	}
+	for _, c := range s.opt.Categories {
+		if c.Overboard == "" {
+			continue
+		}
+		if len(boards) > 0 {
+			var found bool
+		WRITEOVERBOARDS:
+			for _, b := range boards {
+				for _, cb := range c.Boards {
+					if b.ID == cb.ID {
+						found = true
+						break WRITEOVERBOARDS
+					}
+				}
+			}
+			if !found {
+				continue
+			}
+		}
+		s.writeOverboard(db, c)
+	}
+}
+
 func (s *Server) writePage(db serverDB, data *templateData, p *Page, w io.Writer) error {
 	err := p.Validate()
 	if err != nil {
@@ -1721,16 +1787,14 @@ func (s *Server) writePages(db serverDB, pages []*Page) error {
 func (s *Server) rebuildThread(db serverDB, post *Post) {
 	s.writeThread(db, post.Board, post.Thread())
 	s.writeBoardIndexes(db, post.Board)
-	if s.opt.Overboard != "" {
-		s.writeOverboard(db)
-	}
+	s.writeOverboards(db, []*Board{post.Board})
 	s.writeStatistics(db)
 }
 
 // rebuildBoard rebuilds all pages in a board.
 func (s *Server) rebuildBoard(db serverDB, board *Board) {
 	s.indexCache[board.ID] = nil
-	for _, info := range db.AllThreads(board, true) {
+	for _, info := range db.AllThreads(true, board) {
 		s.writeThread(db, board, info[0])
 	}
 	s.writeBoardIndexes(db, board)
@@ -1847,12 +1911,10 @@ func (s *Server) rebuildAll(db serverDB, verbose bool) {
 		}
 		s.rebuildNews(db)
 	}
-	if s.opt.Overboard != "" {
-		if verbose {
-			fmt.Println("Rebuilding overboard...")
-		}
-		s.writeOverboard(db)
+	if s.opt.Overboard != "" && verbose {
+		fmt.Println("Rebuilding overboard...")
 	}
+	s.writeOverboards(db, nil)
 	for _, b := range db.AllBoards() {
 		if verbose {
 			fmt.Printf("Rebuilding %s...\n", b.Path())
@@ -2548,9 +2610,7 @@ func (s *Server) handleRebuild() {
 				boards = append(boards, info.post.Board)
 			}
 		}
-		if s.opt.Overboard != "" {
-			s.writeOverboard(db)
-		}
+		s.writeOverboards(db, boards)
 		s.writeSiteIndex(db)
 		s.writeStatistics(db)
 		if s.opt.Notifications {
@@ -2915,8 +2975,8 @@ func (s *Server) Run() error {
 	// Fill missing post backlink data.
 	if !db.HavePostBacklinks() {
 		for _, b := range db.AllBoards() {
-			for _, thread := range db.AllThreads(b, true) {
-				for _, post := range db.AllPostsInThread(thread[0], true) {
+			for _, thread := range db.AllThreads(true, b) {
+				for _, post := range db.AllPostsInThread(true, thread[0]) {
 					db.AddPostBacklinks(post)
 				}
 			}

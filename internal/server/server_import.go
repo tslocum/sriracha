@@ -500,7 +500,7 @@ func (s *Server) serveImport(data *templateData, db serverDB, w http.ResponseWri
 				if p.Locked {
 					locked = 1
 				}
-				_, err := db.Exec("INSERT INTO post VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26)",
+				_, err := db.Exec("INSERT INTO post VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, DEFAULT, to_tsvector($27))",
 					p.ID,
 					parent,
 					p.Board.ID,
@@ -527,6 +527,7 @@ func (s *Server) serveImport(data *templateData, db serverDB, w http.ResponseWri
 					stickied,
 					locked,
 					p.FileMIME,
+					p.SearchText(),
 				)
 				if err != nil {
 					data.ManageError(fmt.Sprintf("Failed to insert post: %s.", err))

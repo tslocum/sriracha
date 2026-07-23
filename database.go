@@ -119,9 +119,9 @@ type DB interface {
 
 	// Post.
 	AddPost(p *Post)
-	AllThreads(board *Board, moderated bool) [][2]int
+	AllThreads(moderated bool, board ...*Board) [][2]int
 	TrimThreads(board *Board) []*Post
-	AllPostsInThread(postID int, moderated bool) []*Post
+	AllPostsInThread(moderated bool, postID int) []*Post
 	AllReplies(threadID int, limit int, moderated bool) []*Post
 	PendingPosts() []*Post
 	PostByID(postID int) *Post

@@ -10,7 +10,7 @@
 	{{else if .ModMode}}
 		<div class="replymode">{{T "Mod mode"}}</div>
 	{{end}}
-	{{if ne .Board.ID -1}}
+	{{if gt .Board.ID 0}}
 		{{if ne .Message ""}}
 			{{.Message}}
 			<hr>

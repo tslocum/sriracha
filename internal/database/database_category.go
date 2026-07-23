@@ -13,11 +13,12 @@ func (db *DB) AddCategory(c *Category) {
 	if c.Parent != nil {
 		parent = &c.Parent.ID
 	}
-	err := db.conn.QueryRow(context.Background(), "INSERT INTO category VALUES (DEFAULT, $1, $2, $3, $4) RETURNING id",
+	err := db.conn.QueryRow(context.Background(), "INSERT INTO category VALUES (DEFAULT, $1, $2, $3, $4, $5) RETURNING id",
 		parent,
 		c.Sort,
 		c.Name,
 		c.Description,
+		c.Overboard,
 	).Scan(&c.ID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to insert category: %w", err))
@@ -139,11 +140,12 @@ func (db *DB) UpdateCategory(c *Category) {
 	if c.Parent != nil {
 		parent = &c.Parent.ID
 	}
-	_, err := db.conn.Exec(context.Background(), "UPDATE category SET parent = $1, sort = $2, name = $3, description = $4 WHERE id = $5",
+	_, err := db.conn.Exec(context.Background(), "UPDATE category SET parent = $1, sort = $2, name = $3, description = $4, overboard = $5 WHERE id = $6",
 		parent,
 		c.Sort,
 		c.Name,
 		c.Description,
+		c.Overboard,
 		c.ID,
 	)
 	if err != nil {
@@ -170,6 +172,7 @@ func scanCategory(c *Category, row pgx.Row) (error, *int) {
 		&c.Sort,
 		&c.Name,
 		&c.Description,
+		&c.Overboard,
 	)
 	return err, parent
 }

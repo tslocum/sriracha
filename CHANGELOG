@@ -1,5 +1,6 @@
 1.8.8:
 - Support configuring site icon
+- Support adding category overboards
 - Support configuring available stylesheets
 - Support logging to secondary audit database
 

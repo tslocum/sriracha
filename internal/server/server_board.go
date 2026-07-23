@@ -610,10 +610,10 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		data.Boards = db.AllBoards()
 		data.ModMode = true
 		if postID > 0 {
-			data.Threads = [][]*Post{db.AllPostsInThread(postID, true)}
+			data.Threads = [][]*Post{db.AllPostsInThread(true, postID)}
 			data.ReplyMode = postID
 		} else {
-			allThreads := db.AllThreads(b, true)
+			allThreads := db.AllThreads(true, b)
 
 			data.Page = page
 			data.Pages = pageCount(len(allThreads), b.Threads)
@@ -690,7 +690,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 			return
 		}
 
-		allThreads := db.AllThreads(b, false)
+		allThreads := db.AllThreads(false, b)
 		if !FormBool(r, "confirmation") {
 			data.Template = "manage_info"
 			data.Message = template.HTML(`<h2 class="managetitle">` + Get(b, data.Account, "Boards") + `</h2>
@@ -838,8 +838,8 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 					}
 				}
 
-				for _, info := range db.AllThreads(data.Manage.Board, false) {
-					for _, post := range db.AllPostsInThread(info[0], false) {
+				for _, info := range db.AllThreads(false, data.Manage.Board) {
+					for _, post := range db.AllPostsInThread(false, info[0]) {
 						var modified bool
 						resPattern, err := regexp.Compile(`<a href="` + regexp.QuoteMeta(oldPath) + `res\/([0-9]+).html#([0-9]+)"`)
 						if err != nil {

@@ -398,8 +398,8 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	f["AllPages"] = func() []*Page { return s.tplDB.AllPages() }
 
 	// Post.
-	f["AllThreads"] = func(board *Board, moderated bool) [][2]int { return s.tplDB.AllThreads(board, moderated) }
-	f["AllPostsInThread"] = func(postID int, moderated bool) []*Post { return s.tplDB.AllPostsInThread(postID, moderated) }
+	f["AllThreads"] = func(moderated bool, board ...*Board) [][2]int { return s.tplDB.AllThreads(moderated, board...) }
+	f["AllPostsInThread"] = func(moderated bool, postID int) []*Post { return s.tplDB.AllPostsInThread(moderated, postID) }
 	f["AllReplies"] = func(threadID int, limit int, moderated bool) []*Post {
 		return s.tplDB.AllReplies(threadID, limit, moderated)
 	}

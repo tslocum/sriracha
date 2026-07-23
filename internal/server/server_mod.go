@@ -131,7 +131,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				data.ManageError("Failed to move thread: Thread is already located in selected board")
 				return
 			}
-			posts := db.AllPostsInThread(post.ID, false)
+			posts := db.AllPostsInThread(false, post.ID)
 			// Verify attachments do not already exist at destination board.
 			for _, p := range posts {
 				if p.File != "" && !p.IsEmbed() {
@@ -362,26 +362,26 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			}
 		}
 
-		var boards []int
+		var boardIDs []int
 		for _, info := range rebuild {
 			post := db.PostByID(info[1])
 			if post != nil {
 				s.writeThread(db, post.Board, post.ID)
 			}
-			if !slices.Contains(boards, info[0]) {
-				boards = append(boards, info[0])
+			if !slices.Contains(boardIDs, info[0]) {
+				boardIDs = append(boardIDs, info[0])
 			}
 		}
-		for _, boardID := range boards {
+		var boards []*Board
+		for _, boardID := range boardIDs {
 			board := db.BoardByID(boardID)
 			if board == nil {
 				continue
 			}
 			s.writeBoardIndexes(db, board)
+			boards = append(boards, board)
 		}
-		if s.opt.Overboard != "" {
-			s.writeOverboard(db)
-		}
+		s.writeOverboards(db, boards)
 		s.writeSiteIndex(db)
 		s.writeStatistics(db)
 		s.writeModQueue(db)
