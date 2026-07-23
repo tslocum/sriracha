@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"html/template"
 	"net/http"
+	"slices"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -23,6 +24,7 @@ func (s *Server) serveSearch(db serverDB, w http.ResponseWriter, r *http.Request
 	data.Categories = db.AllCategories()
 	query := FormString(r, "q")
 	if query != "" {
+		var boards []*Board
 		if data.Account == nil {
 			now := time.Now().Unix()
 			ipHash := s.hashIP(r)
@@ -32,9 +34,16 @@ func (s *Server) serveSearch(db serverDB, w http.ResponseWriter, r *http.Request
 				return
 			}
 			s.lastSearch[ipHash] = now
+			for _, c := range s.opt.Categories {
+				for _, b := range c.Boards {
+					if !slices.Contains(boards, b) {
+						boards = append(boards, b)
+					}
+				}
+			}
 		}
 		data.Extra3 = query
-		results := db.SearchPosts(query)
+		results := db.SearchPosts(query, boards...)
 		data.Page = FormInt(r, "p")
 		data.Pages = pageCount(len(results), searchPageSize)
 		results = pageSlice(results, data.Page, searchPageSize)
