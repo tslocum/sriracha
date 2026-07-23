@@ -10,7 +10,7 @@ func TestTemplate(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = s.validateTemplates(s)
+	err = s.validateTemplates(s, false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -24,14 +24,14 @@ func BenchmarkTemplate(b *testing.B) {
 	}
 
 	// Warm caches.
-	err = s.validateTemplates(s)
+	err = s.validateTemplates(s, false)
 	if err != nil {
 		b.Fatal(err)
 	}
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		err = s.validateTemplates(s)
+		err = s.validateTemplates(s, false)
 		if err != nil {
 			b.Fatal(err)
 		}

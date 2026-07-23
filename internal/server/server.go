@@ -1005,7 +1005,7 @@ func (s *Server) _watchTemplates(officialDir string, watcher *fsnotify.Watcher) 
 				haveError = true
 				log.Printf("failed to parse template files: %s", err)
 			} else {
-				err = s.validateTemplates(nil)
+				err = s.validateTemplates(nil, false)
 				if err != nil {
 					haveError = true
 					log.Printf("failed to execute template files: %s", err)
@@ -2971,11 +2971,13 @@ func (s *Server) Run() error {
 	s.lock.Lock()
 
 	// Validate templates.
-	fmt.Println("Validating templates...")
-	err = s.validateTemplates(nil)
+	fmt.Print("Validating templates...")
+	err = s.validateTemplates(nil, true)
 	if err != nil {
+		fmt.Println()
 		return fmt.Errorf("failed to validate templates: %s", err)
 	}
+	fmt.Printf(" %d OK.\n", len(s.tpl.Templates()))
 
 	// Begin transaction.
 	db := s.begin()

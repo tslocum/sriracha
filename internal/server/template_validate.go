@@ -32,7 +32,7 @@ func newTestServer() (*Server, error) {
 	return s, nil
 }
 
-func (s *Server) _validateTemplates(db serverDB, allBoards []*Board, img *Board, forum *Board, testCases chan testCase, wg *sync.WaitGroup, errors chan error) {
+func (s *Server) _validateTemplates(db serverDB, allBoards []*Board, img *Board, forum *Board, testCases chan testCase, wg *sync.WaitGroup, errors chan error, verbose bool) {
 	wrapError := func(name string, err error) error {
 		var source string
 		if !slices.Contains(s.customTemplates, name) {
@@ -165,11 +165,14 @@ func (s *Server) _validateTemplates(db serverDB, allBoards []*Board, img *Board,
 			}
 		}
 		wg.Done()
+		if verbose {
+			fmt.Print(".")
+		}
 	}
 }
 
 // validateTemplates executes loaded templates using dummy data.
-func (s *Server) validateTemplates(ts *Server) error {
+func (s *Server) validateTemplates(ts *Server, verbose bool) error {
 	if ts == nil {
 		var err error
 		ts, err = newTestServer()
@@ -190,7 +193,7 @@ func (s *Server) validateTemplates(ts *Server) error {
 
 	numCPU := runtime.NumCPU()
 	for i := 0; i < numCPU; i++ {
-		go ts._validateTemplates(db, allBoards, img, forum, process, wg, errors)
+		go ts._validateTemplates(db, allBoards, img, forum, process, wg, errors, verbose)
 	}
 
 	wg.Add(len(testCases))
