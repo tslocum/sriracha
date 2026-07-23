@@ -223,9 +223,10 @@ type Server struct {
 
 	thresholdCache map[ThresholdEvent][]*Threshold
 
-	config *Config
-	dbPool *pgxpool.Pool
-	opt    ServerOptions
+	config    *Config
+	dbPool    *pgxpool.Pool
+	auditPool *pgxpool.Pool
+	opt       ServerOptions
 
 	importDatabases []*importInfo
 
@@ -1048,12 +1049,16 @@ func (s *Server) log(db serverDB, account *Account, board *Board, action string,
 	}
 	db.SetPlugin("")
 
-	db.AddLog(&Log{
+	l := &Log{
 		Account: account,
 		Board:   board,
 		Message: action,
 		Changes: info,
-	})
+	}
+	db.AddLog(l)
+	if s.auditPool != nil {
+		s.logAudit(l)
+	}
 }
 
 // refreshBannerCache refreshes the banner cache.
@@ -2729,6 +2734,14 @@ func (s *Server) Run() error {
 	s.dbPool, err = database.Connect(s.config)
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %s", err)
+	}
+
+	// Initialize audit database connection pool, which contains one connection.
+	if s.config.Audit != "" {
+		err = s.connectAudit()
+		if err != nil {
+			return fmt.Errorf("failed to connect to audit database: %s", err)
+		}
 	}
 
 	// Load server configuration and set default values.

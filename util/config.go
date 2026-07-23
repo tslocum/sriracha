@@ -36,6 +36,8 @@ type Config struct {
 	DBName   string // Database name.
 	DBURL    string // Database connection URL.
 
+	Audit string // Audit database connection URL.
+
 	MailAddress  string // SMTP server Address:Port.
 	MailTLS      bool   // Whether TLS is used to connect to the server.
 	MailInsecure bool   // Whether TLS certificate verification is skipped.

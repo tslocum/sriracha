@@ -511,6 +511,12 @@ dbname: "sriracha"
 #  post.move:       "mod"
 #  post.delete:     "mod"
 
+# Audit database connection URL. When configured, log entries are duplicated
+# to a secondary database. The audit database role must be forbidden from
+# executing all commands except SELECT and INSERT to prevent log tampering.
+# See https://pkg.go.dev/github.com/jackc/pgx/v5/pgconn#ParseConfig
+#audit: "postgresql://sriracha_audit:hunter2@localhost:5432/sriracha_audit"
+
 # Supported upload file types. Specify a file extension and a MIME type to
 # enable uploading files of that type. You may specify an image to use as the
 # thumbnail for all uploads of that type, or 'none' to not create a thumbnail.
