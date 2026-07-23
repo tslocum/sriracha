@@ -411,7 +411,7 @@ func (db *DB) SearchPosts(query string, board ...*Board) []int {
 		}
 		extra += ") AND "
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT id, ts_rank_cd(search, query) AS rank FROM post, websearch_to_tsquery($1) AS query WHERE "+extra+"query @@ search ORDER BY rank DESC", query)
+	rows, err := db.conn.Query(context.Background(), "SELECT id, ts_rank_cd(search, query) AS rank FROM post, websearch_to_tsquery($1) AS query WHERE "+extra+"query @@ search AND moderated > 0 ORDER BY rank DESC", query)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
