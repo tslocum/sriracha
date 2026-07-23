@@ -31,6 +31,11 @@ msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] "%d viesti pois jätetty. Napsauta Vastaa nähdäksesi."
 msgstr[1] "%d viestiä pois jätetty. Napsauta Vastaa nähdäksesi."
 
+msgid "%d previous ban"
+msgid_plural "%d previous bans"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d report"
 msgid_plural "%d reports"
 msgstr[0] ""
@@ -526,6 +531,9 @@ msgstr "Poistu"
 msgid "Expand"
 msgstr ""
 
+msgid "Expired"
+msgstr ""
+
 msgid "Expires"
 msgstr ""
 
@@ -632,6 +640,9 @@ msgid ""
 "IP address to ban. Wildcards (*) may be used to ban a range of addresses."
 msgstr ""
 
+msgid "Icon"
+msgstr ""
+
 msgid "Idenifiers"
 msgstr ""
 
@@ -707,6 +718,9 @@ msgid "Lift"
 msgstr ""
 
 msgid "Lift File Ban"
+msgstr ""
+
+msgid "Lifted"
 msgstr ""
 
 msgid "Link"
@@ -792,12 +806,13 @@ msgid "Max Threads"
 msgstr ""
 
 msgid ""
-"Maximum file size (in bytes) when creating a thread. Set to 0 to disable "
+"Maximum file size (in megabytes) when creating a thread. Set to 0 to disable "
 "file uploads."
 msgstr ""
 
 msgid ""
-"Maximum file size (in bytes) when replying. Set to 0 to disable file uploads."
+"Maximum file size (in megabytes) when replying. Set to 0 to disable file "
+"uploads."
 msgstr ""
 
 msgid "Maximum file size allowed is %s."
@@ -864,10 +879,10 @@ msgstr ""
 msgid "Min Thread File Size"
 msgstr ""
 
-msgid "Minimum file size (in bytes) when creating a thread."
+msgid "Minimum file size (in megabytes) when creating a thread."
 msgstr ""
 
-msgid "Minimum file size (in bytes) when replying."
+msgid "Minimum file size (in megabytes) when replying."
 msgstr ""
 
 msgid "Minimum length of the email field."
@@ -1466,6 +1481,9 @@ msgstr ""
 msgid "Update Settings"
 msgstr ""
 
+msgid "Upload a %[1]dx%[2]d %[3]s image."
+msgstr ""
+
 msgid "Uptime"
 msgstr ""
 
@@ -1575,6 +1593,11 @@ msgid "Whether visitors may create and submit drawings."
 msgstr ""
 
 msgid "Whether visitors may report posts."
+msgstr ""
+
+msgid ""
+"Whether visitors may search for posts. Only subjects and messages are "
+"searchable."
 msgstr ""
 
 msgid "Whether visitors must pass a CAPTCHA when posting."

@@ -82,6 +82,11 @@
             <td>{{T "Whether visitors must pass a CAPTCHA when posting."}}</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="search">{{T "Search"}}</label></td>
+            <td><input type="text" name="search" value="{{.Opt.Search}}"></input></td>
+            <td>{{T "Delay (in seconds) visitors must wait between searches. Only post subjects and messages are searchable. Set to 0 to disable searching."}}</td>
+        </tr>
+        <tr>
             <td class="postblock"><label for="refresh">{{T "Auto Refresh"}}</label></td>
             <td><input type="text" name="refresh" value="{{.Opt.Refresh}}"></input></td>
             <td>{{T "Seconds between automatic refreshes when viewing a thread. Set to 0 to disable."}}</td>

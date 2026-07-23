@@ -338,6 +338,9 @@ msgstr ""
 msgid "Delay (in seconds) visitors must wait before posting again. Set to 0 to disable."
 msgstr ""
 
+msgid "Delay (in seconds) visitors must wait between searches. Only post subjects and messages are searchable. Set to 0 to disable searching."
+msgstr ""
+
 msgid "Delete"
 msgstr ""
 

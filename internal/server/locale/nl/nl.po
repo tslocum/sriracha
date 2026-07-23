@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-07-19 03:13+0000\n"
+"PO-Revision-Date: 2026-07-23 19:06+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -30,6 +30,11 @@ msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] "%d bericht overgeslagen. Klik op beantwoorden om te bekijken."
 msgstr[1] "%d berichten overgeslagen. Klik op beantwoorden om te bekijken."
+
+msgid "%d previous ban"
+msgid_plural "%d previous bans"
+msgstr[0] "%d eerdere verbanning"
+msgstr[1] "%d eerdere verbanningen"
 
 msgid "%d report"
 msgid_plural "%d reports"
@@ -541,6 +546,9 @@ msgstr "Afsluiten"
 msgid "Expand"
 msgstr "Uitklappen"
 
+msgid "Expired"
+msgstr "Verlopen"
+
 msgid "Expires"
 msgstr "Vervalt op"
 
@@ -654,6 +662,9 @@ msgid ""
 msgstr ""
 "Het te verbannen IP-adres. Gebruik jokertekens (*) om reeksen te verbannen."
 
+msgid "Icon"
+msgstr "Pictogram"
+
 msgid "Idenifiers"
 msgstr "Identificaties"
 
@@ -736,6 +747,9 @@ msgstr "Opheffen"
 
 msgid "Lift File Ban"
 msgstr "Bestandsverbanning opheffen"
+
+msgid "Lifted"
+msgstr "Opgeheven"
 
 msgid "Link"
 msgstr "Link"
@@ -822,17 +836,18 @@ msgid "Max Threads"
 msgstr "Maximaal aantal onderwerpen"
 
 msgid ""
-"Maximum file size (in bytes) when creating a thread. Set to 0 to disable "
+"Maximum file size (in megabytes) when creating a thread. Set to 0 to disable "
 "file uploads."
 msgstr ""
-"De maximum bestandsgrootte (in bytes) bij het toevoegen van een onderwerp. "
-"Stel in op 0 om bestandsuploads uit te schakelen."
+"De maximale bestandsgrootte (in megabytes) bij het opstellen van een nieuw "
+"bericht. Stel in op 0 om uploads uit te schakelen."
 
 msgid ""
-"Maximum file size (in bytes) when replying. Set to 0 to disable file uploads."
+"Maximum file size (in megabytes) when replying. Set to 0 to disable file "
+"uploads."
 msgstr ""
-"De maximum bestandsgrootte (in bytes) bij het antwoorden. Stel in op 0 om "
-"bestandsuploads uit te schakelen."
+"De maximale bestandsgrootte (in megabytes) bij het beantwoorden. Stel in op "
+"0 om uploads uit te schakelen."
 
 msgid "Maximum file size allowed is %s."
 msgstr "De maximaal toegestane bestandsgrootte is %s."
@@ -904,13 +919,13 @@ msgstr "Minimale bestandsgrootte in antwoord"
 msgid "Min Thread File Size"
 msgstr "Minimale bestandsgrootte in onderwerp"
 
-msgid "Minimum file size (in bytes) when creating a thread."
+msgid "Minimum file size (in megabytes) when creating a thread."
 msgstr ""
-"De minimale bestandsgrootte (in bytes) bij het starten van een nieuw "
-"onderwerp."
+"De minimale bestandsgrootte (in megabytes) bij het opstellen van een nieuw "
+"bericht."
 
-msgid "Minimum file size (in bytes) when replying."
-msgstr "De minimale bestandsgrootte (in bytes) bij het beantwoorden."
+msgid "Minimum file size (in megabytes) when replying."
+msgstr "De minimale bestandsgrootte (in megabytes) bij het beantwoorden."
 
 msgid "Minimum length of the email field."
 msgstr "De minimumlengte van het e-mailveld."
@@ -1542,6 +1557,9 @@ msgstr "%s bijwerken"
 msgid "Update Settings"
 msgstr "Instellingen bijwerken"
 
+msgid "Upload a %[1]dx%[2]d %[3]s image."
+msgstr "Upload een afbeelding van %[1]dx%[2]d %[3]s."
+
 msgid "Uptime"
 msgstr "Uptime"
 
@@ -1667,6 +1685,11 @@ msgstr "Of bezoekers tekeningen mogen maken en indienen."
 msgid "Whether visitors may report posts."
 msgstr "Of bezoekers berichten mogen melden."
 
+msgid ""
+"Whether visitors may search for posts. Only subjects and messages are "
+"searchable."
+msgstr ""
+
 msgid "Whether visitors must pass a CAPTCHA when posting."
 msgstr ""
 "Of bezoekers een captcha moeten invullen voorafgaand aan het indienen van "
@@ -1696,6 +1719,28 @@ msgstr "en"
 
 msgid "in an individual board"
 msgstr "een individueel subforum"
+
+#~ msgid ""
+#~ "Maximum file size (in bytes) when creating a thread. Set to 0 to disable "
+#~ "file uploads."
+#~ msgstr ""
+#~ "De maximum bestandsgrootte (in bytes) bij het toevoegen van een "
+#~ "onderwerp. Stel in op 0 om bestandsuploads uit te schakelen."
+
+#~ msgid ""
+#~ "Maximum file size (in bytes) when replying. Set to 0 to disable file "
+#~ "uploads."
+#~ msgstr ""
+#~ "De maximum bestandsgrootte (in bytes) bij het antwoorden. Stel in op 0 om "
+#~ "bestandsuploads uit te schakelen."
+
+#~ msgid "Minimum file size (in bytes) when creating a thread."
+#~ msgstr ""
+#~ "De minimale bestandsgrootte (in bytes) bij het starten van een nieuw "
+#~ "onderwerp."
+
+#~ msgid "Minimum file size (in bytes) when replying."
+#~ msgstr "De minimale bestandsgrootte (in bytes) bij het beantwoorden."
 
 #~ msgid "Please wait %s before creating a new post."
 #~ msgstr "Wacht %s alvorens een nieuw bericht op te stellen."

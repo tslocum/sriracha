@@ -31,6 +31,11 @@ msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] "%d postim i fshehur. Kliko Pergjigju per ta pare."
 msgstr[1] "%d postime te fshehura. Kliko Pergjigju per ti pare."
 
+msgid "%d previous ban"
+msgid_plural "%d previous bans"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d report"
 msgid_plural "%d reports"
 msgstr[0] ""
@@ -536,6 +541,9 @@ msgstr "Dalje"
 msgid "Expand"
 msgstr ""
 
+msgid "Expired"
+msgstr ""
+
 msgid "Expires"
 msgstr "Skadon"
 
@@ -646,6 +654,9 @@ msgstr ""
 "Adresa IP qe do te ndalohet. Fusnotat (*) mund te perdoren per te ndaluar "
 "nje game adresash."
 
+msgid "Icon"
+msgstr ""
+
 msgid "Idenifiers"
 msgstr "Identifikuesit"
 
@@ -725,6 +736,9 @@ msgstr "Hiqe"
 
 msgid "Lift File Ban"
 msgstr "Hiq denimin e skedarit"
+
+msgid "Lifted"
+msgstr ""
 
 msgid "Link"
 msgstr ""
@@ -809,17 +823,14 @@ msgid "Max Threads"
 msgstr "Numri Maksimal i Temave"
 
 msgid ""
-"Maximum file size (in bytes) when creating a thread. Set to 0 to disable "
+"Maximum file size (in megabytes) when creating a thread. Set to 0 to disable "
 "file uploads."
 msgstr ""
-"Madhesia maksimale e skedarit (ne bytes) kur krijon nje teme. Vendos 0 per "
-"ta caktivizuar ngarkimin e skedareve."
 
 msgid ""
-"Maximum file size (in bytes) when replying. Set to 0 to disable file uploads."
+"Maximum file size (in megabytes) when replying. Set to 0 to disable file "
+"uploads."
 msgstr ""
-"Madhesia maksimale e skedarit (ne bytes) kur ben replike. Vendos 0 per ta "
-"caktivizuar ngarkimet e skedareve."
 
 msgid "Maximum file size allowed is %s."
 msgstr "Madhesia maksimale e lejuar e skedareve eshte %s."
@@ -890,11 +901,11 @@ msgstr "Madhesia Minimale e Skedarit ne Replike"
 msgid "Min Thread File Size"
 msgstr "Madhesia Minimale e Skedarit ne Teme"
 
-msgid "Minimum file size (in bytes) when creating a thread."
-msgstr "Madhesia minimale e skedarit (ne bytes) kur krijon nje teme."
+msgid "Minimum file size (in megabytes) when creating a thread."
+msgstr ""
 
-msgid "Minimum file size (in bytes) when replying."
-msgstr "Madhesia minimale e skedarit (ne bytes) kur krijon replike."
+msgid "Minimum file size (in megabytes) when replying."
+msgstr ""
 
 msgid "Minimum length of the email field."
 msgstr "Madhesia minimale e fushes se e-postes."
@@ -1515,6 +1526,9 @@ msgstr "Pergjitheso %s"
 msgid "Update Settings"
 msgstr "Pergjitheso Cilesimet"
 
+msgid "Upload a %[1]dx%[2]d %[3]s image."
+msgstr ""
+
 msgid "Uptime"
 msgstr "Kohezgjatja"
 
@@ -1637,6 +1651,11 @@ msgstr "Nese vizitoret mund te krijojne dhe te dorezojne vizatime."
 msgid "Whether visitors may report posts."
 msgstr "Nese vizitoret mund te raportojne postimet."
 
+msgid ""
+"Whether visitors may search for posts. Only subjects and messages are "
+"searchable."
+msgstr ""
+
 msgid "Whether visitors must pass a CAPTCHA when posting."
 msgstr "Nese vizitoret duhet te kalojne nje CAPTCHA kur postojne."
 
@@ -1662,6 +1681,26 @@ msgstr ""
 
 msgid "in an individual board"
 msgstr ""
+
+#~ msgid ""
+#~ "Maximum file size (in bytes) when creating a thread. Set to 0 to disable "
+#~ "file uploads."
+#~ msgstr ""
+#~ "Madhesia maksimale e skedarit (ne bytes) kur krijon nje teme. Vendos 0 "
+#~ "per ta caktivizuar ngarkimin e skedareve."
+
+#~ msgid ""
+#~ "Maximum file size (in bytes) when replying. Set to 0 to disable file "
+#~ "uploads."
+#~ msgstr ""
+#~ "Madhesia maksimale e skedarit (ne bytes) kur ben replike. Vendos 0 per ta "
+#~ "caktivizuar ngarkimet e skedareve."
+
+#~ msgid "Minimum file size (in bytes) when creating a thread."
+#~ msgstr "Madhesia minimale e skedarit (ne bytes) kur krijon nje teme."
+
+#~ msgid "Minimum file size (in bytes) when replying."
+#~ msgstr "Madhesia minimale e skedarit (ne bytes) kur krijon replike."
 
 #~ msgid "Please wait %s before creating a new post."
 #~ msgstr "Ju lutem prisni %s para se te krijoni nje postim te ri."

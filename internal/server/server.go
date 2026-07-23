@@ -74,6 +74,7 @@ const (
 	defaultServerSiteHome     = "/"
 	defaultServerOekakiWidth  = 540
 	defaultServerOekakiHeight = 540
+	defaultServerSearch       = 30
 	defaultServerRefresh      = 30
 )
 
@@ -172,6 +173,7 @@ type ServerOptions struct {
 	RootDir          string
 	IconWidth        int
 	IconHeight       int
+	Search           int
 	Global           []string
 	FuncMaps         map[string]template.FuncMap
 }
@@ -697,6 +699,12 @@ func (s *Server) loadServerConfig() error {
 	s.opt.BoardIndex = boardIndex == "" || boardIndex == "1"
 
 	s.opt.Statistics = db.GetBool("statistics")
+
+	if !db.HaveConfig("search") {
+		s.opt.Search = defaultServerSearch
+	} else {
+		s.opt.Search = db.GetInt("search")
+	}
 
 	s.opt.CAPTCHA = db.GetBool("captcha")
 
