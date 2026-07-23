@@ -126,7 +126,7 @@ func (db *DB) TrimThreads(board *Board) []*Post {
 	if board.MaxThreads == 0 {
 		return nil
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE post.board = $1 AND parent IS NULL AND moderated > 0 ORDER BY bumped DESC, id ASC OFFSET $2", board.ID, board.MaxThreads)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE post.board = $1 AND parent IS NULL AND moderated > 0 ORDER BY stickied DESC, bumped DESC, id ASC OFFSET $2", board.ID, board.MaxThreads)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
