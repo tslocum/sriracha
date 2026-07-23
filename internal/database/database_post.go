@@ -399,6 +399,41 @@ func (db *DB) LastPostByBoard(board *Board) *Post {
 	return p
 }
 
+func (db *DB) SearchPosts(query string, board ...*Board) []int {
+	var extra string
+	if len(board) > 0 && board[0] != nil {
+		extra = "board IN ("
+		for i, b := range board {
+			if i != 0 {
+				extra += ","
+			}
+			extra += strconv.Itoa(b.ID)
+		}
+		extra += ") AND "
+	}
+	rows, err := db.conn.Query(context.Background(), "SELECT id, ts_rank_cd(search, query) AS rank FROM post, websearch_to_tsquery($1) AS query WHERE "+extra+"query @@ search ORDER BY rank DESC", query)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil
+		}
+		dbErr(fmt.Errorf("failed to search posts: %w", err))
+	}
+	var postIDs []int
+	for rows.Next() {
+		var postID int
+		var rank float64
+		err = rows.Scan(&postID, &rank)
+		if err != nil {
+			dbErr(fmt.Errorf("failed to scan post: %w", err))
+		}
+		postIDs = append(postIDs, postID)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to search posts: %w", rows.Err()))
+	}
+	return postIDs
+}
+
 func (db *DB) NumPosts(filterBoard *Board, since int64) int {
 	var extraWhere string
 	if filterBoard != nil {

@@ -58,6 +58,9 @@
 			{{if and (ne .Board nil) (eq .Board.Type 0)}}
 				[<a href="{{.Board.Path}}catalog.html" style="text-decoration: underline;">{{T "Catalog"}}</a>] &middot;
 			{{end}}
+			{{if and (ne .Template "search") (or (ne .Opt.Search 0) (ne .Account nil))}}
+				[<a href="/sriracha/search" style="text-decoration: underline;">{{T "Search"}}</a>]
+			{{end}}
 			{{if ne .Opt.News 0}}
 				{{if and (eq .Template "news") (eq .Opt.News 1)}}
 					[<a href="/" style="text-decoration: underline;">{{T "Home"}}</a>]
@@ -88,7 +91,7 @@
 			{{$bannerType = -3}}
 		{{end}}
 		{{$banner := Banner (index .Opt.Banners $bannerType)}}
-		<div class="logo">{{if ne $banner nil}}<img src="/banner/{{$banner.Name}}" width="{{$banner.Width}}" height="{{$banner.Height}}" alt="Banner"><br>{{end}}{{if ne .Board nil}}{{.Board.Name}}{{else}}{{.Opt.SiteName}}{{end}}{{template "extra_logo.gohtml" .}}</div>
+		<div class="logo">{{if ne $banner nil}}<img src="/banner/{{$banner.Name}}" width="{{$banner.Width}}" height="{{$banner.Height}}" alt="Banner"><br>{{end}}{{if ne .Board nil}}{{.Board.Name}}{{else if eq .Template "search"}}{{T "Search"}}{{else}}{{.Opt.SiteName}}{{end}}{{template "extra_logo.gohtml" .}}</div>
 		{{if .ReplyMode}}
 			<span class="threadui">
 				{{if .Preview}}

@@ -409,6 +409,7 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	f["PostsByFileHash"] = func(hash string, filterBoard *Board) []*Post { return s.tplDB.PostsByFileHash(hash, filterBoard) }
 	f["PostByField"] = func(board *Board, field string, value any) *Post { return s.tplDB.PostByField(board, field, value) }
 	f["LastPostByIP"] = func(board *Board, ip string) *Post { return s.tplDB.LastPostByIP(board, ip) }
+	f["SearchPosts"] = func(query string, board ...*Board) []int { return s.tplDB.SearchPosts(query, board...) }
 	f["ReplyCount"] = func(threadID int) int { return s.tplDB.ReplyCount(threadID) }
 
 	// Report.

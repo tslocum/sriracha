@@ -3,6 +3,7 @@
 - Support adding category overboards
 - Support configuring available stylesheets
 - Support logging to secondary audit database
+- Support searching for posts by subject and message
 
 1.8.7:
 - Fix adding new accounts

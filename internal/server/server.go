@@ -248,6 +248,8 @@ type Server struct {
 
 	statsCache *ServerStats
 
+	lastSearch map[string]int64
+
 	modQueueSize int
 
 	rebuildQueue     chan *rebuildInfo
@@ -286,6 +288,7 @@ func NewServer() *Server {
 		},
 		shutdownNotifications: make(chan struct{}),
 		indexCache:            make(map[int][][]int),
+		lastSearch:            make(map[string]int64),
 		modQueueSize:          -1,
 		rebuildQueue:          make(chan *rebuildInfo),
 		httpClient:            httpClient,
@@ -2440,6 +2443,10 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		action = "subscribe"
 	}
 
+	if strings.HasPrefix(r.URL.Path, "/sriracha/search") {
+		action = "search"
+	}
+
 	var unlocked bool
 	if s.config.ImportMode && action != "" {
 		data := s.buildData(db, w, r)
@@ -2456,6 +2463,8 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 			s.serveCAPTCHA(db, w, r)
 		case "subscribe":
 			s.serveSubscribe(db, w, r)
+		case "search":
+			s.serveSearch(db, w, r)
 		default:
 			s.serveManage(db, w, r)
 		}
