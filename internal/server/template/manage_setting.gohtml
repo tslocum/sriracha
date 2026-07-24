@@ -100,8 +100,8 @@
             <td class="postblock"><label for="icon">{{T "Icon"}}</label></td>
             <td>
                 {{if ne .Opt.IconWidth 0}}
-                    <img src="/banner/icon.png" width="{{.Opt.IconWidth}}" height="{{.Opt.IconHeight}}">
-                    <label><input type="checkbox" name="deleteicon" value="1"> {{T "Delete"}}</label><br><br>
+                    <a href="/banner/icon.png" target="_blank"><img src="/banner/icon.png" border="0" style="max-width: 128px;height: auto;"></a>
+                    <label style="vertical-align: top;"><input type="checkbox" name="deleteicon" value="1"> {{T "Delete"}}</label><br>
                 {{end}}
                 <input type="file" name="icon">
             </td>
