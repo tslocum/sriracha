@@ -212,7 +212,7 @@ type twoFactorSession struct {
 	validated bool
 }
 
-const entriesPerPage = 25
+const entriesPerPage = 10
 
 // Server is the Sriracha imageboard and forum server.
 type Server struct {
