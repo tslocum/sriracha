@@ -221,6 +221,10 @@ func (s *Server) serveBanner(data *templateData, db serverDB, w http.ResponseWri
 			return
 		}
 		data.Manage.Banner = db.BannerByID(bannerID)
+		if data.Manage.Banner == nil {
+			data.ManageError("Invalid banner.")
+			return
+		}
 
 		if data.Manage.Banner != nil && r.Method == http.MethodPost {
 			oldName := data.Manage.Banner.Name

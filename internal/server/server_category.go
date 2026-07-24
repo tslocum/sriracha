@@ -278,6 +278,10 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 			return
 		}
 		data.Manage.Category = db.CategoryByID(categoryID)
+		if data.Manage.Category == nil {
+			data.ManageError("Invalid category.")
+			return
+		}
 
 		if data.Manage.Category != nil && r.Method == http.MethodPost {
 			oldCategory := *data.Manage.Category

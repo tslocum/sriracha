@@ -160,6 +160,10 @@ func (s *Server) serveKeyword(data *templateData, db serverDB, w http.ResponseWr
 			return
 		}
 		data.Manage.Keyword = db.KeywordByID(keywordID)
+		if data.Manage.Keyword == nil {
+			data.ManageError("Invalid keyword.")
+			return
+		}
 
 		if data.Manage.Keyword != nil && r.Method == http.MethodPost {
 			oldKeyword := *data.Manage.Keyword

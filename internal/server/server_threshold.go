@@ -78,6 +78,10 @@ func (s *Server) serveThreshold(data *templateData, db serverDB, w http.Response
 	thresholdID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/threshold/"))
 	if err == nil && thresholdID > 0 {
 		data.Manage.Threshold = db.ThresholdByID(thresholdID)
+		if data.Manage.Threshold == nil {
+			data.ManageError("Invalid threshold.")
+			return
+		}
 
 		if data.Manage.Threshold != nil && r.Method == http.MethodPost {
 			oldThreshold := *data.Manage.Threshold

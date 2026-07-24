@@ -64,6 +64,10 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 	newsID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/sriracha/news/"))
 	if err == nil && newsID > 0 {
 		data.Manage.News = db.NewsByID(newsID)
+		if data.Manage.News == nil {
+			data.ManageError("Invalid news item.")
+			return
+		}
 
 		if data.Manage.News != nil && r.Method == http.MethodPost {
 			if !data.Manage.News.MayUpdate(data.Account) {
