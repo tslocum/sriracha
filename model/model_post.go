@@ -15,13 +15,25 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 
-	"github.com/PuerkitoBio/goquery"
-
 	. "codeberg.org/tslocum/sriracha/util"
+	"github.com/PuerkitoBio/goquery"
 )
+
+// audioMIME is a regular expression of an audio MIME type.
+var audioMIME = regexp.MustCompile(`^audio/.*`)
+
+// videoMIME is a regular expression of a video MIME type.
+var videoMIME = regexp.MustCompile(`^video/.*`)
+
+// imageMIME is a regular expression of an image MIME type.
+var imageMIME = regexp.MustCompile(`^image/.*`)
+
+// notExpandable is a regular expression of MIME types which lack wide support for inline playback.
+var notExpandable = regexp.MustCompile(`^((audio/midi)|(video/(mpeg|ogg|x-matroska|x-msvideo)))$`)
 
 type PostModerated int
 
@@ -341,9 +353,8 @@ func (p *Post) ExpandHTML() string {
 	}
 	srcPath := fmt.Sprintf("%ssrc/%s", p.Board.Path(), p.File)
 
-	isAudio := strings.HasPrefix(p.FileMIME, "audio/") && p.FileMIME != "audio/midi"
-	isVideo := strings.HasPrefix(p.FileMIME, "video/") && p.FileMIME != "video/mpeg" && p.FileMIME != "video/ogg" && p.FileMIME != "video/x-matroska" && p.FileMIME != "video/x-msvideo"
-	if isAudio || isVideo {
+	isAudio, isVideo := audioMIME.MatchString(p.FileMIME), videoMIME.MatchString(p.FileMIME)
+	if (isAudio || isVideo) && !notExpandable.MatchString(p.FileMIME) {
 		element := "audio"
 		loop := ""
 		if isVideo {
@@ -354,7 +365,7 @@ func (p *Post) ExpandHTML() string {
 		return fmt.Sprintf(expandFormat, element, p.FileWidth, p.FileHeight, loop, srcPath, element)
 	}
 
-	isImage := strings.HasPrefix(p.FileMIME, "image/")
+	isImage := imageMIME.MatchString(p.FileMIME)
 	if !isImage {
 		return ""
 	}
