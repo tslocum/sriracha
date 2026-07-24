@@ -3229,6 +3229,8 @@ func FormatValue(v interface{}) interface{} {
 		return FormatBoardIdentifiers(t)
 	} else if t, ok := v.(BoardRequire); ok {
 		return FormatBoardRequire(t)
+	} else if t, ok := v.(ThresholdEvent); ok {
+		return FormatThresholdEvent(t)
 	}
 	return v
 }

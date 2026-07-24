@@ -17,6 +17,19 @@ const (
 	EventReport ThresholdEvent = 2
 )
 
+func FormatThresholdEvent(e ThresholdEvent) string {
+	switch e {
+	case EventPost:
+		return "Post"
+	case EventThread:
+		return "Thread"
+	case EventReport:
+		return "Report"
+	default:
+		return "Unknown"
+	}
+}
+
 type Threshold struct {
 	ID       int
 	Everyone bool
