@@ -427,6 +427,9 @@ saltpass: "CHANGEME_Random_Data_Here_2"
 # Long random string of text used when generating secure tripcodes. Must not change once set.
 salttrip: "CHANGEME_Random_Data_Here_3"
 
+# Long random string of text used when generating identifiers. Must not change once set.
+saltident: "CHANGEME_Random_Data_Here_4"
+
 # Hostname:Port to connect to the database.
 address: "localhost:5432"
 

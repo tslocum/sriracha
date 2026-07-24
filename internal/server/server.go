@@ -44,6 +44,7 @@ import (
 	"codeberg.org/tslocum/gotext"
 	"codeberg.org/tslocum/sriracha"
 	"codeberg.org/tslocum/sriracha/internal/database"
+	"codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/fsnotify/fsnotify"
@@ -2788,6 +2789,9 @@ func (s *Server) Run() error {
 	s.opt.Identifiers = s.config.Identifiers
 	s.opt.Locale = s.config.Locale
 	s.opt.RootDir = s.config.Root
+	if s.config.SaltIdent != "" {
+		model.CRCSalt = []byte(s.config.SaltIdent)
+	}
 
 	// Parse locale files.
 	gotext.SetDomain(Domain(s.opt.Locale))
@@ -3073,6 +3077,9 @@ func (s *Server) Run() error {
 		extra = " and https://" + s.config.HTTPS
 	}
 	fmt.Printf("Serving http://%s%s\n", s.config.HTTP, extra)
+	if s.config.Identifiers && s.config.SaltIdent == "" {
+		fmt.Println("Warning: Configuring an identifier generation salt is strongly recommended! Set saltident to a long string of random data which, once set, never changes.")
+	}
 	s.lock.Unlock()
 
 	// Setup plugin cron handlers.

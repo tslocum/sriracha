@@ -381,12 +381,13 @@ func (p *Post) Identifier(identifiers bool, force bool) string {
 	if p.Board.Identifiers == IdentifiersBoard {
 		crcHash.Write([]byte(strconv.Itoa(p.Board.ID)))
 	}
+	crcHash.Write(CRCSalt)
 	crcHash.Write([]byte(p.IP))
 
 	crcSum = crcHash.Sum(crcSum[:0])
 
 	base64.RawURLEncoding.Encode(crcBuf, crcSum)
-	return string(crcBuf[:5])
+	return string(crcBuf[1:5])
 }
 
 func (p *Post) Mentions() []int {

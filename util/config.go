@@ -25,10 +25,11 @@ type Config struct {
 	HTTPSKey           string // Path to HTTPS certificate private key file.
 	InsecureSkipVerify bool   // Whether HTTPS certificate verification is skipped.
 
-	Algorithm string // Hash algorithm. Supported algorithms are sha-2 and sha-3.
+	Algorithm string // Hash algorithm used to generate sensitive one-way hashes. Supported algorithms are sha-2 and sha-3.
 	SaltData  string // Long random string of text used when one-way hashing data. Must not change once set.
 	SaltPass  string // Long random string of text used when two-way hashing data. Must not change once set.
 	SaltTrip  string // Long random string of text used when generating secure tripcodes. Must not change once set.
+	SaltIdent string // Long random string of text used when generating identifiers. Must not change once set.
 
 	Address  string // Address:Port to connect to the database.
 	Username string // Database username.

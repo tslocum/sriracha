@@ -12,6 +12,7 @@ var (
 	crcHash = crc32.NewIEEE()
 	crcBuf  = make([]byte, 8)
 	crcSum  []byte
+	CRCSalt []byte
 )
 
 // AllActions is a list of all automated moderation actions.
