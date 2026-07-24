@@ -2672,7 +2672,7 @@ func (s *Server) _handleSignal(signals chan os.Signal) {
 					log.Fatalf("failed to load HTTPS certificate %s and key %s: %s", s.config.HTTPSCert, s.config.HTTPSKey, err)
 				}
 				s.httpsCert = &cert
-				fmt.Printf("HTTPS certificate files reloaded.\n")
+				fmt.Printf("Reloaded HTTPS certificate and private key files.\n")
 			}
 
 			var extra string

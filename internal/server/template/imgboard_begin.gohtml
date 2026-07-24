@@ -61,15 +61,15 @@
 			{{if and (ne .Template "search") (or (ne .Opt.Search 0) (ne .Account nil))}}
 				[<a href="/sriracha/search" style="text-decoration: underline;">{{T "Search"}}</a>]
 			{{end}}
-			{{if ne .Opt.News 0}}
-				{{if and (eq .Template "news") (eq .Opt.News 1)}}
-					[<a href="/" style="text-decoration: underline;">{{T "Home"}}</a>]
-				{{else}}
-					[<a href="/{{if eq .Opt.News 1}}news.html{{end}}" style="text-decoration: underline;">{{T "News"}}</a>]
-				{{end}}
+			{{if and (ne .Template "news") (gt .Opt.News 0)}}
+				[<a href="/{{if eq .Opt.News 1}}news.html{{end}}" style="text-decoration: underline;">{{T "News"}}</a>]
 			{{end}}
-			{{if and (ne .Template "index") (ne .Template "news")}}
-				[<a href="/sriracha/" style="text-decoration: underline;">{{T "Manage"}}</a>]
+			{{if ne .Template "index"}}
+				{{if and (ne .Template "news") (ne .Template "search")}}
+					[<a href="/sriracha/" style="text-decoration: underline;">{{T "Manage"}}</a>]
+				{{else if or .Opt.SiteIndex (eq .Opt.News 2)}}
+					[<a href="/" style="text-decoration: underline;">{{T "Home"}}</a>]
+				{{end}}
 			{{end}}
 			<select id="switchStyle">
 				<option value="">{{T "Style"}}</option>
