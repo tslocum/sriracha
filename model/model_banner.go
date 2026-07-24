@@ -23,6 +23,8 @@ func (b *Banner) Validate() error {
 	switch {
 	case strings.TrimSpace(b.Name) == "" || !FilePathPattern.MatchString(b.Name) || strings.HasPrefix(b.Name, "."):
 		return fmt.Errorf("invalid banner name: %s", b.Name)
+	case strings.TrimSpace(b.Name) == "icon.png":
+		return fmt.Errorf("invalid banner name: icon.png is reserved for the site icon")
 	case b.Width <= 0:
 		return fmt.Errorf("invalid width")
 	case b.Height <= 0:
