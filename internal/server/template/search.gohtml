@@ -3,8 +3,11 @@
 <br>
 <div style="text-align: center;">
     <form method="get" action="/sriracha/search">
-        <input type="text" name="q" value="{{.Extra3}}" size="50" placeholder="{{T "Query"}}"> <input type="submit" value="{{T "Search"}}">
+        <input type="text" id="searchquery" name="q" value="{{.Extra3}}" size="50" placeholder="{{T "Query"}}"> <input type="submit" value="{{T "Search"}}">
     </form>
+    <script type="text/javascript">
+    document.getElementById("searchquery").focus();
+    </script>
 </div><br>
 <hr>
 {{.Message}}
