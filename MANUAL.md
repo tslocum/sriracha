@@ -614,6 +614,8 @@ directory. Plugin API documentation is available via [godoc](https://pkg.go.dev/
 
 ### Using plugins
 
+#### Native
+
 To build a plugin, run the following commands:
 
 ```bash
@@ -631,6 +633,43 @@ sriracha --config=/path/to/config.yml /path/to/fortune.so
 
 Multiple plugin paths may be provided. When a directory is provided, all plugins
 in the directory are loaded.
+
+#### Docker
+
+To use custom Sriracha plugins inside a container using Docker, you will need to build
+and use your own Sriracha container image.
+
+Download the the latest official Sriracha release source code by clicking
+'Source code' on the [Releases](https://codeberg.org/tslocum/sriracha/releases) page.
+
+After extracting the source code, open a terminal and change directories to
+the extracted Sriracha source code and run the following command:
+
+```
+mkdir customplugin
+```
+
+Then create a sub-directory within `customplugin` for each custom pugin.
+
+To build a Sriracha container image including all custom plugins, run the
+following command after replacing 1.0.0 with the downloaded version:
+
+```
+sudo docker build -t sriracha --build-arg version=1.0.0 .
+```
+
+Once complete, instead of starting a container using `tslocum/sriracha`
+(downloaded from Docker Hub), use the locally built image `sriracha`.
+
+Sriracha will not load any custom plugins by default. You will need to provide
+a custom plugin file or directory path when starting the server.
+
+For example, to load all custom plugins included in an image, provide the
+following directory when starting Sriracha:
+
+```
+sriracha /usr/share/sriracha/customplugin
+```
 
 ### Plugin compatibility
 
