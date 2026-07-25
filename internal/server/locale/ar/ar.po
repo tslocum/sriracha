@@ -385,6 +385,11 @@ msgid ""
 "disable."
 msgstr ""
 
+msgid ""
+"Delay (in seconds) visitors must wait between searches. Only post subjects "
+"and messages are searchable. Set to 0 to disable searching."
+msgstr ""
+
 msgid "Delete"
 msgstr ""
 
@@ -1031,6 +1036,9 @@ msgstr ""
 msgid "No configuration options."
 msgstr ""
 
+msgid "No matching posts were found."
+msgstr ""
+
 msgid "No news is good news."
 msgstr ""
 
@@ -1192,6 +1200,9 @@ msgstr ""
 msgid "Please wait %s before reporting a post."
 msgstr ""
 
+msgid "Please wait %s before searching again."
+msgstr ""
+
 msgid "Plugins"
 msgstr ""
 
@@ -1235,6 +1246,9 @@ msgid "Preview"
 msgstr ""
 
 msgid "Previous"
+msgstr ""
+
+msgid "Query"
 msgstr ""
 
 msgid "Quote"
@@ -1657,11 +1671,6 @@ msgid "Whether visitors may create and submit drawings."
 msgstr ""
 
 msgid "Whether visitors may report posts."
-msgstr ""
-
-msgid ""
-"Whether visitors may search for posts. Only subjects and messages are "
-"searchable."
 msgstr ""
 
 msgid "Whether visitors must pass a CAPTCHA when posting."

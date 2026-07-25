@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-07-23 19:06+0000\n"
+"PO-Revision-Date: 2026-07-24 16:52+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -358,6 +358,13 @@ msgid ""
 msgstr ""
 "De wachttijd (in seconden) voordat bezoekers opnieuw iets mogen plaatsen. "
 "Stel in op 0 om uit te schakelen."
+
+msgid ""
+"Delay (in seconds) visitors must wait between searches. Only post subjects "
+"and messages are searchable. Set to 0 to disable searching."
+msgstr ""
+"De vertraging (in seconden) tussen zoekopdrachten. Alleen onderwerpen en "
+"berichtinhoud zijn doorzoekbaar. Stel in op 0 om zoeken uit te schakelen."
 
 msgid "Delete"
 msgstr "Verwijderen"
@@ -1021,6 +1028,9 @@ msgstr "Er is geen forum gekozen."
 msgid "No configuration options."
 msgstr "Er zijn geen instellingen beschikbaar."
 
+msgid "No matching posts were found."
+msgstr "Er zijn geen zoekresultaten."
+
 msgid "No news is good news."
 msgstr "Geen bericht is goed bericht."
 
@@ -1193,6 +1203,9 @@ msgstr "Wacht %[1]s voordat je een nieuw %[2]s maakt."
 msgid "Please wait %s before reporting a post."
 msgstr "Wacht %s voordat je een bericht meldt."
 
+msgid "Please wait %s before searching again."
+msgstr "Wacht %s voordat je een nieuwe poging waagt."
+
 msgid "Plugins"
 msgstr "Plug-ins"
 
@@ -1240,6 +1253,9 @@ msgstr "Voorvertonen"
 
 msgid "Previous"
 msgstr "Vorige"
+
+msgid "Query"
+msgstr "Zoekopdracht"
 
 msgid "Quote"
 msgstr "Citeren"
@@ -1684,11 +1700,6 @@ msgstr "Of bezoekers tekeningen mogen maken en indienen."
 
 msgid "Whether visitors may report posts."
 msgstr "Of bezoekers berichten mogen melden."
-
-msgid ""
-"Whether visitors may search for posts. Only subjects and messages are "
-"searchable."
-msgstr ""
 
 msgid "Whether visitors must pass a CAPTCHA when posting."
 msgstr ""
