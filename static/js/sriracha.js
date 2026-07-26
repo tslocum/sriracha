@@ -497,6 +497,10 @@ function previewPost(el) {
                     postCache['fetched' + threadID] = true;
                     post = postCache[postID];
                     if (post && post.innerHTML) {
+                        // Verify loading message is still visible. If it was hidden, the reflink is no longer being previewed.
+                        if (document.getElementById('ref' + postID) === null) {
+                            return;
+                        }
                         // Preview fetched post.
                         closePostPreview();
                         previewPost(el);
