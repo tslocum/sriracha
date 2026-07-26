@@ -20,6 +20,9 @@
 			</script>
 		{{end}}
 		<script src="/static/js/sriracha.js"></script>
+		<script type="text/javascript">
+		loadStyle();
+		</script>
 		{{if and (ne .ReplyMode 0) (and (ne .Board nil) .Board.Gallery)}}
 			<script src="/static/js/fslightbox/fslightbox.js"></script>
 		{{end}}

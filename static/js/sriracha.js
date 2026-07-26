@@ -710,6 +710,13 @@ function setStyle(style) {
     stylesheet.href = '/static/css/' + styleName + '.css';
 }
 
+function loadStyle() {
+    var style = getCookie("sriracha_style");
+    if (style) {
+        setStyle(style);
+    }
+}
+
 function formatFileSize(size) {
     var i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1000));
     return +((size / Math.pow(1000, i)).toFixed(2)) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i];
@@ -820,12 +827,6 @@ function onSubmit(e) {
 }
 
 function onDOMContentLoaded(e) {
-    // Apply style.
-    var style = getCookie("sriracha_style");
-    if (style) {
-        setStyle(style);
-    }
-
     // Parse thread ID.
     var result = window.location.pathname.match(/.*\/res\/([0-9]+)\.html$/);
     if (result && result.length == 2) {
