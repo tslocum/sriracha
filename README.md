@@ -63,6 +63,6 @@ If you modify the source code of this application, you must share the full
 source code of your changes publicly for free. You may, however, link with this
 application using proprietary shared libraries, so long as the base application
 (Sriracha) remains unmodified. If your only changes are to create proprietary
-shared libraries, and these librarires would work with other installations of
+shared libraries, and these libraries would work with other installations of
 Sriracha because you did not make any modifications to Sriracha's source code,
 then you do not need to release the source code of your shared libraries.

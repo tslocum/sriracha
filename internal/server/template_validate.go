@@ -164,10 +164,10 @@ func (s *Server) _validateTemplates(db serverDB, allBoards []*Board, img *Board,
 				break
 			}
 		}
-		wg.Done()
 		if verbose {
 			fmt.Print(".")
 		}
+		wg.Done()
 	}
 }
 
