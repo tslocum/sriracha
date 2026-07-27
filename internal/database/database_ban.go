@@ -102,9 +102,9 @@ func (db *DB) UpdateBan(b *Ban) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE ban SET expire = $1, reason = $2, liftedtimestamp = $3, liftedreason = $4 WHERE id = $5",
 		b.Expire,
 		b.Reason,
-		b.ID,
 		b.LiftedTimestamp,
 		b.LiftedReason,
+		b.ID,
 	)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to update ban: %w", err))

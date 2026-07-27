@@ -177,6 +177,7 @@ type ServerOptions struct {
 	Search           int
 	Global           []string
 	FuncMaps         map[string]template.FuncMap
+	smokeTest        bool
 }
 
 // DefaultLocaleName returns the name of the configured default locale.
@@ -2744,6 +2745,7 @@ func (s *Server) Run() error {
 		devMode        bool
 		rebuild        bool
 		recoverAccount string
+		smokeTest      bool
 		debugAddress   string
 		printVersion   bool
 	)
@@ -2754,9 +2756,13 @@ func (s *Server) Run() error {
 	flag.BoolVar(&devMode, "dev", false, "run in development mode (watch official and custom template files for changes)")
 	flag.BoolVar(&rebuild, "rebuild", false, "rebuild static files on startup")
 	flag.StringVar(&recoverAccount, "recover", "", "update account password and remove all 2FA devices")
+	flag.BoolVar(&smokeTest, "test", false, "run smoke test and exit (configured database and root directory must be empty)")
 	flag.StringVar(&debugAddress, "debug", "", "address to serve pprof debug information on (DANGEROUS! Debug information includes hashes, passwords and other sensitive data)")
 	flag.BoolVar(&printVersion, "version", false, "print version information and exit")
 	flag.Parse()
+	if smokeTest {
+		devMode = true
+	}
 
 	// Print version information and exit.
 	if printVersion {
@@ -2791,6 +2797,20 @@ func (s *Server) Run() error {
 	s.opt.RootDir = s.config.Root
 	if s.config.SaltIdent != "" {
 		model.CRCSalt = []byte(s.config.SaltIdent)
+	}
+
+	var emptyRootDir bool
+	if smokeTest {
+		f, err := os.Open(s.config.Root)
+		if err != nil {
+			log.Fatalf("failed to open root directory %s: %s", s.config.Root, err)
+		}
+		entries, err := f.ReadDir(1)
+		if err != nil && err != io.EOF {
+			log.Fatalf("failed to read root directory %s: %s", s.config.Root, err)
+		}
+		emptyRootDir = len(entries) == 0
+		f.Close()
 	}
 
 	// Parse locale files.
@@ -2830,6 +2850,7 @@ func (s *Server) Run() error {
 	if err != nil {
 		return fmt.Errorf("failed to set default server configuration: %s", err)
 	}
+	s.opt.smokeTest = smokeTest
 
 	// Recover account.
 	if recoverAccount != "" {
@@ -3087,6 +3108,10 @@ func (s *Server) Run() error {
 		go s.handleCron(info)
 	}
 
+	if smokeTest {
+		go s.smokeTest(emptyRootDir)
+	}
+
 	// Wait until the HTTP server returns an error.
 	err = <-httpErrors
 
@@ -3183,7 +3208,9 @@ func (s *Server) imageDimensions(reader io.Reader) (int, int) {
 
 // Stop shuts down the server gracefully.
 func (s *Server) Stop() {
-	fmt.Println("Shutting down...")
+	if !s.opt.smokeTest {
+		fmt.Println("Shutting down...")
+	}
 
 	// Stop serving new web requests.
 	if s.httpsServer != nil {
