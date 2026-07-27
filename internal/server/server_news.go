@@ -18,7 +18,7 @@ func (s *Server) loadNewsForm(db serverDB, r *http.Request, n *News, a *Account)
 	if ts == "" {
 		n.Timestamp = 0
 	} else {
-		timestamp, err := time.ParseInLocation("2006/01/02 15:04", ts, time.Local)
+		timestamp, err := time.ParseInLocation("2006/01/02 15:04", strings.ReplaceAll(ts, "-", "/"), time.Local)
 		if err != nil {
 			return fmt.Errorf("failed to parse publish date and time (format: YYYY/MM/DD HH:MM)")
 		}

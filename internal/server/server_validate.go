@@ -49,12 +49,16 @@ func (s *Server) smokeTest(emptyDir bool) {
 			break
 		}
 	}
-	db.Commit()
 	if foundLog || foundThread {
 		fatal(fmt.Errorf("an empty database is required"))
 	} else if !emptyDir {
 		fatal(fmt.Errorf("an empty root directory is required"))
 	}
+
+	// Enable writing news to news.html
+	s.opt.News = NewsWriteToNews
+	db.SaveInt("news", int(s.opt.News))
+	db.Commit()
 
 	jar, err := cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
 	if err != nil {
@@ -77,7 +81,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 	getRequest := func(p string) ([]byte, error) {
 		fmt.Printf("GET  %s\n", u+p)
 		wrapErr := func(err error) error {
-			return fmt.Errorf("failed to GET %s: %s", u, err)
+			return fmt.Errorf("failed to GET %s: %s", u+p, err)
 		}
 		resp, err := client.Get(u + p)
 		if err != nil {
@@ -90,6 +94,8 @@ func (s *Server) smokeTest(emptyDir bool) {
 			return nil, wrapErr(fmt.Errorf("failed to read response body: %s", err))
 		} else if len(buf) == 0 {
 			return nil, wrapErr(fmt.Errorf("got empty response body"))
+		} else if bytes.Contains(buf, []byte("Error:")) || bytes.Contains(buf, []byte("error:")) {
+			return nil, wrapErr(fmt.Errorf("found error in page: %s", string(buf)))
 		}
 		return buf, nil
 	}
@@ -97,7 +103,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 	postRequest := func(p string, data url.Values) error {
 		fmt.Printf("POST %s %+v\n", u+p, data)
 		wrapErr := func(err error) error {
-			return fmt.Errorf("failed to POST %s %+v: %s", u, data, err)
+			return fmt.Errorf("failed to POST %s %+v: %s", u+p, data, err)
 		}
 		resp, err := client.PostForm(u+p, data)
 		if err != nil {
@@ -110,6 +116,8 @@ func (s *Server) smokeTest(emptyDir bool) {
 			return wrapErr(fmt.Errorf("failed to read response body: %s", err))
 		} else if len(buf) == 0 {
 			return wrapErr(fmt.Errorf("got empty response body"))
+		} else if bytes.Contains(buf, []byte("Error:")) || bytes.Contains(buf, []byte("error:")) {
+			return wrapErr(fmt.Errorf("found error in page: %s", string(buf)))
 		}
 		return nil
 	}
@@ -141,8 +149,8 @@ func (s *Server) smokeTest(emptyDir bool) {
 		"username": {"admin"},
 		"password": {"wrong"},
 	})
-	if err != nil {
-		fatal(err)
+	if err == nil {
+		fatal(fmt.Errorf("logged in with wrong username and password"))
 	}
 	pageURL, err := url.Parse(u)
 	if err != nil {
@@ -436,10 +444,89 @@ func (s *Server) smokeTest(emptyDir bool) {
 		}
 
 		buf, err = getRequest(fmt.Sprintf("keyword/%d", i+1))
+		if err == nil {
+			fatal(fmt.Errorf("failed to delete keyword: update page is still accessible"))
+		}
+	}
+
+	// Verify News page.
+	for i := 0; i < 3; i++ {
+		timestamp := "2026/01/01 00:00"
+		name := fmt.Sprintf("name%d", i)
+		subject := fmt.Sprintf("subject%d", i)
+		message := fmt.Sprintf("message%d", i)
+		share := "1"
+		err = postRequest("news", map[string][]string{
+			"timestamp": {timestamp},
+			"name":      {name},
+			"subject":   {subject},
+			"message":   {message},
+			"share":     {share},
+		})
 		if err != nil {
 			fatal(err)
-		} else if bytes.Contains(buf, []byte(text)) {
-			fatal(fmt.Errorf("failed to delete keyword: update page is still accessible"))
+		}
+
+		buf, err := getRequest("news")
+		if err != nil {
+			fatal(err)
+		} else if !bytes.Contains(buf, []byte(subject)) {
+			fatal(fmt.Errorf("failed to add news: subject was not found in news table"))
+		}
+
+		buf, err = getRequest(fmt.Sprintf("news/%d", i+1))
+		if err != nil {
+			fatal(err)
+		} else if !bytes.Contains(buf, []byte(subject)) {
+			fatal(fmt.Errorf("failed to add news: subject was not found in update page"))
+		}
+	}
+	for i := 0; i < 3; i++ {
+		timestamp := "2026/06/01 00:00"
+		name := fmt.Sprintf("newname%d", i)
+		subject := fmt.Sprintf("newsubject%d", i)
+		message := fmt.Sprintf("newmessage%d", i)
+		share := "0"
+		err = postRequest(fmt.Sprintf("news/%d", i+1), map[string][]string{
+			"timestamp": {timestamp},
+			"name":      {name},
+			"subject":   {subject},
+			"message":   {message},
+			"share":     {share},
+		})
+		if err != nil {
+			fatal(err)
+		}
+
+		buf, err := getRequest("news")
+		if err != nil {
+			fatal(err)
+		} else if !bytes.Contains(buf, []byte(subject)) {
+			fatal(fmt.Errorf("failed to update news: subject was not found in news table"))
+		}
+
+		buf, err = getRequest(fmt.Sprintf("news/%d", i+1))
+		if err != nil {
+			fatal(err)
+		} else if !bytes.Contains(buf, []byte(subject)) {
+			fatal(fmt.Errorf("failed to update news: subject was not found in update page"))
+		}
+
+		err = postRequest(fmt.Sprintf("news/delete/%d", i+1), nil)
+		if err != nil {
+			fatal(err)
+		}
+
+		buf, err = getRequest("news")
+		if err != nil {
+			fatal(err)
+		} else if bytes.Contains(buf, []byte(subject)) {
+			fatal(fmt.Errorf("failed to delete news: subject still present in news table"))
+		}
+
+		_, err = getRequest(fmt.Sprintf("news/%d", i+1))
+		if err == nil {
+			fatal(fmt.Errorf("failed to delete news: update page is still accessible"))
 		}
 	}
 

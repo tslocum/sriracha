@@ -19,7 +19,7 @@ func (s *Server) loadBanForm(db serverDB, r *http.Request, b *Ban) error {
 	if expire == "" {
 		b.Expire = 0
 	} else {
-		timestamp, err := time.ParseInLocation("2006/01/02 15:04", expire, time.Local)
+		timestamp, err := time.ParseInLocation("2006/01/02 15:04", strings.ReplaceAll(expire, "-", "/"), time.Local)
 		if err != nil {
 			return fmt.Errorf("failed to parse expire date and time (format: YYYY/MM/DD HH:MM)")
 		}
