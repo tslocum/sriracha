@@ -278,7 +278,6 @@ func (s *Server) smokeTest(emptyDir bool) {
 		if err != nil {
 			fatal(err)
 		} else if !bytes.Contains(buf, []byte(reason)) {
-			log.Println(string(buf))
 			fatal(fmt.Errorf("failed to update ban: reason was not found in bans table"))
 		}
 
@@ -313,6 +312,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 			"dir":         {dir},
 			"name":        {name},
 			"description": {description},
+			"approval":    {strconv.Itoa(int(ApprovalAll))},
 		})
 		if err != nil {
 			fatal(err)
@@ -348,6 +348,11 @@ func (s *Server) smokeTest(emptyDir bool) {
 			"dir":         {dir},
 			"name":        {name},
 			"description": {description},
+			"approval":    {strconv.Itoa(int(ApprovalNone))},
+			"maxname":     {strconv.Itoa(DefaultBoardMaxName)},
+			"maxemail":    {strconv.Itoa(DefaultBoardMaxEmail)},
+			"maxsubject":  {strconv.Itoa(DefaultBoardMaxSubject)},
+			"maxmessage":  {strconv.Itoa(DefaultBoardMaxMessage)},
 		})
 		if err != nil {
 			fatal(err)
@@ -599,6 +604,34 @@ func (s *Server) smokeTest(emptyDir bool) {
 		}
 	}
 
+	// Verify thread creation.
+	boardDir := "newdir0"
+	err = postRequest("", map[string][]string{
+		"action":   {"post"},
+		"board":    {boardDir},
+		"parent":   {"0"},
+		"name":     {"name"},
+		"subject":  {"subject"},
+		"message":  {"message"},
+		"password": {"password"},
+	})
+	if err != nil {
+		fatal(err)
+	}
+
+	// Verify reply creation.
+	err = postRequest("", map[string][]string{
+		"action":  {"post"},
+		"board":   {boardDir},
+		"parent":  {"1"},
+		"name":    {"name"},
+		"subject": {"subject"},
+		"message": {"message"},
+	})
+	if err != nil {
+		fatal(err)
+	}
+
 	// Verify log out page.
 	_, err = getRequest("logout")
 	if err != nil {
@@ -613,6 +646,35 @@ func (s *Server) smokeTest(emptyDir bool) {
 	}
 	if foundCookie {
 		fatal(fmt.Errorf("failed to log out: session cookie was not cleared"))
+	}
+
+	// Verify post deletion.
+	err = postRequest("", map[string][]string{
+		"action":       {"delete"},
+		"board":        {boardDir},
+		"delete[]":     {"1"},
+		"confirmation": {"1"},
+		"password":     {"wrong"},
+	})
+	if err == nil {
+		fatal(fmt.Errorf("expected failure when deleting post with wrong password"))
+	}
+
+	deleteData := map[string][]string{
+		"action":       {"delete"},
+		"board":        {boardDir},
+		"delete[]":     {"1"},
+		"confirmation": {"1"},
+		"password":     {"password"},
+	}
+	err = postRequest("", deleteData)
+	if err != nil {
+		fatal(err)
+	}
+
+	_, err = getRequest("post/1")
+	if err == nil {
+		fatal(fmt.Errorf("expected failure when browsing a previously deleted post"))
 	}
 
 	fmt.Println("All tests passed. Smoke test complete.")

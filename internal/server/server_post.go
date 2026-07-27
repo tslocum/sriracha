@@ -503,32 +503,31 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 	}
 
 	var (
-		rawHTML      bool
-		staffPost    bool
-		staffCapcode string
+		loggedIn bool
+		rawHTML  bool
+		capcode  string
 	)
 	data := s.buildData(db, w, r)
 	if data.Account != nil {
-		staffPost = FormString(r, "capcode") != ""
-		if staffPost {
-			capcode := FormInt(r, "capcode")
-			if capcode < 0 || capcode > 2 || (data.Account.Role == RoleMod && capcode == 2) {
-				capcode = 0
-			}
-			switch capcode {
-			case 1:
-				staffCapcode = "Mod"
-			case 2:
-				staffCapcode = "Admin"
-			}
-
+		loggedIn = true
+		if FormString(r, "capcode") != "" {
 			rawHTML = FormBool(r, "raw")
+			capcodeInt := FormInt(r, "capcode")
+			if capcodeInt < 0 || capcodeInt > 2 || (data.Account.Role == RoleMod && capcodeInt == 2) {
+				capcodeInt = 0
+			}
+			switch capcodeInt {
+			case 1:
+				capcode = "Mod"
+			case 2:
+				capcode = "Admin"
+			}
 		}
 	}
 
 	switch b.Lock {
 	case LockPost:
-		if !staffPost {
+		if !loggedIn {
 			data := s.buildData(db, w, r)
 			data.BoardError(w, Get(b, data.Account, "Board locked. No new posts may be created."))
 			return
@@ -574,7 +573,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 
 	var addReport bool
 	var solvedCAPTCHA *CAPTCHA
-	if !staffPost {
+	if !loggedIn {
 		if b.Lock == LockThread && parentPost == nil {
 			s.deletePostFiles(post)
 
@@ -855,7 +854,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		post.Message = html.UnescapeString(post.Message)
 	}
 
-	if !staffPost {
+	if !loggedIn {
 		if parentPost != nil && parentPost.Locked {
 			s.deletePostFiles(post)
 
@@ -1025,7 +1024,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	post.SetNameBlock(b.DefaultName, staffCapcode, s.opt.Identifiers)
+	post.SetNameBlock(b.DefaultName, capcode, s.opt.Identifiers)
 
 	// Replace sentinels with characters.
 	if !rawHTML {
@@ -1043,7 +1042,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		post.Password = s.hashData(post.Password)
 	}
 
-	if !staffPost && (b.Approval == ApprovalAll || (b.Approval == ApprovalFile && post.File != "")) {
+	if !loggedIn && (b.Approval == ApprovalAll || (b.Approval == ApprovalFile && post.File != "")) {
 		post.Moderated = 0
 	}
 
