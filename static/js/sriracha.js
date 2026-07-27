@@ -603,6 +603,13 @@ function setPostAttributes(element) {
                 return;
             }
             if (touchScreen) {
+                el.addEventListener("dblclick", function(e) {
+                    e.preventDefault();
+                    window.location.href = el.href;
+                });
+                el.addEventListener("click", function(e) {
+                    e.preventDefault();
+                });
                 el.classList.add("touchreflink")
             }
             el.setAttribute('refID', postID);
@@ -612,27 +619,14 @@ function setPostAttributes(element) {
             el.addEventListener("mouseleave", function(e) {
                 closePostPreview();
             });
-            var pressTime;
             el.addEventListener("touchstart", function(e) {
-                e.preventDefault();
-                pressTime = new Date().getTime();
                 previewPost(el);
             });
             el.addEventListener("touchend", function(e) {
-                e.preventDefault();
-                var now = new Date().getTime();
                 closePostPreview();
-                if (now - pressTime < 200) {
-                    el.click()
-                }
             });
             el.addEventListener("touchcancel", function(e) {
-                e.preventDefault();
-                var now = new Date().getTime();
                 closePostPreview();
-                if (now - pressTime < 200) {
-                    el.click()
-                }
             });
             if (touchScreen) {
                 el.addEventListener("contextmenu", function(e) {
