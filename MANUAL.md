@@ -733,8 +733,14 @@ the [Fortune](https://codeberg.org/tslocum/sriracha/src/branch/main/plugin/fortu
 Plugins may subscribe to receive one or more types of events by implementing
 the associated event handlers.
 
-For example, a plugin subscribing to [Post](https://pkg.go.dev/codeberg.org/tslocum/sriracha#Post)
-events would implement [PluginWithPost](https://pkg.go.dev/codeberg.org/tslocum/sriracha#PluginWithPost).
+For example, a plugin which modifies new posts would implement [PluginWithPost](https://pkg.go.dev/codeberg.org/tslocum/sriracha#PluginWithPost)
+to subscribe to Post events.
+
+After Post events are handled, [Create](https://pkg.go.dev/codeberg.org/tslocum/sriracha#PluginWithCreate) events are sent,
+which plugins may use to cancel a new post before it is inserted into the database.
+
+After Create events are handled, the post is inserted into the database and [Insert](https://pkg.go.dev/codeberg.org/tslocum/sriracha#PluginWithInsert)
+events are sent, which plugins may use to process finalized posts.
 
 When a plugin handles an event, a reference to the database is provided. This reference
 is only valid during the event handler call.
