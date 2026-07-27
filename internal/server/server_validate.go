@@ -530,6 +530,75 @@ func (s *Server) smokeTest(emptyDir bool) {
 		}
 	}
 
+	// Verify Pages page.
+	for i := 0; i < 3; i++ {
+		pagePath := fmt.Sprintf("path%d", i)
+		message := fmt.Sprintf("message%d", i)
+		err = postRequest("page", map[string][]string{
+			"path":    {pagePath},
+			"message": {message},
+		})
+		if err != nil {
+			fatal(err)
+		}
+
+		buf, err := getRequest("page")
+		if err != nil {
+			fatal(err)
+		} else if !bytes.Contains(buf, []byte(pagePath)) {
+			fatal(fmt.Errorf("failed to add page: path was not found in pages table"))
+		}
+
+		buf, err = getRequest(fmt.Sprintf("page/%d", i+1))
+		if err != nil {
+			fatal(err)
+		} else if !bytes.Contains(buf, []byte(pagePath)) {
+			fatal(fmt.Errorf("failed to add page: path was not found in pages page"))
+		}
+	}
+	for i := 0; i < 3; i++ {
+		pagePath := fmt.Sprintf("newpath%d", i)
+		message := fmt.Sprintf("newmessage%d", i)
+		err = postRequest(fmt.Sprintf("page/%d", i+1), map[string][]string{
+			"path":    {pagePath},
+			"message": {message},
+		})
+		if err != nil {
+			fatal(err)
+		}
+
+		buf, err := getRequest("page")
+		if err != nil {
+			fatal(err)
+		} else if !bytes.Contains(buf, []byte(pagePath)) {
+			fatal(fmt.Errorf("failed to add page: path was not found in pages table"))
+		}
+
+		buf, err = getRequest(fmt.Sprintf("page/%d", i+1))
+		if err != nil {
+			fatal(err)
+		} else if !bytes.Contains(buf, []byte(pagePath)) {
+			fatal(fmt.Errorf("failed to add page: path was not found in pages page"))
+		}
+
+		err = postRequest(fmt.Sprintf("page/delete/%d", i+1), nil)
+		if err != nil {
+			fatal(err)
+		}
+
+		buf, err = getRequest("page")
+		if err != nil {
+			fatal(err)
+		} else if bytes.Contains(buf, []byte(pagePath)) {
+			fatal(fmt.Errorf("failed to delete page: path still present in pages table"))
+		}
+
+		_, err = getRequest(fmt.Sprintf("page/%d", i+1))
+		if err == nil {
+			fatal(fmt.Errorf("failed to delete page: update page is still accessible"))
+		}
+	}
+
 	// Verify log out page.
 	_, err = getRequest("logout")
 	if err != nil {
