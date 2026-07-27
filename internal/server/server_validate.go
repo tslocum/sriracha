@@ -280,6 +280,20 @@ func (s *Server) smokeTest(emptyDir bool) {
 		} else if !bytes.Contains(buf, []byte(reason)) {
 			fatal(fmt.Errorf("failed to update ban: reason was not found in update page"))
 		}
+
+		err = postRequest(fmt.Sprintf("ban/lift/%d", i+1), map[string][]string{
+			"reason": {"reason"},
+		})
+		if err != nil {
+			fatal(err)
+		}
+
+		buf, err = getRequest("ban")
+		if err != nil {
+			fatal(err)
+		} else if bytes.Contains(buf, []byte(reason)) {
+			fatal(fmt.Errorf("failed to lift ban: reason still present in bans table"))
+		}
 	}
 
 	// Verify Boards page.
@@ -352,6 +366,97 @@ func (s *Server) smokeTest(emptyDir bool) {
 		} else if !bytes.Contains(buf, []byte(description)) {
 			fatal(fmt.Errorf("failed to add board: updated board description was not found in update page"))
 		}
+	}
+
+	// Verify Keywords page.
+	for i := 0; i < 3; i++ {
+		text := fmt.Sprintf("text%d", i)
+		action := "hide"
+		boards := []string{"1", "2", "3"}
+		err = postRequest("keyword", map[string][]string{
+			"text":   {text},
+			"action": {action},
+			"boards": boards,
+		})
+		if err != nil {
+			fatal(err)
+		}
+
+		buf, err := getRequest("keyword")
+		if err != nil {
+			fatal(err)
+		} else if !bytes.Contains(buf, []byte(text)) {
+			fatal(fmt.Errorf("failed to add keyword: text was not found in keywords table"))
+		}
+
+		buf, err = getRequest(fmt.Sprintf("keyword/%d", i+1))
+		if err != nil {
+			fatal(err)
+		} else if !bytes.Contains(buf, []byte(text)) {
+			fatal(fmt.Errorf("failed to add keyword: text was not found in update page"))
+		}
+	}
+	for i := 0; i < 3; i++ {
+		text := fmt.Sprintf("text%d", i)
+		action := "delete"
+		boards := []string{"1"}
+		err = postRequest(fmt.Sprintf("keyword/%d", i+1), map[string][]string{
+			"text":   {text},
+			"action": {action},
+			"boards": boards,
+		})
+		if err != nil {
+			fatal(err)
+		}
+
+		buf, err := getRequest("keyword")
+		if err != nil {
+			fatal(err)
+		} else if !bytes.Contains(buf, []byte(text)) {
+			fatal(fmt.Errorf("failed to update keyword: text was not found in keywords table"))
+		}
+
+		buf, err = getRequest(fmt.Sprintf("keyword/%d", i+1))
+		if err != nil {
+			fatal(err)
+		} else if !bytes.Contains(buf, []byte(text)) {
+			fatal(fmt.Errorf("failed to update keyword: text was not found in update page"))
+		}
+
+		err = postRequest(fmt.Sprintf("keyword/delete/%d", i+1), nil)
+		if err != nil {
+			fatal(err)
+		}
+
+		buf, err = getRequest("keyword")
+		if err != nil {
+			fatal(err)
+		} else if bytes.Contains(buf, []byte(text)) {
+			fatal(fmt.Errorf("failed to delete keyword: text still present in keywords table"))
+		}
+
+		buf, err = getRequest(fmt.Sprintf("keyword/%d", i+1))
+		if err != nil {
+			fatal(err)
+		} else if bytes.Contains(buf, []byte(text)) {
+			fatal(fmt.Errorf("failed to delete keyword: update page is still accessible"))
+		}
+	}
+
+	// Verify log out page.
+	_, err = getRequest("logout")
+	if err != nil {
+		fatal(err)
+	}
+	var foundCookie bool
+	for _, c := range jar.Cookies(pageURL) {
+		if c.Value != "" {
+			foundCookie = true
+			break
+		}
+	}
+	if foundCookie {
+		fatal(fmt.Errorf("failed to log out: session cookie was not cleared"))
 	}
 
 	fmt.Println("All tests passed. Smoke test complete.")
