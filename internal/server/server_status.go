@@ -79,9 +79,9 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 			for _, threadInfo := range db.AllThreads(false, b) {
 				for _, p := range db.AllPostsInThread(false, threadInfo[0]) {
 					var capcode string
-					if strings.Contains(p.NameBlock, `<span style="color: red`) {
+					if strings.Contains(p.NameBlock, `<span style="color: red`) || strings.Contains(p.NameBlock, `<span class="modcapcode`) {
 						capcode = "Mod"
-					} else if strings.Contains(p.NameBlock, `<span style="color: purple`) {
+					} else if strings.Contains(p.NameBlock, `<span style="color: purple`) || strings.Contains(p.NameBlock, `<span class="admincapcode`) {
 						capcode = "Admin"
 					}
 					p.SetNameBlock(p.Board.DefaultName, capcode, s.opt.Identifiers)

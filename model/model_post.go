@@ -156,11 +156,11 @@ func (p *Post) SetNameBlock(defaultName string, capcode string, identifiers bool
 	}
 
 	if capcode != "" {
-		spanColor := "red"
+		class := "modcapcode"
 		if capcode == "Admin" {
-			spanColor = "purple"
+			class = "admincapcode"
 		}
-		out.WriteString(` <span style="color: ` + spanColor + `;">## ` + capcode + `</span>`)
+		out.WriteString(` <span class="` + class + `">## ` + capcode + `</span>`)
 	}
 
 	identifier := p.Identifier(identifiers, false)
@@ -197,11 +197,11 @@ func (p *Post) PlainNameBlock(defaultName string, capcode string, identifiers bo
 	}
 
 	if capcode != "" {
-		spanColor := "red"
+		class := "modcapcode"
 		if capcode == "Admin" {
-			spanColor = "purple"
+			class = "admincapcode"
 		}
-		out.WriteString(` <span style="color: ` + spanColor + `;">## ` + capcode + `</span>`)
+		out.WriteString(` <span class="` + class + `">## ` + capcode + `</span>`)
 	}
 
 	identifier := p.Identifier(identifiers, false)

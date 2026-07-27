@@ -60,6 +60,14 @@ img, audio, video {
 	font-weight: bold;
 }
 
+.modcapcode {
+	color: red;
+}
+
+.admincapcode {
+	color: purple;
+}
+
 .thumb {
 	border: none;
 	float: left;
