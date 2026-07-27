@@ -413,6 +413,10 @@ function previewPost(el) {
     var vl = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
     var vt = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
     var rect = el.getBoundingClientRect();
+    if (touchScreen) {
+        const thumbOffset = 50;
+        rect = new DOMRect(rect.x, rect.y+thumbOffset, rect.width, rect.height)
+    }
 
     var preview = document.getElementById('ref' + el.getAttribute('refID'));
     if (!preview) {
