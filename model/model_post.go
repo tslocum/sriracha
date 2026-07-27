@@ -276,12 +276,13 @@ func (p *Post) MessageTruncated(lines int, account *Account) template.HTML {
 
 	blankMessage := template.HTML("…")
 	if showOmitted {
-		blankMessage = template.HTML(`<div class="omittedposts">` + Get(p.Board, account, "Post truncated. Click Reply to view.") + `</div><br>`)
+		blankMessage = template.HTML(`<div class="omittedposts">` + Get(p.Board, account, "Post truncated. Click Reply to view.") + `</div>`)
 	}
 
 	buf := bytes.Join(split[:lines], []byte("\n"))
-	if bytes.Contains(buf, []byte(`<div class="codeblock">`)) {
-		return blankMessage
+	firstCodeBlock := bytes.Index(buf, []byte(`<div class="codeblock">`))
+	if firstCodeBlock != -1 {
+		buf = bytes.TrimSpace(buf[:firstCodeBlock])
 	}
 
 	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(buf))

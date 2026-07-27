@@ -1,3 +1,6 @@
+1.9.0:
+- Fix reflink previews interrupting scrolling on mobile devices
+
 1.8.9:
 - Fix adding new boards
 
