@@ -20,18 +20,26 @@
 - Thread catalog
 - Oekaki (drawings)
 - Fetch new replies automatically
+- Preview reference links when hovered
+- Search for posts by subject and message
 - Extend with [plugins](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#plugins)
 - Send [email notifications](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#email-notifications)
 - Customize [HTML templates](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#custom-templates)
 - Translate into [additional languages](https://translate.codeberg.org/projects/sriracha/sriracha/)
 - Play SWF files with the included [ruffle emulator](https://ruffle.rs)
 - View Shift JIS text art with the included [submona web font](https://github.com/pera/submona-web-font)
+- Deploy within minutes using [Docker](https://hub.docker.com/r/tslocum/sriracha/tags) and [Docker Compose](https://codeberg.org/tslocum/sriracha/src/branch/main/docker-compose.yml)
 - Management panel
   - Configure which roles have access to management and moderation actions
-  - Automatically moderate new posts using regular expressions
   - Ban offensive/abusive visitors across all boards
   - Post using admin or mod capcode
   - Post using raw HTML
+  - Hide new posts until [approved](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#approving-posts)
+  - Delete and/or ban [multiple posts](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#bulk-moderation)
+  - Create custom HTML [pages](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#custom-pages)
+  - Automatically moderate new posts using regular expressions and [thresholds](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#thresholds)
+  - Specify which settings are configured individually or [globally](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#global-settings)
+  - Secure your account with [two-factor authentication](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#two-factor-authentication)
 
 Most features do not require JavaScript and will degrade gracefully when necessary.
 
