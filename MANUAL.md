@@ -396,7 +396,7 @@ The best way to improve the performance of Sriracha is by adjusting the
 configuration of your PostgreSQL database.
 
 See [this page](https://www.postgresql.org/docs/current/runtime-config-resource.html)
-for a full list of options related to resource consumtion.
+for a full list of configuration options related to resource consumption.
 
 On systems with 1GB or less of available memory, the default PostgreSQL
 configuration should be used.
