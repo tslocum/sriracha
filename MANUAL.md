@@ -258,6 +258,27 @@ Support is not available for Sriracha installations using custom templates.
 
 Support is not available for creating or modifying custom template files.
 
+#### Template locations
+
+```
+extra_navbar.gohtml [board1] [board2]                                     extra_adminbar.gohtml [Search] [News] [Manage]
+
+extra_header.gohtml
+
+                                                     Banner Image
+                                                         Name
+                                                   extra_logo.gohtml
+
+ ----------------------------------------------------------------------------------------------------------------------
+
+                                                     Page Content
+
+ ----------------------------------------------------------------------------------------------------------------------
+
+                                                  extra_footer.gohtml
+                                                     - Sriracha -
+```
+
 #### Troubleshooting template errors
 
 If you encounter either of the following errors:
