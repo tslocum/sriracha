@@ -1230,7 +1230,8 @@ The status page is the default page shown when you log in. When posts require
 moderator approval, they will appear on this status page.
 
 When there are no pending moderation requests, the status page will automatically
-refresh after five minutes have passed.
+refresh after five minutes have passed. When permission to send notifications has
+been granted, a notification will be displayed when a moderation request is added.
 
 #### Banning IP addresses
 
@@ -1246,7 +1247,7 @@ When browsing in mod mode, the following moderation links are displayed:
 
 `V M S L D B D&B`
 
-- V: View posts by author
+- V: View posts by author (when `identifiers` are enabed)
 - M: Move thread
 - S: Sticky thread
 - L: Lock thread
@@ -1265,7 +1266,7 @@ To moderate multiple posts, select the checkboxes of any relevant posts and scro
 to the bottom of the page. When browsing normally, click the 'Delete' button without
 entering a password. When browsing in mod mode, click the 'Moderate' button.
 
-Any existing bans for a shorter duration will be replaced.
+Any existing bans for shorter durations will be replaced.
 
 ### Administrator guide
 
