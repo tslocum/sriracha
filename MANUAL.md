@@ -390,6 +390,38 @@ Found {{len $threads}} threads.
 <hr>
 ```
 
+### Performance
+
+The best way to improve the performance of Sriracha is by adjusting the
+configuration of your PostgreSQL database.
+
+See [this page](https://www.postgresql.org/docs/current/runtime-config-resource.html)
+for a full list of options related to resource consumtion.
+
+On systems with 1GB or less of available memory, the default PostgreSQL
+configuration should be used.
+
+On systems with more than 1GB of available memory, the following options should be increased:
+
+#### shared_buffers
+
+Increasing this limit from 128MB to 25% of available memory is recommended.
+
+This option will impact overall system performance.
+
+#### work_mem
+
+Increasing this limit from 4MB to 16MB is recommended.
+
+This option will impact performance when there are many rows in the database.
+
+#### maintenance_work_mem
+
+Increasing this limit from 64MB to 25% of available memory is recommended.
+
+This option will impact performance when PostgreSQL cleans up deleted or
+outdated table data.
+
 ### Locales
 
 The following `locale` configuration options are available:
