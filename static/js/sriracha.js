@@ -7,6 +7,7 @@ var haveFocus = false;
 var blinkTitle = false;
 var originalTitle = "";
 var viewThreadID = 0;
+var viewThreadModified = null;
 var newRepliesCount = 0;
 var newReplyID = 0;
 var postCache = {};
@@ -194,6 +195,12 @@ function fetchPosts(url, append) {
             return;
         } else if (!response.ok) {
             return;
+        } else if (viewThreadModified && response.headers) {
+            var lastModified = new Date(response.headers.get("Last-Modified"));
+            if (lastModified.getTime() == viewThreadModified.getTime()) {
+                return;
+            }
+            viewThreadModified = lastModified;
         }
         return response.text();
     }).then(function(body) {
@@ -219,43 +226,10 @@ function fetchPosts(url, append) {
             container = threadElements[0];
         }
         if (!container) {
-            var ops = document.getElementsByClassName('op');
-            if (ops.length > 0) {
-                posts.push(ops[0]);
+            if (append) {
+                console.log('warning: fetched ' + url + ' but could not find thread container, falling back to appending replies to document body. as a result, auto-refreshed replies will have style issues.');
             }
-            for (const post of document.getElementsByClassName('reply')) {
-                posts.push(post);
-            }
-            if (posts.length > 0) {
-                if (verbose) {
-                    console.log('setting container via elements with class op or reply');
-                }
-                container = posts[posts.length - 1].parentElement.parentElement.parentElement.parentElement;
-            }
-            if (!container) {
-                posts = document.getElementsByClassName('forumpost');
-                if (posts.length > 0) {
-                    forum = true;
-                    if (verbose) {
-                        console.log('setting container via elements with class forumpost');
-                    }
-                    container = posts[posts.length - 1].parentElement.parentElement.parentElement;
-                } else {
-                    var ops = document.getElementsByClassName('op');
-                    if (ops.length > 0) {
-                        if (verbose) {
-                            console.log('setting container via elements with class op');
-                        }
-                        container = ops[0].parentElement;
-                    }
-                }
-            }
-            if (!container) {
-                if (append) {
-                    console.log('warning: fetched ' + url + ' but could not find thread container, falling back to appending replies to document body. as a result, auto-refreshed replies will have style issues.');
-                }
-                container = document.body;
-            }
+            container = document.body;
         }
 
         var doc = (new DOMParser).parseFromString(body, 'text/html');
@@ -573,22 +547,23 @@ function setPostAttributes(element) {
     if (resIndex != -1) {
         base_url = base_url.substring(0, resIndex) + '/';
     }
-    element.querySelectorAll('a').forEach((el, i) => {
+    element.querySelectorAll('.reflink a, .refop, .refreply').forEach((el, i) => {
         var postID = 0;
         var m = null;
-        if (el.getAttribute('href')) {
-            m = el.getAttribute('href').match(/.*\/([0-9]+)\.html#([0-9]+)/i);
+        var href = el.getAttribute('href')
+        if (href) {
+            m = href.match(/^.*\/([0-9]+)\.html#([0-9]+)$/i);
             if (m) {
                 postID = m[2];
                 if (m[1] == viewThreadID) {
                     el.setAttribute("href", "#" + postID);
                 }
             }
-        }
-        if (postID == 0 && el.getAttribute('href')) {
-            m = el.getAttribute('href').match(/\#([0-9]+)/i);
-            if (m) {
-                postID = m[1];
+            if (postID == 0) {
+                m = href.match(/^\#([0-9]+)$/i);
+                if (m) {
+                    postID = m[1];
+                }
             }
         }
         if (postID == 0) {
@@ -598,7 +573,7 @@ function setPostAttributes(element) {
         if (el.innerHTML == 'No.') {
             if (element != document) {
                 element.setAttribute('postID', postID);
-                element.setAttribute('postLink', el.getAttribute('href'))
+                element.setAttribute('postLink', href)
                 element.classList.add('post');
             }
         } else if (el.getAttribute('refID') == undefined) {
@@ -882,12 +857,15 @@ function onDOMContentLoaded(e) {
     }
 
     // Set post attributes and handle reflink hover previews.
+    if (document.lastModified) {
+        viewThreadModified = new Date(document.lastModified);
+    }
     setPostAttributes(document);
 
     // Validate posts before they are submitted.
     var postForm = document.getElementById("postform");
     if (postForm) {
-        postForm.addEventListener("submit", onSubmit)
+        postForm.addEventListener("submit", onSubmit);
     }
 }
 
