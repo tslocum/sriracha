@@ -665,10 +665,13 @@ function setStyle(style) {
     if (style.endsWith('/flex')) {
         styleName = style.substring(0, style.length-5);
 
-        var flexStyle = document.createElement('style');
-        flexStyle.id = 'flexStyle';
-        flexStyle.textContent = '.thread { display: flex; flex-wrap: wrap; }';
-        document.head.appendChild(flexStyle);
+        var flexStyle = document.getElementById('flexStyle');
+        if (!flexStyle) {
+            flexStyle = document.createElement('style');
+            flexStyle.id = 'flexStyle';
+            flexStyle.textContent = '.thread { display: flex; flex-wrap: wrap; }';
+            document.head.appendChild(flexStyle);
+        }
     } else {
         var flexStyle = document.getElementById('flexStyle');
         if (flexStyle) {

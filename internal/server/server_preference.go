@@ -20,10 +20,7 @@ func (s *Server) servePreference(data *templateData, db serverDB, w http.Respons
 	if r.Method == http.MethodPost {
 		switch FormString(r, "action") {
 		case "style":
-			var style string
-			if FormString(r, "style") == "burichan" || FormString(r, "style") == "sriracha" {
-				style = FormString(r, "style")
-			}
+			style := FormString(r, "style")
 			db.UpdateAccountStyle(data.Account.ID, style)
 
 			data.Redirect(w, r, "/sriracha/preference/")

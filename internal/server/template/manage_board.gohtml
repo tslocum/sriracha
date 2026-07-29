@@ -115,6 +115,7 @@
                     <td><select name="style" style="width: 100%;">
                         {{range $style := .Opt.Styles}}
                             <option value="{{index $style 0}}"{{if and (ne $.Manage.Board nil) (eq $.Manage.Board.Style (index $style 0))}} selected{{end}}>{{index $style 1}}</option>
+                            <option value="{{index $style 0}}/flex"{{if and (ne $.Manage.Board nil) (eq $.Manage.Board.Style (Cat (index $style 0) "/flex"))}} selected{{end}}>{{index $style 1}} Flex</option>
                         {{end}}
                     </select></td>
                     <td>{{T "Default page style. Visitors may choose alternative styles in their browser settings."}}</td>

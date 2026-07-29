@@ -32,6 +32,7 @@
                         <select name="style">
                             {{range $style := .Opt.Styles}}
                                 <option value="{{index $style 0}}"{{if eq $.Account.Style (index $style 0)}} selected{{end}}>{{index $style 1}}</option>
+                                <option value="{{index $style 0}}/flex"{{if eq $.Account.Style (Cat (index $style 0) "/flex")}} selected{{end}}>{{index $style 1}} Flex</option>
                             {{end}}
                         </select>
                     </td>

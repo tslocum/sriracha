@@ -94,12 +94,26 @@ type templateData struct {
 func (data *templateData) Style() string {
 	switch {
 	case data.Account != nil:
-		return data.Account.Style
+		return strings.TrimSuffix(data.Account.Style, "/flex")
 	case data.Board != nil:
-		return data.Board.Style
+		return strings.TrimSuffix(data.Board.Style, "/flex")
 	default:
 		return ""
 	}
+}
+
+func (data *templateData) FlexStyle() template.HTML {
+	var style string
+	switch {
+	case data.Account != nil:
+		style = data.Account.Style
+	case data.Board != nil:
+		style = data.Board.Style
+	}
+	if !strings.HasSuffix(style, "/flex") {
+		return ""
+	}
+	return `<style type="text/css" id="flexStyle">.thread { display: flex; flex-wrap: wrap; }</style>`
 }
 
 func (data *templateData) ManageMode() bool {
@@ -239,6 +253,7 @@ var templateFuncMap = template.FuncMap{
 			return banners[rand.Intn(l)]
 		}
 	},
+	"Cat":      func(a string, b string) string { return a + b },
 	"Contains": strings.Contains,
 	"Div": func(i int64, j int64) float64 {
 		return float64(i) / float64(j)

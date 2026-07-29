@@ -10,10 +10,11 @@
 			<link rel="icon" href="data:,">
 		{{end}}
 		<link rel="stylesheet" type="text/css" href="/static/css/global.css">
-		{{$defaultStyle := index (index .Opt.Styles 0) 0}}{{if and (ne .Account nil) (ne .Account.Style "")}}{{$defaultStyle = .Account.Style}}{{end}}
+		{{$defaultStyle := index (index .Opt.Styles 0) 0}}{{if ne .Style ""}}{{$defaultStyle = .Style}}{{end}}
 		{{range $style := .Opt.Styles}}
 			<link rel="{{if ne (index $style 0) $defaultStyle}}alternate {{end}}stylesheet" type="text/css" href="/static/css/{{index $style 0}}.css" title="{{index $style 1}}"{{if eq (index $style 0) $defaultStyle}} id="mainStylesheet"{{end}}>
 		{{end}}
+		{{.FlexStyle}}
 		<script src="/static/js/manage.js"></script>
 	</head>
     <body>
