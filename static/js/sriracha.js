@@ -192,7 +192,7 @@ function fetchPosts(url, append) {
             return;
         } else if (!response.ok) {
             return;
-        } else if (viewThreadModified && response.headers) {
+        } else if (append && viewThreadModified && response.headers) {
             var lastModified = new Date(response.headers.get("Last-Modified"));
             if (lastModified.getTime() == viewThreadModified.getTime()) {
                 return;
