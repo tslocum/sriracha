@@ -10,8 +10,10 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-// boardCache is a cache of all boards.
+// Cache boards to reduce pressure on the database.
 var boardCache []*Board
+var boardCacheID = make(map[int]*Board)
+var boardCacheDir = make(map[string]*Board)
 
 func (db *DB) setBoardAttributes(b *Board) {
 	rows, err := db.conn.Query(context.Background(), "SELECT upload FROM board_upload WHERE board = $1", b.ID)
@@ -55,7 +57,7 @@ func (db *DB) setBoardAttributes(b *Board) {
 }
 
 func (db *DB) AddBoard(b *Board) {
-	boardCache = nil
+	db.ClearBoardCache()
 
 	var reports int
 	if b.Reports {
@@ -135,7 +137,6 @@ func (db *DB) AllBoards() []*Board {
 	if boardCache != nil {
 		return boardCache
 	}
-	boardCache = []*Board{}
 
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM board ORDER BY dir ASC")
 	if err != nil {
@@ -148,6 +149,8 @@ func (db *DB) AllBoards() []*Board {
 			dbErr(fmt.Errorf("failed to select all boards: %w", err))
 		}
 		boardCache = append(boardCache, b)
+		boardCacheID[b.ID] = b
+		boardCacheDir[b.Dir] = b
 	}
 	if rows.Err() != nil {
 		dbErr(fmt.Errorf("failed to select all boards: %w", rows.Err()))
@@ -160,7 +163,10 @@ func (db *DB) AllBoards() []*Board {
 }
 
 func (db *DB) BoardByID(id int) *Board {
-	// Search cached boards.
+	b := boardCacheID[id]
+	if b != nil {
+		return b
+	}
 	for _, b := range db.AllBoards() {
 		if b.ID == id {
 			return b
@@ -170,7 +176,10 @@ func (db *DB) BoardByID(id int) *Board {
 }
 
 func (db *DB) BoardByDir(dir string) *Board {
-	// Search cached boards.
+	b := boardCacheDir[dir]
+	if b != nil {
+		return b
+	}
 	for _, b := range db.AllBoards() {
 		if b.Dir == dir {
 			return b
@@ -199,7 +208,7 @@ func (db *DB) UpdateBoard(b *Board) {
 	if b.ID <= 0 {
 		dbErr(fmt.Errorf("invalid board ID %d", b.ID))
 	}
-	boardCache = nil
+	db.ClearBoardCache()
 
 	var reports int
 	if b.Reports {
@@ -290,7 +299,7 @@ func (db *DB) DeleteBoard(id int) {
 	if id == 0 {
 		return
 	}
-	boardCache = nil
+	db.ClearBoardCache()
 
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM board WHERE id = $1", id)
 	if err != nil {
@@ -301,6 +310,8 @@ func (db *DB) DeleteBoard(id int) {
 
 func (db *DB) ClearBoardCache() {
 	boardCache = nil
+	clear(boardCacheID)
+	clear(boardCacheDir)
 }
 
 func scanBoard(b *Board, row pgx.Row) error {
