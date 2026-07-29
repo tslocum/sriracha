@@ -1,3 +1,6 @@
+1.9.1:
+- Fix touchscreen detection when multiple input devices are connected
+
 1.9.0:
 - Fix reflink previews interrupting scrolling on mobile devices
 

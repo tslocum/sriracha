@@ -20,10 +20,7 @@ var threadStatusDeleted = 3;
 // verbose is a flag which enables verbose logging.
 const verbose = false;
 
-const touchScreen = 'ontouchstart' in window ||
-    (window.DocumentTouch && document instanceof window.DocumentTouch) ||
-    navigator.maxTouchPoints > 0 ||
-    window.navigator.msMaxTouchPoints > 0;
+const touchScreen = window.matchMedia("(pointer: coarse)").matches
 
 function updateTitle() {
     if (originalTitle == "") {
