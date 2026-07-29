@@ -308,7 +308,9 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 			s.log(db, data.Account, nil, "Updated settings", changes)
 		}
 
-		s.rebuildAll(db, false)
+		if FormBool(r, "rebuild") {
+			s.rebuildAll(db, false)
+		}
 	}
 	data.Template = "manage_setting"
 	data.Extra = SrirachaVersion
