@@ -171,7 +171,7 @@ img, audio, video {
 	padding: 3px;
 }
 
-.hoverpost .postui, .hoverpost .threadui, .hoverpost .backlink {
+.hoverpost .postui, .hoverpost .threadui, .hoverpost .backlink, .hoverpost .omittedposts {
 	display: none;
 }
 
