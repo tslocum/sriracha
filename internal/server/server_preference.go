@@ -20,8 +20,19 @@ func (s *Server) servePreference(data *templateData, db serverDB, w http.Respons
 	if r.Method == http.MethodPost {
 		switch FormString(r, "action") {
 		case "style":
-			style := FormString(r, "style")
-			db.UpdateAccountStyle(data.Account.ID, style)
+			stylePreference := FormString(r, "style")
+			var foundStyle bool
+			for _, style := range s.config.Styles {
+				if stylePreference == style || stylePreference == style+"/flex" {
+					foundStyle = true
+					break
+				}
+			}
+			if !foundStyle {
+				data.ManageError("Invalid style")
+				return
+			}
+			db.UpdateAccountStyle(data.Account.ID, stylePreference)
 
 			data.Redirect(w, r, "/sriracha/preference/")
 			return

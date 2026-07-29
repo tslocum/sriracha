@@ -228,7 +228,7 @@ func NewBoard() *Board {
 	}
 }
 
-func (b *Board) Validate() error {
+func (b *Board) Validate(styles []string) error {
 	switch {
 	case b.Dir != "" && !AlphaNumericAndSymbols.MatchString(b.Dir):
 		return fmt.Errorf("dir must only consist of letters, numbers, hyphens and underscores")
@@ -246,6 +246,16 @@ func (b *Board) Validate() error {
 		return fmt.Errorf("minimum %[1]s must be less than or equal to maximum %[1]s", "thread file size")
 	case b.MinSizeReply > b.MaxSizeReply:
 		return fmt.Errorf("minimum %[1]s must be less than or equal to maximum %[1]s", "reply file size")
+	}
+	var foundStyle bool
+	for _, style := range styles {
+		if b.Style == style || b.Style == style+"/flex" {
+			foundStyle = true
+			break
+		}
+	}
+	if !foundStyle {
+		return fmt.Errorf("invalid style: %s", b.Style)
 	}
 	reservedDirs := []string{"captcha", "static", "sriracha", "sriracha_all"}
 	for _, reserved := range reservedDirs {

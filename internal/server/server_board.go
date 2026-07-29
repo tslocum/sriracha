@@ -769,7 +769,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 			oldPath := data.Manage.Board.Path()
 			s.loadBoardForm(db, r, data.Manage.Board)
 
-			err := data.Manage.Board.Validate()
+			err := data.Manage.Board.Validate(s.config.Styles)
 			if err != nil {
 				data.ManageError(err.Error())
 				return false
@@ -932,7 +932,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 			b.Rules = d.Rules
 		}
 
-		err := b.Validate()
+		err := b.Validate(s.config.Styles)
 		if err != nil {
 			data.ManageError(err.Error())
 			return false
