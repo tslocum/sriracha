@@ -110,6 +110,7 @@ func (db *DB) initialize() error {
 	if err != nil {
 		return fmt.Errorf("failed to create database: %w", err)
 	}
+	db.clearStatementCache()
 	return nil
 }
 
@@ -160,7 +161,17 @@ func (db *DB) _upgrade(rootDir string, v int) error {
 			}
 		}
 	}
+	db.clearStatementCache()
 	return nil
+}
+
+// clearStatementCache deallocates all cached prepared statements.
+// The statement cache must be cleared after any schema changes.
+func (db *DB) clearStatementCache() {
+	err := db.conn.Conn().DeallocateAll(context.Background())
+	if err != nil {
+		log.Fatal("failed to deallocate prepared statements after migration")
+	}
 }
 
 func (db *DB) upgrade(rootDir string) error {
@@ -185,11 +196,6 @@ func (db *DB) upgrade(rootDir string) error {
 		if err != nil {
 			return fmt.Errorf("failed to upgrade database from version %d to version %d: %s", v-1, v, err)
 		}
-	}
-
-	// Deallocate all cached prepared statements after migrations in case of schema change.
-	if err = db.conn.Conn().DeallocateAll(context.Background()); err != nil {
-		return fmt.Errorf("failed to deallocate prepared statements after migration")
 	}
 	return nil
 }
