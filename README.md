@@ -45,6 +45,8 @@ Most features do not require JavaScript and will degrade gracefully when necessa
 
 Sriracha requires very little processing power and will typically use less than 250 MB of memory.
 
+[Tofu](https://codeberg.org/tslocum/tofu) is the official thread watcher for Sriracha imageboards and forums.
+
 ## Documentation
 
 See [MANUAL.md](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md)
