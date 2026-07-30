@@ -856,6 +856,19 @@ function onDOMContentLoaded(e) {
         }
     }
 
+    // Auto-focus message when post form is opened.
+    var details = document.getElementById("postdetails");
+    if (details) {
+        details.addEventListener("toggle", function() {
+            if (details.open) {
+                var message = document.getElementById("message");
+                if (message) {
+                    message.focus();
+                }
+            }
+        });
+    }
+
     // Set post attributes and handle reflink hover previews.
     if (document.lastModified) {
         viewThreadModified = new Date(document.lastModified);
