@@ -36,6 +36,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"syscall"
 	"time"
 
@@ -264,6 +265,8 @@ type Server struct {
 	httpsServer *http.Server
 	httpsCert   *tls.Certificate
 
+	connCount *atomic.Int32
+
 	httpMaxRequestSize int64
 
 	twoFactorSessions []*twoFactorSession
@@ -294,6 +297,7 @@ func NewServer() *Server {
 		modQueueSize:          -1,
 		rebuildQueue:          make(chan *rebuildInfo),
 		httpClient:            httpClient,
+		connCount:             &atomic.Int32{},
 		msgPrinter:            message.NewPrinter(language.English),
 	}
 }
@@ -2492,6 +2496,15 @@ func withCacheHeader(fs http.Handler) http.HandlerFunc {
 	}
 }
 
+func (s *Server) handleConnState(conn net.Conn, state http.ConnState) {
+	switch state {
+	case http.StateNew:
+		s.connCount.Add(1)
+	case http.StateHijacked, http.StateClosed:
+		s.connCount.Add(-1)
+	}
+}
+
 // listen listens for HTTP connections and sends the error returned by the HTTP
 // server via the provided channel.
 func (s *Server) listen(httpErrors chan error) {
@@ -2533,6 +2546,7 @@ func (s *Server) listen(httpErrors chan error) {
 			ReadHeaderTimeout: 1 * time.Minute,
 			IdleTimeout:       1 * time.Minute,
 			Protocols:         p,
+			ConnState:         s.handleConnState,
 			HTTP2: &http.HTTP2Config{
 				WriteByteTimeout: 1 * time.Minute,
 			},
@@ -2554,6 +2568,7 @@ func (s *Server) listen(httpErrors chan error) {
 		ReadHeaderTimeout: 1 * time.Minute,
 		IdleTimeout:       1 * time.Minute,
 		Protocols:         p,
+		ConnState:         s.handleConnState,
 		HTTP2: &http.HTTP2Config{
 			WriteByteTimeout: 1 * time.Minute,
 		},

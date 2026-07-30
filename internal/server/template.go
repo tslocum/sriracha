@@ -80,6 +80,7 @@ type templateData struct {
 	Extra         string
 	Extra2        string
 	Extra3        string
+	Extra4        string
 	Opt           *ServerOptions
 	Manage        *manageData
 	Template      string

@@ -320,4 +320,6 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 	data.Extra2 = FormatFileSize(int64(m.Sys))
 
 	data.Extra3 = FormatDuration(time.Since(s.config.StartTime))
+
+	data.Extra4 = fmt.Sprintf("%d", s.connCount.Load())
 }

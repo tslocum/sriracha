@@ -38,6 +38,9 @@ msgstr[1] ""
 msgid "%s Devices"
 msgstr ""
 
+msgid "%s connections."
+msgstr ""
+
 msgid "%s imageboard and forum server"
 msgstr ""
 
@@ -295,6 +298,9 @@ msgid "Configure"
 msgstr ""
 
 msgid "Confirm"
+msgstr ""
+
+msgid "Connections"
 msgstr ""
 
 msgid "Content"

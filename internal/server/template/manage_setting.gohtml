@@ -5,6 +5,11 @@
 <legend>{{T "Status"}}</legend>
 <table class="manageform">
     <tr>
+        <td class="postblock"><label for="version">{{T "Version"}}</label></td>
+        <td><input type="text" name="version" value="{{.Extra}}" disabled></input></td>
+        <td>{{T "%s version." "Sriracha"}} [<a href="https://codeberg.org/tslocum/sriracha/releases/latest" target="_blank">{{T "View latest"}}</a>]</td>
+    </tr>
+    <tr>
         <td class="postblock"><label for="uptime">{{T "Uptime"}}</label></td>
         <td><input type="text" name="uptime" value="{{.Extra3}}" disabled></input></td>
         <td>{{T "%s uptime." "Sriracha"}}</td>
@@ -15,9 +20,9 @@
         <td>{{T "%s memory usage." "Sriracha"}}</td>
     </tr>
     <tr>
-        <td class="postblock"><label for="version">{{T "Version"}}</label></td>
-        <td><input type="text" name="version" value="{{.Extra}}" disabled></input></td>
-        <td>{{T "%s version." "Sriracha"}} [<a href="https://codeberg.org/tslocum/sriracha/releases/latest" target="_blank">{{T "View latest"}}</a>]</td>
+        <td class="postblock"><label for="memory">{{T "Connections"}}</label></td>
+        <td><input type="text" name="connections" value="{{.Extra4}}" disabled></input></td>
+        <td>{{T "%s connections." "Sriracha"}}</td>
     </tr>
 </table>
 </fieldset><br><br>
