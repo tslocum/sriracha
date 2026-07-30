@@ -152,12 +152,13 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 			data.ManageError("Incorrect passcode")
 			return
 		}
-		session.validated = true
 	}
 	if !session.loggedIn {
 		data.Redirect(w, r, "/sriracha/preference")
 		return
 	}
+
+	// Add device.
 	if strings.HasPrefix(r.URL.Path, "/sriracha/preference/2fa/add") {
 		if len(db.TwoFactorsByAccount(data.Account.ID)) >= totpMaxDevices {
 			data.ManageError(data.Get("Sorry, only %d devices may be added. Remove a device before adding another.", totpMaxDevices))

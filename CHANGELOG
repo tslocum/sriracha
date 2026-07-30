@@ -1,5 +1,9 @@
 1.9.1:
-- Fix touchscreen detection when multiple input devices are connected
+- Fix touchscreen detection
+- Offset reflink previews on touchscreens
+- Display connection count in Settings page
+- Support defaulting to flex styles
+- Support updating settings without rebuilding
 
 1.9.0:
 - Fix reflink previews interrupting scrolling on mobile devices
