@@ -312,6 +312,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 			"dir":         {dir},
 			"name":        {name},
 			"description": {description},
+			"style":       {s.config.Styles[0]},
 			"approval":    {strconv.Itoa(int(ApprovalAll))},
 		})
 		if err != nil {
@@ -348,6 +349,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 			"dir":         {dir},
 			"name":        {name},
 			"description": {description},
+			"style":       {s.config.Styles[0] + "/flex"},
 			"approval":    {strconv.Itoa(int(ApprovalNone))},
 			"maxname":     {strconv.Itoa(DefaultBoardMaxName)},
 			"maxemail":    {strconv.Itoa(DefaultBoardMaxEmail)},
