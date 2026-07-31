@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -52,8 +53,10 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 		db.DeleteNews(deleteNewsID)
 		os.Remove(filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", news.ID)))
 
+		wg := &sync.WaitGroup{}
 		s.writeNewsIndexes(db)
-		s.writeSiteIndex(db)
+		s.writeSiteIndex(wg)
+		wg.Wait()
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted news #%d", deleteNewsID), "")
 
@@ -89,13 +92,15 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 
 			db.UpdateNews(data.Manage.News)
 
+			wg := &sync.WaitGroup{}
 			if data.Manage.News.Timestamp == 0 || data.Manage.News.Timestamp > time.Now().Unix() {
 				os.Remove(filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", data.Manage.News.ID)))
 				s.writeNewsIndexes(db)
 			} else {
 				s.rebuildNewsItem(db, data.Manage.News)
 			}
-			s.writeSiteIndex(db)
+			s.writeSiteIndex(wg)
+			wg.Wait()
 
 			changes := printChanges(oldNews, *data.Manage.News)
 			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/news/%d", data.Manage.News.ID), changes)
@@ -123,8 +128,10 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 
 		db.AddNews(n)
 		if n.Timestamp != 0 && n.Timestamp <= time.Now().Unix() {
+			wg := &sync.WaitGroup{}
 			s.rebuildNewsItem(db, n)
-			s.writeSiteIndex(db)
+			s.writeSiteIndex(wg)
+			wg.Wait()
 		}
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/news/%d", n.ID), "")

@@ -55,7 +55,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 			s.queueNotifications(db, post)
 		}
 		s.writeModQueue(db)
-		s.writeSiteIndex(db)
+		s.writeSiteIndex(wg)
 		wg.Wait()
 
 		data.Redirect(w, r, "/sriracha/")

@@ -673,7 +673,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		for _, board := range updated {
 			s.rebuildBoard(db, wg, board)
 		}
-		s.writeSiteIndex(db)
+		s.writeSiteIndex(wg)
 		wg.Wait()
 
 		changes := printChanges(*b, *bb)
@@ -747,7 +747,9 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		s.refreshRulesCache(db)
 		s.refreshCategoryCache(db)
 		s.refreshKeywordCache(db)
-		s.writeSiteIndex(db)
+		wg := &sync.WaitGroup{}
+		s.writeSiteIndex(wg)
+		wg.Wait()
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted board #%d", b.ID), "")
 
@@ -872,7 +874,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 			for _, board := range updated {
 				s.rebuildBoard(db, wg, board)
 			}
-			s.writeSiteIndex(db)
+			s.writeSiteIndex(wg)
 			wg.Wait()
 
 			changes := printChanges(oldBoard, *data.Manage.Board)
@@ -971,7 +973,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		s.refreshKeywordCache(db)
 		wg := &sync.WaitGroup{}
 		s.rebuildBoard(db, wg, b)
-		s.writeSiteIndex(db)
+		s.writeSiteIndex(wg)
 		wg.Wait()
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/board/%d", b.ID), "")

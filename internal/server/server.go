@@ -11,7 +11,6 @@ import (
 	"crypto/tls"
 	"embed"
 	"encoding/base64"
-	"encoding/json"
 	"flag"
 	"fmt"
 	"hash"
@@ -29,7 +28,6 @@ import (
 	"os/signal"
 	"path"
 	"path/filepath"
-	"reflect"
 	"regexp"
 	"runtime"
 	"runtime/debug"
@@ -1455,68 +1453,7 @@ func (s *Server) rebuildThread(db serverDB, wg *sync.WaitGroup, post *Post) {
 	s.writeThread(db, wg, post.Board, post.Thread())
 	s.writeBoardIndexes(db, wg, post.Board)
 	s.writeOverboards(db, wg, []*Board{post.Board})
-	s.writeStatistics(db)
-}
-
-func (s *Server) writeStatistics(db serverDB) {
-	if !s.opt.Statistics {
-		return
-	}
-
-	serverStats := &ServerStats{
-		Name:      s.opt.SiteName,
-		About:     s.opt.SiteDescription,
-		Generated: time.Now().Unix(),
-	}
-	thirtyDays := serverStats.Generated - 2592000
-	for _, c := range s.opt.Categories {
-		for _, b := range c.Boards {
-			boardStats := BoardStats{
-				Dir:   b.Dir,
-				Name:  b.Name,
-				About: b.Description,
-				Month: db.NumPosts(b, thirtyDays),
-				Total: db.NumPosts(b, 0),
-			}
-			recent := db.LastPostByBoard(b)
-			if recent != nil {
-				boardStats.Recent = recent.URL(s.opt.SiteHome)
-			}
-			serverStats.Boards = append(serverStats.Boards, boardStats)
-
-			serverStats.Month += boardStats.Month
-			serverStats.Total += boardStats.Total
-		}
-	}
-
-	if s.statsCache != nil && reflect.DeepEqual(serverStats, s.statsCache) {
-		return
-	}
-
-	writePath := filepath.Join(s.config.Root, "stats_.json")
-	filePath := filepath.Join(s.config.Root, "stats.json")
-
-	file, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	statsJSON, err := json.MarshalIndent(serverStats, "", "\t")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = file.Write(statsJSON)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	file.Close()
-
-	err = os.Rename(writePath, filePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	s.statsCache = serverStats
+	s.writeStatistics(wg)
 }
 
 func (s *Server) writeModQueue(db serverDB) {
@@ -1573,8 +1510,8 @@ func (s *Server) rebuildAll(db serverDB) {
 	for _, b := range db.AllBoards() {
 		s.rebuildBoard(db, wg, b)
 	}
-	s.writeSiteIndex(db)
-	s.writeStatistics(db)
+	s.writeSiteIndex(wg)
+	s.writeStatistics(wg)
 	s.writeVisitorGuide(db)
 	wg.Wait()
 
@@ -1685,54 +1622,6 @@ func (s *Server) writeVisitorGuide(db serverDB) {
 	}
 	data.execute(file)
 	file.Close()
-	err = os.Rename(writePath, filePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-// writeSiteIndex writes the site index page to disk.
-func (s *Server) writeSiteIndex(db serverDB) {
-	if !s.opt.SiteIndex || s.opt.News == NewsWriteToIndex || s.opt.Overboard == "/" || db.BoardByDir("") != nil {
-		return
-	}
-	allBoards := db.AllBoards()
-	var keep []*Board
-	for _, board := range allBoards {
-		if board.Hide == HideIndex || board.Hide == HideEverywhere {
-			continue
-		}
-		keep = append(keep, board)
-	}
-	allBoards = keep
-	if len(allBoards) < 2 {
-		return
-	}
-	data := s.newTemplateData()
-	data.Template = "index"
-
-	data.Boards = allBoards
-
-	if s.opt.News != NewsDisable {
-		allNews := db.AllNews(true)
-		var latest *News
-		if len(allNews) > 0 {
-			latest = allNews[0]
-		}
-		data.News = latest
-	}
-
-	s.refreshRecentPosts(db)
-
-	writePath := filepath.Join(s.config.Root, "_index.html")
-	filePath := filepath.Join(s.config.Root, "index.html")
-
-	indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
-	if err != nil {
-		log.Fatal(err)
-	}
-	data.execute(indexFile)
-	indexFile.Close()
 	err = os.Rename(writePath, filePath)
 	if err != nil {
 		log.Fatal(err)
@@ -2287,8 +2176,8 @@ func (s *Server) handleRebuild() {
 			}
 		}
 		s.writeOverboards(db, wg, boards)
-		s.writeSiteIndex(db)
-		s.writeStatistics(db)
+		s.writeSiteIndex(wg)
+		s.writeStatistics(wg)
 		if s.opt.Notifications {
 			for _, info := range pending {
 				s.queueNotifications(db, info.post)

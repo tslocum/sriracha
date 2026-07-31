@@ -390,8 +390,8 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			boards = append(boards, board)
 		}
 		s.writeOverboards(db, wg, boards)
-		s.writeSiteIndex(db)
-		s.writeStatistics(db)
+		s.writeSiteIndex(wg)
+		s.writeStatistics(wg)
 		s.writeModQueue(db)
 		wg.Wait()
 
