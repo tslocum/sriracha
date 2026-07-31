@@ -1505,7 +1505,7 @@ func (s *Server) rebuildAll(db serverDB) {
 	wg := &sync.WaitGroup{}
 	allPages := db.AllPages()
 	if len(allPages) > 0 {
-		s.writePages(db, wg, allPages) // Ignore non-fatal page errors.
+		s.writePages(db, wg, allPages)
 	}
 	published := len(db.AllNews(true))
 	if published > 0 {
@@ -2637,6 +2637,7 @@ func (s *Server) Run() error {
 		if sv == SrirachaVersion {
 			fmt.Println("Rebuilding...")
 		}
+		db.SoftCommit()
 		s.rebuildAll(db)
 	}
 
@@ -2948,6 +2949,7 @@ type serverDB interface {
 	SoftRollBack()
 	Commit()
 	CommitWithErr() error
+	SoftCommit()
 }
 
 var allGlobalSettings = []string{

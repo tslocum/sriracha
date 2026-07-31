@@ -65,6 +65,7 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 				category.Boards = append(category.Boards[:i], category.Boards[i+1:]...)
 				db.UpdateCategory(category)
 				s.refreshCategoryCache(db)
+				db.SoftCommit()
 				s.rebuildAll(db)
 				break
 			}
@@ -103,6 +104,7 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 		}
 
 		s.refreshCategoryCache(db)
+		db.SoftCommit()
 		s.rebuildAll(db)
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted category #%d", c.ID), "")
@@ -123,6 +125,7 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 					category.Boards[i], category.Boards[i-1] = category.Boards[i-1], category.Boards[i]
 					db.UpdateCategory(category)
 					s.refreshCategoryCache(db)
+					db.SoftCommit()
 					s.rebuildAll(db)
 					break
 				}
@@ -143,6 +146,7 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 					category.Boards[i], category.Boards[i+1] = category.Boards[i+1], category.Boards[i]
 					db.UpdateCategory(category)
 					s.refreshCategoryCache(db)
+					db.SoftCommit()
 					s.rebuildAll(db)
 					break
 				}
@@ -171,6 +175,7 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 					c.Sort = i
 					db.UpdateCategory(c)
 					s.refreshCategoryCache(db)
+					db.SoftCommit()
 					s.rebuildAll(db)
 				}
 			} else {
@@ -190,6 +195,7 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 					c.Sort = i
 					db.UpdateCategory(c)
 					s.refreshCategoryCache(db)
+					db.SoftCommit()
 					s.rebuildAll(db)
 				}
 			}
@@ -216,6 +222,7 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 					c.Sort = i
 					db.UpdateCategory(c)
 					s.refreshCategoryCache(db)
+					db.SoftCommit()
 					s.rebuildAll(db)
 				}
 			} else {
@@ -235,6 +242,7 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 					c.Sort = i
 					db.UpdateCategory(c)
 					s.refreshCategoryCache(db)
+					db.SoftCommit()
 					s.rebuildAll(db)
 				}
 			}
@@ -263,6 +271,7 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 				data.Manage.Category.Boards = append(data.Manage.Category.Boards, board)
 				db.UpdateCategory(data.Manage.Category)
 				s.refreshCategoryCache(db)
+				db.SoftCommit()
 				s.rebuildAll(db)
 			}
 
@@ -314,6 +323,7 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 			}
 
 			s.refreshCategoryCache(db)
+			db.SoftCommit()
 			s.rebuildAll(db)
 
 			changes := printChanges(oldCategory, *data.Manage.Category)
@@ -362,6 +372,7 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 		db.AddCategory(c)
 
 		s.refreshCategoryCache(db)
+		db.SoftCommit()
 		s.rebuildAll(db)
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/category/%d", c.ID), "")

@@ -1,3 +1,6 @@
+1.9.3:
+- Fix creating newly approved thread pages
+
 1.9.2:
 - Utilize all CPU cores to build static pages
 

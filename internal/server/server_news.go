@@ -54,6 +54,7 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 		os.Remove(filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", news.ID)))
 
 		wg := &sync.WaitGroup{}
+		db.SoftCommit()
 		s.writeNewsIndexes(db)
 		s.writeSiteIndex(wg)
 		wg.Wait()
@@ -93,6 +94,7 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 			db.UpdateNews(data.Manage.News)
 
 			wg := &sync.WaitGroup{}
+			db.SoftCommit()
 			if data.Manage.News.Timestamp == 0 || data.Manage.News.Timestamp > time.Now().Unix() {
 				os.Remove(filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", data.Manage.News.ID)))
 				s.writeNewsIndexes(db)
@@ -127,6 +129,7 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 		}
 
 		db.AddNews(n)
+		db.SoftCommit()
 		if n.Timestamp != 0 && n.Timestamp <= time.Now().Unix() {
 			wg := &sync.WaitGroup{}
 			s.rebuildNewsItem(db, n)

@@ -669,6 +669,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		s.refreshCategoryCache(db)
 		s.refreshKeywordCache(db)
 		wg := &sync.WaitGroup{}
+		db.SoftCommit()
 		s.rebuildBoard(db, wg, bb)
 		for _, board := range updated {
 			s.rebuildBoard(db, wg, board)
@@ -748,6 +749,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		s.refreshCategoryCache(db)
 		s.refreshKeywordCache(db)
 		wg := &sync.WaitGroup{}
+		db.SoftCommit()
 		s.writeSiteIndex(wg)
 		wg.Wait()
 
@@ -870,6 +872,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 			s.refreshCategoryCache(db)
 			s.refreshKeywordCache(db)
 			wg := &sync.WaitGroup{}
+			db.SoftCommit()
 			s.rebuildBoard(db, wg, data.Manage.Board)
 			for _, board := range updated {
 				s.rebuildBoard(db, wg, board)
@@ -972,6 +975,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		s.refreshCategoryCache(db)
 		s.refreshKeywordCache(db)
 		wg := &sync.WaitGroup{}
+		db.SoftCommit()
 		s.rebuildBoard(db, wg, b)
 		s.writeSiteIndex(wg)
 		wg.Wait()

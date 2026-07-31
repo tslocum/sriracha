@@ -124,6 +124,7 @@ func (s *Server) servePage(data *templateData, db serverDB, w http.ResponseWrite
 
 		db.UpdatePage(data.Manage.Page)
 		wg := &sync.WaitGroup{}
+		db.SoftCommit()
 		s.writePages(db, wg, []*Page{data.Manage.Page})
 		wg.Wait()
 
@@ -176,6 +177,7 @@ func (s *Server) servePage(data *templateData, db serverDB, w http.ResponseWrite
 
 		db.AddPage(p)
 		wg := &sync.WaitGroup{}
+		db.SoftCommit()
 		s.writePages(db, wg, []*Page{p})
 		wg.Wait()
 

@@ -99,6 +99,9 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			for _, post := range posts {
 				s.deletePost(db, post)
 				s.log(db, data.Account, post.Board, fmt.Sprintf("Deleted >>%d", post.ID), "")
+			}
+			db.SoftCommit()
+			for _, post := range posts {
 				s.rebuildThread(db, wg, post)
 			}
 			wg.Wait()
@@ -238,6 +241,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			}
 			// Rebuild static files.
 			wg := &sync.WaitGroup{}
+			db.SoftCommit()
 			s.rebuildThread(db, wg, post)
 			s.writeBoardIndexes(db, wg, source)
 			wg.Wait()
@@ -297,6 +301,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		}
 		if !skipRebuild {
 			wg := &sync.WaitGroup{}
+			db.SoftCommit()
 			s.rebuildThread(db, wg, post)
 			wg.Wait()
 		}
@@ -370,6 +375,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		}
 
 		wg := &sync.WaitGroup{}
+		db.SoftCommit()
 		var boardIDs []int
 		for _, info := range rebuild {
 			post := db.PostByID(info[1])

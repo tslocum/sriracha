@@ -283,6 +283,20 @@ func (db *DB) CommitWithErr() error {
 	return nil
 }
 
+func (db *DB) SoftCommit() {
+	if db.conn == nil || db.committed {
+		return
+	}
+	_, err := db.conn.Exec(context.Background(), "COMMIT")
+	if err != nil {
+		dbErr(fmt.Errorf("failed to commit transaction: %w", err))
+	}
+	_, err = db.conn.Exec(context.Background(), "BEGIN")
+	if err != nil {
+		dbErr(fmt.Errorf("failed to begin transaction: %w", err))
+	}
+}
+
 func (db *DB) configKey(key string) string {
 	key = strings.ToLower(key)
 	if len(db.plugin) != 0 {

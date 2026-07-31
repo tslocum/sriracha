@@ -104,6 +104,7 @@ func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request
 		s.deletePost(db, post)
 
 		wg := &sync.WaitGroup{}
+		db.SoftCommit()
 		if post.Parent == 0 {
 			os.Remove(filepath.Join(s.config.Root, b.Dir, "res", fmt.Sprintf("%d.html", post.ID)))
 		} else {

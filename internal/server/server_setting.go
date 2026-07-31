@@ -145,6 +145,7 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 			s.log(db, data.Account, nil, "Reset settings", changes)
 		}
 
+		db.SoftCommit()
 		s.rebuildAll(db)
 
 		data.Redirect(w, r, "/sriracha/setting")
@@ -309,6 +310,7 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		}
 
 		if FormBool(r, "rebuild") {
+			db.SoftCommit()
 			s.rebuildAll(db)
 		}
 	}

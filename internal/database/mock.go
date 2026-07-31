@@ -81,6 +81,7 @@ func (db *mockDB) RollBack()                                     {}
 func (db *mockDB) SoftRollBack()                                 {}
 func (db *mockDB) Commit()                                       {}
 func (db *mockDB) CommitWithErr() error                          { return nil }
+func (db *mockDB) SoftCommit()                                   {}
 
 // Config.
 func (db *mockDB) HaveConfig(key string) bool                 { return false }

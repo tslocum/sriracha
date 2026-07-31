@@ -551,5 +551,6 @@ func (s *Server) serveImport(data *templateData, db serverDB, w http.ResponseWri
 	}
 
 	s.config.ImportComplete = true
+	db.SoftCommit()
 	s.rebuildAll(db)
 }

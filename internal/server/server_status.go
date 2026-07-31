@@ -51,6 +51,13 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 			}
 			db.AddPostBacklinks(post)
 			db.BumpThread(post.Thread(), time.Now().Unix())
+		}
+		db.SoftCommit()
+		for _, postID := range ids {
+			post := db.PostByID(postID)
+			if post == nil {
+				continue
+			}
 			s.rebuildThread(db, wg, post)
 			s.queueNotifications(db, post)
 		}
@@ -93,6 +100,9 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 					db.UpdatePostNameblock(p.ID, p.NameBlock)
 				}
 			}
+		}
+		db.SoftCommit()
+		for _, b := range db.AllBoards() {
 			s.rebuildBoard(db, wg, b)
 		}
 		wg.Wait()
