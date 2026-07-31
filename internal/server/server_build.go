@@ -80,6 +80,7 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 	}
 
 	data.Threads = data.Threads[:0]
+	var postIDs []int
 	for _, threadInfo := range info.threads[start:end] {
 		thread := db.PostByID(threadInfo[0])
 		thread.Replies = threadInfo[1]
@@ -88,9 +89,14 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 			posts = append(posts, db.AllReplies(thread.ID, board.Replies, true)...)
 		}
 		for i := range posts {
-			s.indexCache[board.ID][page] = append(s.indexCache[board.ID][page], posts[i].ID)
+			postIDs = append(postIDs, posts[i].ID)
 		}
 		data.Threads = append(data.Threads, posts)
+	}
+	if cap(s.indexCache[board.ID][page]) != len(postIDs) {
+		s.indexCache[board.ID][page] = postIDs
+	} else {
+		copy(s.indexCache[board.ID][page], postIDs)
 	}
 	if checkCache && len(s.indexCache[board.ID][page]) > 0 && slices.Equal(s.indexCache[board.ID][page], existingIDs(page)) {
 		if trace {

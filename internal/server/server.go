@@ -2130,6 +2130,8 @@ func (s *Server) handleRebuild() {
 	var threads []int
 	var shutdown bool
 	var t *time.Timer
+	var traceT time.Time
+	var traceD time.Duration
 	wg := &sync.WaitGroup{}
 	for {
 		// Process queue.
@@ -2171,6 +2173,9 @@ func (s *Server) handleRebuild() {
 		}
 
 		// Flush queue.
+		if trace {
+			traceT = time.Now()
+		}
 		db := s.begin()
 		for _, info := range pending {
 			thread := info.post.Thread()
@@ -2193,6 +2198,14 @@ func (s *Server) handleRebuild() {
 		}
 		wg.Wait()
 		db.Commit()
+		if trace {
+			traceD = time.Since(traceT)
+			msg := fmt.Sprintf("Built %d thread", len(threads))
+			if len(threads) != 1 {
+				msg += "s"
+			}
+			traceLog(msg, traceD)
+		}
 
 		for _, info := range pending {
 			info.wg.Done()
