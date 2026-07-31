@@ -245,7 +245,8 @@ type Server struct {
 	notificationsWaitGroup sync.WaitGroup
 	shutdownNotifications  chan struct{}
 
-	indexCache map[int][][]int
+	indexCache     map[int][][]int
+	indexCacheLock *sync.Mutex
 
 	statsCache *ServerStats
 
@@ -291,6 +292,7 @@ func NewServer() *Server {
 		},
 		shutdownNotifications: make(chan struct{}),
 		indexCache:            make(map[int][][]int),
+		indexCacheLock:        &sync.Mutex{},
 		lastSearch:            make(map[string]int64),
 		modQueueSize:          -1,
 		buildQueue:            make(chan *buildInfo),
@@ -1494,10 +1496,13 @@ func (s *Server) rebuildAll(db serverDB) {
 		traceT = time.Now()
 	}
 
-	wg := &sync.WaitGroup{}
+	s.indexCacheLock.Lock()
 	for boardID := range s.indexCache {
 		s.indexCache[boardID] = s.indexCache[boardID][:0]
 	}
+	s.indexCacheLock.Unlock()
+
+	wg := &sync.WaitGroup{}
 	allPages := db.AllPages()
 	if len(allPages) > 0 {
 		s.writePages(db, wg, allPages) // Ignore non-fatal page errors.
@@ -2119,6 +2124,7 @@ func (s *Server) handleRebuild() {
 	var info *rebuildInfo
 	var pending []*rebuildInfo
 	var boards []*Board
+	var boardIDs []int
 	var threads []int
 	var shutdown bool
 	var t *time.Timer
@@ -2176,9 +2182,10 @@ func (s *Server) handleRebuild() {
 				s.writeThread(db, wg, info.post.Board, thread)
 				threads = append(threads, thread)
 			}
-			if !slices.Contains(boards, info.post.Board) {
+			if !slices.Contains(boardIDs, info.post.Board.ID) {
 				s.writeBoardIndexes(db, wg, info.post.Board)
 				boards = append(boards, info.post.Board)
+				boardIDs = append(boardIDs, info.post.Board.ID)
 			}
 		}
 		s.writeOverboards(db, wg, boards)

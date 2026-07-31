@@ -93,6 +93,7 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 		}
 		data.Threads = append(data.Threads, posts)
 	}
+	s.indexCacheLock.Lock()
 	if cap(s.indexCache[board.ID][page]) != len(postIDs) {
 		s.indexCache[board.ID][page] = postIDs
 	} else {
@@ -103,8 +104,10 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 			traceD = time.Since(traceT)
 			traceLog(board.Path()+fileName+" (skipped)", traceD)
 		}
+		s.indexCacheLock.Unlock()
 		return
 	}
+	s.indexCacheLock.Unlock()
 	data.Page = page
 
 	writePath := filepath.Join(s.config.Root, board.Dir, "_"+fileName)
@@ -399,7 +402,9 @@ func (s *Server) _build() {
 
 // rebuildBoard rebuilds all pages in a board.
 func (s *Server) rebuildBoard(db serverDB, wg *sync.WaitGroup, board *Board) {
+	s.indexCacheLock.Lock()
 	s.indexCache[board.ID] = nil
+	s.indexCacheLock.Unlock()
 
 	threads := s.writeBoardIndexes(db, wg, board)
 	for _, threadInfo := range threads {
@@ -421,6 +426,7 @@ func (s *Server) writeBoardIndexes(db serverDB, wg *sync.WaitGroup, board *Board
 	}
 
 	pages := pageCount(len(threads), board.Threads)
+	s.indexCacheLock.Lock()
 	allPostIDs := make([][]int, len(s.indexCache[board.ID]))
 	for i := range s.indexCache[board.ID] {
 		allPostIDs[i] = make([]int, len(s.indexCache[board.ID][i]))
@@ -433,6 +439,7 @@ func (s *Server) writeBoardIndexes(db serverDB, wg *sync.WaitGroup, board *Board
 			copy(s.indexCache[board.ID][i], allPostIDs[i])
 		}
 	}
+	s.indexCacheLock.Unlock()
 	for build := buildBoardIndex; build <= buildBoardCatalog; build++ {
 		info := &buildInfo{
 			build:   build,

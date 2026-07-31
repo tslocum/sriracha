@@ -1225,7 +1225,6 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 
 	s.rebuildQueue <- &rebuildInfo{post: post, wg: wg}
 	s.rebuildLock.Unlock()
-
 	wg.Wait()
 
 	redir := fmt.Sprintf("%sres/%d.html#%d", b.Path(), post.Thread(), post.ID)
