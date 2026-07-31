@@ -49,10 +49,8 @@ func Connect(c *Config) (*pgxpool.Pool, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse database configuration: %w", err)
 	}
-	numConns := int32(runtime.NumCPU())
-	if numConns < 2 {
-		numConns = 2
-	}
+	// Pool one connection for the main thread and one connection for each worker thread.
+	numConns := max(2, 1+int32(runtime.NumCPU()))
 	config.MinConns = numConns
 	config.MinIdleConns = numConns
 	config.MaxConns = numConns
