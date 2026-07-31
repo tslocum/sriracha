@@ -2214,6 +2214,7 @@ func (s *Server) handleRebuild() {
 
 		pending = pending[:0]
 		boards = boards[:0]
+		boardIDs = boardIDs[:0]
 		threads = threads[:0]
 
 		lastBuild = time.Now()
