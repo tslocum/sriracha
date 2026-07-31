@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
+	"runtime"
 	"runtime/debug"
 	"strconv"
 	"strings"
@@ -48,9 +49,13 @@ func Connect(c *Config) (*pgxpool.Pool, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse database configuration: %w", err)
 	}
-	config.MinConns = 1
-	config.MinIdleConns = 1
-	config.MaxConns = 1
+	numConns := int32(runtime.NumCPU())
+	if numConns < 4 {
+		numConns = 4
+	}
+	config.MinConns = numConns
+	config.MinIdleConns = numConns
+	config.MaxConns = numConns
 
 	pool, err := pgxpool.NewWithConfig(context.Background(), config)
 	if err != nil {

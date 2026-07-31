@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"sync"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
@@ -102,12 +103,14 @@ func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request
 
 		s.deletePost(db, post)
 
+		wg := &sync.WaitGroup{}
 		if post.Parent == 0 {
 			os.Remove(filepath.Join(s.config.Root, b.Dir, "res", fmt.Sprintf("%d.html", post.ID)))
 		} else {
-			s.writeThread(db, b, post.Thread())
+			s.writeThread(db, wg, b, post.Thread())
 		}
-		s.writeBoardIndexes(db, b)
+		s.writeBoardIndexes(db, wg, b)
+		wg.Wait()
 
 		data.Template = "board_info"
 		data.Info = fmt.Sprintf("Deleted No.%d", post.ID)

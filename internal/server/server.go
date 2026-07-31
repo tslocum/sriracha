@@ -31,6 +31,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
+	"runtime"
 	"runtime/debug"
 	"slices"
 	"strconv"
@@ -239,7 +240,6 @@ type Server struct {
 
 	tpl             *template.Template // Template collection used when executing most web requests.
 	tplOriginal     *template.Template // Original template collection. This is needed because a template collection can't be extended once it has been used.
-	tplDB           serverDB
 	customTemplates []string
 
 	notifications          []notification
@@ -254,6 +254,8 @@ type Server struct {
 	lastSearch map[string]int64
 
 	modQueueSize int
+
+	buildQueue chan *buildInfo
 
 	rebuildQueue     chan *rebuildInfo
 	rebuildWaitGroup sync.WaitGroup
@@ -295,6 +297,7 @@ func NewServer() *Server {
 		indexCache:            make(map[int][][]int),
 		lastSearch:            make(map[string]int64),
 		modQueueSize:          -1,
+		buildQueue:            make(chan *buildInfo),
 		rebuildQueue:          make(chan *rebuildInfo),
 		httpClient:            httpClient,
 		connCount:             &atomic.Int32{},
@@ -1321,14 +1324,14 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 			Path:  "/",
 		})
 		http.Redirect(w, r, "/sriracha/", http.StatusFound)
-		return s.newTemplateData(db)
+		return s.newTemplateData()
 	}
 
 	cookies := r.CookiesNamed("sriracha_session")
 	if len(cookies) > 0 {
 		account := db.AccountBySessionKey(cookies[0].Value)
 		if account != nil {
-			data := s.newTemplateData(db)
+			data := s.newTemplateData()
 			data.Account = account
 			return data
 		}
@@ -1368,347 +1371,22 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 							session.timestamp = 0
 						}
 						http.Redirect(w, r, "/sriracha/", http.StatusFound)
-						return s.newTemplateData(db)
+						return s.newTemplateData()
 					}
 				}
 			}
 			if !session.validated {
-				return s.newTemplateData(db)
+				return s.newTemplateData()
 			}
 		}
 	}
-	return s.newTemplateData(db)
-}
-
-// writeThread writes a thread res page to disk.
-func (s *Server) writeThread(db serverDB, board *Board, postID int) {
-	posts := db.AllPostsInThread(true, postID)
-	if len(posts) == 0 {
-		return
-	}
-
-	if board.Unique == 0 {
-		board.Unique = db.UniqueUserPosts(board)
-	}
-
-	writePath := filepath.Join(s.config.Root, board.Dir, "res", fmt.Sprintf("_%d.html", postID))
-	filePath := filepath.Join(s.config.Root, board.Dir, "res", fmt.Sprintf("%d.html", postID))
-
-	f, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	data := s.newTemplateData(db)
-	data.Board = board
-	data.Boards = db.AllBoards()
-	data.Threads = [][]*Post{posts}
-	data.ReplyMode = postID
-	data.Template = "board_page"
-	data.execute(f)
-
-	f.Close()
-	err = os.Rename(writePath, filePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-// writeBoardIndexes writes board index pages to disk.
-func (s *Server) writeBoardIndexes(db serverDB, board *Board) {
-	var (
-		traceT time.Time
-		traceD time.Duration
-	)
-
-	if board.Unique == 0 {
-		board.Unique = db.UniqueUserPosts(board)
-	}
-
-	data := s.newTemplateData(db)
-	data.Board = board
-	data.Boards = db.AllBoards()
-	data.ReplyMode = 1
-	data.Template = "board_catalog"
-
-	threadInfo := db.AllThreads(true, board)
-
-	// Write catalog.
-	if board.Type == TypeImageboard {
-		if trace {
-			traceT = time.Now()
-		}
-
-		writePath := filepath.Join(s.config.Root, board.Dir, "_catalog.html")
-		filePath := filepath.Join(s.config.Root, board.Dir, "catalog.html")
-
-		catalogFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		for _, info := range threadInfo {
-			thread := db.PostByID(info[0])
-			thread.Replies = info[1]
-			data.Threads = append(data.Threads, []*Post{thread})
-		}
-		data.execute(catalogFile)
-
-		catalogFile.Close()
-		err = os.Rename(writePath, filePath)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if trace {
-			traceD = time.Since(traceT)
-			traceLog(board.Path()+"catalog.html", traceD)
-		}
-	}
-
-	// Write indexes.
-
-	existingIDs := func(page int) []int {
-		cachedBoard := s.indexCache[board.ID]
-		if cachedBoard == nil || page < 0 || page > len(cachedBoard)-1 {
-			return nil
-		}
-		return cachedBoard[page]
-	}
-
-	data.ReplyMode = 0
-	data.Template = "board_page"
-	data.Pages = pageCount(len(threadInfo), board.Threads)
-	allPostIDs := make([][]int, data.Pages)
-	checkCache := board.Type == TypeImageboard && len(s.indexCache[board.ID]) > 0
-	for page := 0; page < data.Pages; page++ {
-		if trace {
-			traceT = time.Now()
-		}
-
-		fileName := "index.html"
-		if page > 0 {
-			fileName = fmt.Sprintf("%d.html", page)
-		}
-
-		start := page * board.Threads
-		end := len(threadInfo)
-		if board.Threads != 0 && end > start+board.Threads {
-			end = start + board.Threads
-		}
-
-		data.Threads = data.Threads[:0]
-		for _, info := range threadInfo[start:end] {
-			thread := db.PostByID(info[0])
-			thread.Replies = info[1]
-			posts := []*Post{thread}
-			if board.Type == TypeImageboard {
-				posts = append(posts, db.AllReplies(thread.ID, board.Replies, true)...)
-			}
-			for i := range posts {
-				allPostIDs[page] = append(allPostIDs[page], posts[i].ID)
-			}
-			data.Threads = append(data.Threads, posts)
-		}
-		if checkCache && slices.Equal(allPostIDs[page], existingIDs(page)) {
-			if trace {
-				traceD = time.Since(traceT)
-				traceLog(board.Path()+fileName+" (skipped)", traceD)
-			}
-			continue
-		}
-		data.Page = page
-
-		writePath := filepath.Join(s.config.Root, board.Dir, "_"+fileName)
-		filePath := filepath.Join(s.config.Root, board.Dir, fileName)
-
-		indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
-		if err != nil {
-			log.Fatal(err)
-		}
-		data.execute(indexFile)
-
-		indexFile.Close()
-		err = os.Rename(writePath, filePath)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if trace {
-			traceD = time.Since(traceT)
-			traceLog(board.Path()+fileName, traceD)
-		}
-	}
-	s.indexCache[board.ID] = allPostIDs
+	return s.newTemplateData()
 }
 
 // writeOverboard writes overboard pages to disk.
-func (s *Server) writeOverboard(db serverDB, c *categoryInfo) {
-	var (
-		traceT time.Time
-		traceD time.Duration
-	)
-
-	var id int
-	if c != nil {
-		id = c.ID * -1
-	}
-
-	dir := s.opt.Overboard
-	if c != nil {
-		dir = c.Overboard
-	}
-
-	name := gotext.Get("Overboard")
-	if c != nil && c.Name != "" {
-		name = c.Name
-	}
-
-	var overboardDir string
-	overboardPath := "/"
-	if dir != "/" {
-		overboardDir = dir
-		overboardPath += dir + "/"
-	}
-
-	overboard := &Board{
-		ID:      id,
-		Type:    s.opt.OverboardType,
-		Name:    name,
-		Dir:     overboardDir,
-		Threads: s.opt.OverboardThreads,
-		Replies: s.opt.OverboardReplies,
-	}
-
-	data := s.newTemplateData(db)
-	data.Board = overboard
-	if c != nil {
-		data.Boards = c.Boards
-	} else {
-		data.Boards = db.AllBoards()
-	}
-	data.ReplyMode = 1
-	data.Template = "board_catalog"
-
-	var boards []*Board
-	if c != nil {
-		boards = c.Boards
-	}
-	threadInfo := db.AllThreads(true, boards...)
-
-	// Write catalog.
-	if overboard.Type == TypeImageboard {
-		if trace {
-			traceT = time.Now()
-		}
-
-		writePath := filepath.Join(s.config.Root, overboardDir, "_catalog.html")
-		filePath := filepath.Join(s.config.Root, overboardDir, "catalog.html")
-
-		catalogFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		for _, info := range threadInfo {
-			thread := db.PostByID(info[0])
-			thread.Replies = info[1]
-			data.Threads = append(data.Threads, []*Post{thread})
-		}
-		data.execute(catalogFile)
-
-		catalogFile.Close()
-		err = os.Rename(writePath, filePath)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if trace {
-			traceD = time.Since(traceT)
-			traceLog(overboardPath+"catalog.html", traceD)
-		}
-	}
-
-	// Write indexes.
-
-	existingIDs := func(page int) []int {
-		cachedBoard := s.indexCache[overboard.ID]
-		if cachedBoard == nil || page < 0 || page > len(cachedBoard)-1 {
-			return nil
-		}
-		return cachedBoard[page]
-	}
-
-	data.ReplyMode = 0
-	data.Template = "board_page"
-	data.Pages = pageCount(len(threadInfo), overboard.Threads)
-	allPostIDs := make([][]int, data.Pages)
-	checkCache := overboard.Type == TypeImageboard && len(s.indexCache[overboard.ID]) > 0
-	for page := 0; page < data.Pages; page++ {
-		if trace {
-			traceT = time.Now()
-		}
-
-		fileName := "index.html"
-		if page > 0 {
-			fileName = fmt.Sprintf("%d.html", page)
-		}
-
-		start := page * overboard.Threads
-		end := len(threadInfo)
-		if overboard.Threads != 0 && end > start+overboard.Threads {
-			end = start + overboard.Threads
-		}
-
-		data.Threads = data.Threads[:0]
-		for _, info := range threadInfo[start:end] {
-			thread := db.PostByID(info[0])
-			thread.Replies = info[1]
-			posts := []*Post{thread}
-			if overboard.Type == TypeImageboard {
-				posts = append(posts, db.AllReplies(thread.ID, overboard.Replies, true)...)
-			}
-			for i := range posts {
-				allPostIDs[page] = append(allPostIDs[page], posts[i].ID)
-			}
-			data.Threads = append(data.Threads, posts)
-		}
-		if checkCache && slices.Equal(allPostIDs[page], existingIDs(page)) {
-			if trace {
-				traceD = time.Since(traceT)
-				traceLog(overboardPath+fileName+" (skipped)", traceD)
-			}
-			continue
-		}
-		data.Page = page
-
-		writePath := filepath.Join(s.config.Root, overboardDir, "_"+fileName)
-		filePath := filepath.Join(s.config.Root, overboardDir, fileName)
-
-		indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
-		if err != nil {
-			log.Fatal(err)
-		}
-		data.execute(indexFile)
-
-		indexFile.Close()
-		err = os.Rename(writePath, filePath)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if trace {
-			traceD = time.Since(traceT)
-			traceLog(overboardPath+fileName, traceD)
-		}
-	}
-	s.indexCache[overboard.ID] = allPostIDs
-}
-
-// writeOverboard writes overboard pages to disk.
-func (s *Server) writeOverboards(db serverDB, boards []*Board) {
+func (s *Server) writeOverboards(db serverDB, wg *sync.WaitGroup, boards []*Board) {
 	if s.opt.Overboard != "" {
-		s.writeOverboard(db, nil)
+		s.writeOverboard(db, wg, nil)
 	}
 	for _, c := range s.opt.Categories {
 		if c.Overboard == "" {
@@ -1729,7 +1407,7 @@ func (s *Server) writeOverboards(db serverDB, boards []*Board) {
 				continue
 			}
 		}
-		s.writeOverboard(db, c)
+		s.writeOverboard(db, wg, c)
 	}
 }
 
@@ -1750,7 +1428,7 @@ func (s *Server) writePage(db serverDB, data *templateData, p *Page, w io.Writer
 	}
 
 	if data == nil {
-		data = s.newTemplateData(db)
+		data = s.newTemplateData()
 		data.Boards = db.AllBoards()
 		data.Template = "page"
 	}
@@ -1772,49 +1450,12 @@ func (s *Server) writePage(db serverDB, data *templateData, p *Page, w io.Writer
 	return data.executeWithError(w)
 }
 
-// writePages writes custom pages to disk.
-func (s *Server) writePages(db serverDB, pages []*Page) error {
-	data := s.newTemplateData(db)
-	data.Boards = db.AllBoards()
-	data.Template = "page"
-
-	for _, p := range pages {
-		writePath := filepath.Join(s.config.Root, p.Path+"_.html")
-		filePath := filepath.Join(s.config.Root, p.Path+".html")
-
-		pageFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		err = s.writePage(db, data, p, pageFile)
-		pageFile.Close()
-		if err != nil {
-			return err
-		}
-		err = os.Rename(writePath, filePath)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 // rebuildBoard rebuilds a thread res page and board index pages.
-func (s *Server) rebuildThread(db serverDB, post *Post) {
-	s.writeThread(db, post.Board, post.Thread())
-	s.writeBoardIndexes(db, post.Board)
-	s.writeOverboards(db, []*Board{post.Board})
+func (s *Server) rebuildThread(db serverDB, wg *sync.WaitGroup, post *Post) {
+	s.writeThread(db, wg, post.Board, post.Thread())
+	s.writeBoardIndexes(db, wg, post.Board)
+	s.writeOverboards(db, wg, []*Board{post.Board})
 	s.writeStatistics(db)
-}
-
-// rebuildBoard rebuilds all pages in a board.
-func (s *Server) rebuildBoard(db serverDB, board *Board) {
-	s.indexCache[board.ID] = nil
-	for _, info := range db.AllThreads(true, board) {
-		s.writeThread(db, board, info[0])
-	}
-	s.writeBoardIndexes(db, board)
 }
 
 func (s *Server) writeStatistics(db serverDB) {
@@ -1910,46 +1551,36 @@ func (s *Server) writeModQueue(db serverDB) {
 }
 
 // rebuildAll rebuilds all board, overboard, news and custom pages.
-func (s *Server) rebuildAll(db serverDB, verbose bool) {
+func (s *Server) rebuildAll(db serverDB) {
 	var traceT time.Time
 	if trace {
 		traceT = time.Now()
 	}
 
+	wg := &sync.WaitGroup{}
 	for boardID := range s.indexCache {
 		s.indexCache[boardID] = s.indexCache[boardID][:0]
 	}
 	allPages := db.AllPages()
 	if len(allPages) > 0 {
-		if verbose {
-			fmt.Println("Rebuilding pages...")
-		}
-		_ = s.writePages(db, allPages) // Ignore non-fatal page errors.
+		s.writePages(db, wg, allPages) // Ignore non-fatal page errors.
 	}
 	published := len(db.AllNews(true))
 	if published > 0 {
-		if verbose {
-			fmt.Println("Rebuilding news...")
-		}
 		s.rebuildNews(db)
 	}
-	if s.opt.Overboard != "" && verbose {
-		fmt.Println("Rebuilding overboard...")
-	}
-	s.writeOverboards(db, nil)
+	s.writeOverboards(db, wg, nil)
 	for _, b := range db.AllBoards() {
-		if verbose {
-			fmt.Printf("Rebuilding %s...\n", b.Path())
-		}
-		s.rebuildBoard(db, b)
+		s.rebuildBoard(db, wg, b)
 	}
 	s.writeSiteIndex(db)
 	s.writeStatistics(db)
 	s.writeVisitorGuide(db)
+	wg.Wait()
 
 	if trace {
 		traceD := time.Since(traceT)
-		traceLog("total", traceD)
+		traceLog("Total", traceD)
 	}
 }
 
@@ -1959,7 +1590,7 @@ func (s *Server) writeNewsItem(db serverDB, n *News) {
 		return
 	}
 
-	data := s.newTemplateData(db)
+	data := s.newTemplateData()
 	data.Boards = db.AllBoards()
 	data.Template = "news"
 	data.AllNews = []*News{n}
@@ -1984,7 +1615,7 @@ func (s *Server) writeNewsItem(db serverDB, n *News) {
 // writeNewsIndexes writes news index pages to disk.
 func (s *Server) writeNewsIndexes(db serverDB) {
 	allNews := db.AllNews(true)
-	data := s.newTemplateData(db)
+	data := s.newTemplateData()
 	data.Boards = db.AllBoards()
 	data.Template = "news"
 
@@ -2041,7 +1672,7 @@ func (s *Server) rebuildNews(db serverDB) {
 
 // writeVisitorGuide writes the visitor guide to disk.
 func (s *Server) writeVisitorGuide(db serverDB) {
-	data := s.newTemplateData(db)
+	data := s.newTemplateData()
 	data.Template = "guide"
 	data.Boards = db.AllBoards()
 
@@ -2077,7 +1708,7 @@ func (s *Server) writeSiteIndex(db serverDB) {
 	if len(allBoards) < 2 {
 		return
 	}
-	data := s.newTemplateData(db)
+	data := s.newTemplateData()
 	data.Template = "index"
 
 	data.Boards = allBoards
@@ -2259,7 +1890,7 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 							Value: string(session.key),
 							Path:  "/",
 						})
-						data := s.newTemplateData(db)
+						data := s.newTemplateData()
 						data.Account = nil
 						data.Template = "manage_login"
 						data.Extra2 = "passcode"
@@ -2602,6 +2233,7 @@ func (s *Server) handleRebuild() {
 	var threads []int
 	var shutdown bool
 	var t *time.Timer
+	wg := &sync.WaitGroup{}
 	for {
 		// Process queue.
 		info = <-s.rebuildQueue
@@ -2646,15 +2278,15 @@ func (s *Server) handleRebuild() {
 		for _, info := range pending {
 			thread := info.post.Thread()
 			if !slices.Contains(threads, thread) {
-				s.writeThread(db, info.post.Board, thread)
+				s.writeThread(db, wg, info.post.Board, thread)
 				threads = append(threads, thread)
 			}
 			if !slices.Contains(boards, info.post.Board) {
-				s.writeBoardIndexes(db, info.post.Board)
+				s.writeBoardIndexes(db, wg, info.post.Board)
 				boards = append(boards, info.post.Board)
 			}
 		}
-		s.writeOverboards(db, boards)
+		s.writeOverboards(db, wg, boards)
 		s.writeSiteIndex(db)
 		s.writeStatistics(db)
 		if s.opt.Notifications {
@@ -2662,6 +2294,7 @@ func (s *Server) handleRebuild() {
 				s.queueNotifications(db, info.post)
 			}
 		}
+		wg.Wait()
 		db.Commit()
 
 		for _, info := range pending {
@@ -2688,8 +2321,9 @@ func (s *Server) _handleSignal(signals chan os.Signal) {
 		// Rebuild static files when SIGHUP is received.
 		if sig == unix.SIGHUP {
 			// Rebuild staic files.
+			fmt.Printf("Rebuilding...\n")
 			db := s.begin()
-			s.rebuildAll(db, true)
+			s.rebuildAll(db)
 			db.Commit()
 
 			// Reload HTTPS certificate files.
@@ -2794,6 +2428,11 @@ func (s *Server) Run() error {
 		fmt.Fprintf(os.Stderr, "Sriracha version %s\n", SrirachaVersion)
 		printInfo()
 		return nil
+	}
+
+	// Start page builders.
+	for i := 0; i < runtime.NumCPU(); i++ {
+		go s._build()
 	}
 
 	// Start rebuild queue handler.
@@ -3080,7 +2719,7 @@ func (s *Server) Run() error {
 		db.SaveString("sv", SrirachaVersion)
 	}
 	if rebuild {
-		s.rebuildAll(db, true)
+		s.rebuildAll(db)
 	}
 
 	// Commit transaction.

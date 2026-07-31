@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -34,6 +35,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 			id := FormInt(r, "approve")
 			ids = append(ids, id)
 		}
+		wg := &sync.WaitGroup{}
 		for _, postID := range ids {
 			post := db.PostByID(postID)
 			if post == nil {
@@ -49,11 +51,12 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 			}
 			db.AddPostBacklinks(post)
 			db.BumpThread(post.Thread(), time.Now().Unix())
-			s.rebuildThread(db, post)
+			s.rebuildThread(db, wg, post)
 			s.queueNotifications(db, post)
 		}
 		s.writeModQueue(db)
 		s.writeSiteIndex(db)
+		wg.Wait()
 
 		data.Redirect(w, r, "/sriracha/")
 		return
@@ -75,6 +78,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		if data.forbidden(w, RoleSuperAdmin) {
 			return
 		}
+		wg := &sync.WaitGroup{}
 		for _, b := range db.AllBoards() {
 			for _, threadInfo := range db.AllThreads(false, b) {
 				for _, p := range db.AllPostsInThread(false, threadInfo[0]) {
@@ -89,8 +93,9 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 					db.UpdatePostNameblock(p.ID, p.NameBlock)
 				}
 			}
-			s.rebuildBoard(db, b)
+			s.rebuildBoard(db, wg, b)
 		}
+		wg.Wait()
 		data.Info = "Rebuilt nameblocks"
 	}
 

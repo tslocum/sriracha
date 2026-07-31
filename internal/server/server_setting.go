@@ -145,7 +145,7 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 			s.log(db, data.Account, nil, "Reset settings", changes)
 		}
 
-		s.rebuildAll(db, false)
+		s.rebuildAll(db)
 
 		data.Redirect(w, r, "/sriracha/setting")
 		return
@@ -309,7 +309,7 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		}
 
 		if FormBool(r, "rebuild") {
-			s.rebuildAll(db, false)
+			s.rebuildAll(db)
 		}
 	}
 	data.Template = "manage_setting"

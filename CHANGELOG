@@ -1,3 +1,6 @@
+1.9.2:
+- Utilize all CPU cores to build static pages
+
 1.9.1:
 - Fix touchscreen detection
 - Offset reflink previews on touchscreens

@@ -12,6 +12,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -94,11 +95,13 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			if s.forbidden(w, data, "post.delete") {
 				return
 			}
+			wg := &sync.WaitGroup{}
 			for _, post := range posts {
 				s.deletePost(db, post)
 				s.log(db, data.Account, post.Board, fmt.Sprintf("Deleted >>%d", post.ID), "")
-				s.rebuildThread(db, post)
+				s.rebuildThread(db, wg, post)
 			}
+			wg.Wait()
 			data.Message = "Deleted all posts by author."
 			return
 		}
@@ -234,8 +237,10 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				db.AddPost(p)
 			}
 			// Rebuild static files.
-			s.rebuildThread(db, post)
-			s.writeBoardIndexes(db, source)
+			wg := &sync.WaitGroup{}
+			s.rebuildThread(db, wg, post)
+			s.writeBoardIndexes(db, wg, source)
+			wg.Wait()
 		} else {
 			moveLabel := Get(data.Board, data.Account, "Move")
 			boardLabel := Get(data.Board, data.Account, "Board")
@@ -291,7 +296,9 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			skipRebuild = true
 		}
 		if !skipRebuild {
-			s.rebuildThread(db, post)
+			wg := &sync.WaitGroup{}
+			s.rebuildThread(db, wg, post)
+			wg.Wait()
 		}
 
 		data.Template = "manage_info"
@@ -362,11 +369,12 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			}
 		}
 
+		wg := &sync.WaitGroup{}
 		var boardIDs []int
 		for _, info := range rebuild {
 			post := db.PostByID(info[1])
 			if post != nil {
-				s.writeThread(db, post.Board, post.ID)
+				s.writeThread(db, wg, post.Board, post.ID)
 			}
 			if !slices.Contains(boardIDs, info[0]) {
 				boardIDs = append(boardIDs, info[0])
@@ -378,13 +386,14 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			if board == nil {
 				continue
 			}
-			s.writeBoardIndexes(db, board)
+			s.writeBoardIndexes(db, wg, board)
 			boards = append(boards, board)
 		}
-		s.writeOverboards(db, boards)
+		s.writeOverboards(db, wg, boards)
 		s.writeSiteIndex(db)
 		s.writeStatistics(db)
 		s.writeModQueue(db)
+		wg.Wait()
 
 		data.Template = "manage_info"
 		switch action {

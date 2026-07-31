@@ -17,19 +17,13 @@ The source code of Sriracha is organized as follows:
 
 ## Design
 
-Sriracha maintains a [PostgreSQL](https://www.postgresql.org) connection pool containing one connection.
+Sriracha maintains a [PostgreSQL](https://www.postgresql.org) connection pool containing at least four connections.
 
 When initializing a new Sriracha database, the version 1 schema is applied to the database, then upgraded to version 2, and so on.
 
 When upgrading an existing Sriracha database, schema changes are applied automatically.
 
-When a web request is received, a database connection is obtained from the connection pool before processing the request.
-
-This connection will typically be held until the server finishes processing the request.
-
-Some requests will release the database connection early, but only when it is safe to do so.
-
-This allows Sriracha to safely handle multiple web requests simultaneously.
+While Sriracha uses multiple database connections, only one web request modifies the database at once.
 
 Whenever Sriracha data is modified, static HTML files are written to the configured root directory.
 

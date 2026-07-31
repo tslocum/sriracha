@@ -63,7 +63,7 @@ func (s *Server) _validateTemplates(db serverDB, allBoards []*Board, img *Board,
 			}
 
 			for j := 0; j < 3; j++ {
-				data := s.newTemplateData(db)
+				data := s.newTemplateData()
 				data.Categories = db.AllCategories()
 				data.Template = templateName
 				if c.board {

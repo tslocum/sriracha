@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
@@ -46,7 +47,9 @@ func (s *Server) servePage(data *templateData, db serverDB, w http.ResponseWrite
 			pages = db.AllPages()
 			data.Info = Get(nil, data.Account, "Rebuilt all pages.")
 		}
-		s.writePages(db, pages)
+		wg := &sync.WaitGroup{}
+		s.writePages(db, wg, pages)
+		wg.Wait()
 	}
 
 	deletePageID := PathInt(r, "/sriracha/page/delete/")
@@ -120,7 +123,9 @@ func (s *Server) servePage(data *templateData, db serverDB, w http.ResponseWrite
 		}
 
 		db.UpdatePage(data.Manage.Page)
-		s.writePages(db, []*Page{data.Manage.Page})
+		wg := &sync.WaitGroup{}
+		s.writePages(db, wg, []*Page{data.Manage.Page})
+		wg.Wait()
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/page/%d", data.Manage.Page.ID), "")
 
@@ -170,7 +175,9 @@ func (s *Server) servePage(data *templateData, db serverDB, w http.ResponseWrite
 		}
 
 		db.AddPage(p)
-		s.writePages(db, []*Page{p})
+		wg := &sync.WaitGroup{}
+		s.writePages(db, wg, []*Page{p})
+		wg.Wait()
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/page/%d", p.ID), "")
 

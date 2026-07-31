@@ -13,6 +13,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
@@ -579,7 +580,9 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 			data.ManageError("Board not found")
 			return false
 		}
-		s.rebuildBoard(db, b)
+		wg := &sync.WaitGroup{}
+		s.rebuildBoard(db, wg, b)
+		wg.Wait()
 		data.Info = fmt.Sprintf("Rebuilt %s", b.Path())
 	}
 
@@ -665,11 +668,13 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		s.refreshRulesCache(db)
 		s.refreshCategoryCache(db)
 		s.refreshKeywordCache(db)
-		s.rebuildBoard(db, bb)
+		wg := &sync.WaitGroup{}
+		s.rebuildBoard(db, wg, bb)
 		for _, board := range updated {
-			s.rebuildBoard(db, board)
+			s.rebuildBoard(db, wg, board)
 		}
 		s.writeSiteIndex(db)
+		wg.Wait()
 
 		changes := printChanges(*b, *bb)
 		s.log(db, data.Account, nil, fmt.Sprintf("Reset >>/board/%d", bb.ID), changes)
@@ -862,11 +867,13 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 			s.refreshRulesCache(db)
 			s.refreshCategoryCache(db)
 			s.refreshKeywordCache(db)
-			s.rebuildBoard(db, data.Manage.Board)
+			wg := &sync.WaitGroup{}
+			s.rebuildBoard(db, wg, data.Manage.Board)
 			for _, board := range updated {
-				s.rebuildBoard(db, board)
+				s.rebuildBoard(db, wg, board)
 			}
 			s.writeSiteIndex(db)
+			wg.Wait()
 
 			changes := printChanges(oldBoard, *data.Manage.Board)
 			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/board/%d", data.Manage.Board.ID), changes)
@@ -962,8 +969,10 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		s.refreshRulesCache(db)
 		s.refreshCategoryCache(db)
 		s.refreshKeywordCache(db)
-		s.rebuildBoard(db, b)
+		wg := &sync.WaitGroup{}
+		s.rebuildBoard(db, wg, b)
 		s.writeSiteIndex(db)
+		wg.Wait()
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/board/%d", b.ID), "")
 

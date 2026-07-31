@@ -378,73 +378,113 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	}
 
 	// Ban.
-	f["BanByID"] = func(id int) *Ban { return s.tplDB.BanByID(id) }
-	f["BanByIP"] = func(ip string) *Ban { return s.tplDB.BanByIP(ip) }
-	f["AllActiveBans"] = func(rangeOnly bool) []*Ban { return s.tplDB.AllActiveBans(rangeOnly) }
-	f["LiftedBansByIP"] = func(ip string) []*Ban { return s.tplDB.LiftedBansByIP(ip) }
+	f["BanByID"] = func(id int) *Ban { db := s.begin(); defer db.Commit(); return db.BanByID(id) }
+	f["BanByIP"] = func(ip string) *Ban { db := s.begin(); defer db.Commit(); return db.BanByIP(ip) }
+	f["AllActiveBans"] = func(rangeOnly bool) []*Ban { db := s.begin(); defer db.Commit(); return db.AllActiveBans(rangeOnly) }
+	f["LiftedBansByIP"] = func(ip string) []*Ban { db := s.begin(); defer db.Commit(); return db.LiftedBansByIP(ip) }
 
 	// Banner.
-	f["BannerByID"] = func(id int) *Banner { return s.tplDB.BannerByID(id) }
-	f["BannerByName"] = func(name string) *Banner { return s.tplDB.BannerByName(name) }
-	f["AllBanners"] = func() []*Banner { return s.tplDB.AllBanners() }
+	f["BannerByID"] = func(id int) *Banner { db := s.begin(); defer db.Commit(); return db.BannerByID(id) }
+	f["BannerByName"] = func(name string) *Banner { db := s.begin(); defer db.Commit(); return db.BannerByName(name) }
+	f["AllBanners"] = func() []*Banner { db := s.begin(); defer db.Commit(); return db.AllBanners() }
 
 	// Board.
-	f["BoardByID"] = func(id int) *Board { return s.tplDB.BoardByID(id) }
-	f["BoardByDir"] = func(dir string) *Board { return s.tplDB.BoardByDir(dir) }
-	f["UniqueUserPosts"] = func(b *Board) int { return s.tplDB.UniqueUserPosts(b) }
-	f["AllBoards"] = func() []*Board { return s.tplDB.AllBoards() }
+	f["BoardByID"] = func(id int) *Board { db := s.begin(); defer db.Commit(); return db.BoardByID(id) }
+	f["BoardByDir"] = func(dir string) *Board { db := s.begin(); defer db.Commit(); return db.BoardByDir(dir) }
+	f["UniqueUserPosts"] = func(b *Board) int { db := s.begin(); defer db.Commit(); return db.UniqueUserPosts(b) }
+	f["AllBoards"] = func() []*Board { db := s.begin(); defer db.Commit(); return db.AllBoards() }
 
 	// Category.
-	f["CategoryByID"] = func(id int) *Category { return s.tplDB.CategoryByID(id) }
-	f["ChildCategories"] = func(id int) []*Category { return s.tplDB.ChildCategories(id) }
-	f["AllCategories"] = func() []*Category { return s.tplDB.AllCategories() }
+	f["CategoryByID"] = func(id int) *Category { db := s.begin(); defer db.Commit(); return db.CategoryByID(id) }
+	f["ChildCategories"] = func(id int) []*Category { db := s.begin(); defer db.Commit(); return db.ChildCategories(id) }
+	f["AllCategories"] = func() []*Category { db := s.begin(); defer db.Commit(); return db.AllCategories() }
 
 	//Keyword.
-	f["KeywordByID"] = func(id int) *Keyword { return s.tplDB.KeywordByID(id) }
-	f["KeywordByText"] = func(text string) *Keyword { return s.tplDB.KeywordByText(text) }
-	f["AllKeywords"] = func() []*Keyword { return s.tplDB.AllKeywords() }
+	f["KeywordByID"] = func(id int) *Keyword { db := s.begin(); defer db.Commit(); return db.KeywordByID(id) }
+	f["KeywordByText"] = func(text string) *Keyword { db := s.begin(); defer db.Commit(); return db.KeywordByText(text) }
+	f["AllKeywords"] = func() []*Keyword { db := s.begin(); defer db.Commit(); return db.AllKeywords() }
 
 	// News.
-	f["NewsByID"] = func(id int) *News { return s.tplDB.NewsByID(id) }
-	f["AllNews"] = func(onlyPublished bool) []*News { return s.tplDB.AllNews(onlyPublished) }
+	f["NewsByID"] = func(id int) *News { db := s.begin(); defer db.Commit(); return db.NewsByID(id) }
+	f["AllNews"] = func(onlyPublished bool) []*News { db := s.begin(); defer db.Commit(); return db.AllNews(onlyPublished) }
 
 	// Page.
-	f["PageByID"] = func(id int) *Page { return s.tplDB.PageByID(id) }
-	f["PageByPath"] = func(path string) *Page { return s.tplDB.PageByPath(path) }
-	f["AllPages"] = func() []*Page { return s.tplDB.AllPages() }
+	f["PageByID"] = func(id int) *Page { db := s.begin(); defer db.Commit(); return db.PageByID(id) }
+	f["PageByPath"] = func(path string) *Page { db := s.begin(); defer db.Commit(); return db.PageByPath(path) }
+	f["AllPages"] = func() []*Page { db := s.begin(); defer db.Commit(); return db.AllPages() }
 
 	// Post.
-	f["AllThreads"] = func(moderated bool, board ...*Board) [][2]int { return s.tplDB.AllThreads(moderated, board...) }
-	f["AllPostsInThread"] = func(moderated bool, postID int) []*Post { return s.tplDB.AllPostsInThread(moderated, postID) }
-	f["AllReplies"] = func(threadID int, limit int, moderated bool) []*Post {
-		return s.tplDB.AllReplies(threadID, limit, moderated)
+	f["AllThreads"] = func(moderated bool, board ...*Board) [][2]int {
+		db := s.begin()
+		defer db.Commit()
+		return db.AllThreads(moderated, board...)
 	}
-	f["PendingPosts"] = func() []*Post { return s.tplDB.PendingPosts() }
-	f["PostByID"] = func(postID int) *Post { return s.tplDB.PostByID(postID) }
-	f["PostsByIP"] = func(hash string) []*Post { return s.tplDB.PostsByIP(hash) }
-	f["PostsByFileHash"] = func(hash string, filterBoard *Board) []*Post { return s.tplDB.PostsByFileHash(hash, filterBoard) }
-	f["PostByField"] = func(board *Board, field string, value any) *Post { return s.tplDB.PostByField(board, field, value) }
-	f["LastPostByIP"] = func(board *Board, ip string) *Post { return s.tplDB.LastPostByIP(board, ip) }
-	f["SearchPosts"] = func(query string, board ...*Board) []int { return s.tplDB.SearchPosts(query, board...) }
-	f["ReplyCount"] = func(threadID int) int { return s.tplDB.ReplyCount(threadID) }
+	f["AllPostsInThread"] = func(moderated bool, postID int) []*Post {
+		db := s.begin()
+		defer db.Commit()
+		return db.AllPostsInThread(moderated, postID)
+	}
+	f["AllReplies"] = func(threadID int, limit int, moderated bool) []*Post {
+		db := s.begin()
+		defer db.Commit()
+		return db.AllReplies(threadID, limit, moderated)
+	}
+	f["PendingPosts"] = func() []*Post { db := s.begin(); defer db.Commit(); return db.PendingPosts() }
+	f["PostByID"] = func(postID int) *Post { db := s.begin(); defer db.Commit(); return db.PostByID(postID) }
+	f["PostsByIP"] = func(hash string) []*Post { db := s.begin(); defer db.Commit(); return db.PostsByIP(hash) }
+	f["PostsByFileHash"] = func(hash string, filterBoard *Board) []*Post {
+		db := s.begin()
+		defer db.Commit()
+		return db.PostsByFileHash(hash, filterBoard)
+	}
+	f["PostByField"] = func(board *Board, field string, value any) *Post {
+		db := s.begin()
+		defer db.Commit()
+		return db.PostByField(board, field, value)
+	}
+	f["LastPostByIP"] = func(board *Board, ip string) *Post {
+		db := s.begin()
+		defer db.Commit()
+		return db.LastPostByIP(board, ip)
+	}
+	f["SearchPosts"] = func(query string, board ...*Board) []int {
+		db := s.begin()
+		defer db.Commit()
+		return db.SearchPosts(query, board...)
+	}
+	f["ReplyCount"] = func(threadID int) int { db := s.begin(); defer db.Commit(); return db.ReplyCount(threadID) }
 
 	// Report.
-	f["NumReports"] = func(p *Post) int { return s.tplDB.NumReports(p) }
-	f["PostReported"] = func(p *Post, ipHash string) bool { return s.tplDB.PostReported(p, ipHash) }
-	f["AllReports"] = func() []*Report { return s.tplDB.AllReports() }
+	f["NumReports"] = func(p *Post) int { db := s.begin(); defer db.Commit(); return db.NumReports(p) }
+	f["PostReported"] = func(p *Post, ipHash string) bool {
+		db := s.begin()
+		defer db.Commit()
+		return db.PostReported(p, ipHash)
+	}
+	f["AllReports"] = func() []*Report { db := s.begin(); defer db.Commit(); return db.AllReports() }
 
 	// Subscription.
-	f["SubscriptionByID"] = func(id int) *Subscription { return s.tplDB.SubscriptionByID(id) }
-	f["SubscriptionByIP"] = func(ip string) *Subscription { return s.tplDB.SubscriptionByIP(ip) }
-	f["SubscriptionsByEmail"] = func(email string) []*Subscription { return s.tplDB.SubscriptionsByEmail(email) }
+	f["SubscriptionByID"] = func(id int) *Subscription { db := s.begin(); defer db.Commit(); return db.SubscriptionByID(id) }
+	f["SubscriptionByIP"] = func(ip string) *Subscription { db := s.begin(); defer db.Commit(); return db.SubscriptionByIP(ip) }
+	f["SubscriptionsByEmail"] = func(email string) []*Subscription {
+		db := s.begin()
+		defer db.Commit()
+		return db.SubscriptionsByEmail(email)
+	}
 	f["SubscriptionsByPost"] = func(p *Post, distinct bool, includeBoard bool) []*Subscription {
-		return s.tplDB.SubscriptionsByPost(p, distinct, includeBoard)
+		db := s.begin()
+		defer db.Commit()
+		return db.SubscriptionsByPost(p, distinct, includeBoard)
 	}
 
 	// Threshold.
-	f["ThresholdByID"] = func(id int) *Threshold { return s.tplDB.ThresholdByID(id) }
-	f["ThresholdTimeout"] = func(t *Threshold, ipHash string, now int64) int { return s.tplDB.ThresholdTimeout(t, ipHash, now) }
-	f["AllThresholds"] = func() []*Threshold { return s.tplDB.AllThresholds() }
+	f["ThresholdByID"] = func(id int) *Threshold { db := s.begin(); defer db.Commit(); return db.ThresholdByID(id) }
+	f["ThresholdTimeout"] = func(t *Threshold, ipHash string, now int64) int {
+		db := s.begin()
+		defer db.Commit()
+		return db.ThresholdTimeout(t, ipHash, now)
+	}
+	f["AllThresholds"] = func() []*Threshold { db := s.begin(); defer db.Commit(); return db.AllThresholds() }
 
 	// Two-factor authentication.
 	f["TOTPImage"] = func(a *Account, t *TwoFactor) template.HTML {
@@ -477,10 +517,7 @@ func (s *Server) newTemplateFuncMap(locale string) template.FuncMap {
 	return f
 }
 
-func (s *Server) newTemplateData(db serverDB) *templateData {
-	if db != nil {
-		s.tplDB = db
-	}
+func (s *Server) newTemplateData() *templateData {
 	const initialBufferSize = 128000 // 128 Kilobytes.
 	writeBuf := bytes.NewBuffer(make([]byte, initialBufferSize))
 	return &templateData{
