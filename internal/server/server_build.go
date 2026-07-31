@@ -51,7 +51,7 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 	db := info.db
 	board := info.board
 
-	data := s.newTemplateData()
+	data := s.newTemplateData(db)
 	data.Board = board
 	data.Boards = db.AllBoards()
 
@@ -142,7 +142,7 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 	if board.Type != TypeImageboard {
 		return
 	}
-	data := s.newTemplateData()
+	data := s.newTemplateData(db)
 	data.Board = board
 	data.Boards = db.AllBoards()
 	data.ReplyMode = 1
@@ -193,7 +193,7 @@ func (s *Server) _buildBoardThread(info *buildInfo) {
 		log.Fatal(err)
 	}
 
-	data := s.newTemplateData()
+	data := s.newTemplateData(db)
 	data.Board = board
 	data.Boards = db.AllBoards()
 	data.Threads = [][]*Post{posts}
@@ -211,7 +211,7 @@ func (s *Server) _buildBoardThread(info *buildInfo) {
 func (s *Server) _buildPage(info *buildInfo) {
 	db := info.db
 
-	data := s.newTemplateData()
+	data := s.newTemplateData(db)
 	data.Boards = db.AllBoards()
 	data.Template = "page"
 	p := info.customPage
@@ -262,7 +262,7 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 	if len(allBoards) == 0 {
 		return
 	}
-	data := s.newTemplateData()
+	data := s.newTemplateData(db)
 	data.Template = "index"
 
 	data.Boards = allBoards

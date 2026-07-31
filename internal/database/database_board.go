@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"sync"
 
 	"codeberg.org/tslocum/sriracha"
 	. "codeberg.org/tslocum/sriracha/model"
@@ -14,6 +15,7 @@ import (
 var boardCache []*Board
 var boardCacheID = make(map[int]*Board)
 var boardCacheDir = make(map[string]*Board)
+var boardCacheLock = &sync.RWMutex{}
 
 func (db *DB) setBoardAttributes(b *Board) {
 	rows, err := db.conn.Query(context.Background(), "SELECT upload FROM board_upload WHERE board = $1", b.ID)
@@ -134,9 +136,13 @@ func (db *DB) AddBoard(b *Board) {
 }
 
 func (db *DB) AllBoards() []*Board {
+	boardCacheLock.RLock()
 	if boardCache != nil {
+		boardCacheLock.RUnlock()
 		return boardCache
 	}
+	boardCacheLock.RUnlock()
+	boardCacheLock.Lock()
 
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM board ORDER BY dir ASC")
 	if err != nil {
@@ -159,14 +165,18 @@ func (db *DB) AllBoards() []*Board {
 		db.setBoardAttributes(b)
 	}
 
+	boardCacheLock.Unlock()
 	return boardCache
 }
 
 func (db *DB) BoardByID(id int) *Board {
+	boardCacheLock.RLock()
 	b := boardCacheID[id]
 	if b != nil {
+		boardCacheLock.RUnlock()
 		return b
 	}
+	boardCacheLock.RUnlock()
 	for _, b := range db.AllBoards() {
 		if b.ID == id {
 			return b
@@ -176,10 +186,13 @@ func (db *DB) BoardByID(id int) *Board {
 }
 
 func (db *DB) BoardByDir(dir string) *Board {
+	boardCacheLock.RLock()
 	b := boardCacheDir[dir]
 	if b != nil {
+		boardCacheLock.RUnlock()
 		return b
 	}
+	boardCacheLock.RUnlock()
 	for _, b := range db.AllBoards() {
 		if b.Dir == dir {
 			return b

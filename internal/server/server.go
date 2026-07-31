@@ -273,8 +273,6 @@ type Server struct {
 
 	msgPrinter *message.Printer
 
-	templateFuncMaps map[string]template.FuncMap
-
 	lock sync.Mutex
 }
 
@@ -829,12 +827,6 @@ func (s *Server) loadServerConfig() error {
 		return strings.Compare(s.opt.Locales[s1], s.opt.Locales[s2])
 	})
 
-	s.templateFuncMaps = make(map[string]template.FuncMap)
-	s.templateFuncMaps[""] = s.newTemplateFuncMap(s.opt.Locale)
-	for id := range s.opt.Locales {
-		s.templateFuncMaps[id] = s.newTemplateFuncMap(id)
-	}
-
 	s.opt.Access = make(map[string]string)
 	maps.Copy(s.opt.Access, s.config.Access)
 	return nil
@@ -964,7 +956,7 @@ func (s *Server) parseTemplates(officialDir string, customDir string, db serverD
 		return nil
 	}
 	if officialDir == "" {
-		s.tpl = template.New("sriracha").Funcs(s.templateFuncMaps[""])
+		s.tpl = template.New("sriracha").Funcs(s.newTemplateFuncMap(db, ""))
 
 		entries, err := templateFS.ReadDir("template")
 		if err != nil {
@@ -986,7 +978,7 @@ func (s *Server) parseTemplates(officialDir string, customDir string, db serverD
 			}
 		}
 	} else {
-		s.tpl = template.New("sriracha").Funcs(s.templateFuncMaps[""])
+		s.tpl = template.New("sriracha").Funcs(s.newTemplateFuncMap(db, ""))
 
 		err := parseDir(officialDir, false)
 		if err != nil {
@@ -1330,14 +1322,14 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 			Path:  "/",
 		})
 		http.Redirect(w, r, "/sriracha/", http.StatusFound)
-		return s.newTemplateData()
+		return s.newTemplateData(db)
 	}
 
 	cookies := r.CookiesNamed("sriracha_session")
 	if len(cookies) > 0 {
 		account := db.AccountBySessionKey(cookies[0].Value)
 		if account != nil {
-			data := s.newTemplateData()
+			data := s.newTemplateData(db)
 			data.Account = account
 			return data
 		}
@@ -1377,16 +1369,16 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 							session.timestamp = 0
 						}
 						http.Redirect(w, r, "/sriracha/", http.StatusFound)
-						return s.newTemplateData()
+						return s.newTemplateData(db)
 					}
 				}
 			}
 			if !session.validated {
-				return s.newTemplateData()
+				return s.newTemplateData(db)
 			}
 		}
 	}
-	return s.newTemplateData()
+	return s.newTemplateData(db)
 }
 
 // writeOverboard writes overboard pages to disk.
@@ -1434,7 +1426,7 @@ func (s *Server) writePage(db serverDB, data *templateData, p *Page, w io.Writer
 	}
 
 	if data == nil {
-		data = s.newTemplateData()
+		data = s.newTemplateData(db)
 		data.Boards = db.AllBoards()
 		data.Template = "page"
 	}
@@ -1535,7 +1527,7 @@ func (s *Server) writeNewsItem(db serverDB, n *News) {
 		return
 	}
 
-	data := s.newTemplateData()
+	data := s.newTemplateData(db)
 	data.Boards = db.AllBoards()
 	data.Template = "news"
 	data.AllNews = []*News{n}
@@ -1560,7 +1552,7 @@ func (s *Server) writeNewsItem(db serverDB, n *News) {
 // writeNewsIndexes writes news index pages to disk.
 func (s *Server) writeNewsIndexes(db serverDB) {
 	allNews := db.AllNews(true)
-	data := s.newTemplateData()
+	data := s.newTemplateData(db)
 	data.Boards = db.AllBoards()
 	data.Template = "news"
 
@@ -1617,7 +1609,7 @@ func (s *Server) rebuildNews(db serverDB) {
 
 // writeVisitorGuide writes the visitor guide to disk.
 func (s *Server) writeVisitorGuide(db serverDB) {
-	data := s.newTemplateData()
+	data := s.newTemplateData(db)
 	data.Template = "guide"
 	data.Boards = db.AllBoards()
 
@@ -1787,7 +1779,7 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 							Value: string(session.key),
 							Path:  "/",
 						})
-						data := s.newTemplateData()
+						data := s.newTemplateData(db)
 						data.Account = nil
 						data.Template = "manage_login"
 						data.Extra2 = "passcode"
@@ -2173,6 +2165,7 @@ func (s *Server) handleRebuild() {
 		}
 
 		// Flush queue.
+		s.lock.Lock()
 		if trace {
 			traceT = time.Now()
 		}
@@ -2198,6 +2191,7 @@ func (s *Server) handleRebuild() {
 		}
 		wg.Wait()
 		db.Commit()
+		s.lock.Unlock()
 		if trace {
 			traceD = time.Since(traceT)
 			msg := fmt.Sprintf("Built %d thread", len(threads))
@@ -2230,6 +2224,8 @@ func (s *Server) _handleSignal(signals chan os.Signal) {
 
 		// Rebuild static files when SIGHUP is received.
 		if sig == unix.SIGHUP {
+			s.lock.Lock()
+
 			// Rebuild staic files.
 			fmt.Printf("Rebuilding...\n")
 			db := s.begin()
@@ -2245,6 +2241,8 @@ func (s *Server) _handleSignal(signals chan os.Signal) {
 				s.httpsCert = &cert
 				fmt.Printf("Reloaded HTTPS certificate and private key files.\n")
 			}
+
+			s.lock.Unlock()
 
 			var extra string
 			if s.config.HTTPS != "" {
