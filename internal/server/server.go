@@ -1911,6 +1911,11 @@ func (s *Server) writeModQueue(db serverDB) {
 
 // rebuildAll rebuilds all board, overboard, news and custom pages.
 func (s *Server) rebuildAll(db serverDB, verbose bool) {
+	var traceT time.Time
+	if trace {
+		traceT = time.Now()
+	}
+
 	for boardID := range s.indexCache {
 		s.indexCache[boardID] = s.indexCache[boardID][:0]
 	}
@@ -1941,6 +1946,11 @@ func (s *Server) rebuildAll(db serverDB, verbose bool) {
 	s.writeSiteIndex(db)
 	s.writeStatistics(db)
 	s.writeVisitorGuide(db)
+
+	if trace {
+		traceD := time.Since(traceT)
+		traceLog("total", traceD)
+	}
 }
 
 // writeNewsItem writes a news entry page to disk.
