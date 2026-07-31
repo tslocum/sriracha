@@ -19,8 +19,7 @@ import (
 type buildType int
 
 const (
-	buildBoard buildType = iota
-	buildBoardIndex
+	buildBoardIndex buildType = iota
 	buildBoardCatalog
 	buildBoardThread
 	buildPage
@@ -39,16 +38,6 @@ type buildInfo struct {
 	db         serverDB
 	postIDs    [][]int
 	wg         *sync.WaitGroup
-}
-
-func (s *Server) _buildBoard(info *buildInfo) {
-	db := info.db
-	board := info.board
-
-	for _, threadInfo := range db.AllThreads(true, board) {
-		s.writeThread(db, info.wg, board, threadInfo[0])
-	}
-	s.writeBoardIndexes(db, info.wg, board)
 }
 
 func (s *Server) _buildBoardIndex(info *buildInfo) {
@@ -384,8 +373,6 @@ func (s *Server) _build() {
 		db := s.begin()
 		info.db = db
 		switch info.build {
-		case buildBoard:
-			s._buildBoard(info)
 		case buildBoardIndex:
 			s._buildBoardIndex(info)
 		case buildBoardCatalog:
@@ -407,17 +394,15 @@ func (s *Server) _build() {
 // rebuildBoard rebuilds all pages in a board.
 func (s *Server) rebuildBoard(db serverDB, wg *sync.WaitGroup, board *Board) {
 	s.indexCache[board.ID] = nil
-	wg.Add(1)
-	info := &buildInfo{
-		build: buildBoard,
-		board: board,
-		wg:    wg,
+
+	threads := s.writeBoardIndexes(db, wg, board)
+	for _, threadInfo := range threads {
+		s.writeThread(db, wg, board, threadInfo[0])
 	}
-	s.buildQueue <- info
 }
 
 // writeBoardIndexes writes board index pages to disk.
-func (s *Server) writeBoardIndexes(db serverDB, wg *sync.WaitGroup, board *Board, overboards ...*Board) {
+func (s *Server) writeBoardIndexes(db serverDB, wg *sync.WaitGroup, board *Board, overboards ...*Board) [][2]int {
 	if board.Unique == 0 {
 		board.Unique = db.UniqueUserPosts(board)
 	}
@@ -467,6 +452,7 @@ func (s *Server) writeBoardIndexes(db serverDB, wg *sync.WaitGroup, board *Board
 			}
 		}
 	}
+	return threads
 }
 
 // writeThread writes a thread res page to disk.

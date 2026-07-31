@@ -187,6 +187,7 @@ func (s *Server) validateTemplates(ts *Server, verbose bool) error {
 	errors := make(chan error)
 	wg := &sync.WaitGroup{}
 	db := ts.begin()
+	defer db.Commit()
 	allBoards := db.AllBoards()
 	img := db.BoardByDir("img")
 	forum := db.BoardByDir("forum")
@@ -217,7 +218,6 @@ func (s *Server) validateTemplates(ts *Server, verbose bool) error {
 	case err := <-errors:
 		return err
 	}
-	db.Commit()
 	return nil
 }
 

@@ -2608,6 +2608,9 @@ func (s *Server) Run() error {
 		db.SaveString("sv", SrirachaVersion)
 	}
 	if rebuild {
+		if sv == SrirachaVersion {
+			fmt.Println("Rebuilding...")
+		}
 		s.rebuildAll(db)
 	}
 
