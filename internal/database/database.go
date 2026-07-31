@@ -50,8 +50,8 @@ func Connect(c *Config) (*pgxpool.Pool, error) {
 		return nil, fmt.Errorf("failed to parse database configuration: %w", err)
 	}
 	numConns := int32(runtime.NumCPU())
-	if numConns < 4 {
-		numConns = 4
+	if numConns < 2 {
+		numConns = 2
 	}
 	config.MinConns = numConns
 	config.MinIdleConns = numConns

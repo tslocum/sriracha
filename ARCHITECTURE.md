@@ -17,7 +17,7 @@ The source code of Sriracha is organized as follows:
 
 ## Design
 
-Sriracha maintains a [PostgreSQL](https://www.postgresql.org) connection pool containing at least four connections.
+Sriracha maintains a [PostgreSQL](https://www.postgresql.org) connection pool containing at least two connections.
 
 When initializing a new Sriracha database, the version 1 schema is applied to the database, then upgraded to version 2, and so on.
 

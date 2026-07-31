@@ -740,8 +740,16 @@ func (s *Server) loadServerConfig() error {
 
 	s.opt.Overboard = db.GetString("overboard")
 	s.opt.OverboardType = BoardType(db.GetInt("overboardtype"))
-	s.opt.OverboardThreads = db.GetInt("overboardthreads")
-	s.opt.OverboardReplies = db.GetInt("overboardreplies")
+	if !db.HaveConfig("overboardthreads") {
+		s.opt.OverboardThreads = DefaultBoardThreads
+	} else {
+		s.opt.OverboardThreads = db.GetInt("overboardthreads")
+	}
+	if !db.HaveConfig("overboardreplies") {
+		s.opt.OverboardReplies = DefaultBoardReplies
+	} else {
+		s.opt.OverboardReplies = db.GetInt("overboardreplies")
+	}
 
 	for _, style := range s.config.Styles {
 		if len(style) == 0 {
