@@ -370,6 +370,21 @@ func (s *Server) serveImport(data *templateData, db serverDB, w http.ResponseWri
 			data.Message += template.HTML(s.msgPrinter.Sprintf("<tr><td>%s</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td></tr>", html.EscapeString(name), threads+replies, threads, replies, attachments))
 		}
 		data.Message += `</tbody></table>`
+	} else {
+		for i, info := range s.importDatabases {
+			if haveMapping && importBoards[i] == nil {
+				continue
+			}
+			for _, p := range info.posts {
+				if strings.HasPrefix(p.FileHash, "e ") && p.File == "" {
+					err := s.embedMedia(db, p, p.FileOriginal, !commit)
+					if err != nil {
+						data.ManageError(err.Error())
+						return
+					}
+				}
+			}
+		}
 	}
 
 	if !haveMapping || !commit {

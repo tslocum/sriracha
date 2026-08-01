@@ -488,6 +488,131 @@ func (s *Server) checkDuplicateFileHash(db serverDB, post *Post) *Post {
 	return nil
 }
 
+func (s *Server) embedMedia(db serverDB, post *Post, embed string, dryRun bool) error {
+	b := post.Board
+	for _, embedName := range b.Embeds {
+		var embedURL string
+		for _, info := range s.opt.Embeds {
+			if info[0] == embedName {
+				embedURL = info[1]
+				break
+			}
+		}
+		if embedURL == "" {
+			continue
+		}
+
+		requestURL := strings.ReplaceAll(embedURL, "SRIRACHA_EMBED", embed)
+		req, err := http.NewRequest(http.MethodGet, requestURL, nil)
+		if err != nil {
+			continue
+		}
+
+		resp, err := s.httpResponse(req)
+		if err != nil {
+			continue
+		}
+		defer resp.Body.Close()
+
+		info := &embedInfo{}
+		err = json.NewDecoder(resp.Body).Decode(&info)
+		if err != nil || info.Title == "" || info.Thumb == "" || info.HTML == "" || !strings.HasPrefix(info.Thumb, "https://") {
+			continue
+		}
+
+		// YouTube returns a low quality 4:3 thumbnail by default.
+		// Replace with high quality 16:9 thumbnail when available.
+		var backupThumb string
+		u, err := url.Parse(embed)
+		if err == nil {
+			var ytVideoID string
+			switch strings.ToLower(u.Host) {
+			case "youtube.com", "www.youtube.com":
+				ytVideoID = u.Query().Get("v")
+			case "youtu.be", "www.youtu.be":
+				ytVideoID = strings.TrimPrefix(u.Path, "/")
+			}
+			if ytVideoID != "" && AlphaNumericAndSymbols.MatchString(ytVideoID) {
+				backupThumb = info.Thumb
+				info.Thumb = "https://img.youtube.com/vi/" + ytVideoID + "/maxresdefault.jpg"
+			}
+		}
+
+		// Fetch thumbnail.
+		thumbReq, err := http.NewRequest(http.MethodGet, info.Thumb, nil)
+		if err != nil {
+			continue
+		}
+		thumbResp, err := s.httpResponse(thumbReq)
+		respOK := thumbResp != nil && thumbResp.StatusCode >= 200 && thumbResp.StatusCode < 300
+		if err != nil || !respOK {
+			if !respOK {
+				thumbResp.Body.Close()
+			}
+			if backupThumb == "" {
+				continue
+			}
+
+			// Retry using backup thumbnail URL.
+			thumbReq, err = http.NewRequest(http.MethodGet, backupThumb, nil)
+			if err != nil {
+				continue
+			}
+			thumbResp, err = s.httpResponse(thumbReq)
+			if err != nil {
+				continue
+			}
+		}
+		buf, err := io.ReadAll(thumbResp.Body)
+		thumbResp.Body.Close()
+		if err != nil {
+			continue
+		}
+
+		post.File = info.HTML
+		post.FileHash = "e " + embedName + " " + info.Title
+		post.FileOriginal = embed
+		if dryRun {
+			break
+		}
+
+		mimeType := mimetype.Detect(buf).String()
+
+		fileExt := MIMEToExt(mimeType)
+		if fileExt == "" {
+			continue
+		}
+
+		post.Thumb = fmt.Sprintf("%d.%s", time.Now().UnixNano(), fileExt)
+		thumbPath := filepath.Join(s.config.Root, b.Dir, "thumb", post.Thumb)
+
+		err = createPostThumbnail(post, bytes.NewReader(buf), mimeType, true, thumbPath)
+		if err != nil {
+			continue
+		}
+		break
+	}
+
+	if post.File == "" {
+		for _, info := range allPluginEmbedHandlers {
+			db.SetPlugin(info.Name)
+			handled, err := info.Handler(db, post, embed)
+			if err != nil {
+				db.SetPlugin("")
+				return err
+			} else if handled {
+				break
+			}
+		}
+		db.SetPlugin("")
+
+		if post.File == "" {
+			return fmt.Errorf(Get(b, nil, "Failed to embed media."))
+		}
+	}
+	return nil
+}
+
 func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) (unlocked bool) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "invalid request", http.StatusInternalServerError)
@@ -678,127 +803,11 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 	if post.File == "" && len(b.Embeds) > 0 {
 		embed := FormString(r, "embed")
 		if embed != "" {
-			for _, embedName := range b.Embeds {
-				var embedURL string
-				for _, info := range s.opt.Embeds {
-					if info[0] == embedName {
-						embedURL = info[1]
-						break
-					}
-				}
-				if embedURL == "" {
-					continue
-				}
-
-				requestURL := strings.ReplaceAll(embedURL, "SRIRACHA_EMBED", embed)
-				req, err := http.NewRequest(http.MethodGet, requestURL, nil)
-				if err != nil {
-					continue
-				}
-
-				resp, err := s.httpResponse(req)
-				if err != nil {
-					continue
-				}
-				defer resp.Body.Close()
-
-				info := &embedInfo{}
-				err = json.NewDecoder(resp.Body).Decode(&info)
-				if err != nil || info.Title == "" || info.Thumb == "" || info.HTML == "" || !strings.HasPrefix(info.Thumb, "https://") {
-					continue
-				}
-
-				// YouTube returns a low quality 4:3 thumbnail by default.
-				// Replace with high quality 16:9 thumbnail when available.
-				var backupThumb string
-				u, err := url.Parse(embed)
-				if err == nil {
-					var ytVideoID string
-					switch strings.ToLower(u.Host) {
-					case "youtube.com", "www.youtube.com":
-						ytVideoID = u.Query().Get("v")
-					case "youtu.be", "www.youtu.be":
-						ytVideoID = strings.TrimPrefix(u.Path, "/")
-					}
-					if ytVideoID != "" && AlphaNumericAndSymbols.MatchString(ytVideoID) {
-						backupThumb = info.Thumb
-						info.Thumb = "https://img.youtube.com/vi/" + ytVideoID + "/maxresdefault.jpg"
-					}
-				}
-
-				// Fetch thumbnail.
-				thumbReq, err := http.NewRequest(http.MethodGet, info.Thumb, nil)
-				if err != nil {
-					continue
-				}
-				thumbResp, err := s.httpResponse(thumbReq)
-				respOK := thumbResp != nil && thumbResp.StatusCode >= 200 && thumbResp.StatusCode < 300
-				if err != nil || !respOK {
-					if !respOK {
-						thumbResp.Body.Close()
-					}
-					if backupThumb == "" {
-						continue
-					}
-
-					// Retry using backup thumbnail URL.
-					thumbReq, err = http.NewRequest(http.MethodGet, backupThumb, nil)
-					if err != nil {
-						continue
-					}
-					thumbResp, err = s.httpResponse(thumbReq)
-					if err != nil {
-						continue
-					}
-				}
-				buf, err := io.ReadAll(thumbResp.Body)
-				thumbResp.Body.Close()
-				if err != nil {
-					continue
-				}
-
-				mimeType := mimetype.Detect(buf).String()
-
-				fileExt := MIMEToExt(mimeType)
-				if fileExt == "" {
-					continue
-				}
-
-				thumbName := fmt.Sprintf("%d.%s", time.Now().UnixNano(), fileExt)
-				thumbPath := filepath.Join(s.config.Root, b.Dir, "thumb", thumbName)
-
-				err = createPostThumbnail(post, bytes.NewReader(buf), mimeType, true, thumbPath)
-				if err != nil {
-					continue
-				}
-
-				post.FileHash = "e " + embedName + " " + info.Title
-				post.FileOriginal = embed
-				post.File = info.HTML
-				post.Thumb = thumbName
-				break
-			}
-
-			if post.File == "" {
-				for _, info := range allPluginEmbedHandlers {
-					db.SetPlugin(info.Name)
-					handled, err := info.Handler(db, post, embed)
-					if err != nil {
-						db.SetPlugin("")
-						data := s.buildData(db, w, r)
-						data.BoardError(w, err.Error())
-						return
-					} else if handled {
-						break
-					}
-				}
-				db.SetPlugin("")
-
-				if post.File == "" {
-					data := s.buildData(db, w, r)
-					data.BoardError(w, Get(b, data.Account, "Failed to embed media."))
-					return
-				}
+			err = s.embedMedia(db, post, embed, false)
+			if err != nil {
+				data := s.buildData(db, w, r)
+				data.BoardError(w, err.Error())
+				return
 			}
 		}
 	}

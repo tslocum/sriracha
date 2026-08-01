@@ -80,7 +80,7 @@ func (v *vichanImport) Tables() []string {
 }
 
 func (v *vichanImport) Posts(table string) []*Post {
-	rows, err := v.db.Query("SELECT id, COALESCE(thread, 0), COALESCE(subject, ''), COALESCE(email, ''), COALESCE(name, ''), COALESCE(trip, ''), COALESCE(capcode, ''), COALESCE(body, ''), COALESCE(time, 0), COALESCE(bump, 0), COALESCE(files, ''), sticky, locked FROM " + table + " ORDER BY id ASC")
+	rows, err := v.db.Query("SELECT id, COALESCE(thread, 0), COALESCE(subject, ''), COALESCE(email, ''), COALESCE(name, ''), COALESCE(trip, ''), COALESCE(capcode, ''), COALESCE(body, ''), COALESCE(time, 0), COALESCE(bump, 0), COALESCE(files, ''), sticky, locked, COALESCE(embed, '') FROM " + table + " ORDER BY id ASC")
 	if err != nil {
 		log.Fatalf("failed to select posts: %s", err)
 	}
@@ -98,6 +98,7 @@ func (v *vichanImport) Posts(table string) []*Post {
 			fileInfo []byte
 			stickied int
 			locked   int
+			embed    string
 		)
 		err = rows.Scan(
 			&p.ID,
@@ -113,6 +114,7 @@ func (v *vichanImport) Posts(table string) []*Post {
 			&fileInfo,
 			&stickied,
 			&locked,
+			&embed,
 		)
 		if err != nil {
 			log.Fatalf("failed to scan post: %s", err)
@@ -163,6 +165,11 @@ func (v *vichanImport) Posts(table string) []*Post {
 			}
 			return fmt.Sprintf(`<a href="res/%d.html#%d" class="%s">&gt;&gt;%d</a>`, threadID, postID, class, postID)
 		})
+
+		if embed != "" && p.File == "" {
+			p.FileHash = "e YouTube"
+			p.FileOriginal = embed
+		}
 
 		p.SetNameBlock("Anonymous", capcode, false)
 
