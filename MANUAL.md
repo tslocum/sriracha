@@ -995,7 +995,11 @@ messages indicating Sriracha is running normally, the upgrade is complete.
 
 [Go to top](#sections)
 
-Sriracha supports exporting and importing posts via [SQLite](https://sqlite.org) database files.
+Sriracha supports importing posts from:
+
+- [Sriracha](#import-posts)
+- [TinyIB](#import-posts-from-tinyib)
+- [vichan](#import-posts-from-vichan)
 
 ### Export posts
 
@@ -1127,7 +1131,8 @@ SRIRACHA_IMPORT='mysql://user:pass@tcp(localhost)/dbname' sriracha
 
 Then follow the import instructions above from "4. Visit the management panel" onward.
 
-Embed services (such as YouTube) must be enabled in board settings before importing posts with embeds.
+Embed services (such as YouTube) must be added in Sriracha and enabled in the
+settings of each Sriracha board before importing posts with embeds.
 
 ### Import posts from other software
 
