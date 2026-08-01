@@ -22,6 +22,7 @@
 - Fetch new replies automatically
 - Preview reference links when hovered
 - Search for posts by subject and message
+- Utilize all CPU cores to build static pages
 - Extend with [plugins](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#plugins)
 - Send [email notifications](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#email-notifications)
 - Customize [HTML templates](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#custom-templates)
