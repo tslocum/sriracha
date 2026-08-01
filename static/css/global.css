@@ -74,6 +74,10 @@ img, audio, video {
 	margin: 4px 20px 2px 20px;
 }
 
+.spoilerthumb {
+	filter: contrast(0%) brightness(40%);
+}
+
 .doubledash::before {
 	content: "¨";
 }

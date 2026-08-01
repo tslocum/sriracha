@@ -342,9 +342,15 @@ function quotePost(postID) {
 
 function expandFile(e, id) {
     if (e == undefined || e.which == undefined || e.which == 1) {
-        var srcFile = document.querySelector("#file" + id);
         var thumbFile = document.querySelector("#thumbfile" + id);
-        if (!srcFile || !thumbFile || !srcFile.dataset) {
+        if (!thumbFile) {
+            return true;
+        } else if (thumbFile.classList.contains('spoilerthumb')) {
+            thumbFile.classList.remove('spoilerthumb');
+            return false;
+        }
+        var srcFile = document.querySelector("#file" + id);
+        if (!srcFile || !srcFile.dataset) {
             return true;
         }
 

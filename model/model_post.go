@@ -259,6 +259,20 @@ func (p *Post) EmbedInfo() []string {
 	return split
 }
 
+func (p *Post) FileOriginalLabel() string {
+	if !p.Spoiler() {
+		return p.FileOriginal
+	}
+	return p.FileOriginal[1:]
+}
+
+func (p *Post) Spoiler() bool {
+	if len(p.FileOriginal) == 0 {
+		return false
+	}
+	return p.FileOriginal[0] == '!'
+}
+
 func (p *Post) MessageTruncated(lines int, account *Account) template.HTML {
 	var showOmitted bool
 	if lines == 0 {
