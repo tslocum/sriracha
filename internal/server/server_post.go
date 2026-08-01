@@ -817,6 +817,10 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		}
 	}
 
+	if post.Thumb != "" && FormBool(r, "spoiler") {
+		post.FileOriginal = "!" + post.FileOriginal
+	}
+
 	duplicate := s.checkDuplicateFileHash(db, post)
 	if duplicate != nil {
 		s.deletePostFiles(post)
@@ -1089,6 +1093,10 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 			data := s.buildData(db, w, r)
 			data.BoardError(w, err.Error())
 			return
+		}
+
+		if p.Thumb != "" && FormBool(r, "spoiler") {
+			p.FileOriginal = "!" + p.FileOriginal
 		}
 
 		duplicate := s.checkDuplicateFileHash(db, p)

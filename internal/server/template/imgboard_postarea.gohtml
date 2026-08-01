@@ -78,6 +78,7 @@
                         </td>
                         <td colspan="2">
                             <input type="file" name="file" size="35" accesskey="f"{{if gt .Board.Files 1}} multiple{{end}}>
+                            <label style="float: right;"><input type="checkbox" name="spoiler" value="1"><small>{{T "Spoiler"}}</small>&nbsp;</label>
                         </td>
                     </tr>
                 {{end}}

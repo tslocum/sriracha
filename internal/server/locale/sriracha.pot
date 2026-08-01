@@ -1308,6 +1308,9 @@ msgstr ""
 msgid "Site News"
 msgstr ""
 
+msgid "Spoiler"
+msgstr ""
+
 msgid "Sriracha is not running in import mode."
 msgstr ""
 
