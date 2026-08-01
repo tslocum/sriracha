@@ -115,8 +115,9 @@ func (v *vichanImport) Posts(table string) []*Post {
 				}
 				p.File = info.FilePath[lastSlash+1:]
 				if p.File == "" {
-					log.Fatalf("failed to parse file %s: blank file")
+					log.Fatalf("failed to parse file %s: blank file", string(fileInfo))
 				}
+				p.FileOriginal = info.Name
 				lastSlash = strings.LastIndexByte(info.ThumbPath, '/')
 				if lastSlash != -1 {
 					p.Thumb = info.ThumbPath[lastSlash+1:]

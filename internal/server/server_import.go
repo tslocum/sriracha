@@ -251,6 +251,7 @@ func (s *Server) _importPost(p *Post, tinyIB bool) error {
 		if p.ThumbWidth <= 0 || p.ThumbHeight <= 0 {
 			mime, err := mimetype.DetectReader(thumbFile)
 			if err == nil {
+				thumbFile.Seek(0, 0)
 				mimeType := mime.String()
 				if mimeType == "image/jpeg" || mimeType == "image/pjpeg" || mimeType == "image/png" || mimeType == "image/gif" {
 					imgWidth, imgHeight := s.imageDimensions(thumbFile)
