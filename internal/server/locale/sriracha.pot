@@ -1082,6 +1082,9 @@ msgstr ""
 msgid "Please enter an embed URL or enter a message."
 msgstr ""
 
+msgid "Please restart Sriracha without any import options."
+msgstr ""
+
 msgid "Please upload a file or enter a message."
 msgstr ""
 

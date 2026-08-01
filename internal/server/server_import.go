@@ -291,7 +291,7 @@ func (s *Server) serveImport(data *templateData, db serverDB, w http.ResponseWri
 	data.Boards = db.AllBoards()
 	data.Message = `<h2 class="managetitle">` + GetHTML(nil, data.Account, "Import") + `</h2>`
 
-	completeMessage := "<b>" + Get(nil, data.Account, "Import complete.") + "</b><br>" + Get(nil, data.Account, "Please restart Sriracha without the %s flag.", "--import") + "<br>"
+	completeMessage := "<b>" + Get(nil, data.Account, "Import complete.") + "</b><br>" + Get(nil, data.Account, "Please restart Sriracha without any import options.") + "<br>"
 	if data.forbidden(w, RoleSuperAdmin) {
 		return
 	} else if !s.config.ImportMode {

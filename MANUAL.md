@@ -1122,10 +1122,12 @@ be successful.
 To import posts from a vichan database, provide the relevant connection details via `SRIRACHA_IMPORT` when starting Sriracha:
 
 ```
-SRIRACHA_IMPORT='mysql://vichan:vichan@tcp(localhost)/vichan' sriracha
+SRIRACHA_IMPORT='mysql://user:pass@tcp(localhost)/dbname' sriracha
 ```
 
 Then follow the import instructions above from "4. Visit the management panel" onward.
+
+Embed services (such as YouTube) must be enabled in board settings before importing posts with embeds.
 
 ### Import posts from other software
 
