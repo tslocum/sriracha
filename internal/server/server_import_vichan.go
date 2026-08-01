@@ -5,10 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"regexp"
 	"slices"
 	"strings"
 
 	. "codeberg.org/tslocum/sriracha/model"
+	. "codeberg.org/tslocum/sriracha/util"
 )
 
 type vichanImport struct {
@@ -78,11 +80,13 @@ func (v *vichanImport) Tables() []string {
 }
 
 func (v *vichanImport) Posts(table string) []*Post {
-	rows, err := v.db.Query("SELECT id, COALESCE(thread, 0), COALESCE(subject, ''), COALESCE(email, ''), COALESCE(name, ''), COALESCE(trip, ''), COALESCE(body, ''), COALESCE(time, 0), COALESCE(bump, 0), COALESCE(files, ''), sticky, locked FROM " + table + " ORDER BY id ASC")
+	rows, err := v.db.Query("SELECT id, COALESCE(thread, 0), COALESCE(subject, ''), COALESCE(email, ''), COALESCE(name, ''), COALESCE(trip, ''), COALESCE(capcode, ''), COALESCE(body, ''), COALESCE(time, 0), COALESCE(bump, 0), COALESCE(files, ''), sticky, locked FROM " + table + " ORDER BY id ASC")
 	if err != nil {
 		log.Fatalf("failed to select posts: %s", err)
 	}
 	defer rows.Close()
+
+	resPattern := regexp.MustCompile(`<a onclick="highlightReply\('([0-9]+)', event\);" href="[^"]*res/([0-9]+).html#([0-9]+)">&gt;&gt;([0-9]+)</a>`)
 
 	var posts []*Post
 	for rows.Next() {
@@ -90,6 +94,7 @@ func (v *vichanImport) Posts(table string) []*Post {
 			p = &Post{
 				Moderated: ModeratedVisible,
 			}
+			capcode  string
 			fileInfo []byte
 			stickied int
 			locked   int
@@ -101,6 +106,7 @@ func (v *vichanImport) Posts(table string) []*Post {
 			&p.Email,
 			&p.Name,
 			&p.Tripcode,
+			&capcode,
 			&p.Message,
 			&p.Timestamp,
 			&p.Bumped,
@@ -139,6 +145,27 @@ func (v *vichanImport) Posts(table string) []*Post {
 		}
 		p.Stickied = stickied == 1
 		p.Locked = locked == 1
+
+		// Replace line break tags.
+		p.Message = strings.ReplaceAll(p.Message, `<br/>`, `<br>`+"\n")
+
+		// Replace quote class.
+		p.Message = strings.ReplaceAll(p.Message, `<span class="quote">`, `<span class="unkfunc">`)
+
+		// Replace reflinks.
+		p.Message = resPattern.ReplaceAllStringFunc(p.Message, func(s string) string {
+			match := resPattern.FindStringSubmatch(s)
+			postID := ParseInt(match[1])
+			threadID := ParseInt(match[2])
+			class := "refreply"
+			if postID == threadID {
+				class = "refop"
+			}
+			return fmt.Sprintf(`<a href="res/%d.html#%d" class="%s">&gt;&gt;%d</a>`, threadID, postID, class, postID)
+		})
+
+		p.SetNameBlock("Anonymous", capcode, false)
+
 		posts = append(posts, p)
 	}
 	if err = rows.Err(); err != nil {
