@@ -8,7 +8,8 @@ import (
 )
 
 type tinyibImport struct {
-	db *sql.DB
+	db        *sql.DB
+	postTable string
 }
 
 func (t *tinyibImport) Name() string {
@@ -30,11 +31,17 @@ func (t *tinyibImport) Matches() bool {
 	if rows.Err() != nil {
 		return false
 	}
+	if table != "" {
+		t.postTable = table
+	}
 	return table != ""
 }
 
 func (t *tinyibImport) Tables() []string {
-	return nil
+	if t.postTable == "" {
+		return nil
+	}
+	return []string{t.postTable}
 }
 
 func (t *tinyibImport) Posts(table string) []*Post {

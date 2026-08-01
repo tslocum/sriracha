@@ -151,7 +151,7 @@ func (s *Server) exportPosts(db serverDB, exportPath string) error {
 		if b.Description != "" {
 			fName += "_" + strings.ReplaceAll(strings.ToLower(b.Name), " ", "_")
 		}
-		fName += ".serverDB"
+		fName += ".db"
 
 		boardFile, err := s._exportBoardPosts(db, b, threads)
 		if err != nil {

@@ -42,9 +42,9 @@ type importInfo struct {
 
 func (s *Server) importHandlers(db *sql.DB) []importHandler {
 	return []importHandler{
-		&srirachaImport{db},
-		&tinyibImport{db},
-		&vichanImport{db},
+		&vichanImport{db: db},
+		&srirachaImport{db: db},
+		&tinyibImport{db: db},
 	}
 }
 
@@ -104,11 +104,11 @@ func (s *Server) _importDatabase(name string, filePath string) error {
 		return fmt.Errorf("failed to open file %s: expected SQLite database file", filePath)
 	}
 	var handler importHandler
-	srirachaHandler := &srirachaImport{sqlDB}
+	srirachaHandler := &srirachaImport{db: sqlDB}
 	if srirachaHandler.Matches() {
 		handler = srirachaHandler
 	} else {
-		tinyibHandler := &tinyibImport{sqlDB}
+		tinyibHandler := &tinyibImport{db: sqlDB}
 		if tinyibHandler.Matches() {
 			handler = tinyibHandler
 		} else {
@@ -348,21 +348,25 @@ func (s *Server) serveImport(data *templateData, db serverDB, w http.ResponseWri
 		data.Message += `<table class="managetable"><tbody>
 		<tr>
 			<th>` + GetHTML(nil, data.Account, "Export") + `</th>
+			<th>` + GetHTML(nil, data.Account, "Posts") + `</th>
 			<th>` + GetHTML(nil, data.Account, "Threads") + `</th>
 			<th>` + GetHTML(nil, data.Account, "Replies") + `</th>
-			<th>` + GetHTML(nil, data.Account, "Posts") + `</th>
+			<th>` + GetHTML(nil, data.Account, "Attachments") + `</th>
 		</tr>`
 		for _, info := range s.importDatabases {
 			name := strings.TrimSuffix(strings.TrimSuffix(info.name, ".db"), ".sriracha")
-			var threads, replies int
+			var threads, replies, attachments int
 			for _, p := range info.posts {
 				if p.Parent == 0 {
 					threads++
 				} else {
 					replies++
 				}
+				if p.File != "" {
+					attachments++
+				}
 			}
-			data.Message += template.HTML(s.msgPrinter.Sprintf("<tr><td>%s</td><td>%d</td><td>%d</td><td>%d</td></tr>", html.EscapeString(name), threads, replies, threads+replies))
+			data.Message += template.HTML(s.msgPrinter.Sprintf("<tr><td>%s</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td></tr>", html.EscapeString(name), threads+replies, threads, replies, attachments))
 		}
 		data.Message += `</tbody></table>`
 	}

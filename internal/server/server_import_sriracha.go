@@ -35,7 +35,7 @@ func (s *srirachaImport) Matches() bool {
 }
 
 func (s *srirachaImport) Tables() []string {
-	return nil
+	return []string{"post"}
 }
 
 func (s *srirachaImport) Posts(table string) []*Post {
