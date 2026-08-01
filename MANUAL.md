@@ -1115,6 +1115,18 @@ Restart Sriracha without the --import flag to re-enable posting.
 Don't forget to keep the backup handy, even if the migration appears to
 be successful.
 
+### Import posts from vichan
+
+**Note:** Sriracha does not have the same features as vichan.
+
+To import posts from a vichan database, provide the relevant connection details via `SRIRACHA_IMPORT` when starting Sriracha:
+
+```
+SRIRACHA_IMPORT='mysql://vichan:vichan@tcp(localhost)/vichan' sriracha
+```
+
+Then follow the import instructions above from "4. Visit the management panel" onward.
+
 ### Import posts from other software
 
 Sriracha is capable of importing posts from any software, provided you or

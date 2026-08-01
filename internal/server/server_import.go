@@ -8,6 +8,7 @@ import (
 	"html"
 	"html/template"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -18,14 +19,83 @@ import (
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/gabriel-vasile/mimetype"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var ytEmbedPattern = regexp.MustCompile(`\/\/www\.youtube\.com\/embed\/([0-9A-Za-z_\-]+)`)
 
+type importHandler interface {
+	Name() string
+	Matches() bool
+	Tables() []string
+	Posts(table string) []*Post
+}
+
 type importInfo struct {
-	name  string
-	sqlDB *sql.DB
-	posts []*Post
+	name    string
+	sqlDB   *sql.DB
+	handler importHandler
+	table   string
+	posts   []*Post
+}
+
+func (s *Server) importHandlers(db *sql.DB) []importHandler {
+	return []importHandler{
+		&srirachaImport{db},
+		&tinyibImport{db},
+		&vichanImport{db},
+	}
+}
+
+func (s *Server) _importExternal(importPath string) error {
+	var db *sql.DB
+	var err error
+	switch {
+	case strings.HasPrefix(importPath, "mysql://"):
+		db, err = sql.Open("mysql", importPath[8:])
+		if err != nil {
+			return fmt.Errorf("failed to connect to database: %s", err)
+		}
+	}
+	if db == nil {
+		return fmt.Errorf("unrecognized database type: expected 'mysql://...'")
+	}
+
+	var handlers []importHandler
+	allHandlers := s.importHandlers(db)
+	for _, handler := range allHandlers {
+		if handler.Matches() {
+			handlers = append(handlers, handler)
+		}
+	}
+	if len(handlers) == 0 {
+		return fmt.Errorf("no import handlers recognize the provided database (see manual for list of supported software)")
+	} else if len(handlers) > 1 {
+		var names []string
+		for _, handler := range handlers {
+			names = append(names, handler.Name())
+		}
+		return fmt.Errorf("multiple import handlers claim to match the provided database: %+v", names)
+	}
+
+	tables := handlers[0].Tables()
+	if len(tables) == 0 {
+		log.Fatalf("no tables containing posts were found")
+	}
+	for _, table := range tables {
+		if len(handlers[0].Posts(table)) == 0 {
+			continue
+		}
+		info := &importInfo{
+			name:    fmt.Sprintf("%s (%s)", handlers[0].Name(), table),
+			sqlDB:   db,
+			handler: handlers[0],
+			table:   table,
+		}
+		s.importDatabases = append(s.importDatabases, info)
+	}
+	return nil
 }
 
 func (s *Server) _importDatabase(name string, filePath string) error {
@@ -33,15 +103,38 @@ func (s *Server) _importDatabase(name string, filePath string) error {
 	if err != nil {
 		return fmt.Errorf("failed to open file %s: expected SQLite database file", filePath)
 	}
-	info := &importInfo{
-		name:  name,
-		sqlDB: sqlDB,
+	var handler importHandler
+	srirachaHandler := &srirachaImport{sqlDB}
+	if srirachaHandler.Matches() {
+		handler = srirachaHandler
+	} else {
+		tinyibHandler := &tinyibImport{sqlDB}
+		if tinyibHandler.Matches() {
+			handler = tinyibHandler
+		} else {
+			return fmt.Errorf("unrecognized database")
+		}
 	}
-	s.importDatabases = append(s.importDatabases, info)
+	for _, table := range handler.Tables() {
+		if len(handler.Posts(table)) == 0 {
+			continue
+		}
+		info := &importInfo{
+			name:    name,
+			sqlDB:   sqlDB,
+			handler: handler,
+			table:   table,
+		}
+		s.importDatabases = append(s.importDatabases, info)
+	}
 	return nil
 }
 
 func (s *Server) importDatabase(importPath string) error {
+	if strings.Contains(importPath, "://") {
+		return s._importExternal(importPath)
+	}
+
 	_, err := os.Stat(importPath)
 	if os.IsNotExist(err) {
 		return fmt.Errorf("file %s does not exist", importPath)
@@ -176,69 +269,18 @@ func (s *Server) _importPost(p *Post, tinyIB bool) error {
 	return nil
 }
 
-func (s *Server) importPosts(sqlDB *sql.DB, table string, tinyIB bool, b *Board) ([]*Post, error) {
-	// Build query.
-	var query string
-	if tinyIB {
-		// Import from TinyIB database.
-		query = "SELECT id, parent, timestamp, bumped, name, tripcode, email, nameblock, subject, message, file, '' AS file_mime, file_hex, file_original, file_size, image_width, image_height, thumb, thumb_width, thumb_height, stickied, locked FROM " + table
-	} else {
-		// Import from Sriracha-compatible export.
-		query = "SELECT id, parent, timestamp, bumped, name, tripcode, email, nameblock, subject, message, file, filemime, filehash, fileoriginal, filesize, filewidth, fileheight, thumb, thumbwidth, thumbheight, stickied, locked FROM " + table
-	}
-	query += " ORDER BY id ASC"
-
-	// Query database for posts.
-	var posts []*Post
-	rows, err := sqlDB.Query(query)
-	if err != nil {
-		return nil, err
-	}
-	for rows.Next() {
-		p := &Post{}
-		var stickied, locked int
-		err = rows.Scan(&p.ID,
-			&p.Parent,
-			&p.Timestamp,
-			&p.Bumped,
-			&p.Name,
-			&p.Tripcode,
-			&p.Email,
-			&p.NameBlock,
-			&p.Subject,
-			&p.Message,
-			&p.File,
-			&p.FileMIME,
-			&p.FileHash,
-			&p.FileOriginal,
-			&p.FileSize,
-			&p.FileWidth,
-			&p.FileHeight,
-			&p.Thumb,
-			&p.ThumbWidth,
-			&p.ThumbHeight,
-			&stickied,
-			&locked)
-		if err != nil {
-			return nil, err
-		}
-		p.Moderated = ModeratedVisible
-		p.Stickied = stickied == 1
-		p.Locked = locked == 1
-
-		posts = append(posts, p)
-
+func (s *Server) importPosts(info *importInfo, b *Board) ([]*Post, error) {
+	tinyIB := info.handler.Name() == "TinyIB"
+	posts := info.handler.Posts(info.table)
+	for _, p := range posts {
 		if b == nil {
 			continue
 		}
 		p.Board = b
-		err = s._importPost(p, tinyIB)
+		err := s._importPost(p, tinyIB)
 		if err != nil {
 			return nil, err
 		}
-	}
-	if rows.Err() != nil {
-		return nil, rows.Err()
 	}
 	return posts, nil
 }
@@ -291,43 +333,7 @@ func (s *Server) serveImport(data *templateData, db serverDB, w http.ResponseWri
 
 	// Validate table.
 	for i, info := range s.importDatabases {
-		sqlDB := info.sqlDB
-
-		// Locate post table.
-		var table string
-		var tinyIB bool
-		for i := 0; i < 2; i++ {
-			column := "filesize"
-			if i == 1 {
-				column = "file_size"
-			}
-			rows, err := sqlDB.Query("SELECT DISTINCT name FROM sqlite_master WHERE sql LIKE '%" + column + "%'")
-			if err != nil {
-				data.ManageError(err.Error())
-				return
-			}
-			for rows.Next() {
-				err = rows.Scan(&table)
-				if err != nil {
-					data.ManageError(err.Error())
-					return
-				}
-			}
-			if rows.Err() != nil {
-				data.ManageError(rows.Err().Error())
-				return
-			}
-			if table != "" {
-				tinyIB = i == 1
-				break
-			}
-		}
-		if table == "" {
-			data.ManageError(fmt.Sprintf("Failed to locate post table in export %s", info.name))
-			return
-		}
-
-		posts, err := s.importPosts(sqlDB, table, tinyIB, importBoards[i])
+		posts, err := s.importPosts(info, importBoards[i])
 		if err != nil {
 			data.ManageError(fmt.Sprintf("Failed to load export %s: %s", info.name, err.Error()))
 			return

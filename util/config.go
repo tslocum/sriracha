@@ -64,6 +64,8 @@ type Config struct {
 
 	Uploads []string // Supported upload file types.
 
+	Import string // Import posts from DSN.
+
 	// Calculated fields.
 	cachedUploads  []*UploadType
 	ImportMode     bool

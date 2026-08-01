@@ -1821,7 +1821,7 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 			data.ManageError("Sriracha is running in import mode. Only super-administrators may log in.")
 			data.execute(w)
 			return
-		} else if !strings.HasPrefix(r.URL.Path, "/sriracha/import/") && !strings.HasPrefix(r.URL.Path, "/sriracha/board/") {
+		} else if !strings.HasPrefix(r.URL.Path, "/sriracha/import/") && !strings.HasPrefix(r.URL.Path, "/sriracha/board/") && !strings.HasPrefix(r.URL.Path, "/sriracha/captcha") {
 			data.Redirect(w, r, "/sriracha/import/")
 			return
 		}
@@ -1989,7 +1989,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var unlocked bool
-	if s.config.ImportMode && action != "" {
+	if s.config.ImportMode && action != "" && action != "captcha" && action != "manage" {
 		data := s.buildData(db, w, r)
 		data.BoardError(w, "All boards are locked because Sriracha is running in import mode. Please try again later.")
 	} else {
@@ -2523,11 +2523,16 @@ func (s *Server) Run() error {
 	}
 
 	// Import posts.
+	if importPath == "" {
+		importPath = os.Getenv("SRIRACHA_IMPORT")
+	}
 	if importPath != "" {
 		s.config.ImportMode = true
 		err := s.importDatabase(importPath)
 		if err != nil {
 			return fmt.Errorf("failed to import posts: %s", err)
+		} else if len(s.importDatabases) == 0 {
+			return fmt.Errorf("failed to import posts: database or export does not contain any posts")
 		}
 	}
 
