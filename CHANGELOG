@@ -1,5 +1,6 @@
 1.9.5:
 - Add spoiler thumbnails
+- Support importing posts from vichan
 
 1.9.4:
 - Fix creating board index pages

@@ -78,7 +78,7 @@ func (v *vichanImport) Tables() []string {
 }
 
 func (v *vichanImport) Posts(table string) []*Post {
-	rows, err := v.db.Query("SELECT id, COALESCE(thread, 0), COALESCE(subject, ''), COALESCE(email, ''), COALESCE(name, ''), COALESCE(trip, ''), COALESCE(body, ''), COALESCE(files, ''), sticky, locked FROM " + table)
+	rows, err := v.db.Query("SELECT id, COALESCE(thread, 0), COALESCE(subject, ''), COALESCE(email, ''), COALESCE(name, ''), COALESCE(trip, ''), COALESCE(body, ''), COALESCE(time, 0), COALESCE(bump, 0), COALESCE(files, ''), sticky, locked FROM " + table + " ORDER BY id ASC")
 	if err != nil {
 		log.Fatalf("failed to select posts: %s", err)
 	}
@@ -94,7 +94,20 @@ func (v *vichanImport) Posts(table string) []*Post {
 			stickied int
 			locked   int
 		)
-		err = rows.Scan(&p.ID, &p.Parent, &p.Subject, &p.Email, &p.Name, &p.Tripcode, &p.Message, &fileInfo, &stickied, &locked)
+		err = rows.Scan(
+			&p.ID,
+			&p.Parent,
+			&p.Subject,
+			&p.Email,
+			&p.Name,
+			&p.Tripcode,
+			&p.Message,
+			&p.Timestamp,
+			&p.Bumped,
+			&fileInfo,
+			&stickied,
+			&locked,
+		)
 		if err != nil {
 			log.Fatalf("failed to scan post: %s", err)
 		} else if len(fileInfo) > 0 {
