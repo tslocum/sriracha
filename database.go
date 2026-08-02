@@ -137,6 +137,7 @@ type DB interface {
 	BumpThread(threadID int, timestamp int64)
 	ModeratePost(postID int, moderated PostModerated)
 	StickyPost(postID int, sticky bool)
+	SpoilerPost(postID int, spoiler bool)
 	LockPost(postID int, lock bool)
 	UpdatePostBoard(postID int, board *Board)
 	UpdatePostNameblock(postID int, nameblock string)

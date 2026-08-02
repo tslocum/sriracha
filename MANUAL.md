@@ -581,8 +581,9 @@ dbname: "sriracha"
 #  page.add:        "admin"
 #  page.update:     "admin"
 #  page.delete:     "admin"
-#  post.sticky:     "mod"
 #  post.lock:       "mod"
+#  post.sticky:     "mod"
+#  post.spoiler:    "mod"
 #  post.move:       "mod"
 #  post.delete:     "mod"
 
@@ -1314,8 +1315,9 @@ range, use a wildcard (*) at the end of the range prefix:
 Mod mode is a tool staff members may use to moderate one or more posts.
 When browsing in mod mode, the following moderation links are displayed:
 
-`V M S L D B D&B`
+`? V M S L D B D&B`
 
+- ?: Spoiler post (when a thumbnail is present)
 - V: View posts by author (when `identifiers` are enabed)
 - M: Move thread
 - S: Sticky thread

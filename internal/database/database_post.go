@@ -499,6 +499,24 @@ func (db *DB) StickyPost(postID int, sticky bool) {
 	}
 }
 
+func (db *DB) SpoilerPost(postID int, spoiler bool) {
+	if postID <= 0 {
+		return
+	}
+	post := db.PostByID(postID)
+	if post == nil || post.Spoiler() == spoiler {
+		return
+	} else if spoiler {
+		post.FileOriginal = "!" + post.FileOriginal
+	} else if len(post.FileOriginal) > 0 {
+		post.FileOriginal = post.FileOriginal[1:]
+	}
+	_, err := db.conn.Exec(context.Background(), "UPDATE post SET fileoriginal = $1 WHERE id = $2", post.FileOriginal, post.ID)
+	if err != nil {
+		dbErr(fmt.Errorf("failed to spooiler post: %w", err))
+	}
+}
+
 func (db *DB) LockPost(postID int, lock bool) {
 	var locked int
 	if lock {

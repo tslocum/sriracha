@@ -48,14 +48,18 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				action = "b"
 			case "deleteban":
 				action = "db"
-			case "sticky":
-				action = "s"
-			case "unsticky":
-				action = "us"
 			case "lock":
 				action = "l"
 			case "unlock":
 				action = "ul"
+			case "sticky":
+				action = "s"
+			case "unsticky":
+				action = "us"
+			case "spoiler":
+				action = "sp"
+			case "unspoiler":
+				action = "usp"
 			case "view":
 				action = "v"
 			case "move":
@@ -245,6 +249,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			s.rebuildThread(db, wg, post)
 			s.writeBoardIndexes(db, wg, source)
 			wg.Wait()
+			data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", destination.ID, post.Thread()))
 		} else {
 			moveLabel := Get(data.Board, data.Account, "Move")
 			boardLabel := Get(data.Board, data.Account, "Board")
@@ -260,6 +265,32 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			addNoticeLabel := Get(data.Board, data.Account, "Add notice")
 			data.Message += `</select></td></tr><tr><td class="postblock"><label for="notice">` + template.HTML(html.EscapeString(noticeLabel)) + `</label></td><td><label><input type="checkbox" id="notice" name="notice" value="1"> ` + template.HTML(html.EscapeString(addNoticeLabel)) + `</label></td></tr><tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="` + template.HTML(html.EscapeString(moveLabel)) + `"></td></tr></table></form></fieldset><br><br>`
 		}
+		return
+	} else if action == "sp" || action == "usp" {
+		post := selected[0]
+		var rebuild bool
+		if action == "sp" && !post.Spoiler() {
+			if s.forbidden(w, data, "post.spoiler") {
+				return
+			}
+			db.SpoilerPost(post.ID, true)
+			s.log(db, data.Account, nil, fmt.Sprintf("Spoilered >>/post/%d", post.ID), "")
+			rebuild = true
+		} else if action == "usp" && post.Spoiler() {
+			if s.forbidden(w, data, "post.spoiler") {
+				return
+			}
+			db.SpoilerPost(post.ID, false)
+			s.log(db, data.Account, nil, fmt.Sprintf("Unspoilered >>/post/%d", post.ID), "")
+			rebuild = true
+		}
+		if rebuild {
+			wg := &sync.WaitGroup{}
+			db.SoftCommit()
+			s.rebuildThread(db, wg, post)
+			wg.Wait()
+		}
+		data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", post.Board.ID, post.Thread()))
 		return
 	}
 	threadAction := action == "s" || action == "us" || action == "l" || action == "ul"
@@ -307,7 +338,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		}
 
 		data.Template = "manage_info"
-		data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", post.Board.ID, post.ID))
+		data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", post.Board.ID, post.Thread()))
 		return
 	}
 	data.Board = selected[0].Board

@@ -471,8 +471,9 @@ func (s *Server) parseConfig(configFile string) error {
 		"page.add":        "admin",
 		"page.update":     "admin",
 		"page.delete":     "admin",
-		"post.sticky":     "mod",
 		"post.lock":       "mod",
+		"post.sticky":     "mod",
+		"post.spoiler":    "mod",
 		"post.move":       "mod",
 		"post.delete":     "mod",
 	}

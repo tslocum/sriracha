@@ -730,6 +730,9 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
+msgid "Lock"
+msgstr ""
+
 msgid "Log In"
 msgstr ""
 
@@ -1329,6 +1332,9 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+msgid "Sticky"
+msgstr ""
+
 msgid "Style"
 msgstr ""
 
@@ -1431,7 +1437,16 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
+msgid "Unlock"
+msgstr ""
+
 msgid "Unpublished"
+msgstr ""
+
+msgid "Unspoiler"
+msgstr ""
+
+msgid "Unsticky"
 msgstr ""
 
 msgid "Unsubscribe"
