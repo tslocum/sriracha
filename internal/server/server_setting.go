@@ -92,6 +92,9 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		s.opt.CAPTCHA = false
 		db.SaveBool("captcha", s.opt.CAPTCHA)
 
+		s.opt.Spoiler = true
+		db.SaveBool("spoiler", s.opt.Spoiler)
+
 		s.opt.OekakiWidth = defaultServerOekakiWidth
 		db.SaveInt("oekakiwidth", s.opt.OekakiWidth)
 
@@ -219,6 +222,10 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		enableCAPTCHA := FormBool(r, "captcha")
 		db.SaveBool("captcha", enableCAPTCHA)
 		s.opt.CAPTCHA = enableCAPTCHA
+
+		spoiler := FormBool(r, "spoiler")
+		db.SaveBool("spoiler", spoiler)
+		s.opt.Spoiler = spoiler
 
 		search := FormInt(r, "search")
 		db.SaveInt("search", search)

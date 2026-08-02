@@ -150,6 +150,7 @@ type ServerOptions struct {
 	BoardIndex       bool
 	Statistics       bool
 	CAPTCHA          bool
+	Spoiler          bool
 	Refresh          int
 	Uploads          []*UploadType
 	Embeds           [][2]string
@@ -720,6 +721,12 @@ func (s *Server) loadServerConfig() error {
 	}
 
 	s.opt.CAPTCHA = db.GetBool("captcha")
+
+	if !db.HaveConfig("spoiler") {
+		s.opt.Spoiler = true
+	} else {
+		s.opt.Spoiler = db.GetBool("spoiler")
+	}
 
 	oekakiWidth := db.GetInt("oekakiwidth")
 	if oekakiWidth == 0 {

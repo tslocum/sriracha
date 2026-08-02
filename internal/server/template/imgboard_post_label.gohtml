@@ -21,7 +21,7 @@
         {{end}}
         {{if $.ModMode}}
             <span class="modui">
-                {{if and (ne $post.Thumb "") (May "post.spoiler" $.Account $.Opt.Access)}}
+                {{if and $.Opt.Spoiler (ne $post.Thumb "") (May "post.spoiler" $.Account $.Opt.Access)}}
                     <a href="/sriracha/mod/{{if $post.Spoiler}}un{{end}}spoiler/{{$post.ID}}" title="{{if not $post.Spoiler}}{{T "Spoiler"}}{{else}}{{T "Unspoiler"}}{{end}}" onclick="javascript:return confirm('{{if not $post.Spoiler}}Spoiler{{else}}Unspoiler{{end}} post?');">?</a>
                 {{end}}
                 {{if $.Opt.Identifiers}}

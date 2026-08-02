@@ -87,6 +87,14 @@
             <td>{{T "Whether visitors must pass a CAPTCHA when posting."}}</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="spoiler">{{T "Spoiler"}}</label></td>
+            <td><select name="spoiler" style="width: 100%;">
+                <option value="0"{{if not .Opt.Spoiler}} selected{{end}}>✗ {{T "Disable"}}</option>
+                <option value="1"{{if .Opt.Spoiler}} selected{{end}}>✓ {{T "Enable"}}</option>
+            </select></td>
+            <td>{{T "Whether visitors and staff members may mark attachment thumbnails as spoilers."}}</td>
+        </tr>
+        <tr>
             <td class="postblock"><label for="search">{{T "Search"}}</label></td>
             <td><input type="text" name="search" value="{{.Opt.Search}}"></input></td>
             <td>{{T "Delay (in seconds) visitors must wait between searches. Only post subjects and messages are searchable. Set to 0 to disable searching."}}</td>

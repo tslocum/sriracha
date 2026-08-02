@@ -1569,6 +1569,9 @@ msgstr ""
 msgid "Whether the threshold is for individual visitors or everyone."
 msgstr ""
 
+msgid "Whether visitors and staff members may mark attachment thumbnails as spoilers."
+msgstr ""
+
 msgid "Whether visitors may browse attachments as an image gallery."
 msgstr ""
 
