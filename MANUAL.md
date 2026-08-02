@@ -1348,6 +1348,14 @@ As an administrator, in addition to moderator privileges you may:
 - Delete news
 - Update settings
 
+#### Keywords
+
+Keywords are [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) which,
+when detected, trigger automatic moderation.
+
+A built-in keyword tester is included. To test building a regular expression,
+use an expression testing website with the Go (or "Golang") format selected.
+
 #### Global settings
 
 Some board, banner and keyword settings may be configured globally. Administrators
