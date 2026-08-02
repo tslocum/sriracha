@@ -29,12 +29,15 @@ const (
 	buildStatistics
 )
 
+const newsCount = 10
+
 // buildInfo contains information used to request building a page.
 type buildInfo struct {
 	build      buildType
 	board      *Board
 	threads    [][2]int
 	post       int
+	news       []*News
 	page       int
 	customPage *Page
 	db         serverDB
@@ -207,6 +210,78 @@ func (s *Server) _buildBoardThread(info *buildInfo) {
 	data.execute(f)
 
 	f.Close()
+	err = os.Rename(writePath, filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (s *Server) _buildNewsIndex(info *buildInfo) {
+	db := info.db
+	page := info.page
+
+	data := s.newTemplateData(db)
+	data.Boards = db.AllBoards()
+	data.Template = "news"
+
+	data.Pages = pageCount(len(info.news), newsCount)
+
+	fileName := "news.html"
+	if s.opt.News == NewsWriteToIndex {
+		fileName = "index.html"
+	}
+	if page > 0 {
+		fileName = fmt.Sprintf("news-p%d.html", page)
+	}
+
+	writePath := filepath.Join(s.config.Root, "_"+fileName)
+	filePath := filepath.Join(s.config.Root, fileName)
+
+	indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	start := page * newsCount
+	end := len(info.news)
+	if newsCount != 0 && end > start+newsCount {
+		end = start + newsCount
+	}
+
+	data.AllNews = info.news[start:end]
+	data.Page = page
+	data.execute(indexFile)
+
+	indexFile.Close()
+	err = os.Rename(writePath, filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (s *Server) _buildNewsEntry(info *buildInfo) {
+	db := info.db
+	n := info.news[0]
+	if n.ID <= 0 {
+		return
+	}
+
+	data := s.newTemplateData(db)
+	data.Boards = db.AllBoards()
+	data.Template = "news"
+	data.AllNews = []*News{n}
+	data.Pages = 1
+	data.Extra = "view"
+
+	writePath := filepath.Join(s.config.Root, fmt.Sprintf("_news-%d.html", n.ID))
+	filePath := filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", n.ID))
+
+	itemFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	if err != nil {
+		log.Fatal(err)
+	}
+	data.execute(itemFile)
+	itemFile.Close()
 	err = os.Rename(writePath, filePath)
 	if err != nil {
 		log.Fatal(err)
@@ -390,6 +465,10 @@ func (s *Server) _build() {
 			s._buildBoardCatalog(info)
 		case buildBoardThread:
 			s._buildBoardThread(info)
+		case buildNewsIndex:
+			s._buildNewsIndex(info)
+		case buildNewsEntry:
+			s._buildNewsEntry(info)
 		case buildPage:
 			s._buildPage(info)
 		case buildSiteIndex:
@@ -524,6 +603,48 @@ func (s *Server) writeOverboard(db serverDB, wg *sync.WaitGroup, c *categoryInfo
 		boards = c.Boards
 	}
 	s.writeBoardIndexes(db, wg, board, boards...)
+}
+
+// writeNewsEntry writes a news entry page to disk.
+func (s *Server) writeNewsEntry(db serverDB, wg *sync.WaitGroup, n *News) {
+	wg.Add(1)
+	info := &buildInfo{
+		build: buildNewsEntry,
+		news:  []*News{n},
+		wg:    wg,
+	}
+	s.buildQueue <- info
+}
+
+// writeNewsIndexes writes news index pages to disk.
+func (s *Server) writeNewsIndexes(db serverDB, wg *sync.WaitGroup) []*News {
+	allNews := db.AllNews(true)
+	pages := pageCount(len(allNews), newsCount)
+	wg.Add(pages)
+	for page := 0; page < pages; page++ {
+		info := &buildInfo{
+			build: buildNewsIndex,
+			news:  allNews,
+			page:  page,
+			wg:    wg,
+		}
+		s.buildQueue <- info
+	}
+	return allNews
+}
+
+// rebuildNewsEntry rebuilds a news entry.
+func (s *Server) rebuildNewsEntry(db serverDB, wg *sync.WaitGroup, n *News) {
+	s.writeNewsIndexes(db, wg)
+	s.writeNewsEntry(db, wg, n)
+}
+
+// rebuildNews rebuilds all news entries.
+func (s *Server) rebuildNews(db serverDB, wg *sync.WaitGroup) {
+	allNews := s.writeNewsIndexes(db, wg)
+	for _, n := range allNews {
+		s.writeNewsEntry(db, wg, n)
+	}
 }
 
 // writePages writes custom pages to disk.

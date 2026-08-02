@@ -1509,10 +1509,7 @@ func (s *Server) rebuildAll(db serverDB) {
 	if len(allPages) > 0 {
 		s.writePages(db, wg, allPages)
 	}
-	published := len(db.AllNews(true))
-	if published > 0 {
-		s.rebuildNews(db)
-	}
+	s.rebuildNews(db, wg)
 	s.writeOverboards(db, wg, nil)
 	for _, b := range db.AllBoards() {
 		s.rebuildBoard(db, wg, b)
@@ -1546,92 +1543,6 @@ func (s *Server) handleBenchmark(n int) {
 
 	log.Printf("Rebuilt all static files %d times in %s (median: %s, average: %s)", n, sumDuration(durations).Round(time.Millisecond), medianDuration(durations).Round(time.Millisecond), averageDuration(durations).Round(time.Millisecond))
 	s.Stop()
-}
-
-// writeNewsItem writes a news entry page to disk.
-func (s *Server) writeNewsItem(db serverDB, n *News) {
-	if n.ID <= 0 {
-		return
-	}
-
-	data := s.newTemplateData(db)
-	data.Boards = db.AllBoards()
-	data.Template = "news"
-	data.AllNews = []*News{n}
-	data.Pages = 1
-	data.Extra = "view"
-
-	writePath := filepath.Join(s.config.Root, fmt.Sprintf("_news-%d.html", n.ID))
-	filePath := filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", n.ID))
-
-	itemFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
-	if err != nil {
-		log.Fatal(err)
-	}
-	data.execute(itemFile)
-	itemFile.Close()
-	err = os.Rename(writePath, filePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-// writeNewsIndexes writes news index pages to disk.
-func (s *Server) writeNewsIndexes(db serverDB) {
-	allNews := db.AllNews(true)
-	data := s.newTemplateData(db)
-	data.Boards = db.AllBoards()
-	data.Template = "news"
-
-	const newsCount = 10
-	data.Pages = pageCount(len(allNews), newsCount)
-	for page := 0; page < data.Pages; page++ {
-		fileName := "news.html"
-		if s.opt.News == NewsWriteToIndex {
-			fileName = "index.html"
-		}
-		if page > 0 {
-			fileName = fmt.Sprintf("news-p%d.html", page)
-		}
-
-		writePath := filepath.Join(s.config.Root, "_"+fileName)
-		filePath := filepath.Join(s.config.Root, fileName)
-
-		indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		start := page * newsCount
-		end := len(allNews)
-		if newsCount != 0 && end > start+newsCount {
-			end = start + newsCount
-		}
-
-		data.AllNews = allNews[start:end]
-		data.Page = page
-		data.execute(indexFile)
-
-		indexFile.Close()
-		err = os.Rename(writePath, filePath)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-}
-
-// rebuildNewsItem rebuilds a news entry.
-func (s *Server) rebuildNewsItem(db serverDB, n *News) {
-	s.writeNewsItem(db, n)
-	s.writeNewsIndexes(db)
-}
-
-// rebuildNews rebuilds all news entries.
-func (s *Server) rebuildNews(db serverDB) {
-	for _, n := range db.AllNews(true) {
-		s.writeNewsItem(db, n)
-	}
-	s.writeNewsIndexes(db)
 }
 
 // writeVisitorGuide writes the visitor guide to disk.
