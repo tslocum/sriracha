@@ -401,14 +401,28 @@ func (s *Server) newTemplateFuncMap(db serverDB, locale string) template.FuncMap
 	f["ChildCategories"] = func(id int) []*Category { return db.ChildCategories(id) }
 	f["AllCategories"] = func() []*Category { return db.AllCategories() }
 
-	//Keyword.
+	// Keyword.
 	f["KeywordByID"] = func(id int) *Keyword { return db.KeywordByID(id) }
 	f["KeywordByText"] = func(text string) *Keyword { return db.KeywordByText(text) }
 	f["AllKeywords"] = func() []*Keyword { return db.AllKeywords() }
 
 	// News.
-	f["NewsByID"] = func(id int) *News { return db.NewsByID(id) }
-	f["AllNews"] = func(onlyPublished bool) []*News { return db.AllNews(onlyPublished) }
+	f["NewsByID"] = func(id int) *News {
+		n := db.NewsByID(id)
+		if n.Account != nil {
+			n.Account.Anonymize()
+		}
+		return n
+	}
+	f["AllNews"] = func(onlyPublished bool) []*News {
+		allNews := db.AllNews(onlyPublished)
+		for _, n := range allNews {
+			if n.Account != nil {
+				n.Account.Anonymize()
+			}
+		}
+		return allNews
+	}
 
 	// Page.
 	f["PageByID"] = func(id int) *Page { return db.PageByID(id) }

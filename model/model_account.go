@@ -60,3 +60,10 @@ func (a *Account) LastActiveDate() string {
 	}
 	return time.Unix(a.LastActive, 0).Format("2006-01-02 15:04:05 MST")
 }
+
+func (a *Account) Anonymize() {
+	aa := &Account{
+		ID: a.ID,
+	}
+	*a = *aa
+}
