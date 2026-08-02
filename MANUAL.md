@@ -194,6 +194,8 @@ Generating and validating two-factor authentication passcodes requires accurate
 timekeeping. Passcodes will fail validation when the time difference between a
 device and the server is greater than one minute.
 
+#### Account recovery
+
 If you lose access to all of your 2FA devices, ask a super-administrator to
 reset your password. All existing 2FA devices will be removed from your account.
 If you are the only super-administrator, use the `--recover` flag instead.
@@ -1334,6 +1336,19 @@ to the bottom of the page. When browsing normally, click the 'Delete' button wit
 entering a password. When browsing in mod mode, click the 'Moderate' button.
 
 Any existing bans for shorter durations will be replaced.
+
+#### News
+
+When enabled, all staff have access to post news entries. Staff may also update
+existing news entries which have been shared by other staff members.
+
+Leave a news entry's Date field blank to draft a news entry only visible to staff.
+
+Enter a date and time in the future to hide the news entry from visitors until then.
+
+Enter the present date and time or a past date and time to show a news entry to visitors.
+
+When the Site Index is enabled, the latest news entry will be displayed on the homepage.
 
 ### Administrator guide
 
