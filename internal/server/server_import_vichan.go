@@ -88,6 +88,8 @@ func (v *vichanImport) Posts(table string) []*Post {
 
 	resPattern := regexp.MustCompile(`<a onclick="highlightReply\('([0-9]+)', event\);" href="[^"]*res/([0-9]+).html#([0-9]+)">&gt;&gt;([0-9]+)</a>`)
 
+	var pending []*Post
+
 	var posts []*Post
 	for rows.Next() {
 		var (
@@ -125,23 +127,37 @@ func (v *vichanImport) Posts(table string) []*Post {
 				log.Fatalf("failed to scan files column: %s: %s", string(fileInfo), err)
 			}
 			for i, info := range allInfo {
-				// store extra attachments, return as extra new posts duplicated from original and copied with file at tail
-				if i != 0 {
-					// store
-					continue
+				var current *Post
+				if i == 0 {
+					current = p
+				} else {
+					pp := p.Copy()
+					pp.ID = 0
+					if pp.Parent == 0 {
+						pp.Parent = p.ID
+					}
+					pp.Subject = ""
+					class := "refreply"
+					if p.Parent == 0 {
+						class = "refop"
+					}
+					pp.Message = fmt.Sprintf(`<a href="res/%d.html#%d" class="%s">&gt;&gt;%d</a>`, p.Thread(), p.ID, class, p.ID)
+					pp.ResetAttachment()
+					pending = append(pending, pp)
+					current = pp
 				}
 				lastSlash := strings.LastIndexByte(info.FilePath, '/')
 				if lastSlash == -1 {
 					log.Fatalf("failed to parse file %s: no slash found in file path", string(fileInfo))
 				}
-				p.File = info.FilePath[lastSlash+1:]
-				if p.File == "" {
+				current.File = info.FilePath[lastSlash+1:]
+				if current.File == "" {
 					log.Fatalf("failed to parse file %s: blank file", string(fileInfo))
 				}
-				p.FileOriginal = info.Name
+				current.FileOriginal = info.Name
 				lastSlash = strings.LastIndexByte(info.ThumbPath, '/')
 				if lastSlash != -1 {
-					p.Thumb = info.ThumbPath[lastSlash+1:]
+					current.Thumb = info.ThumbPath[lastSlash+1:]
 				}
 			}
 		}
@@ -177,6 +193,10 @@ func (v *vichanImport) Posts(table string) []*Post {
 	}
 	if err = rows.Err(); err != nil {
 		log.Fatalf("failed to select posts: %s", err)
+	}
+
+	for _, post := range pending {
+		posts = append(posts, post)
 	}
 	return posts
 }
