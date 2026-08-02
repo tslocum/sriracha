@@ -19,8 +19,6 @@ type vichanImport struct {
 
 type vichanFileInfo struct {
 	Name      string
-	FullPath  string `json:"full_path"`
-	Type      string
 	FilePath  string `json:"file_path"`
 	ThumbPath string `json:"thumb_path"`
 }
