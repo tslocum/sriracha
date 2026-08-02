@@ -184,6 +184,13 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 }
 
 func (s *Server) _buildBoardThread(info *buildInfo) {
+	var (
+		traceT time.Time
+		traceD time.Duration
+	)
+	if s.opt.trace {
+		traceT = time.Now()
+	}
 	db := info.db
 	board := info.board
 	postID := info.post
@@ -214,9 +221,21 @@ func (s *Server) _buildBoardThread(info *buildInfo) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	if s.opt.trace {
+		traceD = time.Since(traceT)
+		traceLog(board.Path()+fmt.Sprintf("res/%d.html", postID), traceD)
+	}
 }
 
 func (s *Server) _buildNewsIndex(info *buildInfo) {
+	var (
+		traceT time.Time
+		traceD time.Duration
+	)
+	if s.opt.trace {
+		traceT = time.Now()
+	}
 	db := info.db
 	page := info.page
 
@@ -257,9 +276,21 @@ func (s *Server) _buildNewsIndex(info *buildInfo) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	if s.opt.trace {
+		traceD = time.Since(traceT)
+		traceLog("/"+fileName, traceD)
+	}
 }
 
 func (s *Server) _buildNewsEntry(info *buildInfo) {
+	var (
+		traceT time.Time
+		traceD time.Duration
+	)
+	if s.opt.trace {
+		traceT = time.Now()
+	}
 	db := info.db
 	n := info.news[0]
 	if n.ID <= 0 {
@@ -286,9 +317,21 @@ func (s *Server) _buildNewsEntry(info *buildInfo) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	if s.opt.trace {
+		traceD = time.Since(traceT)
+		traceLog(fmt.Sprintf("/news-%d.html", n.ID), traceD)
+	}
 }
 
 func (s *Server) _buildPage(info *buildInfo) {
+	var (
+		traceT time.Time
+		traceD time.Duration
+	)
+	if s.opt.trace {
+		traceT = time.Now()
+	}
 	db := info.db
 
 	data := s.newTemplateData(db)
@@ -313,6 +356,11 @@ func (s *Server) _buildPage(info *buildInfo) {
 	err = os.Rename(writePath, filePath)
 	if err != nil {
 		log.Printf("warning: skipped invalid page %s: %s", p.Path, err)
+	}
+
+	if s.opt.trace {
+		traceD = time.Since(traceT)
+		traceLog(fmt.Sprintf("/%s.html", p.Path), traceD)
 	}
 }
 
@@ -374,7 +422,7 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 
 	if s.opt.trace {
 		traceD = time.Since(traceT)
-		traceLog("Site index", traceD)
+		traceLog("/index.html", traceD)
 	}
 }
 
