@@ -733,6 +733,9 @@ msgstr ""
 msgid "Lock"
 msgstr ""
 
+msgid "Locked"
+msgstr ""
+
 msgid "Log In"
 msgstr ""
 
@@ -1330,6 +1333,9 @@ msgid "Statistics"
 msgstr ""
 
 msgid "Status"
+msgstr ""
+
+msgid "Stickied"
 msgstr ""
 
 msgid "Sticky"
