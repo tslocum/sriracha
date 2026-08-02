@@ -423,22 +423,27 @@ On systems with more than 1GB of available memory, the following options should 
 
 #### shared_buffers
 
-Increasing this limit from 128MB to 25% of available memory is recommended.
-
-This option will impact overall system performance.
+Increase this limit from 128MB to 25% of available memory. This option will
+impact overall system performance.
 
 #### work_mem
 
-Increasing this limit from 4MB to 16MB is recommended.
-
-This option will impact performance when there are many rows in the database.
+Increase this limit from 4MB to 16MB. This option will impact performance when
+there are many rows in the database.
 
 #### maintenance_work_mem
 
-Increasing this limit from 64MB to 25% of available memory is recommended.
+Increase this limit from 64MB to 25% of available memory. This option will
+impact performance when PostgreSQL cleans up deleted or outdated table data.
 
-This option will impact performance when PostgreSQL cleans up deleted or
-outdated table data.
+### Tracing
+
+To print performance metrics to the server console, start Sriracha with the `--trace` flag.
+Adding this flag will not significantly affect performance.
+
+Developers can also enable high precision tracing by setting the `SRIRACHA_TRACE` environment vaiable.
+High precision tracing severely degrades system performance and should only be used by developers.
+Run `go tool trace file.trace` after shutting down Sriracha to view recorded information.
 
 ### Locales
 
