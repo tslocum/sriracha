@@ -239,6 +239,26 @@ type testCase struct {
 // testCases represents all template test cases.
 var testCases = []testCase{
 	{
+		template: "extra_adminbar",
+		board:    true,
+	},
+	{
+		template: "extra_footer",
+		board:    true,
+	},
+	{
+		template: "extra_header",
+		board:    true,
+	},
+	{
+		template: "extra_logo",
+		board:    true,
+	},
+	{
+		template: "extra_navbar",
+		board:    true,
+	},
+	{
 		template: "board_error",
 		board:    true,
 	},
@@ -272,18 +292,6 @@ var testCases = []testCase{
 	},
 	{
 		template: "index",
-		board:    true,
-	},
-	{
-		template: "news",
-		board:    true,
-	},
-	{
-		template: "oekaki",
-		board:    true,
-	},
-	{
-		template: "subscribe",
 		board:    true,
 	},
 	{
@@ -355,5 +363,20 @@ var testCases = []testCase{
 	{
 		template:        "manage_twofactor",
 		manageTwoFactor: true,
+	},
+	{
+		template: "news",
+		board:    true,
+	},
+	{
+		template: "oekaki",
+		board:    true,
+	},
+	{
+		template: "search",
+	},
+	{
+		template: "subscribe",
+		board:    true,
 	},
 }
