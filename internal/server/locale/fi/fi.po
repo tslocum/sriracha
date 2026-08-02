@@ -44,6 +44,9 @@ msgstr[1] ""
 msgid "%s Devices"
 msgstr ""
 
+msgid "%s connections."
+msgstr ""
+
 msgid "%s imageboard and forum server"
 msgstr ""
 
@@ -302,6 +305,9 @@ msgstr ""
 
 msgid "Confirm"
 msgstr "Vahvista"
+
+msgid "Connections"
+msgstr ""
 
 msgid "Content"
 msgstr ""
@@ -750,6 +756,12 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
+msgid "Lock"
+msgstr ""
+
+msgid "Locked"
+msgstr ""
+
 msgid "Log In"
 msgstr ""
 
@@ -1122,6 +1134,9 @@ msgstr ""
 msgid "Please enter an embed URL or enter a message."
 msgstr ""
 
+msgid "Please restart Sriracha without any import options."
+msgstr ""
+
 msgid "Please upload a file or enter a message."
 msgstr ""
 
@@ -1353,6 +1368,9 @@ msgstr ""
 msgid "Site News"
 msgstr ""
 
+msgid "Spoiler"
+msgstr ""
+
 msgid "Sriracha is not running in import mode."
 msgstr ""
 
@@ -1367,6 +1385,12 @@ msgstr ""
 
 msgid "Status"
 msgstr "Tila"
+
+msgid "Stickied"
+msgstr ""
+
+msgid "Sticky"
+msgstr ""
 
 msgid "Style"
 msgstr ""
@@ -1474,7 +1498,16 @@ msgstr ""
 msgid "Unknown"
 msgstr "Tuntematon"
 
+msgid "Unlock"
+msgstr ""
+
 msgid "Unpublished"
+msgstr ""
+
+msgid "Unspoiler"
+msgstr ""
+
+msgid "Unsticky"
 msgstr ""
 
 msgid "Unsubscribe"
@@ -1598,6 +1631,11 @@ msgid "Whether the threshold is for individual boards or everywhere."
 msgstr ""
 
 msgid "Whether the threshold is for individual visitors or everyone."
+msgstr ""
+
+msgid ""
+"Whether visitors and staff members may mark attachment thumbnails as "
+"spoilers."
 msgstr ""
 
 msgid "Whether visitors may browse attachments as an image gallery."

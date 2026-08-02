@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-07-24 16:52+0000\n"
+"PO-Revision-Date: 2026-07-31 19:46+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.6.1\n"
+"X-Generator: Weblate 2026.7.1\n"
 
 msgid "%d existing ban"
 msgid_plural "%d existing bans"
@@ -43,6 +43,9 @@ msgstr[1] "%d meldingen"
 
 msgid "%s Devices"
 msgstr "%s apparaten"
+
+msgid "%s connections."
+msgstr "%s verbindingen."
 
 msgid "%s imageboard and forum server"
 msgstr "%s: afbeeldingsforum en forumserver"
@@ -309,6 +312,9 @@ msgstr "Instellen"
 
 msgid "Confirm"
 msgstr "Bevestigen"
+
+msgid "Connections"
+msgstr "Verbindingen"
 
 msgid "Content"
 msgstr "Inhoud"
@@ -782,6 +788,12 @@ msgstr "De te gebruiken taal op subfora."
 msgid "Location"
 msgstr "Locatie"
 
+msgid "Lock"
+msgstr ""
+
+msgid "Locked"
+msgstr ""
+
 msgid "Log In"
 msgstr "Inloggen"
 
@@ -1185,6 +1197,9 @@ msgstr "Voer een geldige insluit-url in."
 msgid "Please enter an embed URL or enter a message."
 msgstr "Voer een insluit-url of bericht in."
 
+msgid "Please restart Sriracha without any import options."
+msgstr ""
+
 msgid "Please upload a file or enter a message."
 msgstr "Upload een bestand of voer een bericht in."
 
@@ -1424,6 +1439,9 @@ msgstr "Sitenaam"
 msgid "Site News"
 msgstr "Sitenieuws"
 
+msgid "Spoiler"
+msgstr ""
+
 msgid "Sriracha is not running in import mode."
 msgstr "De importmodus van Sriracha is inactief."
 
@@ -1438,6 +1456,12 @@ msgstr "Statistieken"
 
 msgid "Status"
 msgstr "Status"
+
+msgid "Stickied"
+msgstr ""
+
+msgid "Sticky"
+msgstr ""
 
 msgid "Style"
 msgstr "Stijl"
@@ -1552,8 +1576,17 @@ msgstr ""
 msgid "Unknown"
 msgstr "Onbekend"
 
+msgid "Unlock"
+msgstr ""
+
 msgid "Unpublished"
 msgstr "Ongepubliceerd"
+
+msgid "Unspoiler"
+msgstr ""
+
+msgid "Unsticky"
+msgstr ""
 
 msgid "Unsubscribe"
 msgstr "Deabonneren"
@@ -1690,6 +1723,11 @@ msgstr "Of de drempelwaarde van toepassing is op specifieke subfora of overal."
 msgid "Whether the threshold is for individual visitors or everyone."
 msgstr ""
 "Of de drempelwaarde van toepassing is op specifieke bezoekers of iedereen."
+
+msgid ""
+"Whether visitors and staff members may mark attachment thumbnails as "
+"spoilers."
+msgstr ""
 
 msgid "Whether visitors may browse attachments as an image gallery."
 msgstr ""
