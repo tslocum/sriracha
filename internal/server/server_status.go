@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -78,6 +79,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 			return
 		}
 		data.Info = "Remote address: " + s.requestIP(r)
+		return
 	}
 
 	// Allow super-administrators to rebuild post nameblocks.
@@ -107,6 +109,40 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		}
 		wg.Wait()
 		data.Info = "Rebuilt nameblocks"
+		return
+	}
+
+	// Allow super-administrators to rebuild reflinks.
+	if r.URL.Query().Has("rebuildReflinks") {
+		if data.forbidden(w, RoleSuperAdmin) {
+			return
+		}
+		data.Template = "manage_info"
+		for _, b := range db.AllBoards() {
+			for _, thread := range db.AllThreads(false, b) {
+				for _, p := range db.AllPostsInThread(false, thread[0]) {
+					resPattern := regexp.MustCompile(`<a href="[^"]*res\/([0-9]+).html#([0-9]+)" class="([A-Aa-z]+)">&gt;&gt;([0-9]+)(\(OP\))?</a>`)
+					oldMessage := p.Message
+					p.Message = resPattern.ReplaceAllStringFunc(p.Message, func(s string) string {
+						match := resPattern.FindStringSubmatch(s)
+						threadID := ParseInt(match[1])
+						postID := ParseInt(match[2])
+						var extra string
+						if postID == threadID {
+							extra = "(OP)"
+						}
+						return fmt.Sprintf(`<a href="%sres/%d.html#%d" class="%s">&gt;&gt;%d%s</a>`, b.Path(), threadID, postID, match[3], postID, extra)
+					})
+					if p.Message != oldMessage {
+						db.UpdatePostMessage(p.ID, p.Message)
+					}
+				}
+			}
+		}
+		db.SoftCommit()
+		s.rebuildAll(db)
+		data.Info = "Rebuilt reflinks"
+		return
 	}
 
 	// Allow super-administrators to scan for unexpected files.

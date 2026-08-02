@@ -498,7 +498,7 @@ func (s *Server) serveImport(data *templateData, db serverDB, w http.ResponseWri
 				return "\n" + string(s[1])
 			})
 
-			resPattern := regexp.MustCompile(`<a href="[^"]*res\/([0-9]+).html#([0-9]+)" class="([A-Aa-z]+)">&gt;&gt;([0-9]+)</a>`)
+			resPattern := regexp.MustCompile(`<a href="[^"]*res\/([0-9]+).html#([0-9]+)" class="([A-Aa-z]+)">&gt;&gt;([0-9]+)(\(OP\))?</a>`)
 			p.Message = resPattern.ReplaceAllStringFunc(p.Message, func(s string) string {
 				match := resPattern.FindStringSubmatch(s)
 				threadID := ParseInt(match[1])
@@ -506,7 +506,11 @@ func (s *Server) serveImport(data *templateData, db serverDB, w http.ResponseWri
 				if newIDs[threadID] == 0 || newIDs[postID] == 0 {
 					return s
 				}
-				return fmt.Sprintf(`<a href="%sres/%d.html#%d" class="%s">&gt;&gt;%d</a>`, b.Path(), newIDs[threadID], newIDs[postID], match[3], newIDs[postID])
+				var extra string
+				if postID == threadID {
+					extra = "(OP)"
+				}
+				return fmt.Sprintf(`<a href="%sres/%d.html#%d" class="%s">&gt;&gt;%d%s</a>`, b.Path(), newIDs[threadID], newIDs[postID], match[3], newIDs[postID], extra)
 			})
 
 			p.Message = strings.TrimSuffix(p.Message, "<br>")

@@ -1422,6 +1422,10 @@ Each post has a `nameblock` field containing the poster's name, tripcode and
 identifier, as well as the date/time the post was created. Super-administrators
 may rebuild all `nameblock` fields by visiting `/sriracha/?rebuildNameblocks`.
 
+#### Rebuild reflinks
+
+Super-administrators may rebuild all reflinks `>>###` by visiting `/sriracha/?rebuildReflinks`.
+
 #### Verify IP address resolution
 
 To support banning visitors, Sriracha must be able to resolve remote IP addresses,

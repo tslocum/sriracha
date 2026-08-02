@@ -972,10 +972,12 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 				return s
 			}
 			className := "refop"
+			extra := "(OP)"
 			if refPost.Parent != 0 {
 				className = "refreply"
+				extra = ""
 			}
-			return fmt.Sprintf(`<a href="%sres/%d.html#%d" class="%s">%s</a>`, refPost.Board.Path(), refPost.Thread(), refPost.ID, className, s)
+			return fmt.Sprintf(`<a href="%sres/%d.html#%d" class="%s">%s</a>`, refPost.Board.Path(), refPost.Thread(), refPost.ID, className, s+extra)
 		})
 
 		var allBoards []*Board
