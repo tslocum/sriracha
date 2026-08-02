@@ -35,6 +35,11 @@ func (s *Server) loadNewsForm(db serverDB, r *http.Request, n *News, a *Account)
 }
 
 func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
+	if s.opt.News == NewsDisable {
+		data.ManageError("Site news is disabled.")
+		return
+	}
+
 	var err error
 	data.Template = "manage_news"
 	data.Boards = db.AllBoards()

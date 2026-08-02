@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -269,6 +270,30 @@ func (s *Server) _buildNewsIndex(info *buildInfo) {
 
 	data.AllNews = info.news[start:end]
 	data.Page = page
+
+	subData := s.newTemplateData(db)
+	buf := &bytes.Buffer{}
+	for _, n := range data.AllNews {
+		subData.Boards = db.AllBoards()
+		subData.Template = "line"
+		subData.tpl, err = s.tplOriginal.Clone()
+		if err != nil {
+			log.Fatal(err)
+		}
+		subData.tpl, err = subData.tpl.New("line").Parse(n.Message)
+		if err != nil {
+			log.Printf("warning: skipped invalid news entry %d: %s", n.ID, err)
+			continue
+		}
+		err = subData.executeWithError(buf)
+		if err != nil {
+			log.Printf("warning: skipped invalid news entry %d: %s", n.ID, err)
+			continue
+		}
+		n.Message = buf.String()
+		buf.Reset()
+	}
+
 	data.execute(indexFile)
 
 	indexFile.Close()
@@ -311,7 +336,30 @@ func (s *Server) _buildNewsEntry(info *buildInfo) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	subData := s.newTemplateData(db)
+	buf := &bytes.Buffer{}
+	subData.Boards = db.AllBoards()
+	subData.Template = "line"
+	subData.tpl, err = s.tplOriginal.Clone()
+	if err != nil {
+		log.Fatal(err)
+	}
+	subData.tpl, err = subData.tpl.New("line").Parse(n.Message)
+	if err != nil {
+		log.Printf("warning: skipped invalid news entry %d: %s", n.ID, err)
+		return
+	}
+	err = subData.executeWithError(buf)
+	if err != nil {
+		log.Printf("warning: skipped invalid news entry %d: %s", n.ID, err)
+		return
+	}
+	n.Message = buf.String()
+	buf.Reset()
+
 	data.execute(itemFile)
+
 	itemFile.Close()
 	err = os.Rename(writePath, filePath)
 	if err != nil {
@@ -397,11 +445,31 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 
 	if s.opt.News != NewsDisable {
 		allNews := db.AllNews(true)
-		var latest *News
 		if len(allNews) > 0 {
-			latest = allNews[0]
+			n := allNews[0]
+			subData := s.newTemplateData(db)
+			buf := &bytes.Buffer{}
+			subData.Boards = db.AllBoards()
+			subData.Template = "line"
+			var err error
+			subData.tpl, err = s.tplOriginal.Clone()
+			if err != nil {
+				log.Fatal(err)
+			}
+			subData.tpl, err = subData.tpl.New("line").Parse(n.Message)
+			if err != nil {
+				log.Printf("warning: skipped invalid news entry %d: %s", n.ID, err)
+			} else {
+				err = subData.executeWithError(buf)
+				if err != nil {
+					log.Printf("warning: skipped invalid news entry %d: %s", n.ID, err)
+				} else {
+					n.Message = buf.String()
+					buf.Reset()
+				}
+			}
+			data.News = n
 		}
-		data.News = latest
 	}
 
 	s.refreshRecentPosts(db)

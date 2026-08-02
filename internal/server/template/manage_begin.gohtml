@@ -26,7 +26,9 @@
 			[<a href="/sriracha/board/" style="text-decoration: underline;">{{T "Boards"}}</a>]
 			[<a href="/sriracha/keyword/" style="text-decoration: underline;">{{T "Keywords"}}</a>]
 			[<a href="/sriracha/log/" style="text-decoration: underline;">{{T "Logs"}}</a>]
-			[<a href="/sriracha/news/" style="text-decoration: underline;">{{T "News"}}</a>]
+			{{if ne .Opt.News 0}}
+				[<a href="/sriracha/news/" style="text-decoration: underline;">{{T "News"}}</a>]
+			{{end}}
 			[<a href="/sriracha/page/" style="text-decoration: underline;">{{T "Pages"}}</a>]
 			{{if le .Account.Role 2}}{{/* Admin */}}
 				{{if ne (len .Manage.Plugins) 0}}

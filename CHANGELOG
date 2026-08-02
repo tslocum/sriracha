@@ -2,6 +2,7 @@
 - Add spoiler thumbnails
 - Add (OP) to OP reflinks
 - Support importing posts from vichan
+- Support Go HTML template actions in news entries
 
 1.9.4:
 - Fix creating board index pages
