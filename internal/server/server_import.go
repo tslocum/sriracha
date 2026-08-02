@@ -25,10 +25,18 @@ import (
 
 var ytEmbedPattern = regexp.MustCompile(`\/\/www\.youtube\.com\/embed\/([0-9A-Za-z_\-]+)`)
 
+// importHandler describes the required methods for handling importing posts from an external database.
 type importHandler interface {
+	// Name returns the name of the software supported by the handler.
 	Name() string
+
+	// Matches returns whether the handler recognizes the database being imported.
 	Matches() bool
+
+	// Tables returns a list of post tables.
 	Tables() []string
+
+	// Posts returns the posts contained in the specified table.
 	Posts(table string) []*Post
 }
 

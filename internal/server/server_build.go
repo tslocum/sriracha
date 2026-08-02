@@ -45,7 +45,7 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 		traceT time.Time
 		traceD time.Duration
 	)
-	if trace {
+	if s.opt.trace {
 		traceT = time.Now()
 	}
 	db := info.db
@@ -100,7 +100,7 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 		copy(s.indexCache[board.ID][page], postIDs)
 	}
 	if checkCache && len(s.indexCache[board.ID][page]) > 0 && slices.Equal(s.indexCache[board.ID][page], existingIDs(page)) {
-		if trace {
+		if s.opt.trace {
 			traceD = time.Since(traceT)
 			traceLog(board.Path()+fileName+" (skipped)", traceD)
 		}
@@ -125,7 +125,7 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 		log.Fatal(err)
 	}
 
-	if trace {
+	if s.opt.trace {
 		traceD = time.Since(traceT)
 		traceLog(board.Path()+fileName, traceD)
 	}
@@ -136,7 +136,7 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 		traceT time.Time
 		traceD time.Duration
 	)
-	if trace {
+	if s.opt.trace {
 		traceT = time.Now()
 	}
 	db := info.db
@@ -172,7 +172,7 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 		log.Fatal(err)
 	}
 
-	if trace {
+	if s.opt.trace {
 		traceD = time.Since(traceT)
 		traceLog(board.Path()+"catalog.html", traceD)
 	}
@@ -244,7 +244,7 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 		traceT time.Time
 		traceD time.Duration
 	)
-	if trace {
+	if s.opt.trace {
 		traceT = time.Now()
 	}
 	db := info.db
@@ -295,7 +295,7 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 		log.Fatal(err)
 	}
 
-	if trace {
+	if s.opt.trace {
 		traceD = time.Since(traceT)
 		traceLog("Site index", traceD)
 	}
@@ -306,7 +306,7 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 		traceT time.Time
 		traceD time.Duration
 	)
-	if trace {
+	if s.opt.trace {
 		traceT = time.Now()
 	}
 	db := info.db
@@ -338,7 +338,7 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 	}
 
 	if s.statsCache != nil && reflect.DeepEqual(serverStats, s.statsCache) {
-		if trace {
+		if s.opt.trace {
 			traceD = time.Since(traceT)
 			traceLog("/stats.json (skipped)", traceD)
 		}
@@ -370,7 +370,7 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 	}
 	s.statsCache = serverStats
 
-	if trace {
+	if s.opt.trace {
 		traceD = time.Since(traceT)
 		traceLog("/stats.json", traceD)
 	}

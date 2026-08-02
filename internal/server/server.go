@@ -31,6 +31,7 @@ import (
 	"regexp"
 	"runtime"
 	"runtime/debug"
+	"runtime/trace"
 	"slices"
 	"strconv"
 	"strings"
@@ -177,6 +178,7 @@ type ServerOptions struct {
 	Search           int
 	Global           []string
 	FuncMaps         map[string]template.FuncMap
+	trace            bool
 	smokeTest        bool
 }
 
@@ -1492,7 +1494,7 @@ func (s *Server) writeModQueue(db serverDB) {
 // rebuildAll rebuilds all board, overboard, news and custom pages.
 func (s *Server) rebuildAll(db serverDB) {
 	var traceT time.Time
-	if trace {
+	if s.opt.trace {
 		traceT = time.Now()
 	}
 
@@ -1520,7 +1522,7 @@ func (s *Server) rebuildAll(db serverDB) {
 	s.writeVisitorGuide(db)
 	wg.Wait()
 
-	if trace {
+	if s.opt.trace {
 		traceD := time.Since(traceT)
 		traceLog("Total", traceD)
 	}
@@ -2172,7 +2174,7 @@ func (s *Server) handleRebuild() {
 
 		// Flush queue.
 		s.lock.Lock()
-		if trace {
+		if s.opt.trace {
 			traceT = time.Now()
 		}
 		db := s.begin()
@@ -2199,7 +2201,7 @@ func (s *Server) handleRebuild() {
 		wg.Wait()
 		db.Commit()
 		s.lock.Unlock()
-		if trace {
+		if s.opt.trace {
 			traceD = time.Since(traceT)
 			msg := fmt.Sprintf("Built %d thread", len(threads))
 			if len(threads) != 1 {
@@ -2320,6 +2322,7 @@ func (s *Server) Run() error {
 		devMode        bool
 		rebuild        bool
 		recoverAccount string
+		enableTrace    bool
 		smokeTest      bool
 		debugAddress   string
 		printVersion   bool
@@ -2331,10 +2334,14 @@ func (s *Server) Run() error {
 	flag.BoolVar(&devMode, "dev", false, "run in development mode (watch official and custom template files for changes)")
 	flag.BoolVar(&rebuild, "rebuild", false, "rebuild static files on startup")
 	flag.StringVar(&recoverAccount, "recover", "", "update account password and remove all 2FA devices")
+	flag.BoolVar(&enableTrace, "trace", false, "print performance metrics to console")
 	flag.BoolVar(&smokeTest, "test", false, "run smoke test and exit (configured database and root directory must be empty)")
 	flag.StringVar(&debugAddress, "debug", "", "address to serve pprof debug information on (DANGEROUS! Debug information includes hashes, passwords and other sensitive data)")
 	flag.BoolVar(&printVersion, "version", false, "print version information and exit")
 	flag.Parse()
+	if enableTrace {
+		s.opt.trace = true
+	}
 	if smokeTest {
 		devMode = true
 	}
@@ -2588,6 +2595,9 @@ func (s *Server) Run() error {
 
 	// Lock server until initialization is complete.
 	s.lock.Lock()
+
+	traceStart()
+	defer traceStop()
 
 	// Validate templates.
 	fmt.Print("Validating templates...")
@@ -2943,6 +2953,40 @@ func randomBytes(n int) []byte {
 func randomString(n int) string {
 	buf := randomBytes(n)
 	return base64.URLEncoding.EncodeToString(buf)
+}
+
+var traceFile *os.File
+
+func traceStart() {
+	traceFilePath := os.Getenv("SRIRACHA_TRACE")
+	if traceFilePath == "" {
+		return
+	}
+	fmt.Printf("Warning: Writing high precision tracing information to %s. Performance will be significantly reduced.\n", traceFilePath)
+	var err error
+	traceFile, err = os.OpenFile(traceFilePath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, NewFilePermission)
+	if err != nil {
+		log.Fatalf("failed to open file %s for tracing: %s", traceFilePath, err)
+	}
+	trace.Start(traceFile)
+}
+
+func traceStop() {
+	if traceFile == nil {
+		return
+	}
+	trace.Stop()
+	traceFile.Close()
+}
+
+func traceLog(message string, duration time.Duration) {
+	var label string
+	if duration >= time.Millisecond {
+		label = fmt.Sprintf("%d", duration/time.Millisecond)
+	} else {
+		label = fmt.Sprintf("%.1f", float64(duration)/float64(time.Millisecond))
+	}
+	log.Printf("%4s  %s", label, message)
 }
 
 type serverDB interface {
