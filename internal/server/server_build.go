@@ -22,6 +22,8 @@ const (
 	buildBoardIndex buildType = iota
 	buildBoardCatalog
 	buildBoardThread
+	buildNewsIndex
+	buildNewsEntry
 	buildPage
 	buildSiteIndex
 	buildStatistics

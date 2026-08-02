@@ -1528,6 +1528,26 @@ func (s *Server) rebuildAll(db serverDB) {
 	}
 }
 
+func (s *Server) handleBenchmark(n int) {
+	s.lock.Lock()
+	db := s.begin()
+
+	durations := make([]time.Duration, n)
+
+	var traceT time.Time
+	for i := 0; i < n; i++ {
+		traceT = time.Now()
+		s.rebuildAll(db)
+		durations[i] = time.Since(traceT)
+	}
+
+	db.Commit()
+	s.lock.Unlock()
+
+	log.Printf("Rebuilt all static files %d times in %s (median: %s, average: %s)", n, sumDuration(durations).Round(time.Millisecond), medianDuration(durations).Round(time.Millisecond), averageDuration(durations).Round(time.Millisecond))
+	s.Stop()
+}
+
 // writeNewsItem writes a news entry page to disk.
 func (s *Server) writeNewsItem(db serverDB, n *News) {
 	if n.ID <= 0 {
@@ -2322,6 +2342,7 @@ func (s *Server) Run() error {
 		devMode        bool
 		rebuild        bool
 		recoverAccount string
+		benchmark      int
 		enableTrace    bool
 		smokeTest      bool
 		debugAddress   string
@@ -2334,6 +2355,7 @@ func (s *Server) Run() error {
 	flag.BoolVar(&devMode, "dev", false, "run in development mode (watch official and custom template files for changes)")
 	flag.BoolVar(&rebuild, "rebuild", false, "rebuild static files on startup")
 	flag.StringVar(&recoverAccount, "recover", "", "update account password and remove all 2FA devices")
+	flag.IntVar(&benchmark, "benchmark", 0, "rebuild all static files multiple times for benchmarking purposes")
 	flag.BoolVar(&enableTrace, "trace", false, "print performance metrics to console")
 	flag.BoolVar(&smokeTest, "test", false, "run smoke test and exit (configured database and root directory must be empty)")
 	flag.StringVar(&debugAddress, "debug", "", "address to serve pprof debug information on (DANGEROUS! Debug information includes hashes, passwords and other sensitive data)")
@@ -2707,6 +2729,10 @@ func (s *Server) Run() error {
 		go s.handleCron(info)
 	}
 
+	if benchmark > 0 {
+		go s.handleBenchmark(benchmark)
+	}
+
 	if smokeTest {
 		go s.smokeTest(emptyRootDir)
 	}
@@ -2953,6 +2979,27 @@ func randomBytes(n int) []byte {
 func randomString(n int) string {
 	buf := randomBytes(n)
 	return base64.URLEncoding.EncodeToString(buf)
+}
+
+func sumDuration(d []time.Duration) time.Duration {
+	var sum time.Duration
+	for _, duration := range d {
+		sum += duration
+	}
+	return sum
+}
+
+func medianDuration(d []time.Duration) time.Duration {
+	slices.Sort(d)
+	len := len(d)
+	if len%2 == 0 {
+		return (d[len/2-1] + d[len/2]) / 2
+	}
+	return d[len/2]
+}
+
+func averageDuration(d []time.Duration) time.Duration {
+	return sumDuration(d) / time.Duration(len(d))
 }
 
 var traceFile *os.File
