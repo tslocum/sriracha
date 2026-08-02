@@ -1494,7 +1494,7 @@ msgstr "Gesprek"
 msgid "Thread deleted."
 msgstr "Het onderwerp is verwijderd."
 
-msgid "Thread moved from %[1]s to %[2]s."
+msgid "Moved thread from %[1]s to %[2]s."
 msgstr "Het onderwerp is verplaatst van %[1]s naar %[2]s."
 
 msgid "Threads"

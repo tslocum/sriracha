@@ -1392,7 +1392,7 @@ msgstr ""
 msgid "Thread deleted."
 msgstr ""
 
-msgid "Thread moved from %[1]s to %[2]s."
+msgid "Moved thread from %[1]s to %[2]s."
 msgstr ""
 
 msgid "Threads"

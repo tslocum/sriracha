@@ -237,7 +237,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 					Parent:    post.ID,
 					Timestamp: now,
 					Bumped:    now,
-					Message:   Get(destination, nil, "Thread moved from %[1]s to %[2]s.", sourceLink, destinationLink),
+					Message:   Get(destination, nil, "Moved thread from %[1]s to %[2]s.", sourceLink, destinationLink),
 					Moderated: ModeratedApproved,
 				}
 				p.SetNameBlock("", "Mod", false)
