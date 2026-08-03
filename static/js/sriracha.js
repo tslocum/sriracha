@@ -842,7 +842,7 @@ function onDOMContentLoaded(e) {
     }
 
     // Display thread status icons.
-    if (autoRefreshDelay && autoRefreshDelay > 0 && document.getElementsByClassName('thread').length > 0) {
+    if (typeof(autoRefreshDelay) !== 'undefined' && autoRefreshDelay > 0 && document.getElementsByClassName('thread').length > 0) {
         if ("Notification" in window) {
             var permission = Notification.permission;
             if (permission !== "denied") {

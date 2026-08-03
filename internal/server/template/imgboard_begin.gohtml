@@ -15,7 +15,7 @@
 			<link rel="{{if ne (index $style 0) $defaultStyle}}alternate {{end}}stylesheet" type="text/css" href="/static/css/{{index $style 0}}.css" title="{{index $style 1}}"{{if eq (index $style 0) $defaultStyle}} id="mainStylesheet"{{end}}>
 		{{end}}
 		{{.FlexStyle}}
-		{{if ne .Opt.Refresh 0}}
+		{{if and (ne .Opt.Refresh 0) (not .ModMode)}}
 			<script type="text/javascript">
 			var autoRefreshDelay = {{.Opt.Refresh}};
 			</script>
