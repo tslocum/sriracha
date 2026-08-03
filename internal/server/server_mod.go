@@ -105,9 +105,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				s.log(db, data.Account, post.Board, fmt.Sprintf("Deleted >>%d", post.ID), "")
 			}
 			db.SoftCommit()
-			for _, post := range posts {
-				s.rebuildThread(db, wg, post)
-			}
+			s.rebuildThreads(db, wg, posts)
 			wg.Wait()
 			data.Message = "Deleted all posts by author."
 			return
@@ -251,7 +249,6 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			wg := &sync.WaitGroup{}
 			db.SoftCommit()
 			s.rebuildThread(db, wg, post)
-			s.writeBoardIndexes(db, wg, source)
 			wg.Wait()
 			data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", destination.ID, post.Thread()))
 		} else {
@@ -355,7 +352,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		if banFile && s.forbidden(w, data, "banfile.add") {
 			return
 		}
-		var rebuild [][2]int
+		var rebuild []*Post
 		slices.Reverse(selected)
 		for _, post := range selected {
 			if banFile && post.FileHash != "" && !db.FileBanned(post.FileHash) {
@@ -402,38 +399,13 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 
 				s.log(db, data.Account, data.Board, fmt.Sprintf("Deleted >>%d", post.ID), "")
 
-				info := [2]int{post.Board.ID, post.Thread()}
-				if !slices.Contains(rebuild, info) {
-					rebuild = append(rebuild, info)
-				}
+				rebuild = append(rebuild, post)
 			}
 		}
 
 		wg := &sync.WaitGroup{}
 		db.SoftCommit()
-		var boardIDs []int
-		for _, info := range rebuild {
-			post := db.PostByID(info[1])
-			if post != nil {
-				s.writeBoardThread(db, wg, post.Board, post.ID)
-			}
-			if !slices.Contains(boardIDs, info[0]) {
-				boardIDs = append(boardIDs, info[0])
-			}
-		}
-		var boards []*Board
-		for _, boardID := range boardIDs {
-			board := db.BoardByID(boardID)
-			if board == nil {
-				continue
-			}
-			s.writeBoardIndexes(db, wg, board)
-			boards = append(boards, board)
-		}
-		s.writeOverboards(db, wg, boards)
-		s.writeSiteIndex(wg)
-		s.writeStatistics(wg)
-		s.writeModQueue(db)
+		s.rebuildThreads(db, wg, rebuild)
 		wg.Wait()
 
 		data.Template = "manage_info"

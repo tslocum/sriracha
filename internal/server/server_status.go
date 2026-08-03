@@ -63,7 +63,6 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 			posts = append(posts, post)
 		}
 		s.rebuildThreads(db, wg, posts)
-		s.writeModQueue(db)
 		wg.Wait()
 
 		for _, postID := range ids {

@@ -1466,7 +1466,9 @@ func (s *Server) rebuildThread(db serverDB, wg *sync.WaitGroup, post *Post) {
 	s.writeBoardThread(db, wg, post.Board, post.Thread())
 	s.writeBoardIndexes(db, wg, post.Board)
 	s.writeOverboards(db, wg, []*Board{post.Board})
+	s.writeSiteIndex(wg)
 	s.writeStatistics(wg)
+	s.writeModQueue(db)
 }
 
 func (s *Server) rebuildThreads(db serverDB, wg *sync.WaitGroup, posts []*Post) {
@@ -1493,6 +1495,7 @@ func (s *Server) rebuildThreads(db serverDB, wg *sync.WaitGroup, posts []*Post) 
 	s.writeOverboards(db, wg, boards)
 	s.writeSiteIndex(wg)
 	s.writeStatistics(wg)
+	s.writeModQueue(db)
 }
 
 func (s *Server) writeModQueue(db serverDB) {
@@ -1551,6 +1554,7 @@ func (s *Server) rebuildAll(db serverDB) {
 	}
 	s.writeSiteIndex(wg)
 	s.writeStatistics(wg)
+	s.writeModQueue(db)
 	s.writeVisitorGuide(db)
 	wg.Wait()
 
