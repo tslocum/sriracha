@@ -297,7 +297,7 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 			s.loadCategoryForm(db, r, data.Manage.Category)
 
 			if data.Manage.Category.Overboard != "" && data.Manage.Category.Overboard != oldCategory.Overboard {
-				err = s.dirAvailable(data.Manage.Category.Overboard)
+				err = s.dirAvailable(db, data.Manage.Category.Overboard)
 				if err != nil {
 					data.ManageError(err.Error())
 					return
@@ -343,7 +343,7 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 		s.loadCategoryForm(db, r, c)
 
 		if c.Overboard != "" {
-			err = s.dirAvailable(c.Overboard)
+			err = s.dirAvailable(db, c.Overboard)
 			if err != nil {
 				data.ManageError(err.Error())
 				return

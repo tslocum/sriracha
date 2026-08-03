@@ -1123,7 +1123,48 @@ func (s *Server) refreshBannerCache(db serverDB) {
 	}
 }
 
-func (s *Server) dirAvailable(dir string) error {
+func (s *Server) dirAvailable(db serverDB, dir string) error {
+	if dir == "/" {
+		dir = ""
+	}
+	wrapErr := func(err error) error {
+		var label string
+		if dir == "" {
+			label = "'' (root)"
+		} else {
+			label = "'" + dir + "'"
+		}
+		return fmt.Errorf("directory %s is unavailable: %s", label, err)
+	}
+
+	// Verify directory is not already in use.
+	if dir == "" {
+		if s.opt.News == NewsWriteToIndex {
+			return wrapErr(fmt.Errorf("site news is currently configured to write to /index.html"))
+		} else if s.opt.SiteIndex {
+			return wrapErr(fmt.Errorf("site index is currently enabled"))
+		}
+	}
+
+	page := db.PageByPath(dir + "/index")
+	if page != nil {
+		return wrapErr(fmt.Errorf("custom page %s.html already exists", page.Path))
+	}
+
+	if (s.opt.Overboard == "/" && dir == "") || (s.opt.Overboard != "" && s.opt.Overboard == dir) {
+		return wrapErr(fmt.Errorf("site overboard already configured to write to %s", dir))
+	}
+	for _, c := range s.opt.Categories {
+		if (c.Overboard == "/" && dir == "") || (c.Overboard != "" && c.Overboard == dir) {
+			label := strconv.Itoa(c.ID)
+			if c.Name != "" {
+				label = c.Name
+			}
+			return wrapErr(fmt.Errorf("category %s overboard already writes to %s", label, dir))
+		}
+	}
+
+	// Verify directory does not already exist.
 	if dir == "" {
 		return nil
 	}
@@ -1131,7 +1172,7 @@ func (s *Server) dirAvailable(dir string) error {
 	if os.IsNotExist(err) {
 		return nil
 	}
-	return fmt.Errorf("directory %s already exists", dir)
+	return wrapErr(fmt.Errorf("directory %s already exists", dir))
 }
 
 // refreshMaxRequestSize refreshes the maximum HTTP request size.

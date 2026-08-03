@@ -77,7 +77,11 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		s.opt.SiteHome = defaultServerSiteHome
 		db.SaveString("sitehome", s.opt.SiteHome)
 
-		s.opt.SiteIndex = true
+		s.opt.SiteIndex = false
+		err := s.dirAvailable(db, "")
+		if err == nil {
+			s.opt.SiteIndex = true
+		}
 		db.SaveBool("siteindex", s.opt.SiteIndex)
 
 		s.opt.News = NewsDisable
@@ -204,10 +208,24 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		}
 
 		siteIndex := FormBool(r, "siteindex")
+		if siteIndex != s.opt.SiteIndex {
+			err = s.dirAvailable(db, "")
+			if err != nil {
+				data.ManageError(fmt.Sprintf("failed to enable site index: %s", err))
+				return
+			}
+		}
 		db.SaveBool("siteindex", siteIndex)
 		s.opt.SiteIndex = siteIndex
 
 		news := FormInt(r, "news")
+		if news != int(s.opt.News) && news == int(NewsWriteToIndex) {
+			err = s.dirAvailable(db, "")
+			if err != nil {
+				data.ManageError(fmt.Sprintf("failed to enable news option 'Write to index.html': %s", err))
+				return
+			}
+		}
 		db.SaveInt("news", news)
 		s.opt.News = NewsOption(news)
 
@@ -253,6 +271,13 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		db.SaveString("modqueue", modQueue)
 		s.opt.ModQueue = modQueue
 
+		if overboard != s.opt.Overboard {
+			err := s.dirAvailable(db, overboard)
+			if err != nil {
+				data.ManageError(fmt.Sprintf("failed to configure overboard: %s", err))
+				return
+			}
+		}
 		db.SaveString("overboard", overboard)
 		s.opt.Overboard = overboard
 

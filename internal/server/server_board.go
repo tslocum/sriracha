@@ -785,6 +785,11 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 			}
 
 			if data.Manage.Board.Dir != "" && data.Manage.Board.Dir != oldDir {
+				err = s.dirAvailable(db, data.Manage.Board.Dir)
+				if err != nil {
+					data.ManageError(err.Error())
+					return false
+				}
 				_, err := os.Stat(filepath.Join(s.config.Root, data.Manage.Board.Dir))
 				if err != nil {
 					if !os.IsNotExist(err) {
@@ -897,6 +902,12 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		s.loadBoardForm(db, r, b)
 		s.loadGlobalBoardSettings(db, b)
 
+		err := s.dirAvailable(db, b.Dir)
+		if err != nil {
+			data.ManageError(err.Error())
+			return
+		}
+
 		if FormBool(r, "duplicate") {
 			duplicateID := FormInt(r, "board")
 			d := db.BoardByID(duplicateID)
@@ -944,7 +955,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 			b.Rules = d.Rules
 		}
 
-		err := b.Validate(s.config.Styles)
+		err = b.Validate(s.config.Styles)
 		if err != nil {
 			data.ManageError(err.Error())
 			return false
