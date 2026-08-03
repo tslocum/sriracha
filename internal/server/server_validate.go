@@ -80,7 +80,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 	u += "/"
 
 	getRequest := func(p string) ([]byte, error) {
-		fmt.Printf("GET  %s\n", u+p)
+		fmt.Printf("GET  /%s\n", p)
 		wrapErr := func(err error) error {
 			return fmt.Errorf("failed to GET %s: %s", u+p, err)
 		}
@@ -102,7 +102,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 	}
 
 	postRequest := func(p string, data url.Values) error {
-		fmt.Printf("POST %s %+v\n", u+p, data)
+		fmt.Printf("POST /%s %+v\n", p, data)
 		wrapErr := func(err error) error {
 			return fmt.Errorf("failed to POST %s %+v: %s", u+p, data, err)
 		}
