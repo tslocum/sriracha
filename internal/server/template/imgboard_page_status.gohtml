@@ -1,0 +1,8 @@
+<div id="threadstatus" style="display: none;">
+    <button id="replacethreads" onclick="return replaceThreads();" class="postbutton" style="display: none;cursor: default;"></button>
+    <span id="threadstatusnormal" onclick="return toggleAutoRefresh();" class="postbutton" title="{{TN "Refreshing page every %d second. Click to pause." "Refreshing page every %d seconds. Click to pause." .Opt.Refresh}}">🟢</span>
+    <span id="threadstatusdelayed" onclick="return toggleAutoRefresh();" class="postbutton" title="{{T "Failed to refresh page. Retrying..."}}">🟠</span>
+    <span id="threadstatuspaused" onclick="return toggleAutoRefresh();" class="postbutton" title="{{T "Refresh paused. Click to resume."}}">🔴</span>
+    <span id="notificationsoff" onclick="return toggleNotifications();" class="postbutton" style="display: none;" title="{{T "Notifications are disabled. Click to enable."}}">🗨️</span>
+    <span id="notificationson" onclick="return toggleNotifications();" class="postbutton" style="display: none;" title="{{T "Notifications are enabled. Click to disable."}}">💬</span>
+</div>

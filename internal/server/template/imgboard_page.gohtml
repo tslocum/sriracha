@@ -11,13 +11,7 @@
 			{{T "Mod mode: Reply"}}
 		{{end}}
 		{{if and (ne .ReplyMode 0) (ne .Opt.Refresh 0)}}
-			<div id="threadstatus" style="display: none;">
-				<span id="threadstatusnormal" onclick="return toggleAutoRefresh();" class="postbutton" title="{{TN "Refreshing thread every %d second. Click to pause." "Refreshing thread every %d seconds. Click to pause." .Opt.Refresh}}">🟢</span>
-				<span id="threadstatusdelayed" onclick="return toggleAutoRefresh();" class="postbutton" title="{{T "Failed to refresh thread. Retrying..."}}">🟠</span>
-				<span id="threadstatuspaused" onclick="return toggleAutoRefresh();" class="postbutton" title="{{T "Refresh paused. Click to resume."}}">🔴</span>
-				<span id="notificationsoff" onclick="return toggleNotifications();" class="postbutton" style="display: none;" title="{{T "Notifications are disabled. Click to enable."}}">🗨️</span>
-				<span id="notificationson" onclick="return toggleNotifications();" class="postbutton" style="display: none;" title="{{T "Notifications are enabled. Click to disable."}}">💬</span>
-			</div>
+			{{template "imgboard_page_status.gohtml" $}}
 		{{end}}
 	</div>
 {{else if .ModMode}}
@@ -31,7 +25,12 @@
 		{{T "Go back, uncheck '%s' and resubmit to post." (T "Preview")}}
 	{{else}}
 		<details id="postdetails">
-			<summary>{{if eq .ReplyMode 0}}{{T "Post thread"}}{{else}}{{T "Post reply"}}{{end}}</summary>
+			<summary>
+				{{if eq .ReplyMode 0}}{{T "Post thread"}}{{else}}{{T "Post reply"}}{{end}}
+				{{if and (eq .ReplyMode 0) (ne .Opt.Refresh 0)}}
+					{{template "imgboard_page_status.gohtml" $}}
+				{{end}}
+			</summary>
 			<div>
 				{{if eq .Board.Type 0}}{{template "imgboard_postarea.gohtml" .}}{{else}}{{template "forum_postarea.gohtml" .}}{{end}}
 			</div>

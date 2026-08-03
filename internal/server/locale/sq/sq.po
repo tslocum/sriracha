@@ -570,7 +570,7 @@ msgstr ""
 msgid "Failed to embed media."
 msgstr "Deshtoi integrimi i medias."
 
-msgid "Failed to refresh thread. Retrying..."
+msgid "Failed to refresh page. Retrying..."
 msgstr ""
 
 msgid "File"
@@ -1274,8 +1274,8 @@ msgstr ""
 msgid "Refresh paused. Click to resume."
 msgstr ""
 
-msgid "Refreshing thread every %d second. Click to pause."
-msgid_plural "Refreshing thread every %d seconds. Click to pause."
+msgid "Refreshing page every %d second. Click to pause."
+msgid_plural "Refreshing page every %d seconds. Click to pause."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1365,7 +1365,7 @@ msgid "Search"
 msgstr ""
 
 msgid ""
-"Seconds between automatic refreshes when viewing a thread. Set to 0 to "
+"Seconds between automatic refreshes when viewing a board index or thread page. Set to 0 to "
 "disable."
 msgstr ""
 "Sekonda midis rifreskimeve automatike gjate shikimit te nje teme diskutimi. "

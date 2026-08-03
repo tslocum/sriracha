@@ -1,5 +1,5 @@
 var refreshPaused = false;
-var refreshTimeout = {};
+var refreshTimeout = null;
 var enableNotifications = false;
 var currentNotification = null;
 var setUnloadHandler = false;
@@ -8,8 +8,9 @@ var blinkTitle = false;
 var originalTitle = "";
 var viewThreadID = 0;
 var viewThreadModified = null;
-var newRepliesCount = 0;
-var newReplyID = 0;
+var newPostCount = 0;
+var newPostID = 0;
+var pendingPage = null;
 var postCache = {};
 
 var threadStatusNormal = 0;
@@ -33,11 +34,9 @@ function updateTitle() {
     }
 
     if (document.title == originalTitle) {
-        document.title = newRepliesCount + " new";
-        if (newRepliesCount == 1) {
-            document.title += " reply";
-        } else {
-            document.title += " replies";
+        document.title = newPostCount + " New Post";
+        if (newPostCount != 1) {
+            document.title += "s";
         }
     } else {
         document.title = originalTitle;
@@ -119,6 +118,20 @@ function setStatusIndicator(status) {
         } else {
             statusDeleted.style.display = "none";
         }
+    }
+}
+
+function replaceThreads() {
+    if (viewThreadID != 0 || !pendingPage) {
+        return;
+    }
+    document.body = pendingPage.body;
+    pendingPage = null;
+    setPostAttributes(document);
+    onDOMContentLoaded(null);
+    if (newPostID != 0) {
+        window.location.hash = newPostID;
+        newPostID = 0;
     }
 }
 
@@ -240,38 +253,54 @@ function fetchPosts(url, append) {
                 newPosts.push(post);
             }
         }
+        if (viewThreadID == 0) {
+            newPostCount = newPosts.length;
+        }
+        var title = newPosts.length + " New Post"
+        if (newPosts.length != 1) {
+            title += "s";
+        }
         if (newPosts.length == 0) {
             return;
-        }
-        for (const post of newPosts) {
-            postCache[post.id] = post;
-            if (append) {
-                if (forum) { // Append forum reply.
-                    var tr = doc.createElement('tr');
-                    tr.appendChild(post);
+        } else if (append && viewThreadID == 0) {
+            pendingPage = doc;
+            var replacethreads = document.getElementById("replacethreads");
+            if (replacethreads) {
+                replacethreads.style.display = "inline-block";
+                replacethreads.innerText = title;
+            }
+            newPostCount = 0;
+        } else {
+            for (const post of newPosts) {
+                postCache[post.id] = post;
+                if (append) {
+                    if (forum) { // Append forum reply.
+                        var tr = doc.createElement('tr');
+                        tr.appendChild(post);
 
-                    container.appendChild(tr);
-                } else { // Append imageboard reply.
-                    var table = doc.createElement('table');
-                    var tbody = doc.createElement('tbody');
-                    table.appendChild(tbody);
-                    var tr = doc.createElement('tr');
-                    tbody.appendChild(tr);
+                        container.appendChild(tr);
+                    } else { // Append imageboard reply.
+                        var table = doc.createElement('table');
+                        var tbody = doc.createElement('tbody');
+                        table.appendChild(tbody);
+                        var tr = doc.createElement('tr');
+                        tbody.appendChild(tr);
 
-                    var td = doc.createElement('td');
-                    td.classList.add('doubledash');
+                        var td = doc.createElement('td');
+                        td.classList.add('doubledash');
 
-                    tr.appendChild(td);
-                    tr.appendChild(post);
+                        tr.appendChild(td);
+                        tr.appendChild(post);
 
-                    container.appendChild(table);
+                        container.appendChild(table);
+                    }
                 }
             }
+            setPostAttributes(container);
         }
-        setPostAttributes(container);
         if (append && !haveFocus) {
-            if (newReplyID == 0) {
-                newReplyID = newPosts[0].id;
+            if (newPostID == 0) {
+                newPostID = newPosts[0].id;
                 if (enableNotifications && Notification.permission === "granted") {
                     if (currentNotification) {
                         currentNotification.close();
@@ -281,10 +310,6 @@ function fetchPosts(url, append) {
                         renotify: true,
                         requireInteraction: false,
                     };
-                    var title = newPosts.length + " new post"
-                    if (newPosts.length != 1) {
-                        title += "s";
-                    }
                     currentNotification = new Notification(title, options);
                     if (!setUnloadHandler) {
                         window.addEventListener('unload', function(e) {
@@ -294,7 +319,7 @@ function fetchPosts(url, append) {
                     }
                 }
             }
-            newRepliesCount += newPosts.length;
+            newPostCount += newPosts.length;
             if (!blinkTitle) {
                 blinkTitle = true;
                 updateTitle();
@@ -706,15 +731,15 @@ function formatFileSize(size) {
 }
 
 function onFocus(e) {
-    newRepliesCount = 0;
+    newPostCount = 0;
     blinkTitle = false;
     haveFocus = true;
     if (originalTitle != "") {
         document.title = originalTitle;
     }
-    if (newReplyID != 0) {
-        window.location.hash = newReplyID;
-        newReplyID = 0;
+    if (newPostID != 0 && viewThreadID != 0) {
+        window.location.hash = newPostID;
+        newPostID = 0;
     }
     if (currentNotification) {
         currentNotification.close();
@@ -722,7 +747,7 @@ function onFocus(e) {
 }
 
 function onBlur(e) {
-    newRepliesCount = 0;
+    newPostCount = 0;
     haveFocus = false;
 }
 
@@ -817,7 +842,7 @@ function onDOMContentLoaded(e) {
     }
 
     // Display thread status icons.
-    if (autoRefreshDelay && autoRefreshDelay > 0 && viewThreadID > 0) {
+    if (autoRefreshDelay && autoRefreshDelay > 0 && document.getElementsByClassName('thread').length > 0) {
         if ("Notification" in window) {
             var permission = Notification.permission;
             if (permission !== "denied") {
@@ -836,7 +861,9 @@ function onDOMContentLoaded(e) {
             }
         }
         setStatusIndicator(threadStatusNormal);
-        refreshTimeout = setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
+        if (!refreshTimeout) {
+            refreshTimeout = setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
+        }
     }
 
     // Handle style change.

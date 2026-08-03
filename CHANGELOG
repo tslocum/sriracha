@@ -1,4 +1,7 @@
 1.9.5:
+- Support auto-refreshing imageboard index pages
+
+1.9.5:
 - Add spoiler thumbnails
 - Add (OP) to OP reflinks
 - Support importing posts from vichan
