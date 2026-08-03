@@ -1130,11 +1130,11 @@ func (s *Server) dirAvailable(db serverDB, dir string) error {
 	wrapErr := func(err error) error {
 		var label string
 		if dir == "" {
-			label = "'' (root)"
+			label = "root directory"
 		} else {
-			label = "'" + dir + "'"
+			label = "directory '" + dir + "'"
 		}
-		return fmt.Errorf("directory %s is unavailable: %s", label, err)
+		return fmt.Errorf("%s is unavailable: %s", label, err)
 	}
 
 	// Verify directory is not already in use.
@@ -1143,6 +1143,16 @@ func (s *Server) dirAvailable(db serverDB, dir string) error {
 			return wrapErr(fmt.Errorf("site news is currently configured to write to /index.html"))
 		} else if s.opt.SiteIndex {
 			return wrapErr(fmt.Errorf("site index is currently enabled"))
+		}
+	}
+
+	for _, b := range db.AllBoards() {
+		if b.Dir == dir {
+			label := b.Name
+			if label == "" {
+				label = strconv.Itoa(b.ID)
+			}
+			return wrapErr(fmt.Errorf("already in use by board %s", label))
 		}
 	}
 
@@ -2654,6 +2664,79 @@ func (s *Server) Run() error {
 	s.refreshCategoryCache(db)
 	s.refreshKeywordCache(db)
 	s.refreshThresholdCache(db)
+
+	// Verify and correct server configuration.
+	for i := 0; i < 2; i++ {
+		var matches []string
+		if s.opt.Overboard == "/" {
+			matches = append(matches, "Site Overboard")
+		}
+		for _, c := range s.opt.Categories {
+			if c.Overboard == "/" {
+				matches = append(matches, "Category Overboard")
+				break
+			}
+		}
+		if s.opt.SiteIndex {
+			matches = append(matches, "Site Index")
+		}
+		if s.opt.News == NewsWriteToIndex {
+			matches = append(matches, "News - 'Write to index.html'")
+		}
+		for _, b := range db.AllBoards() {
+			if b.Dir == "" {
+				matches = append(matches, "Root Dir Board")
+				break
+			}
+		}
+		page := db.PageByPath("/index")
+		if page != nil {
+			matches = append(matches, "Custom Page")
+		}
+		if len(matches) > 1 {
+			matchesLabel := strings.Join(matches, ", ")
+			if i == 0 {
+				log.Printf("Warning: Multiple options (%s) are configured to write to /index.html! Attempting to correct...", matchesLabel)
+
+				if s.opt.News == NewsWriteToIndex && s.opt.SiteIndex {
+					s.opt.News = NewsWriteToNews
+					db.SaveInt("news", int(s.opt.News))
+					log.Println("Warning: Updated News option from 'Write to index.html' to 'Write to news.html'.")
+				}
+				if s.opt.SiteIndex || s.opt.News == NewsWriteToIndex {
+					unsetIndex := s.opt.Overboard == "/"
+					if !unsetIndex {
+						for _, c := range s.opt.Categories {
+							if c.Overboard == "/" {
+								unsetIndex = true
+								break
+							}
+						}
+						if !unsetIndex {
+							for _, b := range db.AllBoards() {
+								if b.Dir == "" {
+									unsetIndex = true
+									break
+								}
+							}
+						}
+					}
+					if unsetIndex {
+						s.opt.SiteIndex = false
+						db.SaveBool("siteindex", false)
+						log.Println("Warning: Updated Site Index option from 'Enable' to 'Disable'.")
+					}
+				}
+			} else {
+				log.Printf("Warning: Failed to auto-correct server configuration! Multiple options (%s) are configured to write to /index.html. Until the server configuration is corrected, race conditions will occur whenever static pages are built.", matchesLabel)
+			}
+		} else if i == 1 {
+			log.Println("Server configuration was successfully corrected.")
+		} else {
+			break
+		}
+	}
+
 	sv := db.GetString("sv") // Sriracha version.
 	if sv != SrirachaVersion {
 		if sv != "" {

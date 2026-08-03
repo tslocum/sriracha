@@ -208,7 +208,7 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		}
 
 		siteIndex := FormBool(r, "siteindex")
-		if siteIndex != s.opt.SiteIndex {
+		if siteIndex && siteIndex != s.opt.SiteIndex {
 			err = s.dirAvailable(db, "")
 			if err != nil {
 				data.ManageError(fmt.Sprintf("failed to enable site index: %s", err))
