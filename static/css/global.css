@@ -480,6 +480,9 @@ details {
 	hr {
 		border-top: 1px solid #000000;
 	}
+	.thumb {
+		break-inside: avoid;
+	}
 	.reply {
 		border: 0px none !important;
 	}
