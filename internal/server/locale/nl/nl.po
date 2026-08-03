@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-07-31 19:46+0000\n"
+"PO-Revision-Date: 2026-08-03 15:27+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -789,10 +789,10 @@ msgid "Location"
 msgstr "Locatie"
 
 msgid "Lock"
-msgstr ""
+msgstr "Vergrendelen"
 
 msgid "Locked"
-msgstr ""
+msgstr "Vergrendeld"
 
 msgid "Log In"
 msgstr "Inloggen"
@@ -1198,7 +1198,7 @@ msgid "Please enter an embed URL or enter a message."
 msgstr "Voer een insluit-url of bericht in."
 
 msgid "Please restart Sriracha without any import options."
-msgstr ""
+msgstr "Herstart Sriracha zonder importopties."
 
 msgid "Please upload a file or enter a message."
 msgstr "Upload een bestand of voer een bericht in."
@@ -1393,8 +1393,8 @@ msgid "Search"
 msgstr "Zoeken"
 
 msgid ""
-"Seconds between automatic refreshes when viewing a board index or thread page. Set to 0 to "
-"disable."
+"Seconds between automatic refreshes when viewing a board index or thread "
+"page. Set to 0 to disable."
 msgstr ""
 "Het aantal seconden tussen automatische herladingen tijdens het bekijken van "
 "een draadje. Stel in op 0 om uit te schakelen."
@@ -1440,7 +1440,7 @@ msgid "Site News"
 msgstr "Sitenieuws"
 
 msgid "Spoiler"
-msgstr ""
+msgstr "Leeswaarschuwing"
 
 msgid "Sriracha is not running in import mode."
 msgstr "De importmodus van Sriracha is inactief."
@@ -1458,10 +1458,10 @@ msgid "Status"
 msgstr "Status"
 
 msgid "Stickied"
-msgstr ""
+msgstr "Vastgemaakt"
 
 msgid "Sticky"
-msgstr ""
+msgstr "Vastmaken"
 
 msgid "Style"
 msgstr "Stijl"
@@ -1577,16 +1577,16 @@ msgid "Unknown"
 msgstr "Onbekend"
 
 msgid "Unlock"
-msgstr ""
+msgstr "Ontgrendelen"
 
 msgid "Unpublished"
 msgstr "Ongepubliceerd"
 
 msgid "Unspoiler"
-msgstr ""
+msgstr "Geen leeswaarschuwing"
 
 msgid "Unsticky"
-msgstr ""
+msgstr "Losmaken"
 
 msgid "Unsubscribe"
 msgstr "Deabonneren"
@@ -1728,6 +1728,7 @@ msgid ""
 "Whether visitors and staff members may mark attachment thumbnails as "
 "spoilers."
 msgstr ""
+"Of bezoekers en stafleden bijlagen van een leeswaarschuwing mogen voorzien."
 
 msgid "Whether visitors may browse attachments as an image gallery."
 msgstr ""
