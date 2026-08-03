@@ -47,13 +47,33 @@ To deploy Sriracha using [Docker Compose](https://docs.docker.com/compose/), use
 
 #### Build from source
 
-Install the [Go compiler](https://go.dev) and then install [goreleaser](https://goreleaser.com):
+Install [Git](https://git-scm.com), the [Go compiler](https://go.dev) and [goreleaser](https://goreleaser.com):
 
 ```
 go install github.com/goreleaser/goreleaser/v2@latest
 ```
 
-Change directories to the location of the Sriracha source code and run the following command:
+Clone the Sriracha source code repository:
+
+```
+git clone https://codeberg.org/tslocum/sriracha.git
+```
+
+Change directories to the Sriracha source code:
+
+```
+cd sriracha
+```
+
+**Note:** Only tagged official Sriracha releases are supported. Base any modifications on the latest version tag.
+
+Check out the latest release (replace v1.0.0 with the [latest tag](https://codeberg.org/tslocum/sriracha/tags)):
+
+```
+git checkout v1.0.0
+```
+
+Build Sriracha release archives:
 
 ```
 goreleaser --clean --snapshot
