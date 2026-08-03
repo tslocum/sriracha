@@ -54,17 +54,25 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 			db.BumpThread(post.Thread(), time.Now().Unix())
 		}
 		db.SoftCommit()
+		var posts []*Post
 		for _, postID := range ids {
 			post := db.PostByID(postID)
 			if post == nil {
 				continue
 			}
-			s.rebuildThread(db, wg, post)
+			posts = append(posts, post)
+		}
+		s.rebuildThreads(db, wg, posts)
+		s.writeModQueue(db)
+		wg.Wait()
+
+		for _, postID := range ids {
+			post := db.PostByID(postID)
+			if post == nil {
+				continue
+			}
 			s.queueNotifications(db, post)
 		}
-		s.writeModQueue(db)
-		s.writeSiteIndex(wg)
-		wg.Wait()
 
 		data.Redirect(w, r, "/sriracha/")
 		return

@@ -605,7 +605,7 @@ func (s *Server) rebuildBoard(db serverDB, wg *sync.WaitGroup, board *Board) {
 
 	threads := s.writeBoardIndexes(db, wg, board)
 	for _, threadInfo := range threads {
-		s.writeThread(db, wg, board, threadInfo[0])
+		s.writeBoardThread(db, wg, board, threadInfo[0])
 	}
 }
 
@@ -665,8 +665,8 @@ func (s *Server) writeBoardIndexes(db serverDB, wg *sync.WaitGroup, board *Board
 	return threads
 }
 
-// writeThread writes a thread res page to disk.
-func (s *Server) writeThread(db serverDB, wg *sync.WaitGroup, board *Board, postID int) {
+// writeBoardThread writes a thread res page to disk.
+func (s *Server) writeBoardThread(db serverDB, wg *sync.WaitGroup, board *Board, postID int) {
 	if board.Unique == 0 {
 		board.Unique = db.UniqueUserPosts(board)
 	}

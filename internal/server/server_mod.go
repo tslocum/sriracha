@@ -415,7 +415,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		for _, info := range rebuild {
 			post := db.PostByID(info[1])
 			if post != nil {
-				s.writeThread(db, wg, post.Board, post.ID)
+				s.writeBoardThread(db, wg, post.Board, post.ID)
 			}
 			if !slices.Contains(boardIDs, info[0]) {
 				boardIDs = append(boardIDs, info[0])

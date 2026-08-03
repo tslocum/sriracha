@@ -108,7 +108,7 @@ func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request
 		if post.Parent == 0 {
 			os.Remove(filepath.Join(s.config.Root, b.Dir, "res", fmt.Sprintf("%d.html", post.ID)))
 		} else {
-			s.writeThread(db, wg, b, post.Thread())
+			s.writeBoardThread(db, wg, b, post.Thread())
 		}
 		s.writeBoardIndexes(db, wg, b)
 		wg.Wait()

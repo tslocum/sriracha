@@ -1463,9 +1463,35 @@ func (s *Server) writePage(db serverDB, data *templateData, p *Page, w io.Writer
 
 // rebuildBoard rebuilds a thread res page and board index pages.
 func (s *Server) rebuildThread(db serverDB, wg *sync.WaitGroup, post *Post) {
-	s.writeThread(db, wg, post.Board, post.Thread())
+	s.writeBoardThread(db, wg, post.Board, post.Thread())
 	s.writeBoardIndexes(db, wg, post.Board)
 	s.writeOverboards(db, wg, []*Board{post.Board})
+	s.writeStatistics(wg)
+}
+
+func (s *Server) rebuildThreads(db serverDB, wg *sync.WaitGroup, posts []*Post) {
+	var boardIDs []int
+	var boards []*Board
+	var threadIDs []int
+	var threadBoards []*Board
+	for _, post := range posts {
+		if !slices.Contains(boardIDs, post.Board.ID) {
+			boardIDs = append(boardIDs, post.Board.ID)
+			boards = append(boards, post.Board)
+		}
+		if !slices.Contains(threadIDs, post.Thread()) {
+			threadIDs = append(threadIDs, post.Thread())
+			threadBoards = append(threadBoards, post.Board)
+		}
+	}
+	for i, threadID := range threadIDs {
+		s.writeBoardThread(db, wg, threadBoards[i], threadID)
+	}
+	for _, b := range boards {
+		s.writeBoardIndexes(db, wg, b)
+	}
+	s.writeOverboards(db, wg, boards)
+	s.writeSiteIndex(wg)
 	s.writeStatistics(wg)
 }
 
@@ -2121,7 +2147,7 @@ func (s *Server) handleRebuild() {
 		for _, info := range pending {
 			thread := info.post.Thread()
 			if !slices.Contains(threads, thread) {
-				s.writeThread(db, wg, info.post.Board, thread)
+				s.writeBoardThread(db, wg, info.post.Board, thread)
 				threads = append(threads, thread)
 			}
 			if !slices.Contains(boardIDs, info.post.Board.ID) {
