@@ -97,6 +97,7 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 			}
 
 			db.UpdateNews(data.Manage.News)
+			changes := printChanges(oldNews, *data.Manage.News)
 
 			wg := &sync.WaitGroup{}
 			db.SoftCommit()
@@ -109,7 +110,6 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 			s.writeSiteIndex(wg)
 			wg.Wait()
 
-			changes := printChanges(oldNews, *data.Manage.News)
 			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/news/%d", data.Manage.News.ID), changes)
 
 			data.Redirect(w, r, "/sriracha/news/")
