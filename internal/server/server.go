@@ -2670,72 +2670,80 @@ func (s *Server) Run() error {
 	s.refreshThresholdCache(db)
 
 	// Verify and correct server configuration.
-	for i := 0; i < 2; i++ {
+	const (
+		matchNews              = "News - 'Write to index.html'"
+		matchSiteIndex         = "Site Index"
+		matchSiteOverboard     = "Site Overboard"
+		matchCategoryOverboard = "Category Overboard"
+		matchPage              = "Custom Page"
+		matchBoard             = "Root Dir Board"
+	)
+	for i := 0; i < 5; i++ {
 		var matches []string
+		if s.opt.News == NewsWriteToIndex {
+			matches = append(matches, matchNews)
+		}
+		if s.opt.SiteIndex {
+			matches = append(matches, matchSiteIndex)
+		}
 		if s.opt.Overboard == "/" {
-			matches = append(matches, "Site Overboard")
+			matches = append(matches, matchSiteOverboard)
 		}
 		for _, c := range s.opt.Categories {
 			if c.Overboard == "/" {
-				matches = append(matches, "Category Overboard")
-				break
-			}
-		}
-		if s.opt.SiteIndex {
-			matches = append(matches, "Site Index")
-		}
-		if s.opt.News == NewsWriteToIndex {
-			matches = append(matches, "News - 'Write to index.html'")
-		}
-		for _, b := range db.AllBoards() {
-			if b.Dir == "" {
-				matches = append(matches, "Root Dir Board")
+				matches = append(matches, matchCategoryOverboard)
 				break
 			}
 		}
 		page := db.PageByPath("index")
 		if page != nil {
-			matches = append(matches, "Custom Page")
+			matches = append(matches, matchPage)
+		}
+		for _, b := range db.AllBoards() {
+			if b.Dir == "" {
+				matches = append(matches, matchBoard)
+				break
+			}
 		}
 		if len(matches) > 1 {
 			matchesLabel := strings.Join(matches, ", ")
 			if i == 0 {
 				log.Printf("Warning: Multiple options (%s) are configured to write to /index.html! Attempting to correct...", matchesLabel)
-
-				if s.opt.News == NewsWriteToIndex && s.opt.SiteIndex {
-					s.opt.News = NewsWriteToNews
-					db.SaveInt("news", int(s.opt.News))
-					log.Println("Warning: Updated option News from 'Write to index.html' to 'Write to news.html'.")
-				}
-				if s.opt.SiteIndex || s.opt.News == NewsWriteToIndex {
-					unsetIndex := s.opt.Overboard == "/"
-					if !unsetIndex {
-						for _, c := range s.opt.Categories {
-							if c.Overboard == "/" {
-								unsetIndex = true
-								break
-							}
+			}
+			switch matches[0] {
+			case matchNews:
+				s.opt.News = NewsWriteToNews
+				db.SaveInt("news", int(s.opt.News))
+				log.Println("Warning: Updated option News from 'Write to index.html' to 'Write to news.html'.")
+			case matchSiteIndex:
+				s.opt.SiteIndex = false
+				db.SaveBool("siteindex", false)
+				log.Println("Warning: Updated option Site Index from 'Enable' to 'Disable'.")
+			case matchSiteOverboard:
+				s.opt.Overboard = ""
+				db.SaveString("overboard", s.opt.Overboard)
+				log.Println("Warning: Updated option Site Overboard from '/' to ''.")
+			case matchCategoryOverboard:
+				categories := db.AllCategories()
+				for _, c := range categories {
+					if c.Overboard == "/" {
+						c.Overboard = ""
+						db.UpdateCategory(c)
+						s.refreshCategoryCache(db)
+						label := c.Name
+						if label == "" {
+							label = strconv.Itoa(c.ID)
 						}
-						if !unsetIndex {
-							for _, b := range db.AllBoards() {
-								if b.Dir == "" {
-									unsetIndex = true
-									break
-								}
-							}
-						}
-					}
-					if unsetIndex {
-						s.opt.SiteIndex = false
-						db.SaveBool("siteindex", false)
-						log.Println("Warning: Updated option Site Index from 'Enable' to 'Disable'.")
+						log.Printf("Warning: Updated category '%s' option Overboard from '/' to ''.", label)
 					}
 				}
-			} else {
+			}
+			if i == 4 {
 				log.Printf("Warning: Failed to auto-correct server configuration! Multiple options (%s) are configured to write to /index.html. Until the server configuration is corrected, race conditions will occur whenever static pages are built.", matchesLabel)
 			}
-		} else if i == 1 {
+		} else if i != 0 {
 			log.Println("Server configuration was successfully corrected.")
+			break
 		} else {
 			break
 		}

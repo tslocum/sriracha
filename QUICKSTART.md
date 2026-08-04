@@ -51,6 +51,11 @@ must be from the perspective of the Docker container.
 
 For example, you should set the `root` option to `/public`, not `/home/myuser/srirachapublic`.
 
+Set the `address` option to `sriracha_db`, the name of the Sriracha database service.
+
+If you are using Caddy with Sriracha, set the `header` option to `X-Forwarded-For`.
+If you are not using Caddy, leave the `header` option blank.
+
 Change the owner of the `srirachaconf` and `srirachapublic` directories:
 
 ```
