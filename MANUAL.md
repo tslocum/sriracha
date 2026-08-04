@@ -14,6 +14,8 @@
 
 [Go to top](#sections)
 
+A [quick start guide](https://codeberg.org/tslocum/sriracha/src/branch/main/QUICKSTART.md) is available.
+
 ### 1. Create root directory
 
 Create a directory where board files will be written to. A new sub directory is

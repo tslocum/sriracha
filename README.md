@@ -29,7 +29,7 @@
 - Translate into [additional languages](https://translate.codeberg.org/projects/sriracha/sriracha/)
 - Play SWF files with the included [ruffle emulator](https://ruffle.rs)
 - View Shift JIS text art with the included [submona web font](https://github.com/pera/submona-web-font)
-- Deploy within minutes using [Docker](https://hub.docker.com/r/tslocum/sriracha/tags) and [Docker Compose](https://codeberg.org/tslocum/sriracha/src/branch/main/docker-compose.yml)
+- [Deploy within minutes](https://codeberg.org/tslocum/sriracha/src/branch/main/QUICKSTART.md) using [Docker](https://hub.docker.com/r/tslocum/sriracha/tags) and [Docker Compose](https://codeberg.org/tslocum/sriracha/src/branch/main/docker-compose.yml)
 - Management panel
   - Configure which roles have access to management and moderation actions
   - Ban offensive/abusive visitors across all boards
