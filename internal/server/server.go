@@ -1158,6 +1158,7 @@ func (s *Server) dirAvailable(db serverDB, dir string) error {
 		}
 	}
 
+	db.ClearBoardCache()
 	for _, b := range db.AllBoards() {
 		if b.Dir == dir {
 			label := b.Name
@@ -2279,14 +2280,14 @@ func (s *Server) _handleSignal(signals chan os.Signal) {
 			s.rebuildAll(db)
 			db.Commit()
 
-			// Reload HTTPS certificate files.
+			// Reload HTTPS certificate and private key.
 			if s.config.HTTPS != "" {
 				cert, err := tls.LoadX509KeyPair(s.config.HTTPSCert, s.config.HTTPSKey)
 				if err != nil {
 					log.Fatalf("failed to load HTTPS certificate %s and key %s: %s", s.config.HTTPSCert, s.config.HTTPSKey, err)
 				}
 				s.httpsCert = &cert
-				fmt.Printf("Reloaded HTTPS certificate and private key files.\n")
+				fmt.Printf("Reloaded HTTPS certificate and private key.\n")
 			}
 
 			s.lock.Unlock()
