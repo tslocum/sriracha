@@ -323,6 +323,9 @@ msgstr ""
 msgid "Date and time when the news item was published, or will be published."
 msgstr ""
 
+msgid "Date/Time Format"
+msgstr ""
+
 msgid "Default"
 msgstr ""
 
@@ -566,6 +569,9 @@ msgid "Files"
 msgstr ""
 
 msgid "For post deletion."
+msgstr ""
+
+msgid "Format of rendered timestamps. Include %s tags where applicable."
 msgstr ""
 
 msgid "Forum"
@@ -907,6 +913,9 @@ msgid "Moderators may only perform certain actions. See moderator guide for more
 msgstr ""
 
 msgid "Move"
+msgstr ""
+
+msgid "Moved thread from %[1]s to %[2]s."
 msgstr ""
 
 msgid "Name"
@@ -1390,9 +1399,6 @@ msgid "Thread"
 msgstr ""
 
 msgid "Thread deleted."
-msgstr ""
-
-msgid "Moved thread from %[1]s to %[2]s."
 msgstr ""
 
 msgid "Threads"

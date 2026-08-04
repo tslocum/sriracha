@@ -113,6 +113,14 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		s.opt.ModQueue = ""
 		db.SaveString("modqueue", s.opt.ModQueue)
 
+		if s.opt.DateTimeFormat != defaultServerDateTimeFormat {
+			s.opt.DateTimeFormat = defaultServerDateTimeFormat
+			db.SaveString("datetimeformat", s.opt.DateTimeFormat)
+			s.dateTimeFormatUpdated()
+			db.SoftCommit()
+			s.rebuildNameblocks(db)
+		}
+
 		s.opt.Overboard = ""
 		db.SaveString("overboard", s.opt.Overboard)
 
@@ -266,6 +274,24 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		}
 		db.SaveString("modqueue", modQueue)
 		s.opt.ModQueue = modQueue
+
+		dateTimeFormat := FormString(r, "datetimeformat")
+		if dateTimeFormat == "" {
+			dateTimeFormat = defaultServerDateTimeFormat
+		} else {
+			result := time.Now().Format(dateTimeFormat)
+			if result == dateTimeFormat {
+				data.ManageError("failed to parse date/time format")
+				return
+			}
+		}
+		if dateTimeFormat != s.opt.DateTimeFormat {
+			db.SaveString("datetimeformat", dateTimeFormat)
+			s.opt.DateTimeFormat = dateTimeFormat
+			s.dateTimeFormatUpdated()
+			db.SoftCommit()
+			s.rebuildNameblocks(db)
+		}
 
 		if overboard != s.opt.Overboard {
 			err := s.dirAvailable(db, overboard)

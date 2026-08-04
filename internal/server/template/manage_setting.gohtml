@@ -96,6 +96,11 @@
             <td>{{T "Whether visitors and staff members may mark attachment thumbnails as spoilers."}}</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="datetimeformat">{{T "Date/Time Format"}}</label></td>
+            <td><input type="text" name="datetimeformat" value="{{.Opt.DateTimeFormat}}"></input></td>
+            <td>{{T "Format of rendered timestamps. Include %s tags where applicable." "<wbr>"}}</td>
+        </tr>
+        <tr>
             <td class="postblock"><label for="search">{{T "Search"}}</label></td>
             <td><input type="text" name="search" value="{{.Opt.Search}}"></input></td>
             <td>{{T "Delay (in seconds) visitors must wait between searches. Only post subjects and messages are searchable. Set to 0 to disable searching."}}</td>

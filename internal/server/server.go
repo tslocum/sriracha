@@ -47,6 +47,7 @@ import (
 	"codeberg.org/tslocum/sriracha/internal/database"
 	"codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/model"
+	"codeberg.org/tslocum/sriracha/util"
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/fsnotify/fsnotify"
 	"github.com/jackc/pgx/v5"
@@ -72,12 +73,13 @@ var localeFS embed.FS
 
 // Default server settings.
 const (
-	defaultServerSiteName     = "Sriracha"
-	defaultServerSiteHome     = "/"
-	defaultServerOekakiWidth  = 540
-	defaultServerOekakiHeight = 540
-	defaultServerSearch       = 30
-	defaultServerRefresh      = 30
+	defaultServerSiteName       = "Sriracha"
+	defaultServerSiteHome       = "/"
+	defaultServerOekakiWidth    = 540
+	defaultServerOekakiHeight   = 540
+	defaultServerSearch         = 30
+	defaultServerRefresh        = 30
+	defaultServerDateTimeFormat = DefaultDateTimeFormatHTML
 )
 
 // defaultServerEmbeds is a list of default oEmbed services.
@@ -187,6 +189,7 @@ type ServerOptions struct {
 	IconWidth        int
 	IconHeight       int
 	Search           int
+	DateTimeFormat   string
 	Global           []string
 	FuncMaps         map[string]template.FuncMap
 	trace            bool
@@ -553,6 +556,14 @@ func (s *Server) parseLocales() error {
 	})
 }
 
+func (s *Server) dateTimeFormatUpdated() {
+	if s.opt.DateTimeFormat == "" {
+		s.opt.DateTimeFormat = defaultServerDateTimeFormat
+	}
+	util.DateTimeFormatHTML = s.opt.DateTimeFormat
+	util.DateTimeFormatPlain = strings.ReplaceAll(s.opt.DateTimeFormat, "<wbr>", "")
+}
+
 // connectToMailServer connects to the configured mail server and returns a SMTP client.
 func (s *Server) connectToMailServer() (*smtp.Client, error) {
 	if s.config.MailAddress == "" {
@@ -760,6 +771,9 @@ func (s *Server) loadServerConfig() error {
 	}
 
 	s.opt.ModQueue = db.GetString("modqueue")
+
+	s.opt.DateTimeFormat = db.GetString("datetimeformat")
+	s.dateTimeFormatUpdated()
 
 	s.opt.Overboard = db.GetString("overboard")
 	s.opt.OverboardType = BoardType(db.GetInt("overboardtype"))
@@ -1650,6 +1664,24 @@ func (s *Server) handleBenchmark(n int) {
 
 	log.Printf("Rebuilt all static files %d times in %s (median: %s, average: %s)", n, sumDuration(durations).Round(time.Millisecond), medianDuration(durations).Round(time.Millisecond), averageDuration(durations).Round(time.Millisecond))
 	s.Stop()
+}
+
+func (s *Server) rebuildNameblocks(db serverDB) {
+	for _, b := range db.AllBoards() {
+		for _, threadInfo := range db.AllThreads(false, b) {
+			for _, p := range db.AllPostsInThread(false, threadInfo[0]) {
+				var capcode string
+				if strings.Contains(p.NameBlock, `<span style="color: red`) || strings.Contains(p.NameBlock, `<span class="modcapcode`) {
+					capcode = "Mod"
+				} else if strings.Contains(p.NameBlock, `<span style="color: purple`) || strings.Contains(p.NameBlock, `<span class="admincapcode`) {
+					capcode = "Admin"
+				}
+				p.SetNameBlock(p.Board.DefaultName, capcode, s.opt.Identifiers)
+
+				db.UpdatePostNameblock(p.ID, p.NameBlock)
+			}
+		}
+	}
 }
 
 // writeVisitorGuide writes the visitor guide to disk.

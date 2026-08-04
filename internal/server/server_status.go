@@ -94,22 +94,8 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		if data.forbidden(w, RoleSuperAdmin) {
 			return
 		}
+		s.rebuildNameblocks(db)
 		wg := &sync.WaitGroup{}
-		for _, b := range db.AllBoards() {
-			for _, threadInfo := range db.AllThreads(false, b) {
-				for _, p := range db.AllPostsInThread(false, threadInfo[0]) {
-					var capcode string
-					if strings.Contains(p.NameBlock, `<span style="color: red`) || strings.Contains(p.NameBlock, `<span class="modcapcode`) {
-						capcode = "Mod"
-					} else if strings.Contains(p.NameBlock, `<span style="color: purple`) || strings.Contains(p.NameBlock, `<span class="admincapcode`) {
-						capcode = "Admin"
-					}
-					p.SetNameBlock(p.Board.DefaultName, capcode, s.opt.Identifiers)
-
-					db.UpdatePostNameblock(p.ID, p.NameBlock)
-				}
-			}
-		}
 		db.SoftCommit()
 		for _, b := range db.AllBoards() {
 			s.rebuildBoard(db, wg, b)

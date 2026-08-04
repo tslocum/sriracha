@@ -19,6 +19,11 @@ import (
 const NewDirPermission = 0755
 const NewFilePermission = 0644
 
+const (
+	DefaultDateTimeFormatPlain = "2006/01/02(Mon)15:04:05"
+	DefaultDateTimeFormatHTML  = "2006/01/02<wbr>(Mon)<wbr>15:04:05"
+)
+
 var (
 	AlphaNumericAndSymbols = regexp.MustCompile(`^[0-9A-Za-z_\-]+$`)
 	FileNamePattern        = regexp.MustCompile(`^[0-9A-Za-z_\-.]+$`)
@@ -33,6 +38,9 @@ var (
 	FixURLPattern1 = regexp.MustCompile(`(?i)\(\<a href\=\"(.*)\)"\ target\=\"\_blank\">(.*)\)\<\/a>`)
 	FixURLPattern2 = regexp.MustCompile(`(?i)\<a href\=\"(.*)\."\ target\=\"\_blank\">(.*)\.\<\/a>`)
 	FixURLPattern3 = regexp.MustCompile(`(?i)\<a href\=\"(.*)\,"\ target\=\"\_blank\">(.*)\,\<\/a>`)
+
+	DateTimeFormatPlain = DefaultDateTimeFormatPlain
+	DateTimeFormatHTML  = DefaultDateTimeFormatHTML
 )
 
 func ParseInt(v string) int {
@@ -173,11 +181,11 @@ func MIMEToExt(mimeType string) string {
 
 func FormatTimestamp(timestamp int64) template.HTML {
 	utcDate := template.HTML(time.Unix(timestamp, 0).In(time.UTC).Format("2006-01-02T15:04:05Z"))
-	return `<time datetime="` + utcDate + `" title="` + utcDate + `">` + template.HTML(time.Unix(timestamp, 0).Format("2006/01/02<wbr>(Mon)<wbr>15:04:05")) + `</time>`
+	return `<time datetime="` + utcDate + `" title="` + utcDate + `">` + template.HTML(time.Unix(timestamp, 0).Format(DateTimeFormatHTML)) + `</time>`
 }
 
 func FormatRawTimestamp(timestamp int64) string {
-	return time.Unix(timestamp, 0).Format("2006/01/02(Mon)15:04:05")
+	return time.Unix(timestamp, 0).Format(DateTimeFormatPlain)
 }
 
 func FormatYYYYMMDD(timestamp int64) string {

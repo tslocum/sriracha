@@ -1,3 +1,6 @@
+1.9.8:
+- Support customizing date/time format
+
 1.9.7:
 - Reuse static page write buffers
 - Support writing site index to nav.html
