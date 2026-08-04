@@ -55,7 +55,7 @@ Each post is formatted as follows:
                 <span class="postername">Anonymous</span><span class="postertrip">!XgzPoOaLlE</span> tGQV5 <time datetime="2026-03-29T23:59:51Z" title="2026-03-29T23:59:51Z">2026/03/29<wbr>(Sun)<wbr>16:59:51</time>
                 <span class="reflink">
                     <span class="postui">
-                        <a href="/sriracha/?action=report&board=2&post=1" title="Report">R</a>
+                        <a href="/sriracha/?action=report&board=2&post=1" title="Report" rel="nofollow">R</a>
                     </span>
                     <a href="/b/res/1.html#1">No.</a><a href="/b/res/1.html#q1">1</a>
                 </span>
@@ -78,7 +78,7 @@ Each post is formatted as follows:
                             <span class="postername">Anonymous</span> tGQV5 <time datetime="2026-03-30T00:00:10Z" title="2026-03-30T00:00:10Z">2026/03/29<wbr>(Sun)<wbr>17:00:10</time>
                             <span class="reflink">
                                 <span class="postui">
-                                    <a href="/sriracha/?action=report&board=2&post=2" title="Report">R</a>
+                                    <a href="/sriracha/?action=report&board=2&post=2" title="Report" rel="nofollow">R</a>
                                 </span>
                                 <a href="/b/res/1.html#2">No.</a><a href="/b/res/1.html#q2">2</a>
                             </span>

@@ -11,7 +11,7 @@
     <span class="reflink">
         {{if and $post.Board.Reports (not $.ModMode)}}
             <span class="postui">
-                <a href="/sriracha/?action=report&board={{$post.Board.ID}}&post={{$post.ID}}" title="{{T "Report"}}">R</a>
+                <a href="/sriracha/?action=report&board={{$post.Board.ID}}&post={{$post.ID}}" title="{{T "Report"}}" rel="nofollow">R</a>
             </span>
         {{end}}
         <a href="{{if not $.ModMode}}{{$post.Board.Path}}res/{{$post.Thread}}.html{{else}}/sriracha/board/mod/{{$post.Board.ID}}/{{$post.Thread}}{{end}}#{{$post.ID}}">No.</a><a href="{{if not $.ModMode}}{{$post.Board.Path}}res/{{$post.Thread}}.html{{else}}/sriracha/board/mod/{{$post.Board.ID}}/{{$post.Thread}}{{end}}#q{{$post.ID}}"{{if ne $.ReplyMode 0}} onclick="javascript:quotePost('{{$post.ID}}');"{{end}}>{{$post.ID}}</a>
