@@ -1156,7 +1156,11 @@ func (s *Server) dirAvailable(db serverDB, dir string) error {
 		}
 	}
 
-	page := db.PageByPath(dir + "/index")
+	pagePath := "index"
+	if dir != "" {
+		pagePath = dir + "/index"
+	}
+	page := db.PageByPath(pagePath)
 	if page != nil {
 		return wrapErr(fmt.Errorf("custom page %s.html already exists", page.Path))
 	}
@@ -2658,7 +2662,7 @@ func (s *Server) Run() error {
 	httpErrors := make(chan error)
 	go s.listen(httpErrors)
 
-	// Rebuild everything on startup when explicitly requested and after upgrading.
+	// Populate caches.
 	s.refreshBannerCache(db)
 	s.refreshRulesCache(db)
 	s.refreshCategoryCache(db)
@@ -2689,7 +2693,7 @@ func (s *Server) Run() error {
 				break
 			}
 		}
-		page := db.PageByPath("/index")
+		page := db.PageByPath("index")
 		if page != nil {
 			matches = append(matches, "Custom Page")
 		}
@@ -2701,7 +2705,7 @@ func (s *Server) Run() error {
 				if s.opt.News == NewsWriteToIndex && s.opt.SiteIndex {
 					s.opt.News = NewsWriteToNews
 					db.SaveInt("news", int(s.opt.News))
-					log.Println("Warning: Updated News option from 'Write to index.html' to 'Write to news.html'.")
+					log.Println("Warning: Updated option News from 'Write to index.html' to 'Write to news.html'.")
 				}
 				if s.opt.SiteIndex || s.opt.News == NewsWriteToIndex {
 					unsetIndex := s.opt.Overboard == "/"
@@ -2724,7 +2728,7 @@ func (s *Server) Run() error {
 					if unsetIndex {
 						s.opt.SiteIndex = false
 						db.SaveBool("siteindex", false)
-						log.Println("Warning: Updated Site Index option from 'Enable' to 'Disable'.")
+						log.Println("Warning: Updated option Site Index from 'Enable' to 'Disable'.")
 					}
 				}
 			} else {
@@ -2737,6 +2741,7 @@ func (s *Server) Run() error {
 		}
 	}
 
+	// Rebuild everything on startup when explicitly requested and after upgrading.
 	sv := db.GetString("sv") // Sriracha version.
 	if sv != SrirachaVersion {
 		if sv != "" {
