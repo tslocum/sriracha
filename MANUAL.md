@@ -1434,6 +1434,16 @@ The following thresholds are configured by default:
 - When an individual visitor adds more than 1 thread anywhere within 5m, delete.
 - When an individual visitor adds more than 10 reports anywhere within 1h, delete.
 
+#### Date/time format
+
+By default, Sriracha formats timestamps as `2006/01/02<wbr>(Mon)<wbr>15:04:05`.
+Administrators may customize the date/time format in the Settings page.
+
+See the [Go time package documentation](https://pkg.go.dev/time#pkg-constants)
+for information on how to write alternative formats.
+
+For example, a 12-hour version of the default format would be `2006/01/02<wbr>(Mon)<wbr>03:04:05PM`.
+
 ### Super-administrator guide
 
 As a super-administrator, you have unrestricted access.

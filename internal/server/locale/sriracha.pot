@@ -571,9 +571,6 @@ msgstr ""
 msgid "For post deletion."
 msgstr ""
 
-msgid "Format of rendered timestamps. Include %s tags where applicable."
-msgstr ""
-
 msgid "Forum"
 msgstr ""
 
@@ -1215,6 +1212,9 @@ msgid "Rename"
 msgstr ""
 
 msgid "Rename Device"
+msgstr ""
+
+msgid "Render format of timestamps. Include %s tags where applicable."
 msgstr ""
 
 msgid "Replies"
