@@ -42,9 +42,9 @@ services:
       - /home/myuser/srirachapublic:/mnt/sriracha # Root directory containing board files.
 ```
 
-## Create Sriracha configuration
+## Configure Sriracha
 
-Create a file in `srirachaconf` named `config.yml` and paste the [example configuration](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#example-configuration-config-yml).
+Create a file in `srirachaconf` named `config.yml` and paste the [example configuration](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#example-configuration-config-yml). A quick-copy button appears when the example text is hovered.
 
 Update the Sriracha configuration file options as desired. Note that any paths
 must be from the perspective of the Docker container.
@@ -56,18 +56,26 @@ Set the `address` option to `sriracha_db`, the name of the Sriracha database ser
 If you are using Caddy with Sriracha, set the `header` option to `X-Forwarded-For`.
 If you are not using Caddy, leave the `header` option blank.
 
+See the [Configure](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#configure)
+section of the Sriracha Manual for more information.
+
 Change the owner of the `srirachaconf` and `srirachapublic` directories:
 
 ```
 chown -R 1000:1000 srirachaconf srirachapublic
 ```
 
-## Configure PostgreSQL environment variables
+## Configure PostgreSQL
 
 Update the `sriracha_db` environment variables in `docker-compose.yml`.
 
 Edit the database options in the Sriracha `config.yml` file to match the newly
 updated environment variables.
+
+Update the `command` parameter of `sriracha_db` to specify PostgreSQL resource usage limits.
+
+The example values included in `docker-compose.yml` are for a system with 2 GB
+of available memory. See the [Performance](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#performance) section for optimal values.
 
 Change the owner of the `pgdata` directory:
 
@@ -75,7 +83,7 @@ Change the owner of the `pgdata` directory:
 chown -R 70:70 pgdata
 ```
 
-## Create Caddy configuration
+## Configure Caddy
 
 **Note:** If you only want to test Sriracha locally, skip ahead to the [next section](#disable-caddy).
 
