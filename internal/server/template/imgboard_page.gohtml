@@ -10,9 +10,6 @@
 		{{else}}
 			{{T "Mod mode: Reply"}}
 		{{end}}
-		{{if and (ne .ReplyMode 0) (ne .Opt.Refresh 0)}}
-			{{template "imgboard_page_status.gohtml" $}}
-		{{end}}
 	</div>
 {{else if .ModMode}}
 	<div class="replymode">{{T "Mod mode"}}</div>
@@ -27,7 +24,7 @@
 		<details id="postdetails">
 			<summary>
 				{{if eq .ReplyMode 0}}{{T "Post thread"}}{{else}}{{T "Post reply"}}{{end}}
-				{{if and (eq .ReplyMode 0) (ne .Opt.Refresh 0)}}
+				{{if ne .Opt.Refresh 0}}
 					{{template "imgboard_page_status.gohtml" $}}
 				{{end}}
 			</summary>
