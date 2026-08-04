@@ -104,6 +104,16 @@ const (
 	NewsWriteToIndex NewsOption = 2
 )
 
+// IndexOption represents a Site Index setting option.
+type IndexOption int
+
+// Site Index options.
+const (
+	IndexDisable      IndexOption = 0
+	IndexWriteToIndex IndexOption = 1 // Backwards compatible with boolean Site Index option.
+	IndexWriteToNav   IndexOption = 2
+)
+
 type categoryInfo struct {
 	ID          int
 	Name        string
@@ -145,7 +155,7 @@ type ServerOptions struct {
 	SiteName         string
 	SiteDescription  string
 	SiteHome         string
-	SiteIndex        bool
+	SiteIndex        IndexOption
 	News             NewsOption
 	BoardIndex       bool
 	Statistics       bool
@@ -702,8 +712,10 @@ func (s *Server) loadServerConfig() error {
 	}
 	s.opt.SiteHome = siteHome
 
-	siteIndex := db.GetString("siteindex")
-	s.opt.SiteIndex = siteIndex == "" || siteIndex == "1"
+	index := IndexOption(db.GetInt("siteindex"))
+	if index == IndexDisable || index == IndexWriteToIndex || index == IndexWriteToNav {
+		s.opt.SiteIndex = index
+	}
 
 	news := NewsOption(db.GetInt("news"))
 	if news == NewsDisable || news == NewsWriteToNews || news == NewsWriteToIndex {
@@ -1141,8 +1153,8 @@ func (s *Server) dirAvailable(db serverDB, dir string) error {
 	if dir == "" {
 		if s.opt.News == NewsWriteToIndex {
 			return wrapErr(fmt.Errorf("site news is currently configured to write to /index.html"))
-		} else if s.opt.SiteIndex {
-			return wrapErr(fmt.Errorf("site index is currently enabled"))
+		} else if s.opt.SiteIndex == IndexWriteToIndex {
+			return wrapErr(fmt.Errorf("site index is currently configured to write to /index.html"))
 		}
 	}
 
@@ -2683,7 +2695,7 @@ func (s *Server) Run() error {
 		if s.opt.News == NewsWriteToIndex {
 			matches = append(matches, matchNews)
 		}
-		if s.opt.SiteIndex {
+		if s.opt.SiteIndex == IndexWriteToIndex {
 			matches = append(matches, matchSiteIndex)
 		}
 		if s.opt.Overboard == "/" {
@@ -2716,9 +2728,9 @@ func (s *Server) Run() error {
 				db.SaveInt("news", int(s.opt.News))
 				log.Println("Warning: Updated option News from 'Write to index.html' to 'Write to news.html'.")
 			case matchSiteIndex:
-				s.opt.SiteIndex = false
-				db.SaveBool("siteindex", false)
-				log.Println("Warning: Updated option Site Index from 'Enable' to 'Disable'.")
+				s.opt.SiteIndex = IndexWriteToNav
+				db.SaveInt("siteindex", int(s.opt.SiteIndex))
+				log.Println("Warning: Updated option Site Index from 'Write to index.html' to 'Write to nav.html'.")
 			case matchSiteOverboard:
 				s.opt.Overboard = ""
 				db.SaveString("overboard", s.opt.Overboard)

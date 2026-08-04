@@ -57,8 +57,9 @@
         <tr>
             <td class="postblock"><label for="siteindex">{{T "Site Index"}}</label></td>
             <td><select name="siteindex" style="width: 100%;">
-                <option value="0"{{if not .Opt.SiteIndex}} selected{{end}}>✗ {{T "Disable"}}</option>
-                <option value="1"{{if .Opt.SiteIndex}} selected{{end}}>✓ {{T "Enable"}}</option>
+                <option value="0"{{if eq .Opt.SiteIndex 0}} selected{{end}}>✗ {{T "Disable"}}</option>
+                <option value="2"{{if eq .Opt.SiteIndex 2}} selected{{end}}>✓ {{T "Enable - Write to %s" "nav.html"}}</option>
+                <option value="1"{{if eq .Opt.SiteIndex 1}} selected{{end}}>✓ {{T "Enable - Write to %s" "index.html"}}</option>
             </select></td>
             <td>{{T "Write site index page, which contains the most recent news item, links to boards and the most recent posts."}}</td>
         </tr>

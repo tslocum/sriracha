@@ -1,4 +1,5 @@
 1.9.7:
+- Support writing site index to nav.html
 - Strip required password from post password prefix
 - Detect and automatically correct invalid server configurations
 

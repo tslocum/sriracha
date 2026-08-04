@@ -474,8 +474,12 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 
 	s.refreshRecentPosts(db)
 
-	writePath := filepath.Join(s.config.Root, "_index.html")
-	filePath := filepath.Join(s.config.Root, "index.html")
+	fileName := "index.html"
+	if s.opt.SiteIndex == IndexWriteToNav {
+		fileName = "nav.html"
+	}
+	writePath := filepath.Join(s.config.Root, "_"+fileName)
+	filePath := filepath.Join(s.config.Root, fileName)
 
 	indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 	if err != nil {
@@ -723,6 +727,10 @@ func (s *Server) writeOverboard(db serverDB, wg *sync.WaitGroup, c *categoryInfo
 
 // writeNewsEntry writes a news entry page to disk.
 func (s *Server) writeNewsEntry(db serverDB, wg *sync.WaitGroup, n *News) {
+	if s.opt.News == NewsDisable {
+		return
+	}
+
 	wg.Add(1)
 	info := &buildInfo{
 		build: buildNewsEntry,
@@ -734,6 +742,10 @@ func (s *Server) writeNewsEntry(db serverDB, wg *sync.WaitGroup, n *News) {
 
 // writeNewsIndexes writes news index pages to disk.
 func (s *Server) writeNewsIndexes(db serverDB, wg *sync.WaitGroup) []*News {
+	if s.opt.News == NewsDisable {
+		return nil
+	}
+
 	allNews := db.AllNews(true)
 	pages := pageCount(len(allNews), newsCount)
 	wg.Add(pages)
@@ -778,9 +790,10 @@ func (s *Server) writePages(db serverDB, wg *sync.WaitGroup, pages []*Page) {
 
 // writeSiteIndex writes the site index page to disk.
 func (s *Server) writeSiteIndex(wg *sync.WaitGroup) {
-	if !s.opt.SiteIndex || s.opt.News == NewsWriteToIndex || s.opt.Overboard == "/" {
+	if s.opt.SiteIndex == IndexDisable {
 		return
 	}
+
 	wg.Add(1)
 	info := &buildInfo{
 		build: buildSiteIndex,
@@ -793,6 +806,7 @@ func (s *Server) writeStatistics(wg *sync.WaitGroup) {
 	if !s.opt.Statistics {
 		return
 	}
+
 	wg.Add(1)
 	info := &buildInfo{
 		build: buildStatistics,

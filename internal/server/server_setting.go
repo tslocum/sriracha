@@ -77,12 +77,8 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		s.opt.SiteHome = defaultServerSiteHome
 		db.SaveString("sitehome", s.opt.SiteHome)
 
-		s.opt.SiteIndex = false
-		err := s.dirAvailable(db, "")
-		if err == nil {
-			s.opt.SiteIndex = true
-		}
-		db.SaveBool("siteindex", s.opt.SiteIndex)
+		s.opt.SiteIndex = IndexDisable
+		db.SaveInt("siteindex", int(s.opt.SiteIndex))
 
 		s.opt.News = NewsDisable
 		db.SaveInt("news", int(s.opt.News))
@@ -207,16 +203,16 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 			s.opt.SiteHome = siteHome
 		}
 
-		siteIndex := FormBool(r, "siteindex")
-		if siteIndex && siteIndex != s.opt.SiteIndex {
+		siteIndex := FormInt(r, "siteindex")
+		if siteIndex != int(s.opt.SiteIndex) && siteIndex == int(IndexWriteToIndex) {
 			err = s.dirAvailable(db, "")
 			if err != nil {
 				data.ManageError(fmt.Sprintf("failed to enable site index: %s", err))
 				return
 			}
 		}
-		db.SaveBool("siteindex", siteIndex)
-		s.opt.SiteIndex = siteIndex
+		db.SaveInt("siteindex", siteIndex)
+		s.opt.SiteIndex = IndexOption(siteIndex)
 
 		news := FormInt(r, "news")
 		if news != int(s.opt.News) && news == int(NewsWriteToIndex) {
