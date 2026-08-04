@@ -112,9 +112,9 @@ func (v *Password) Post(db sriracha.DB, post *Post) error {
 			continue
 		}
 		passwordRequired = true
-		if post.Password == p.text {
+		if strings.HasPrefix(post.Password, p.text) {
 			passwordSubmitted = true
-			post.Password = ""
+			post.Password = strings.TrimPrefix(post.Password, p.text)
 			break
 		}
 	}
