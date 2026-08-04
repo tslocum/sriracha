@@ -47,7 +47,6 @@ import (
 	"codeberg.org/tslocum/sriracha/internal/database"
 	"codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/model"
-	"codeberg.org/tslocum/sriracha/util"
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/fsnotify/fsnotify"
 	"github.com/jackc/pgx/v5"
@@ -560,8 +559,8 @@ func (s *Server) dateTimeFormatUpdated() {
 	if s.opt.DateTimeFormat == "" {
 		s.opt.DateTimeFormat = defaultServerDateTimeFormat
 	}
-	util.DateTimeFormatHTML = s.opt.DateTimeFormat
-	util.DateTimeFormatPlain = strings.ReplaceAll(s.opt.DateTimeFormat, "<wbr>", "")
+	DateTimeFormatHTML = s.opt.DateTimeFormat
+	DateTimeFormatPlain = strings.ReplaceAll(s.opt.DateTimeFormat, "<wbr>", "")
 }
 
 // connectToMailServer connects to the configured mail server and returns a SMTP client.

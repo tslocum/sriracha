@@ -53,5 +53,4 @@ services:
     volumes:
       - /home/httpd/etc:/config/caddy # Caddy configuration directory containing Caddyfile.
       - /home/sriracha/public:/mnt/sriracha # Root directory containing board files.
-    command:
-      caddy run --config=/config/caddy/Caddyfile
+    command: caddy run --config=/config/caddy/Caddyfile
