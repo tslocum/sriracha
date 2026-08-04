@@ -17,6 +17,11 @@ import (
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
+const (
+	initialBufferSize = 256000  // 256 KB.
+	maxBufferSize     = 1000000 // 1 MB.
+)
+
 type buildType int
 
 const (
@@ -43,6 +48,7 @@ type buildInfo struct {
 	customPage *Page
 	db         serverDB
 	postIDs    [][]int
+	buf        *bytes.Buffer
 	wg         *sync.WaitGroup
 }
 
@@ -57,7 +63,7 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 	db := info.db
 	board := info.board
 
-	data := s.newTemplateData(db)
+	data := s.newTemplateData(db, info.buf)
 	data.Board = board
 	data.Boards = db.AllBoards()
 
@@ -151,7 +157,7 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 	if board.Type != TypeImageboard {
 		return
 	}
-	data := s.newTemplateData(db)
+	data := s.newTemplateData(db, info.buf)
 	data.Board = board
 	data.Boards = db.AllBoards()
 	data.ReplyMode = 1
@@ -209,7 +215,7 @@ func (s *Server) _buildBoardThread(info *buildInfo) {
 		log.Fatal(err)
 	}
 
-	data := s.newTemplateData(db)
+	data := s.newTemplateData(db, info.buf)
 	data.Board = board
 	data.Boards = db.AllBoards()
 	data.Threads = [][]*Post{posts}
@@ -240,7 +246,7 @@ func (s *Server) _buildNewsIndex(info *buildInfo) {
 	db := info.db
 	page := info.page
 
-	data := s.newTemplateData(db)
+	data := s.newTemplateData(db, info.buf)
 	data.Boards = db.AllBoards()
 	data.Template = "news"
 
@@ -271,7 +277,7 @@ func (s *Server) _buildNewsIndex(info *buildInfo) {
 	data.AllNews = info.news[start:end]
 	data.Page = page
 
-	subData := s.newTemplateData(db)
+	subData := s.newTemplateData(db, info.buf)
 	buf := &bytes.Buffer{}
 	for _, n := range data.AllNews {
 		subData.Boards = db.AllBoards()
@@ -322,7 +328,7 @@ func (s *Server) _buildNewsEntry(info *buildInfo) {
 		return
 	}
 
-	data := s.newTemplateData(db)
+	data := s.newTemplateData(db, info.buf)
 	data.Boards = db.AllBoards()
 	data.Template = "news"
 	data.AllNews = []*News{n}
@@ -337,7 +343,7 @@ func (s *Server) _buildNewsEntry(info *buildInfo) {
 		log.Fatal(err)
 	}
 
-	subData := s.newTemplateData(db)
+	subData := s.newTemplateData(db, info.buf)
 	buf := &bytes.Buffer{}
 	subData.Boards = db.AllBoards()
 	subData.Template = "line"
@@ -382,7 +388,7 @@ func (s *Server) _buildPage(info *buildInfo) {
 	}
 	db := info.db
 
-	data := s.newTemplateData(db)
+	data := s.newTemplateData(db, info.buf)
 	data.Boards = db.AllBoards()
 	data.Template = "page"
 	p := info.customPage
@@ -438,7 +444,7 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 	if len(allBoards) == 0 {
 		return
 	}
-	data := s.newTemplateData(db)
+	data := s.newTemplateData(db, info.buf)
 	data.Template = "index"
 
 	data.Boards = allBoards
@@ -447,7 +453,7 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 		allNews := db.AllNews(true)
 		if len(allNews) > 0 {
 			n := allNews[0]
-			subData := s.newTemplateData(db)
+			subData := s.newTemplateData(db, info.buf)
 			buf := &bytes.Buffer{}
 			subData.Boards = db.AllBoards()
 			subData.Template = "line"
@@ -573,11 +579,18 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 	}
 }
 
+// _build handles the static page build queue.
 func (s *Server) _build() {
+	// Initialize write buffer.
+	buf := bytes.NewBuffer(make([]byte, initialBufferSize))
+
 	for {
 		info := <-s.buildQueue
 		db := s.begin()
 		info.db = db
+		info.buf = buf
+
+		// Handle build request.
 		switch info.build {
 		case buildBoardIndex:
 			s._buildBoardIndex(info)
@@ -596,8 +609,14 @@ func (s *Server) _build() {
 		case buildStatistics:
 			s._buildStatistics(info)
 		}
+
 		db.Commit()
 		info.wg.Done()
+
+		// Resize write buffer.
+		if buf.Cap() > maxBufferSize {
+			buf = bytes.NewBuffer(make([]byte, initialBufferSize))
+		}
 	}
 }
 

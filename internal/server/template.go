@@ -229,6 +229,8 @@ func (data *templateData) executeWithError(w io.Writer) error {
 	}
 
 	io.Copy(w, data.buf)
+
+	data.buf.Reset()
 	return nil
 }
 
@@ -493,17 +495,21 @@ func (s *Server) newTemplateFuncMap(db serverDB, locale string) template.FuncMap
 	return f
 }
 
-func (s *Server) newTemplateData(db serverDB) *templateData {
-	const initialBufferSize = 128000 // 128 Kilobytes.
-	writeBuf := bytes.NewBuffer(make([]byte, initialBufferSize))
-	return &templateData{
+func (s *Server) newTemplateData(db serverDB, buf ...*bytes.Buffer) *templateData {
+	data := &templateData{
 		Manage: &manageData{
 			Plugins: allPluginInfo,
 		},
 		Opt:                &s.opt,
 		tpl:                s.tpl,
-		buf:                writeBuf,
 		newTemplateFuncMap: s.newTemplateFuncMap,
 		db:                 db,
 	}
+	if len(buf) > 0 {
+		buf[0].Reset()
+		data.buf = buf[0]
+	} else {
+		data.buf = bytes.NewBuffer(make([]byte, initialBufferSize))
+	}
+	return data
 }
