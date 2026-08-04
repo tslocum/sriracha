@@ -32,6 +32,9 @@ services:
       - POSTGRES_USER=sriracha
       - POSTGRES_PASSWORD=hunter42
       - POSTGRES_DB=sriracha
+    # Note: See the Performance section of the Sriracha Manual for optimal configuration values.
+    # The example values below are appropriate for a system with 2 GB of available memory (RAM).
+    command: postgres -c shared_buffers=512MB -c work_mem=16MB -c maintenance_work_mem=512MB
 
   httpd:
     image: caddy:2.11.4-alpine # https://hub.docker.com/_/caddy/tags
