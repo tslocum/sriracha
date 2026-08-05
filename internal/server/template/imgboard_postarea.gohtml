@@ -67,7 +67,7 @@
                         </td>
                         <td colspan="2">
                             <input type="text" name="captcha" id="newpostcaptcha" accesskey="c" autocomplete="off" style="vertical-align: middle;box-sizing: border-box;width: 70px;height: 40px;">
-                            <a href="/sriracha/captcha?new" target="_blank" onclick="javascript:document.getElementById('captchaimage').src = '/sriracha/captcha?new=' + new Date().getTime();return false;"><img src="/sriracha/captcha" alt="CAPTCHA Challenge" id="captchaimage" width="225" height="40" style="border: 0;vertical-align: middle;"></a> <span style="vertical-align: middle;"><small>{{T "Click to refresh."}}</small></span>
+                            <a href="/sriracha/captcha?new" target="_blank" onclick="javascript:document.getElementById('captchaimage').src = '/sriracha/captcha?new=' + new Date().getTime();return false;"><img loading="lazy" src="/sriracha/captcha" alt="CAPTCHA Challenge" id="captchaimage" width="225" height="40" style="border: 0;vertical-align: middle;"></a> <span style="vertical-align: middle;"><small>{{T "Click to refresh."}}</small></span>
                         </td>
                     </tr>
                 {{end}}

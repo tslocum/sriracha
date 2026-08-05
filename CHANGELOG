@@ -2,6 +2,7 @@
 - Add date/time format option
 - Add option to disable recording author IP addresses
 - Make omitted and truncated post messages clickable
+- Wait to load CAPTCHA image until post form is opened
 
 1.9.7:
 - Reuse static page write buffers
