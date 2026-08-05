@@ -594,7 +594,7 @@ func (s *Server) _build() {
 
 	for {
 		info := <-s.buildQueue
-		db := s.begin()
+		db := s.beginReadOnly()
 		info.db = db
 		info.buf = buf
 

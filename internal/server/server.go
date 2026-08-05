@@ -721,6 +721,13 @@ func (s *Server) begin() serverDB {
 	return database.Begin(s.dbPool, s.config)
 }
 
+func (s *Server) beginReadOnly() serverDB {
+	if s.config.HTTP == "" {
+		return database.MockDB
+	}
+	return database.BeginReadOnly(s.dbPool, s.config)
+}
+
 // loadServerConfig loads the server configuration and sets default values.
 func (s *Server) loadServerConfig() error {
 	db := s.begin()

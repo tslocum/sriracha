@@ -228,6 +228,31 @@ func Begin(pool *pgxpool.Pool, config *Config) *DB {
 	}
 }
 
+func BeginReadOnly(pool *pgxpool.Pool, config *Config) *DB {
+	if pool == nil {
+		// Return mock database.
+		return &DB{
+			config: config,
+		}
+	}
+
+	conn, err := pool.Acquire(context.Background())
+	if err != nil {
+		dbErr(fmt.Errorf("failed to acquire connection from pool: %w", err))
+	}
+
+	_, err = conn.Exec(context.Background(), "BEGIN TRANSACTION READ ONLY")
+	if err != nil {
+		conn.Release()
+		dbErr(fmt.Errorf("failed to begin transaction: %w", err))
+	}
+
+	return &DB{
+		conn:   conn,
+		config: config,
+	}
+}
+
 func (db *DB) SetPlugin(name string) {
 	db.plugin = name
 }
