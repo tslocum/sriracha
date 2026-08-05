@@ -583,6 +583,11 @@ dbname: "sriracha"
 # addition to their username and password. Enabling this option increases security.
 #require2fa: false
 
+# Do not record post author IP addresses. When this option is enabled, it is
+# not possible for staff members to ban visitors. You should only enable this
+# option if you are running Sriracha somewhere other than the public Internet.
+#noip: false
+
 # Access required to perform an action. Default values for all actions are listed below.
 #
 # Format: mod / admin / super-admin / disable (disallow all roles)

@@ -60,6 +60,8 @@ type Config struct {
 
 	Require2FA bool // Require two-factor authentication.
 
+	NoIP bool // Do not record post author IP addresses.
+
 	Access map[string]string // Specifies which roles may perform each management or moderation action.
 
 	Uploads []string // Supported upload file types.

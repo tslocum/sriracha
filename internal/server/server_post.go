@@ -671,7 +671,9 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		Moderated: 1,
 	}
 
-	post.IP = s.hashIP(r)
+	if !s.config.NoIP {
+		post.IP = s.hashIP(r)
+	}
 
 	err := s.loadPostForm(db, r, post)
 	if err != nil {
@@ -719,7 +721,11 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 				s.captchaCacheLock.Unlock()
 			}
 
-			challenge := db.GetCAPTCHA(post.IP)
+			ipHash := post.IP
+			if post.IP == "" {
+				ipHash = s.hashIP(r)
+			}
+			challenge := db.GetCAPTCHA(ipHash)
 			if challenge != nil {
 				solution := FormString(r, "captcha")
 				if strings.ToLower(solution) == challenge.Text {
@@ -793,10 +799,14 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	if solvedCAPTCHA != nil {
+		ipHash := post.IP
+		if post.IP == "" {
+			ipHash = s.hashIP(r)
+		}
 		s.captchaCacheLock.Lock()
-		delete(s.captchaCache, post.IP)
+		delete(s.captchaCache, ipHash)
 		s.captchaCacheLock.Unlock()
-		db.DeleteCAPTCHA(post.IP)
+		db.DeleteCAPTCHA(ipHash)
 		os.Remove(filepath.Join(s.config.Root, "captcha", solvedCAPTCHA.Image+".png"))
 	}
 
@@ -899,14 +909,16 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		}
 
 		if post.FileHash != "" && db.FileBanned(post.FileHash) {
-			ban := &Ban{
-				IP:        post.IP,
-				Timestamp: time.Now().Unix(),
-				Reason:    Get(nil, nil, "Detected banned file."),
+			if post.IP != "" {
+				ban := &Ban{
+					IP:        post.IP,
+					Timestamp: time.Now().Unix(),
+					Reason:    Get(nil, nil, "Detected banned file."),
+				}
+				db.AddBan(ban)
+				s.log(db, nil, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info()+" File hash: "+post.FileHash)
 			}
-			db.AddBan(ban)
 
-			s.log(db, nil, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info()+" File hash: "+post.FileHash)
 			s.deletePostFiles(post)
 
 			data := s.buildData(db, w, r)
@@ -1140,14 +1152,16 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		if db.FileBanned(p.FileHash) {
 			cancel()
 
-			ban := &Ban{
-				IP:        p.IP,
-				Timestamp: time.Now().Unix(),
-				Reason:    Get(nil, nil, "Detected banned file."),
+			if p.IP != "" {
+				ban := &Ban{
+					IP:        p.IP,
+					Timestamp: time.Now().Unix(),
+					Reason:    Get(nil, nil, "Detected banned file."),
+				}
+				db.AddBan(ban)
+				s.log(db, nil, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info()+" File hash: "+p.FileHash)
 			}
-			db.AddBan(ban)
 
-			s.log(db, nil, nil, fmt.Sprintf("Added >>/ban/%d", ban.ID), ban.Info()+" File hash: "+p.FileHash)
 			s.deletePostFiles(p)
 
 			data := s.buildData(db, w, r)

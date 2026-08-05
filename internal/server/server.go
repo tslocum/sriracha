@@ -1780,6 +1780,9 @@ func (s *Server) handleBanAction(db serverDB, account *Account, action string, i
 	}
 
 	// Ban visitor.
+	if ipHash == "" {
+		return "delete"
+	}
 	existing := db.BanByIP(ipHash)
 	if existing == nil {
 		ban := &Ban{
