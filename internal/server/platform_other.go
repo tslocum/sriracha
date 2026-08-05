@@ -4,6 +4,6 @@ package server
 
 import "os"
 
-func preallocateFile(file *os.File, size int64) error {
-	return nil // Preallocation is only supported on Linux.
+func preallocateFile(file *os.File, size int64) {
+	// Preallocation is only supported on Linux.
 }

@@ -353,10 +353,7 @@ func (s *Server) loadPostFile(db serverDB, r *http.Request, p *Post, fileHeader 
 		log.Fatal(err)
 	}
 
-	err = preallocateFile(file, fileHeader.Size)
-	if err != nil {
-		log.Fatal(err)
-	}
+	preallocateFile(file, fileHeader.Size)
 
 	formFile.Seek(0, 0)
 
@@ -607,7 +604,7 @@ func (s *Server) embedMedia(db serverDB, post *Post, embed string, dryRun bool) 
 		db.SetPlugin("")
 
 		if post.File == "" {
-			return fmt.Errorf(Get(b, nil, "Failed to embed media."))
+			return errors.New(G(b, nil, "Failed to embed media."))
 		}
 	}
 	return nil
