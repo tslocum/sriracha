@@ -165,11 +165,9 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 
 	if r.Method == http.MethodPost {
 		overboard := FormString(r, "overboard")
-		if overboard != "" && overboard != "/" {
-			if !AlphaNumericAndSymbols.MatchString(overboard) {
-				data.ManageError("Invalid overboard directory.")
-				return
-			}
+		if overboard != "" && overboard != "/" && !AlphaNumericAndSymbols.MatchString(overboard) {
+			data.ManageError("Invalid overboard directory.")
+			return
 		}
 
 		iconPath := filepath.Join(s.config.Root, "banner", "icon.png")
@@ -266,7 +264,7 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		s.opt.Refresh = refresh
 
 		modQueue := strings.TrimSuffix(FormString(r, "modqueue"), ".html")
-		if modQueue != "" && (!FilePathPattern.MatchString(modQueue) || strings.Contains(modQueue, "..")) {
+		if modQueue != "" && !ValidRelativePath(modQueue) {
 			data.ManageError("Invalid moderation queue status page file path.")
 			return
 		} else if s.opt.ModQueue != modQueue && s.opt.ModQueue != "" {

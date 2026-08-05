@@ -265,3 +265,7 @@ func FormatAction(action string) string {
 	}
 	return label
 }
+
+func ValidRelativePath(p string) bool {
+	return p != "" && FilePathPattern.MatchString(p) && !strings.Contains(p, "..") && !strings.HasPrefix(p, ".") && !strings.HasPrefix(p, "/") && !strings.HasSuffix(p, "/") && !strings.HasPrefix(strings.ToLower(p), "sriracha")
+}

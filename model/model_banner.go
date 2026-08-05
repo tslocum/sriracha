@@ -21,7 +21,7 @@ type Banner struct {
 func (b *Banner) Validate() error {
 	b.Name = strings.TrimSpace(b.Name)
 	switch {
-	case strings.TrimSpace(b.Name) == "" || !FilePathPattern.MatchString(b.Name) || strings.HasPrefix(b.Name, "."):
+	case !ValidRelativePath(b.Name):
 		return fmt.Errorf("invalid banner name: %s", b.Name)
 	case strings.TrimSpace(b.Name) == "icon.png":
 		return fmt.Errorf("invalid banner name: icon.png is reserved for the site icon")

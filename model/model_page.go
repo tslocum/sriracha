@@ -17,7 +17,7 @@ type Page struct {
 
 func (p *Page) Validate() error {
 	p.Path = strings.TrimSpace(p.Path)
-	if p.Path == "" || !FilePathPattern.MatchString(p.Path) || strings.HasPrefix(p.Path, ".") || strings.HasPrefix(p.Path, "/") || strings.HasPrefix(strings.ToLower(p.Path), "sriracha") {
+	if !ValidRelativePath(p.Path) {
 		return fmt.Errorf("invalid page path: %s", p.Path)
 	}
 	return nil

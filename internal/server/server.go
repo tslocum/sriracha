@@ -1506,7 +1506,6 @@ func (s *Server) writeOverboards(db serverDB, wg *sync.WaitGroup, boards []*Boar
 func (s *Server) writePage(db serverDB, data *templateData, p *Page, w io.Writer) error {
 	err := p.Validate()
 	if err != nil {
-		log.Println("VALIDATE ERR", err)
 		return err
 	}
 

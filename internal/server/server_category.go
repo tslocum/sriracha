@@ -297,6 +297,10 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 			s.loadCategoryForm(db, r, data.Manage.Category)
 
 			if data.Manage.Category.Overboard != "" && data.Manage.Category.Overboard != oldCategory.Overboard {
+				if data.Manage.Category.Overboard != "/" && !AlphaNumericAndSymbols.MatchString(data.Manage.Category.Overboard) {
+					data.ManageError("Invalid overboard directory.")
+					return
+				}
 				err = s.dirAvailable(db, data.Manage.Category.Overboard)
 				if err != nil {
 					data.ManageError(err.Error())
@@ -343,6 +347,10 @@ func (s *Server) serveCategory(data *templateData, db serverDB, w http.ResponseW
 		s.loadCategoryForm(db, r, c)
 
 		if c.Overboard != "" {
+			if c.Overboard != "/" && !AlphaNumericAndSymbols.MatchString(c.Overboard) {
+				data.ManageError("Invalid overboard directory.")
+				return
+			}
 			err = s.dirAvailable(db, c.Overboard)
 			if err != nil {
 				data.ManageError(err.Error())
