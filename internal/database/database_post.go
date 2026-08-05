@@ -104,7 +104,7 @@ func (db *DB) AllThreads(moderated bool, board ...*Board) [][2]int {
 		extraJoin = " AND reply.moderated > 0"
 		extraWhere = " AND post.moderated > 0"
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT post.id, COUNT(reply.id) as replies FROM post LEFT OUTER JOIN post reply ON reply.parent = post.id"+extraJoin+" WHERE "+boardWhere+" post.parent IS NULL"+extraWhere+" GROUP BY post.id ORDER BY post.stickied DESC, post.bumped DESC")
+	rows, err := db.conn.Query(context.Background(), "SELECT post.id, COUNT(reply.id) AS replies FROM post LEFT OUTER JOIN post reply ON reply.parent = post.id"+extraJoin+" WHERE "+boardWhere+" post.parent IS NULL"+extraWhere+" GROUP BY post.id ORDER BY post.stickied DESC, post.bumped DESC")
 	if err != nil {
 		dbErr(fmt.Errorf("failed to select all threads: %w", err))
 	}
@@ -127,7 +127,7 @@ func (db *DB) TrimThreads(board *Board) []*Post {
 	if board.MaxThreads == 0 {
 		return nil
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE post.board = $1 AND parent IS NULL AND moderated > 0 ORDER BY stickied DESC, bumped DESC, id ASC OFFSET $2", board.ID, board.MaxThreads)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE post.board = $1 AND parent IS NULL AND moderated > 0 ORDER BY stickied DESC, bumped DESC, id ASC OFFSET $2", board.ID, board.MaxThreads)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -155,7 +155,7 @@ func (db *DB) AllPostsInThread(moderated bool, postID int) []*Post {
 	if moderated {
 		extra = " AND moderated > 0"
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE (id = $1 OR parent = $1)"+extra+" ORDER BY id ASC", postID)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE (id = $1 OR parent = $1)"+extra+" ORDER BY id ASC", postID)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -199,7 +199,7 @@ func (db *DB) AllReplies(threadID int, limit int, moderated bool) []*Post {
 	if moderated {
 		extraModerated = " AND moderated > 0"
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE parent = $1"+extraModerated+" ORDER BY id "+sortDir+extraLimit, threadID)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE parent = $1"+extraModerated+" ORDER BY id "+sortDir+extraLimit, threadID)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -230,7 +230,7 @@ func (db *DB) AllReplies(threadID int, limit int, moderated bool) []*Post {
 }
 
 func (db *DB) PendingPosts() []*Post {
-	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE moderated = $1 ORDER BY id ASC", ModeratedHidden)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE moderated = $1 ORDER BY id ASC", ModeratedHidden)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -259,7 +259,7 @@ func (db *DB) PendingPosts() []*Post {
 
 func (db *DB) PostByID(postID int) *Post {
 	p := &Post{}
-	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE id = $1", postID))
+	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE id = $1", postID))
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -278,7 +278,7 @@ func (db *DB) PostsByID(postIDs []int) []*Post {
 		}
 		ids.WriteString(strconv.Itoa(id))
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post JOIN unnest('{"+ids.String()+"}'::int[]) WITH ORDINALITY t(id, ord) USING (id) ORDER BY t.ord")
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post JOIN unnest('{"+ids.String()+"}'::int[]) WITH ORDINALITY t(id, ord) USING (id) ORDER BY t.ord")
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -309,7 +309,7 @@ func (db *DB) PostsByIP(hash string) []*Post {
 	if hash == "" {
 		return nil
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE ip = $1", hash)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE ip = $1", hash)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -341,7 +341,7 @@ func (db *DB) PostsByFileHash(hash string, filterBoard *Board) []*Post {
 	if filterBoard != nil {
 		extra = " AND post.board = " + strconv.Itoa(filterBoard.ID)
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE filehash = $1 "+extra, hash)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE filehash = $1 "+extra, hash)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -369,7 +369,7 @@ func (db *DB) PostsByFileHash(hash string, filterBoard *Board) []*Post {
 }
 
 func (db *DB) PostsByBacklink(targetID int) []*Post {
-	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE $1 = ANY(backlinks)", targetID)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE $1 = ANY(backlinks)", targetID)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -398,7 +398,7 @@ func (db *DB) PostsByBacklink(targetID int) []*Post {
 
 func (db *DB) PostByField(b *Board, field string, value any) *Post {
 	p := &Post{}
-	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE post.board = $1 AND "+field+" = $2 LIMIT 1", b.ID, value))
+	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE post.board = $1 AND "+field+" = $2 LIMIT 1", b.ID, value))
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -413,7 +413,7 @@ func (db *DB) PostByField(b *Board, field string, value any) *Post {
 
 func (db *DB) LastPostByIP(board *Board, ip string) *Post {
 	p := &Post{}
-	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE post.board = $1 AND ip = $2 ORDER BY id DESC LIMIT 1", board.ID, ip))
+	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE post.board = $1 AND ip = $2 ORDER BY id DESC LIMIT 1", board.ID, ip))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {
@@ -425,7 +425,7 @@ func (db *DB) LastPostByIP(board *Board, ip string) *Post {
 
 func (db *DB) LastPostByBoard(board *Board) *Post {
 	p := &Post{}
-	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post WHERE post.board = $1 AND moderated> 0 ORDER BY id DESC LIMIT 1", board.ID))
+	_, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE post.board = $1 AND moderated> 0 ORDER BY id DESC LIMIT 1", board.ID))
 	if err == pgx.ErrNoRows {
 		return nil
 	} else if err != nil {

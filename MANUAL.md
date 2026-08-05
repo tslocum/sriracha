@@ -386,6 +386,7 @@ Pages and templates may access the database via the following read-only methods:
   - `AllReplies(threadID int, limit int, moderated bool) []*Post`
   - `PendingPosts() []*Post`
   - `PostByID(postID int) *Post`
+  - `PostsByID(postIDs []int) []*Post`
   - `PostsByIP(hash string) []*Post`
   - `PostsByFileHash(hash string, filterBoard *Board) []*Post`
   - `PostByField(b *Board, field string, value any) *Post`

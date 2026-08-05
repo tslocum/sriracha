@@ -439,6 +439,7 @@ func (s *Server) newTemplateFuncMap(db serverDB, locale string) template.FuncMap
 	}
 	f["PendingPosts"] = func() []*Post { return db.PendingPosts() }
 	f["PostByID"] = func(postID int) *Post { return db.PostByID(postID) }
+	f["PostsByID"] = func(postIDs []int) []*Post { return db.PostsByID(postIDs) }
 	f["PostsByIP"] = func(hash string) []*Post { return db.PostsByIP(hash) }
 	f["PostsByFileHash"] = func(hash string, filterBoard *Board) []*Post { return db.PostsByFileHash(hash, filterBoard) }
 	f["PostByField"] = func(board *Board, field string, value any) *Post { return db.PostByField(board, field, value) }
