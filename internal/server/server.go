@@ -1660,7 +1660,17 @@ func (s *Server) handleBenchmark(n int) {
 	db.Commit()
 	s.lock.Unlock()
 
-	log.Printf("Rebuilt all static files %d times in %s (median: %s, average: %s)", n, sumDuration(durations).Round(time.Millisecond), medianDuration(durations).Round(time.Millisecond), averageDuration(durations).Round(time.Millisecond))
+	var shortest, longest time.Duration
+	for _, d := range durations {
+		if shortest == 0 || d < shortest {
+			shortest = d
+		}
+		if longest == 0 || d > longest {
+			longest = d
+		}
+	}
+
+	fmt.Printf("Rebuilt all static files %d times: %s avg, %s min, %s med, %s max\n", n, averageDuration(durations).Round(time.Millisecond), shortest.Round(time.Millisecond), medianDuration(durations).Round(time.Millisecond), longest.Round(time.Millisecond))
 	s.Stop()
 }
 
@@ -2706,7 +2716,9 @@ func (s *Server) Run() error {
 
 	// Start listening for HTTP connections.
 	httpErrors := make(chan error)
-	go s.listen(httpErrors)
+	if benchmark <= 0 {
+		go s.listen(httpErrors)
+	}
 
 	// Populate caches.
 	s.refreshBannerCache(db)
@@ -2847,11 +2859,13 @@ func (s *Server) Run() error {
 	}
 
 	// Initialization complete. Unlock server.
-	var extra string
-	if s.config.HTTPS != "" {
-		extra = " and https://" + s.config.HTTPS
+	if benchmark <= 0 {
+		var extra string
+		if s.config.HTTPS != "" {
+			extra = " and https://" + s.config.HTTPS
+		}
+		fmt.Printf("Serving http://%s%s\n", s.config.HTTP, extra)
 	}
-	fmt.Printf("Serving http://%s%s\n", s.config.HTTP, extra)
 	if s.config.Identifiers && s.config.SaltIdent == "" {
 		fmt.Println("Warning: Configuring an identifier generation salt is strongly recommended! Set saltident to a long string of random data which, once set, never changes.")
 	}
@@ -2863,7 +2877,7 @@ func (s *Server) Run() error {
 	}
 
 	if benchmark > 0 {
-		go s.handleBenchmark(benchmark)
+		s.handleBenchmark(benchmark)
 	}
 
 	if smokeTest {
