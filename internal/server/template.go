@@ -370,6 +370,9 @@ func (s *Server) newTemplateFuncMap(db serverDB, locale string) template.FuncMap
 
 	// Localization.
 	f["T"] = func(message string, vars ...interface{}) string {
+		if !strings.ContainsRune(message, '%') {
+			return gotext.GetD(domain, message)
+		}
 		return gotext.GetD(domain, message, vars...)
 	}
 	f["TN"] = func(singular string, plural string, n int) string {

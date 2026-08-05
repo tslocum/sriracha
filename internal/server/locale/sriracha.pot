@@ -1191,10 +1191,14 @@ msgstr ""
 msgid "Refresh paused. Click to resume."
 msgstr ""
 
-msgid "Refreshing page every %d second. Click to pause."
-msgid_plural "Refreshing page every %d seconds. Click to pause."
-msgstr[0] ""
-msgstr[1] ""
+msgid "Refreshing page every minute. Click to pause."
+msgstr ""
+
+msgid "Refreshing page every %d minutes. Click to pause."
+msgstr ""
+
+msgid "Refreshing page every %d seconds. Click to pause."
+msgstr ""
 
 msgid "Regular expression to search for when a new post is created."
 msgstr ""

@@ -260,6 +260,9 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		s.opt.OekakiHeight = oekakiHeight
 
 		refresh := FormInt(r, "refresh")
+		if refresh != 0 && refresh < minServerRefresh {
+			refresh = minServerRefresh
+		}
 		db.SaveInt("refresh", refresh)
 		s.opt.Refresh = refresh
 

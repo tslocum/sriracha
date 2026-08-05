@@ -76,10 +76,12 @@ const (
 	defaultServerSiteHome       = "/"
 	defaultServerOekakiWidth    = 540
 	defaultServerOekakiHeight   = 540
-	defaultServerSearch         = 30
-	defaultServerRefresh        = 30
+	defaultServerSearch         = 30  // 30 seconds.
+	defaultServerRefresh        = 300 // 5 minutes.
 	defaultServerDateTimeFormat = DefaultDateTimeFormatHTML
 )
+
+const minServerRefresh = 10 // New posts are batched together every 10 seconds.
 
 // defaultServerEmbeds is a list of default oEmbed services.
 var defaultServerEmbeds = [][2]string{
@@ -205,6 +207,22 @@ func (opt *ServerOptions) DefaultLocaleName() string {
 		return name
 	}
 	return opt.Locale
+}
+
+func (opt *ServerOptions) RefreshLabel() string {
+	if opt.Refresh >= 120 {
+		return "Refreshing page every %d minutes. Click to pause."
+	} else if opt.Refresh >= 60 {
+		return "Refreshing page every minute. Click to pause."
+	}
+	return "Refreshing page every %d seconds. Click to pause."
+}
+
+func (opt *ServerOptions) RefreshLabelValue() int {
+	if opt.Refresh >= 60 {
+		return opt.Refresh / 60
+	}
+	return opt.Refresh
 }
 
 type cachedKeyword struct {
@@ -767,6 +785,9 @@ func (s *Server) loadServerConfig() error {
 		s.opt.Refresh = defaultServerRefresh
 	} else {
 		s.opt.Refresh = db.GetInt("refresh")
+		if s.opt.Refresh != 0 && s.opt.Refresh < minServerRefresh {
+			s.opt.Refresh = minServerRefresh
+		}
 	}
 
 	s.opt.ModQueue = db.GetString("modqueue")
