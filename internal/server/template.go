@@ -116,7 +116,7 @@ func (data *templateData) FlexStyle() template.HTML {
 	if !strings.HasSuffix(style, "/flex") {
 		return ""
 	}
-	return `<style type="text/css" id="flexStyle">.thread { display: flex; flex-wrap: wrap; }</style>`
+	return `<style type="text/css" id="flexStyle">.thread { display: flex; flex-wrap: wrap; } .omittedposts { clear: both; }</style>`
 }
 
 func (data *templateData) ManageMode() bool {

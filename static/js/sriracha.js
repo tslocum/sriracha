@@ -700,7 +700,7 @@ function setStyle(style) {
         if (!flexStyle) {
             flexStyle = document.createElement('style');
             flexStyle.id = 'flexStyle';
-            flexStyle.textContent = '.thread { display: flex; flex-wrap: wrap; }';
+            flexStyle.textContent = '.thread { display: flex; flex-wrap: wrap; } .omittedposts { clear: both; }';
             document.head.appendChild(flexStyle);
         }
     } else {
