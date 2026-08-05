@@ -92,13 +92,17 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 	}
 
 	data.Threads = data.Threads[:0]
+	threadIDs := make([]int, len(info.threads[start:end]))
+	for i, threadInfo := range info.threads[start:end] {
+		threadIDs[i] = threadInfo[0]
+	}
+	threadPosts := db.PostsByID(threadIDs)
 	var postIDs []int
-	for _, threadInfo := range info.threads[start:end] {
-		thread := db.PostByID(threadInfo[0])
-		thread.Replies = threadInfo[1]
-		posts := []*Post{thread}
+	for i, threadInfo := range info.threads[start:end] {
+		threadPosts[i].Replies = threadInfo[1]
+		posts := []*Post{threadPosts[i]}
 		if board.Type == TypeImageboard {
-			posts = append(posts, db.AllReplies(thread.ID, board.Replies, true)...)
+			posts = append(posts, db.AllReplies(threadPosts[i].ID, board.Replies, true)...)
 		}
 		for i := range posts {
 			postIDs = append(postIDs, posts[i].ID)
@@ -171,10 +175,14 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 		log.Fatal(err)
 	}
 
-	for _, threadInfo := range info.threads {
-		thread := db.PostByID(threadInfo[0])
-		thread.Replies = threadInfo[1]
-		data.Threads = append(data.Threads, []*Post{thread})
+	ids := make([]int, len(info.threads))
+	for i, threadInfo := range info.threads {
+		ids[i] = threadInfo[0]
+	}
+	posts := db.PostsByID(ids)
+	for i, threadInfo := range info.threads {
+		posts[i].Replies = threadInfo[1]
+		data.Threads = append(data.Threads, []*Post{posts[i]})
 	}
 	data.execute(catalogFile)
 

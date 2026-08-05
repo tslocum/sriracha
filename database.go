@@ -125,6 +125,7 @@ type DB interface {
 	AllReplies(threadID int, limit int, moderated bool) []*Post
 	PendingPosts() []*Post
 	PostByID(postID int) *Post
+	PostsByID(postIDs []int) []*Post
 	PostsByIP(hash string) []*Post
 	PostsByFileHash(hash string, filterBoard *Board) []*Post
 	PostByField(b *Board, field string, value any) *Post

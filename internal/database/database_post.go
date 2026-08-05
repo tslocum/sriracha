@@ -1,6 +1,7 @@
 package database
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"log"
@@ -267,6 +268,41 @@ func (db *DB) PostByID(postID int) *Post {
 	}
 	p.Board = db.BoardByID(boardID)
 	return p
+}
+
+func (db *DB) PostsByID(postIDs []int) []*Post {
+	ids := &bytes.Buffer{}
+	for i, id := range postIDs {
+		if i != 0 {
+			ids.WriteRune(',')
+		}
+		ids.WriteString(strconv.Itoa(id))
+	}
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 as replies FROM post JOIN unnest('{"+ids.String()+"}'::int[]) WITH ORDINALITY t(id, ord) USING (id) ORDER BY t.ord")
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil
+		}
+		dbErr(fmt.Errorf("failed to select posts: %w", err))
+	}
+	var posts []*Post
+	var boardIDs []int
+	for rows.Next() {
+		p := &Post{}
+		boardID, err := scanPost(p, rows)
+		if err != nil {
+			dbErr(fmt.Errorf("failed to scan post: %w", err))
+		}
+		posts = append(posts, p)
+		boardIDs = append(boardIDs, boardID)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select posts: %w", rows.Err()))
+	}
+	for i, p := range posts {
+		p.Board = db.BoardByID(boardIDs[i])
+	}
+	return posts
 }
 
 func (db *DB) PostsByIP(hash string) []*Post {
