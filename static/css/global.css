@@ -162,6 +162,11 @@ img, audio, video {
 	margin-left: 20px;
 }
 
+.omittedposts a, .omittedposts a:hover, .omittedposts a:active, .omittedposts a:visited {
+	color: inherit;
+	text-decoration: inherit;
+}
+
 .hoverpost {
 	display: block;
 	clear: both;

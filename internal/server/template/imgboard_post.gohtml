@@ -21,7 +21,7 @@
                 </div>
                 {{$omitted := Omitted .Board.Replies .Replies}}
                 {{if and (eq $.ReplyMode 0) (gt $omitted 0)}}
-                    <div class="omittedposts">{{TN "%d post omitted. Click Reply to view." "%d posts omitted. Click Reply to view." $omitted}}</div>
+                    <div class="omittedposts"><a href="{{if not $.ModMode}}{{$post.Board.Path}}res/{{.Thread}}.html{{else}}/sriracha/board/mod/{{$post.Board.ID}}/{{.Thread}}{{end}}">{{TN "%d post omitted. Click Reply to view." "%d posts omitted. Click Reply to view." $omitted}}</a></div>
                     <p style="display: none;"></p>
                 {{end}}
             </div>
