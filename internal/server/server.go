@@ -2706,9 +2706,6 @@ func (s *Server) Run() error {
 	// Lock server until initialization is complete.
 	s.lock.Lock()
 
-	traceStart()
-	defer traceStop()
-
 	// Validate templates.
 	fmt.Print("Validating templates...")
 	err = s.validateTemplates(nil, true)
@@ -2843,6 +2840,10 @@ func (s *Server) Run() error {
 		}
 		db.SaveString("sv", SrirachaVersion)
 	}
+
+	traceStart()
+	defer traceStop()
+
 	if rebuild {
 		if sv == SrirachaVersion {
 			fmt.Println("Rebuilding...")

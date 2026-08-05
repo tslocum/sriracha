@@ -14,6 +14,7 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
+	"os"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -228,6 +229,9 @@ func (data *templateData) executeWithError(w io.Writer) error {
 		return err
 	}
 
+	if f, ok := w.(*os.File); ok {
+		preallocateFile(f, int64(data.buf.Len()))
+	}
 	io.Copy(w, data.buf)
 
 	data.buf.Reset()
