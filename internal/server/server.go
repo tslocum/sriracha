@@ -1648,6 +1648,9 @@ func (s *Server) handleBenchmark(n int) {
 	s.lock.Lock()
 	db := s.begin()
 
+	fmt.Println("Accurate benchmark results are only possible when the CPU governor has been configured to run at maximum speed and the Sriracha root directory is located in a tmpfs mount.")
+	fmt.Println("Benchmarking...")
+
 	durations := make([]time.Duration, n)
 
 	var traceT time.Time
@@ -2422,6 +2425,9 @@ func (s *Server) Run() error {
 	flag.StringVar(&debugAddress, "debug", "", "address to serve pprof debug information on (DANGEROUS! Debug information includes hashes, passwords and other sensitive data)")
 	flag.BoolVar(&printVersion, "version", false, "print version information and exit")
 	flag.Parse()
+	if benchmark > 0 {
+		rebuild = true
+	}
 	if enableTrace {
 		s.opt.trace = true
 	}
