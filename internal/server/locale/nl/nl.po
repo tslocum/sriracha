@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-08-03 15:27+0000\n"
+"PO-Revision-Date: 2026-08-05 18:36+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -335,6 +335,9 @@ msgstr "Datum"
 
 msgid "Date and time when the news item was published, or will be published."
 msgstr "De datum en tijd waarop het nieuwsitem gepubliceerd is of zal worden."
+
+msgid "Date/Time Format"
+msgstr "Datum- en tijdopmaak"
 
 msgid "Default"
 msgstr "Standaard"
@@ -991,6 +994,9 @@ msgstr ""
 msgid "Move"
 msgstr "Verplaatsen"
 
+msgid "Moved thread from %[1]s to %[2]s."
+msgstr "Het onderwerp is verplaatst van %[1]s naar %[2]s."
+
 msgid "Name"
 msgstr "Naam"
 
@@ -1299,11 +1305,14 @@ msgstr "Alle pagina's zijn herbouwd."
 msgid "Refresh paused. Click to resume."
 msgstr "Herladen is onderbroken — klik om te hervatten."
 
-msgid "Refreshing page every %d second. Click to pause."
-msgid_plural "Refreshing page every %d seconds. Click to pause."
-msgstr[0] "Het bericht wordt elke %d seconde herladen. Klik om te onderbreken."
-msgstr[1] ""
-"Het bericht wordt elke %d seconden herladen. Klik om te onderbreken."
+msgid "Refreshing page every minute. Click to pause."
+msgstr ""
+
+msgid "Refreshing page every %d minutes. Click to pause."
+msgstr ""
+
+msgid "Refreshing page every %d seconds. Click to pause."
+msgstr ""
 
 msgid "Regular expression to search for when a new post is created."
 msgstr ""
@@ -1325,6 +1334,9 @@ msgstr "Naam wĳzigen"
 
 msgid "Rename Device"
 msgstr "Apparaatnaam wĳzigen"
+
+msgid "Render format of timestamps. Include %s tags where applicable."
+msgstr "De weergave van tijdstempels. Voeg %s-tags toe waar nodig."
 
 msgid "Replies"
 msgstr "Antwoorden"
@@ -1517,9 +1529,6 @@ msgstr "Gesprek"
 
 msgid "Thread deleted."
 msgstr "Het onderwerp is verwijderd."
-
-msgid "Moved thread from %[1]s to %[2]s."
-msgstr "Het onderwerp is verplaatst van %[1]s naar %[2]s."
 
 msgid "Threads"
 msgstr "Onderwerpen"
@@ -1769,6 +1778,13 @@ msgstr "en"
 
 msgid "in an individual board"
 msgstr "een individueel subforum"
+
+#~ msgid "Refreshing page every %d second. Click to pause."
+#~ msgid_plural "Refreshing page every %d seconds. Click to pause."
+#~ msgstr[0] ""
+#~ "Het bericht wordt elke %d seconde herladen. Klik om te onderbreken."
+#~ msgstr[1] ""
+#~ "Het bericht wordt elke %d seconden herladen. Klik om te onderbreken."
 
 #~ msgid ""
 #~ "Maximum file size (in bytes) when creating a thread. Set to 0 to disable "

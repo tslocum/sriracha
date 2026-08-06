@@ -329,6 +329,9 @@ msgstr ""
 msgid "Date and time when the news item was published, or will be published."
 msgstr ""
 
+msgid "Date/Time Format"
+msgstr ""
+
 msgid "Default"
 msgstr ""
 
@@ -946,6 +949,9 @@ msgstr ""
 msgid "Move"
 msgstr ""
 
+msgid "Moved thread from %[1]s to %[2]s."
+msgstr ""
+
 msgid "Name"
 msgstr "Jack"
 
@@ -1234,10 +1240,14 @@ msgstr ""
 msgid "Refresh paused. Click to resume."
 msgstr ""
 
-msgid "Refreshing page every %d second. Click to pause."
-msgid_plural "Refreshing page every %d seconds. Click to pause."
-msgstr[0] ""
-msgstr[1] ""
+msgid "Refreshing page every minute. Click to pause."
+msgstr ""
+
+msgid "Refreshing page every %d minutes. Click to pause."
+msgstr ""
+
+msgid "Refreshing page every %d seconds. Click to pause."
+msgstr ""
 
 msgid "Regular expression to search for when a new post is created."
 msgstr ""
@@ -1256,6 +1266,9 @@ msgid "Rename"
 msgstr ""
 
 msgid "Rename Device"
+msgstr ""
+
+msgid "Render format of timestamps. Include %s tags where applicable."
 msgstr ""
 
 msgid "Replies"
@@ -1444,9 +1457,6 @@ msgid "Thread"
 msgstr ""
 
 msgid "Thread deleted."
-msgstr ""
-
-msgid "Moved thread from %[1]s to %[2]s."
 msgstr ""
 
 msgid "Threads"
