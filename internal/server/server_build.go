@@ -116,10 +116,6 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 		copy(s.indexCache[board.ID][page], postIDs)
 	}
 	if checkCache && len(s.indexCache[board.ID][page]) > 0 && slices.Equal(s.indexCache[board.ID][page], existingIDs(page)) {
-		if s.opt.trace {
-			traceD = time.Since(traceT)
-			traceLog(board.Path()+fileName+" (skipped)", traceD)
-		}
 		s.indexCacheLock.Unlock()
 		return
 	}
@@ -548,10 +544,6 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 	}
 
 	if s.statsCache != nil && reflect.DeepEqual(serverStats, s.statsCache) {
-		if s.opt.trace {
-			traceD = time.Since(traceT)
-			traceLog("/stats.json (skipped)", traceD)
-		}
 		return
 	}
 
