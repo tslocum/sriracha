@@ -13,6 +13,10 @@ a:hover {
 	background: inherit;
 }
 
+a[href="mailto:sage"] > * {
+	color: #0000EE;
+}
+
 hr {
 	color: #34345C;
 	background-color: #34345C;

@@ -1,6 +1,7 @@
 1.9.8:
 - Add date/time format option
 - Add option to disable recording author IP addresses
+- Highlight sage post names
 - Make omitted and truncated post messages clickable
 - Wait to load CAPTCHA image until post form is opened
 

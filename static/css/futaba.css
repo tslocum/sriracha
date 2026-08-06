@@ -11,6 +11,10 @@ a:hover {
 	color: #DD0000;
 }
 
+a[href="mailto:sage"] > * {
+	color: #0000EE;
+}
+
 hr {
 	color: #800000;
 	background-color: #800000;

@@ -11,6 +11,10 @@ a:hover {
 	color: #72c6ff;
 }
 
+a[href="mailto:sage"] > * {
+	color: #26a8ff;
+}
+
 label a {
 	text-decoration: none;
 }
