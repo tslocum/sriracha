@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-08-05 18:36+0000\n"
+"PO-Revision-Date: 2026-08-06 17:09+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -1306,13 +1306,13 @@ msgid "Refresh paused. Click to resume."
 msgstr "Herladen is onderbroken — klik om te hervatten."
 
 msgid "Refreshing page every minute. Click to pause."
-msgstr ""
+msgstr "De pagina wordt elke minuut herladen. Klik om te onderbreken."
 
 msgid "Refreshing page every %d minutes. Click to pause."
-msgstr ""
+msgstr "De pagina wordt elke %d minuten herladen. Klik om te onderbreken."
 
 msgid "Refreshing page every %d seconds. Click to pause."
-msgstr ""
+msgstr "De pagina wordt elke %d seconden herladen. Klik om te onderbreken."
 
 msgid "Regular expression to search for when a new post is created."
 msgstr ""
