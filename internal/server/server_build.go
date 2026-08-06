@@ -18,8 +18,8 @@ import (
 )
 
 const (
-	initialBufferSize = 256000  // 256 KB.
-	maxBufferSize     = 1000000 // 1 MB.
+	initialBufferSize = 500000  // 500 KB.
+	maxBufferSize     = 4000000 // 4 MB.
 )
 
 type buildType int
@@ -288,7 +288,7 @@ func (s *Server) _buildNewsIndex(info *buildInfo) {
 	subData := s.newTemplateData(db, info.buf)
 	buf := &bytes.Buffer{}
 	for _, n := range data.AllNews {
-		subData.Boards = db.AllBoards()
+		subData.Boards = data.Boards
 		subData.Template = "line"
 		subData.tpl, err = s.tplOriginal.Clone()
 		if err != nil {
@@ -353,7 +353,7 @@ func (s *Server) _buildNewsEntry(info *buildInfo) {
 
 	subData := s.newTemplateData(db, info.buf)
 	buf := &bytes.Buffer{}
-	subData.Boards = db.AllBoards()
+	subData.Boards = data.Boards
 	subData.Template = "line"
 	subData.tpl, err = s.tplOriginal.Clone()
 	if err != nil {
@@ -448,14 +448,13 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 		}
 		keep = append(keep, board)
 	}
-	allBoards = keep
-	if len(allBoards) == 0 {
+	if len(keep) == 0 {
 		return
 	}
 	data := s.newTemplateData(db, info.buf)
 	data.Template = "index"
 
-	data.Boards = allBoards
+	data.Boards = keep
 
 	if s.opt.News != NewsDisable {
 		allNews := db.AllNews(true)
@@ -463,7 +462,7 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 			n := allNews[0]
 			subData := s.newTemplateData(db, info.buf)
 			buf := &bytes.Buffer{}
-			subData.Boards = db.AllBoards()
+			subData.Boards = allBoards
 			subData.Template = "line"
 			var err error
 			subData.tpl, err = s.tplOriginal.Clone()

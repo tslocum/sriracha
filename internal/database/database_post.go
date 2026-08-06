@@ -163,7 +163,7 @@ func (db *DB) AllPostsInThread(moderated bool, postID int) []*Post {
 		dbErr(fmt.Errorf("failed to select all posts in thread %d: %s", postID, err))
 	}
 	var posts []*Post
-	var boardIDs []int
+	var postBoardID int
 	for rows.Next() {
 		p := &Post{}
 		boardID, err := scanPost(p, rows)
@@ -171,16 +171,18 @@ func (db *DB) AllPostsInThread(moderated bool, postID int) []*Post {
 			dbErr(err)
 		}
 		posts = append(posts, p)
-		boardIDs = append(boardIDs, boardID)
-	}
-	if rows.Err() != nil {
-		dbErr(fmt.Errorf("failed to select all pages: %w", rows.Err()))
-	}
-	for i := range posts {
-		posts[i].Board = db.BoardByID(boardIDs[i])
+		if postBoardID == 0 {
+			postBoardID = boardID
+		}
 	}
 	if rows.Err() != nil {
 		dbErr(fmt.Errorf("failed to select all posts in thread %d: %s", postID, rows.Err()))
+	}
+	if postBoardID != 0 {
+		board := db.BoardByID(postBoardID)
+		for i := range posts {
+			posts[i].Board = board
+		}
 	}
 	return posts
 }
@@ -207,7 +209,7 @@ func (db *DB) AllReplies(threadID int, limit int, moderated bool) []*Post {
 		dbErr(fmt.Errorf("failed to select all replies: %w", err))
 	}
 	var posts []*Post
-	var boardIDs []int
+	var postBoardID int
 	for rows.Next() {
 		p := &Post{}
 		boardID, err := scanPost(p, rows)
@@ -215,16 +217,21 @@ func (db *DB) AllReplies(threadID int, limit int, moderated bool) []*Post {
 			dbErr(err)
 		}
 		posts = append(posts, p)
-		boardIDs = append(boardIDs, boardID)
+		if postBoardID == 0 {
+			postBoardID = boardID
+		}
 	}
 	if rows.Err() != nil {
 		dbErr(fmt.Errorf("failed to select all replies: %w", rows.Err()))
 	}
-	for i := range posts {
-		posts[i].Board = db.BoardByID(boardIDs[i])
-	}
 	if sortDir == "DESC" {
 		slices.Reverse(posts)
+	}
+	if postBoardID != 0 {
+		board := db.BoardByID(postBoardID)
+		for i := range posts {
+			posts[i].Board = board
+		}
 	}
 	return posts
 }
@@ -287,6 +294,7 @@ func (db *DB) PostsByID(postIDs []int) []*Post {
 	}
 	var posts []*Post
 	var boardIDs []int
+	var postBoardID int
 	for rows.Next() {
 		p := &Post{}
 		boardID, err := scanPost(p, rows)
@@ -295,12 +303,24 @@ func (db *DB) PostsByID(postIDs []int) []*Post {
 		}
 		posts = append(posts, p)
 		boardIDs = append(boardIDs, boardID)
+		if postBoardID == 0 {
+			postBoardID = boardID
+		} else if postBoardID != boardID {
+			postBoardID = -1
+		}
 	}
 	if rows.Err() != nil {
 		dbErr(fmt.Errorf("failed to select posts: %w", rows.Err()))
 	}
-	for i, p := range posts {
-		p.Board = db.BoardByID(boardIDs[i])
+	if postBoardID > 0 {
+		board := db.BoardByID(postBoardID)
+		for i := range posts {
+			posts[i].Board = board
+		}
+	} else {
+		for i := range posts {
+			posts[i].Board = db.BoardByID(boardIDs[i])
+		}
 	}
 	return posts
 }
@@ -377,7 +397,7 @@ func (db *DB) PostsByBacklink(targetID int) []*Post {
 		dbErr(fmt.Errorf("failed to select posts: %w", err))
 	}
 	var posts []*Post
-	var boardIDs []int
+	var postBoardID int
 	for rows.Next() {
 		p := &Post{}
 		boardID, err := scanPost(p, rows)
@@ -385,13 +405,18 @@ func (db *DB) PostsByBacklink(targetID int) []*Post {
 			dbErr(fmt.Errorf("failed to scan post: %w", err))
 		}
 		posts = append(posts, p)
-		boardIDs = append(boardIDs, boardID)
+		if postBoardID == 0 {
+			postBoardID = boardID
+		}
 	}
 	if rows.Err() != nil {
 		dbErr(fmt.Errorf("failed to select posts: %w", rows.Err()))
 	}
-	for i, p := range posts {
-		p.Board = db.BoardByID(boardIDs[i])
+	if postBoardID != 0 {
+		board := db.BoardByID(postBoardID)
+		for i := range posts {
+			posts[i].Board = board
+		}
 	}
 	return posts
 }

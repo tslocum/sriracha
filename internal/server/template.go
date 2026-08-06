@@ -197,11 +197,6 @@ func (data *templateData) executeWithError(w io.Writer) error {
 		boardTemplate = true
 	}
 
-	responseWriter, ok := w.(http.ResponseWriter)
-	if ok {
-		responseWriter.Header().Set("Content-Type", "text/html")
-	}
-
 	var funcMap template.FuncMap
 	if strings.HasPrefix(data.Template, "manage_") && data.Account != nil && data.Account.Locale != "" {
 		funcMap = data.newTemplateFuncMap(data.db, data.Account.Locale)
@@ -231,6 +226,8 @@ func (data *templateData) executeWithError(w io.Writer) error {
 
 	if f, ok := w.(*os.File); ok {
 		allocateFile(f, int64(data.buf.Len()))
+	} else if responseWriter, ok := w.(http.ResponseWriter); ok {
+		responseWriter.Header().Set("Content-Type", "text/html")
 	}
 	io.Copy(w, data.buf)
 
