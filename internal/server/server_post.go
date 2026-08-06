@@ -353,7 +353,7 @@ func (s *Server) loadPostFile(db serverDB, r *http.Request, p *Post, fileHeader 
 		log.Fatal(err)
 	}
 
-	preallocateFile(file, fileHeader.Size)
+	allocateFile(file, fileHeader.Size)
 
 	formFile.Seek(0, 0)
 

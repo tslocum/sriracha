@@ -4,9 +4,11 @@ package server
 
 import (
 	"os"
-	"syscall"
+
+	"golang.org/x/sys/unix"
 )
 
-func preallocateFile(file *os.File, size int64) {
-	syscall.Fallocate(int(file.Fd()), 0, 0, size)
+func allocateFile(file *os.File, size int64) {
+	unix.Fallocate(int(file.Fd()), 0, 0, size)
+	file.Truncate(size)
 }

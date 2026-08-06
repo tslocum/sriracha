@@ -230,7 +230,7 @@ func (data *templateData) executeWithError(w io.Writer) error {
 	}
 
 	if f, ok := w.(*os.File); ok {
-		preallocateFile(f, int64(data.buf.Len()))
+		allocateFile(f, int64(data.buf.Len()))
 	}
 	io.Copy(w, data.buf)
 
