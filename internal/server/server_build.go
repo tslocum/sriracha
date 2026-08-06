@@ -33,6 +33,7 @@ const (
 	buildPage
 	buildSiteIndex
 	buildStatistics
+	queueBoardIndexes
 )
 
 const newsCount = 10
@@ -41,6 +42,7 @@ const newsCount = 10
 type buildInfo struct {
 	build      buildType
 	board      *Board
+	overboards []*Board
 	threads    [][2]int
 	post       int
 	news       []*News
@@ -129,9 +131,11 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	data.execute(indexFile)
 
 	indexFile.Close()
+
 	err = os.Rename(writePath, filePath)
 	if err != nil {
 		log.Fatal(err)
@@ -176,13 +180,16 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 		ids[i] = threadInfo[0]
 	}
 	posts := db.PostsByID(ids)
+	data.Threads = make([][]*Post, len(info.threads))
 	for i, threadInfo := range info.threads {
 		posts[i].Replies = threadInfo[1]
-		data.Threads = append(data.Threads, []*Post{posts[i]})
+		data.Threads[i] = append(data.Threads[i], posts[i])
 	}
+
 	data.execute(catalogFile)
 
 	catalogFile.Close()
+
 	err = os.Rename(writePath, filePath)
 	if err != nil {
 		log.Fatal(err)
@@ -191,6 +198,91 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 	if s.opt.trace {
 		traceD = time.Since(traceT)
 		traceLog(board.Path()+"catalog.html", traceD)
+	}
+}
+
+func (s *Server) _queueBoardIndexes(info *buildInfo) {
+	db := info.db
+	board := info.board
+	wg := info.wg
+
+	if board.Unique == 0 {
+		board.Unique = db.UniqueUserPosts(board)
+	}
+
+	var threads [][2]int
+	if board.ID > 0 {
+		threads = db.AllThreads(true, board)
+	} else {
+		threads = db.AllThreads(true, info.overboards...)
+	}
+
+	pages := pageCount(len(threads), board.Threads)
+	s.indexCacheLock.Lock()
+	allPostIDs := make([][]int, len(s.indexCache[board.ID]))
+	for i := range s.indexCache[board.ID] {
+		allPostIDs[i] = make([]int, len(s.indexCache[board.ID][i]))
+		copy(allPostIDs[i], s.indexCache[board.ID][i])
+	}
+	if len(s.indexCache[board.ID]) < pages {
+		s.indexCache[board.ID] = make([][]int, pages)
+		for i := range allPostIDs {
+			s.indexCache[board.ID][i] = make([]int, len(allPostIDs[i]))
+			copy(s.indexCache[board.ID][i], allPostIDs[i])
+		}
+	}
+	s.indexCacheLock.Unlock()
+	var buf *bytes.Buffer
+	for build := buildBoardIndex; build <= buildBoardCatalog; build++ {
+		info := &buildInfo{
+			build:   build,
+			board:   board,
+			threads: threads,
+			postIDs: allPostIDs,
+			wg:      wg,
+		}
+		wg.Add(1)
+		select {
+		case s.buildQueue <- info:
+		default:
+			if buf == nil {
+				buf = bytes.NewBuffer(make([]byte, initialBufferSize))
+			}
+			buf.Reset()
+			info.buf = buf
+			info.db = db
+			if build == buildBoardIndex {
+				s._buildBoardIndex(info)
+			} else {
+				s._buildBoardCatalog(info)
+			}
+			wg.Done()
+		}
+		if build == buildBoardIndex {
+			for page := 1; page < pages; page++ {
+				info := &buildInfo{
+					build:   build,
+					board:   board,
+					page:    page,
+					threads: threads,
+					postIDs: allPostIDs,
+					wg:      wg,
+				}
+				wg.Add(1)
+				select {
+				case s.buildQueue <- info:
+				default:
+					if buf == nil {
+						buf = bytes.NewBuffer(make([]byte, initialBufferSize))
+					}
+					buf.Reset()
+					info.buf = buf
+					info.db = db
+					s._buildBoardIndex(info)
+					wg.Done()
+				}
+			}
+		}
 	}
 }
 
@@ -225,9 +317,11 @@ func (s *Server) _buildBoardThread(info *buildInfo) {
 	data.Threads = [][]*Post{posts}
 	data.ReplyMode = postID
 	data.Template = "board_page"
+
 	data.execute(f)
 
 	f.Close()
+
 	err = os.Rename(writePath, filePath)
 	if err != nil {
 		log.Fatal(err)
@@ -307,6 +401,7 @@ func (s *Server) _buildNewsIndex(info *buildInfo) {
 	data.execute(indexFile)
 
 	indexFile.Close()
+
 	err = os.Rename(writePath, filePath)
 	if err != nil {
 		log.Fatal(err)
@@ -371,6 +466,7 @@ func (s *Server) _buildNewsEntry(info *buildInfo) {
 	data.execute(itemFile)
 
 	itemFile.Close()
+
 	err = os.Rename(writePath, filePath)
 	if err != nil {
 		log.Fatal(err)
@@ -411,9 +507,10 @@ func (s *Server) _buildPage(info *buildInfo) {
 		log.Printf("warning: skipped invalid page %s: %s", p.Path, err)
 		return
 	}
+
 	err = os.Rename(writePath, filePath)
 	if err != nil {
-		log.Printf("warning: skipped invalid page %s: %s", p.Path, err)
+		log.Fatal(err)
 	}
 
 	if s.opt.trace {
@@ -494,8 +591,11 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	data.execute(indexFile)
+
 	indexFile.Close()
+
 	err = os.Rename(writePath, filePath)
 	if err != nil {
 		log.Fatal(err)
@@ -607,6 +707,8 @@ func (s *Server) _build() {
 			s._buildSiteIndex(info)
 		case buildStatistics:
 			s._buildStatistics(info)
+		case queueBoardIndexes:
+			s._queueBoardIndexes(info)
 		}
 
 		db.Commit()
@@ -625,66 +727,22 @@ func (s *Server) rebuildBoard(db serverDB, wg *sync.WaitGroup, board *Board) {
 	s.indexCache[board.ID] = nil
 	s.indexCacheLock.Unlock()
 
-	threads := s.writeBoardIndexes(db, wg, board)
-	for _, threadInfo := range threads {
+	s.writeBoardIndexes(db, wg, board)
+	for _, threadInfo := range db.AllThreads(true, board) {
 		s.writeBoardThread(db, wg, board, threadInfo[0])
 	}
 }
 
 // writeBoardIndexes writes board index pages to disk.
-func (s *Server) writeBoardIndexes(db serverDB, wg *sync.WaitGroup, board *Board, overboards ...*Board) [][2]int {
-	if board.Unique == 0 {
-		board.Unique = db.UniqueUserPosts(board)
+func (s *Server) writeBoardIndexes(db serverDB, wg *sync.WaitGroup, board *Board, overboards ...*Board) {
+	info := &buildInfo{
+		build:      queueBoardIndexes,
+		board:      board,
+		overboards: overboards,
+		wg:         wg,
 	}
-
-	var threads [][2]int
-	if board.ID > 0 {
-		threads = db.AllThreads(true, board)
-	} else {
-		threads = db.AllThreads(true, overboards...)
-	}
-
-	pages := pageCount(len(threads), board.Threads)
-	s.indexCacheLock.Lock()
-	allPostIDs := make([][]int, len(s.indexCache[board.ID]))
-	for i := range s.indexCache[board.ID] {
-		allPostIDs[i] = make([]int, len(s.indexCache[board.ID][i]))
-		copy(allPostIDs[i], s.indexCache[board.ID][i])
-	}
-	if len(s.indexCache[board.ID]) < pages {
-		s.indexCache[board.ID] = make([][]int, pages)
-		for i := range allPostIDs {
-			s.indexCache[board.ID][i] = make([]int, len(allPostIDs[i]))
-			copy(s.indexCache[board.ID][i], allPostIDs[i])
-		}
-	}
-	s.indexCacheLock.Unlock()
-	for build := buildBoardIndex; build <= buildBoardCatalog; build++ {
-		info := &buildInfo{
-			build:   build,
-			board:   board,
-			threads: threads,
-			postIDs: allPostIDs,
-			wg:      wg,
-		}
-		wg.Add(1)
-		s.buildQueue <- info
-		if build == buildBoardIndex {
-			for page := 1; page < pages; page++ {
-				info := &buildInfo{
-					build:   build,
-					board:   board,
-					page:    page,
-					threads: threads,
-					postIDs: allPostIDs,
-					wg:      wg,
-				}
-				wg.Add(1)
-				s.buildQueue <- info
-			}
-		}
-	}
-	return threads
+	wg.Add(1)
+	s.buildQueue <- info
 }
 
 // writeBoardThread writes a thread res page to disk.

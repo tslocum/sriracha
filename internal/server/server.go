@@ -315,7 +315,6 @@ func NewServer() *Server {
 	httpClient := &http.Client{
 		Timeout: 15 * time.Second,
 	}
-	buildQueueSize := runtime.NumCPU() * 2
 	return &Server{
 		captchaCache:   make(map[string]string),
 		keywordCache:   make(map[int][]*cachedKeyword),
@@ -329,7 +328,7 @@ func NewServer() *Server {
 		indexCacheLock:        &sync.Mutex{},
 		lastSearch:            make(map[string]int64),
 		modQueueSize:          -1,
-		buildQueue:            make(chan *buildInfo, buildQueueSize),
+		buildQueue:            make(chan *buildInfo),
 		rebuildQueue:          make(chan *rebuildInfo),
 		httpClient:            httpClient,
 		connCount:             &atomic.Int32{},

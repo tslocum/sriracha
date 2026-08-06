@@ -212,7 +212,7 @@ func (data *templateData) executeWithError(w io.Writer) error {
 	if funcMap == nil {
 		funcMap = data.newTemplateFuncMap(data.db, "")
 	}
-
+	// Write to intermediate buffer to differentiate template execution errors from write errors.
 	data.buf.Reset()
 
 	tplName := data.Template + ".gohtml"
