@@ -1454,6 +1454,18 @@ For example, a 12-hour alternative of the default format would be `2006/01/02<wb
 
 As a super-administrator, you have unrestricted access.
 
+#### Rebuild static files
+
+Super-administrators may manually rebuild static files. Visit the Settings page,
+scroll to the end and click the Update button to rebuild all static files.
+
+Under normal circumstances, manually rebuilding static files is unnecessary.
+Static files are rebuilt automatically whenever Sriracha data is updated.
+
+If you find yourself consistently needing to manually rebuild static files,
+and you are not running Sriracha in development mode, please
+[report](https://codeberg.org/tslocum/sriracha/issues) the issue.
+
 #### Rebuild name blocks
 
 Each post has a `nameblock` field containing the poster's name, tripcode and
