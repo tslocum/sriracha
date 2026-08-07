@@ -1371,16 +1371,16 @@ range, use a wildcard (*) at the end of the range prefix:
 Mod mode is a tool staff members may use to moderate one or more posts.
 When browsing in mod mode, the following moderation links are displayed:
 
-`? V M S L D B D&B`
+**? V M S L D B D&B**
 
-- ?: Spoiler post (when a thumbnail is present)
-- V: View posts by author (when `identifiers` are enabed)
-- M: Move thread
-- S: Sticky thread
-- L: Lock thread
-- D: Delete post
-- B: Ban post author
-- D&B: Delete post and ban post author
+- **?** Spoiler post (when spoilers are enabled and a thumbnail is present)
+- **V** View posts by author (when identifiers are enabed)
+- **M** Move thread
+- **S** Sticky thread
+- **L** Lock thread
+- **D** Delete post
+- **B** Ban post author
+- **D&B** Delete post and ban post author
 
 A shortcut for accessing mod mode is available when logged in. View any index
 or thread page normally, scroll to the bottom of the page and click the delete
