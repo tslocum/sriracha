@@ -459,6 +459,29 @@ there are many rows in the database.
 Increase this limit from 64MB to 25% of available memory. This option will
 impact performance when PostgreSQL cleans up deleted or outdated table data.
 
+### Caching middleware
+
+Websites with high volumes of new posts may benefit from the use of caching
+middleware such as [Pgpool-II](https://pgpool.net/docs/latest/en/html/intro-whatis.html).
+
+However, before adding any caching middleware to your Sriracha server, it is
+important to understand how the database and static files are already cached.
+
+Sriracha is optimized to rely on the built-in caching functionality of PostgreSQL,
+as well as the built-in caching functionality of the underlying operating system.
+
+Database rows which are accessed often, and well as files which are accessed often,
+will be cached in-memory by PostgreSQL and the operating system.
+
+When more than one post is added within a ten second time frame, Sriracha will conserve
+system resources by [batching](#post-batching) static page updates together.
+
+Thus, the addition of caching middleware will add unecessary abstraction and
+latency for most websites, and will actually reduce performance.
+
+Always verify any expected performance improvements by running multiple benchmarks
+(via the `--benchmark` flag) before and after making any changes.
+
 ### Tracing
 
 To print performance metrics to the server console, start Sriracha with the `--trace` flag.
