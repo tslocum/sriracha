@@ -241,6 +241,7 @@ func (db *mockDB) PostByField(b *Board, field string, value any) *Post        { 
 func (db *mockDB) LastPostByIP(board *Board, ip string) *Post                 { return nil }
 func (db *mockDB) LastPostByBoard(board *Board) *Post                         { return nil }
 func (db *mockDB) SearchPosts(query string, board ...*Board) []int            { return nil }
+func (db *mockDB) HighlightPosts(query string, posts []*Post)                 {}
 func (db *mockDB) NumPosts(filterBoard *Board, since int64) int               { return 0 }
 func (db *mockDB) ReplyCount(threadID int) int {
 	var replies int

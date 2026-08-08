@@ -54,8 +54,9 @@ func (s *Server) serveSearch(db serverDB, w http.ResponseWriter, r *http.Request
 			out := &bytes.Buffer{}
 			subData := s.buildData(db, w, r)
 			subData.Template = "imgboard_post"
-			for _, id := range results {
-				post := db.PostByID(id)
+			posts := db.PostsByID(results)
+			db.HighlightPosts(query, posts)
+			for _, post := range posts {
 				if post == nil {
 					continue
 				}

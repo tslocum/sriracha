@@ -495,6 +495,37 @@ func (db *DB) SearchPosts(query string, board ...*Board) []int {
 	return postIDs
 }
 
+func (db *DB) HighlightPosts(query string, posts []*Post) {
+	if len(posts) == 0 {
+		return
+	}
+	var ids []byte
+	for i := range posts {
+		if i != 0 {
+			ids = append(ids, ',')
+		}
+		ids = append(ids, []byte(strconv.Itoa(posts[i].ID))...)
+	}
+	rows, err := db.conn.Query(context.Background(), "WITH q AS (SELECT websearch_to_tsquery($1) AS query) SELECT ts_headline(post.message, query, 'HighlightAll=true, StartSel=<b><u>, StopSel=</u></b>') FROM q, post JOIN unnest('{"+string(ids)+"}'::int[]) WITH ORDINALITY t(id, ord) USING (id) ORDER BY t.ord", query)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return
+		}
+		dbErr(fmt.Errorf("failed to select posts: %w", err))
+	}
+	var i int
+	for rows.Next() {
+		err := rows.Scan(&posts[i].Message)
+		if err != nil {
+			dbErr(fmt.Errorf("failed to scan post: %w", err))
+		}
+		i++
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select posts: %w", rows.Err()))
+	}
+}
+
 func (db *DB) NumPosts(filterBoard *Board, since int64) int {
 	var extraWhere string
 	if filterBoard != nil {
