@@ -37,7 +37,7 @@ and set a password.
 #### Native
 
 Download the [latest release](https://codeberg.org/tslocum/sriracha/releases) of
-Sriracha for your platform. Only Linux, FreeBSD and macOS are supported.
+Sriracha for your platform. Only Linux, FreeBSD, OpenBSD and macOS are supported.
 
 #### Docker
 
