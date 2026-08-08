@@ -431,6 +431,11 @@ Found {{len $threads}} threads.
 <hr>
 ```
 
+### Custom styles
+
+Use the [style builder](https://sriracha.rocket9labs.com/static/stylebuilder.html)
+to quickly prototype new Sriracha styles.
+
 ### Performance
 
 The best way to improve the performance of Sriracha is by adjusting the
