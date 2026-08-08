@@ -476,7 +476,7 @@ will be cached in-memory by PostgreSQL and the operating system.
 When more than one post is added within a ten second time frame, Sriracha will conserve
 system resources by [batching](#post-batching) static page updates together.
 
-Thus, the addition of caching middleware will add unecessary abstraction and
+Thus, the addition of caching middleware will add unnecessary abstraction and
 latency for most websites, and will actually reduce performance.
 
 Always verify any expected performance improvements by running multiple benchmarks
@@ -487,23 +487,25 @@ Always verify any expected performance improvements by running multiple benchmar
 To print performance metrics to the server console, start Sriracha with the `--trace` flag.
 Adding this flag will not significantly affect performance.
 
-Developers can also enable high precision tracing by setting the `SRIRACHA_TRACE` environment vaiable.
+Developers can also enable high precision tracing by setting the `SRIRACHA_TRACE` environment variable.
 High precision tracing severely degrades system performance and should only be used by developers.
 Run `go tool trace file.trace` after shutting down Sriracha to view recorded information.
 
 ### Locales
 
-The following `locale` configuration options are available:
+The following locales have partial or full translations:
 
-| Language | Locale |
-| --       | --     |
-| English  | `en`   |
-| Albanian | `sq`   |
-| Dutch    | `nl`   |
-| Finnish  | `fi`   |
-| Russian  | `ru`   |
+| Locale    | Description          |
+| --        | --                   |
+| `en`      | English              |
+| `sq`      | Albanian             |
+| `zh_Hans` | Chinese (Simplified) |
+| `nl`      | Dutch                |
+| `fi`      | Finnish              |
+| `ru`      | Russian              |
 
-If you are multilingual, please help [translate Sriracha](https://translate.codeberg.org/projects/sriracha/sriracha/).
+Sriracha relies on the assistance of volunteer translators. If you are multilingual,
+please [help translate Sriracha](https://translate.codeberg.org/projects/sriracha/sriracha/).
 
 ### Example configuration (config.yml)
 

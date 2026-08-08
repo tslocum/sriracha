@@ -26,9 +26,9 @@ Most features do not require JavaScript and will degrade gracefully when necessa
 - Extend with [plugins](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#plugins)
 - Send [email notifications](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#email-notifications)
 - Customize [HTML templates](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#custom-templates)
-- Translate into [additional languages](https://translate.codeberg.org/projects/sriracha/sriracha/)
 - Play SWF files with the included [ruffle emulator](https://ruffle.rs)
 - View Shift JIS text art with the included [submona web font](https://github.com/pera/submona-web-font)
+- Translate the entire site or individual boards into [any language](https://translate.codeberg.org/projects/sriracha/sriracha/)
 - [Deploy within minutes](https://codeberg.org/tslocum/sriracha/src/branch/main/QUICKSTART.md) using [Docker](https://hub.docker.com/r/tslocum/sriracha/tags) and [Docker Compose](https://codeberg.org/tslocum/sriracha/src/branch/main/docker-compose.yml)
 - Management panel
   - Configure which roles have access to management and moderation actions

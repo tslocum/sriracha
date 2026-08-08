@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-03-13 04:53+0000\n"
-"Last-Translator: tslocum <tslocum@noreply.codeberg.org>\n"
+"PO-Revision-Date: 2026-08-08 00:25+0000\n"
+"Last-Translator: vamah09 <vamah09@noreply.codeberg.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://"
 "translate.codeberg.org/projects/sriracha/sriracha/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -9,181 +9,181 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 2026.7.1\n"
 
 msgid "%d existing ban"
 msgid_plural "%d existing bans"
-msgstr[0] ""
+msgstr[0] "%d 已存在的封禁"
 
 msgid "%d new post"
 msgid_plural "%d new posts"
-msgstr[0] ""
+msgstr[0] "%d 新帖子"
 
 msgid "%d pending moderation request"
 msgid_plural "%d pending moderation requests"
-msgstr[0] ""
+msgstr[0] "%d 等待审核的请求"
 
 msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
-msgstr[0] ""
+msgstr[0] "%d 帖子被删除。点击回退查看。"
 
 msgid "%d previous ban"
 msgid_plural "%d previous bans"
-msgstr[0] ""
+msgstr[0] "%d 先前的封禁"
 
 msgid "%d report"
 msgid_plural "%d reports"
-msgstr[0] ""
+msgstr[0] "%d 报告"
 
 msgid "%s Devices"
-msgstr ""
+msgstr "%s 设备"
 
 msgid "%s connections."
-msgstr ""
+msgstr "%s 连接数。"
 
 msgid "%s imageboard and forum server"
-msgstr ""
+msgstr "%s 图像板和论坛服务器"
 
 msgid "%s memory usage."
-msgstr ""
+msgstr "%s 内存使用情况。"
 
 msgid "%s passcode"
-msgstr ""
+msgstr "%s 通行码"
 
 msgid "%s uptime."
-msgstr ""
+msgstr "%s 运行时间。"
 
 msgid "%s version."
-msgstr ""
+msgstr "%s 版本。"
 
 msgid "(Mentioned) %s"
-msgstr ""
+msgstr "(被提及) %s"
 
 msgid "1 Day"
-msgstr ""
+msgstr "1 天"
 
 msgid "1 Hour"
-msgstr ""
+msgstr "1 小时"
 
 msgid "1 Month"
-msgstr ""
+msgstr "1 个月"
 
 msgid "1 Week"
-msgstr ""
+msgstr "1 周"
 
 msgid "2 Days"
-msgstr ""
+msgstr "2 天"
 
 msgid "2 Weeks"
-msgstr ""
+msgstr "2 周"
 
 msgid "A file %s or larger is required."
-msgstr ""
+msgstr "需要一个 %s 或更大的文件。"
 
 msgid "A file is required."
-msgstr ""
+msgstr "需要一个文件。"
 
 msgid "Accounts"
-msgstr ""
+msgstr "账户"
 
 msgid "Action"
-msgstr ""
+msgstr "操作"
 
 msgid "Action taken when the keyword is detected."
-msgstr ""
+msgstr "检测到关键字时采取的操作。"
 
 msgid "Action taken when the threshold amount is exceeded."
-msgstr ""
+msgstr "对超出限额的行为进行处理。"
 
 msgid "Add"
-msgstr ""
+msgstr "添加"
 
 msgid "Add %s Device"
-msgstr ""
+msgstr "添加 %s 设备"
 
 msgid "Add Account"
-msgstr ""
+msgstr "添加账户"
 
 msgid "Add Ban"
-msgstr ""
+msgstr "添加封禁"
 
 msgid "Add Banner"
-msgstr ""
+msgstr "添加封禁人员"
 
 msgid "Add Board"
-msgstr ""
+msgstr "添加板块"
 
 msgid "Add Category"
-msgstr ""
+msgstr "添加类别"
 
 msgid "Add Keyword"
-msgstr ""
+msgstr "添加关键词"
 
 msgid "Add News"
-msgstr ""
+msgstr "添加新闻"
 
 msgid "Add Page"
-msgstr ""
+msgstr "添加页面"
 
 msgid "Add Threshold"
-msgstr ""
+msgstr "添加阈值"
 
 msgid "Add board to %s"
-msgstr ""
+msgstr "将板块添加到 %s"
 
 msgid "Add notice"
-msgstr ""
+msgstr "添加提示"
 
 msgid "Added"
-msgstr ""
+msgstr "已添加"
 
 msgid "Added %s device."
-msgstr ""
+msgstr "已添加 %s 设备。"
 
 msgid "Admin"
-msgstr ""
+msgstr "管理员账户"
 
 msgid "Administrator"
-msgstr ""
+msgstr "管理员"
 
 msgid "Administrators have full access except for managing accounts."
-msgstr ""
+msgstr "管理员拥有除管理帐户外的所有权限。"
 
 msgid "All"
-msgstr ""
+msgstr "所有"
 
 msgid "All board options will be duplicated except those below."
-msgstr ""
+msgstr "除了以下列出的选项外，面板所有选项都将被复制。"
 
 msgid "All new posts"
-msgstr ""
+msgstr "新发布的所有帖子"
 
 msgid "All posts"
-msgstr ""
+msgstr "所有帖子"
 
 msgid "Allow all"
-msgstr ""
+msgstr "同意所有内容"
 
 msgid "Allow moderators to post site news."
-msgstr ""
+msgstr "允许版主发布站点最新资讯。"
 
 msgid "Amount"
-msgstr ""
+msgstr "金额"
 
 msgid "An attachment is required."
-msgstr ""
+msgstr "需要一个附件。"
 
 msgid "Anywhere"
-msgstr ""
+msgstr "任何地方"
 
 msgid "Appearance"
-msgstr ""
+msgstr "外观"
 
 msgid "Appears in %s and search results for the site index."
-msgstr ""
+msgstr "显示 %s 和网站索引中的搜索结果。"
 
 msgid "Appears in page title and header."
-msgstr ""
+msgstr "显示在网页标题和顶部导航区。"
 
 msgid "Approve"
 msgstr ""
@@ -204,273 +204,277 @@ msgid "Auto Refresh"
 msgstr ""
 
 msgid "Available embed services. Visit board settings to enable usage."
-msgstr ""
+msgstr "可用的嵌入式服务。访问面板设置以启用。"
 
 msgid "Backlinks"
-msgstr ""
+msgstr "反向链接"
 
 msgid "Backup all files and databases before importing posts."
-msgstr ""
+msgstr "在导入帖子之前，请备份所有文件和数据库。"
 
 msgid "Ban"
-msgstr ""
+msgstr "封禁"
 
 msgid "Ban %d post"
 msgid_plural "Ban %d posts"
-msgstr[0] ""
+msgstr[0] "封禁 %d 帖子"
 
 msgid "Ban ID"
-msgstr ""
+msgstr "封禁 ID"
 
 msgid "Ban file"
-msgstr ""
+msgstr "封禁文件"
 
 msgid "Banned"
-msgstr ""
+msgstr "已封禁"
 
 msgid "Banned %d post"
 msgid_plural "Banned %d posts"
-msgstr[0] ""
+msgstr[0] "已封禁 %d 帖子"
 
 msgid "Banners"
-msgstr ""
+msgstr "横幅"
 
 msgid "Bans"
-msgstr ""
+msgstr "封禁列表"
 
 msgid "Board"
-msgstr ""
+msgstr "面板"
 
 msgid "Board description, which is used by search engines."
-msgstr ""
+msgstr "板块描述，用于搜索引擎抓取。"
 
 msgid "Board locked. No new posts may be created."
-msgstr ""
+msgstr "该版块已被锁定，禁止创建新帖子。"
 
 msgid "Board locked. You may only reply to threads."
-msgstr ""
+msgstr "该版块已锁定，你只能回复现有帖子，不能发布新主题。"
 
 msgid "Boards"
-msgstr ""
+msgstr "板块管理"
 
 msgid "Boards where the banner is displayed."
-msgstr ""
+msgstr "显示横幅的版块。"
 
 msgid "Boards where the keyword applies."
-msgstr ""
+msgstr "哪些版块会应用此关键词。"
 
 msgid "Capcode"
-msgstr ""
+msgstr "可爱标识"
 
 msgid "Catalog"
-msgstr ""
+msgstr "图墙"
 
 msgid "Catalog mode"
-msgstr ""
+msgstr "图墙模式"
 
 msgid "Categories"
-msgstr ""
+msgstr "分类管理"
 
 msgid "Change Locale"
-msgstr ""
+msgstr "变更语言"
 
 msgid "Change Password"
-msgstr ""
+msgstr "变更密码"
 
 msgid "Change Style"
-msgstr ""
+msgstr "变更风格"
 
 msgid "Choose where to import posts"
-msgstr ""
+msgstr "选择将帖子导入的地方"
 
 msgid "Click 'Delete'."
-msgstr ""
+msgstr "点击 'Delete'按钮。"
 
 msgid "Click a post ID next to 'No.' to reply quickly:"
-msgstr ""
+msgstr "点击‘No.’旁边的帖子编号即可快速回复："
 
 msgid "Click to refresh."
-msgstr ""
+msgstr "点击以刷新。"
 
 msgid "Configure"
-msgstr ""
+msgstr "配置"
 
 msgid "Confirm"
-msgstr ""
+msgstr "确认"
 
 msgid "Connections"
-msgstr ""
+msgstr "连接管理"
 
 msgid "Content"
-msgstr ""
+msgstr "内容"
 
 msgid "Create a new drawing."
-msgstr ""
+msgstr "创建一个新的草稿。"
 
 msgid "Current"
-msgstr ""
+msgstr "当前"
 
 msgid "Currently %d unique user post."
 msgid_plural "Currently %d unique user posts."
-msgstr[0] ""
+msgstr[0] "当前有 %d 条特殊用户的帖子。"
 
 msgid "Date"
-msgstr ""
+msgstr "日期"
 
 msgid "Date and time when the news item was published, or will be published."
-msgstr ""
+msgstr "资讯发布的日期和时间，或即将发布的时间。"
 
 msgid "Date/Time Format"
-msgstr ""
+msgstr "日期/时间格式"
 
 msgid "Default"
-msgstr ""
+msgstr "默认"
 
 msgid "Default Name"
-msgstr ""
+msgstr "默认的名字"
 
 msgid "Default oekaki canvas height."
-msgstr ""
+msgstr "涂鸦画布的默认高度。"
 
 msgid "Default oekaki canvas width."
-msgstr ""
+msgstr "涂鸦画布的默认宽度。"
 
 msgid ""
 "Default page style. Visitors may choose alternative styles in their browser "
 "settings."
-msgstr ""
+msgstr "默认页面样式。访问者可以在浏览器设置中选择其他样式。"
 
 msgid "Delay"
-msgstr ""
+msgstr "延迟"
 
 msgid ""
 "Delay (in seconds) visitors must wait before posting again. Set to 0 to "
 "disable."
-msgstr ""
+msgstr "延迟(以秒为单位)访问者在再次发帖前必须等待的时间。设置为0表示禁用。"
 
 msgid ""
 "Delay (in seconds) visitors must wait between searches. Only post subjects "
 "and messages are searchable. Set to 0 to disable searching."
 msgstr ""
+"延迟(以秒为单位)访问者在搜索之间必须等待的时间。只有帖子主题和帖子可以搜索。"
+"设置为0表示禁用搜索。"
 
 msgid "Delete"
-msgstr ""
+msgstr "删除"
 
 msgid "Delete %d post"
 msgid_plural "Delete %d posts"
-msgstr[0] ""
+msgstr[0] "删除 %d 帖子"
 
 msgid "Delete %s"
-msgstr ""
+msgstr "删除 %s"
 
 msgid "Delete & ban"
-msgstr ""
+msgstr "删除并封禁"
 
 msgid "Delete & ban %d post"
 msgid_plural "Delete & ban %d posts"
-msgstr[0] ""
+msgstr[0] "删除并封禁 %d 帖子"
 
 msgid "Delete & ban for 1 hour"
-msgstr ""
+msgstr "删除并封禁一个小时"
 
 msgid "Delete & ban for 1 day"
-msgstr ""
+msgstr "删除并封禁一天"
 
 msgid "Delete & ban for 2 days"
-msgstr ""
+msgstr "删除并封禁两天"
 
 msgid "Delete & ban for 1 week"
-msgstr ""
+msgstr "删除并封禁一周"
 
 msgid "Delete & ban for 2 weeks"
-msgstr ""
+msgstr "删除并封禁两周"
 
 msgid "Delete & ban for 1 month"
-msgstr ""
+msgstr "删除并封禁一个月"
 
 msgid "Delete & ban permanently"
-msgstr ""
+msgstr "永久删除和封禁"
 
 msgid "Delete Post"
-msgstr ""
+msgstr "删除帖子"
 
 msgid "Deleted %d post"
 msgid_plural "Deleted %d posts"
-msgstr[0] ""
+msgstr[0] "删除 %d 帖子"
 
 msgid "Deleted & banned %d post"
 msgid_plural "Deleted & banned %d posts"
-msgstr[0] ""
+msgstr[0] "已删除和已封禁 %d 帖子"
 
 msgid "Description"
-msgstr ""
+msgstr "描述"
 
 msgid "Deselect"
-msgstr ""
+msgstr "取消选择"
 
 msgid "Details"
-msgstr ""
+msgstr "详情"
 
 msgid "Detected banned file."
-msgstr ""
+msgstr "检测到禁止的文件。"
 
 msgid "Detected banned keyword."
-msgstr ""
+msgstr "检测到禁止的关键词。"
 
 msgid "Device"
-msgstr ""
+msgstr "设备"
 
 msgid "Dimensions"
-msgstr ""
+msgstr "尺寸"
 
 msgid "Dir"
-msgstr ""
+msgstr "目录"
 
 msgid "Directory"
-msgstr ""
+msgstr "目录"
 
 msgid ""
 "Directory where the board files are located. Leave blank to place the board "
 "at the server root."
-msgstr ""
+msgstr "存放面板文件的目录。留空表示将面板文件放置在服务器根目录。"
 
 msgid ""
 "Directory where the overboard files are located. Leave blank to disable. To "
 "write the overboard at the root directory, enter \"/\"."
 msgstr ""
+"指定全局看板（所有版块聚合页）的存储路径。留空则不生成该页面。若要置于根目录"
+"，请输入“/”。"
 
 msgid "Disable"
-msgstr ""
+msgstr "禁用"
 
 msgid "Disable All"
-msgstr ""
+msgstr "禁用全部"
 
 msgid "Disabled"
-msgstr ""
+msgstr "已禁用"
 
 msgid "Disallow visitor and staff posts"
-msgstr ""
+msgstr "禁止访客和成员发帖"
 
 msgid "Disallow visitor posts"
-msgstr ""
+msgstr "禁止访客发帖"
 
 msgid "Disallow visitor threads"
-msgstr ""
+msgstr "禁止访客发布主题"
 
 msgid "Displayed in site index."
-msgstr ""
+msgstr "显示在站点入口页面。"
 
 msgid "Do not import"
-msgstr ""
+msgstr "不导入"
 
 msgid "Do not share with staff"
-msgstr ""
+msgstr "不与成员分享"
 
 msgid "Documentation"
-msgstr ""
+msgstr "文档"
 
 msgid "Dry run complete."
-msgstr ""
+msgstr "试运行完成。"
 
 msgid "Duplicate"
 msgstr ""
