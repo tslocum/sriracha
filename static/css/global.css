@@ -51,6 +51,10 @@ img, audio, video {
 	max-width: 100%;
 }
 
+.postarea input[type=checkbox] {
+	vertical-align: middle;
+}
+
 .postblock {
 	vertical-align: top;
 	padding: 3px;
