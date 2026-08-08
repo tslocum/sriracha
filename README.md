@@ -5,24 +5,24 @@
 
 [**Browse the read-only demo**](https://sriracha.rocket9labs.com/img/)
 
-- Host imageboards and forums online or offline
-- Organize files via boards and threads
-- Organize notes via news entries
+Sriracha requires very little processing power and will typically use less than 250 MB of memory.
+
+Most features do not require JavaScript and will degrade gracefully when necessary.
 
 ## Features
 
-- Upload files matching MIME type whitelist
-- Embed external media (YouTube, Vimeo and SoundCloud)
+- Upload files matching [MIME type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types/Common_types) whitelist
+- [Embed](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#embed-services) external media (e.g. YouTube, Vimeo, SoundCloud)
+- Utilize all CPU cores to build static HTML pages
+- Search for posts by subject and message
+- Preview reference links when hovered
+- Fetch new posts automatically
 - Reference links `>>###`
-- CAPTCHA
 - Report posts
+- CAPTCHA
 - Overboard
 - Thread catalog
 - Oekaki (drawings)
-- Fetch new replies automatically
-- Preview reference links when hovered
-- Search for posts by subject and message
-- Utilize all CPU cores to build static pages
 - Extend with [plugins](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#plugins)
 - Send [email notifications](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#email-notifications)
 - Customize [HTML templates](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#custom-templates)
@@ -33,18 +33,14 @@
 - Management panel
   - Configure which roles have access to management and moderation actions
   - Ban offensive/abusive visitors across all boards
-  - Post using admin or mod capcode
   - Post using raw HTML
+  - Post using admin or mod capcode
   - Hide new posts until [approved](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#approving-posts)
   - Delete and/or ban [multiple posts](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#bulk-moderation)
   - Create custom HTML [pages](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#custom-pages)
   - Automatically moderate new posts using regular expressions and [thresholds](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#thresholds)
   - Specify which settings are configured individually or [globally](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#global-settings)
   - Secure your account with [two-factor authentication](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#two-factor-authentication)
-
-Most features do not require JavaScript and will degrade gracefully when necessary.
-
-Sriracha requires very little processing power and will typically use less than 250 MB of memory.
 
 Import posts from [TinyIB](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#import-posts-from-tinyib)
 or [vichan](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#import-posts-from-vichan).
@@ -56,6 +52,9 @@ Vote on which software to support next [here](https://codeberg.org/tslocum/srira
 
 See [MANUAL.md](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md)
 for info on how to install and use Sriracha.
+
+A [quick start](https://codeberg.org/tslocum/sriracha/src/branch/main/QUICKSTART.md)
+installation guide is also available.
 
 ## Translate
 
