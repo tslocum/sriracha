@@ -1,5 +1,6 @@
 1.9.9:
 - Highlight search results
+- Normalize text before detecting keywords
 
 1.9.8:
 - Add date/time format option

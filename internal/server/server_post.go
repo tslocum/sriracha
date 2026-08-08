@@ -25,12 +25,15 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"unicode"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/aquilax/tripcode"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/nfnt/resize"
+	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
 )
 
 var postUploadFileLock = &sync.Mutex{}
@@ -883,8 +886,9 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 			return
 		}
 
+		t := transform.Chain(norm.NFD, transform.RemoveFunc(isNonSpacingMark), norm.NFC)
 		for _, k := range s.keywordCache[post.Board.ID] {
-			if !k.p.MatchString(post.Name) && !k.p.MatchString(post.Email) && !k.p.MatchString(post.Subject) && !k.p.MatchString(post.Message) {
+			if !matchKeyword(t, k.p, post.Name, post.Email, post.Subject, post.Message) {
 				continue
 			}
 
@@ -1260,4 +1264,23 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 	redir := fmt.Sprintf("%sres/%d.html#%d", b.Path(), post.Thread(), post.ID)
 	data.Redirect(w, r, redir)
 	return
+}
+
+func isNonSpacingMark(r rune) bool {
+	return unicode.Is(unicode.Mn, r)
+}
+
+func matchKeyword(t transform.Transformer, r *regexp.Regexp, message ...string) bool {
+	var result string
+	var err error
+	for _, msg := range message {
+		result, _, err = transform.String(t, msg)
+		if err == nil {
+			msg = result
+		}
+		if r.MatchString(msg) {
+			return true
+		}
+	}
+	return false
 }

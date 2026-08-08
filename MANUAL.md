@@ -1431,6 +1431,11 @@ when detected, trigger automatic moderation.
 A built-in keyword tester is included. To test building a regular expression,
 use an expression testing website with the Go (or "Golang") format selected.
 
+Sriracha normalizes text before detecting keywords. This avoids the need to
+create multiple keywords for each possible accent character variation.
+
+Write keywords using only characters without accents.
+
 #### Global settings
 
 Some board, banner and keyword settings may be configured globally. Administrators
