@@ -7,7 +7,7 @@
                 <td class="catalogdate">{{.BumpLabel}}</td>
                 <td class="catalogthumb">
                     {{if ne .Thumb ""}}
-                        <a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}"><img src="{{$post.Board.Path}}thumb/{{.Thumb}}" alt="{{if .IsEmbed}}{{index .EmbedInfo 2}}{{else}}{{.File}}{{end}}" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
+                        <a href="{{if $.ModMode}}/sriracha/board/mod/{{$post.Board.ID}}/{{.ID}}{{else}}{{$post.Board.Path}}res/{{.ID}}.html{{end}}"><img loading="lazy" src="{{$post.Board.Path}}thumb/{{.Thumb}}" alt="{{if .IsEmbed}}{{index .EmbedInfo 2}}{{else}}{{.File}}{{end}}" id="thumbnail{{.ID}}" width="{{.ThumbWidth}}" height="{{.ThumbHeight}}"></a>
                     {{else}}
                         &mldr;
                     {{end}}
