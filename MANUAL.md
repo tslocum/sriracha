@@ -1489,17 +1489,17 @@ For example, a 12-hour alternative of the default format would be `2006/01/02<wb
 
 As a super-administrator, you have unrestricted access.
 
-#### Rebuild static files
+#### Rebuild static pages
 
-Super-administrators may manually rebuild static files. Visit the Settings page,
-scroll to the end and click the Update button to rebuild all static files.
+Super-administrators may manually rebuild static pages. Visit the Settings page,
+scroll to the end and click the Update button to rebuild all static pages.
 
-Under normal circumstances, manually rebuilding static files is unnecessary.
-Static files are rebuilt automatically whenever Sriracha data is updated.
+During normal operation, manually rebuilding static pages is unnecessary.
+Whenever Sriracha data is modified, static pages are automatically rebuilt.
 
-If you find yourself consistently needing to manually rebuild static files,
-and you are not running Sriracha in development mode, please
-[report](https://codeberg.org/tslocum/sriracha/issues) the issue.
+If you find yourself needing to manually rebuild static pages often, and you
+are not running Sriracha in development mode, please [report](https://codeberg.org/tslocum/sriracha/issues)
+the issue.
 
 #### Rebuild name blocks
 
