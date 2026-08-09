@@ -2631,6 +2631,10 @@ func (s *Server) Run() error {
 
 	// Export posts.
 	if exportPath != "" {
+		if !builtWithSQLite {
+			return errorMissingSQLite
+		}
+
 		db := s.begin()
 		defer db.Commit()
 
@@ -2650,6 +2654,10 @@ func (s *Server) Run() error {
 		importPath = os.Getenv("SRIRACHA_IMPORT")
 	}
 	if importPath != "" {
+		if !builtWithSQLite {
+			return errorMissingSQLite
+		}
+
 		s.config.ImportMode = true
 		err := s.importDatabase(importPath)
 		if err != nil {

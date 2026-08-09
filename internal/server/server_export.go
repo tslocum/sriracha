@@ -12,7 +12,6 @@ import (
 
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
-	_ "modernc.org/sqlite"
 )
 
 func (s *Server) _exportBoardPosts(db serverDB, b *Board, threads [][2]int) (*os.File, error) {
