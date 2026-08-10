@@ -10,6 +10,7 @@ import (
 	"reflect"
 	"slices"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"codeberg.org/tslocum/gotext"
@@ -52,6 +53,7 @@ type buildInfo struct {
 	postIDs    [][]int
 	buf        *bytes.Buffer
 	wg         *sync.WaitGroup
+	delta      *atomic.Uint32
 }
 
 func (s *Server) _buildBoardIndex(info *buildInfo) {
@@ -144,6 +146,7 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 	if s.opt.trace {
 		traceD = time.Since(traceT)
 		traceLog(board.Path()+fileName, traceD)
+		info.delta.Add(uint32(traceD.Milliseconds()))
 	}
 }
 
@@ -198,6 +201,7 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 	if s.opt.trace {
 		traceD = time.Since(traceT)
 		traceLog(board.Path()+"catalog.html", traceD)
+		info.delta.Add(uint32(traceD.Milliseconds()))
 	}
 }
 
@@ -240,6 +244,7 @@ func (s *Server) _queueBoardIndexes(info *buildInfo) {
 			threads: threads,
 			postIDs: allPostIDs,
 			wg:      wg,
+			delta:   info.delta,
 		}
 		wg.Add(1)
 		select {
@@ -267,6 +272,7 @@ func (s *Server) _queueBoardIndexes(info *buildInfo) {
 					threads: threads,
 					postIDs: allPostIDs,
 					wg:      wg,
+					delta:   info.delta,
 				}
 				wg.Add(1)
 				select {
@@ -330,6 +336,7 @@ func (s *Server) _buildBoardThread(info *buildInfo) {
 	if s.opt.trace {
 		traceD = time.Since(traceT)
 		traceLog(board.Path()+fmt.Sprintf("res/%d.html", postID), traceD)
+		info.delta.Add(uint32(traceD.Milliseconds()))
 	}
 }
 
@@ -410,6 +417,7 @@ func (s *Server) _buildNewsIndex(info *buildInfo) {
 	if s.opt.trace {
 		traceD = time.Since(traceT)
 		traceLog("/"+fileName, traceD)
+		info.delta.Add(uint32(traceD.Milliseconds()))
 	}
 }
 
@@ -475,6 +483,7 @@ func (s *Server) _buildNewsEntry(info *buildInfo) {
 	if s.opt.trace {
 		traceD = time.Since(traceT)
 		traceLog(fmt.Sprintf("/news-%d.html", n.ID), traceD)
+		info.delta.Add(uint32(traceD.Milliseconds()))
 	}
 }
 
@@ -516,6 +525,7 @@ func (s *Server) _buildPage(info *buildInfo) {
 	if s.opt.trace {
 		traceD = time.Since(traceT)
 		traceLog(fmt.Sprintf("/%s.html", p.Path), traceD)
+		info.delta.Add(uint32(traceD.Milliseconds()))
 	}
 }
 
@@ -604,6 +614,7 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 	if s.opt.trace {
 		traceD = time.Since(traceT)
 		traceLog("/"+fileName, traceD)
+		info.delta.Add(uint32(traceD.Milliseconds()))
 	}
 }
 
@@ -676,6 +687,7 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 	if s.opt.trace {
 		traceD = time.Since(traceT)
 		traceLog("/stats.json", traceD)
+		info.delta.Add(uint32(traceD.Milliseconds()))
 	}
 }
 
@@ -723,31 +735,32 @@ func (s *Server) _build() {
 }
 
 // rebuildBoard rebuilds all pages in a board.
-func (s *Server) rebuildBoard(db serverDB, wg *sync.WaitGroup, board *Board) {
+func (s *Server) rebuildBoard(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, board *Board) {
 	s.indexCacheLock.Lock()
 	s.indexCache[board.ID] = nil
 	s.indexCacheLock.Unlock()
 
-	s.writeBoardIndexes(db, wg, board)
+	s.writeBoardIndexes(db, wg, delta, board)
 	for _, threadInfo := range db.AllThreads(true, board) {
-		s.writeBoardThread(db, wg, board, threadInfo[0])
+		s.writeBoardThread(db, wg, delta, board, threadInfo[0])
 	}
 }
 
 // writeBoardIndexes writes board index pages to disk.
-func (s *Server) writeBoardIndexes(db serverDB, wg *sync.WaitGroup, board *Board, overboards ...*Board) {
+func (s *Server) writeBoardIndexes(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, board *Board, overboards ...*Board) {
 	info := &buildInfo{
 		build:      queueBoardIndexes,
 		board:      board,
 		overboards: overboards,
 		wg:         wg,
+		delta:      delta,
 	}
 	wg.Add(1)
 	s.buildQueue <- info
 }
 
 // writeBoardThread writes a thread res page to disk.
-func (s *Server) writeBoardThread(db serverDB, wg *sync.WaitGroup, board *Board, postID int) {
+func (s *Server) writeBoardThread(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, board *Board, postID int) {
 	if board.Unique == 0 {
 		board.Unique = db.UniqueUserPosts(board)
 	}
@@ -757,13 +770,14 @@ func (s *Server) writeBoardThread(db serverDB, wg *sync.WaitGroup, board *Board,
 		board: board,
 		post:  postID,
 		wg:    wg,
+		delta: delta,
 	}
 	wg.Add(1)
 	s.buildQueue <- info
 }
 
 // writeOverboard writes overboard pages to disk.
-func (s *Server) writeOverboard(db serverDB, wg *sync.WaitGroup, c *categoryInfo) {
+func (s *Server) writeOverboard(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, c *categoryInfo) {
 	var id int
 	if c != nil {
 		id = c.ID * -1
@@ -799,11 +813,11 @@ func (s *Server) writeOverboard(db serverDB, wg *sync.WaitGroup, c *categoryInfo
 	if c != nil {
 		boards = c.Boards
 	}
-	s.writeBoardIndexes(db, wg, board, boards...)
+	s.writeBoardIndexes(db, wg, delta, board, boards...)
 }
 
 // writeNewsEntry writes a news entry page to disk.
-func (s *Server) writeNewsEntry(db serverDB, wg *sync.WaitGroup, n *News) {
+func (s *Server) writeNewsEntry(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, n *News) {
 	if s.opt.News == NewsDisable {
 		return
 	}
@@ -813,12 +827,13 @@ func (s *Server) writeNewsEntry(db serverDB, wg *sync.WaitGroup, n *News) {
 		build: buildNewsEntry,
 		news:  []*News{n},
 		wg:    wg,
+		delta: delta,
 	}
 	s.buildQueue <- info
 }
 
 // writeNewsIndexes writes news index pages to disk.
-func (s *Server) writeNewsIndexes(db serverDB, wg *sync.WaitGroup) []*News {
+func (s *Server) writeNewsIndexes(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32) []*News {
 	if s.opt.News == NewsDisable {
 		return nil
 	}
@@ -832,6 +847,7 @@ func (s *Server) writeNewsIndexes(db serverDB, wg *sync.WaitGroup) []*News {
 			news:  allNews,
 			page:  page,
 			wg:    wg,
+			delta: delta,
 		}
 		s.buildQueue <- info
 	}
@@ -839,34 +855,35 @@ func (s *Server) writeNewsIndexes(db serverDB, wg *sync.WaitGroup) []*News {
 }
 
 // rebuildNewsEntry rebuilds a news entry.
-func (s *Server) rebuildNewsEntry(db serverDB, wg *sync.WaitGroup, n *News) {
-	s.writeNewsIndexes(db, wg)
-	s.writeNewsEntry(db, wg, n)
+func (s *Server) rebuildNewsEntry(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, n *News) {
+	s.writeNewsIndexes(db, wg, delta)
+	s.writeNewsEntry(db, wg, delta, n)
 }
 
 // rebuildNews rebuilds all news entries.
-func (s *Server) rebuildNews(db serverDB, wg *sync.WaitGroup) {
-	allNews := s.writeNewsIndexes(db, wg)
+func (s *Server) rebuildNews(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32) {
+	allNews := s.writeNewsIndexes(db, wg, delta)
 	for _, n := range allNews {
-		s.writeNewsEntry(db, wg, n)
+		s.writeNewsEntry(db, wg, delta, n)
 	}
 }
 
 // writePages writes custom pages to disk.
-func (s *Server) writePages(db serverDB, wg *sync.WaitGroup, pages []*Page) {
+func (s *Server) writePages(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, pages []*Page) {
 	wg.Add(len(pages))
 	for _, p := range pages {
 		info := &buildInfo{
 			build:      buildPage,
 			customPage: p,
 			wg:         wg,
+			delta:      delta,
 		}
 		s.buildQueue <- info
 	}
 }
 
 // writeSiteIndex writes the site index page to disk.
-func (s *Server) writeSiteIndex(wg *sync.WaitGroup) {
+func (s *Server) writeSiteIndex(wg *sync.WaitGroup, delta *atomic.Uint32) {
 	if s.opt.SiteIndex == IndexDisable {
 		return
 	}
@@ -875,11 +892,12 @@ func (s *Server) writeSiteIndex(wg *sync.WaitGroup) {
 	info := &buildInfo{
 		build: buildSiteIndex,
 		wg:    wg,
+		delta: delta,
 	}
 	s.buildQueue <- info
 }
 
-func (s *Server) writeStatistics(wg *sync.WaitGroup) {
+func (s *Server) writeStatistics(wg *sync.WaitGroup, delta *atomic.Uint32) {
 	if !s.opt.Statistics {
 		return
 	}
@@ -888,6 +906,7 @@ func (s *Server) writeStatistics(wg *sync.WaitGroup) {
 	info := &buildInfo{
 		build: buildStatistics,
 		wg:    wg,
+		delta: delta,
 	}
 	s.buildQueue <- info
 }

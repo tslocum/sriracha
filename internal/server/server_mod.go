@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -100,12 +101,13 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				return
 			}
 			wg := &sync.WaitGroup{}
+			delta := &atomic.Uint32{}
 			for _, post := range posts {
 				s.deletePost(db, post)
 				s.log(db, data.Account, post.Board, fmt.Sprintf("Deleted >>%d", post.ID), "")
 			}
 			db.SoftCommit()
-			s.rebuildThreads(db, wg, posts)
+			s.rebuildThreads(db, wg, delta, posts)
 			wg.Wait()
 			data.Message = "Deleted all posts by author."
 			return
@@ -247,8 +249,9 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			}
 			// Rebuild static files.
 			wg := &sync.WaitGroup{}
+			delta := &atomic.Uint32{}
 			db.SoftCommit()
-			s.rebuildThread(db, wg, post)
+			s.rebuildThread(db, wg, delta, post)
 			wg.Wait()
 			data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", destination.ID, post.Thread()))
 		} else {
@@ -287,8 +290,9 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		}
 		if rebuild {
 			wg := &sync.WaitGroup{}
+			delta := &atomic.Uint32{}
 			db.SoftCommit()
-			s.rebuildThread(db, wg, post)
+			s.rebuildThread(db, wg, delta, post)
 			wg.Wait()
 		}
 		data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", post.Board.ID, post.Thread()))
@@ -333,8 +337,9 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		}
 		if !skipRebuild {
 			wg := &sync.WaitGroup{}
+			delta := &atomic.Uint32{}
 			db.SoftCommit()
-			s.rebuildThread(db, wg, post)
+			s.rebuildThread(db, wg, delta, post)
 			wg.Wait()
 		}
 
@@ -404,8 +409,9 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		}
 
 		wg := &sync.WaitGroup{}
+		delta := &atomic.Uint32{}
 		db.SoftCommit()
-		s.rebuildThreads(db, wg, rebuild)
+		s.rebuildThreads(db, wg, delta, rebuild)
 		wg.Wait()
 
 		data.Template = "manage_info"

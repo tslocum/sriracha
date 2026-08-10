@@ -1501,9 +1501,9 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 }
 
 // writeOverboard writes overboard pages to disk.
-func (s *Server) writeOverboards(db serverDB, wg *sync.WaitGroup, boards []*Board) {
+func (s *Server) writeOverboards(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, boards []*Board) {
 	if s.opt.Overboard != "" {
-		s.writeOverboard(db, wg, nil)
+		s.writeOverboard(db, wg, delta, nil)
 	}
 	for _, c := range s.opt.Categories {
 		if c.Overboard == "" {
@@ -1524,7 +1524,7 @@ func (s *Server) writeOverboards(db serverDB, wg *sync.WaitGroup, boards []*Boar
 				continue
 			}
 		}
-		s.writeOverboard(db, wg, c)
+		s.writeOverboard(db, wg, delta, c)
 	}
 }
 
@@ -1567,16 +1567,16 @@ func (s *Server) writePage(db serverDB, data *templateData, p *Page, w io.Writer
 }
 
 // rebuildBoard rebuilds a thread res page and board index pages.
-func (s *Server) rebuildThread(db serverDB, wg *sync.WaitGroup, post *Post) {
-	s.writeBoardThread(db, wg, post.Board, post.Thread())
-	s.writeBoardIndexes(db, wg, post.Board)
-	s.writeOverboards(db, wg, []*Board{post.Board})
-	s.writeSiteIndex(wg)
-	s.writeStatistics(wg)
+func (s *Server) rebuildThread(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, post *Post) {
+	s.writeBoardThread(db, wg, delta, post.Board, post.Thread())
+	s.writeBoardIndexes(db, wg, delta, post.Board)
+	s.writeOverboards(db, wg, delta, []*Board{post.Board})
+	s.writeSiteIndex(wg, delta)
+	s.writeStatistics(wg, delta)
 	s.writeModQueue(db)
 }
 
-func (s *Server) rebuildThreads(db serverDB, wg *sync.WaitGroup, posts []*Post) {
+func (s *Server) rebuildThreads(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, posts []*Post) {
 	var boardIDs []int
 	var boards []*Board
 	var threadIDs []int
@@ -1592,14 +1592,14 @@ func (s *Server) rebuildThreads(db serverDB, wg *sync.WaitGroup, posts []*Post) 
 		}
 	}
 	for i, threadID := range threadIDs {
-		s.writeBoardThread(db, wg, threadBoards[i], threadID)
+		s.writeBoardThread(db, wg, delta, threadBoards[i], threadID)
 	}
 	for _, b := range boards {
-		s.writeBoardIndexes(db, wg, b)
+		s.writeBoardIndexes(db, wg, delta, b)
 	}
-	s.writeOverboards(db, wg, boards)
-	s.writeSiteIndex(wg)
-	s.writeStatistics(wg)
+	s.writeOverboards(db, wg, delta, boards)
+	s.writeSiteIndex(wg, delta)
+	s.writeStatistics(wg, delta)
 	s.writeModQueue(db)
 }
 
@@ -1648,24 +1648,30 @@ func (s *Server) rebuildAll(db serverDB) {
 	s.indexCacheLock.Unlock()
 
 	wg := &sync.WaitGroup{}
+	delta := &atomic.Uint32{}
 	allPages := db.AllPages()
 	if len(allPages) > 0 {
-		s.writePages(db, wg, allPages)
+		s.writePages(db, wg, delta, allPages)
 	}
-	s.rebuildNews(db, wg)
-	s.writeOverboards(db, wg, nil)
+	s.rebuildNews(db, wg, delta)
+	s.writeOverboards(db, wg, delta, nil)
 	for _, b := range db.AllBoards() {
-		s.rebuildBoard(db, wg, b)
+		s.rebuildBoard(db, wg, delta, b)
 	}
-	s.writeSiteIndex(wg)
-	s.writeStatistics(wg)
+	s.writeSiteIndex(wg, delta)
+	s.writeStatistics(wg, delta)
 	s.writeModQueue(db)
 	s.writeVisitorGuide(db)
 	wg.Wait()
 
 	if s.opt.trace {
 		traceD := time.Since(traceT)
-		traceLog("Total", traceD)
+		cpuTime := delta.Load()
+		traceDTime := uint32(traceD.Milliseconds())
+		if traceDTime < 1 {
+			traceDTime = 1
+		}
+		traceLog(fmt.Sprintf("Built all static pages  %d CPU  %.1fx Speedup", cpuTime, float64(cpuTime)/float64(traceDTime)), traceD)
 	}
 }
 
@@ -2063,7 +2069,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	for ban, pattern := range s.rangeBans {
 		if pattern.MatchString(ip) {
 			data := s.buildData(db, w, r)
-			data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (%s: %s_%d)", Get(nil, data.Account, "Ban ID"), ban.AppealID(), ban.ID))
+			data.ManageError(data.G("You are banned.") + " " + ban.Info() + fmt.Sprintf(" (%s: %s_%d)", Get(nil, data.Account, "Ban ID"), ban.AppealID(), ban.ID))
 			data.execute(w)
 			s.lock.Unlock()
 			return
@@ -2242,6 +2248,7 @@ func (s *Server) handleRebuild() {
 	var traceT time.Time
 	var traceD time.Duration
 	wg := &sync.WaitGroup{}
+	delta := &atomic.Uint32{}
 	for {
 		// Process queue.
 		info = <-s.rebuildQueue
@@ -2286,22 +2293,23 @@ func (s *Server) handleRebuild() {
 		if s.opt.trace {
 			traceT = time.Now()
 		}
+		delta.Store(0)
 		db := s.begin()
 		for _, info := range pending {
 			thread := info.post.Thread()
 			if !slices.Contains(threads, thread) {
-				s.writeBoardThread(db, wg, info.post.Board, thread)
+				s.writeBoardThread(db, wg, delta, info.post.Board, thread)
 				threads = append(threads, thread)
 			}
 			if !slices.Contains(boardIDs, info.post.Board.ID) {
-				s.writeBoardIndexes(db, wg, info.post.Board)
+				s.writeBoardIndexes(db, wg, delta, info.post.Board)
 				boards = append(boards, info.post.Board)
 				boardIDs = append(boardIDs, info.post.Board.ID)
 			}
 		}
-		s.writeOverboards(db, wg, boards)
-		s.writeSiteIndex(wg)
-		s.writeStatistics(wg)
+		s.writeOverboards(db, wg, delta, boards)
+		s.writeSiteIndex(wg, delta)
+		s.writeStatistics(wg, delta)
 		if s.opt.Notifications {
 			for _, info := range pending {
 				s.queueNotifications(db, info.post)
@@ -2316,6 +2324,12 @@ func (s *Server) handleRebuild() {
 			if len(threads) != 1 {
 				msg += "s"
 			}
+			cpuTime := delta.Load()
+			traceDTime := uint32(traceD.Milliseconds())
+			if traceDTime < 1 {
+				traceDTime = 1
+			}
+			msg += fmt.Sprintf("  %d CPU  %.1fx Speedup", cpuTime, float64(cpuTime)/float64(traceDTime))
 			traceLog(msg, traceD)
 		}
 

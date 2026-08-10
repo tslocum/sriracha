@@ -14,6 +14,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
@@ -581,7 +582,8 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 			return false
 		}
 		wg := &sync.WaitGroup{}
-		s.rebuildBoard(db, wg, b)
+		delta := &atomic.Uint32{}
+		s.rebuildBoard(db, wg, delta, b)
 		wg.Wait()
 		data.Info = fmt.Sprintf("Rebuilt %s", b.Path())
 	}
@@ -669,12 +671,13 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		s.refreshCategoryCache(db)
 		s.refreshKeywordCache(db)
 		wg := &sync.WaitGroup{}
+		delta := &atomic.Uint32{}
 		db.SoftCommit()
-		s.rebuildBoard(db, wg, bb)
+		s.rebuildBoard(db, wg, delta, bb)
 		for _, board := range updated {
-			s.rebuildBoard(db, wg, board)
+			s.rebuildBoard(db, wg, delta, board)
 		}
-		s.writeSiteIndex(wg)
+		s.writeSiteIndex(wg, delta)
 		wg.Wait()
 
 		changes := printChanges(*b, *bb)
@@ -749,8 +752,9 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		s.refreshCategoryCache(db)
 		s.refreshKeywordCache(db)
 		wg := &sync.WaitGroup{}
+		delta := &atomic.Uint32{}
 		db.SoftCommit()
-		s.writeSiteIndex(wg)
+		s.writeSiteIndex(wg, delta)
 		wg.Wait()
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted board #%d", b.ID), "")
@@ -877,12 +881,13 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 			s.refreshCategoryCache(db)
 			s.refreshKeywordCache(db)
 			wg := &sync.WaitGroup{}
+			delta := &atomic.Uint32{}
 			db.SoftCommit()
-			s.rebuildBoard(db, wg, data.Manage.Board)
+			s.rebuildBoard(db, wg, delta, data.Manage.Board)
 			for _, board := range updated {
-				s.rebuildBoard(db, wg, board)
+				s.rebuildBoard(db, wg, delta, board)
 			}
-			s.writeSiteIndex(wg)
+			s.writeSiteIndex(wg, delta)
 			wg.Wait()
 
 			changes := printChanges(oldBoard, *data.Manage.Board)
@@ -986,9 +991,10 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		s.refreshCategoryCache(db)
 		s.refreshKeywordCache(db)
 		wg := &sync.WaitGroup{}
+		delta := &atomic.Uint32{}
 		db.SoftCommit()
-		s.rebuildBoard(db, wg, b)
-		s.writeSiteIndex(wg)
+		s.rebuildBoard(db, wg, delta, b)
+		s.writeSiteIndex(wg, delta)
 		wg.Wait()
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Added >>/board/%d", b.ID), "")

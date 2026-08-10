@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -59,9 +60,10 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 		os.Remove(filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", news.ID)))
 
 		wg := &sync.WaitGroup{}
+		delta := &atomic.Uint32{}
 		db.SoftCommit()
-		s.writeNewsIndexes(db, wg)
-		s.writeSiteIndex(wg)
+		s.writeNewsIndexes(db, wg, delta)
+		s.writeSiteIndex(wg, delta)
 		wg.Wait()
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted news #%d", deleteNewsID), "")
@@ -100,14 +102,15 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 			changes := printChanges(oldNews, *data.Manage.News)
 
 			wg := &sync.WaitGroup{}
+			delta := &atomic.Uint32{}
 			db.SoftCommit()
 			if data.Manage.News.Timestamp == 0 || data.Manage.News.Timestamp > time.Now().Unix() {
 				os.Remove(filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", data.Manage.News.ID)))
-				s.writeNewsIndexes(db, wg)
+				s.writeNewsIndexes(db, wg, delta)
 			} else {
-				s.rebuildNewsEntry(db, wg, data.Manage.News)
+				s.rebuildNewsEntry(db, wg, delta, data.Manage.News)
 			}
-			s.writeSiteIndex(wg)
+			s.writeSiteIndex(wg, delta)
 			wg.Wait()
 
 			s.log(db, data.Account, nil, fmt.Sprintf("Updated >>/news/%d", data.Manage.News.ID), changes)
@@ -137,8 +140,9 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 		db.SoftCommit()
 		if n.Timestamp != 0 && n.Timestamp <= time.Now().Unix() {
 			wg := &sync.WaitGroup{}
-			s.rebuildNewsEntry(db, wg, n)
-			s.writeSiteIndex(wg)
+			delta := &atomic.Uint32{}
+			s.rebuildNewsEntry(db, wg, delta, n)
+			s.writeSiteIndex(wg, delta)
 			wg.Wait()
 		}
 

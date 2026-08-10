@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -37,6 +38,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 			ids = append(ids, id)
 		}
 		wg := &sync.WaitGroup{}
+		delta := &atomic.Uint32{}
 		for _, postID := range ids {
 			post := db.PostByID(postID)
 			if post == nil {
@@ -62,7 +64,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 			}
 			posts = append(posts, post)
 		}
-		s.rebuildThreads(db, wg, posts)
+		s.rebuildThreads(db, wg, delta, posts)
 		wg.Wait()
 
 		for _, postID := range ids {
@@ -96,9 +98,10 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		}
 		s.rebuildNameblocks(db)
 		wg := &sync.WaitGroup{}
+		delta := &atomic.Uint32{}
 		db.SoftCommit()
 		for _, b := range db.AllBoards() {
-			s.rebuildBoard(db, wg, b)
+			s.rebuildBoard(db, wg, delta, b)
 		}
 		wg.Wait()
 		data.Info = "Rebuilt nameblocks"

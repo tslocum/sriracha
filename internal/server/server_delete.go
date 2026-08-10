@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"sync"
+	"sync/atomic"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
@@ -105,13 +106,14 @@ func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request
 		s.deletePost(db, post)
 
 		wg := &sync.WaitGroup{}
+		delta := &atomic.Uint32{}
 		db.SoftCommit()
 		if post.Parent == 0 {
 			os.Remove(filepath.Join(s.config.Root, b.Dir, "res", fmt.Sprintf("%d.html", post.ID)))
 		} else {
-			s.writeBoardThread(db, wg, b, post.Thread())
+			s.writeBoardThread(db, wg, delta, b, post.Thread())
 		}
-		s.writeBoardIndexes(db, wg, b)
+		s.writeBoardIndexes(db, wg, delta, b)
 		wg.Wait()
 
 		data.Template = "board_info"
