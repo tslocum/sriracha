@@ -83,6 +83,27 @@ goreleaser --clean --snapshot
 
 Sriracha release archives will then be available in the `dist` directory.
 
+##### Unsupported platform
+
+Sriracha supports Linux and other Unix based platforms. You should use a
+supported platform to run Sriracha. If that is not possible, and Docker is
+available for your platform, you should use Docker to run Sriracha.
+
+If you want to run Sriracha on a platform not supported by Docker, try following
+the compilation instructions above first.
+
+If Sriracha fails to compile, try building Sriracha without import/export functionality:
+
+```
+go build -tags nosqlite ./cmd/sriracha/
+```
+
+**Note:** If you want to import or export posts later, you will need to perform
+the operation on a supported platform or in a Docker container instead.
+
+If you are still having trouble running Sriracha on an unsupported platform,
+please open an issue or create a thread on /help/ explaining the problem.
+
 ## Configure
 
 [Go to top](#sections)
