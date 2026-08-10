@@ -32,12 +32,12 @@
     <table class="manageform">
         <tr>
             <td class="postblock"><label for="dir">{{T "Username"}}</label></td>
-            <td><input type="text" name="username" value="{{if ne .Manage.Account nil}}{{.Manage.Account.Username}}{{end}}"></td>
+            <td><input type="text" name="username" value="{{if ne .Manage.Account nil}}{{.Manage.Account.Username}}{{end}}" autocomplete="off"></td>
             <td>{{T "Used to log in and audit actions."}}</td>
         </tr>
         <tr>
             <td class="postblock"><label for="name">{{T "Password"}}</label></td>
-            <td><input type="password" name="password"></td>
+            <td><input type="password" name="password" autocomplete="off"></td>
             <td>{{if eq .Manage.Account nil}}{{T "Required."}}{{else}}{{T "Leave blank to keep current password."}}{{end}}</td>
         </tr>
         <tr>

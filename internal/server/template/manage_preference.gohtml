@@ -7,15 +7,15 @@
             <form method="post" action="/sriracha/preference/2fa">
                 <input type="hidden" name="action" value="twofactor">
                 <tr><th colspan="2">{{T "Manage %s Devices" "2FA"}}</th></tr>
-                <tr><td class="postblock">{{T "Password"}}</td><td><input type="password" name="password"></td></tr>
+                <tr><td class="postblock">{{T "Password"}}</td><td><input type="password" name="password" autocomplete="off"></td></tr>
                 <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Manage %s" "2FA"}}"></td></tr>
             </form>
             <form method="post">
                 <input type="hidden" name="action" value="password">
                 <tr><th colspan="2"><br>{{T "Change Password"}}</th></tr>
-                <tr><td class="postblock">{{T "Current"}}</td><td><input type="password" name="old"></td></tr>
-                <tr><td class="postblock">{{T "New"}}</td><td><input type="password" name="new"></td></tr>
-                <tr><td class="postblock">{{T "New (confirm)"}}</td><td><input type="password" name="confirmation"></td></tr>
+                <tr><td class="postblock">{{T "Current"}}</td><td><input type="password" name="old" autocomplete="off"></td></tr>
+                <tr><td class="postblock">{{T "New"}}</td><td><input type="password" name="new" autocomplete="off"></td></tr>
+                <tr><td class="postblock">{{T "New (confirm)"}}</td><td><input type="password" name="confirmation" autocomplete="off"></td></tr>
                 <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Change Password"}}"></td></tr>
             </form>
         </table>
