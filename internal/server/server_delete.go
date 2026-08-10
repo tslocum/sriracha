@@ -18,9 +18,10 @@ func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request
 	boardDir := FormString(r, "board")
 	b := db.BoardByDir(boardDir)
 	if b == nil {
-		data.BoardError(w, Get(b, data.Account, "No board specified."))
+		data.BoardError(w, data.G("No board specified."))
 		return
 	}
+	data.Board = b
 
 	subscribe := FormString(r, "subscribe") != ""
 
@@ -46,7 +47,7 @@ func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request
 			}
 		}
 		if len(posts) == 0 {
-			data.BoardError(w, Get(b, data.Account, "Invalid post."))
+			data.BoardError(w, data.G("Invalid or deleted post."))
 			return
 		}
 		url := fmt.Sprintf("/sriracha/subscribe/post/%d", posts[0].ID)

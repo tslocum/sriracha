@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"codeberg.org/tslocum/gotext"
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
@@ -60,12 +61,12 @@ func (b *Ban) AppealID() string {
 func (b *Ban) Info() string {
 	var info string
 	if b.Expire == 0 {
-		info += "This ban is permanent."
+		info += gotext.Get("This ban is permanent.")
 	} else {
-		info += fmt.Sprintf("This ban will expire at %s.", FormatRawTimestamp(b.Expire))
+		info += gotext.Get("This ban will expire at %s.", FormatRawTimestamp(b.Expire))
 	}
 	if b.Reason != "" {
-		info += " Reason: " + b.Reason
+		info += " " + gotext.Get("Reason: %s", b.Reason)
 	}
 	return info
 }

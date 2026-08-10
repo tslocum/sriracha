@@ -2076,7 +2076,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	ban := db.BanByIP(ipHash)
 	if ban != nil {
 		data := s.buildData(db, w, r)
-		data.ManageError("You are banned. " + ban.Info() + fmt.Sprintf(" (%s: %s_%d)", Get(nil, data.Account, "Ban ID"), ban.AppealID(), ban.ID))
+		data.ManageError(data.G("You are banned.") + " " + ban.Info() + fmt.Sprintf(" (%s: %s_%d)", data.G("Ban ID"), ban.AppealID(), ban.ID))
 		data.execute(w)
 		s.lock.Unlock()
 		return
@@ -2085,7 +2085,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		post := db.PostByID(postID)
 		data := s.buildData(db, w, r)
 		if post == nil {
-			data.BoardError(w, "Invalid or deleted post.")
+			data.BoardError(w, data.G("Invalid or deleted post."))
 		} else {
 			data.Redirect(w, r, fmt.Sprintf("%sres/%d.html#%d", post.Board.Path(), post.Thread(), post.ID))
 		}
@@ -2104,7 +2104,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	var unlocked bool
 	if s.config.ImportMode && action != "" && action != "captcha" && action != "manage" {
 		data := s.buildData(db, w, r)
-		data.BoardError(w, "All boards are locked because Sriracha is running in import mode. Please try again later.")
+		data.BoardError(w, data.G("All boards are locked because Sriracha is running in import mode. Please try again later."))
 	} else {
 		switch action {
 		case "post":

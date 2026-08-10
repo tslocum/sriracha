@@ -155,6 +155,9 @@ msgstr ""
 msgid "All board options will be duplicated except those below."
 msgstr ""
 
+msgid "All boards are locked because Sriracha is running in import mode. Please try again later."
+msgstr ""
+
 msgid "All new posts"
 msgstr ""
 
@@ -706,7 +709,7 @@ msgstr ""
 msgid "Invalid email."
 msgstr ""
 
-msgid "Invalid post."
+msgid "Invalid or deleted post."
 msgstr ""
 
 msgid "Keyword"
@@ -1203,6 +1206,9 @@ msgstr ""
 msgid "Reason"
 msgstr ""
 
+msgid "Reason: %s"
+msgstr ""
+
 msgid "Rebuild"
 msgstr ""
 
@@ -1432,6 +1438,12 @@ msgstr ""
 msgid "That file has already been posted."
 msgstr ""
 
+msgid "This ban is permanent."
+msgstr ""
+
+msgid "This ban will expire at %s."
+msgstr ""
+
 msgid "This setting is purely cosmetic. To actually prevent access, configure your HTTPS server to require password authorization."
 msgstr ""
 
@@ -1640,6 +1652,9 @@ msgid "Write site index page, which contains the most recent news item, links to
 msgstr ""
 
 msgid "You already requested a confirmation link. You may request another confirmation link when 24 hours have passed."
+msgstr ""
+
+msgid "You are banned."
 msgstr ""
 
 msgid "Your email address is unconfirmed."

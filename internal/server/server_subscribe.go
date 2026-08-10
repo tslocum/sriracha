@@ -128,7 +128,7 @@ func (s *Server) serveSubscribe(db serverDB, w http.ResponseWriter, r *http.Requ
 		if postID > 0 {
 			post := db.PostByID(postID)
 			if post == nil {
-				data.BoardError(w, data.G("Invalid post."))
+				data.BoardError(w, data.G("Invalid or deleted post."))
 				return
 			}
 			data.Board = post.Board
