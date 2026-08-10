@@ -603,7 +603,7 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 
 	if s.opt.trace {
 		traceD = time.Since(traceT)
-		traceLog("/index.html", traceD)
+		traceLog("/"+fileName, traceD)
 	}
 }
 
@@ -644,6 +644,7 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 	}
 
 	if s.statsCache != nil && reflect.DeepEqual(serverStats, s.statsCache) {
+		log.Printf("CACHE %+v", s.statsCache)
 		return
 	}
 

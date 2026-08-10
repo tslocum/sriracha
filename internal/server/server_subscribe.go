@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"codeberg.org/tslocum/gotext"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
@@ -20,7 +19,7 @@ func (s *Server) serveSubscribe(db serverDB, w http.ResponseWriter, r *http.Requ
 	data := s.buildData(db, w, r)
 	data.Boards = db.AllBoards()
 	if !s.opt.Notifications {
-		data.BoardError(w, "Email notifications are disabled.")
+		data.BoardError(w, data.G("Email notifications are disabled."))
 		return
 	}
 	data.Template = "subscribe"
@@ -29,12 +28,12 @@ func (s *Server) serveSubscribe(db serverDB, w http.ResponseWriter, r *http.Requ
 	if key != "" {
 		email := r.URL.Query().Get("email")
 		if email == "" {
-			data.BoardError(w, "Invalid email.")
+			data.BoardError(w, data.G("Invalid email."))
 			return
 		}
 		expectedKey := md5Sum(s.hashData(md5Sum(email)))
 		if key != expectedKey {
-			data.BoardError(w, "Invalid access key.")
+			data.BoardError(w, data.G("Invalid access key."))
 			return
 		}
 		data.Extra = email
@@ -50,25 +49,25 @@ func (s *Server) serveSubscribe(db serverDB, w http.ResponseWriter, r *http.Requ
 		}
 		if !confirmed {
 			if len(subs) == 0 {
-				data.BoardError(w, "Your email address is unconfirmed. Subscribe to request a confirmation link.")
+				data.BoardError(w, data.G("Your email address is unconfirmed.")+" "+data.G("Subscribe to request a confirmation link."))
 				return
 			}
 			const errorMessage = "Click the confirmation link emailed to you."
 			confirmKey := r.URL.Query().Get("confirm")
 			if confirmKey == "" {
-				data.BoardError(w, "Your email address is unconfirmed. "+errorMessage)
+				data.BoardError(w, data.G("Your email address is unconfirmed.")+" "+data.G(errorMessage))
 				return
 			}
 			expectedConfirmKey := s.subscriptionConfirmKey(subs[0])
 			if confirmKey != expectedConfirmKey {
-				data.BoardError(w, "Invalid confirmation key. "+errorMessage)
+				data.BoardError(w, data.G("Invalid confirmation key.")+" "+data.G(errorMessage))
 				return
 			}
 			subs[0].Confirm = 0
 			subs[0].IP = ""
 			db.UpdateSubscription(subs[0])
 
-			data.Info = "Subscription confirmed."
+			data.Info = data.G("Subscription confirmed.")
 		}
 
 		if r.Method == http.MethodPost {
@@ -120,7 +119,7 @@ func (s *Server) serveSubscribe(db serverDB, w http.ResponseWriter, r *http.Requ
 	if boardID > 0 {
 		board := db.BoardByID(boardID)
 		if board == nil {
-			data.BoardError(w, "Invalid board.")
+			data.BoardError(w, data.G("Invalid board."))
 			return
 		}
 		data.Board = board
@@ -129,7 +128,7 @@ func (s *Server) serveSubscribe(db serverDB, w http.ResponseWriter, r *http.Requ
 		if postID > 0 {
 			post := db.PostByID(postID)
 			if post == nil {
-				data.BoardError(w, "Invalid post.")
+				data.BoardError(w, data.G("Invalid post."))
 				return
 			}
 			data.Board = post.Board
@@ -153,7 +152,7 @@ func (s *Server) serveSubscribe(db serverDB, w http.ResponseWriter, r *http.Requ
 		ipHash := s.hashIP(r)
 		ipSub := db.SubscriptionByIP(ipHash)
 		if ipSub != nil {
-			data.BoardError(w, confirmErrorMessage)
+			data.BoardError(w, data.G(confirmErrorMessage))
 			return
 		}
 
@@ -169,7 +168,7 @@ func (s *Server) serveSubscribe(db serverDB, w http.ResponseWriter, r *http.Requ
 		var confirmTime int64
 		if !confirmed {
 			if len(subs) != 0 {
-				data.BoardError(w, confirmErrorMessage)
+				data.BoardError(w, data.G(confirmErrorMessage))
 				return
 			}
 
@@ -184,7 +183,7 @@ func (s *Server) serveSubscribe(db serverDB, w http.ResponseWriter, r *http.Requ
 					}
 				}
 				if !matched {
-					data.BoardError(w, "Sorry, only the following email address domains are allowed: "+s.config.MailDomains)
+					data.BoardError(w, data.Get("Sorry, only the following email address domains are allowed: %s", s.config.MailDomains))
 					return
 				}
 			}
@@ -221,17 +220,17 @@ func (s *Server) serveSubscribe(db serverDB, w http.ResponseWriter, r *http.Requ
 			const errorMessage = "Failed to send confirmation link. Please try again later."
 			client, err := s.connectToMailServer()
 			if err != nil {
-				data.BoardError(w, errorMessage)
+				data.BoardError(w, data.G(errorMessage))
 				return
 			}
-			subject := gotext.Get("Subscribe to %s", target)
+			subject := data.Get("Subscribe to %s", target)
 			key := md5Sum(s.hashData(md5Sum(email)))
 			confirmKey := s.subscriptionConfirmKey(sub)
 			message := s.opt.SiteHome + "sriracha/subscribe/?email=" + email + "&key=" + key + "&confirm=" + confirmKey
 			err = s.sendMail(client, sub.Email, subject, message)
 			client.Close()
 			if err != nil {
-				data.BoardError(w, errorMessage)
+				data.BoardError(w, data.G(errorMessage))
 				return
 			}
 		}
@@ -254,9 +253,9 @@ func (s *Server) serveSubscribe(db serverDB, w http.ResponseWriter, r *http.Requ
 
 		data.Template = "board_info"
 		if !confirmed {
-			data.Info = "Please confirm your subscription by clicking the link emailed to you."
+			data.Info = data.G("Please confirm your subscription by clicking the link emailed to you.")
 		} else {
-			data.Info = fmt.Sprintf("Subscribed to %s", target)
+			data.Info = data.G("Subscription confirmed.")
 		}
 	}
 

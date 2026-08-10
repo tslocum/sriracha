@@ -13,7 +13,7 @@ require (
 	github.com/gabriel-vasile/mimetype v1.4.15
 	github.com/go-sql-driver/mysql v1.10.0
 	github.com/jackc/pgx/v5 v5.10.0
-	github.com/lrstanley/girc v1.1.1
+	github.com/lrstanley/girc v1.1.2
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/pquerna/otp v1.5.0
 	github.com/r3labs/diff/v3 v3.0.2
@@ -31,7 +31,7 @@ require (
 	filippo.io/edwards25519 v1.2.0 // indirect
 	github.com/andybalholm/cascadia v1.3.4 // indirect
 	github.com/boombuler/barcode v1.1.0 // indirect
-	github.com/dlclark/regexp2/v2 v2.5.2 // indirect
+	github.com/dlclark/regexp2/v2 v2.6.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
@@ -49,7 +49,7 @@ require (
 	golang.org/x/crypto v0.54.0 // indirect
 	golang.org/x/image v0.44.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect
-	modernc.org/libc v1.74.4 // indirect
+	modernc.org/libc v1.75.3 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
-	modernc.org/memory v1.11.0 // indirect
+	modernc.org/memory v1.12.0 // indirect
 )
