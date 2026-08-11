@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-03-13 04:53+0000\n"
-"Last-Translator: tslocum <tslocum@noreply.codeberg.org>\n"
+"PO-Revision-Date: 2026-08-10 19:05+0000\n"
+"Last-Translator: kron4eg <kron4eg@noreply.codeberg.org>\n"
 "Language-Team: Russian <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/ru/>\n"
 "Language: ru\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 2026.8.1\n"
 
 msgid "%d existing ban"
 msgid_plural "%d existing bans"
@@ -20,15 +20,15 @@ msgstr[2] ""
 
 msgid "%d new post"
 msgid_plural "%d new posts"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d новый пост"
+msgstr[1] "%d новых поста"
+msgstr[2] "%d новых постов"
 
 msgid "%d pending moderation request"
 msgid_plural "%d pending moderation requests"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d запрос на модерацию"
+msgstr[1] "%d запросов на модерацию"
+msgstr[2] "%d запросов на модерацию"
 
 msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
@@ -38,21 +38,21 @@ msgstr[2] "%d сообщений не показано. Нажмите Отве�
 
 msgid "%d previous ban"
 msgid_plural "%d previous bans"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d предудыщий бан"
+msgstr[1] "%d предыдущих банов"
+msgstr[2] "%d предыдущих банов"
 
 msgid "%d report"
 msgid_plural "%d reports"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d отчёт"
+msgstr[1] "%d отчёта"
+msgstr[2] "%d отчётов"
 
 msgid "%s Devices"
-msgstr ""
+msgstr "%s Устройств"
 
 msgid "%s connections."
-msgstr ""
+msgstr "%s связей."
 
 msgid "%s imageboard and forum server"
 msgstr ""
@@ -166,6 +166,11 @@ msgid "All"
 msgstr ""
 
 msgid "All board options will be duplicated except those below."
+msgstr ""
+
+msgid ""
+"All boards are locked because Sriracha is running in import mode. Please try "
+"again later."
 msgstr ""
 
 msgid "All new posts"
@@ -304,6 +309,9 @@ msgid "Click 'Delete'."
 msgstr ""
 
 msgid "Click a post ID next to 'No.' to reply quickly:"
+msgstr ""
+
+msgid "Click the confirmation link emailed to you."
 msgstr ""
 
 msgid "Click to refresh."
@@ -520,6 +528,9 @@ msgstr ""
 msgid "Email"
 msgstr "Email"
 
+msgid "Email notifications are disabled."
+msgstr ""
+
 msgid "Embed"
 msgstr "Встроить"
 
@@ -578,6 +589,9 @@ msgid "Failed to embed media."
 msgstr "Не удалось встроить медиа."
 
 msgid "Failed to refresh page. Retrying..."
+msgstr ""
+
+msgid "Failed to send confirmation link. Please try again later."
 msgstr ""
 
 msgid "File"
@@ -719,6 +733,21 @@ msgid "Info"
 msgstr ""
 
 msgid "Instance Limit"
+msgstr ""
+
+msgid "Invalid access key."
+msgstr ""
+
+msgid "Invalid board."
+msgstr ""
+
+msgid "Invalid confirmation key."
+msgstr ""
+
+msgid "Invalid email."
+msgstr ""
+
+msgid "Invalid or deleted post."
 msgstr ""
 
 msgid "Keyword"
@@ -1125,6 +1154,9 @@ msgstr ""
 msgid "Permanently ban uploaded file."
 msgstr ""
 
+msgid "Please confirm your subscription by clicking the link emailed to you."
+msgstr ""
+
 msgid "Please enter a name."
 msgstr ""
 
@@ -1237,6 +1269,9 @@ msgid "Ready to start dry run."
 msgstr ""
 
 msgid "Reason"
+msgstr ""
+
+msgid "Reason: %s"
 msgstr ""
 
 msgid "Rebuild"
@@ -1396,6 +1431,9 @@ msgstr ""
 msgid "Site News"
 msgstr ""
 
+msgid "Sorry, only the following email address domains are allowed: %s"
+msgstr ""
+
 msgid "Spoiler"
 msgstr ""
 
@@ -1435,6 +1473,12 @@ msgstr ""
 msgid "Subscribe to %s"
 msgstr ""
 
+msgid "Subscribe to request a confirmation link."
+msgstr ""
+
+msgid "Subscription confirmed."
+msgstr ""
+
 msgid "Super-administrator"
 msgstr ""
 
@@ -1460,6 +1504,12 @@ msgid "That embed has already been posted."
 msgstr ""
 
 msgid "That file has already been posted."
+msgstr ""
+
+msgid "This ban is permanent."
+msgstr ""
+
+msgid "This ban will expire at %s."
 msgstr ""
 
 msgid ""
@@ -1684,6 +1734,17 @@ msgstr ""
 msgid ""
 "Write site index page, which contains the most recent news item, links to "
 "boards and the most recent posts."
+msgstr ""
+
+msgid ""
+"You already requested a confirmation link. You may request another "
+"confirmation link when 24 hours have passed."
+msgstr ""
+
+msgid "You are banned."
+msgstr ""
+
+msgid "Your email address is unconfirmed."
 msgstr ""
 
 msgid "Your post will be shown once it has been approved."

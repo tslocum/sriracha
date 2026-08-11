@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-08-06 17:09+0000\n"
+"PO-Revision-Date: 2026-08-11 16:30+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.7.1\n"
+"X-Generator: Weblate 2026.8.1\n"
 
 msgid "%d existing ban"
 msgid_plural "%d existing bans"
@@ -163,6 +163,13 @@ msgstr "Alles"
 msgid "All board options will be duplicated except those below."
 msgstr "Alle subforumopties worden gekloond, behalve onderstaande."
 
+msgid ""
+"All boards are locked because Sriracha is running in import mode. Please try "
+"again later."
+msgstr ""
+"Alle fora zijn vergrendeld, omdat de importmodus actief is. Probeer het "
+"later opnieuw."
+
 msgid "All new posts"
 msgstr "Alle nieuwe berichten"
 
@@ -303,6 +310,9 @@ msgstr "Klik op verwijderen."
 
 msgid "Click a post ID next to 'No.' to reply quickly:"
 msgstr "Klik op een bericht-id naast het nummer om snel te antwoorden:"
+
+msgid "Click the confirmation link emailed to you."
+msgstr "Klik op de bevestigingslink in de toegestuurde e-mail."
 
 msgid "Click to refresh."
 msgstr "Klik om te herladen."
@@ -523,6 +533,9 @@ msgstr "De duur (in seconden) van recente gebeurtenissen."
 msgid "Email"
 msgstr "E-mailen"
 
+msgid "Email notifications are disabled."
+msgstr "E-mailmeldingen zijn uitgeschakeld."
+
 msgid "Embed"
 msgstr "Invoegen"
 
@@ -582,6 +595,10 @@ msgstr "De media kan niet worden ingevoegd."
 
 msgid "Failed to refresh page. Retrying..."
 msgstr "Het herladen is mislukt — bezig met opnieuw proberen…"
+
+msgid "Failed to send confirmation link. Please try again later."
+msgstr ""
+"De bevestigingslink kan niet worden verstuurd. Probeer het later opnieuw."
 
 msgid "File"
 msgstr "Bestand"
@@ -735,6 +752,21 @@ msgstr "Informatie"
 
 msgid "Instance Limit"
 msgstr "Instantielimiet"
+
+msgid "Invalid access key."
+msgstr "Ongeldige toegangssleutel."
+
+msgid "Invalid board."
+msgstr "Ongeldig forum."
+
+msgid "Invalid confirmation key."
+msgstr "Ongeldinge bevestigingssleutel."
+
+msgid "Invalid email."
+msgstr "Ongeldig e-mailadres."
+
+msgid "Invalid or deleted post."
+msgstr "Ongeldig of verwijderd bericht."
 
 msgid "Keyword"
 msgstr "Trefwoord"
@@ -1173,6 +1205,10 @@ msgstr "Locatie"
 msgid "Permanently ban uploaded file."
 msgstr "Verban geüploade bestanden."
 
+msgid "Please confirm your subscription by clicking the link emailed to you."
+msgstr ""
+"Bevestig je abonnement door op de per e-mail toegestuurde link te klikken."
+
 msgid "Please enter a name."
 msgstr "Voer een naam in."
 
@@ -1289,6 +1325,9 @@ msgstr "Het proefdraaien kan beginnen."
 
 msgid "Reason"
 msgstr "Reden"
+
+msgid "Reason: %s"
+msgstr "Reden: %s"
 
 msgid "Rebuild"
 msgstr "Herbouwen"
@@ -1451,6 +1490,9 @@ msgstr "Sitenaam"
 msgid "Site News"
 msgstr "Sitenieuws"
 
+msgid "Sorry, only the following email address domains are allowed: %s"
+msgstr "Alleen de volgende e-mailadresdomeinnamen zijn toegestaan: %s"
+
 msgid "Spoiler"
 msgstr "Leeswaarschuwing"
 
@@ -1490,6 +1532,12 @@ msgstr "Abonneren"
 msgid "Subscribe to %s"
 msgstr "Abonneren op %s"
 
+msgid "Subscribe to request a confirmation link."
+msgstr "Abonneer je om een bevestigingslink aan te vragen."
+
+msgid "Subscription confirmed."
+msgstr "Abonnement bevestigd."
+
 msgid "Super-administrator"
 msgstr "Superbeheerder"
 
@@ -1516,6 +1564,12 @@ msgstr "Deze bijlage is al geplaatst."
 
 msgid "That file has already been posted."
 msgstr "Dit bestand is al geplaatst."
+
+msgid "This ban is permanent."
+msgstr "Deze verbanning is permanent."
+
+msgid "This ban will expire at %s."
+msgstr "Deze verbanning vervalt op %s."
 
 msgid ""
 "This setting is purely cosmetic. To actually prevent access, configure your "
@@ -1766,6 +1820,19 @@ msgid ""
 msgstr ""
 "Schrijf een inleidende tekst voor de overzichtspagina, met daarin het "
 "recentste nieuws, de recentste berichten en links naar subfora."
+
+msgid ""
+"You already requested a confirmation link. You may request another "
+"confirmation link when 24 hours have passed."
+msgstr ""
+"Je hebt al een bevestigingslink aangevraagd — na 24 uur kun je een nieuwe "
+"aanvragen."
+
+msgid "You are banned."
+msgstr "Je bent verbannen."
+
+msgid "Your email address is unconfirmed."
+msgstr "Je e-mailadres is niet bevestigd."
 
 msgid "Your post will be shown once it has been approved."
 msgstr "Je bericht wordt na goedkeuring getoond."

@@ -155,6 +155,11 @@ msgstr "所有"
 msgid "All board options will be duplicated except those below."
 msgstr "除了以下列出的选项外，面板所有选项都将被复制。"
 
+msgid ""
+"All boards are locked because Sriracha is running in import mode. Please try "
+"again later."
+msgstr ""
+
 msgid "All new posts"
 msgstr "新发布的所有帖子"
 
@@ -288,6 +293,9 @@ msgstr "点击 'Delete'按钮。"
 
 msgid "Click a post ID next to 'No.' to reply quickly:"
 msgstr "点击‘No.’旁边的帖子编号即可快速回复："
+
+msgid "Click the confirmation link emailed to you."
+msgstr ""
 
 msgid "Click to refresh."
 msgstr "点击以刷新。"
@@ -440,8 +448,8 @@ msgid ""
 "Directory where the overboard files are located. Leave blank to disable. To "
 "write the overboard at the root directory, enter \"/\"."
 msgstr ""
-"指定全局看板（所有版块聚合页）的存储路径。留空则不生成该页面。若要置于根目录"
-"，请输入“/”。"
+"指定全局看板（所有版块聚合页）的存储路径。留空则不生成该页面。若要置于根目"
+"录，请输入“/”。"
 
 msgid "Disable"
 msgstr "禁用"
@@ -495,6 +503,9 @@ msgid "Duration (in seconds) of recent events to match against."
 msgstr ""
 
 msgid "Email"
+msgstr ""
+
+msgid "Email notifications are disabled."
 msgstr ""
 
 msgid "Embed"
@@ -555,6 +566,9 @@ msgid "Failed to embed media."
 msgstr ""
 
 msgid "Failed to refresh page. Retrying..."
+msgstr ""
+
+msgid "Failed to send confirmation link. Please try again later."
 msgstr ""
 
 msgid "File"
@@ -696,6 +710,21 @@ msgid "Info"
 msgstr ""
 
 msgid "Instance Limit"
+msgstr ""
+
+msgid "Invalid access key."
+msgstr ""
+
+msgid "Invalid board."
+msgstr ""
+
+msgid "Invalid confirmation key."
+msgstr ""
+
+msgid "Invalid email."
+msgstr ""
+
+msgid "Invalid or deleted post."
 msgstr ""
 
 msgid "Keyword"
@@ -1098,6 +1127,9 @@ msgstr ""
 msgid "Permanently ban uploaded file."
 msgstr ""
 
+msgid "Please confirm your subscription by clicking the link emailed to you."
+msgstr ""
+
 msgid "Please enter a name."
 msgstr ""
 
@@ -1210,6 +1242,9 @@ msgid "Ready to start dry run."
 msgstr ""
 
 msgid "Reason"
+msgstr ""
+
+msgid "Reason: %s"
 msgstr ""
 
 msgid "Rebuild"
@@ -1369,6 +1404,9 @@ msgstr ""
 msgid "Site News"
 msgstr ""
 
+msgid "Sorry, only the following email address domains are allowed: %s"
+msgstr ""
+
 msgid "Spoiler"
 msgstr ""
 
@@ -1408,6 +1446,12 @@ msgstr ""
 msgid "Subscribe to %s"
 msgstr ""
 
+msgid "Subscribe to request a confirmation link."
+msgstr ""
+
+msgid "Subscription confirmed."
+msgstr ""
+
 msgid "Super-administrator"
 msgstr ""
 
@@ -1433,6 +1477,12 @@ msgid "That embed has already been posted."
 msgstr ""
 
 msgid "That file has already been posted."
+msgstr ""
+
+msgid "This ban is permanent."
+msgstr ""
+
+msgid "This ban will expire at %s."
 msgstr ""
 
 msgid ""
@@ -1657,6 +1707,17 @@ msgstr ""
 msgid ""
 "Write site index page, which contains the most recent news item, links to "
 "boards and the most recent posts."
+msgstr ""
+
+msgid ""
+"You already requested a confirmation link. You may request another "
+"confirmation link when 24 hours have passed."
+msgstr ""
+
+msgid "You are banned."
+msgstr ""
+
+msgid "Your email address is unconfirmed."
 msgstr ""
 
 msgid "Your post will be shown once it has been approved."
