@@ -739,8 +739,11 @@ func (s *Server) loadServerConfig() error {
 	s.opt.SiteDescription = db.GetString("sitedescription")
 
 	siteHome := db.GetString("sitehome")
-	if siteHome == "" {
+	switch siteHome {
+	case "":
 		siteHome = defaultServerSiteHome
+	case "index.html/":
+		siteHome = "/"
 	}
 	s.opt.SiteHome = siteHome
 

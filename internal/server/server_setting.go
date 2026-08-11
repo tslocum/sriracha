@@ -205,6 +205,9 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 			if !strings.HasSuffix(siteHome, "/") {
 				siteHome += "/"
 			}
+			if siteHome == "index.html/" {
+				siteHome = "/"
+			}
 			db.SaveString("sitehome", siteHome)
 			s.opt.SiteHome = siteHome
 		}
