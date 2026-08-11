@@ -9,6 +9,24 @@ Sriracha requires very little processing power and will typically use less than 
 
 Most features do not require JavaScript and will degrade gracefully when necessary.
 
+## Why Sriracha?
+
+- **Privacy** - Sriracha never stores plain text IP addresses in the database. Only salted [secure hashes](https://en.wikipedia.org/wiki/Secure_Hash_Algorithms)
+  of IP addresses are stored in the database. Sriracha release archives include
+  all of the files needed to run a website. Unless a webmaster has added their own
+  external resources, visitors will download pages and resources from one server.
+- **Security** - Sriracha accounts may be secured with two-factor authentication devices.
+  When a 2FA device has been added, staff must enter a passcode (TOTP) in addition
+  to their username and password.
+- **Efficiency** - Sriracha utilizes every CPU core to build static pages. The work of building
+  each page is spread out across each CPU core. For example, a system with 16
+  CPU cores will build pages about 15-16 times faster than a single core system.
+- **Cacheability** - Sriracha writes static HTML pages whenever data is modified. Visitors who
+  browse the website without adding a post will only be served cacheable static files.
+  These files may be cached on the server and on each client.
+- **Extensibility** - Sriracha supports customizing the template files used to generate HTML pages.
+  Spport for creating and loading custom plugins enables new functionality for visitors and staff.
+
 ## Features
 
 - Upload files matching [MIME type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types/Common_types) whitelist

@@ -655,7 +655,6 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 	}
 
 	if s.statsCache != nil && reflect.DeepEqual(serverStats, s.statsCache) {
-		log.Printf("CACHE %+v", s.statsCache)
 		return
 	}
 
