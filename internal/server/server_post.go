@@ -1248,7 +1248,6 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		db.AddPostBacklinks(post)
 	}
 
-	s.rebuildLock.Lock()
 	db.Commit()
 
 	wg := &sync.WaitGroup{}
@@ -1258,7 +1257,6 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 	unlocked = true
 
 	s.rebuildQueue <- &rebuildInfo{post: post, wg: wg}
-	s.rebuildLock.Unlock()
 	wg.Wait()
 
 	redir := fmt.Sprintf("%sres/%d.html#%d", b.Path(), post.Thread(), post.ID)

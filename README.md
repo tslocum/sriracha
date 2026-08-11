@@ -25,7 +25,7 @@ Most features do not require JavaScript and will degrade gracefully when necessa
   browse the website without adding a post will only be served cacheable static files.
   These files may be cached on the server and on each client.
 - **Extensibility** - Sriracha supports customizing the template files used to generate HTML pages.
-  Spport for creating and loading custom plugins enables new functionality for visitors and staff.
+  Support for creating and loading custom plugins enables new functionality for visitors and staff.
 
 ## Features
 

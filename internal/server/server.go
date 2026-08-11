@@ -289,7 +289,6 @@ type Server struct {
 
 	rebuildQueue     chan *rebuildInfo
 	rebuildWaitGroup sync.WaitGroup
-	rebuildLock      sync.Mutex
 
 	httpClient *http.Client
 
@@ -2895,10 +2894,37 @@ func (s *Server) Run() error {
 
 	// Shut down gracefully.
 	if err == http.ErrServerClosed {
-		// Wait until all web requests have been processed.
+		// Wait for existing requests to finish processing.
+		timer := time.NewTimer(30 * time.Second)
+		ticker := time.NewTicker(500 * time.Millisecond)
+		for {
+			if s.connCount.Load() == 0 {
+				break
+			}
+
+			var timeout bool
+			select {
+			case <-ticker.C:
+			case <-timer.C:
+				timeout = true
+			}
+			if timeout {
+				break
+			}
+		}
+
+		// Flush rebuild queue.
+		s.rebuildQueue <- nil
 		s.rebuildWaitGroup.Wait()
-		// Wait until all notifications have been sent.
-		s.notificationsWaitGroup.Wait()
+
+		// Flush notification queue.
+		if s.opt.Notifications {
+			s.shutdownNotifications <- struct{}{}
+			s.notificationsWaitGroup.Wait()
+		}
+
+		// Lock before exiting.
+		s.lock.Lock()
 		return nil
 	}
 	return err
@@ -2990,27 +3016,17 @@ func (s *Server) Stop() {
 		fmt.Println("Shutting down...")
 	}
 
-	// Stop serving new web requests.
-	if s.httpsServer != nil {
-		s.httpsServer.Shutdown(context.Background())
-	} else if s.httpServer != nil {
-		s.httpServer.Shutdown(context.Background())
-	}
-
-	// Wait until existing web requests finish processing.
-	s.lock.Lock()
-	s.rebuildLock.Lock()
-	s.rebuildQueue <- nil
-	s.rebuildWaitGroup.Wait()
-
-	// Flush notification queue.
-	if s.opt.Notifications {
-		s.shutdownNotifications <- struct{}{}
-	}
-
 	// If the HTTP server hasn't started yet, exit immediately.
 	if s.httpServer == nil && s.httpsServer == nil {
 		os.Exit(0)
+	}
+
+	// Stop serving new web requests.
+	if s.httpsServer != nil {
+		s.httpsServer.Shutdown(context.Background())
+	}
+	if s.httpServer != nil {
+		s.httpServer.Shutdown(context.Background())
 	}
 }
 
