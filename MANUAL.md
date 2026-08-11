@@ -623,7 +623,7 @@ dbname: "sriracha"
 #mailusername: ""          # SMTP server username.
 #mailpassword: ""          # SMTP server password.
 #mailauth:     "challenge" # SMTP server authentication mechanism. Format: challenge / plain / none
-#mailfrom:     ""          # Notification "From" email address.
+#mailfrom:     ""          # Notification "From" email address. Required.
 #mailreplyto:  ""          # Notification "Reply-To" email address.
 #maildomains:  ""          # Regular expression specifying allowed email address domains.
 

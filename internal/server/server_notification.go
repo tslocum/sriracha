@@ -72,9 +72,13 @@ func (s *Server) queueNotifications(db serverDB, p *Post) {
 }
 
 func (s *Server) sendNotifications(onlyMentions bool) {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
 	if len(s.notifications) == 0 {
 		return
 	}
+
 	db := s.begin()
 	defer db.Commit()
 

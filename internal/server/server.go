@@ -665,10 +665,7 @@ func (s *Server) connectToMailServer() (*smtp.Client, error) {
 // sendMail sends an email.
 func (s *Server) sendMail(client *smtp.Client, recipient string, subject string, message string) error {
 	// Build mail body.
-	var body []byte
-	if s.config.MailFrom != "" {
-		body = fmt.Appendf(body, "From: %s\n", s.config.MailFrom)
-	}
+	body := fmt.Appendf(nil, "From: %s\n", s.config.MailFrom)
 	body = fmt.Appendf(body, "To: %s\nSubject: %s\n", recipient, subject)
 	if s.config.MailReplyTo != "" {
 		body = fmt.Appendf(body, "Reply-To: %s\n", s.config.MailReplyTo)
@@ -681,10 +678,8 @@ func (s *Server) sendMail(client *smtp.Client, recipient string, subject string,
 	}
 
 	// Set "From" and "To" addresses.
-	if s.config.MailFrom != "" {
-		if err := client.Mail(s.config.MailFrom); err != nil {
-			return fmt.Errorf("failed to set from address: %s", err)
-		}
+	if err := client.Mail(s.config.MailFrom); err != nil {
+		return fmt.Errorf("failed to set from address: %s", err)
 	}
 	if err := client.Rcpt(recipient); err != nil {
 		return fmt.Errorf("failed to set recipient address: %s", err)
@@ -2491,6 +2486,9 @@ func (s *Server) Run() error {
 
 	// Verify mail server configuration.
 	s.opt.Notifications = s.config.MailAddress != ""
+	if s.opt.Notifications && s.config.MailFrom == "" {
+		log.Fatalf("Error: The mailfrom option, which specifies the 'From' address of notification emails, is currently blank. Set the mailfrom option to an email address.")
+	}
 	if s.opt.Notifications && !devMode {
 		fmt.Println("Verifying mail server configuration...")
 		client, err := s.connectToMailServer()
