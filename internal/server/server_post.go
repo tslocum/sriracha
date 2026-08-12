@@ -687,7 +687,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 	var parentPost *Post
 	if post.Parent != 0 {
 		parentPost = db.PostByID(post.Parent)
-		if parentPost == nil || parentPost.Parent != 0 {
+		if parentPost == nil || parentPost.Parent != 0 || parentPost.Archived() {
 			s.deletePostFiles(post)
 
 			data := s.buildData(db, w, r)
@@ -1234,20 +1234,26 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 	}
 
 	if post.Parent == 0 {
+		prunePost := func(threadID int, archive bool) {
+			moderate := ModeratedPruned
+			if archive {
+				moderate = ModeratedArchived
+			}
+			db.StickyPost(threadID, false)
+			db.LockPost(threadID, false)
+			db.BumpThread(threadID, time.Now().Unix())
+			for _, p := range db.AllPostsInThread(FilterAny, threadID) {
+				db.ModeratePost(p.ID, moderate)
+			}
+		}
 		for _, thread := range db.PruneThreads(post.Board) {
 			switch post.Board.Archive {
 			case ArchiveDisable:
 				s.deletePost(db, thread)
 			case ArchiveManual:
-				db.BumpThread(thread.ID, time.Now().Unix())
-				for _, p := range db.AllPostsInThread(FilterAny, thread.ID) {
-					db.ModeratePost(p.ID, ModeratedPruned)
-				}
+				prunePost(thread.ID, false)
 			case ArchiveAutomatic:
-				db.BumpThread(thread.ID, time.Now().Unix())
-				for _, p := range db.AllPostsInThread(FilterAny, thread.ID) {
-					db.ModeratePost(p.ID, ModeratedArchived)
-				}
+				prunePost(thread.ID, true)
 			}
 		}
 	} else if strings.ToLower(post.Email) != "sage" {
