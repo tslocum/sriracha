@@ -20,7 +20,7 @@
 	{{else if $.Preview}}
 		{{if eq .Extra "thumb"}}{{T "Only thumbnails are displayed."}}{{end}}
 		{{T "Go back, uncheck '%s' and resubmit to post." (T "Preview")}}
-	{{else}}
+	{{else if not .ArchiveMode}}
 		<details id="postdetails">
 			<summary>
 				{{if eq .ReplyMode 0}}{{T "Post thread"}}{{else}}{{T "Post reply"}}{{end}}

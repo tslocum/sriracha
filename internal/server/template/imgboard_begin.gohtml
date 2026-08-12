@@ -97,7 +97,7 @@
 			{{$bannerType = -3}}
 		{{end}}
 		{{$banner := Banner (index .Opt.Banners $bannerType)}}
-		<div class="logo">{{if ne $banner nil}}<img src="/banner/{{$banner.Name}}" width="{{$banner.Width}}" height="{{$banner.Height}}" alt="Banner"><br>{{end}}{{if ne .Board nil}}{{.Board.Name}}{{else if eq .Template "search"}}{{T "Search"}}{{else}}{{.Opt.SiteName}}{{end}}{{template "extra_logo.gohtml" .}}</div>
+		<div class="logo">{{if ne $banner nil}}<img src="/banner/{{$banner.Name}}" width="{{$banner.Width}}" height="{{$banner.Height}}" alt="Banner"><br>{{end}}{{if ne .Board nil}}{{.Board.Name}}{{if .ArchiveMode}} - {{T "Archive"}}{{end}}{{else if eq .Template "search"}}{{T "Search"}}{{else}}{{.Opt.SiteName}}{{end}}{{template "extra_logo.gohtml" .}}</div>
 		{{if .ReplyMode}}
 			<span class="threadui">
 				{{if .Preview}}
