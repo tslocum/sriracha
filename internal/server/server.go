@@ -3257,6 +3257,7 @@ var allGlobalSettings = []string{
 	"board.oekaki",
 	"board.gallery",
 	"board.require",
+	"board.archive",
 	"banner.boards",
 	"banner.overboard",
 	"banner.news",

@@ -496,6 +496,14 @@
             <td>{{T "Require visitors to include an attachment when posting."}}</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="board.archive">{{T "Archive"}}</label></td>
+            <td><select name="board.archive" style="width: 100%;">
+                <option value="0"{{if not (Global "board.archive")}} selected{{end}}>✗ {{T "Local"}}</option>
+                <option value="1"{{if Global "board.archive"}} selected{{end}}>✓ {{T "Global"}}</option>
+            </select></td>
+            <td>{{T "Archive threads (instead of deleting them) when the thread limit is exceeded."}}</td>
+        </tr>
+        <tr>
             <th><br>{{T "Banners"}}<div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td>&nbsp;</td>
         </tr>
         <tr>

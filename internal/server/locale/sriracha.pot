@@ -194,6 +194,12 @@ msgstr ""
 msgid "Approve all"
 msgstr ""
 
+msgid "Archive"
+msgstr ""
+
+msgid "Archive threads (instead of deleting them) when the maxmimum number of threads is exceeded."
+msgstr ""
+
 msgid "Artwork title:"
 msgstr ""
 
@@ -204,6 +210,9 @@ msgid "Author"
 msgstr ""
 
 msgid "Auto Refresh"
+msgstr ""
+
+msgid "Automatic"
 msgstr ""
 
 msgid "Available embed services. Visit board settings to enable usage."
@@ -800,6 +809,9 @@ msgid "Manage Thresholds"
 msgstr ""
 
 msgid "Manage mode"
+msgstr ""
+
+msgid "Manual"
 msgstr ""
 
 msgid "Max Email Length"

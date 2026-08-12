@@ -1,3 +1,6 @@
+2.0.0:
+- Support archiving threads
+
 1.9.9:
 - Highlight search results
 - Normalize text before detecting keywords

@@ -141,6 +141,27 @@ func FormatBoardRequire(i BoardRequire) string {
 	}
 }
 
+type BoardArchive int
+
+const (
+	ArchiveDisable   BoardArchive = 0
+	ArchiveManual    BoardArchive = 1
+	ArchiveAutomatic BoardArchive = 2
+)
+
+func FormatBoardArchive(i BoardArchive) string {
+	switch i {
+	case ArchiveDisable:
+		return "Disable"
+	case ArchiveManual:
+		return "Manual"
+	case ArchiveAutomatic:
+		return "Automatic"
+	default:
+		return "Unknown"
+	}
+}
+
 type Board struct {
 	ID            int
 	Dir           string
@@ -181,6 +202,7 @@ type Board struct {
 	Identifiers   BoardIdentifiers
 	Gallery       bool
 	Require       BoardRequire
+	Archive       BoardArchive
 
 	// Calculated fields.
 	Uploads []string
@@ -205,6 +227,7 @@ const (
 	DefaultBoardFiles       = 1
 	DefaultBoardInstances   = 1
 	DefaultBoardGallery     = true
+	DefaultBoardArchive     = ArchiveManual
 )
 
 func NewBoard() *Board {
@@ -225,6 +248,7 @@ func NewBoard() *Board {
 		Files:         DefaultBoardFiles,
 		Instances:     DefaultBoardInstances,
 		Gallery:       DefaultBoardGallery,
+		Archive:       DefaultBoardArchive,
 	}
 }
 

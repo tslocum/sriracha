@@ -91,6 +91,7 @@ CREATE TABLE board (
 	-- v10: files smallint NOT NULL DEFAULT 1
 	-- v11: gallery smallint NOT NULL DEFAULT 1
 	-- v17: require smallint NOT NULL DEFAULT 0
+	-- v21: archive smallint NOT NULL DEFAULT 1
 );
 CREATE UNIQUE INDEX ON board (dir);
 
@@ -394,4 +395,7 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 	CREATE INDEX ON post USING GIN (search);
 	ALTER TABLE category ADD COLUMN overboard varchar(255) NOT NULL DEFAULT '';
 	UPDATE config SET value = '20' WHERE name = 'version';`,
+	// Version 21.
+	`ALTER TABLE board ADD COLUMN archive smallint NOT NULL DEFAULT 1;
+	UPDATE config SET value = '21' WHERE name = 'version';`,
 }

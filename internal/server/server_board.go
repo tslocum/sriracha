@@ -304,6 +304,13 @@ func (s *Server) loadGlobalBoardSettings(db serverDB, b *Board) {
 			b.Require = RequireNever
 		}
 	}
+	if slices.Contains(s.opt.Global, "board.archive") {
+		if first != nil {
+			b.Archive = first.Archive
+		} else {
+			b.Archive = ArchiveManual
+		}
+	}
 }
 
 func (s *Server) loadBoardForm(db serverDB, r *http.Request, b *Board) {
@@ -346,6 +353,7 @@ func (s *Server) loadBoardForm(db serverDB, r *http.Request, b *Board) {
 	b.Files = FormInt(r, "files")
 	b.Gallery = FormBool(r, "gallery")
 	b.Require = FormRange(r, "require", RequireNever, RequireAll)
+	b.Archive = FormRange(r, "archive", ArchiveDisable, ArchiveAutomatic)
 
 	if b.Locale != "" && !slices.Contains(s.opt.LocalesSorted, b.Locale) {
 		b.Locale = ""
@@ -557,6 +565,10 @@ func (s *Server) saveGlobalBoardSettings(db serverDB, b *Board) []*Board {
 		}
 		if slices.Contains(s.opt.Global, "board.require") && board.Require != b.Require {
 			board.Require = b.Require
+			modified = true
+		}
+		if slices.Contains(s.opt.Global, "board.archive") && board.Archive != b.Archive {
+			board.Archive = b.Archive
 			modified = true
 		}
 		if !modified {
@@ -955,6 +967,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 			b.Identifiers = d.Identifiers
 			b.Gallery = d.Gallery
 			b.Require = d.Require
+			b.Archive = d.Archive
 			b.Uploads = d.Uploads
 			b.Embeds = d.Embeds
 			b.Rules = d.Rules

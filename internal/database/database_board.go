@@ -77,7 +77,7 @@ func (db *DB) AddBoard(b *Board) {
 	if b.Gallery {
 		gallery = 1
 	}
-	err := db.conn.QueryRow(context.Background(), "INSERT INTO board VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39) RETURNING id",
+	err := db.conn.QueryRow(context.Background(), "INSERT INTO board VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40) RETURNING id",
 		b.Dir,
 		b.Name,
 		b.Description,
@@ -117,6 +117,7 @@ func (db *DB) AddBoard(b *Board) {
 		b.Files,
 		gallery,
 		b.Require,
+		b.Archive,
 	).Scan(&b.ID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to insert board: %w", err))
@@ -239,7 +240,7 @@ func (db *DB) UpdateBoard(b *Board) {
 	if b.Gallery {
 		gallery = 1
 	}
-	_, err := db.conn.Exec(context.Background(), "UPDATE board SET dir = $1, name = $2, description = $3, type = $4, lock = $5, approval = $6, reports = $7, style = $8, locale = $9, minname = $10, maxname = $11, minemail = $12, maxemail = $13, minsubject = $14, maxsubject = $15, minmessage = $16, maxmessage = $17, minsizethread = $18, maxsizethread = $19, minsizereply = $20, maxsizereply = $21, thumbwidth = $22, thumbheight = $23, defaultname = $24, wordbreak = $25, truncate = $26, threads = $27, replies = $28, maxthreads = $29, maxreplies = $30, oekaki = $31, rules = $32, hide = $33, backlinks = $34, instances = $35, identifiers = $36, files = $37, gallery = $38, require = $39 WHERE id = $40",
+	_, err := db.conn.Exec(context.Background(), "UPDATE board SET dir = $1, name = $2, description = $3, type = $4, lock = $5, approval = $6, reports = $7, style = $8, locale = $9, minname = $10, maxname = $11, minemail = $12, maxemail = $13, minsubject = $14, maxsubject = $15, minmessage = $16, maxmessage = $17, minsizethread = $18, maxsizethread = $19, minsizereply = $20, maxsizereply = $21, thumbwidth = $22, thumbheight = $23, defaultname = $24, wordbreak = $25, truncate = $26, threads = $27, replies = $28, maxthreads = $29, maxreplies = $30, oekaki = $31, rules = $32, hide = $33, backlinks = $34, instances = $35, identifiers = $36, files = $37, gallery = $38, require = $39, archive = $40 WHERE id = $41",
 		b.Dir,
 		b.Name,
 		b.Description,
@@ -279,6 +280,7 @@ func (db *DB) UpdateBoard(b *Board) {
 		b.Files,
 		gallery,
 		b.Require,
+		b.Archive,
 		b.ID,
 	)
 	if err != nil {
@@ -376,6 +378,7 @@ func scanBoard(b *Board, row pgx.Row) error {
 		&b.Files,
 		&gallery,
 		&b.Require,
+		&b.Archive,
 	)
 	if err != nil {
 		return err
