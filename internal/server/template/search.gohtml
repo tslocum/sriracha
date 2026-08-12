@@ -4,11 +4,13 @@
 <div style="text-align: center;">
     <form method="get" action="/sriracha/search">
         <input type="text" id="searchquery" name="q" value="{{.Extra3}}" size="40" placeholder="{{T "Query"}}">
-        <select name="f">
-            <option value="">{{T "All posts"}}</option>
-            <option value="1"{{if eq .Extra2 "1"}} selected{{end}}>{{T "Active"}}</option>
-            <option value="2"{{if eq .Extra2 "2"}} selected{{end}}>{{T "Archived"}}</option>
-        </select>
+        {{if ne .Extra2 ""}}
+            <select name="f">
+                <option value="">{{T "All posts"}}</option>
+                <option value="1"{{if eq .Extra2 "1"}} selected{{end}}>{{T "Active"}}</option>
+                <option value="2"{{if eq .Extra2 "2"}} selected{{end}}>{{T "Archived"}}</option>
+            </select>
+        {{end}}
         <input type="submit" value="{{T "Search"}}">
     </form>
     <script type="text/javascript">
@@ -21,13 +23,13 @@
 	<table class="navtable">
 		<tbody>
 			<tr>
-                <td>{{if gt .Page 0}}<form method="get" action="/sriracha/search"><input type="hidden" name="q" value="{{.Extra3}}">{{if gt .Page 1}}<input type="hidden" name="p" value="{{.Page | MinusOne}}">{{end}}<input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
+                <td>{{if gt .Page 0}}<form method="get" action="/sriracha/search"><input type="hidden" name="q" value="{{.Extra3}}">{{if and (ne .Extra2 "") (ne .Extra2 "0")}}<input type="hidden" name="f" value="{{.Extra2}}">{{end}}{{if gt .Page 1}}<input type="hidden" name="p" value="{{.Page | MinusOne}}">{{end}}<input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
                 <td>
                     {{range $i := Iterate (.Pages | MinusOne)}}
-                        [{{if eq $i $.Page}}{{$i}}{{else}}<a href="/sriracha/search?q={{$.Extra3}}{{if gt $i 0}}&p={{$i}}{{end}}">{{$i}}</a>{{end}}]
+                        [{{if eq $i $.Page}}{{$i}}{{else}}<a href="/sriracha/search?q={{$.Extra3}}{{if gt $i 0}}{{if and (ne $.Extra2 "") (ne $.Extra2 "0")}}&f={{$.Extra2}}{{end}}&p={{$i}}{{end}}">{{$i}}</a>{{end}}]
                     {{end}}
                 </td>
-                <td>{{if lt .Page (.Pages | MinusOne)}}<form method="get" action="/sriracha/search"><input type="hidden" name="q" value="{{.Extra3}}"><input type="hidden" name="p" value="{{.Page | PlusOne}}"><input type="submit" value="{{T "Next"}}"></form>{{else}}{{T "Next"}}{{end}}</td>
+                <td>{{if lt .Page (.Pages | MinusOne)}}<form method="get" action="/sriracha/search"><input type="hidden" name="q" value="{{.Extra3}}">{{if and (ne .Extra2 "") (ne .Extra2 "0")}}<input type="hidden" name="f" value="{{.Extra2}}">{{end}}<input type="hidden" name="p" value="{{.Page | PlusOne}}"><input type="submit" value="{{T "Next"}}"></form>{{else}}{{T "Next"}}{{end}}</td>
 		</tbody>
     </table>
 {{end}}

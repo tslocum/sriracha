@@ -241,6 +241,7 @@ func (s *Server) _queueBoardIndexes(info *buildInfo) {
 
 	if board.Unique == 0 {
 		board.Unique = db.UniqueUserPosts(board)
+		board.ArchiveSize = len(db.AllThreads(FilterArchived, board))
 	}
 
 	postFilter := FilterActive
@@ -806,6 +807,7 @@ func (s *Server) writeBoardIndexes(db serverDB, wg *sync.WaitGroup, delta *atomi
 func (s *Server) writeBoardThread(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, board *Board, postID int) {
 	if board.Unique == 0 {
 		board.Unique = db.UniqueUserPosts(board)
+		board.ArchiveSize = len(db.AllThreads(FilterArchived, board))
 	}
 
 	info := &buildInfo{

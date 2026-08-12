@@ -205,10 +205,11 @@ type Board struct {
 	Archive       BoardArchive
 
 	// Calculated fields.
-	Uploads []string
-	Embeds  []string
-	Rules   []string
-	Unique  int `diff:"-"`
+	Uploads     []string
+	Embeds      []string
+	Rules       []string
+	Unique      int `diff:"-"`
+	ArchiveSize int `diff:"-"`
 }
 
 const (

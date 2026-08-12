@@ -22,17 +22,24 @@ func (s *Server) serveSearch(db serverDB, w http.ResponseWriter, r *http.Request
 	data.Template = "search"
 	data.Boards = db.AllBoards()
 	data.Categories = db.AllCategories()
-	var postFilter PostFilter
-	filter := FormInt(r, "f")
-	switch filter {
-	case 1:
-		postFilter = FilterActive
-	case 2:
-		postFilter = FilterArchived
-	default:
-		postFilter = FilterVisible
+	for _, b := range data.Boards {
+		if b.ArchiveSize > 0 {
+			data.Extra2 = "0"
+			break
+		}
 	}
-	data.Extra2 = FormString(r, "f")
+	postFilter := FilterVisible
+	if data.Extra2 == "0" {
+		filter := FormInt(r, "f")
+		switch filter {
+		case 1:
+			postFilter = FilterActive
+			data.Extra2 = "1"
+		case 2:
+			postFilter = FilterArchived
+			data.Extra2 = "2"
+		}
+	}
 	query := FormString(r, "q")
 	if query != "" {
 		var boards []*Board
