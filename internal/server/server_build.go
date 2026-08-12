@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -36,7 +37,6 @@ const (
 	buildSiteIndex
 	buildStatistics
 	queueBoardIndexes
-	queueBoardArchives
 )
 
 const newsCount = 10
@@ -45,6 +45,7 @@ const newsCount = 10
 type buildInfo struct {
 	build      buildType
 	board      *Board
+	archive    bool
 	overboards []*Board
 	threads    [][2]int
 	post       int
@@ -68,6 +69,10 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 	}
 	db := info.db
 	board := info.board
+	cacheID := board.ID
+	if info.archive {
+		cacheID = math.MaxInt32 - board.ID
+	}
 
 	data := s.newTemplateData(db, info.buf)
 	data.Board = board
@@ -76,7 +81,7 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 	data.ReplyMode = 0
 	data.Template = "board_page"
 	data.Pages = pageCount(len(info.threads), board.Threads)
-	checkCache := board.Type == TypeImageboard && len(s.indexCache[board.ID]) > 0
+	checkCache := board.Type == TypeImageboard && len(s.indexCache[cacheID]) > 0
 	page := info.page
 
 	existingIDs := func(page int) []int {
@@ -86,9 +91,19 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 		return info.postIDs[page]
 	}
 
-	fileName := "index.html"
-	if page > 0 {
-		fileName = fmt.Sprintf("%d.html", page)
+	var fileName string
+	if !info.archive {
+		if page == 0 {
+			fileName = "index.html"
+		} else {
+			fileName = fmt.Sprintf("%d.html", page)
+		}
+	} else {
+		if page == 0 {
+			fileName = "archive.html"
+		} else {
+			fileName = fmt.Sprintf("archive-%d.html", page)
+		}
 	}
 
 	start := page * board.Threads
@@ -116,12 +131,12 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 		data.Threads = append(data.Threads, posts)
 	}
 	s.indexCacheLock.Lock()
-	if cap(s.indexCache[board.ID][page]) != len(postIDs) {
-		s.indexCache[board.ID][page] = postIDs
+	if cap(s.indexCache[cacheID][page]) != len(postIDs) {
+		s.indexCache[cacheID][page] = postIDs
 	} else {
-		copy(s.indexCache[board.ID][page], postIDs)
+		copy(s.indexCache[cacheID][page], postIDs)
 	}
-	if checkCache && len(s.indexCache[board.ID][page]) > 0 && slices.Equal(s.indexCache[board.ID][page], existingIDs(page)) {
+	if checkCache && len(s.indexCache[cacheID][page]) > 0 && slices.Equal(s.indexCache[cacheID][page], existingIDs(page)) {
 		s.indexCacheLock.Unlock()
 		return
 	}
@@ -172,8 +187,14 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 	data.ReplyMode = 1
 	data.Template = "board_catalog"
 
-	writePath := filepath.Join(s.config.Root, board.Dir, "_catalog.html")
-	filePath := filepath.Join(s.config.Root, board.Dir, "catalog.html")
+	var fileName string
+	if !info.archive {
+		fileName = "catalog.html"
+	} else {
+		fileName = "archive-catalog.html"
+	}
+	writePath := filepath.Join(s.config.Root, board.Dir, "_"+fileName)
+	filePath := filepath.Join(s.config.Root, board.Dir, fileName)
 
 	catalogFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
 	if err != nil {
@@ -202,7 +223,7 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 
 	if s.opt.trace {
 		traceD = time.Since(traceT)
-		traceLog(board.Path()+"catalog.html", traceD)
+		traceLog(board.Path()+fileName, traceD)
 		info.delta.Add(uint32(traceD.Milliseconds()))
 	}
 }
@@ -211,30 +232,39 @@ func (s *Server) _queueBoardIndexes(info *buildInfo) {
 	db := info.db
 	board := info.board
 	wg := info.wg
+	cacheID := board.ID
+	if info.archive {
+		cacheID = math.MaxInt32 - cacheID
+	}
 
 	if board.Unique == 0 {
 		board.Unique = db.UniqueUserPosts(board)
 	}
 
+	postFilter := FilterActive
+	if info.archive {
+		postFilter = FilterArchived
+	}
+
 	var threads [][2]int
 	if board.ID > 0 {
-		threads = db.AllThreads(FilterVisible, board)
+		threads = db.AllThreads(postFilter, board)
 	} else {
-		threads = db.AllThreads(FilterVisible, info.overboards...)
+		threads = db.AllThreads(postFilter, info.overboards...)
 	}
 
 	pages := pageCount(len(threads), board.Threads)
 	s.indexCacheLock.Lock()
-	allPostIDs := make([][]int, len(s.indexCache[board.ID]))
-	for i := range s.indexCache[board.ID] {
-		allPostIDs[i] = make([]int, len(s.indexCache[board.ID][i]))
-		copy(allPostIDs[i], s.indexCache[board.ID][i])
+	allPostIDs := make([][]int, len(s.indexCache[cacheID]))
+	for i := range s.indexCache[cacheID] {
+		allPostIDs[i] = make([]int, len(s.indexCache[cacheID][i]))
+		copy(allPostIDs[i], s.indexCache[cacheID][i])
 	}
-	if len(s.indexCache[board.ID]) < pages {
-		s.indexCache[board.ID] = make([][]int, pages)
+	if len(s.indexCache[cacheID]) < pages {
+		s.indexCache[cacheID] = make([][]int, pages)
 		for i := range allPostIDs {
-			s.indexCache[board.ID][i] = make([]int, len(allPostIDs[i]))
-			copy(s.indexCache[board.ID][i], allPostIDs[i])
+			s.indexCache[cacheID][i] = make([]int, len(allPostIDs[i]))
+			copy(s.indexCache[cacheID][i], allPostIDs[i])
 		}
 	}
 	s.indexCacheLock.Unlock()
@@ -243,6 +273,7 @@ func (s *Server) _queueBoardIndexes(info *buildInfo) {
 		info := &buildInfo{
 			build:   build,
 			board:   board,
+			archive: info.archive,
 			threads: threads,
 			postIDs: allPostIDs,
 			wg:      wg,
@@ -270,6 +301,7 @@ func (s *Server) _queueBoardIndexes(info *buildInfo) {
 				info := &buildInfo{
 					build:   build,
 					board:   board,
+					archive: info.archive,
 					page:    page,
 					threads: threads,
 					postIDs: allPostIDs,
@@ -742,20 +774,23 @@ func (s *Server) _build() {
 // rebuildBoard rebuilds all pages in a board.
 func (s *Server) rebuildBoard(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, board *Board) {
 	s.indexCacheLock.Lock()
-	s.indexCache[board.ID] = nil
+	s.indexCache[board.ID] = nil               // Clear active page cache.
+	s.indexCache[math.MaxInt32-board.ID] = nil // Clear archive page cache.
 	s.indexCacheLock.Unlock()
 
-	s.writeBoardIndexes(db, wg, delta, board)
+	s.writeBoardIndexes(db, wg, delta, false, board)
+	s.writeBoardIndexes(db, wg, delta, true, board)
 	for _, threadInfo := range db.AllThreads(FilterVisible, board) {
 		s.writeBoardThread(db, wg, delta, board, threadInfo[0])
 	}
 }
 
 // writeBoardIndexes writes board index pages to disk.
-func (s *Server) writeBoardIndexes(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, board *Board, overboards ...*Board) {
+func (s *Server) writeBoardIndexes(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, archive bool, board *Board, overboards ...*Board) {
 	info := &buildInfo{
 		build:      queueBoardIndexes,
 		board:      board,
+		archive:    archive,
 		overboards: overboards,
 		wg:         wg,
 		delta:      delta,
@@ -818,7 +853,7 @@ func (s *Server) writeOverboard(db serverDB, wg *sync.WaitGroup, delta *atomic.U
 	if c != nil {
 		boards = c.Boards
 	}
-	s.writeBoardIndexes(db, wg, delta, board, boards...)
+	s.writeBoardIndexes(db, wg, delta, false, board, boards...)
 }
 
 // writeNewsEntry writes a news entry page to disk.

@@ -1565,36 +1565,51 @@ func (s *Server) writePage(db serverDB, data *templateData, p *Page, w io.Writer
 
 // rebuildBoard rebuilds a thread res page and board index pages.
 func (s *Server) rebuildThread(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, post *Post) {
+	archived := post.Archived()
 	s.writeBoardThread(db, wg, delta, post.Board, post.Thread())
-	s.writeBoardIndexes(db, wg, delta, post.Board)
-	s.writeOverboards(db, wg, delta, []*Board{post.Board})
-	s.writeSiteIndex(wg, delta)
+	s.writeBoardIndexes(db, wg, delta, archived, post.Board)
+	if !archived {
+		s.writeOverboards(db, wg, delta, []*Board{post.Board})
+		s.writeSiteIndex(wg, delta)
+	}
 	s.writeStatistics(wg, delta)
 	s.writeModQueue(db)
 }
 
 func (s *Server) rebuildThreads(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, posts []*Post) {
-	var boardIDs []int
-	var boards []*Board
+	var activeIDs []int
+	var activeBoards []*Board
+	var archiveIDs []int
+	var archiveBoards []*Board
 	var threadIDs []int
 	var threadBoards []*Board
 	for _, post := range posts {
-		if !slices.Contains(boardIDs, post.Board.ID) {
-			boardIDs = append(boardIDs, post.Board.ID)
-			boards = append(boards, post.Board)
-		}
 		if !slices.Contains(threadIDs, post.Thread()) {
 			threadIDs = append(threadIDs, post.Thread())
 			threadBoards = append(threadBoards, post.Board)
+		}
+		if !post.Archived() {
+			if !slices.Contains(activeIDs, post.Board.ID) {
+				activeIDs = append(activeIDs, post.Board.ID)
+				activeBoards = append(activeBoards, post.Board)
+			}
+		} else {
+			if !slices.Contains(archiveIDs, post.Board.ID) {
+				archiveIDs = append(archiveIDs, post.Board.ID)
+				archiveBoards = append(archiveBoards, post.Board)
+			}
 		}
 	}
 	for i, threadID := range threadIDs {
 		s.writeBoardThread(db, wg, delta, threadBoards[i], threadID)
 	}
-	for _, b := range boards {
-		s.writeBoardIndexes(db, wg, delta, b)
+	for _, b := range activeBoards {
+		s.writeBoardIndexes(db, wg, delta, false, b)
 	}
-	s.writeOverboards(db, wg, delta, boards)
+	for _, b := range archiveBoards {
+		s.writeBoardIndexes(db, wg, delta, true, b)
+	}
+	s.writeOverboards(db, wg, delta, activeBoards)
 	s.writeSiteIndex(wg, delta)
 	s.writeStatistics(wg, delta)
 	s.writeModQueue(db)
@@ -1639,8 +1654,8 @@ func (s *Server) rebuildAll(db serverDB) {
 	}
 
 	s.indexCacheLock.Lock()
-	for boardID := range s.indexCache {
-		s.indexCache[boardID] = s.indexCache[boardID][:0]
+	for cacheID := range s.indexCache {
+		s.indexCache[cacheID] = s.indexCache[cacheID][:0]
 	}
 	s.indexCacheLock.Unlock()
 
@@ -2237,8 +2252,10 @@ func (s *Server) handleRebuild() {
 
 	var info *rebuildInfo
 	var pending []*rebuildInfo
-	var boards []*Board
-	var boardIDs []int
+	var activeIDs []int
+	var activeBoards []*Board
+	var archiveIDs []int
+	var archiveBoards []*Board
 	var threads []int
 	var shutdown bool
 	var t *time.Timer
@@ -2298,13 +2315,21 @@ func (s *Server) handleRebuild() {
 				s.writeBoardThread(db, wg, delta, info.post.Board, thread)
 				threads = append(threads, thread)
 			}
-			if !slices.Contains(boardIDs, info.post.Board.ID) {
-				s.writeBoardIndexes(db, wg, delta, info.post.Board)
-				boards = append(boards, info.post.Board)
-				boardIDs = append(boardIDs, info.post.Board.ID)
+			if !info.post.Archived() {
+				if !slices.Contains(activeIDs, info.post.Board.ID) {
+					s.writeBoardIndexes(db, wg, delta, false, info.post.Board)
+					activeBoards = append(activeBoards, info.post.Board)
+					activeIDs = append(activeIDs, info.post.Board.ID)
+				}
+			} else {
+				if !slices.Contains(archiveIDs, info.post.Board.ID) {
+					s.writeBoardIndexes(db, wg, delta, true, info.post.Board)
+					archiveBoards = append(archiveBoards, info.post.Board)
+					archiveIDs = append(archiveIDs, info.post.Board.ID)
+				}
 			}
 		}
-		s.writeOverboards(db, wg, delta, boards)
+		s.writeOverboards(db, wg, delta, activeBoards)
 		s.writeSiteIndex(wg, delta)
 		s.writeStatistics(wg, delta)
 		if s.opt.Notifications {
@@ -2335,8 +2360,10 @@ func (s *Server) handleRebuild() {
 		}
 
 		pending = pending[:0]
-		boards = boards[:0]
-		boardIDs = boardIDs[:0]
+		activeIDs = activeIDs[:0]
+		activeBoards = activeBoards[:0]
+		archiveIDs = archiveIDs[:0]
+		archiveBoards = archiveBoards[:0]
 		threads = threads[:0]
 
 		lastBuild = time.Now()
