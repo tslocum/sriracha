@@ -1429,6 +1429,17 @@ entering a password. When browsing in mod mode, click the 'Moderate' button.
 
 Any existing bans for shorter durations will be replaced.
 
+#### Archive
+
+When the configured maximum thread limit is exceeded, the oldest threads are pruned.
+
+The Archive setting of each board determines how pruned threads are handled:
+
+- **Disable** - Pruned threads are deleted automatically.
+- **Manual** - Pruned threads appear in the management panel, allowing staff to
+choose which threads are deleted or archived. This is the default.
+- **Automatic** - Pruned threads are archived automatically.
+
 #### News
 
 When enabled, all staff have access to post news entries. Staff may also update
