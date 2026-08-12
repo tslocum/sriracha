@@ -206,6 +206,9 @@ msgstr ""
 msgid "Archived"
 msgstr ""
 
+msgid "Archived %s"
+msgstr ""
+
 msgid "Artwork title:"
 msgstr ""
 

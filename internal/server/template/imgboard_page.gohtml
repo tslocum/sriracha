@@ -76,7 +76,7 @@
 					</td>
 					<td>{{if lt .Page (.Pages | MinusOne)}}<form method="get" action="{{if not $.ModMode}}{{.Board.Path}}{{.Page | PlusOne}}.html{{else}}/sriracha/board/mod/{{$.Board.ID}}/p{{.Page | PlusOne}}{{end}}"><input type="submit" value="{{T "Next"}}"></form>{{else}}{{T "Next"}}{{end}}</td>
 				{{end}}
-				{{if and .Opt.Notifications (gt .Board.ID 0)}}
+				{{if and .Opt.Notifications (gt .Board.ID 0) (not .ArchiveMode)}}
 					{{if eq .ReplyMode 0}}
 						<td style="border: 0px none;">&nbsp;</td>
 					{{end}}
@@ -91,9 +91,17 @@
 					</td>
 				{{end}}
 				{{if ne .ReplyMode 0}}
-					<td id="threadstatusdeleted" style="display: none;border: 0px none;color: red;font-weight: bold;">
-						{{T "Thread deleted."}}
-					</td>
+					{{if .ArchiveMode}}
+						{{if and (gt (len .Threads) 0) (gt (len (index .Threads 0)) 0)}}
+							<td style="border: 0px none;">
+								{{T "Archived %s" (FormatTimestamp (index (index .Threads 0) 0).Bumped) | HTML}}
+							</td>
+						{{end}}
+					{{else}}
+						<td id="threadstatusdeleted" style="display: none;border: 0px none;color: red;font-weight: bold;">
+							{{T "Thread deleted."}}
+						</td>
+					{{end}}
 				{{end}}
 			</tr>
 		</tbody>

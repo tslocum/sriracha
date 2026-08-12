@@ -59,8 +59,16 @@
 		</span>
 		<div class="adminbar">
 			{{template "extra_adminbar.gohtml" .}}
-			{{if and (ne .Board nil) (eq .Board.Type 0)}}
-				[<a href="{{.Board.Path}}{{if .ArchiveMode}}archive-{{end}}catalog.html" style="text-decoration: underline;">{{T "Catalog"}}</a>] &middot;
+			{{$showCatalog := and (ne .Board nil) (eq .Board.Type 0)}}
+			{{$showArchive := and (eq .ReplyMode 0) (not .ArchiveMode) (ne .Board nil) (gt .Board.ArchiveSize 0)}}
+			{{if or $showCatalog $showArchive}}
+				{{if $showCatalog}}
+					[<a href="{{.Board.Path}}{{if .ArchiveMode}}archive-{{end}}catalog.html" style="text-decoration: underline;">{{T "Catalog"}}</a>]
+				{{end}}
+				{{if $showArchive}}
+					[<a href="{{.Board.Path}}archive.html" style="text-decoration: underline;">{{T "Archive"}}</a>]
+				{{end}}
+				&middot;
 			{{end}}
 			{{if and (ne .Template "search") (or (ne .Opt.Search 0) (ne .Account nil))}}
 				[<a href="/sriracha/search" style="text-decoration: underline;">{{T "Search"}}</a>]

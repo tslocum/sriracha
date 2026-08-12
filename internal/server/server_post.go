@@ -1234,15 +1234,19 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 	}
 
 	if post.Parent == 0 {
-		prunePost := func(threadID int, archive bool) {
+		prunePost := func(thread *Post, archive bool) {
+			if thread.Stickied {
+				db.StickyPost(thread.ID, false)
+			}
+			if thread.Locked {
+				db.LockPost(thread.ID, false)
+			}
+			db.BumpThread(thread.ID, time.Now().Unix())
 			moderate := ModeratedPruned
 			if archive {
 				moderate = ModeratedArchived
 			}
-			db.StickyPost(threadID, false)
-			db.LockPost(threadID, false)
-			db.BumpThread(threadID, time.Now().Unix())
-			for _, p := range db.AllPostsInThread(FilterAny, threadID) {
+			for _, p := range db.AllPostsInThread(FilterAny, thread.ID) {
 				db.ModeratePost(p.ID, moderate)
 			}
 		}
@@ -1251,9 +1255,9 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 			case ArchiveDisable:
 				s.deletePost(db, thread)
 			case ArchiveManual:
-				prunePost(thread.ID, false)
+				prunePost(thread, false)
 			case ArchiveAutomatic:
-				prunePost(thread.ID, true)
+				prunePost(thread, true)
 			}
 		}
 	} else if strings.ToLower(post.Email) != "sage" {
