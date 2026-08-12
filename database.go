@@ -131,7 +131,7 @@ type DB interface {
 	PostByField(b *Board, field string, value any) *Post
 	LastPostByIP(board *Board, ip string) *Post
 	LastPostByBoard(board *Board) *Post
-	SearchPosts(query string, board ...*Board) []int
+	SearchPosts(filter PostFilter, query string, board ...*Board) []int
 	HighlightPosts(query string, posts []*Post)
 	NumPosts(filterBoard *Board, since int64) int
 	ReplyCount(threadID int) int

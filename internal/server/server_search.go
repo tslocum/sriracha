@@ -22,6 +22,17 @@ func (s *Server) serveSearch(db serverDB, w http.ResponseWriter, r *http.Request
 	data.Template = "search"
 	data.Boards = db.AllBoards()
 	data.Categories = db.AllCategories()
+	var postFilter PostFilter
+	filter := FormInt(r, "f")
+	switch filter {
+	case 1:
+		postFilter = FilterActive
+	case 2:
+		postFilter = FilterArchived
+	default:
+		postFilter = FilterVisible
+	}
+	data.Extra2 = FormString(r, "f")
 	query := FormString(r, "q")
 	if query != "" {
 		var boards []*Board
@@ -43,7 +54,7 @@ func (s *Server) serveSearch(db serverDB, w http.ResponseWriter, r *http.Request
 			}
 		}
 		data.Extra3 = query
-		results := db.SearchPosts(query, boards...)
+		results := db.SearchPosts(postFilter, query, boards...)
 		data.Page = FormInt(r, "p")
 		data.Pages = pageCount(len(results), searchPageSize)
 		results = pageSlice(results, data.Page, searchPageSize)

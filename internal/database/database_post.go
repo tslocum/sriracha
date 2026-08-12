@@ -477,19 +477,27 @@ func (db *DB) LastPostByBoard(board *Board) *Post {
 	return p
 }
 
-func (db *DB) SearchPosts(query string, board ...*Board) []int {
+func (db *DB) SearchPosts(filter PostFilter, query string, board ...*Board) []int {
 	var extra string
 	if len(board) > 0 && board[0] != nil {
-		extra = "board IN ("
+		extra = " AND board IN ("
 		for i, b := range board {
 			if i != 0 {
 				extra += ","
 			}
 			extra += strconv.Itoa(b.ID)
 		}
-		extra += ") AND "
+		extra += ")"
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT id, ts_rank_cd(search, query) AS rank FROM post, websearch_to_tsquery($1) AS query WHERE "+extra+"query @@ search AND moderated > 0 ORDER BY rank DESC, id DESC", query)
+	switch filter {
+	case FilterVisible:
+		extra += " AND moderated > 0"
+	case FilterActive:
+		extra += " AND (moderated = 1 OR moderated = 2)"
+	case FilterArchived:
+		extra += " AND moderated = 3"
+	}
+	rows, err := db.conn.Query(context.Background(), "SELECT id, ts_rank_cd(search, query) AS rank FROM post, websearch_to_tsquery($1) AS query WHERE query @@ search"+extra+" ORDER BY rank DESC, id DESC", query)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil

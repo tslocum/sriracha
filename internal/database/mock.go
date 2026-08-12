@@ -231,18 +231,18 @@ func (db *mockDB) AllPostsInThread(filter PostFilter, postID int) []*Post {
 	}
 	return posts
 }
-func (db *mockDB) AllReplies(filter PostFilter, threadID int, limit int) []*Post { return nil }
-func (db *mockDB) PendingPosts() []*Post                                         { return nil }
-func (db *mockDB) PostByID(postID int) *Post                                     { return nil }
-func (db *mockDB) PostsByID(postIDs []int) []*Post                               { return nil }
-func (db *mockDB) PostsByIP(hash string) []*Post                                 { return nil }
-func (db *mockDB) PostsByFileHash(hash string, filterBoard *Board) []*Post       { return nil }
-func (db *mockDB) PostByField(b *Board, field string, value any) *Post           { return nil }
-func (db *mockDB) LastPostByIP(board *Board, ip string) *Post                    { return nil }
-func (db *mockDB) LastPostByBoard(board *Board) *Post                            { return nil }
-func (db *mockDB) SearchPosts(query string, board ...*Board) []int               { return nil }
-func (db *mockDB) HighlightPosts(query string, posts []*Post)                    {}
-func (db *mockDB) NumPosts(filterBoard *Board, since int64) int                  { return 0 }
+func (db *mockDB) AllReplies(filter PostFilter, threadID int, limit int) []*Post      { return nil }
+func (db *mockDB) PendingPosts() []*Post                                              { return nil }
+func (db *mockDB) PostByID(postID int) *Post                                          { return nil }
+func (db *mockDB) PostsByID(postIDs []int) []*Post                                    { return nil }
+func (db *mockDB) PostsByIP(hash string) []*Post                                      { return nil }
+func (db *mockDB) PostsByFileHash(hash string, filterBoard *Board) []*Post            { return nil }
+func (db *mockDB) PostByField(b *Board, field string, value any) *Post                { return nil }
+func (db *mockDB) LastPostByIP(board *Board, ip string) *Post                         { return nil }
+func (db *mockDB) LastPostByBoard(board *Board) *Post                                 { return nil }
+func (db *mockDB) SearchPosts(filter PostFilter, query string, board ...*Board) []int { return nil }
+func (db *mockDB) HighlightPosts(query string, posts []*Post)                         {}
+func (db *mockDB) NumPosts(filterBoard *Board, since int64) int                       { return 0 }
 func (db *mockDB) ReplyCount(threadID int) int {
 	var replies int
 	for _, post := range db.posts {

@@ -448,7 +448,9 @@ func (s *Server) newTemplateFuncMap(db serverDB, locale string) template.FuncMap
 	f["PostsByFileHash"] = func(hash string, filterBoard *Board) []*Post { return db.PostsByFileHash(hash, filterBoard) }
 	f["PostByField"] = func(board *Board, field string, value any) *Post { return db.PostByField(board, field, value) }
 	f["LastPostByIP"] = func(board *Board, ip string) *Post { return db.LastPostByIP(board, ip) }
-	f["SearchPosts"] = func(query string, board ...*Board) []int { return db.SearchPosts(query, board...) }
+	f["SearchPosts"] = func(filter PostFilter, query string, board ...*Board) []int {
+		return db.SearchPosts(filter, query, board...)
+	}
 	f["ReplyCount"] = func(threadID int) int { return db.ReplyCount(threadID) }
 
 	// Report.

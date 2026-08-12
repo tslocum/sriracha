@@ -412,7 +412,7 @@ Pages and templates may access the database via the following read-only methods:
   - `PostsByFileHash(hash string, filterBoard *Board) []*Post`
   - `PostByField(b *Board, field string, value any) *Post`
   - `LastPostByIP(board *Board, ip string) *Post`
-  - `SearchPosts(query string, board ...*Board) []int`
+  - `SearchPosts(filter PostFilter, query string, board ...*Board) []int`
   - `ReplyCount(threadID int) int`
 - [Report](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Report)
   - `NumReports(p *Post) int`

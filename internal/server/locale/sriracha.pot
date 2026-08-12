@@ -95,6 +95,9 @@ msgstr ""
 msgid "Action taken when the threshold amount is exceeded."
 msgstr ""
 
+msgid "Active"
+msgstr ""
+
 msgid "Add"
 msgstr ""
 
@@ -198,6 +201,9 @@ msgid "Archive"
 msgstr ""
 
 msgid "Archive threads (instead of deleting them) when the maxmimum number of threads is exceeded."
+msgstr ""
+
+msgid "Archived"
 msgstr ""
 
 msgid "Artwork title:"
