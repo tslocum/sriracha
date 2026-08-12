@@ -79,6 +79,7 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 	data.Boards = db.AllBoards()
 
 	data.ReplyMode = 0
+	data.ArchiveMode = info.archive
 	data.Template = "board_page"
 	data.Pages = pageCount(len(info.threads), board.Threads)
 	checkCache := board.Type == TypeImageboard && len(s.indexCache[cacheID]) > 0
@@ -185,6 +186,7 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 	data.Board = board
 	data.Boards = db.AllBoards()
 	data.ReplyMode = 1
+	data.ArchiveMode = info.archive
 	data.Template = "board_catalog"
 
 	var fileName string
@@ -356,6 +358,7 @@ func (s *Server) _buildBoardThread(info *buildInfo) {
 	data.Boards = db.AllBoards()
 	data.Threads = [][]*Post{posts}
 	data.ReplyMode = postID
+	data.ArchiveMode = posts[0].Archived()
 	data.Template = "board_page"
 
 	data.execute(f)

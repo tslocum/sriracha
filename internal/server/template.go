@@ -76,6 +76,7 @@ type templateData struct {
 	Post          *Post
 	Threads       [][]*Post
 	ReplyMode     int
+	ArchiveMode   bool
 	ModMode       bool
 	Preview       bool
 	Extra         string
