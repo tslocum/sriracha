@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"slices"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -35,6 +36,7 @@ const (
 	buildSiteIndex
 	buildStatistics
 	queueBoardIndexes
+	queueBoardArchives
 )
 
 const newsCount = 10
@@ -106,7 +108,7 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 		threadPosts[i].Replies = threadInfo[1]
 		posts := []*Post{threadPosts[i]}
 		if board.Type == TypeImageboard {
-			posts = append(posts, db.AllReplies(threadPosts[i].ID, board.Replies, true)...)
+			posts = append(posts, db.AllReplies(FilterVisible, threadPosts[i].ID, board.Replies)...)
 		}
 		for i := range posts {
 			postIDs = append(postIDs, posts[i].ID)
@@ -216,9 +218,9 @@ func (s *Server) _queueBoardIndexes(info *buildInfo) {
 
 	var threads [][2]int
 	if board.ID > 0 {
-		threads = db.AllThreads(true, board)
+		threads = db.AllThreads(FilterVisible, board)
 	} else {
-		threads = db.AllThreads(true, info.overboards...)
+		threads = db.AllThreads(FilterVisible, info.overboards...)
 	}
 
 	pages := pageCount(len(threads), board.Threads)
@@ -304,7 +306,7 @@ func (s *Server) _buildBoardThread(info *buildInfo) {
 	board := info.board
 	postID := info.post
 
-	posts := db.AllPostsInThread(true, postID)
+	posts := db.AllPostsInThread(FilterVisible, postID)
 	if len(posts) == 0 {
 		return
 	}
@@ -513,6 +515,10 @@ func (s *Server) _buildPage(info *buildInfo) {
 	err = s.writePage(db, data, p, pageFile)
 	pageFile.Close()
 	if err != nil {
+		log.Printf("%s content:", p.Path)
+		for i, line := range strings.Split(p.Content, "\n") {
+			log.Printf("%d %s", i+1, line)
+		}
 		log.Printf("warning: skipped invalid page %s: %s", p.Path, err)
 		return
 	}
@@ -740,7 +746,7 @@ func (s *Server) rebuildBoard(db serverDB, wg *sync.WaitGroup, delta *atomic.Uin
 	s.indexCacheLock.Unlock()
 
 	s.writeBoardIndexes(db, wg, delta, board)
-	for _, threadInfo := range db.AllThreads(true, board) {
+	for _, threadInfo := range db.AllThreads(FilterVisible, board) {
 		s.writeBoardThread(db, wg, delta, board, threadInfo[0])
 	}
 }

@@ -45,7 +45,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 	foundLog := db.LogCount() > 0
 	var foundThread bool
 	for _, b := range db.AllBoards() {
-		if len(db.AllThreads(false, b)) > 0 {
+		if len(db.AllThreads(FilterAny, b)) > 0 {
 			foundThread = true
 			break
 		}

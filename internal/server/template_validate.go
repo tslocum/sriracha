@@ -71,8 +71,8 @@ func (s *Server) _validateTemplates(db serverDB, allBoards []*Board, img *Board,
 				}
 				data.Boards = allBoards
 				if c.thread || c.threads {
-					for _, thread := range db.AllThreads(true, board) {
-						data.Threads = append(data.Threads, db.AllPostsInThread(true, thread[0]))
+					for _, thread := range db.AllThreads(FilterVisible, board) {
+						data.Threads = append(data.Threads, db.AllPostsInThread(FilterVisible, thread[0]))
 						if c.thread {
 							break
 						}

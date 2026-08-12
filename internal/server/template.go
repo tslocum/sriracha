@@ -436,10 +436,10 @@ func (s *Server) newTemplateFuncMap(db serverDB, locale string) template.FuncMap
 	f["AllPages"] = func() []*Page { return db.AllPages() }
 
 	// Post.
-	f["AllThreads"] = func(moderated bool, board ...*Board) [][2]int { return db.AllThreads(moderated, board...) }
-	f["AllPostsInThread"] = func(moderated bool, postID int) []*Post { return db.AllPostsInThread(moderated, postID) }
-	f["AllReplies"] = func(threadID int, limit int, moderated bool) []*Post {
-		return db.AllReplies(threadID, limit, moderated)
+	f["AllThreads"] = func(filter PostFilter, board ...*Board) [][2]int { return db.AllThreads(filter, board...) }
+	f["AllPostsInThread"] = func(filter PostFilter, postID int) []*Post { return db.AllPostsInThread(filter, postID) }
+	f["AllReplies"] = func(filter PostFilter, threadID int, limit int) []*Post {
+		return db.AllReplies(filter, threadID, limit)
 	}
 	f["PendingPosts"] = func() []*Post { return db.PendingPosts() }
 	f["PostByID"] = func(postID int) *Post { return db.PostByID(postID) }

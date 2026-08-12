@@ -38,9 +38,20 @@ var notExpandable = regexp.MustCompile(`^((audio/midi)|(video/(mpeg|ogg|x-matros
 type PostModerated int
 
 const (
-	ModeratedHidden   PostModerated = 0
-	ModeratedVisible  PostModerated = 1
-	ModeratedApproved PostModerated = 2
+	ModeratedPruned   PostModerated = -1 // Hidden everywhere pending archival or deletion.
+	ModeratedHidden   PostModerated = 0  // Hidden everywhere pending approval.
+	ModeratedVisible  PostModerated = 1  // Visible in board index without staff approval.
+	ModeratedApproved PostModerated = 2  // Visible in board index with staff approval.
+	ModeratedArchived PostModerated = 3  // Visible in thread archive.
+)
+
+type PostFilter int
+
+const (
+	FilterAny      PostFilter = 0 // Do not filter results.
+	FilterVisible  PostFilter = 1 // Only visible posts.
+	FilterActive   PostFilter = 2 // Only visible active posts.
+	FilterArchived PostFilter = 3 // Only visible archived posts.
 )
 
 type PostBacklink struct {
@@ -457,6 +468,10 @@ func (p *Post) URL(siteHome string) string {
 	}
 
 	return fmt.Sprintf(`%s%sres/%d.html#%d`, host, path, p.Thread(), p.ID)
+}
+
+func (p *Post) Archived() bool {
+	return p.Moderated == ModeratedArchived || p.Moderated == ModeratedPruned
 }
 
 func (p *Post) SearchText() string {

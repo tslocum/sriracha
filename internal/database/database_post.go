@@ -66,7 +66,7 @@ func (db *DB) AddPost(p *Post) {
 
 // AllThreads returns all thread IDs and reply counts. When board is nil, only
 // threads belonging to boards included in the overboard are returned.
-func (db *DB) AllThreads(moderated bool, board ...*Board) [][2]int {
+func (db *DB) AllThreads(filter PostFilter, board ...*Board) [][2]int {
 	var boardWhere string
 	l := len(board)
 	if l > 0 && board[0] != nil {
@@ -100,9 +100,16 @@ func (db *DB) AllThreads(moderated bool, board ...*Board) [][2]int {
 
 	var extraJoin string
 	var extraWhere string
-	if moderated {
+	switch filter {
+	case FilterVisible:
 		extraJoin = " AND reply.moderated > 0"
 		extraWhere = " AND post.moderated > 0"
+	case FilterActive:
+		extraJoin = " AND (reply.moderated = 1 OR reply.moderated = 2)"
+		extraWhere = " AND (post.moderated = 1 OR post.moderated = 2)"
+	case FilterArchived:
+		extraJoin = " AND reply.moderated = 3"
+		extraWhere = " AND post.moderated = 3"
 	}
 	rows, err := db.conn.Query(context.Background(), "SELECT post.id, COUNT(reply.id) AS replies FROM post LEFT OUTER JOIN post reply ON reply.parent = post.id"+extraJoin+" WHERE "+boardWhere+" post.parent IS NULL"+extraWhere+" GROUP BY post.id ORDER BY post.stickied DESC, post.bumped DESC")
 	if err != nil {
@@ -150,10 +157,15 @@ func (db *DB) TrimThreads(board *Board) []*Post {
 	return posts
 }
 
-func (db *DB) AllPostsInThread(moderated bool, postID int) []*Post {
+func (db *DB) AllPostsInThread(filter PostFilter, postID int) []*Post {
 	var extra string
-	if moderated {
+	switch filter {
+	case FilterVisible:
 		extra = " AND moderated > 0"
+	case FilterActive:
+		extra = " AND (moderated = 1 OR moderated = 2)"
+	case FilterArchived:
+		extra = " AND moderated = 3"
 	}
 	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE (id = $1 OR parent = $1)"+extra+" ORDER BY id ASC", postID)
 	if err != nil {
@@ -187,7 +199,7 @@ func (db *DB) AllPostsInThread(moderated bool, postID int) []*Post {
 	return posts
 }
 
-func (db *DB) AllReplies(threadID int, limit int, moderated bool) []*Post {
+func (db *DB) AllReplies(filter PostFilter, threadID int, limit int) []*Post {
 	if limit == 0 {
 		return nil
 	}
@@ -198,8 +210,13 @@ func (db *DB) AllReplies(threadID int, limit int, moderated bool) []*Post {
 		extraLimit = fmt.Sprintf(" LIMIT %d", limit)
 	}
 	var extraModerated string
-	if moderated {
+	switch filter {
+	case FilterVisible:
 		extraModerated = " AND moderated > 0"
+	case FilterActive:
+		extraModerated = " AND (moderated = 1 OR moderated = 2)"
+	case FilterArchived:
+		extraModerated = " AND moderated = 3"
 	}
 	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE parent = $1"+extraModerated+" ORDER BY id "+sortDir+extraLimit, threadID)
 	if err != nil {

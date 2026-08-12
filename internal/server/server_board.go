@@ -627,10 +627,10 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		data.Boards = db.AllBoards()
 		data.ModMode = true
 		if postID > 0 {
-			data.Threads = [][]*Post{db.AllPostsInThread(true, postID)}
+			data.Threads = [][]*Post{db.AllPostsInThread(FilterVisible, postID)}
 			data.ReplyMode = postID
 		} else {
-			allThreads := db.AllThreads(true, b)
+			allThreads := db.AllThreads(FilterVisible, b)
 
 			data.Page = page
 			data.Pages = pageCount(len(allThreads), b.Threads)
@@ -645,7 +645,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 				thread.Replies = threadInfo[1]
 				posts := []*Post{thread}
 				if b.Type == TypeImageboard {
-					posts = append(posts, db.AllReplies(threadInfo[0], b.Replies, true)...)
+					posts = append(posts, db.AllReplies(FilterVisible, threadInfo[0], b.Replies)...)
 				}
 				data.Threads = append(data.Threads, posts)
 			}
@@ -711,7 +711,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 			return
 		}
 
-		allThreads := db.AllThreads(false, b)
+		allThreads := db.AllThreads(FilterAny, b)
 		if !FormBool(r, "confirmation") {
 			data.Template = "manage_info"
 			data.Message = template.HTML(`<h2 class="managetitle">` + Get(b, data.Account, "Boards") + `</h2>
@@ -868,8 +868,8 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 					}
 				}
 
-				for _, info := range db.AllThreads(false, data.Manage.Board) {
-					for _, post := range db.AllPostsInThread(false, info[0]) {
+				for _, info := range db.AllThreads(FilterAny, data.Manage.Board) {
+					for _, post := range db.AllPostsInThread(FilterAny, info[0]) {
 						var modified bool
 						resPattern, err := regexp.Compile(`<a href="` + regexp.QuoteMeta(oldPath) + `res\/([0-9]+).html#([0-9]+)"`)
 						if err != nil {

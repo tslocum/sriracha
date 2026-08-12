@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"codeberg.org/tslocum/sriracha"
+	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/alexedwards/argon2id"
 	"github.com/gabriel-vasile/mimetype"
@@ -126,9 +127,9 @@ func (db *DB) _upgrade(rootDir string, v int) error {
 	case 5: // Add file MIME type to posts.
 		boards := db.AllBoards()
 		for _, b := range boards {
-			allThreads := db.AllThreads(false, b)
+			allThreads := db.AllThreads(FilterAny, b)
 			for _, threadInfo := range allThreads {
-				posts := db.AllPostsInThread(false, threadInfo[0])
+				posts := db.AllPostsInThread(FilterAny, threadInfo[0])
 				for _, post := range posts {
 					if post.File != "" && !post.IsEmbed() {
 						if strings.HasSuffix(post.File, ".tgkr") {
@@ -152,9 +153,9 @@ func (db *DB) _upgrade(rootDir string, v int) error {
 	case 20: // Add search vector to posts.
 		boards := db.AllBoards()
 		for _, b := range boards {
-			allThreads := db.AllThreads(false, b)
+			allThreads := db.AllThreads(FilterAny, b)
 			for _, threadInfo := range allThreads {
-				posts := db.AllPostsInThread(false, threadInfo[0])
+				posts := db.AllPostsInThread(FilterAny, threadInfo[0])
 				for _, post := range posts {
 					_, err = db.conn.Exec(context.Background(), "UPDATE post SET search = to_tsvector($1) WHERE id = $2", post.SearchText(), post.ID)
 					if err != nil {

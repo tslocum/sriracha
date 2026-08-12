@@ -1410,7 +1410,7 @@ func (s *Server) deletePostFiles(p *Post) {
 
 // deletePost deletes a post from the database as well as any associated files.
 func (s *Server) deletePost(db serverDB, p *Post) {
-	posts := db.AllPostsInThread(false, p.ID)
+	posts := db.AllPostsInThread(FilterAny, p.ID)
 	for _, post := range posts {
 		s.deletePostFiles(post)
 	}
@@ -1707,8 +1707,8 @@ func (s *Server) handleBenchmark(n int) {
 
 func (s *Server) rebuildNameblocks(db serverDB) {
 	for _, b := range db.AllBoards() {
-		for _, threadInfo := range db.AllThreads(false, b) {
-			for _, p := range db.AllPostsInThread(false, threadInfo[0]) {
+		for _, threadInfo := range db.AllThreads(FilterAny, b) {
+			for _, p := range db.AllPostsInThread(FilterAny, threadInfo[0]) {
 				var capcode string
 				if strings.Contains(p.NameBlock, `<span style="color: red`) || strings.Contains(p.NameBlock, `<span class="modcapcode`) {
 					capcode = "Mod"
@@ -2698,8 +2698,8 @@ func (s *Server) Run() error {
 	// Fill missing post backlink data.
 	if !db.HavePostBacklinks() {
 		for _, b := range db.AllBoards() {
-			for _, thread := range db.AllThreads(true, b) {
-				for _, post := range db.AllPostsInThread(true, thread[0]) {
+			for _, thread := range db.AllThreads(FilterVisible, b) {
+				for _, post := range db.AllPostsInThread(FilterVisible, thread[0]) {
 					db.AddPostBacklinks(post)
 				}
 			}

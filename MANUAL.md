@@ -402,9 +402,9 @@ Pages and templates may access the database via the following read-only methods:
   - `PageByPath(path string) *Page`
   - `AllPages() []*Page`
 - [Post](https://docs.rocket9labs.com/codeberg.org/tslocum/sriracha/model/#Post)
-  - `AllThreads(moderated bool, board ...*Board) [][2]int`
-  - `AllPostsInThread(moderated bool, postID int) []*Post`
-  - `AllReplies(threadID int, limit int, moderated bool) []*Post`
+  - `AllThreads(filter PostFilter, board ...*Board) [][2]int`
+  - `AllPostsInThread(filter PostFilter, postID int) []*Post`
+  - `AllReplies(filter PostFilter, limit int) []*Post`
   - `PendingPosts() []*Post`
   - `PostByID(postID int) *Post`
   - `PostsByID(postIDs []int) []*Post`
@@ -432,17 +432,17 @@ For example, the following custom page will render all moderated posts in the
 board with ID #7 by printing their ID, subject and message:
 
 ```gohtml
-{{$onlyShowModerated := true}}
-{{$board := BoardByID 7}}
-{{$threads := AllThreads $onlyShowModerated $board}}
+{{$postFilter := 1}}{{/* Only show visible posts. */}}
+{{$board := BoardByID 7}}{{/* Fetch board with ID 7 from the database. */}}
+{{$threads := AllThreads $postFilter $board}}{{/* Fetch threads in board. */}}
 <hr>
 Found {{len $threads}} threads.
-{{range $i, $thread := $threads}}
+{{range $i, $thread := $threads}}{{/* Iterate over each thread. */}}
     {{$threadID := index $thread 0}}
     {{$threadReplyCount := index $thread 1}}
     <hr>
     Thread No.{{$threadID}} (Replies: {{$threadReplyCount}})
-    {{range $post := AllPostsInThread $onlyShowModerated $threadID}}
+    {{range $post := AllPostsInThread $postFilter $threadID}}{{/* Iterate over each post in thread. */}}
         <br><br>
         ID: {{$post.ID}}<br>
         Subject: {{$post.Subject}}<br>

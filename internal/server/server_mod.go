@@ -141,7 +141,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				data.ManageError("Failed to move thread: Thread is already located in selected board")
 				return
 			}
-			posts := db.AllPostsInThread(false, post.ID)
+			posts := db.AllPostsInThread(FilterAny, post.ID)
 			// Verify attachments do not already exist at destination board.
 			for _, p := range posts {
 				if p.File != "" && !p.IsEmbed() {

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -30,6 +31,8 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 				if err != nil {
 					data.ManageError(err.Error())
 					return
+				} else if slices.Contains(ids, id) {
+					continue
 				}
 				ids = append(ids, id)
 			}
@@ -41,7 +44,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		delta := &atomic.Uint32{}
 		for _, postID := range ids {
 			post := db.PostByID(postID)
-			if post == nil {
+			if post == nil || post.Archived() {
 				continue
 			}
 			rebuild := post.Moderated == ModeratedHidden
@@ -59,7 +62,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		var posts []*Post
 		for _, postID := range ids {
 			post := db.PostByID(postID)
-			if post == nil {
+			if post == nil || post.Archived() {
 				continue
 			}
 			posts = append(posts, post)
@@ -69,7 +72,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 
 		for _, postID := range ids {
 			post := db.PostByID(postID)
-			if post == nil {
+			if post == nil || post.Archived() {
 				continue
 			}
 			s.queueNotifications(db, post)
@@ -115,8 +118,8 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		}
 		data.Template = "manage_info"
 		for _, b := range db.AllBoards() {
-			for _, thread := range db.AllThreads(false, b) {
-				for _, p := range db.AllPostsInThread(false, thread[0]) {
+			for _, thread := range db.AllThreads(FilterAny, b) {
+				for _, p := range db.AllPostsInThread(FilterAny, thread[0]) {
 					resPattern := regexp.MustCompile(`<a href="[^"]*res\/([0-9]+).html#([0-9]+)" class="([A-Aa-z]+)">&gt;&gt;([0-9]+)(\(OP\))?</a>`)
 					oldMessage := p.Message
 					p.Message = resPattern.ReplaceAllStringFunc(p.Message, func(s string) string {
