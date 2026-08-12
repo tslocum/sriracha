@@ -1,0 +1,22 @@
+Sriracha Release Checklist
+==========================
+
+See the Sriracha Manual for information on how to install and use Sriracha:
+  https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md
+
+This is a checklist of things to do every time a new version of Sriracha is released.
+
+- [ ] Verify git tag is set correctly
+- [ ] Run smoke test `sriracha --test`
+- [ ] Add 2FA device
+- [ ] Log out, log back in using 2FA device
+- [ ] Upgrade remote Sriracha instances
+- [ ] Verify remote Sriracha instances have not printed any error messages
+- [ ] Build for supported platforms `goreleaser --clean --skip=publish`
+- [ ] Build and publish Docker container image
+  - [ ] `sudo docker build -t tslocum/sriracha:v2.0.0 --build-arg version=2.0.0 .`
+  - [ ] `sudo docker tag tslocum/sriracha:v2.0.0 tslocum/sriracha:latest`
+  - [ ] `sudo docker push tslocum/sriracha:v2.0.0`
+  - [ ] `sudo docker push tslocum/sriracha:latest`
+- [ ] Upload release archives to Codeberg
+- [ ] Add news entry to official Sriracha instance

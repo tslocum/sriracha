@@ -2919,42 +2919,43 @@ func (s *Server) Run() error {
 	// Wait until the HTTP server returns an error.
 	err = <-httpErrors
 
-	// Shut down gracefully.
-	if err == http.ErrServerClosed {
-		// Wait for existing requests to finish processing.
-		timer := time.NewTimer(30 * time.Second)
-		ticker := time.NewTicker(500 * time.Millisecond)
-		for {
-			if s.connCount.Load() == 0 {
-				break
-			}
-
-			var timeout bool
-			select {
-			case <-ticker.C:
-			case <-timer.C:
-				timeout = true
-			}
-			if timeout {
-				break
-			}
-		}
-
-		// Flush rebuild queue.
-		s.rebuildQueue <- nil
-		s.rebuildWaitGroup.Wait()
-
-		// Flush notification queue.
-		if s.opt.Notifications {
-			s.shutdownNotifications <- struct{}{}
-			s.notificationsWaitGroup.Wait()
-		}
-
-		// Lock before exiting.
-		s.lock.Lock()
-		return nil
+	// Handle unexpected HTTP server error.
+	if err != http.ErrServerClosed {
+		return err
 	}
-	return err
+
+	// The HTTP server has stopped accepting new connections. Wait for existing connections to close.
+	timer := time.NewTimer(30 * time.Second)
+	ticker := time.NewTicker(500 * time.Millisecond)
+	for {
+		if s.connCount.Load() == 0 {
+			break
+		}
+
+		var timeout bool
+		select {
+		case <-ticker.C:
+		case <-timer.C:
+			timeout = true
+		}
+		if timeout {
+			break
+		}
+	}
+
+	// Flush rebuild queue.
+	s.rebuildQueue <- nil
+	s.rebuildWaitGroup.Wait()
+
+	// Flush notification queue.
+	if s.opt.Notifications {
+		s.shutdownNotifications <- struct{}{}
+		s.notificationsWaitGroup.Wait()
+	}
+
+	// Lock before exiting.
+	s.lock.Lock()
+	return nil
 }
 
 // newHash returns a new hash digest.
