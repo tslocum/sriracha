@@ -86,6 +86,10 @@ func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request
 		return
 	} else if len(posts) > 0 {
 		post := posts[0]
+		if post.Archived() {
+			data.BoardError(w, Get(b, data.Account, "Only active posts may be deleted."))
+			return
+		}
 
 		password := r.FormValue("password")
 		if post.Password == "" || s.hashData(password) != post.Password {
@@ -117,7 +121,7 @@ func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request
 		wg.Wait()
 
 		data.Template = "board_info"
-		data.Info = fmt.Sprintf("Deleted No.%d", post.ID)
+		data.Info = data.Get("Deleted %s.", fmt.Sprintf("No.%d", post.ID))
 		data.execute(w)
 		return
 	}
