@@ -130,11 +130,11 @@ func (db *DB) AllThreads(filter PostFilter, board ...*Board) [][2]int {
 	return threads
 }
 
-func (db *DB) TrimThreads(board *Board) []*Post {
+func (db *DB) PruneThreads(board *Board) []*Post {
 	if board.MaxThreads == 0 {
 		return nil
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE post.board = $1 AND parent IS NULL AND moderated > 0 ORDER BY stickied DESC, bumped DESC, id ASC OFFSET $2", board.ID, board.MaxThreads)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE post.board = $1 AND parent IS NULL AND (moderated = 1 OR moderated = 2) ORDER BY stickied DESC, bumped DESC, id ASC OFFSET $2", board.ID, board.MaxThreads)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil

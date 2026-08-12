@@ -9,7 +9,7 @@
         {{$post.Identifier $.Opt.Identifiers true}}
     {{end}}
     <span class="reflink">
-        {{if and $post.Board.Reports (not $.ModMode)}}
+        {{if and $post.Board.Reports (not $.ArchiveMode) (not $.ModMode)}}
             <span class="postui">
                 <a href="/sriracha/?action=report&board={{$post.Board.ID}}&post={{$post.ID}}" title="{{T "Report"}}" rel="nofollow">R</a>
             </span>

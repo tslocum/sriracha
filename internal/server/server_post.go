@@ -1234,8 +1234,21 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 	}
 
 	if post.Parent == 0 {
-		for _, thread := range db.TrimThreads(post.Board) {
-			s.deletePost(db, thread)
+		for _, thread := range db.PruneThreads(post.Board) {
+			switch post.Board.Archive {
+			case ArchiveDisable:
+				s.deletePost(db, thread)
+			case ArchiveManual:
+				db.BumpThread(thread.ID, time.Now().Unix())
+				for _, p := range db.AllPostsInThread(FilterAny, thread.ID) {
+					db.ModeratePost(p.ID, ModeratedPruned)
+				}
+			case ArchiveAutomatic:
+				db.BumpThread(thread.ID, time.Now().Unix())
+				for _, p := range db.AllPostsInThread(FilterAny, thread.ID) {
+					db.ModeratePost(p.ID, ModeratedArchived)
+				}
+			}
 		}
 	} else if strings.ToLower(post.Email) != "sage" {
 		bump := post.Board.MaxReplies == 0 || db.ReplyCount(post.Parent) <= post.Board.MaxReplies

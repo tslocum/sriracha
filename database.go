@@ -120,7 +120,7 @@ type DB interface {
 	// Post.
 	AddPost(p *Post)
 	AllThreads(filter PostFilter, board ...*Board) [][2]int
-	TrimThreads(board *Board) []*Post
+	PruneThreads(board *Board) []*Post
 	AllPostsInThread(filter PostFilter, postID int) []*Post
 	AllReplies(filter PostFilter, threadID int, limit int) []*Post
 	PendingPosts() []*Post

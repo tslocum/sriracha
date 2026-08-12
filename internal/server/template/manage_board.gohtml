@@ -220,6 +220,17 @@
                     <td>{{T "Whether visitors may report posts."}}</td>
                 </tr>
             {{end}}
+            {{if or (ne .Manage.Board.ID 0) (not (Global "board.archive"))}}
+                <tr>
+                    <td class="postblock"><label for="archive">{{T "Archive"}}{{Globe "board.archive"}}</label></td>
+                    <td><select name="archive" style="width: 100%;">
+                        <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Archive 0)}} selected{{end}}>{{T "Disable"}}</option>
+                        <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Archive 1)}} selected{{end}}>{{T "Manual"}}</option>
+                        <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Archive 2)}} selected{{end}}>{{T "Automatic"}}</option>
+                    </select></td>
+                    <td>{{T "Archive threads (instead of deleting them) when the thread limit is exceeded."}}</td>
+                </tr>
+            {{end}}
             {{if or (ne .Manage.Board.ID 0) (not (Global "board.maxthreads"))}}
                 <tr>
                     <td class="postblock"><label for="maxthreads">{{T "Max Threads"}}{{Globe "board.maxthreads"}}</label></td>
@@ -426,17 +437,6 @@
                         <option value="3"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Require 3)}} selected{{end}}>{{T "All posts"}}</option>
                     </select></td>
                     <td>{{T "Require visitors to include an attachment when posting."}}</td>
-                </tr>
-            {{end}}
-            {{if or (ne .Manage.Board.ID 0) (not (Global "board.archive"))}}
-                <tr>
-                    <td class="postblock"><label for="archive">{{T "Archive"}}{{Globe "board.archive"}}</label></td>
-                    <td><select name="archive" style="width: 100%;">
-                        <option value="0"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Archive 0)}} selected{{end}}>{{T "Disable"}}</option>
-                        <option value="1"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Archive 1)}} selected{{end}}>{{T "Manual"}}</option>
-                        <option value="2"{{if and (ne .Manage.Board nil) (eq .Manage.Board.Archive 2)}} selected{{end}}>{{T "Automatic"}}</option>
-                    </select></td>
-                    <td>{{T "Archive threads (instead of deleting them) when the thread limit is exceeded."}}</td>
                 </tr>
             {{end}}
             {{if or (and (eq .Manage.Board.ID 0) (May "board.add" $.Account $.Opt.Access)) (and (ne .Manage.Board.ID 0) (May "board.update" $.Account $.Opt.Access))}}

@@ -221,7 +221,7 @@ func (db *mockDB) AllThreads(filter PostFilter, board ...*Board) [][2]int {
 	}
 	return threads
 }
-func (db *mockDB) TrimThreads(board *Board) []*Post { return nil }
+func (db *mockDB) PruneThreads(board *Board) []*Post { return nil }
 func (db *mockDB) AllPostsInThread(filter PostFilter, postID int) []*Post {
 	var posts []*Post
 	for _, post := range db.posts {
