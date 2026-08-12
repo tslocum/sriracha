@@ -452,6 +452,12 @@ Found {{len $threads}} threads.
 <hr>
 ```
 
+### Browsers
+
+Sriracha web pages follow the [HTML5](https://en.wikipedia.org/wiki/HTML5) specification.
+While any web browser should work with Sriracha, only [Firefox](https://firefox.com)
+and [Lynx](https://en.wikipedia.org/wiki/Lynx_(web_browser)) are officially supported.
+
 ### Custom styles
 
 Use the [style builder](https://sriracha.rocket9labs.com/static/stylebuilder.html)
