@@ -206,7 +206,7 @@ msgstr ""
 msgid "Archive mode"
 msgstr ""
 
-msgid "Archive threads (instead of deleting them) when the maxmimum number of threads is exceeded."
+msgid "Archive threads (instead of deleting them) when the thread limit is exceeded."
 msgstr ""
 
 msgid "Archived"
