@@ -58,7 +58,6 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 			data.ManageError("No post selected.")
 			return
 		}
-		log.Println(action, ids)
 
 		wg := &sync.WaitGroup{}
 		delta := &atomic.Uint32{}
@@ -96,7 +95,9 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 				if post.Locked {
 					db.LockPost(post.ID, false)
 				}
-				db.BumpThread(post.Thread(), time.Now().Unix())
+				if post.Moderated != ModeratedPruned {
+					db.BumpThread(post.Thread(), time.Now().Unix())
+				}
 			}
 		}
 		db.SoftCommit()
@@ -334,6 +335,8 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		if i > 0 {
 			buf.WriteString("<hr>\n")
 		}
+
+		fmt.Fprintf(buf, `<div style="margin-bottom: 5px;"><form method="post" action="/sriracha/" style="display: inline-block;"><input type="hidden" name="archive" value="%d"><input type="submit" value="%s"></form> <form method="post" action="/sriracha/mod/delete/%d" onsubmit="return confirm('Delete No.%d?');"><input type="hidden" name="delete" value="%d"><input type="hidden" name="confirmation" value="1"><input type="submit" value="%s"></form></div>`, threadID, Get(nil, data.Account, "Archive"), threadID, threadID, threadID, Get(nil, data.Account, "Delete"))
 
 		posts := db.AllPostsInThread(FilterAny, threadID)
 
