@@ -1,4 +1,7 @@
 2.0.0:
+- Add maximum connections setting
+- Add maximum form buffer size setting
+- Add minimum and maximum page buffer size settings
 - Support archiving threads
 
 1.9.9:

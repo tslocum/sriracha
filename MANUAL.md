@@ -464,6 +464,19 @@ and [Lynx](https://en.wikipedia.org/wiki/Lynx_(web_browser)) are officially supp
 Use the [style builder](https://sriracha.rocket9labs.com/static/stylebuilder.html)
 to quickly prototype new Sriracha styles.
 
+### Memory usage
+
+The following calculation provides the worst-case scenario for memory usage.
+This is the expected increase in memory usage when the server is fully saturated
+with the maximum number of active connections allowed and every page buffer has
+also grown to the maximum size allowed.
+
+```
+mem = (maxconns * maxformbuffer) + (numcpu * maxpagebuffer)
+```
+
+Replace `numcpu` with the number of CPU cores available to Sriracha.
+
 ### Performance
 
 The best way to improve the performance of Sriracha is by adjusting the
