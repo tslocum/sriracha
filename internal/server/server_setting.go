@@ -19,13 +19,6 @@ import (
 )
 
 func (s *Server) loadSettingFormFile(db serverDB, r *http.Request) ([]byte, int, int, error) {
-	if r.PostForm == nil {
-		const maxMemory = 32 << 20 // 32 MB
-		err := r.ParseMultipartForm(maxMemory)
-		if err != nil {
-			return nil, 0, 0, err
-		}
-	}
 	if r.MultipartForm == nil || r.MultipartForm.File == nil {
 		return nil, 0, 0, nil
 	}

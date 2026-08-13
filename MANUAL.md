@@ -655,18 +655,19 @@ dbname: "sriracha"
 # Maximum static page buffer size. When exceeded, the buffer size is reset.
 # You probably don't need to change this. If you do change it, confirm any
 # expected performance improvements by running benchmarks before and after.
+# Memory usage will increase by numcpu * maxpagebuffer when fully saturated.
 #maxpagebuffer: 4000000 # 4 MB.
 
 # Maximum form buffer size. Uploaded files are first read into the form buffer.
 # When the total upload exceeds this limit, remaining data is written to disk.
-# Each active connection has its own form buffer. You should only change this if
-# you want to handle requests larger than 32 MB without writing temporary files.
-#maxformbuffer: 32000000 # 32 MB.
+# Each active connection has its own form buffer. You should only change this
+# if you want to handle requests larger than 16 MB without buffering to disk.
+#maxformbuffer: 16000000 # 16 MB.
 
-# Maximum active connections. Connections exceeding this limit are still accepted,
-# but they are not read from until an active connection slot becomes available.
-# Memory usage could reach maxconns * maxformbuffer in the worst-case scenario.
-#maxconns: 10
+# Maximum active connections. Connections exceeding this limit are still accepted
+# but are not read from until an active connection slot becomes available.
+# Memory usage will increase by maxconns * maxformbuffer when fully saturated.
+#maxconns: 16
 
 # Access required to perform an action. Default values for all actions are listed below.
 #

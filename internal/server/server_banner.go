@@ -67,13 +67,6 @@ func (s *Server) loadGlobalBannerSettings(db serverDB, b *Banner) {
 }
 
 func (s *Server) loadBannerFormFile(db serverDB, r *http.Request, b *Banner) ([]byte, error) {
-	if r.PostForm == nil {
-		const maxMemory = 32 << 20 // 32 MB
-		err := r.ParseMultipartForm(maxMemory)
-		if err != nil {
-			return nil, err
-		}
-	}
 	if r.MultipartForm == nil || r.MultipartForm.File == nil {
 		return nil, nil
 	}

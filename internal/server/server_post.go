@@ -228,13 +228,6 @@ func (s *Server) loadPostForm(db serverDB, r *http.Request, p *Post) error {
 }
 
 func (s *Server) loadPostFiles(r *http.Request, p *Post) ([]*multipart.FileHeader, error) {
-	if r.PostForm == nil {
-		const maxMemory = 32 << 20 // 32 MB
-		err := r.ParseMultipartForm(maxMemory)
-		if err != nil {
-			return nil, err
-		}
-	}
 	if r.MultipartForm == nil || r.MultipartForm.File == nil {
 		return nil, nil
 	}

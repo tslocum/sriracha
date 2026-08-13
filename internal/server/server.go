@@ -77,6 +77,11 @@ const (
 	defaultServerSearch         = 30  // 30 seconds.
 	defaultServerRefresh        = 300 // 5 minutes.
 	defaultServerDateTimeFormat = DefaultDateTimeFormatHTML
+
+	defaultServerMinPageBuffer = 500000   // 500 KB.
+	defaultServerMaxPageBuffer = 4000000  // 4 MB.
+	defaultServerMaxFormBuffer = 16000000 // 16 MB.
+	defaultServerMaxConns      = 16
 )
 
 const minServerRefresh = 10 // New posts are batched together every 10 seconds.
@@ -537,14 +542,18 @@ func (s *Server) parseConfig(configFile string) error {
 	}
 
 	if config.MinPageBuffer <= 0 {
-		config.MinPageBuffer = 500000 // 500 KB.
+		config.MinPageBuffer = defaultServerMinPageBuffer
 	}
 	if config.MaxPageBuffer <= 0 {
-		config.MaxPageBuffer = 4000000 // 4 MB.
+		config.MaxPageBuffer = defaultServerMaxPageBuffer
 	}
 
 	if config.MaxFormBuffer <= 0 {
-		config.MaxFormBuffer = 32000000 // 32 MB.
+		config.MaxFormBuffer = defaultServerMaxFormBuffer
+	}
+
+	if config.MaxConns <= 0 {
+		config.MaxConns = defaultServerMaxConns
 	}
 
 	s.config = config
@@ -2028,8 +2037,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 
 	// Parse form.
 	if r.Method == http.MethodPost {
-		const maxMemory = 32 << 20 // 32 megabytes.
-		err := r.ParseMultipartForm(maxMemory)
+		err := r.ParseMultipartForm(s.config.MaxFormBuffer)
 		if r.MultipartForm != nil {
 			defer r.MultipartForm.RemoveAll()
 		}

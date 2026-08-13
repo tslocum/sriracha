@@ -62,11 +62,12 @@ type Config struct {
 
 	NoIP bool // Do not record post author IP addresses.
 
-	MaxConns      int // Maximum concurrent connections.
-	MaxFormBuffer int // Maximum multipart form buffer size, in bytes.
-
 	MinPageBuffer int // Initial static page buffer size, in bytes.
 	MaxPageBuffer int // Maximum static page buffer size, in bytes.
+
+	MaxFormBuffer int64 // Maximum multipart form buffer size, in bytes.
+
+	MaxConns int // Maximum concurrent connections.
 
 	Access map[string]string // Specifies which roles may perform each management or moderation action.
 
