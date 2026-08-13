@@ -284,7 +284,37 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		buf.WriteString(fmt.Sprintf(`<hr><form method="post" action="/sriracha/" style="display: inline-block;"><input type="hidden" name="approve" value="%s"><input type="submit" value="%s"></form>`, ids, Get(nil, data.Account, "Approve all")))
 	}
 	data.Message2 = template.HTML(buf.String())
-	total := len(reports) + len(pending)
+
+	buf.Reset()
+	pruned := db.PrunedThreads()
+	for i, threadID := range pruned {
+		if i > 0 {
+			buf.WriteString("<hr>\n")
+		}
+
+		posts := db.AllPostsInThread(FilterAny, threadID)
+
+		d := s.buildData(db, w, r)
+		d.Template = "imgboard_post"
+		d.Board = posts[0].Board
+		d.Post = posts[0]
+		d.Threads = [][]*Post{posts}
+		d.ReplyMode = posts[0].ID
+		d.execute(buf)
+	}
+	if len(pruned) > 1 {
+		var ids []byte
+		for i := range pruned {
+			if i != 0 {
+				ids = append(ids, ',')
+			}
+			ids = append(ids, []byte(strconv.Itoa(pruned[i]))...)
+		}
+		buf.WriteString(fmt.Sprintf(`<hr><form method="post" action="/sriracha/" style="display: inline-block;"><input type="hidden" name="archive" value="%s"><input type="submit" value="%s"></form>`, ids, Get(nil, data.Account, "Archive all")))
+	}
+	data.Message3 = template.HTML(buf.String())
+
+	total := len(reports) + len(pending) + len(pruned)
 	if total > 0 {
 		data.Extra3 = data.GetN("%d pending moderation request", "%d pending moderation requests", total)
 	}

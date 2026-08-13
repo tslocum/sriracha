@@ -406,6 +406,7 @@ Pages and templates may access the database via the following read-only methods:
   - `AllPostsInThread(filter PostFilter, postID int) []*Post`
   - `AllReplies(filter PostFilter, limit int) []*Post`
   - `PendingPosts() []*Post`
+  - `PrunedThreads() []int`
   - `PostByID(postID int) *Post`
   - `PostsByID(postIDs []int) []*Post`
   - `PostsByIP(hash string) []*Post`

@@ -1620,7 +1620,7 @@ func (s *Server) writeModQueue(db serverDB) {
 		return
 	}
 
-	queueSize := len(db.PendingPosts()) + len(db.AllReports())
+	queueSize := len(db.PendingPosts()) + len(db.AllReports()) + len(db.PrunedThreads())
 	if queueSize == s.modQueueSize {
 		return
 	}

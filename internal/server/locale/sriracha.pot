@@ -200,6 +200,9 @@ msgstr ""
 msgid "Archive"
 msgstr ""
 
+msgid "Archive all"
+msgstr ""
+
 msgid "Archive threads (instead of deleting them) when the maxmimum number of threads is exceeded."
 msgstr ""
 
@@ -1216,6 +1219,9 @@ msgid "Preview"
 msgstr ""
 
 msgid "Previous"
+msgstr ""
+
+msgid "Pruned Threads"
 msgstr ""
 
 msgid "Query"

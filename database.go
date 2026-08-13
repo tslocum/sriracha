@@ -124,6 +124,7 @@ type DB interface {
 	AllPostsInThread(filter PostFilter, postID int) []*Post
 	AllReplies(filter PostFilter, threadID int, limit int) []*Post
 	PendingPosts() []*Post
+	PrunedThreads() []int
 	PostByID(postID int) *Post
 	PostsByID(postIDs []int) []*Post
 	PostsByIP(hash string) []*Post

@@ -233,6 +233,7 @@ func (db *mockDB) AllPostsInThread(filter PostFilter, postID int) []*Post {
 }
 func (db *mockDB) AllReplies(filter PostFilter, threadID int, limit int) []*Post      { return nil }
 func (db *mockDB) PendingPosts() []*Post                                              { return nil }
+func (db *mockDB) PrunedThreads() []int                                               { return nil }
 func (db *mockDB) PostByID(postID int) *Post                                          { return nil }
 func (db *mockDB) PostsByID(postIDs []int) []*Post                                    { return nil }
 func (db *mockDB) PostsByIP(hash string) []*Post                                      { return nil }

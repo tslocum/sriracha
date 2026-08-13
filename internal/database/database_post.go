@@ -281,6 +281,29 @@ func (db *DB) PendingPosts() []*Post {
 	return posts
 }
 
+func (db *DB) PrunedThreads() []int {
+	rows, err := db.conn.Query(context.Background(), "SELECT id FROM post WHERE moderated = -1 AND parent IS NULL ORDER BY bumped ASC")
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil
+		}
+		dbErr(fmt.Errorf("failed to select pruned threads: %w", err))
+	}
+	var threadIDs []int
+	for rows.Next() {
+		var id int
+		err = rows.Scan(&id)
+		if err != nil {
+			dbErr(err)
+		}
+		threadIDs = append(threadIDs, id)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select pruned threads: %w", rows.Err()))
+	}
+	return threadIDs
+}
+
 func (db *DB) PostByID(postID int) *Post {
 	p := &Post{}
 	boardID, err := scanPost(p, db.conn.QueryRow(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE id = $1", postID))
