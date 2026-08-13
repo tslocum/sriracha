@@ -303,6 +303,8 @@ type Server struct {
 
 	connCount *atomic.Int32
 
+	connSemaphore chan struct{}
+
 	httpMaxRequestSize int64
 
 	twoFactorSessions []*twoFactorSession
@@ -2023,6 +2025,19 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 
 // serve serves web requests.
 func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
+	var unlocked bool
+
+	// Acquire semaphore.
+	s.connSemaphore <- struct{}{}
+
+	// Release semaphore after serving request.
+	defer func() {
+		if unlocked {
+			return
+		}
+		<-s.connSemaphore
+	}()
+
 	// Set Server header.
 	w.Header().Set("Server", "Sriracha GNU LGPL")
 
@@ -2039,7 +2054,12 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		err := r.ParseMultipartForm(s.config.MaxFormBuffer)
 		if r.MultipartForm != nil {
-			defer r.MultipartForm.RemoveAll()
+			defer func() {
+				if r.MultipartForm == nil {
+					return
+				}
+				r.MultipartForm.RemoveAll()
+			}()
 		}
 		if err != nil && err != http.ErrNotMultipart {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -2136,7 +2156,6 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		action = "search"
 	}
 
-	var unlocked bool
 	if s.config.ImportMode && action != "" && action != "captcha" && action != "manage" {
 		data := s.buildData(db, w, r)
 		data.BoardError(w, data.G("All boards are locked because Sriracha is running in import mode. Please try again later."))
@@ -2498,6 +2517,7 @@ func (s *Server) Run() error {
 	if s.config.SaltIdent != "" {
 		model.CRCSalt = []byte(s.config.SaltIdent)
 	}
+	s.connSemaphore = make(chan struct{}, s.config.MaxConns)
 
 	var emptyRootDir bool
 	if smokeTest {

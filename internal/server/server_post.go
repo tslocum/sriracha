@@ -1269,12 +1269,24 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
+	// Unlock server and release semaphore.
 	s.lock.Unlock()
+	<-s.connSemaphore
 	unlocked = true
 
+	// Queue building static pages.
 	s.rebuildQueue <- &rebuildInfo{post: post, wg: wg}
+
+	// Remove temporary files and deallocate multipart form.
+	if r.MultipartForm != nil {
+		r.MultipartForm.RemoveAll()
+		r.MultipartForm = nil
+	}
+
+	// Wait for static pages to be built.
 	wg.Wait()
 
+	// Redirect to new post.
 	redir := fmt.Sprintf("%sres/%d.html#%d", b.Path(), post.Thread(), post.ID)
 	data.Redirect(w, r, redir)
 	return
