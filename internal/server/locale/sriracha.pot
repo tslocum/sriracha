@@ -1534,6 +1534,9 @@ msgstr ""
 msgid "Type ## and some text in the name field to add a secure tripcode:"
 msgstr ""
 
+msgid "Unarchive"
+msgstr ""
+
 msgid "Unknown"
 msgstr ""
 

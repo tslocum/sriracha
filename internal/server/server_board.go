@@ -626,11 +626,18 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		data.Board = b
 		data.Boards = db.AllBoards()
 		data.ModMode = true
+		postFilter := FilterActive
+		if FormBool(r, "archive") {
+			postFilter = FilterArchived
+		}
 		if postID > 0 {
-			data.Threads = [][]*Post{db.AllPostsInThread(FilterVisible, postID)}
+			data.Threads = [][]*Post{db.AllPostsInThread(postFilter, postID)}
 			data.ReplyMode = postID
+			if len(data.Threads[0]) > 0 && data.Threads[0][0] != nil && data.Threads[0][0].Archived() {
+				data.ArchiveMode = true
+			}
 		} else {
-			allThreads := db.AllThreads(FilterVisible, b)
+			allThreads := db.AllThreads(postFilter, b)
 
 			data.Page = page
 			data.Pages = pageCount(len(allThreads), b.Threads)
@@ -645,7 +652,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 				thread.Replies = threadInfo[1]
 				posts := []*Post{thread}
 				if b.Type == TypeImageboard {
-					posts = append(posts, db.AllReplies(FilterVisible, threadInfo[0], b.Replies)...)
+					posts = append(posts, db.AllReplies(postFilter, threadInfo[0], b.Replies)...)
 				}
 				data.Threads = append(data.Threads, posts)
 			}

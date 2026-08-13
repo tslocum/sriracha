@@ -1406,13 +1406,14 @@ range, use a wildcard (*) at the end of the range prefix:
 Mod mode is a tool staff members may use to moderate one or more posts.
 When browsing in mod mode, the following moderation links are displayed:
 
-**? V M S L D B D&B**
+**? # V M S L D B D&B**
 
-- **?** Spoiler post (when spoilers are enabled and a thumbnail is present)
+- **?** Spoiler or unspoiler post (when spoilers are enabled and a thumbnail is present)
+- **#** Archive or unarchive thread
 - **V** View posts by author (when identifiers are enabed)
 - **M** Move thread
-- **S** Sticky thread
-- **L** Lock thread
+- **S** Sticky or unsticky thread
+- **L** Lock or unlock thread
 - **D** Delete post
 - **B** Ban post author
 - **D&B** Delete post and ban post author

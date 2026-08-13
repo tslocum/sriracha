@@ -21,7 +21,7 @@ import (
 )
 
 func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodPost {
+	if r.Method == http.MethodPost || FormString(r, "approve") != "" || FormString(r, "archive") != "" || FormString(r, "unarchive") != "" {
 		scanIDs := func(formKey string) []int {
 			formValue := FormString(r, formKey)
 			if formValue == "" {
@@ -49,6 +49,8 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 			action = "approve"
 		} else if FormString(r, "archive") != "" {
 			action = "archive"
+		} else if FormString(r, "unarchive") != "" {
+			action = "unarchive"
 		} else {
 			data.ManageError("Unknown moderation action.")
 			return
@@ -81,13 +83,28 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 				}
 				db.AddPostBacklinks(post)
 				db.BumpThread(post.Thread(), time.Now().Unix())
-			} else { // action = archive
-				if post.Moderated == ModeratedArchived {
-					continue
-				}
-				for _, p := range db.AllPostsInThread(FilterAny, post.ID) {
-					db.ModeratePost(p.ID, ModeratedArchived)
-					db.DeleteReports(p)
+			} else {
+				if action == "archive" {
+					if post.Moderated == ModeratedArchived {
+						continue
+					}
+					pruned := post.Moderated == ModeratedPruned
+					for _, p := range db.AllPostsInThread(FilterAny, post.ID) {
+						db.ModeratePost(p.ID, ModeratedArchived)
+						db.DeleteReports(p)
+					}
+					if !pruned {
+						s.log(db, data.Account, post.Board, fmt.Sprintf("Archived >>%d", post.ID), "")
+					}
+				} else {
+					if !post.Archived() {
+						continue
+					}
+					for _, p := range db.AllPostsInThread(FilterAny, post.ID) {
+						db.ModeratePost(p.ID, ModeratedApproved)
+						db.DeleteReports(p)
+					}
+					s.log(db, data.Account, post.Board, fmt.Sprintf("Unarchived >>%d", post.ID), "")
 				}
 				if post.Stickied {
 					db.StickyPost(post.ID, false)
@@ -95,7 +112,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 				if post.Locked {
 					db.LockPost(post.ID, false)
 				}
-				if post.Moderated != ModeratedPruned {
+				if action == "unarchive" || post.Moderated != ModeratedPruned {
 					db.BumpThread(post.Thread(), time.Now().Unix())
 				}
 			}
@@ -120,6 +137,16 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 				}
 				s.queueNotifications(db, post)
 			}
+		}
+
+		if (action == "archive" || action == "unarchive") && r.Method == http.MethodGet {
+			data.Template = "manage_info"
+			if action == "archive" {
+				data.Info = "Archived thread."
+			} else {
+				data.Info = "Unarchived thread."
+			}
+			return
 		}
 
 		data.Redirect(w, r, "/sriracha/")
