@@ -104,7 +104,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			delta := &atomic.Uint32{}
 			for _, post := range posts {
 				s.deletePost(db, post)
-				s.log(db, data.Account, post.Board, fmt.Sprintf("Deleted >>%d", post.ID), "")
+				s.log(db, data.Account, post.Board, fmt.Sprintf("Deleted >>%d", post.ID), "Deleted all posts by author.")
 			}
 			db.SoftCommit()
 			s.rebuildThreads(db, wg, delta, posts)
@@ -400,9 +400,19 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				}
 			}
 			if action == "d" || action == "db" {
+				moderated := post.Moderated
 				s.deletePost(db, post)
 
-				s.log(db, data.Account, data.Board, fmt.Sprintf("Deleted >>%d", post.ID), "")
+				message := fmt.Sprintf("Deleted >>%d", post.ID)
+				if post.Parent == 0 {
+					switch moderated {
+					case ModeratedPruned:
+						message = fmt.Sprintf("Deleted pruned thread >>%d", post.ID)
+					case ModeratedArchived:
+						message = fmt.Sprintf("Deleted archived thread >>%d", post.ID)
+					}
+				}
+				s.log(db, data.Account, data.Board, message, "")
 
 				rebuild = append(rebuild, post)
 			}
