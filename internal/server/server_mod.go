@@ -311,6 +311,9 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		case action == "s" && !post.Stickied:
 			if s.forbidden(w, data, "post.sticky") {
 				return
+			} else if post.Archived() {
+				data.ManageError("Only active posts may be stickied.")
+				return
 			}
 			db.StickyPost(post.ID, true)
 			s.log(db, data.Account, nil, fmt.Sprintf("Stickied >>/post/%d", post.ID), "")
@@ -322,6 +325,9 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			s.log(db, data.Account, nil, fmt.Sprintf("Unstickied >>/post/%d", post.ID), "")
 		case action == "l" && !post.Locked:
 			if s.forbidden(w, data, "post.lock") {
+				return
+			} else if post.Archived() {
+				data.ManageError("Only active posts may be locked.")
 				return
 			}
 			db.LockPost(post.ID, true)
