@@ -203,13 +203,13 @@ msgstr ""
 msgid "Archive all"
 msgstr ""
 
+msgid "Archive mode"
+msgstr ""
+
 msgid "Archive threads (instead of deleting them) when the maxmimum number of threads is exceeded."
 msgstr ""
 
 msgid "Archived"
-msgstr ""
-
-msgid "Archived %s"
 msgstr ""
 
 msgid "Artwork title:"
@@ -1481,6 +1481,9 @@ msgid "This setting is purely cosmetic. To actually prevent access, configure yo
 msgstr ""
 
 msgid "Thread"
+msgstr ""
+
+msgid "Thread archived %s."
 msgstr ""
 
 msgid "Thread deleted."

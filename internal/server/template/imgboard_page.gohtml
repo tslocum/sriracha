@@ -6,7 +6,11 @@
 {{else if .ReplyMode}}
 	<div class="replymode">
 		{{if not .ModMode}}
-			{{T "Posting mode: Reply"}}
+			{{if not .ArchiveMode}}
+				{{T "Posting mode: Reply"}}
+			{{else}}
+				{{T "Archive mode"}}
+			{{end}}
 		{{else}}
 			{{T "Mod mode: Reply"}}
 		{{end}}
@@ -33,7 +37,7 @@
 			</div>
 		</details>
 	{{else if and .ReplyMode (gt (len .Threads) 0)}}
-		{{T "Archived %s" (FormatTimestamp (index (index .Threads 0) 0).Bumped) | HTML}}
+		{{T "Thread archived %s." (FormatTimestamp (index (index .Threads 0) 0).Bumped) | HTML}}
 	{{end}}
 {{end}}
 <form method="post" action="/sriracha/">
