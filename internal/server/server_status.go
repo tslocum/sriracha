@@ -22,47 +22,88 @@ import (
 
 func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
-		var ids []int
-		approveStr := FormString(r, "approve")
-		if strings.ContainsRune(approveStr, ',') {
-			split := strings.Split(approveStr, ",")
-			for _, splitStr := range split {
-				id, err := strconv.Atoi(splitStr)
-				if err != nil {
-					data.ManageError(err.Error())
-					return
-				} else if slices.Contains(ids, id) {
-					continue
-				}
-				ids = append(ids, id)
+		scanIDs := func(formKey string) []int {
+			formValue := FormString(r, formKey)
+			if formValue == "" {
+				return nil
 			}
-		} else {
-			id := FormInt(r, "approve")
-			ids = append(ids, id)
+			var allIDs []int
+			if strings.ContainsRune(formValue, ',') {
+				split := strings.Split(formValue, ",")
+				for _, splitStr := range split {
+					id, err := strconv.Atoi(splitStr)
+					if err != nil || slices.Contains(allIDs, id) {
+						continue
+					}
+					allIDs = append(allIDs, id)
+				}
+			} else {
+				id := FormInt(r, formKey)
+				allIDs = append(allIDs, id)
+			}
+			return allIDs
 		}
+
+		var action string
+		if FormString(r, "approve") != "" {
+			action = "approve"
+		} else if FormString(r, "archive") != "" {
+			action = "archive"
+		} else {
+			data.ManageError("Unknown moderation action.")
+			return
+		}
+		ids := scanIDs(action)
+		if len(ids) == 0 {
+			data.ManageError("No post selected.")
+			return
+		}
+		log.Println(action, ids)
+
 		wg := &sync.WaitGroup{}
 		delta := &atomic.Uint32{}
 		for _, postID := range ids {
 			post := db.PostByID(postID)
-			if post == nil || post.Archived() {
+			if post == nil {
 				continue
 			}
-			rebuild := post.Moderated == ModeratedHidden
 
-			db.ModeratePost(post.ID, ModeratedApproved)
-			db.DeleteReports(post)
+			if action == "approve" {
+				if post.Archived() {
+					continue
+				}
+				rebuild := post.Moderated == ModeratedHidden
 
-			if !rebuild {
-				continue
+				db.ModeratePost(post.ID, ModeratedApproved)
+				db.DeleteReports(post)
+
+				if !rebuild {
+					continue
+				}
+				db.AddPostBacklinks(post)
+				db.BumpThread(post.Thread(), time.Now().Unix())
+			} else { // action = archive
+				if post.Moderated == ModeratedArchived {
+					continue
+				}
+				for _, p := range db.AllPostsInThread(FilterAny, post.ID) {
+					db.ModeratePost(p.ID, ModeratedArchived)
+					db.DeleteReports(p)
+				}
+				if post.Stickied {
+					db.StickyPost(post.ID, false)
+				}
+				if post.Locked {
+					db.LockPost(post.ID, false)
+				}
+				db.BumpThread(post.Thread(), time.Now().Unix())
 			}
-			db.AddPostBacklinks(post)
-			db.BumpThread(post.Thread(), time.Now().Unix())
 		}
 		db.SoftCommit()
 		var posts []*Post
 		for _, postID := range ids {
 			post := db.PostByID(postID)
-			if post == nil || post.Archived() {
+			if post == nil {
 				continue
 			}
 			posts = append(posts, post)
@@ -70,12 +111,14 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		s.rebuildThreads(db, wg, delta, posts)
 		wg.Wait()
 
-		for _, postID := range ids {
-			post := db.PostByID(postID)
-			if post == nil || post.Archived() {
-				continue
+		if action == "approve" && s.opt.Notifications {
+			for _, postID := range ids {
+				post := db.PostByID(postID)
+				if post == nil || post.Archived() {
+					continue
+				}
+				s.queueNotifications(db, post)
 			}
-			s.queueNotifications(db, post)
 		}
 
 		data.Redirect(w, r, "/sriracha/")

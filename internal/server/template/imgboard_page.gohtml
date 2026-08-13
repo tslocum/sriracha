@@ -32,6 +32,8 @@
 				{{if eq .Board.Type 0}}{{template "imgboard_postarea.gohtml" .}}{{else}}{{template "forum_postarea.gohtml" .}}{{end}}
 			</div>
 		</details>
+	{{else if and .ReplyMode (gt (len .Threads) 0)}}
+		{{T "Archived %s" (FormatTimestamp (index (index .Threads 0) 0).Bumped) | HTML}}
 	{{end}}
 {{end}}
 <form method="post" action="/sriracha/">
@@ -90,18 +92,10 @@
 						{{end}}
 					</td>
 				{{end}}
-				{{if ne .ReplyMode 0}}
-					{{if .ArchiveMode}}
-						{{if and (gt (len .Threads) 0) (gt (len (index .Threads 0)) 0)}}
-							<td style="border: 0px none;">
-								{{T "Archived %s" (FormatTimestamp (index (index .Threads 0) 0).Bumped) | HTML}}
-							</td>
-						{{end}}
-					{{else}}
-						<td id="threadstatusdeleted" style="display: none;border: 0px none;color: red;font-weight: bold;">
-							{{T "Thread deleted."}}
-						</td>
-					{{end}}
+				{{if and (ne .ReplyMode 0) (not .ArchiveMode)}}
+					<td id="threadstatusdeleted" style="display: none;border: 0px none;color: red;font-weight: bold;">
+						{{T "Thread deleted."}}
+					</td>
 				{{end}}
 			</tr>
 		</tbody>
