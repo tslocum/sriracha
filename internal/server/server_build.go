@@ -20,11 +20,6 @@ import (
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
-const (
-	initialBufferSize = 500000  // 500 KB.
-	maxBufferSize     = 4000000 // 4 MB.
-)
-
 type buildType int
 
 const (
@@ -287,7 +282,7 @@ func (s *Server) _queueBoardIndexes(info *buildInfo) {
 		case s.buildQueue <- info:
 		default:
 			if buf == nil {
-				buf = bytes.NewBuffer(make([]byte, initialBufferSize))
+				buf = bytes.NewBuffer(make([]byte, s.config.MinPageBuffer))
 			}
 			buf.Reset()
 			info.buf = buf
@@ -316,7 +311,7 @@ func (s *Server) _queueBoardIndexes(info *buildInfo) {
 				case s.buildQueue <- info:
 				default:
 					if buf == nil {
-						buf = bytes.NewBuffer(make([]byte, initialBufferSize))
+						buf = bytes.NewBuffer(make([]byte, s.config.MinPageBuffer))
 					}
 					buf.Reset()
 					info.buf = buf
@@ -735,7 +730,7 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 // _build handles the static page build queue.
 func (s *Server) _build() {
 	// Initialize write buffer.
-	buf := bytes.NewBuffer(make([]byte, initialBufferSize))
+	buf := bytes.NewBuffer(make([]byte, s.config.MinPageBuffer))
 
 	for {
 		info := <-s.buildQueue
@@ -769,8 +764,8 @@ func (s *Server) _build() {
 		info.wg.Done()
 
 		// Resize write buffer.
-		if buf.Cap() > maxBufferSize {
-			buf = bytes.NewBuffer(make([]byte, initialBufferSize))
+		if buf.Cap() > s.config.MaxPageBuffer {
+			buf = bytes.NewBuffer(make([]byte, s.config.MinPageBuffer))
 		}
 	}
 }

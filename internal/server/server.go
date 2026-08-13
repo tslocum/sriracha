@@ -536,6 +536,17 @@ func (s *Server) parseConfig(configFile string) error {
 		config.Access[name] = v
 	}
 
+	if config.MinPageBuffer <= 0 {
+		config.MinPageBuffer = 500000 // 500 KB.
+	}
+	if config.MaxPageBuffer <= 0 {
+		config.MaxPageBuffer = 4000000 // 4 MB.
+	}
+
+	if config.MaxFormBuffer <= 0 {
+		config.MaxFormBuffer = 32000000 // 32 MB.
+	}
+
 	s.config = config
 
 	if s.config.MailDomains != "" {
@@ -2456,15 +2467,6 @@ func (s *Server) Run() error {
 		return nil
 	}
 
-	// Start page builders.
-	for i := 0; i < runtime.NumCPU(); i++ {
-		go s._build()
-	}
-
-	// Start rebuild queue handler.
-	s.rebuildWaitGroup.Add(1)
-	go s.handleRebuild()
-
 	// Start signal handler.
 	s.startSignalHandler()
 
@@ -2835,6 +2837,11 @@ func (s *Server) Run() error {
 		}
 	}
 
+	// Start page builders.
+	for i := 0; i < runtime.NumCPU(); i++ {
+		go s._build()
+	}
+
 	// Rebuild everything on startup when explicitly requested and after upgrading.
 	sv := db.GetString("sv") // Sriracha version.
 	if sv != SrirachaVersion {
@@ -2858,6 +2865,10 @@ func (s *Server) Run() error {
 
 	// Commit transaction.
 	db.Commit()
+
+	// Start rebuild queue handler.
+	s.rebuildWaitGroup.Add(1)
+	go s.handleRebuild()
 
 	// Watch template directories.
 	if devMode {

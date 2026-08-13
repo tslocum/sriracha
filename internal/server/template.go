@@ -519,7 +519,7 @@ func (s *Server) newTemplateData(db serverDB, buf ...*bytes.Buffer) *templateDat
 		buf[0].Reset()
 		data.buf = buf[0]
 	} else {
-		data.buf = bytes.NewBuffer(make([]byte, initialBufferSize))
+		data.buf = bytes.NewBuffer(make([]byte, s.config.MinPageBuffer))
 	}
 	return data
 }
