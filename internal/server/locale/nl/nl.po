@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-08-11 16:30+0000\n"
+"PO-Revision-Date: 2026-08-13 15:31+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -101,6 +101,9 @@ msgstr ""
 
 msgid "Action taken when the threshold amount is exceeded."
 msgstr "Er wordt actie ondernomen zodra de drempelwaarde is overschreden."
+
+msgid "Active"
+msgstr "Actief"
 
 msgid "Add"
 msgstr "Toevoegen"
@@ -206,6 +209,25 @@ msgstr "Goedkeuren"
 msgid "Approve all"
 msgstr "Alles goedkeuren"
 
+msgid "Archive"
+msgstr "Archiveren"
+
+msgid "Archive all"
+msgstr "Alles archiveren"
+
+msgid "Archive mode"
+msgstr "Archiveermodus"
+
+msgid ""
+"Archive threads (instead of deleting them) when the maxmimum number of "
+"threads is exceeded."
+msgstr ""
+"Archiveer berichten in plaats van ze te verwijderen, zodra het maximumaantal "
+"is overschreden."
+
+msgid "Archived"
+msgstr "Gearchiveerd"
+
 msgid "Artwork title:"
 msgstr "Naam van illustraties:"
 
@@ -217,6 +239,9 @@ msgstr "Auteur"
 
 msgid "Auto Refresh"
 msgstr "Automatisch herladen"
+
+msgid "Automatic"
+msgstr "Automatisch"
 
 msgid "Available embed services. Visit board settings to enable usage."
 msgstr ""
@@ -432,6 +457,9 @@ msgid "Deleted %d post"
 msgid_plural "Deleted %d posts"
 msgstr[0] "Er is %d bericht verwijderd"
 msgstr[1] "Er zijn %d berichten verwijderd"
+
+msgid "Deleted %s."
+msgstr "%s verwijderd."
 
 msgid "Deleted & banned %d post"
 msgid_plural "Deleted & banned %d posts"
@@ -865,6 +893,9 @@ msgstr "Drempelwaarden beheren"
 msgid "Manage mode"
 msgstr "Beheermodus"
 
+msgid "Manual"
+msgstr "Handmatig"
+
 msgid "Max Email Length"
 msgstr "Maximale e-maillengte"
 
@@ -1166,6 +1197,9 @@ msgid_plural "Only %d files may be uploaded at once."
 msgstr[0] "Je mag slechts %d bestand per keer uploaden."
 msgstr[1] "Je mag slechts %d bestanden per keer uploaden."
 
+msgid "Only active posts may be deleted."
+msgstr "Alleen actieve berichten mogen worden verwijderd."
+
 msgid "Only thumbnails are displayed."
 msgstr "Er worden alleen miniaturen getoond."
 
@@ -1310,6 +1344,9 @@ msgstr "Voorvertonen"
 
 msgid "Previous"
 msgstr "Vorige"
+
+msgid "Pruned Threads"
+msgstr "Gearchiveerde berichten"
 
 msgid "Query"
 msgstr "Zoekopdracht"
@@ -1581,6 +1618,9 @@ msgstr ""
 msgid "Thread"
 msgstr "Gesprek"
 
+msgid "Thread archived %s."
+msgstr "%s is gearchiveerd."
+
 msgid "Thread deleted."
 msgstr "Het onderwerp is verwijderd."
 
@@ -1635,6 +1675,9 @@ msgstr ""
 msgid "Type ## and some text in the name field to add a secure tripcode:"
 msgstr ""
 "Typ ## en tekst in het naamveld om een beveiligde toegangscode toe te voegen:"
+
+msgid "Unarchive"
+msgstr ""
 
 msgid "Unknown"
 msgstr "Onbekend"

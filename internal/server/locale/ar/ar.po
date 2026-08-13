@@ -126,6 +126,9 @@ msgstr ""
 msgid "Action taken when the threshold amount is exceeded."
 msgstr ""
 
+msgid "Active"
+msgstr ""
+
 msgid "Add"
 msgstr ""
 
@@ -227,6 +230,23 @@ msgstr ""
 msgid "Approve all"
 msgstr ""
 
+msgid "Archive"
+msgstr ""
+
+msgid "Archive all"
+msgstr ""
+
+msgid "Archive mode"
+msgstr ""
+
+msgid ""
+"Archive threads (instead of deleting them) when the maxmimum number of "
+"threads is exceeded."
+msgstr ""
+
+msgid "Archived"
+msgstr ""
+
 msgid "Artwork title:"
 msgstr ""
 
@@ -237,6 +257,9 @@ msgid "Author"
 msgstr ""
 
 msgid "Auto Refresh"
+msgstr ""
+
+msgid "Automatic"
 msgstr ""
 
 msgid "Available embed services. Visit board settings to enable usage."
@@ -466,6 +489,9 @@ msgstr[2] ""
 msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
+
+msgid "Deleted %s."
+msgstr ""
 
 msgid "Deleted & banned %d post"
 msgid_plural "Deleted & banned %d posts"
@@ -882,6 +908,9 @@ msgstr ""
 msgid "Manage mode"
 msgstr ""
 
+msgid "Manual"
+msgstr ""
+
 msgid "Max Email Length"
 msgstr ""
 
@@ -1162,6 +1191,9 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
+msgid "Only active posts may be deleted."
+msgstr ""
+
 msgid "Only thumbnails are displayed."
 msgstr ""
 
@@ -1299,6 +1331,9 @@ msgid "Preview"
 msgstr ""
 
 msgid "Previous"
+msgstr ""
+
+msgid "Pruned Threads"
 msgstr ""
 
 msgid "Query"
@@ -1565,6 +1600,9 @@ msgstr ""
 msgid "Thread"
 msgstr ""
 
+msgid "Thread archived %s."
+msgstr ""
+
 msgid "Thread deleted."
 msgstr ""
 
@@ -1613,6 +1651,9 @@ msgid "Type # (hash) and some text in the name field to add a global tripcode:"
 msgstr ""
 
 msgid "Type ## and some text in the name field to add a secure tripcode:"
+msgstr ""
+
+msgid "Unarchive"
 msgstr ""
 
 msgid "Unknown"

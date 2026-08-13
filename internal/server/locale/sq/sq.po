@@ -101,6 +101,9 @@ msgstr "Veprimi i ndermarre kur zbulohet fjala kyce."
 msgid "Action taken when the threshold amount is exceeded."
 msgstr ""
 
+msgid "Active"
+msgstr ""
+
 msgid "Add"
 msgstr "Shto"
 
@@ -202,6 +205,23 @@ msgstr ""
 msgid "Approve all"
 msgstr ""
 
+msgid "Archive"
+msgstr ""
+
+msgid "Archive all"
+msgstr ""
+
+msgid "Archive mode"
+msgstr ""
+
+msgid ""
+"Archive threads (instead of deleting them) when the maxmimum number of "
+"threads is exceeded."
+msgstr ""
+
+msgid "Archived"
+msgstr ""
+
 msgid "Artwork title:"
 msgstr "Titulli i vepres artistike:"
 
@@ -213,6 +233,9 @@ msgstr "Autori"
 
 msgid "Auto Refresh"
 msgstr "Auto Rifreskim"
+
+msgid "Automatic"
+msgstr ""
 
 msgid "Available embed services. Visit board settings to enable usage."
 msgstr ""
@@ -423,6 +446,9 @@ msgid "Deleted %d post"
 msgid_plural "Deleted %d posts"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Deleted %s."
+msgstr ""
 
 msgid "Deleted & banned %d post"
 msgid_plural "Deleted & banned %d posts"
@@ -847,6 +873,9 @@ msgstr ""
 msgid "Manage mode"
 msgstr "Forma menaxhimit"
 
+msgid "Manual"
+msgstr ""
+
 msgid "Max Email Length"
 msgstr "Gjatesia Maksimale e E-Postes"
 
@@ -1140,6 +1169,9 @@ msgid_plural "Only %d files may be uploaded at once."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Only active posts may be deleted."
+msgstr ""
+
 msgid "Only thumbnails are displayed."
 msgstr ""
 
@@ -1281,6 +1313,9 @@ msgstr ""
 
 msgid "Previous"
 msgstr "Para"
+
+msgid "Pruned Threads"
+msgstr ""
 
 msgid "Query"
 msgstr ""
@@ -1550,6 +1585,9 @@ msgstr ""
 msgid "Thread"
 msgstr ""
 
+msgid "Thread archived %s."
+msgstr ""
+
 msgid "Thread deleted."
 msgstr ""
 
@@ -1598,6 +1636,9 @@ msgid "Type # (hash) and some text in the name field to add a global tripcode:"
 msgstr ""
 
 msgid "Type ## and some text in the name field to add a secure tripcode:"
+msgstr ""
+
+msgid "Unarchive"
 msgstr ""
 
 msgid "Unknown"
