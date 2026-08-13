@@ -629,6 +629,8 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		postFilter := FilterActive
 		if FormBool(r, "archive") {
 			postFilter = FilterArchived
+		} else if postID > 0 {
+			postFilter = FilterVisible
 		}
 		if postID > 0 {
 			data.Threads = [][]*Post{db.AllPostsInThread(postFilter, postID)}

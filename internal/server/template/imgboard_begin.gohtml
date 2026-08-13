@@ -113,11 +113,11 @@
 				{{else if not .ModMode}}
 					[<a href="{{.Board.Path}}{{if .ArchiveMode}}archive.html{{end}}">{{T "Return"}}</a>]
 				{{else}}
-					[<a href="/sriracha/board/mod/{{.Board.ID}}">{{T "Return"}}</a>]
+					[<a href="/sriracha/board/mod/{{.Board.ID}}{{if .ArchiveMode}}?archive=1{{end}}">{{T "Return"}}</a>]
 				{{end}}
 			</span>
 		{{else if .ModMode}}
 			<span class="threadui">
-				[<a href="{{.Board.Path}}" style="text-decoration: underline;">{{T "Exit"}}</a>]
+				[<a href="{{.Board.Path}}{{if .ArchiveMode}}archive.html{{end}}" style="text-decoration: underline;">{{T "Exit"}}</a>]
 			</span>
 		{{end}}

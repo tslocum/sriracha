@@ -12,7 +12,11 @@
 				{{T "Archive mode"}}
 			{{end}}
 		{{else}}
-			{{T "Mod mode: Reply"}}
+			{{if not .ArchiveMode}}
+				{{T "Mod mode: Reply"}}
+			{{else}}
+				{{T "Mod mode: View"}}
+			{{end}}
 		{{end}}
 	</div>
 {{else if .ModMode}}

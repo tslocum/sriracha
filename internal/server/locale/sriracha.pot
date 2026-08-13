@@ -949,6 +949,9 @@ msgstr ""
 msgid "Mod mode: Reply"
 msgstr ""
 
+msgid "Mod mode: View"
+msgstr ""
+
 msgid "Moderate"
 msgstr ""
 
