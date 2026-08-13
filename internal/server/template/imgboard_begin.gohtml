@@ -60,13 +60,13 @@
 		<div class="adminbar">
 			{{template "extra_adminbar.gohtml" .}}
 			{{$showCatalog := and (ne .Board nil) (eq .Board.Type 0)}}
-			{{$showArchive := and (eq .ReplyMode 0) (not .ArchiveMode) (ne .Board nil) (gt .Board.ArchiveSize 0)}}
+			{{$showArchive := and (not .ArchiveMode) (ne .Board nil) (gt .Board.ArchiveSize 0)}}
 			{{if or $showCatalog $showArchive}}
 				{{if $showCatalog}}
 					[<a href="{{.Board.Path}}{{if .ArchiveMode}}archive-{{end}}catalog.html" style="text-decoration: underline;">{{T "Catalog"}}</a>]
 				{{end}}
 				{{if $showArchive}}
-					[<a href="{{.Board.Path}}archive.html" style="text-decoration: underline;">{{T "Archive"}}</a>]
+					[<a href="{{if not .ModMode}}{{.Board.Path}}archive.html{{else}}/sriracha/board/mod/{{.Board.ID}}{{if not .ArchiveMode}}?archive=1{{end}}{{end}}" style="text-decoration: underline;">{{T "Archive"}}</a>]
 				{{end}}
 				&middot;
 			{{end}}

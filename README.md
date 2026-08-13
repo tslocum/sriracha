@@ -39,7 +39,8 @@ Most features do not require JavaScript and will degrade gracefully when necessa
 - Report posts
 - CAPTCHA
 - Overboard
-- Thread catalog
+- Catalog
+- Archive
 - Oekaki (drawings)
 - Extend with [plugins](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#plugins)
 - Send [email notifications](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#email-notifications)
