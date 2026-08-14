@@ -1594,6 +1594,12 @@ may rebuild all `nameblock` fields by visiting `/sriracha/?rebuildNameblocks`.
 
 Super-administrators may rebuild all reflinks `>>###` by visiting `/sriracha/?rebuildReflinks`.
 
+#### Verify memory configuration
+
+Super-administrators may view detailed information related to memory usage,
+including the potential increase in memory usage when the server is fully saturated,
+by visiting `/sriracha/?memoryConfig`.
+
 #### Verify IP address resolution
 
 To support banning visitors, Sriracha must be able to resolve remote IP addresses,

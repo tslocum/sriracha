@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"slices"
 	"strconv"
 	"strings"
@@ -155,6 +156,37 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 
 	buf := &bytes.Buffer{}
 	data.Template = "manage_status"
+
+	// Allow super-administrators to view detailed information related to memory usage.
+	if r.URL.Query().Has("memoryConfig") {
+		if data.forbidden(w, RoleSuperAdmin) {
+			return
+		}
+		data.Template = "manage_info"
+		numCPU := runtime.NumCPU()
+		worstCase := int64(s.config.MaxConns)*s.config.MaxFormBuffer + int64(numCPU)*int64(s.config.MaxPageBuffer)
+		data.Message = template.HTML(fmt.Sprintf(`<h2 class="managetitle">Memory Configuration</h2>
+			<table class="managetable"><tbody>
+				<tr><th>maxconns</th><td>%d</td></tr>
+				<tr><th>minpagebuffer</th><td>%s</td></tr>
+				<tr><th>maxpagebuffer</th><td>%s</td></tr>
+				<tr><th>numcpu</th><td>%d</td></tr>
+				<tr><th>maxformbuffer</th><td>%s</td></tr>
+				<tr><th>worst-case</th><td>(%d * %s) + (%d * %s) = %s</td></tr>
+			</tbody></table>`,
+			s.config.MaxConns,
+			FormatFileSize(int64(s.config.MinPageBuffer)),
+			FormatFileSize(int64(s.config.MaxPageBuffer)),
+			numCPU,
+			FormatFileSize(s.config.MaxFormBuffer),
+			s.config.MaxConns,
+			FormatFileSize(int64(s.config.MaxPageBuffer)),
+			numCPU,
+			FormatFileSize(s.config.MaxFormBuffer),
+			FormatFileSize(worstCase),
+		))
+		return
+	}
 
 	// Allow super-administrators to verify remote address resolution.
 	if r.URL.Query().Has("remoteAddress") {
