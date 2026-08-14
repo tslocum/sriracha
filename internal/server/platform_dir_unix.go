@@ -3,7 +3,6 @@
 package server
 
 import (
-	"log"
 	"path/filepath"
 	"slices"
 	"time"
@@ -18,8 +17,8 @@ func writeable(dir string) bool {
 
 func (s *Server) handleRefreshDiskSpace() {
 	var fsIDs []string
-	var err error
 	var lastRefresh time.Time
+	const maxRefresh = 6 * time.Hour
 	const minRefresh = 5 * time.Minute
 	for {
 		s.lock.Lock()
@@ -30,9 +29,7 @@ func (s *Server) handleRefreshDiskSpace() {
 		for _, b := range db.AllBoards() {
 			boardDir := filepath.Join(s.config.Root, b.Dir)
 			avail, fsID := remainingDiskSpace(boardDir)
-			if err != nil {
-				log.Fatalf("failed to stat directory %s: %s", boardDir, err)
-			} else if slices.Contains(fsIDs, fsID) {
+			if slices.Contains(fsIDs, fsID) {
 				continue
 			}
 
@@ -54,7 +51,11 @@ func (s *Server) handleRefreshDiskSpace() {
 		lastRefresh = time.Now()
 
 		// Refresh disk space at least every six hours and at most every five minutes.
-		t := time.NewTimer(6 * time.Hour)
+		wait := maxRefresh
+		if len(s.opt.FullDisks) > 0 || len(s.opt.NearDisks) > 0 {
+			wait = minRefresh
+		}
+		t := time.NewTimer(wait)
 		select {
 		case <-t.C:
 		case <-s.refreshDisks:
