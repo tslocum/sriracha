@@ -20,6 +20,8 @@ func (s *Server) handleRefreshDiskSpace() {
 	var fsIDs []unix.Fsid
 	var stat unix.Statfs_t
 	var err error
+	var lastRefresh time.Time
+	const minRefresh = 5 * time.Minute
 	for {
 		s.lock.Lock()
 
@@ -52,10 +54,31 @@ func (s *Server) handleRefreshDiskSpace() {
 
 		s.lock.Unlock()
 
+		fsIDs = fsIDs[:0]
+
+		lastRefresh = time.Now()
+
+		// Refresh disk space at least every six hours and at most every five minutes.
 		t := time.NewTimer(6 * time.Hour)
 		select {
 		case <-t.C:
-		case <-s.refreshFreeSpace:
+		case <-s.refreshDisks:
+			delta := minRefresh - time.Since(lastRefresh)
+			if delta <= 0 {
+				break
+			}
+			tt := time.NewTimer(delta)
+			var timeout bool
+			for {
+				select {
+				case <-tt.C:
+					timeout = true
+				case <-s.refreshDisks:
+				}
+				if timeout {
+					break
+				}
+			}
 		}
 	}
 }

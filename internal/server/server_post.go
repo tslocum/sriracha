@@ -1218,6 +1218,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		data.Info = Get(b, data.Account, "Your post will be shown once it has been approved.")
 		data.execute(w)
 		s.writeModQueue(db)
+		go s.refreshDiskSpace()
 		return
 	} else if addReport {
 		report := &Report{

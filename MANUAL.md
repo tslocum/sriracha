@@ -720,7 +720,7 @@ dbname: "sriracha"
 #audit: "postgresql://sriracha_audit:hunter2@localhost:5432/sriracha_audit"
 
 # Free disk space warning threshold. A warning message is displayed to staff
-# if and when the available free space drops below this threshold.
+# members if and when the available free space drops below this threshold.
 #warnfree: 2000000000 # 2 GB.
 
 # Minimum free disk space. Many features, including adding new posts, will be

@@ -305,9 +305,9 @@ type Server struct {
 	httpsServer *http.Server
 	httpsCert   *tls.Certificate
 
-	emptyDisks       [][2]string
-	lowDisks         [][2]string
-	refreshFreeSpace chan struct{}
+	emptyDisks   [][2]string
+	lowDisks     [][2]string
+	refreshDisks chan struct{}
 
 	connCount *atomic.Int32
 
@@ -343,7 +343,7 @@ func NewServer() *Server {
 		buildQueue:            make(chan *buildInfo),
 		rebuildQueue:          make(chan *rebuildInfo),
 		httpClient:            httpClient,
-		refreshFreeSpace:      make(chan struct{}),
+		refreshDisks:          make(chan struct{}),
 		connCount:             &atomic.Int32{},
 		msgPrinter:            message.NewPrinter(language.English),
 	}
@@ -605,6 +605,10 @@ func (s *Server) parseLocales() error {
 		gotext.GetStorage().AddTranslator(Domain(id), po)
 		return nil
 	})
+}
+
+func (s *Server) refreshDiskSpace() {
+	s.refreshDisks <- struct{}{}
 }
 
 func (s *Server) dateTimeFormatUpdated() {
@@ -2412,6 +2416,8 @@ func (s *Server) handleRebuild() {
 		for _, info := range pending {
 			info.wg.Done()
 		}
+
+		go s.refreshDiskSpace()
 
 		pending = pending[:0]
 		activeIDs = activeIDs[:0]

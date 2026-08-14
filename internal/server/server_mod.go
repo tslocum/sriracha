@@ -246,6 +246,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				}
 				p.SetNameBlock("", "Mod", false)
 				db.AddPost(p)
+				go s.refreshDiskSpace()
 			}
 			// Rebuild static files.
 			wg := &sync.WaitGroup{}
