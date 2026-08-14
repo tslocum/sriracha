@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-08-13 15:31+0000\n"
+"PO-Revision-Date: 2026-08-14 16:21+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -1035,6 +1035,9 @@ msgstr "Modereermodus"
 msgid "Mod mode: Reply"
 msgstr "Modmodus: beantwoorden"
 
+msgid "Mod mode: View"
+msgstr "Modmodus: weergave"
+
 msgid "Moderate"
 msgstr "Modereren"
 
@@ -1317,6 +1320,11 @@ msgstr "Onderwerp plaatsen"
 
 msgid "Post truncated. Click Reply to view."
 msgstr "Het bericht is ingekort. Klik op beantwoorden om te bekijken."
+
+msgid "Posting is currently disabled: not enough free disk space."
+msgstr ""
+"Berichten plaatsen is uitgeschakeld, omdat er onvoldoende vrije schijfruimte "
+"is."
 
 msgid "Posting mode: Preview"
 msgstr "Berichtmodus: voorvertoning"
@@ -1676,7 +1684,7 @@ msgstr ""
 "Typ ## en tekst in het naamveld om een beveiligde toegangscode toe te voegen:"
 
 msgid "Unarchive"
-msgstr ""
+msgstr "Uit archief halen"
 
 msgid "Unknown"
 msgstr "Onbekend"
@@ -1771,6 +1779,20 @@ msgstr "bezoekersgids"
 
 msgid "Warning"
 msgstr "Waarschuwing"
+
+msgid ""
+"Warning: The hard drive containing the directory %[1]s is full: only %[2]s "
+"of free space remains. Posting is disabled."
+msgstr ""
+"Waarschuwing: de schijf met de map ‘%[1]s’ is vol — er is slechts %[2]s "
+"vrije schijfruimte over. Berichten plaatsen is daarom uitgeschakeld."
+
+msgid ""
+"Warning: The hard drive containing the directory %[1]s is nearly full: only "
+"%[2]s of free space remains."
+msgstr ""
+"Waarschuwing: de schijf met de map ‘%[1]s’ is bijna vol — er is slechts "
+"%[2]s vrije schijfruimte over."
 
 msgid "When %[1]s adds more than %[2]d %[3]s %[4]s within %[5]s, %[6]s."
 msgstr "Als %[1]s meer dan %[2]d %[3]s %[4]s binnen %[5]s, %[6]s toevoegt."
