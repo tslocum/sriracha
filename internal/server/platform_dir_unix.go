@@ -1,4 +1,4 @@
-//go:build unix
+//go:build unix && !bsd
 
 package server
 
@@ -17,8 +17,7 @@ func writeable(dir string) bool {
 }
 
 func (s *Server) handleRefreshDiskSpace() {
-	var fsIDs []unix.Fsid
-	var stat unix.Statfs_t
+	var fsIDs []string
 	var err error
 	var lastRefresh time.Time
 	const minRefresh = 5 * time.Minute
@@ -26,30 +25,26 @@ func (s *Server) handleRefreshDiskSpace() {
 		s.lock.Lock()
 
 		db := s.begin()
-		var emptyDisks [][]string
-		var lowDisks [][]string
+		var fullDisks [][]string
+		var nearDisks [][]string
 		for _, b := range db.AllBoards() {
 			boardDir := filepath.Join(s.config.Root, b.Dir)
-			err = unix.Statfs(boardDir, &stat)
+			avail, fsID := remainingDiskSpace(boardDir)
 			if err != nil {
 				log.Fatalf("failed to stat directory %s: %s", boardDir, err)
-			} else if slices.Contains(fsIDs, stat.Fsid) {
+			} else if slices.Contains(fsIDs, fsID) {
 				continue
 			}
 
-			var avail int64
-			if stat.Bavail > 0 {
-				avail = int64(stat.Bavail) * stat.Bsize
-			}
 			if avail < s.config.MinFree {
-				emptyDisks = append(emptyDisks, []string{boardDir + "/", FormatFileSize(avail)})
+				fullDisks = append(fullDisks, []string{boardDir + "/", FormatFileSize(avail)})
 			} else if avail < s.config.WarnFree {
-				lowDisks = append(lowDisks, []string{boardDir + "/", FormatFileSize(avail)})
+				nearDisks = append(nearDisks, []string{boardDir + "/", FormatFileSize(avail)})
 			}
-			fsIDs = append(fsIDs, stat.Fsid)
+			fsIDs = append(fsIDs, fsID)
 		}
-		s.opt.EmptyDisks = emptyDisks
-		s.opt.LowDisks = lowDisks
+		s.opt.FullDisks = fullDisks
+		s.opt.NearDisks = nearDisks
 		db.Commit()
 
 		s.lock.Unlock()

@@ -47,12 +47,12 @@
 		</div>
 		<div class="logo">{{.Opt.SiteName}}</div>
 		<div class="replymode"{{if eq .Template "manage_login"}} style="text-align: center;"{{end}}>{{T "Manage mode"}}</div>
-		{{if and (ne .Account nil) (or (gt (len .Opt.EmptyDisks) 0) (gt (len .Opt.LowDisks) 0))}}
+		{{if and (ne .Account nil) (or (gt (len .Opt.FullDisks) 0) (gt (len .Opt.NearDisks) 0))}}
 			<div class="errormessage" style="text-align: left;">
-				{{range $info := .Opt.EmptyDisks}}
+				{{range $info := .Opt.FullDisks}}
 					{{T "Warning: The hard drive containing the directory %[1]s is full: only %[2]s of free space remains. Posting is disabled." (index $info 0) (index $info 1)}}
 				{{end}}
-				{{range $info := .Opt.LowDisks}}
+				{{range $info := .Opt.NearDisks}}
 					{{T "Warning: The hard drive containing the directory %[1]s is nearly full: only %[2]s of free space remains." (index $info 0) (index $info 1)}}
 				{{end}}
 			</div>

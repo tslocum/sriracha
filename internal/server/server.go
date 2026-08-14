@@ -197,8 +197,8 @@ type ServerOptions struct {
 	Search           int
 	DateTimeFormat   string
 	Global           []string
-	EmptyDisks       [][]string
-	LowDisks         [][]string
+	FullDisks        [][]string
+	NearDisks        [][]string
 	FuncMaps         map[string]template.FuncMap
 	trace            bool
 	smokeTest        bool
@@ -305,8 +305,6 @@ type Server struct {
 	httpsServer *http.Server
 	httpsCert   *tls.Certificate
 
-	emptyDisks   [][2]string
-	lowDisks     [][2]string
 	refreshDisks chan struct{}
 
 	connCount *atomic.Int32
