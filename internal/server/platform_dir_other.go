@@ -18,6 +18,9 @@ func writeable(dir string) bool {
 	return err == nil
 }
 
-func handleRefreshDiskSpace() {
+func (s *Server) handleRefreshDiskSpace() {
 	// Monitoring disk space is only supported on UNIX platforms.
+	for {
+		<-s.refreshDisks
+	}
 }
