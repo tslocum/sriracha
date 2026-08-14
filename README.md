@@ -12,20 +12,18 @@ Most features do not require JavaScript and will degrade gracefully when necessa
 ## Why Sriracha?
 
 - **Privacy** - Sriracha never stores plain text IP addresses in the database. Only salted [secure hashes](https://en.wikipedia.org/wiki/Secure_Hash_Algorithms)
-  of IP addresses are stored in the database. Sriracha release archives include
+  of IP addresses are stored in the database. Sriracha release archives also include
   all of the files needed to run a website. Unless a webmaster has added their own
-  external resources, visitors will download pages and resources from one server.
+  external resources, visitors will download pages and resources from a single server.
 - **Security** - Sriracha accounts may be secured with two-factor authentication devices.
-  When a 2FA device has been added, staff must enter a passcode (TOTP) in addition
-  to their username and password.
-- **Efficiency** - Sriracha utilizes every CPU core to build static pages. The work of building
-  each page is spread out across each CPU core. For example, a system with 16
-  CPU cores will build pages about 15-16 times faster than a single core system.
-- **Cacheability** - Sriracha writes static HTML pages whenever data is modified. Visitors who
-  browse the website without adding a post will only be served cacheable static files.
-  These files may be cached on the server and on each client.
-- **Extensibility** - Sriracha supports customizing the template files used to generate HTML pages.
-  Support for creating and loading custom plugins enables new functionality for visitors and staff.
+  When a two-factor authentication device has been added, staff must enter a passcode (TOTP)
+  in addition to their username and password.
+- **Efficiency** - Sriracha spreads out the work of building each static page across all CPU cores.
+  For example, a 16-core system will build pages 15 to 16 times faster than a single-core system.
+- **Cacheability** - Sriracha writes static HTML pages whenever data is modified. Visitors browsing
+  through boards will only hit static files. Static files are cached on the server and on each client.
+- **Extensibility** - Sriracha supports customizing the template of every page. Support is also
+  available for creating and loading custom plugins, enabling new functionality for visitors and staff.
 
 ## Features
 
