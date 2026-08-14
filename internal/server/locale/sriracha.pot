@@ -1199,6 +1199,9 @@ msgstr ""
 msgid "Post truncated. Click Reply to view."
 msgstr ""
 
+msgid "Posting is currently disabled: not enough free disk space."
+msgstr ""
+
 msgid "Posting mode: Preview"
 msgstr ""
 
@@ -1625,6 +1628,12 @@ msgid "visitor guide"
 msgstr ""
 
 msgid "Warning"
+msgstr ""
+
+msgid "Warning: The hard drive containing the directory %[1]s is full: only %[2]s of free space remains. Posting is disabled."
+msgstr ""
+
+msgid "Warning: The hard drive containing the directory %[1]s is nearly full: only %[2]s of free space remains."
 msgstr ""
 
 msgid "When %[1]s adds more than %[2]d %[3]s %[4]s within %[5]s, %[6]s."

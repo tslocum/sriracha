@@ -719,6 +719,14 @@ dbname: "sriracha"
 # See https://pkg.go.dev/github.com/jackc/pgx/v5/pgconn#ParseConfig
 #audit: "postgresql://sriracha_audit:hunter2@localhost:5432/sriracha_audit"
 
+# Free disk space warning threshold. A warning message is displayed to staff
+# if and when the available free space drops below this threshold.
+#warnfree: 2000000000 # 2 GB.
+
+# Minimum free disk space. Many features, including adding new posts, will be
+# disabled if and when the available free space drops below this threshold.
+#minfree: 500000000 # 500 MB.
+
 # Supported upload file types. Specify a file extension and a MIME type to
 # enable uploading files of that type. You may specify an image to use as the
 # thumbnail for all uploads of that type, or 'none' to not create a thumbnail.

@@ -71,6 +71,9 @@ type Config struct {
 
 	Access map[string]string // Specifies which roles may perform each management or moderation action.
 
+	WarnFree int64 // Free disk space warning threshold.
+	MinFree  int64 // Minimum free disk space.
+
 	Uploads []string // Supported upload file types.
 
 	Import string // Import posts from DSN.

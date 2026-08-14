@@ -610,6 +610,10 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 	if r.Method != http.MethodPost {
 		http.Error(w, "invalid request", http.StatusInternalServerError)
 		return
+	} else if len(s.opt.EmptyDisks) > 0 {
+		data := s.buildData(db, w, r)
+		data.BoardError(w, data.G("Posting is currently disabled: not enough free disk space."))
+		return
 	}
 
 	boardDir := FormString(r, "board")

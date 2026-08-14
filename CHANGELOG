@@ -1,3 +1,7 @@
+2.0.1:
+- Warn when a hard drive is nearly full
+- Reject new posts when a hard drive is full
+
 2.0.0:
 - Add maximum connections setting
 - Add maximum form buffer size setting

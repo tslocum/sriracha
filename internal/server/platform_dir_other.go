@@ -17,3 +17,7 @@ func writeable(dir string) bool {
 	os.Remove(filepath.Join(dir, name))
 	return err == nil
 }
+
+func handleRefreshDiskSpace() {
+	// Monitoring disk space is only supported on UNIX platforms.
+}

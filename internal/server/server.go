@@ -82,6 +82,8 @@ const (
 	defaultServerMaxPageBuffer = 4000000  // 4 MB.
 	defaultServerMaxFormBuffer = 16000000 // 16 MB.
 	defaultServerMaxConns      = 16
+	defaultServerWarnFree      = 2000000000 // 2 GB.
+	defaultServerMinFree       = 500000000  // 500 MB.
 )
 
 const minServerRefresh = 10 // New posts are batched together every 10 seconds.
@@ -195,6 +197,8 @@ type ServerOptions struct {
 	Search           int
 	DateTimeFormat   string
 	Global           []string
+	EmptyDisks       [][]string
+	LowDisks         [][]string
 	FuncMaps         map[string]template.FuncMap
 	trace            bool
 	smokeTest        bool
@@ -301,6 +305,10 @@ type Server struct {
 	httpsServer *http.Server
 	httpsCert   *tls.Certificate
 
+	emptyDisks       [][2]string
+	lowDisks         [][2]string
+	refreshFreeSpace chan struct{}
+
 	connCount *atomic.Int32
 
 	connSemaphore chan struct{}
@@ -335,6 +343,7 @@ func NewServer() *Server {
 		buildQueue:            make(chan *buildInfo),
 		rebuildQueue:          make(chan *rebuildInfo),
 		httpClient:            httpClient,
+		refreshFreeSpace:      make(chan struct{}),
 		connCount:             &atomic.Int32{},
 		msgPrinter:            message.NewPrinter(language.English),
 	}
@@ -556,6 +565,13 @@ func (s *Server) parseConfig(configFile string) error {
 
 	if config.MaxConns <= 0 {
 		config.MaxConns = defaultServerMaxConns
+	}
+
+	if config.WarnFree <= 0 {
+		config.WarnFree = defaultServerWarnFree
+	}
+	if config.MinFree <= 0 {
+		config.MinFree = defaultServerMinFree
 	}
 
 	s.config = config
@@ -2864,6 +2880,8 @@ func (s *Server) Run() error {
 			break
 		}
 	}
+
+	go s.handleRefreshDiskSpace()
 
 	// Start page builders.
 	for i := 0; i < runtime.NumCPU(); i++ {
