@@ -255,6 +255,7 @@ func (db *mockDB) ReplyCount(threadID int) int {
 }
 func (db *mockDB) MaxPostID() int                                   { return 0 }
 func (db *mockDB) BumpThread(threadID int, timestamp int64)         {}
+func (db *mockDB) UnBumpThread(threadID int, timestamp int64)       {}
 func (db *mockDB) ModeratePost(postID int, moderated PostModerated) {}
 func (db *mockDB) StickyPost(postID int, sticky bool)               {}
 func (db *mockDB) SpoilerPost(postID int, spoiler bool)             {}

@@ -621,6 +621,13 @@ func (db *DB) BumpThread(threadID int, timestamp int64) {
 	}
 }
 
+func (db *DB) UnBumpThread(threadID int, timestamp int64) {
+	_, err := db.conn.Exec(context.Background(), "UPDATE post SET bumped = $1 WHERE id = $2", timestamp, threadID)
+	if err != nil {
+		dbErr(fmt.Errorf("failed to bump thread: %w", err))
+	}
+}
+
 func (db *DB) ModeratePost(postID int, moderated PostModerated) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE post SET moderated = $1 WHERE id = $2", moderated, postID)
 	if err != nil {

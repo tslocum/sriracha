@@ -1605,6 +1605,29 @@ func (s *Server) writePage(db serverDB, data *templateData, p *Page, w io.Writer
 	return data.executeWithError(w)
 }
 
+func (s *Server) unBumpThread(db serverDB, threadID int) {
+	if threadID <= 0 {
+		return
+	}
+	posts := db.AllPostsInThread(FilterVisible, threadID)
+	if len(posts) == 0 {
+		return
+	}
+	thread := posts[0]
+	bumped := thread.Timestamp
+	slices.Reverse(posts)
+	for _, p := range posts {
+		if strings.ToLower(p.Email) != "sage" {
+			bumped = p.Timestamp
+			break
+		}
+	}
+	if thread.Bumped > bumped {
+		thread.Bumped = bumped
+		db.UnBumpThread(threadID, bumped)
+	}
+}
+
 // rebuildBoard rebuilds a thread res page and board index pages.
 func (s *Server) rebuildThread(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, post *Post) {
 	archived := post.Archived()

@@ -109,12 +109,15 @@ func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request
 
 		s.deletePost(db, post)
 
+		if post.Parent == 0 {
+			os.Remove(filepath.Join(s.config.Root, b.Dir, "res", fmt.Sprintf("%d.html", post.ID)))
+		} else {
+			s.unBumpThread(db, post.Parent)
+		}
+
 		wg := &sync.WaitGroup{}
 		delta := &atomic.Uint32{}
 		db.SoftCommit()
-		if post.Parent == 0 {
-			os.Remove(filepath.Join(s.config.Root, b.Dir, "res", fmt.Sprintf("%d.html", post.ID)))
-		}
 		s.rebuildThread(db, wg, delta, post)
 		wg.Wait()
 

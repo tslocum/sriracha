@@ -100,12 +100,22 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			if s.forbidden(w, data, "post.delete") {
 				return
 			}
-			wg := &sync.WaitGroup{}
-			delta := &atomic.Uint32{}
+			var threadIDs []int
 			for _, post := range posts {
 				s.deletePost(db, post)
 				s.log(db, data.Account, post.Board, fmt.Sprintf("Deleted >>%d", post.ID), "Deleted all posts by author.")
+				threadID := post.Thread()
+				if !slices.Contains(threadIDs, threadID) {
+					threadIDs = append(threadIDs, threadID)
+				}
 			}
+
+			for _, threadID := range threadIDs {
+				s.unBumpThread(db, threadID)
+			}
+
+			wg := &sync.WaitGroup{}
+			delta := &atomic.Uint32{}
 			db.SoftCommit()
 			s.rebuildThreads(db, wg, delta, posts)
 			wg.Wait()
@@ -365,6 +375,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			return
 		}
 		var rebuild []*Post
+		var threadIDs []int
 		slices.Reverse(selected)
 		for _, post := range selected {
 			if banFile && post.FileHash != "" && !db.FileBanned(post.FileHash) {
@@ -418,11 +429,26 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 					case ModeratedArchived:
 						message = fmt.Sprintf("Deleted archived thread >>%d", post.ID)
 					}
+				} else {
+					switch moderated {
+					case ModeratedPruned:
+						message = fmt.Sprintf("Deleted pruned post >>%d", post.ID)
+					case ModeratedArchived:
+						message = fmt.Sprintf("Deleted archived post >>%d", post.ID)
+					}
 				}
 				s.log(db, data.Account, data.Board, message, "")
 
 				rebuild = append(rebuild, post)
+				threadID := post.Thread()
+				if !slices.Contains(threadIDs, threadID) {
+					threadIDs = append(threadIDs, threadID)
+				}
 			}
+		}
+
+		for _, threadID := range threadIDs {
+			s.unBumpThread(db, threadID)
 		}
 
 		wg := &sync.WaitGroup{}

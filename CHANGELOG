@@ -1,6 +1,7 @@
 2.0.1:
-- Warn when a hard drive is nearly full
-- Reject new posts when a hard drive is full
+- Un-bump threads when replies are deleted
+- Warn when one or more hard drives are nearly full
+- Reject new posts when one or more hard drives are full
 
 2.0.0:
 - Add maximum connections setting

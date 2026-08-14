@@ -138,6 +138,7 @@ type DB interface {
 	ReplyCount(threadID int) int
 	MaxPostID() int
 	BumpThread(threadID int, timestamp int64)
+	UnBumpThread(threadID int, timestamp int64)
 	ModeratePost(postID int, moderated PostModerated)
 	StickyPost(postID int, sticky bool)
 	SpoilerPost(postID int, spoiler bool)
