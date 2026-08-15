@@ -337,8 +337,9 @@ func (f *BBCode) rebuildCompiler() {
 
 	if !f.config[configSJIS] {
 		f.compiler.SetTag("sjis", nil)
+		f.compiler.SetTag("aa", nil)
 	} else {
-		f.compiler.SetTag("sjis", func(node *bbcode.BBCodeNode) (*bbcode.HTMLTag, bool) {
+		sjisFunc := func(node *bbcode.BBCodeNode) (*bbcode.HTMLTag, bool) {
 			out := bbcode.NewHTMLTag("")
 			out.Name = "span"
 			out.Attrs["class"] = "sjis"
@@ -347,7 +348,9 @@ func (f *BBCode) rebuildCompiler() {
 				out.AppendChild(bbcode.CompileRaw(child))
 			}
 			return out, false
-		})
+		}
+		f.compiler.SetTag("sjis", sjisFunc)
+		f.compiler.SetTag("aa", sjisFunc)
 	}
 
 	if !f.config[configURL] {
