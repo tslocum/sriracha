@@ -1,3 +1,6 @@
+2.0.3:
+- Fix including version information in binary
+
 2.0.2:
 - Refresh available disk space every 5 minutes when full or nearly full
 

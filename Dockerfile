@@ -21,7 +21,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
     cd /usr/src/sriracha/cmd/sriracha && \
     echo "Building sriracha..." && \
-    go build -trimpath -ldflags "-s -w -X 'codeberg.org/tslocum/sriracha.SrirachaVersion=${version:-DEV}'" && \
+    go build -trimpath -ldflags "-s -w -X 'codeberg.org/tslocum/sriracha/internal/server.SrirachaVersion=${version:-DEV}'" && \
     if [ -d "/usr/src/sriracha/customplugin/" ]; then \
         for dir in /usr/src/sriracha/customplugin/*; do \
             (echo "Building custom plugin $(basename $dir)..." && cd "$dir" && go build -trimpath -ldflags "-s -w" -buildmode=plugin); \

@@ -7,7 +7,7 @@ builds:
     flags:
       - -trimpath
     ldflags:
-      - -s -w -X codeberg.org/tslocum/sriracha.SrirachaVersion={{.Version}}
+      - -s -w -X codeberg.org/tslocum/sriracha/internal/server.SrirachaVersion={{.Version}}
     goos:
       - darwin
       - freebsd
