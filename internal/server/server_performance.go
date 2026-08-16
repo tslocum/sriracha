@@ -17,7 +17,7 @@ func (s *Server) servePerformance(data *templateData, db serverDB, w http.Respon
 
 	type timing struct {
 		path string
-		ms   uint32
+		ms   int32
 	}
 
 	data.Template = "manage_performance"
@@ -38,7 +38,7 @@ func (s *Server) servePerformance(data *templateData, db serverDB, w http.Respon
 		if sortName {
 			return strings.Compare(a.path, b.path)
 		}
-		delta := int(b.ms) - int(a.ms)
+		delta := b.ms - a.ms
 		switch {
 		case delta < 0:
 			return -1

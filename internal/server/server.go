@@ -307,7 +307,8 @@ type Server struct {
 
 	refreshDisks chan struct{}
 
-	connCount *atomic.Int32
+	connCount   *atomic.Int32
+	recordConns int32
 
 	connSemaphore chan struct{}
 
@@ -315,7 +316,7 @@ type Server struct {
 
 	twoFactorSessions []*twoFactorSession
 
-	pageTimings    map[string]uint32
+	pageTimings    map[string]int32
 	pageTimingLock sync.Mutex
 
 	msgPrinter *message.Printer
@@ -346,7 +347,7 @@ func NewServer() *Server {
 		httpClient:            httpClient,
 		refreshDisks:          make(chan struct{}),
 		connCount:             &atomic.Int32{},
-		pageTimings:           make(map[string]uint32),
+		pageTimings:           make(map[string]int32),
 		msgPrinter:            message.NewPrinter(language.English),
 	}
 }
@@ -933,6 +934,8 @@ func (s *Server) loadServerConfig() error {
 
 	s.opt.Access = make(map[string]string)
 	maps.Copy(s.opt.Access, s.config.Access)
+
+	s.recordConns = int32(db.GetInt("recordconns"))
 	return nil
 }
 
@@ -1545,7 +1548,7 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 }
 
 // writeOverboard writes overboard pages to disk.
-func (s *Server) writeOverboards(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, boards []*Board) {
+func (s *Server) writeOverboards(db serverDB, wg *sync.WaitGroup, delta *atomic.Int32, boards []*Board) {
 	if s.opt.Overboard != "" {
 		s.writeOverboard(db, wg, delta, nil)
 	}
@@ -1634,7 +1637,7 @@ func (s *Server) unBumpThread(db serverDB, threadID int) {
 }
 
 // rebuildBoard rebuilds a thread res page and board index pages.
-func (s *Server) rebuildThread(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, post *Post) {
+func (s *Server) rebuildThread(db serverDB, wg *sync.WaitGroup, delta *atomic.Int32, post *Post) {
 	archived := post.Archived()
 	s.writeBoardThread(db, wg, delta, post.Board, post.Thread())
 	s.writeBoardIndexes(db, wg, delta, archived, post.Board)
@@ -1646,7 +1649,7 @@ func (s *Server) rebuildThread(db serverDB, wg *sync.WaitGroup, delta *atomic.Ui
 	s.writeModQueue(db)
 }
 
-func (s *Server) rebuildThreads(db serverDB, wg *sync.WaitGroup, delta *atomic.Uint32, posts []*Post) {
+func (s *Server) rebuildThreads(db serverDB, wg *sync.WaitGroup, delta *atomic.Int32, posts []*Post) {
 	var activeIDs []int
 	var activeBoards []*Board
 	var archiveIDs []int
@@ -1730,7 +1733,7 @@ func (s *Server) rebuildAll(db serverDB) {
 	s.indexCacheLock.Unlock()
 
 	wg := &sync.WaitGroup{}
-	delta := &atomic.Uint32{}
+	delta := &atomic.Int32{}
 	allPages := db.AllPages()
 	if len(allPages) > 0 {
 		s.writePages(db, wg, delta, allPages)
@@ -2248,10 +2251,29 @@ func withCacheHeader(fs http.Handler) http.HandlerFunc {
 	}
 }
 
+func (s *Server) updateRecordConns(count int32) {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
+	if count < s.recordConns {
+		return
+	}
+	s.recordConns = count
+
+	db := s.begin()
+	defer db.Commit()
+
+	db.SaveInt("recordconns", int(count))
+	db.SaveInt64("recordconnstimestamp", time.Now().Unix())
+}
+
 func (s *Server) handleConnState(conn net.Conn, state http.ConnState) {
 	switch state {
 	case http.StateNew:
-		s.connCount.Add(1)
+		count := s.connCount.Add(1)
+		if count > s.recordConns {
+			go s.updateRecordConns(count)
+		}
 	case http.StateHijacked, http.StateClosed:
 		s.connCount.Add(-1)
 	}
@@ -2350,7 +2372,7 @@ func (s *Server) handleRebuild() {
 	var traceT time.Time
 	var traceD time.Duration
 	wg := &sync.WaitGroup{}
-	delta := &atomic.Uint32{}
+	delta := &atomic.Int32{}
 	for {
 		// Process queue.
 		info = <-s.rebuildQueue

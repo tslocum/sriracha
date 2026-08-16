@@ -63,7 +63,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		}
 
 		wg := &sync.WaitGroup{}
-		delta := &atomic.Uint32{}
+		delta := &atomic.Int32{}
 		for _, postID := range ids {
 			post := db.PostByID(postID)
 			if post == nil {
@@ -204,7 +204,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		}
 		s.rebuildNameblocks(db)
 		wg := &sync.WaitGroup{}
-		delta := &atomic.Uint32{}
+		delta := &atomic.Int32{}
 		db.SoftCommit()
 		for _, b := range db.AllBoards() {
 			s.rebuildBoard(db, wg, delta, b)

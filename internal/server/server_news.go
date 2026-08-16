@@ -63,7 +63,7 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 		s.pageTimingLock.Unlock()
 
 		wg := &sync.WaitGroup{}
-		delta := &atomic.Uint32{}
+		delta := &atomic.Int32{}
 		db.SoftCommit()
 		s.writeNewsIndexes(db, wg, delta)
 		s.writeSiteIndex(wg, delta)
@@ -105,7 +105,7 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 			changes := printChanges(oldNews, *data.Manage.News)
 
 			wg := &sync.WaitGroup{}
-			delta := &atomic.Uint32{}
+			delta := &atomic.Int32{}
 			db.SoftCommit()
 			if data.Manage.News.Timestamp == 0 || data.Manage.News.Timestamp > time.Now().Unix() {
 				os.Remove(filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", data.Manage.News.ID)))
@@ -146,7 +146,7 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 		db.SoftCommit()
 		if n.Timestamp != 0 && n.Timestamp <= time.Now().Unix() {
 			wg := &sync.WaitGroup{}
-			delta := &atomic.Uint32{}
+			delta := &atomic.Int32{}
 			s.rebuildNewsEntry(db, wg, delta, n)
 			s.writeSiteIndex(wg, delta)
 			wg.Wait()

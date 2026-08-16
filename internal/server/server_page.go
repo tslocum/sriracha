@@ -49,7 +49,7 @@ func (s *Server) servePage(data *templateData, db serverDB, w http.ResponseWrite
 			data.Info = Get(nil, data.Account, "Rebuilt all pages.")
 		}
 		wg := &sync.WaitGroup{}
-		delta := &atomic.Uint32{}
+		delta := &atomic.Int32{}
 		s.writePages(db, wg, delta, pages)
 		wg.Wait()
 	}
@@ -132,7 +132,7 @@ func (s *Server) servePage(data *templateData, db serverDB, w http.ResponseWrite
 
 		db.UpdatePage(data.Manage.Page)
 		wg := &sync.WaitGroup{}
-		delta := &atomic.Uint32{}
+		delta := &atomic.Int32{}
 		db.SoftCommit()
 		s.writePages(db, wg, delta, []*Page{data.Manage.Page})
 		wg.Wait()
@@ -186,7 +186,7 @@ func (s *Server) servePage(data *templateData, db serverDB, w http.ResponseWrite
 
 		db.AddPage(p)
 		wg := &sync.WaitGroup{}
-		delta := &atomic.Uint32{}
+		delta := &atomic.Int32{}
 		db.SoftCommit()
 		s.writePages(db, wg, delta, []*Page{p})
 		wg.Wait()

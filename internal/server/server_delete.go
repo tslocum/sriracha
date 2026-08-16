@@ -119,7 +119,7 @@ func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request
 		}
 
 		wg := &sync.WaitGroup{}
-		delta := &atomic.Uint32{}
+		delta := &atomic.Int32{}
 		db.SoftCommit()
 		s.rebuildThread(db, wg, delta, post)
 		wg.Wait()

@@ -115,7 +115,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			}
 
 			wg := &sync.WaitGroup{}
-			delta := &atomic.Uint32{}
+			delta := &atomic.Int32{}
 			db.SoftCommit()
 			s.rebuildThreads(db, wg, delta, posts)
 			wg.Wait()
@@ -263,7 +263,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			}
 			// Rebuild static files.
 			wg := &sync.WaitGroup{}
-			delta := &atomic.Uint32{}
+			delta := &atomic.Int32{}
 			db.SoftCommit()
 			s.rebuildThread(db, wg, delta, post)
 			wg.Wait()
@@ -304,7 +304,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		}
 		if rebuild {
 			wg := &sync.WaitGroup{}
-			delta := &atomic.Uint32{}
+			delta := &atomic.Int32{}
 			db.SoftCommit()
 			s.rebuildThread(db, wg, delta, post)
 			wg.Wait()
@@ -357,7 +357,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		}
 		if !skipRebuild {
 			wg := &sync.WaitGroup{}
-			delta := &atomic.Uint32{}
+			delta := &atomic.Int32{}
 			db.SoftCommit()
 			s.rebuildThread(db, wg, delta, post)
 			wg.Wait()
@@ -455,7 +455,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		}
 
 		wg := &sync.WaitGroup{}
-		delta := &atomic.Uint32{}
+		delta := &atomic.Int32{}
 		db.SoftCommit()
 		s.rebuildThreads(db, wg, delta, rebuild)
 		wg.Wait()

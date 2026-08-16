@@ -594,7 +594,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 			return false
 		}
 		wg := &sync.WaitGroup{}
-		delta := &atomic.Uint32{}
+		delta := &atomic.Int32{}
 		s.rebuildBoard(db, wg, delta, b)
 		wg.Wait()
 		data.Info = fmt.Sprintf("Rebuilt %s", b.Path())
@@ -692,7 +692,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		s.refreshCategoryCache(db)
 		s.refreshKeywordCache(db)
 		wg := &sync.WaitGroup{}
-		delta := &atomic.Uint32{}
+		delta := &atomic.Int32{}
 		db.SoftCommit()
 		s.rebuildBoard(db, wg, delta, bb)
 		for _, board := range updated {
@@ -773,7 +773,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		s.refreshCategoryCache(db)
 		s.refreshKeywordCache(db)
 		wg := &sync.WaitGroup{}
-		delta := &atomic.Uint32{}
+		delta := &atomic.Int32{}
 		db.SoftCommit()
 		s.writeSiteIndex(wg, delta)
 		wg.Wait()
@@ -902,7 +902,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 			s.refreshCategoryCache(db)
 			s.refreshKeywordCache(db)
 			wg := &sync.WaitGroup{}
-			delta := &atomic.Uint32{}
+			delta := &atomic.Int32{}
 			db.SoftCommit()
 			s.rebuildBoard(db, wg, delta, data.Manage.Board)
 			for _, board := range updated {
@@ -1013,7 +1013,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		s.refreshCategoryCache(db)
 		s.refreshKeywordCache(db)
 		wg := &sync.WaitGroup{}
-		delta := &atomic.Uint32{}
+		delta := &atomic.Int32{}
 		db.SoftCommit()
 		s.rebuildBoard(db, wg, delta, b)
 		s.writeSiteIndex(wg, delta)
