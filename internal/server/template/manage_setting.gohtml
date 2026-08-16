@@ -156,6 +156,14 @@
             <th><br>{{T "Attachments"}}</th><td>&nbsp;</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="striporiginal">{{T "Strip Original Names"}}</label></td>
+            <td><select name="striporiginal" style="width: 100%;">
+                <option value="0"{{if not .Opt.StripOriginal}} selected{{end}}>✗ {{T "Disable"}}</option>
+                <option value="1"{{if .Opt.StripOriginal}} selected{{end}}>✓ {{T "Enable"}}</option>
+            </select></td>
+            <td>{{T "Strip original file names from attachments."}}</td>
+        </tr>
+        <tr>
             <td class="postblock"><label for="oekakiwidth">{{T "Oekaki Width"}}</label></td>
             <td><input type="text" name="oekakiwidth" value="{{.Opt.OekakiWidth}}"></input></td>
             <td>{{T "Default oekaki canvas width."}}</td>

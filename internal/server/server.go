@@ -172,6 +172,7 @@ type ServerOptions struct {
 	Refresh          int
 	Uploads          []*UploadType
 	Embeds           [][2]string
+	StripOriginal    bool
 	OekakiWidth      int
 	OekakiHeight     int
 	Overboard        string
@@ -814,6 +815,8 @@ func (s *Server) loadServerConfig() error {
 	} else {
 		s.opt.Spoiler = db.GetBool("spoiler")
 	}
+
+	s.opt.StripOriginal = db.GetBool("striporiginal")
 
 	oekakiWidth := db.GetInt("oekakiwidth")
 	if oekakiWidth == 0 {

@@ -1432,6 +1432,12 @@ msgstr ""
 msgid "Sticky"
 msgstr ""
 
+msgid "Strip Original Names"
+msgstr ""
+
+msgid "Strip original file names from attachments."
+msgstr ""
+
 msgid "Style"
 msgstr ""
 

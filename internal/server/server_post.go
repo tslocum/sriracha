@@ -273,7 +273,10 @@ func (s *Server) loadPostFile(db serverDB, r *http.Request, p *Post, fileHeader 
 	if err == nil {
 		p.FileMIME = mime.String()
 	}
-	p.FileOriginal = fileHeader.Filename
+
+	if !s.opt.StripOriginal {
+		p.FileOriginal = fileHeader.Filename
+	}
 
 	oekakiPost := p.Board.Oekaki && p.FileMIME == "application/octet-stream"
 	if oekakiPost {

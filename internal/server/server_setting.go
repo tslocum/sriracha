@@ -88,6 +88,9 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		s.opt.Spoiler = true
 		db.SaveBool("spoiler", s.opt.Spoiler)
 
+		s.opt.StripOriginal = false
+		db.SaveBool("striporiginal", s.opt.StripOriginal)
+
 		s.opt.OekakiWidth = defaultServerOekakiWidth
 		db.SaveInt("oekakiwidth", s.opt.OekakiWidth)
 
@@ -246,6 +249,10 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		search := FormInt(r, "search")
 		db.SaveInt("search", search)
 		s.opt.Search = search
+
+		stripOriginal := FormBool(r, "striporiginal")
+		db.SaveBool("striporiginal", stripOriginal)
+		s.opt.StripOriginal = stripOriginal
 
 		oekakiWidth := FormInt(r, "oekakiwidth")
 		db.SaveInt("oekakiwidth", oekakiWidth)

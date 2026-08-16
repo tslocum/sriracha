@@ -1,5 +1,6 @@
 2.0.4:
-- Track and record highest number of connections
+- Track and record highest connection count
+- Support stripping original file names from attachments
 
 2.0.3:
 - Fix including version information in binary
