@@ -67,6 +67,9 @@ func (s *Server) servePage(data *templateData, db serverDB, w http.ResponseWrite
 		db.DeletePage(p.ID)
 
 		os.Remove(filepath.Join(s.config.Root, p.Path+".html"))
+		s.pageTimingLock.Lock()
+		delete(s.pageTimings, fmt.Sprintf("/%s.html", p.Path))
+		s.pageTimingLock.Unlock()
 
 		s.log(db, data.Account, nil, fmt.Sprintf("Deleted page #%d", p.ID), "")
 
@@ -122,6 +125,9 @@ func (s *Server) servePage(data *templateData, db serverDB, w http.ResponseWrite
 			}
 
 			os.Remove(filepath.Join(s.config.Root, oldPath+".html"))
+			s.pageTimingLock.Lock()
+			delete(s.pageTimings, fmt.Sprintf("/%s.html", oldPath))
+			s.pageTimingLock.Unlock()
 		}
 
 		db.UpdatePage(data.Manage.Page)

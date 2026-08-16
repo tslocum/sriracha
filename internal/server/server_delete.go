@@ -111,6 +111,9 @@ func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request
 
 		if post.Parent == 0 {
 			os.Remove(filepath.Join(s.config.Root, b.Dir, "res", fmt.Sprintf("%d.html", post.ID)))
+			s.pageTimingLock.Lock()
+			delete(s.pageTimings, b.Path()+fmt.Sprintf("res/%d.html", post.ID))
+			s.pageTimingLock.Unlock()
 		} else {
 			s.unBumpThread(db, post.Parent)
 		}

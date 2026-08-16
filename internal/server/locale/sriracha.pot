@@ -1121,6 +1121,9 @@ msgstr ""
 msgid "Path"
 msgstr ""
 
+msgid "Performance"
+msgstr ""
+
 msgid "Permanently ban uploaded file."
 msgstr ""
 

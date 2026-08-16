@@ -55,13 +55,8 @@ type buildInfo struct {
 }
 
 func (s *Server) _buildBoardIndex(info *buildInfo) {
-	var (
-		traceT time.Time
-		traceD time.Duration
-	)
-	if s.opt.trace {
-		traceT = time.Now()
-	}
+	traceT := time.Now()
+
 	db := info.db
 	board := info.board
 	cacheID := board.ID
@@ -156,21 +151,21 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 		log.Fatal(err)
 	}
 
+	traceD := time.Since(traceT)
+	traceLabel := board.Path() + fileName
+	ms := uint32(traceD.Milliseconds())
 	if s.opt.trace {
-		traceD = time.Since(traceT)
-		traceLog(board.Path()+fileName, traceD)
-		info.delta.Add(uint32(traceD.Milliseconds()))
+		traceLog(traceLabel, traceD)
+		info.delta.Add(ms)
 	}
+	s.pageTimingLock.Lock()
+	s.pageTimings[traceLabel] = ms
+	s.pageTimingLock.Unlock()
 }
 
 func (s *Server) _buildBoardCatalog(info *buildInfo) {
-	var (
-		traceT time.Time
-		traceD time.Duration
-	)
-	if s.opt.trace {
-		traceT = time.Now()
-	}
+	traceT := time.Now()
+
 	db := info.db
 	board := info.board
 
@@ -218,11 +213,16 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 		log.Fatal(err)
 	}
 
+	traceD := time.Since(traceT)
+	traceLabel := board.Path() + fileName
+	ms := uint32(traceD.Milliseconds())
 	if s.opt.trace {
-		traceD = time.Since(traceT)
-		traceLog(board.Path()+fileName, traceD)
-		info.delta.Add(uint32(traceD.Milliseconds()))
+		traceLog(traceLabel, traceD)
+		info.delta.Add(ms)
 	}
+	s.pageTimingLock.Lock()
+	s.pageTimings[traceLabel] = ms
+	s.pageTimingLock.Unlock()
 }
 
 func (s *Server) _queueBoardIndexes(info *buildInfo) {
@@ -325,13 +325,8 @@ func (s *Server) _queueBoardIndexes(info *buildInfo) {
 }
 
 func (s *Server) _buildBoardThread(info *buildInfo) {
-	var (
-		traceT time.Time
-		traceD time.Duration
-	)
-	if s.opt.trace {
-		traceT = time.Now()
-	}
+	traceT := time.Now()
+
 	db := info.db
 	board := info.board
 	postID := info.post
@@ -366,21 +361,21 @@ func (s *Server) _buildBoardThread(info *buildInfo) {
 		log.Fatal(err)
 	}
 
+	traceD := time.Since(traceT)
+	traceLabel := board.Path() + fmt.Sprintf("res/%d.html", postID)
+	ms := uint32(traceD.Milliseconds())
 	if s.opt.trace {
-		traceD = time.Since(traceT)
-		traceLog(board.Path()+fmt.Sprintf("res/%d.html", postID), traceD)
-		info.delta.Add(uint32(traceD.Milliseconds()))
+		traceLog(traceLabel, traceD)
+		info.delta.Add(ms)
 	}
+	s.pageTimingLock.Lock()
+	s.pageTimings[traceLabel] = ms
+	s.pageTimingLock.Unlock()
 }
 
 func (s *Server) _buildNewsIndex(info *buildInfo) {
-	var (
-		traceT time.Time
-		traceD time.Duration
-	)
-	if s.opt.trace {
-		traceT = time.Now()
-	}
+	traceT := time.Now()
+
 	db := info.db
 	page := info.page
 
@@ -447,21 +442,21 @@ func (s *Server) _buildNewsIndex(info *buildInfo) {
 		log.Fatal(err)
 	}
 
+	traceD := time.Since(traceT)
+	traceLabel := "/" + fileName
+	ms := uint32(traceD.Milliseconds())
 	if s.opt.trace {
-		traceD = time.Since(traceT)
-		traceLog("/"+fileName, traceD)
-		info.delta.Add(uint32(traceD.Milliseconds()))
+		traceLog(traceLabel, traceD)
+		info.delta.Add(ms)
 	}
+	s.pageTimingLock.Lock()
+	s.pageTimings[traceLabel] = ms
+	s.pageTimingLock.Unlock()
 }
 
 func (s *Server) _buildNewsEntry(info *buildInfo) {
-	var (
-		traceT time.Time
-		traceD time.Duration
-	)
-	if s.opt.trace {
-		traceT = time.Now()
-	}
+	traceT := time.Now()
+
 	db := info.db
 	n := info.news[0]
 	if n.ID <= 0 {
@@ -513,21 +508,21 @@ func (s *Server) _buildNewsEntry(info *buildInfo) {
 		log.Fatal(err)
 	}
 
+	traceD := time.Since(traceT)
+	traceLabel := fmt.Sprintf("/news-%d.html", n.ID)
+	ms := uint32(traceD.Milliseconds())
 	if s.opt.trace {
-		traceD = time.Since(traceT)
-		traceLog(fmt.Sprintf("/news-%d.html", n.ID), traceD)
-		info.delta.Add(uint32(traceD.Milliseconds()))
+		traceLog(traceLabel, traceD)
+		info.delta.Add(ms)
 	}
+	s.pageTimingLock.Lock()
+	s.pageTimings[traceLabel] = ms
+	s.pageTimingLock.Unlock()
 }
 
 func (s *Server) _buildPage(info *buildInfo) {
-	var (
-		traceT time.Time
-		traceD time.Duration
-	)
-	if s.opt.trace {
-		traceT = time.Now()
-	}
+	traceT := time.Now()
+
 	db := info.db
 
 	data := s.newTemplateData(db, info.buf)
@@ -559,21 +554,21 @@ func (s *Server) _buildPage(info *buildInfo) {
 		log.Fatal(err)
 	}
 
+	traceD := time.Since(traceT)
+	traceLabel := fmt.Sprintf("/%s.html", p.Path)
+	ms := uint32(traceD.Milliseconds())
 	if s.opt.trace {
-		traceD = time.Since(traceT)
-		traceLog(fmt.Sprintf("/%s.html", p.Path), traceD)
-		info.delta.Add(uint32(traceD.Milliseconds()))
+		traceLog(traceLabel, traceD)
+		info.delta.Add(ms)
 	}
+	s.pageTimingLock.Lock()
+	s.pageTimings[traceLabel] = ms
+	s.pageTimingLock.Unlock()
 }
 
 func (s *Server) _buildSiteIndex(info *buildInfo) {
-	var (
-		traceT time.Time
-		traceD time.Duration
-	)
-	if s.opt.trace {
-		traceT = time.Now()
-	}
+	traceT := time.Now()
+
 	db := info.db
 
 	if db.BoardByDir("") != nil {
@@ -648,21 +643,21 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 		log.Fatal(err)
 	}
 
+	traceD := time.Since(traceT)
+	traceLabel := "/" + fileName
+	ms := uint32(traceD.Milliseconds())
 	if s.opt.trace {
-		traceD = time.Since(traceT)
-		traceLog("/"+fileName, traceD)
-		info.delta.Add(uint32(traceD.Milliseconds()))
+		traceLog(traceLabel, traceD)
+		info.delta.Add(ms)
 	}
+	s.pageTimingLock.Lock()
+	s.pageTimings[traceLabel] = ms
+	s.pageTimingLock.Unlock()
 }
 
 func (s *Server) _buildStatistics(info *buildInfo) {
-	var (
-		traceT time.Time
-		traceD time.Duration
-	)
-	if s.opt.trace {
-		traceT = time.Now()
-	}
+	traceT := time.Now()
+
 	db := info.db
 
 	serverStats := &ServerStats{
@@ -720,11 +715,16 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 	}
 	s.statsCache = serverStats
 
+	traceD := time.Since(traceT)
+	traceLabel := "/stats.json"
+	ms := uint32(traceD.Milliseconds())
 	if s.opt.trace {
-		traceD = time.Since(traceT)
-		traceLog("/stats.json", traceD)
-		info.delta.Add(uint32(traceD.Milliseconds()))
+		traceLog(traceLabel, traceD)
+		info.delta.Add(ms)
 	}
+	s.pageTimingLock.Lock()
+	s.pageTimings[traceLabel] = ms
+	s.pageTimingLock.Unlock()
 }
 
 // _build handles the static page build queue.

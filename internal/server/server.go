@@ -315,6 +315,9 @@ type Server struct {
 
 	twoFactorSessions []*twoFactorSession
 
+	pageTimings    map[string]uint32
+	pageTimingLock sync.Mutex
+
 	msgPrinter *message.Printer
 
 	lock sync.Mutex
@@ -343,6 +346,7 @@ func NewServer() *Server {
 		httpClient:            httpClient,
 		refreshDisks:          make(chan struct{}),
 		connCount:             &atomic.Int32{},
+		pageTimings:           make(map[string]uint32),
 		msgPrinter:            message.NewPrinter(language.English),
 	}
 }
@@ -1433,6 +1437,9 @@ func (s *Server) deletePostFiles(p *Post) {
 		return
 	} else if p.ID != 0 && p.Parent == 0 {
 		os.Remove(filepath.Join(s.config.Root, p.Board.Dir, "res", fmt.Sprintf("%d.html", p.ID)))
+		s.pageTimingLock.Lock()
+		delete(s.pageTimings, p.Board.Path()+fmt.Sprintf("res/%d.html", p.ID))
+		s.pageTimingLock.Unlock()
 	}
 
 	if p.File == "" {
@@ -2048,6 +2055,8 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 		s.serveNews(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/page"):
 		s.servePage(data, db, w, r)
+	case strings.HasPrefix(r.URL.Path, "/sriracha/performance"):
+		s.servePerformance(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/plugin"):
 		s.servePlugin(data, db, w, r)
 	case strings.HasPrefix(r.URL.Path, "/sriracha/setting"):

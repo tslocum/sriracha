@@ -218,6 +218,9 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			}
 			// Delete thread page.
 			os.Remove(filepath.Join(s.config.Root, post.Board.Path(), "res", fmt.Sprintf("%d.html", post.ID)))
+			s.pageTimingLock.Lock()
+			delete(s.pageTimings, post.Board.Path()+fmt.Sprintf("res/%d.html", post.ID))
+			s.pageTimingLock.Unlock()
 			// Update post board.
 			source := post.Board
 			for _, p := range posts {

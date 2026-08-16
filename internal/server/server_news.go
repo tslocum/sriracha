@@ -58,6 +58,9 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 
 		db.DeleteNews(deleteNewsID)
 		os.Remove(filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", news.ID)))
+		s.pageTimingLock.Lock()
+		delete(s.pageTimings, fmt.Sprintf("/news-%d.html", news.ID))
+		s.pageTimingLock.Unlock()
 
 		wg := &sync.WaitGroup{}
 		delta := &atomic.Uint32{}
@@ -106,6 +109,9 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 			db.SoftCommit()
 			if data.Manage.News.Timestamp == 0 || data.Manage.News.Timestamp > time.Now().Unix() {
 				os.Remove(filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", data.Manage.News.ID)))
+				s.pageTimingLock.Lock()
+				delete(s.pageTimings, fmt.Sprintf("/news-%d.html", data.Manage.News.ID))
+				s.pageTimingLock.Unlock()
 				s.writeNewsIndexes(db, wg, delta)
 			} else {
 				s.rebuildNewsEntry(db, wg, delta, data.Manage.News)
