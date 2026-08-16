@@ -168,21 +168,21 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		data.Message = template.HTML(fmt.Sprintf(`<h2 class="managetitle">Memory Configuration</h2>
 			<table class="managetable"><tbody>
 				<tr><th>maxconns</th><td>%d</td></tr>
+				<tr><th>maxformbuffer</th><td>%s</td></tr>
+				<tr><th>numcpu</th><td>%d</td></tr>
 				<tr><th>minpagebuffer</th><td>%s</td></tr>
 				<tr><th>maxpagebuffer</th><td>%s</td></tr>
-				<tr><th>numcpu</th><td>%d</td></tr>
-				<tr><th>maxformbuffer</th><td>%s</td></tr>
 				<tr><th>worst-case</th><td>(%d * %s) + (%d * %s) = %s</td></tr>
 			</tbody></table>`,
 			s.config.MaxConns,
+			FormatFileSize(s.config.MaxFormBuffer),
+			numCPU,
 			FormatFileSize(int64(s.config.MinPageBuffer)),
 			FormatFileSize(int64(s.config.MaxPageBuffer)),
-			numCPU,
-			FormatFileSize(s.config.MaxFormBuffer),
 			s.config.MaxConns,
-			FormatFileSize(int64(s.config.MaxPageBuffer)),
-			numCPU,
 			FormatFileSize(s.config.MaxFormBuffer),
+			numCPU,
+			FormatFileSize(int64(s.config.MaxPageBuffer)),
 			FormatFileSize(worstCase),
 		))
 		return
