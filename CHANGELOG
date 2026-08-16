@@ -1,3 +1,6 @@
+2.0.2:
+- Refresh available disk space every 5 minutes when full or nearly full
+
 2.0.1:
 - Un-bump threads when replies are deleted
 - Warn when one or more hard drives are nearly full
