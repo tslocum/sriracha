@@ -1,3 +1,6 @@
+2.0.5:
+- Redirect to board index when 'nonoko' is entered in email field
+
 2.0.4:
 - Add Performance page to management panel
 - Track and record highest connection count

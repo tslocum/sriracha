@@ -138,7 +138,7 @@ func (p *Post) AddMediaOverlay(img image.Image) image.Image {
 func (p *Post) SetNameBlock(defaultName string, capcode string, identifiers bool) {
 	var out strings.Builder
 
-	emailLink := p.Email != "" && strings.ToLower(p.Email) != "noko"
+	emailLink := p.Email != "" && strings.ToLower(p.Email) != "noko" && strings.ToLower(p.Email) != "nonoko"
 
 	if emailLink {
 		out.WriteString(`<a href="mailto:` + html.EscapeString(p.Email) + `">`)

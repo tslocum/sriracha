@@ -1337,6 +1337,12 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 	// Wait for static pages to be built.
 	wg.Wait()
 
+	// Redirect to board index.
+	if strings.ToLower(post.Email) == "nonoko" {
+		data.Redirect(w, r, b.Path())
+		return
+	}
+
 	// Redirect to new post.
 	redir := fmt.Sprintf("%sres/%d.html#%d", b.Path(), post.Thread(), post.ID)
 	data.Redirect(w, r, redir)
