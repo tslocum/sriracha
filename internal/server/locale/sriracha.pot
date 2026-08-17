@@ -1432,7 +1432,13 @@ msgstr ""
 msgid "Sticky"
 msgstr ""
 
+msgid "Strip Metadata"
+msgstr ""
+
 msgid "Strip Original Names"
+msgstr ""
+
+msgid "Strip metadata (including %[1]s tags) from attachments. Enabling this option will also enable '%[2]s'."
 msgstr ""
 
 msgid "Strip original file names from attachments."

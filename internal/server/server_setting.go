@@ -88,6 +88,9 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		s.opt.Spoiler = true
 		db.SaveBool("spoiler", s.opt.Spoiler)
 
+		s.opt.StripMetadata = false
+		db.SaveBool("stripmetadata", s.opt.StripMetadata)
+
 		s.opt.StripOriginal = false
 		db.SaveBool("striporiginal", s.opt.StripOriginal)
 
@@ -250,7 +253,14 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		db.SaveInt("search", search)
 		s.opt.Search = search
 
+		stripMetadata := FormBool(r, "stripmetadata")
+		db.SaveBool("stripmetadata", stripMetadata)
+		s.opt.StripMetadata = stripMetadata
+
 		stripOriginal := FormBool(r, "striporiginal")
+		if stripMetadata {
+			stripOriginal = true // Enabling the 'Strip Metadata' option also enables 'Strip Original Names'.
+		}
 		db.SaveBool("striporiginal", stripOriginal)
 		s.opt.StripOriginal = stripOriginal
 

@@ -72,7 +72,6 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 	data.ArchiveMode = info.archive
 	data.Template = "board_page"
 	data.Pages = pageCount(len(info.threads), board.Threads)
-	checkCache := board.Type == TypeImageboard && len(s.indexCache[cacheID]) > 0
 	page := info.page
 
 	existingIDs := func(page int) []int {
@@ -127,7 +126,8 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 	} else {
 		copy(s.indexCache[cacheID][page], postIDs)
 	}
-	if checkCache && len(s.indexCache[cacheID][page]) > 0 && slices.Equal(s.indexCache[cacheID][page], existingIDs(page)) {
+	// Cache imageboard index pages only.
+	if board.Type == TypeImageboard && len(s.indexCache[cacheID][page]) > 0 && slices.Equal(s.indexCache[cacheID][page], existingIDs(page)) {
 		s.indexCacheLock.Unlock()
 		return
 	}

@@ -41,8 +41,8 @@ ENTRYPOINT [ "sriracha" ]
 # Create symbolic link to binary.
 RUN ln -s /usr/share/sriracha/cmd/sriracha/sriracha /usr/bin/sriracha
 
-# Install timezone data and ffmpeg.
-RUN apk add --no-cache tzdata ffmpeg
+# Install timezone data, ffmpeg and exiftool.
+RUN apk add --no-cache tzdata ffmpeg exiftool
 
 # Copy source code and built files.
 COPY --from=build --chown=1000:1000 /usr/src/sriracha /usr/share/sriracha

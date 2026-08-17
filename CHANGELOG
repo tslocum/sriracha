@@ -1,5 +1,7 @@
 2.0.4:
+- Add Performance page to management panel
 - Track and record highest connection count
+- Support stripping metadata from attachments
 - Support stripping original file names from attachments
 
 2.0.3:

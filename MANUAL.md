@@ -216,6 +216,17 @@ embed URL, the second service is tried, and so on.
 Manage the available embed services by visiting the 'Settings' page.
 Embed services may then be enabled per-board, just like upload file types.
 
+### Stripping metadata
+
+Enable the 'Strip Metadata' option in Settings to strip all metadata (including EXIF tags)
+from attachments.
+
+This feature requires the installation of [ExifTool](https://exiftool.org),
+a free and open source program, which handles the manipulation of metadata.
+
+ExifTool strips all recognized metadata from attachments, including potentially helpful
+metadata which normally improves rendering quality. File corruption is also possible.
+
 ### Two-factor authentication
 
 Staff may add up to five [TOTP](https://en.wikipedia.org/wiki/Time-based_one-time_password)

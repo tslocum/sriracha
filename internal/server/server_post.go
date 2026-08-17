@@ -159,6 +159,43 @@ func setFileAndThumb(p *Post, rootDir string, fileExt string, thumbExt string) {
 	}
 }
 
+func (s *Server) _stripMetadata(filePath string) error {
+	// Verify ExifTool is installed and accessible.
+	exifToolPath, err := exec.LookPath("exiftool")
+	if err != nil || exifToolPath == "" {
+		log.Fatal(fmt.Errorf("error: the 'Strip Metadata' option is enabled, but ExifTool is not installed (or is inaccessible)"))
+	}
+
+	// Ignore ExifTool errors.
+	cmd := exec.Command("exiftool", "-qq", "-m", "-overwrite_original", "-all:all=", filePath)
+	cmd.Start()
+	cmd.Wait()
+	return err
+}
+
+func (s *Server) stripMetadata(p *Post) {
+	if !s.opt.StripMetadata {
+		return
+	}
+
+	if p.File != "" && !p.IsEmbed() {
+		filePath := filepath.Join(s.config.Root, p.Board.Dir, "src", p.File)
+		err := s._stripMetadata(filePath)
+		if err != nil {
+			log.Fatalf("failed to strip metadata from %s: %s", filePath, err)
+		}
+	}
+
+	if p.Thumb == "" {
+		return
+	}
+	filePath := filepath.Join(s.config.Root, p.Board.Dir, "thumb", p.Thumb)
+	err := s._stripMetadata(filePath)
+	if err != nil {
+		log.Fatalf("failed to strip metadata from %s: %s", filePath, err)
+	}
+}
+
 func (s *Server) loadPostForm(db serverDB, r *http.Request, p *Post) error {
 	limitString := func(v string, limit int) string {
 		if len(v) > limit {
@@ -1090,6 +1127,9 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 
 	preview := FormBool(r, "preview") && !oekakiPost
 	if !preview {
+		if s.opt.StripMetadata {
+			s.stripMetadata(post)
+		}
 		db.AddPost(post)
 	}
 
@@ -1171,6 +1211,9 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		}
 
 		if !preview {
+			if s.opt.StripMetadata {
+				s.stripMetadata(p)
+			}
 			db.AddPost(p)
 		}
 		posts = append(posts, p)

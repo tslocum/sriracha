@@ -172,6 +172,7 @@ type ServerOptions struct {
 	Refresh          int
 	Uploads          []*UploadType
 	Embeds           [][2]string
+	StripMetadata    bool
 	StripOriginal    bool
 	OekakiWidth      int
 	OekakiHeight     int
@@ -816,7 +817,14 @@ func (s *Server) loadServerConfig() error {
 		s.opt.Spoiler = db.GetBool("spoiler")
 	}
 
-	s.opt.StripOriginal = db.GetBool("striporiginal")
+	s.opt.StripMetadata = db.GetBool("stripmetadata")
+
+	if s.opt.StripMetadata {
+		// Enabling the 'Strip Metadata' option also enables 'Strip Original Names'.
+		s.opt.StripOriginal = true
+	} else {
+		s.opt.StripOriginal = db.GetBool("striporiginal")
+	}
 
 	oekakiWidth := db.GetInt("oekakiwidth")
 	if oekakiWidth == 0 {
