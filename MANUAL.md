@@ -196,6 +196,17 @@ Categories may be used to organize boards. When at least one category exists, on
 categorized boards are displayed in the site index and navigation header. When no
 categories exist, all visible boards are displayed.
 
+### Stripping metadata
+
+Enable the 'Strip Metadata' option in Settings to strip many types of metadata
+(including [Exif](https://en.wikipedia.org/wiki/Exif) tags) from attachments.
+
+This feature requires the installation of [ExifTool](https://exiftool.org),
+a free and open source program which handles the manipulation of metadata.
+
+ExifTool will strip all recognized metadata, including potentially helpful metadata,
+which may reduce rendering quality. File corruption is also possible.
+
 ### Post batching
 
 When a visitor creates a new post, and less than ten seconds have passed since
@@ -215,17 +226,6 @@ embed URL, the second service is tried, and so on.
 
 Manage the available embed services by visiting the 'Settings' page.
 Embed services may then be enabled per-board, just like upload file types.
-
-### Stripping metadata
-
-Enable the 'Strip Metadata' option in Settings to strip all metadata (including EXIF tags)
-from attachments.
-
-This feature requires the installation of [ExifTool](https://exiftool.org),
-a free and open source program, which handles the manipulation of metadata.
-
-ExifTool strips all recognized metadata from attachments, including potentially helpful
-metadata which normally improves rendering quality. File corruption is also possible.
 
 ### Two-factor authentication
 
