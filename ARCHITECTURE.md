@@ -32,6 +32,28 @@ the static file server unless they create or delete a post.
 
 Because of this, it is possible to make use of extensive server-side and client-side caching.
 
+### Locking
+
+While Sriracha will read from multiple connections simulatenously, only one
+write operation is ever performed at a time.
+
+A write operation is any operation which has the potential to write to the
+database or the configured root directory at least once.
+
+Sriracha will commit new data to the database and then use multiple read-only
+connections to complete operations more efficiently.
+
+Write operations include:
+
+- Processing new posts (after the request and uploaded files have already been read)
+- Rebuilding any number of static files simulatenously
+- Refreshing available disk space
+- Sending Cron events to plugins
+- Sending notification emails
+
+The `Server.lock` variable, which is a `sync.Mutex`, is responsible for
+allowing only one write operation at a time.
+
 ## Format
 
 Sriracha posts and threads are formatted to be easily readable by humans and machines.
