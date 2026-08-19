@@ -77,6 +77,23 @@ installation guide is also available.
 
 Translation is handled [online](https://translate.codeberg.org/projects/sriracha/sriracha/).
 
+## Donate
+
+I need your help to continue developing and improving Sriracha. I pushed the
+first commit of Sriracha on [2025/04/10](https://codeberg.org/tslocum/sriracha/commit/d8e901191a1a1c2d06ec15d2acfa008b935adf94)
+and have worked ever since to make it as private, secure and efficient as possible.
+Sriracha is [free and open source software](https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE).
+When someone downloads and installs Sriracha, I do not get anything in return financially
+nor in terms of data. I do not include any tracking in Sriracha. My only metrics are the
+binary download counts on Codeberg and the pull count on Docker Hub.
+
+If you use the software which I have shared freely, there are only two things I ask in return:
+Please do not modify or remove the footer link to the Codeberg repository. And, if you have
+the financial means, please make a recurring [donation](https://liberapay.com/rocket9labs.com)
+to help fund the continued development of Sriracha. You are welcome to donate anonymously.
+Any amount you feel is appropriate for your usage and financial situation would be greatly appreciated.
+If you can't afford to donate, that is okay. I trust you to do what is right for you.
+
 ## Support
 
 **Note:** Support is only available for official Sriracha releases running without any custom templates.
