@@ -89,6 +89,9 @@ msgstr ""
 msgid "A file is required."
 msgstr ""
 
+msgid "Access Key"
+msgstr ""
+
 msgid "Accounts"
 msgstr "Sailors"
 
@@ -181,6 +184,11 @@ msgstr ""
 msgid "Allow moderators to post site news."
 msgstr ""
 
+msgid ""
+"Alphanumeric management panel access key. When set, staff members must visit "
+"%s to log in."
+msgstr ""
+
 msgid "Amount"
 msgstr ""
 
@@ -222,6 +230,9 @@ msgid "Archived"
 msgstr ""
 
 msgid "Artwork title:"
+msgstr ""
+
+msgid "Attachment"
 msgstr ""
 
 msgid "Attachments"
@@ -432,6 +443,9 @@ msgstr "Shoot & maroon for 1 month"
 msgid "Delete & ban permanently"
 msgstr "Shoot & maroon to the bitter end"
 
+msgid "Delete Attachment"
+msgstr ""
+
 msgid "Delete Post"
 msgstr "Shoot Post"
 
@@ -447,6 +461,18 @@ msgid "Deleted & banned %d post"
 msgid_plural "Deleted & banned %d posts"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Delete attachment from %s"
+msgstr ""
+
+msgid "Deleted attachment."
+msgstr ""
+
+msgid "Deleted by author"
+msgstr ""
+
+msgid "Deleted by moderator"
+msgstr ""
 
 msgid "Description"
 msgstr ""
@@ -1171,6 +1197,9 @@ msgstr "Stow a YouTube video."
 msgid "Path"
 msgstr ""
 
+msgid "Performance"
+msgstr ""
+
 msgid "Permanently ban uploaded file."
 msgstr ""
 
@@ -1482,6 +1511,20 @@ msgid "Stickied"
 msgstr ""
 
 msgid "Sticky"
+msgstr ""
+
+msgid "Strip Metadata"
+msgstr ""
+
+msgid "Strip Original Names"
+msgstr ""
+
+msgid ""
+"Strip metadata (including %[1]s tags) from attachments. Enabling this option "
+"will also enable '%[2]s'."
+msgstr ""
+
+msgid "Strip original file names from attachments."
 msgstr ""
 
 msgid "Style"

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-08-14 16:21+0000\n"
+"PO-Revision-Date: 2026-08-20 17:18+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -88,6 +88,9 @@ msgstr "Er is een bestand van %s of groter vereist."
 
 msgid "A file is required."
 msgstr "Er is een bestand vereist."
+
+msgid "Access Key"
+msgstr "Toegangssleutel"
 
 msgid "Accounts"
 msgstr "Accounts"
@@ -185,6 +188,13 @@ msgstr "Alles toestaan"
 msgid "Allow moderators to post site news."
 msgstr "Sta toe dat moderators nieuws mogen plaatsen."
 
+msgid ""
+"Alphanumeric management panel access key. When set, staff members must visit "
+"%s to log in."
+msgstr ""
+"Een alfanumerieke toegangssleutel voor het beheerderspaneel. Indien "
+"ingesteld, moeten stafleden %s bezoeken om in te loggen."
+
 msgid "Amount"
 msgstr "Hoeveelheid"
 
@@ -229,6 +239,9 @@ msgstr "Gearchiveerd"
 
 msgid "Artwork title:"
 msgstr "Naam van illustraties:"
+
+msgid "Attachment"
+msgstr "Bijlage"
 
 msgid "Attachments"
 msgstr "Bijlagen"
@@ -449,6 +462,9 @@ msgstr "Verwijderen en verbannen voor 1 maand"
 msgid "Delete & ban permanently"
 msgstr "Verwijderen en permanent verbannen"
 
+msgid "Delete Attachment"
+msgstr ""
+
 msgid "Delete Post"
 msgstr "Bericht verwijderen"
 
@@ -464,6 +480,18 @@ msgid "Deleted & banned %d post"
 msgid_plural "Deleted & banned %d posts"
 msgstr[0] "Er is %d bericht verwijderd en verbannen"
 msgstr[1] "Er zijn %d berichten verwijderd en verbannen"
+
+msgid "Delete attachment from %s"
+msgstr ""
+
+msgid "Deleted attachment."
+msgstr ""
+
+msgid "Deleted by author"
+msgstr "Verwijderd door auteur"
+
+msgid "Deleted by moderator"
+msgstr "Verwijderd door moderator"
 
 msgid "Description"
 msgstr "Beschrijving"
@@ -1238,6 +1266,9 @@ msgstr "Plak een YouTube-url."
 msgid "Path"
 msgstr "Locatie"
 
+msgid "Performance"
+msgstr "Prestaties"
+
 msgid "Permanently ban uploaded file."
 msgstr "Verban geüploade bestanden."
 
@@ -1560,6 +1591,22 @@ msgstr "Vastgemaakt"
 
 msgid "Sticky"
 msgstr "Vastmaken"
+
+msgid "Strip Metadata"
+msgstr "Metagegevens weglaten"
+
+msgid "Strip Original Names"
+msgstr "Oorspronkelijke namen weglaten"
+
+msgid ""
+"Strip metadata (including %[1]s tags) from attachments. Enabling this option "
+"will also enable '%[2]s'."
+msgstr ""
+"Laat metagegevens, waaronder %[1]s-labels, weg uit bijlagen. Door deze optie "
+"in te schakelen, wordt ‘%[2]s’ eveneens ingeschakeld."
+
+msgid "Strip original file names from attachments."
+msgstr "Laat oorspronkelijke bestandsnamen weg uit bijlagen."
 
 msgid "Style"
 msgstr "Stijl"

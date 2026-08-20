@@ -89,6 +89,9 @@ msgstr ""
 msgid "A file is required."
 msgstr ""
 
+msgid "Access Key"
+msgstr ""
+
 msgid "Accounts"
 msgstr "Llogarite"
 
@@ -181,6 +184,11 @@ msgstr "Lejo te gjitha"
 msgid "Allow moderators to post site news."
 msgstr "Lejoni moderatoret te postojne lajme ne faqe."
 
+msgid ""
+"Alphanumeric management panel access key. When set, staff members must visit "
+"%s to log in."
+msgstr ""
+
 msgid "Amount"
 msgstr ""
 
@@ -223,6 +231,9 @@ msgstr ""
 
 msgid "Artwork title:"
 msgstr "Titulli i vepres artistike:"
+
+msgid "Attachment"
+msgstr ""
 
 msgid "Attachments"
 msgstr "Bashkangjitjet"
@@ -438,6 +449,9 @@ msgstr "Fshij & deno per 1 muaj"
 msgid "Delete & ban permanently"
 msgstr "Fshij & deno pergjithmone"
 
+msgid "Delete Attachment"
+msgstr ""
+
 msgid "Delete Post"
 msgstr "Fshij Postimin"
 
@@ -453,6 +467,18 @@ msgid "Deleted & banned %d post"
 msgid_plural "Deleted & banned %d posts"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Delete attachment from %s"
+msgstr ""
+
+msgid "Deleted attachment."
+msgstr ""
+
+msgid "Deleted by author"
+msgstr ""
+
+msgid "Deleted by moderator"
+msgstr ""
 
 msgid "Description"
 msgstr "Pershkrimi"
@@ -1208,6 +1234,9 @@ msgstr "Ngjit nje URL te YouTube-it."
 msgid "Path"
 msgstr ""
 
+msgid "Performance"
+msgstr ""
+
 msgid "Permanently ban uploaded file."
 msgstr "Deno pergjithmone skedarin e ngarkuar."
 
@@ -1524,6 +1553,20 @@ msgid "Stickied"
 msgstr ""
 
 msgid "Sticky"
+msgstr ""
+
+msgid "Strip Metadata"
+msgstr ""
+
+msgid "Strip Original Names"
+msgstr ""
+
+msgid ""
+"Strip metadata (including %[1]s tags) from attachments. Enabling this option "
+"will also enable '%[2]s'."
+msgstr ""
+
+msgid "Strip original file names from attachments."
 msgstr ""
 
 msgid "Style"
