@@ -63,7 +63,7 @@
 						{{if $.ModMode}}
 							<input type="submit" name="moderate" value="{{T "Moderate"}}">
 						{{else}}
-							{{T "Delete Post"}} <input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}" autocomplete="off">&nbsp;<input type="submit" id="deletepost" name="deletepost" value="{{T "Delete"}}">
+							<label>{{T "Attachment"}}<input type="checkbox" name="attachment" value="1"></label> <input type="password" name="password" id="deletepostpassword" size="8" placeholder="{{T "Password"}}" autocomplete="off"> <input type="submit" id="deletepost" name="deletepost" value="{{T "Delete"}}">
 						{{end}}
 					</td>
 				</tr>

@@ -221,6 +221,9 @@ msgstr ""
 msgid "Artwork title:"
 msgstr ""
 
+msgid "Attachment"
+msgstr ""
+
 msgid "Attachments"
 msgstr ""
 
@@ -438,6 +441,12 @@ msgid "Deleted & banned %d post"
 msgid_plural "Deleted & banned %d posts"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Deleted by author"
+msgstr ""
+
+msgid "Deleted by moderator"
+msgstr ""
 
 msgid "Description"
 msgstr ""
