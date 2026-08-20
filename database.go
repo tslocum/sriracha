@@ -146,6 +146,7 @@ type DB interface {
 	UpdatePostBoard(postID int, board *Board)
 	UpdatePostNameblock(postID int, nameblock string)
 	UpdatePostMessage(postID int, message string)
+	DeletePostAttachment(p *Post, staff bool)
 	DeletePost(postID int)
 	AddPostBacklink(target *Post, sourceID int)
 	AddPostBacklinks(p *Post)

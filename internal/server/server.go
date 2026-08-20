@@ -1448,6 +1448,27 @@ func (s *Server) refreshRecentPosts(db serverDB) {
 	}
 }
 
+func (s *Server) deletePostAttachment(db serverDB, p *Post, update bool, staff bool) {
+	if p.Board == nil || p.File == "" {
+		return
+	}
+
+	if !p.IsEmbed() {
+		srcPath := filepath.Join(s.config.Root, p.Board.Dir, "src", p.File)
+		os.Remove(srcPath)
+	}
+
+	if p.Thumb == "" {
+		thumbPath := filepath.Join(s.config.Root, p.Board.Dir, "thumb", p.Thumb)
+		os.Remove(thumbPath)
+	}
+
+	if !update {
+		return
+	}
+	db.DeletePostAttachment(p, staff)
+}
+
 // deletePostFiles deletes files associated with a post.
 func (s *Server) deletePostFiles(p *Post) {
 	if p.Board == nil {
@@ -1459,17 +1480,7 @@ func (s *Server) deletePostFiles(p *Post) {
 		s.pageTimingLock.Unlock()
 	}
 
-	if p.File == "" {
-		return
-	}
-	srcPath := filepath.Join(s.config.Root, p.Board.Dir, "src", p.File)
-	os.Remove(srcPath)
-
-	if p.Thumb == "" {
-		return
-	}
-	thumbPath := filepath.Join(s.config.Root, p.Board.Dir, "thumb", p.Thumb)
-	os.Remove(thumbPath)
+	s.deletePostAttachment(nil, p, false, false)
 }
 
 // deletePost deletes a post from the database as well as any associated files.

@@ -263,6 +263,7 @@ func (db *mockDB) LockPost(postID int, lock bool)                   {}
 func (db *mockDB) UpdatePostBoard(postID int, board *Board)         {}
 func (db *mockDB) UpdatePostNameblock(postID int, nameblock string) {}
 func (db *mockDB) UpdatePostMessage(postID int, message string)     {}
+func (db *mockDB) DeletePostAttachment(p *Post, staff bool)         {}
 func (db *mockDB) DeletePost(postID int)                            {}
 func (db *mockDB) AddPostBacklink(target *Post, sourceID int)       {}
 func (db *mockDB) AddPostBacklinks(p *Post)                         {}

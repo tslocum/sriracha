@@ -102,20 +102,28 @@ func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request
 			data.Board = b
 			data.Post = post
 			data.Extra = password
+			if FormBool(r, "attachment") && post.File != "" {
+				data.Extra2 = "attachment"
+			}
 			data.Template = "board_delete"
 			data.execute(w)
 			return
 		}
 
-		s.deletePost(db, post)
-
-		if post.Parent == 0 {
-			os.Remove(filepath.Join(s.config.Root, b.Dir, "res", fmt.Sprintf("%d.html", post.ID)))
-			s.pageTimingLock.Lock()
-			delete(s.pageTimings, b.Path()+fmt.Sprintf("res/%d.html", post.ID))
-			s.pageTimingLock.Unlock()
+		attachment := FormBool(r, "attachment") && post.File != ""
+		if attachment {
+			s.deletePostAttachment(db, post, true, false)
 		} else {
-			s.unBumpThread(db, post.Parent)
+			s.deletePost(db, post)
+
+			if post.Parent == 0 {
+				os.Remove(filepath.Join(s.config.Root, b.Dir, "res", fmt.Sprintf("%d.html", post.ID)))
+				s.pageTimingLock.Lock()
+				delete(s.pageTimings, b.Path()+fmt.Sprintf("res/%d.html", post.ID))
+				s.pageTimingLock.Unlock()
+			} else {
+				s.unBumpThread(db, post.Parent)
+			}
 		}
 
 		wg := &sync.WaitGroup{}
@@ -125,7 +133,11 @@ func (s *Server) serveDelete(db serverDB, w http.ResponseWriter, r *http.Request
 		wg.Wait()
 
 		data.Template = "board_info"
-		data.Info = data.Get("Deleted %s.", fmt.Sprintf("No.%d", post.ID))
+		if attachment {
+			data.Info = data.G("Deleted attachment.")
+		} else {
+			data.Info = data.Get("Deleted %s.", fmt.Sprintf("No.%d", post.ID))
+		}
 		data.execute(w)
 		return
 	}

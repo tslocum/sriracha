@@ -696,6 +696,35 @@ func (db *DB) UpdatePostMessage(postID int, message string) {
 	}
 }
 
+func (db *DB) DeletePostAttachment(p *Post, staff bool) {
+	if p == nil || p.ID <= 0 || p.File == "" {
+		return
+	}
+
+	p.ResetAttachment()
+	if !staff {
+		p.FileOriginal = "?a"
+	} else {
+		p.FileOriginal = "?s"
+	}
+
+	_, err := db.conn.Exec(context.Background(), "UPDATE post SET file = $1, filemime = $2, filehash = $3, fileoriginal = $4, filesize = $5, filewidth = $6, fileheight = $7, thumb = $8, thumbwidth = $9, thumbheight = $10 WHERE id = $11",
+		p.File,
+		p.FileMIME,
+		p.FileHash,
+		p.FileOriginal,
+		p.FileSize,
+		p.FileWidth,
+		p.FileHeight,
+		p.Thumb,
+		p.ThumbWidth,
+		p.ThumbHeight,
+		p.ID)
+	if err != nil {
+		dbErr(fmt.Errorf("failed to delete post attachment: %w", err))
+	}
+}
+
 func (db *DB) DeletePost(postID int) {
 	if postID <= 0 {
 		log.Panicf("invalid post ID %d", postID)

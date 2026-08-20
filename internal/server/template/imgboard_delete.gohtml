@@ -5,10 +5,13 @@
     <input type="hidden" name="delete[]" value="{{.Post.ID}}">
     <input type="hidden" name="password" value="{{.Extra}}">
     <input type="hidden" name="confirmation" value="1">
+    {{if eq .Extra2 "attachment"}}
+        <input type="hidden" name="attachment" value="1">
+    {{end}}
 	<fieldset>
-        <legend>{{T "Delete %s" .Post.RefLink | HTML}}</legend>
+        <legend>{{if ne .Extra2 "attachment"}}{{T "Delete %s" .Post.RefLink | HTML}}{{else}}{{T "Delete attachment from %s" .Post.RefLink | HTML}}{{end}}</legend>
         <table style="border: 0;">
-            <tr><td class="postblock">{{T "Confirm"}}</td><td><input type="submit" class="managebutton" style="width: 100%;" value="{{T "Delete %s" (print ">>" .Post.ID)}}"></td></tr>
+            <tr><td class="postblock">{{T "Confirm"}}</td><td><input type="submit" class="managebutton" style="width: 100%;" value="{{if ne .Extra2 "attachment"}}{{T "Delete %s" (print ">>" .Post.ID)}}{{else}}{{T "Delete Attachment"}}{{end}}"></td></tr>
         </table>
 	</fieldset>
 </form>

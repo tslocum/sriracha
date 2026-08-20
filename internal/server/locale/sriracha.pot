@@ -426,6 +426,9 @@ msgstr ""
 msgid "Delete & ban permanently"
 msgstr ""
 
+msgid "Delete Attachment"
+msgstr ""
+
 msgid "Delete Post"
 msgstr ""
 
@@ -441,6 +444,12 @@ msgid "Deleted & banned %d post"
 msgid_plural "Deleted & banned %d posts"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Delete attachment from %s"
+msgstr ""
+
+msgid "Deleted attachment."
+msgstr ""
 
 msgid "Deleted by author"
 msgstr ""
