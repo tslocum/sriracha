@@ -17,4 +17,12 @@
     {{if not $.Preview}}
         <div id="file{{$post.ID}}" class="thumb" style="display: none;" data-expand="{{$post.ExpandHTML}}"></div>
     {{end}}
+{{else if ne $post.FileOriginal ""}}
+    <div class="thumb" style="padding: 5px;border: 1px dashed;cursor: default;">
+        {{if eq $post.FileOriginal "?a"}}
+            {{T "Deleted by author"}}
+        {{else}}
+            {{T "Deleted by moderator"}}
+        {{end}}
+    </div>
 {{end}}
