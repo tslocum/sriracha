@@ -1462,8 +1462,9 @@ When browsing in mod mode, the following moderation links are displayed:
 
 **? # V M S L D B D&B**
 
-- **?** Spoiler or unspoiler post (when spoilers are enabled and a thumbnail is present)
 - **#** Archive or unarchive thread
+- **?** Spoiler or unspoiler post (when spoilers are enabled and a thumbnail is present)
+- **Ø** Delete attachment (when a file or embed is present and the post has a message)
 - **V** View posts by author (when identifiers are enabed)
 - **M** Move thread
 - **S** Sticky or unsticky thread

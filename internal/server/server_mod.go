@@ -49,6 +49,8 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				action = "b"
 			case "deleteban":
 				action = "db"
+			case "deleteattachment":
+				action = "da"
 			case "lock":
 				action = "l"
 			case "unlock":
@@ -309,6 +311,28 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			s.rebuildThread(db, wg, delta, post)
 			wg.Wait()
 		}
+		data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", post.Board.ID, post.Thread()))
+		return
+	} else if action == "da" {
+		post := selected[0]
+		if post.File == "" {
+			data.ManageError("That post does not have an attachment.")
+			return
+		} else if post.Message == "" {
+			data.ManageError("That post does not have a message. Delete the post instead.")
+			return
+		}
+
+		s.deletePostAttachment(db, post, true, true)
+		s.log(db, data.Account, post.Board, fmt.Sprintf("Deleted attachment from >>/post/%d", post.ID), "")
+
+		wg := &sync.WaitGroup{}
+		delta := &atomic.Int32{}
+		db.SoftCommit()
+		s.rebuildThread(db, wg, delta, post)
+		wg.Wait()
+
+		data.Template = "manage_info"
 		data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", post.Board.ID, post.Thread()))
 		return
 	}
