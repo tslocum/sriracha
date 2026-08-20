@@ -106,6 +106,9 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		s.opt.Refresh = defaultServerRefresh
 		db.SaveInt("refresh", s.opt.Refresh)
 
+		s.opt.AccessKey = ""
+		db.SaveString("accesskey", s.opt.AccessKey)
+
 		if s.opt.ModQueue != "" {
 			os.Remove(filepath.Join(s.config.Root, s.opt.ModQueue+".html"))
 		}
@@ -164,7 +167,7 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 
 	if r.Method == http.MethodPost {
 		overboard := FormString(r, "overboard")
-		if overboard != "" && overboard != "/" && !AlphaNumericAndSymbols.MatchString(overboard) {
+		if overboard != "" && overboard != "/" && !AlphanumericAndSymbols.MatchString(overboard) {
 			data.ManageError("Invalid overboard directory.")
 			return
 		}
@@ -278,6 +281,14 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		}
 		db.SaveInt("refresh", refresh)
 		s.opt.Refresh = refresh
+
+		accessKey := FormString(r, "accesskey")
+		if accessKey != "" && !Alphanumeric.MatchString(accessKey) {
+			data.ManageError(data.G("Invalid access key."))
+			return
+		}
+		db.SaveString("accesskey", accessKey)
+		s.opt.AccessKey = accessKey
 
 		modQueue := strings.TrimSuffix(FormString(r, "modqueue"), ".html")
 		if modQueue != "" && !ValidRelativePath(modQueue) {

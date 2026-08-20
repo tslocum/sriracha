@@ -78,7 +78,9 @@
 			{{end}}
 			{{if ne .Template "index"}}
 				{{if and (ne .Template "news") (ne .Template "search")}}
-					[<a href="/sriracha/" style="text-decoration: underline;">{{T "Manage"}}</a>]
+					{{if eq .Opt.AccessKey ""}}
+						[<a href="/sriracha/" style="text-decoration: underline;">{{T "Manage"}}</a>]
+					{{end}}
 				{{else if or (eq .Opt.SiteIndex 1) (eq .Opt.News 2)}}
 					[<a href="/" style="text-decoration: underline;">{{T "Home"}}</a>]
 				{{else if eq .Opt.SiteIndex 2}}

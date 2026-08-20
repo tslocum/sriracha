@@ -190,6 +190,7 @@ type ServerOptions struct {
 	Banners          map[int][]*Banner
 	Rules            map[int][]template.HTML
 	Categories       []*categoryInfo
+	AccessKey        string
 	ModQueue         string
 	Notifications    bool
 	DevMode          bool
@@ -846,6 +847,8 @@ func (s *Server) loadServerConfig() error {
 			s.opt.Refresh = minServerRefresh
 		}
 	}
+
+	s.opt.AccessKey = db.GetString("accesskey")
 
 	s.opt.ModQueue = db.GetString("modqueue")
 
@@ -1953,6 +1956,20 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 
 	if data.Account != nil {
 		db.UpdateAccountLastActive(data.Account.ID)
+	}
+
+	if len(data.Info) != 0 {
+		data.Template = "manage_error"
+		data.execute(w)
+		return
+	} else if data.Account == nil && s.opt.AccessKey != "" {
+		accessKey := FormString(r, "k")
+		if accessKey != s.opt.AccessKey {
+			data.ManageError(data.G("Invalid access key."))
+			data.execute(w)
+			return
+		}
+		data.Extra = accessKey
 	}
 
 	data.Template = "manage_login"
@@ -3237,7 +3254,7 @@ func printChanges(old interface{}, new interface{}) string {
 			switch name {
 			case "Session":
 				continue
-			case "Password":
+			case "AccessKey", "Password":
 				from = mask
 				to = mask
 			case "Timestamp", "Expire":

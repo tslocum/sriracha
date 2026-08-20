@@ -25,7 +25,8 @@ const (
 )
 
 var (
-	AlphaNumericAndSymbols = regexp.MustCompile(`^[0-9A-Za-z_\-]+$`)
+	Alphanumeric           = regexp.MustCompile(`^[0-9A-Za-z]+$`)
+	AlphanumericAndSymbols = regexp.MustCompile(`^[0-9A-Za-z_\-]+$`)
 	FileNamePattern        = regexp.MustCompile(`^[0-9A-Za-z_\-.]+$`)
 	FilePathPattern        = regexp.MustCompile(`^[0-9A-Za-z_\-/.]+$`)
 

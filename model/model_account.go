@@ -48,7 +48,7 @@ func (a *Account) Validate() error {
 	switch {
 	case strings.TrimSpace(a.Username) == "":
 		return fmt.Errorf("username must be set")
-	case !AlphaNumericAndSymbols.MatchString(a.Username):
+	case !AlphanumericAndSymbols.MatchString(a.Username):
 		return fmt.Errorf("username must only consist of letters, numbers, hyphens and underscores")
 	}
 	return nil

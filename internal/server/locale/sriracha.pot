@@ -83,6 +83,9 @@ msgstr ""
 msgid "A file is required."
 msgstr ""
 
+msgid "Access Key"
+msgstr ""
+
 msgid "Accounts"
 msgstr ""
 
@@ -171,6 +174,9 @@ msgid "Allow all"
 msgstr ""
 
 msgid "Allow moderators to post site news."
+msgstr ""
+
+msgid "Alphanumeric management panel access key. When set, staff members must visit %s to log in."
 msgstr ""
 
 msgid "Amount"

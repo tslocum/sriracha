@@ -565,7 +565,7 @@ func (s *Server) embedMedia(db serverDB, post *Post, embed string, dryRun bool) 
 			case "youtu.be", "www.youtu.be":
 				ytVideoID = strings.TrimPrefix(u.Path, "/")
 			}
-			if ytVideoID != "" && AlphaNumericAndSymbols.MatchString(ytVideoID) {
+			if ytVideoID != "" && AlphanumericAndSymbols.MatchString(ytVideoID) {
 				backupThumb = info.Thumb
 				info.Thumb = "https://img.youtube.com/vi/" + ytVideoID + "/maxresdefault.jpg"
 			}

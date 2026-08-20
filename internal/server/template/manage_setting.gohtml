@@ -96,9 +96,14 @@
             <td>{{T "Whether visitors and staff members may mark attachment thumbnails as spoilers."}}</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="datetimeformat">{{T "Date/Time Format"}}</label></td>
-            <td><input type="text" name="datetimeformat" value="{{.Opt.DateTimeFormat}}"></input></td>
-            <td>{{T "Render format of timestamps. Include %s tags where applicable." "<wbr>"}}</td>
+            <td class="postblock"><label for="accesskey">{{T "Access Key"}}</label></td>
+            <td><input type="text" name="accesskey" value="{{.Opt.AccessKey}}"></input></td>
+            <td>{{T "Alphanumeric management panel access key. When set, staff members must visit %s to log in." "/sriracha?k=ACCESSKEY"}}</td>
+        </tr>
+        <tr>
+            <td class="postblock"><label for="modqueue">{{T "Mod Queue"}}</label></td>
+            <td><input type="text" name="modqueue" value="{{.Opt.ModQueue}}"></input></td>
+            <td>{{T "File path (excluding .html suffix) of the moderation queue status page. Leave blank to disable."}}</td>
         </tr>
         <tr>
             <td class="postblock"><label for="search">{{T "Search"}}</label></td>
@@ -111,9 +116,9 @@
             <td>{{T "Seconds between automatic refreshes when viewing a board index or thread page. Set to 0 to disable."}}</td>
         </tr>
         <tr>
-            <td class="postblock"><label for="modqueue">{{T "Mod Queue"}}</label></td>
-            <td><input type="text" name="modqueue" value="{{.Opt.ModQueue}}"></input></td>
-            <td>{{T "File path (excluding .html suffix) of the moderation queue status page. Leave blank to disable."}}</td>
+            <td class="postblock"><label for="datetimeformat">{{T "Date/Time Format"}}</label></td>
+            <td><input type="text" name="datetimeformat" value="{{.Opt.DateTimeFormat}}"></input></td>
+            <td>{{T "Render format of timestamps. Include %s tags where applicable." "<wbr>"}}</td>
         </tr>
         <tr>
             <td class="postblock"><label for="icon">{{T "Icon"}}</label></td>

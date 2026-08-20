@@ -255,7 +255,7 @@ func NewBoard() *Board {
 
 func (b *Board) Validate(styles []string) error {
 	switch {
-	case b.Dir != "" && !AlphaNumericAndSymbols.MatchString(b.Dir):
+	case b.Dir != "" && !AlphanumericAndSymbols.MatchString(b.Dir):
 		return fmt.Errorf("dir must only consist of letters, numbers, hyphens and underscores")
 	case strings.TrimSpace(b.Name) == "":
 		return fmt.Errorf("name must be set")
