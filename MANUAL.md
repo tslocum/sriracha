@@ -1300,8 +1300,39 @@ settings of each Sriracha board before importing posts with embeds.
 
 ### Import posts from other software
 
-Sriracha is capable of importing posts from any software, provided you or
-someone else export the data in a compatible format.
+Sriracha is capable of importing posts from any software, provided you either:
+
+- Add import support to Sriracha (but first, read the [license](https://codeberg.org/tslocum/sriracha/src/branch/main/LICENSE))
+- Export the posts to a SQLite database file in Sriracha format
+
+#### Sriracha import handler interface
+
+Sriracha imports posts via handlers which satisfy the `importHandler` interface:
+
+```go
+// importHandler describes the required methods for handling importing posts from an external database.
+type importHandler interface {
+  // Name returns the name of the software supported by the handler.
+  Name() string
+
+  // Matches returns whether the handler recognizes the database being imported.
+  Matches() bool
+
+  // Tables returns a list of post tables.
+  Tables() []string
+
+  // Posts returns the posts contained in the specified table.
+  Posts(table string) []*Post
+}
+```
+
+The following import handlers are available:
+
+- [Sriracha](https://codeberg.org/tslocum/sriracha/src/branch/main/internal/server/server_import_sriracha.go)
+- [TinyIB](https://codeberg.org/tslocum/sriracha/src/branch/main/internal/server/server_import_tinyib.go)
+- [vichan](https://codeberg.org/tslocum/sriracha/src/branch/main/internal/server/server_import_vichan.go)
+
+#### Sriracha export format
 
 Sriracha supports importing post data via SQLite database files containing one table:
 
