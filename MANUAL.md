@@ -1460,11 +1460,11 @@ range, use a wildcard (*) at the end of the range prefix:
 Mod mode is a tool staff members may use to moderate one or more posts.
 When browsing in mod mode, the following moderation links are displayed:
 
-**? # V M S L D B D&B**
+**# ? Ø V M S L D B D&B**
 
 - **#** Archive or unarchive thread
-- **?** Spoiler or unspoiler post (when spoilers are enabled and a thumbnail is present)
-- **Ø** Delete attachment (when a file or embed is present and the post has a message)
+- **?** Spoiler or unspoiler thumbnail (when a thumbnail is present and spoilers are enabled)
+- **Ø** Delete attachment (when an attachment is present and the post has a message)
 - **V** View posts by author (when identifiers are enabed)
 - **M** Move thread
 - **S** Sticky or unsticky thread
@@ -1522,6 +1522,19 @@ As an administrator, in addition to moderator privileges you may:
 - Delete keywords
 - Delete news
 - Update settings
+
+#### Duplicate attachments
+
+The 'Instance Limit' option of each board specifies how many instances of an
+attachment (file or embed) are allowed, as well as where to search for posts.
+
+When the 'Instance Limit' is set to a positive number, all boards are searched for
+existing instances. When set to a negative number, only the board which is being
+posted to is searched. When set to zero, duplicate attachment checks are disabled.
+
+By default, only one instance of an attachment is allowed across the entire site.
+When someone uploads a file or embeds a URL which has already been posted, they
+will receive an error message containing a link the existing post.
 
 #### Keywords
 
