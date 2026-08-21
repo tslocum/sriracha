@@ -1356,6 +1356,12 @@ The following fields may be left blank and will be filled during import:
 - When `thumbwidth` is less than or equal to zero, and the post has a JPG, PNG or GIF thumbnail, it will be set to the width of the thumbnail.
 - When `thumbheight` is less than or equal to zero, and the post has a JPG, PNG or GIF thumbnail, it will be set to the height of the thumbnail.
 
+The following sentinel values are used:
+
+- `fileoriginal` has prefix `!` - Spoiler thumbnail
+- `fileoriginal` = `?a` - Attachment deleted by author
+- `fileoriginal` = `?s` - Attachment deleted by staff
+
 #### Example post with file attachment
 
 ```json
