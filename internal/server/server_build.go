@@ -413,6 +413,9 @@ func (s *Server) _buildNewsIndex(info *buildInfo) {
 	subData := s.newTemplateData(db, info.buf)
 	buf := &bytes.Buffer{}
 	for _, n := range data.AllNews {
+		if !HTMLTemplate.MatchString(n.Message) {
+			continue
+		}
 		subData.Boards = data.Boards
 		subData.Template = "line"
 		subData.tpl, err = s.tplOriginal.Clone()
@@ -478,26 +481,28 @@ func (s *Server) _buildNewsEntry(info *buildInfo) {
 		log.Fatal(err)
 	}
 
-	subData := s.newTemplateData(db, info.buf)
-	buf := &bytes.Buffer{}
-	subData.Boards = data.Boards
-	subData.Template = "line"
-	subData.tpl, err = s.tplOriginal.Clone()
-	if err != nil {
-		log.Fatal(err)
+	if HTMLTemplate.MatchString(n.Message) {
+		subData := s.newTemplateData(db, info.buf)
+		buf := &bytes.Buffer{}
+		subData.Boards = data.Boards
+		subData.Template = "line"
+		subData.tpl, err = s.tplOriginal.Clone()
+		if err != nil {
+			log.Fatal(err)
+		}
+		subData.tpl, err = subData.tpl.New("line").Parse(n.Message)
+		if err != nil {
+			log.Printf("warning: skipped invalid news entry %d: %s", n.ID, err)
+			return
+		}
+		err = subData.executeWithError(buf)
+		if err != nil {
+			log.Printf("warning: skipped invalid news entry %d: %s", n.ID, err)
+			return
+		}
+		n.Message = buf.String()
+		buf.Reset()
 	}
-	subData.tpl, err = subData.tpl.New("line").Parse(n.Message)
-	if err != nil {
-		log.Printf("warning: skipped invalid news entry %d: %s", n.ID, err)
-		return
-	}
-	err = subData.executeWithError(buf)
-	if err != nil {
-		log.Printf("warning: skipped invalid news entry %d: %s", n.ID, err)
-		return
-	}
-	n.Message = buf.String()
-	buf.Reset()
 
 	data.execute(itemFile)
 

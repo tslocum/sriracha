@@ -40,6 +40,8 @@ var (
 	FixURLPattern2 = regexp.MustCompile(`(?i)\<a href\=\"(.*)\."\ target\=\"\_blank\">(.*)\.\<\/a>`)
 	FixURLPattern3 = regexp.MustCompile(`(?i)\<a href\=\"(.*)\,"\ target\=\"\_blank\">(.*)\,\<\/a>`)
 
+	HTMLTemplate = regexp.MustCompile(`^.*{{.*}}.*$`)
+
 	DateTimeFormatPlain = DefaultDateTimeFormatPlain
 	DateTimeFormatHTML  = DefaultDateTimeFormatHTML
 )
