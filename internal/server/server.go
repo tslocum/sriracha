@@ -145,6 +145,7 @@ type BoardStats struct {
 	Name   string
 	About  string
 	Recent string
+	Hour   float64
 	Month  int
 	Total  int
 }
@@ -152,6 +153,7 @@ type BoardStats struct {
 type ServerStats struct {
 	Name      string
 	About     string
+	Hour      float64
 	Month     int
 	Total     int
 	Boards    []BoardStats

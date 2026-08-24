@@ -671,6 +671,7 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 		Generated: time.Now().Unix(),
 	}
 	thirtyDays := serverStats.Generated - 2592000
+	const hours = 720
 	for _, c := range s.opt.Categories {
 		for _, b := range c.Boards {
 			boardStats := BoardStats{
@@ -680,6 +681,8 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 				Month: db.NumPosts(b, thirtyDays),
 				Total: db.NumPosts(b, 0),
 			}
+			boardStats.Hour = float64(int(float64(boardStats.Month)/hours*100)) / 100
+
 			recent := db.LastPostByBoard(b)
 			if recent != nil {
 				boardStats.Recent = recent.URL(s.opt.SiteHome)
@@ -690,6 +693,7 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 			serverStats.Total += boardStats.Total
 		}
 	}
+	serverStats.Hour = float64(int(float64(serverStats.Month)/hours*100)) / 100
 
 	if s.statsCache != nil && reflect.DeepEqual(serverStats, s.statsCache) {
 		return
