@@ -1315,6 +1315,16 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		db.AddPostBacklinks(post)
 	}
 
+	if loggedIn {
+		moderate := FormString(r, "moderate")
+		switch {
+		case (moderate == "s" || moderate == "us") && s.may(data, "post.sticky"):
+			db.StickyPost(post.Thread(), moderate == "s")
+		case (moderate == "l" || moderate == "ul") && s.may(data, "post.lock"):
+			db.LockPost(post.Thread(), moderate == "l")
+		}
+	}
+
 	db.Commit()
 
 	wg := &sync.WaitGroup{}

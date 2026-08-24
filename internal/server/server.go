@@ -398,6 +398,19 @@ func (s *Server) parseBuildInfo() {
 	}
 }
 
+func (s *Server) may(data *templateData, action string) bool {
+	var required AccountRole
+	switch s.config.Access[action] {
+	case "mod":
+		required = RoleMod
+	case "admin":
+		required = RoleAdmin
+	case "super-admin":
+		required = RoleSuperAdmin
+	}
+	return required != 0 && data.Account != nil && data.Account.Role != 0 && data.Account.Role <= required
+}
+
 // forbidden returns whether a user is forbidden from performing an accion.
 // When forbidden, an error page is written to the web request automatically.
 func (s *Server) forbidden(w http.ResponseWriter, data *templateData, action string) bool {
