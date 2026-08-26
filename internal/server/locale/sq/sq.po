@@ -343,6 +343,9 @@ msgstr ""
 msgid "Click to refresh."
 msgstr "Kliko per rifreskim."
 
+msgid "Color Identifiers"
+msgstr ""
+
 msgid "Configure"
 msgstr "Konfiguro"
 
@@ -1811,6 +1814,9 @@ msgid ""
 msgstr ""
 "Nese identifikuesit shfaqen per secilin postim. Identifikuesit gjenerohen "
 "bazuar ne \"hashes\" se adreses IP."
+
+msgid "Whether identifiers are randomly colored."
+msgstr ""
 
 msgid ""
 "Whether moderator approval is required before displaying newly created posts."

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-08-20 17:18+0000\n"
+"PO-Revision-Date: 2026-08-21 15:56+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -354,6 +354,9 @@ msgstr "Klik op de bevestigingslink in de toegestuurde e-mail."
 msgid "Click to refresh."
 msgstr "Klik om te herladen."
 
+msgid "Color Identifiers"
+msgstr ""
+
 msgid "Configure"
 msgstr "Instellen"
 
@@ -463,7 +466,7 @@ msgid "Delete & ban permanently"
 msgstr "Verwijderen en permanent verbannen"
 
 msgid "Delete Attachment"
-msgstr ""
+msgstr "Bijlage verwijderen"
 
 msgid "Delete Post"
 msgstr "Bericht verwijderen"
@@ -482,10 +485,10 @@ msgstr[0] "Er is %d bericht verwijderd en verbannen"
 msgstr[1] "Er zijn %d berichten verwijderd en verbannen"
 
 msgid "Delete attachment from %s"
-msgstr ""
+msgstr "Bijlage verwijderen van %s"
 
 msgid "Deleted attachment."
-msgstr ""
+msgstr "De bijlage is verwijderd."
 
 msgid "Deleted by author"
 msgstr "Verwijderd door auteur"
@@ -1859,6 +1862,9 @@ msgid ""
 msgstr ""
 "Of identificaties moeten worden getoond bij berichten. Deze worden "
 "samengesteld op basis van ip-adrescontrolesommen."
+
+msgid "Whether identifiers are randomly colored."
+msgstr ""
 
 msgid ""
 "Whether moderator approval is required before displaying newly created posts."

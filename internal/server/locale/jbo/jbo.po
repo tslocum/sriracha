@@ -333,6 +333,9 @@ msgstr ""
 msgid "Click to refresh."
 msgstr ""
 
+msgid "Color Identifiers"
+msgstr ""
+
 msgid "Configure"
 msgstr ""
 
@@ -1743,6 +1746,9 @@ msgstr ""
 msgid ""
 "Whether identifiers are displayed for each post. Identifiers are generated "
 "based on IP address hashes."
+msgstr ""
+
+msgid "Whether identifiers are randomly colored."
 msgstr ""
 
 msgid ""
