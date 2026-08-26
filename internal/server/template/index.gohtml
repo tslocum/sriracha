@@ -79,7 +79,7 @@ td {
                                 <label style="cursor: pointer;">
                                     <a href="{{$post.Board.Path}}res/{{$post.Thread}}.html#{{$post.ID}}" style="color: inherit;text-decoration: none;">
                                         {{if ne $post.Subject ""}}<span class="filetitle">{{$post.Subject}}</span>{{end}}
-                                        {{$post.PlainNameBlock $post.Board.DefaultName "" false}} No.{{$post.ID}}
+                                        {{$post.PlainNameBlock $post.Board.DefaultName "" false false}} No.{{$post.ID}}
                                     </a>
                                 </label>
                                 <br>

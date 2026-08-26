@@ -1,3 +1,6 @@
+2.0.8:
+- Support randomly coloring identifiers
+
 2.0.7:
 - Add posts per hour to stats.json
 - Support stickying and locking threads while posting

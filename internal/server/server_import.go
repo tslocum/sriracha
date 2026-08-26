@@ -201,7 +201,7 @@ func (s *Server) _importPost(p *Post, tinyIB bool) error {
 
 	// Fill nameblock.
 	if p.NameBlock == "" {
-		p.SetNameBlock(p.Board.DefaultName, "", false)
+		p.SetNameBlock(p.Board.DefaultName, "", false, false)
 	}
 
 	if p.File != "" && !p.IsEmbed() {

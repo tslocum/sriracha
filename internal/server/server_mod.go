@@ -259,7 +259,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 					Message:   Get(destination, nil, "Moved thread from %[1]s to %[2]s.", sourceLink, destinationLink),
 					Moderated: ModeratedApproved,
 				}
-				p.SetNameBlock("", "Mod", false)
+				p.SetNameBlock("", "Mod", false, false)
 				db.AddPost(p)
 				go s.refreshDiskSpace()
 			}

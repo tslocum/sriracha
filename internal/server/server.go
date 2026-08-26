@@ -183,6 +183,7 @@ type ServerOptions struct {
 	OverboardThreads int
 	OverboardReplies int
 	Identifiers      bool
+	ColorIdentifiers bool
 	Styles           [][2]string
 	Locale           string
 	Locales          map[string]string
@@ -832,6 +833,8 @@ func (s *Server) loadServerConfig() error {
 	} else {
 		s.opt.Spoiler = db.GetBool("spoiler")
 	}
+
+	s.opt.ColorIdentifiers = db.GetBool("coloridentifiers")
 
 	s.opt.StripMetadata = db.GetBool("stripmetadata")
 
@@ -1843,7 +1846,7 @@ func (s *Server) rebuildNameblocks(db serverDB) {
 				} else if strings.Contains(p.NameBlock, `<span style="color: purple`) || strings.Contains(p.NameBlock, `<span class="admincapcode`) {
 					capcode = "Admin"
 				}
-				p.SetNameBlock(p.Board.DefaultName, capcode, s.opt.Identifiers)
+				p.SetNameBlock(p.Board.DefaultName, capcode, s.opt.Identifiers, s.opt.ColorIdentifiers)
 
 				db.UpdatePostNameblock(p.ID, p.NameBlock)
 			}

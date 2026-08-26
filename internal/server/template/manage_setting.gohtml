@@ -95,6 +95,16 @@
             </select></td>
             <td>{{T "Whether visitors and staff members may mark attachment thumbnails as spoilers."}}</td>
         </tr>
+        {{if .Opt.Identifiers}}
+            <tr>
+                <td class="postblock"><label for="coloridentifiers">{{T "Color Identifiers"}}</label></td>
+                <td><select name="coloridentifiers" style="width: 100%;">
+                    <option value="0"{{if not .Opt.ColorIdentifiers}} selected{{end}}>✗ {{T "Disable"}}</option>
+                    <option value="1"{{if .Opt.ColorIdentifiers}} selected{{end}}>✓ {{T "Enable"}}</option>
+                </select></td>
+                <td>{{T "Whether identifiers are randomly colored."}}</td>
+            </tr>
+        {{end}}
         <tr>
             <td class="postblock"><label for="accesskey">{{T "Access Key"}}</label></td>
             <td><input type="text" name="accesskey" value="{{.Opt.AccessKey}}"></input></td>

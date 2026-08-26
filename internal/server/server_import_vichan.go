@@ -185,7 +185,7 @@ func (v *vichanImport) Posts(table string) []*Post {
 			p.FileOriginal = embed
 		}
 
-		p.SetNameBlock("Anonymous", capcode, false)
+		p.SetNameBlock("Anonymous", capcode, false, false)
 
 		posts = append(posts, p)
 	}

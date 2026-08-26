@@ -330,6 +330,9 @@ msgstr ""
 msgid "Click to refresh."
 msgstr ""
 
+msgid "Color Identifiers"
+msgstr ""
+
 msgid "Configure"
 msgstr ""
 
@@ -1688,6 +1691,9 @@ msgid "When this amount is exceeded the selected action is taken."
 msgstr ""
 
 msgid "Whether identifiers are displayed for each post. Identifiers are generated based on IP address hashes."
+msgstr ""
+
+msgid "Whether identifiers are randomly colored."
 msgstr ""
 
 msgid "Whether moderator approval is required before displaying newly created posts."

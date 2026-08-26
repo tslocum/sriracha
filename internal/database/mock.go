@@ -25,7 +25,7 @@ func newTestThread(board *Board, size int) []*Post {
 			posts[i].Parent = 1
 		}
 		posts[i].Board = board
-		posts[i].SetNameBlock("Anonymous", "", false)
+		posts[i].SetNameBlock("Anonymous", "", false, false)
 	}
 	return posts
 }

@@ -6,7 +6,7 @@
     {{if ne $post.Subject ""}}<span class="filetitle">{{$post.Subject}}</span>{{end}}
     {{$post.NameBlock | HTML}}
     {{if and $.Opt.Identifiers (and (eq $post.Board.Identifiers 0) $.ModMode)}}
-        {{$post.Identifier $.Opt.Identifiers true}}
+        {{$post.Identifier $.Opt.Identifiers $.Opt.ColorIdentifiers true}}
     {{end}}
     <span class="reflink">
         {{if and $post.Board.Reports (not $.ArchiveMode) (not $.ModMode)}}

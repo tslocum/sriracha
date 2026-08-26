@@ -135,7 +135,7 @@ func (p *Post) AddMediaOverlay(img image.Image) image.Image {
 	return target
 }
 
-func (p *Post) SetNameBlock(defaultName string, capcode string, identifiers bool) {
+func (p *Post) SetNameBlock(defaultName string, capcode string, identifiers bool, colorIdentifiers bool) {
 	var out strings.Builder
 
 	emailLink := p.Email != "" && strings.ToLower(p.Email) != "noko" && strings.ToLower(p.Email) != "nonoko"
@@ -174,9 +174,9 @@ func (p *Post) SetNameBlock(defaultName string, capcode string, identifiers bool
 		out.WriteString(` <span class="` + class + `">## ` + capcode + `</span>`)
 	}
 
-	identifier := p.Identifier(identifiers, false)
+	identifier := p.Identifier(identifiers, colorIdentifiers, false)
 	if identifier != "" {
-		out.WriteString(" " + identifier)
+		out.WriteString(" " + string(identifier))
 	}
 
 	out.WriteString(" " + string(p.TimestampLabel()))
@@ -184,7 +184,7 @@ func (p *Post) SetNameBlock(defaultName string, capcode string, identifiers bool
 	p.NameBlock = out.String()
 }
 
-func (p *Post) PlainNameBlock(defaultName string, capcode string, identifiers bool) template.HTML {
+func (p *Post) PlainNameBlock(defaultName string, capcode string, identifiers bool, colorIdentifiers bool) template.HTML {
 	var out strings.Builder
 
 	if p.Name != "" || p.Tripcode == "" {
@@ -215,9 +215,9 @@ func (p *Post) PlainNameBlock(defaultName string, capcode string, identifiers bo
 		out.WriteString(` <span class="` + class + `">## ` + capcode + `</span>`)
 	}
 
-	identifier := p.Identifier(identifiers, false)
+	identifier := p.Identifier(identifiers, colorIdentifiers, false)
 	if identifier != "" {
-		out.WriteString(" " + identifier)
+		out.WriteString(" " + string(identifier))
 	}
 
 	out.WriteString(" " + string(p.TimestampLabel()))
@@ -399,7 +399,7 @@ func (p *Post) ExpandHTML() string {
 	return fmt.Sprintf(expandFormat, srcPath, p.ID, srcPath, p.FileWidth, p.FileHeight)
 }
 
-func (p *Post) Identifier(identifiers bool, force bool) string {
+func (p *Post) Identifier(identifiers bool, colorIdentfiers bool, force bool) template.HTML {
 	if p.IP == "" || !identifiers || (p.Board.Identifiers == IdentifiersDisable && !force) {
 		return ""
 	}
@@ -413,7 +413,29 @@ func (p *Post) Identifier(identifiers bool, force bool) string {
 	crcSum = crcHash.Sum(crcSum[:0])
 
 	base64.RawURLEncoding.Encode(crcBuf, crcSum)
-	return string(crcBuf[1:5])
+	id := string(crcBuf[1:5])
+	if !colorIdentfiers {
+		return template.HTML(`<span class="identifier">` + id + `</span>`)
+	}
+
+	const encodingChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+	const encodingCharCount = len(encodingChars)
+	posR := (strings.IndexByte(encodingChars, id[0]) + strings.IndexByte(encodingChars, id[1])) / 2
+	posG := (strings.IndexByte(encodingChars, id[1]) + strings.IndexByte(encodingChars, id[2])) / 2
+	posB := (strings.IndexByte(encodingChars, id[2]) + strings.IndexByte(encodingChars, id[3])) / 2
+	r := int((float64(posR) / float64(encodingCharCount)) * 255)
+	if r >= 128 {
+		r -= 128
+	}
+	g := int((float64(posG) / float64(encodingCharCount)) * 255)
+	if g >= 128 {
+		g -= 128
+	}
+	b := int((float64(posB) / float64(encodingCharCount)) * 255)
+	if b >= 128 {
+		b -= 128
+	}
+	return template.HTML(fmt.Sprintf(`<span class="identifier" style="color: #%02x%02x%02x;">%s</span>`, r, g, b, id))
 }
 
 func (p *Post) Mentions() []int {

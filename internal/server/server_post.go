@@ -1089,7 +1089,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	post.SetNameBlock(b.DefaultName, capcode, s.opt.Identifiers)
+	post.SetNameBlock(b.DefaultName, capcode, s.opt.Identifiers, s.opt.ColorIdentifiers)
 
 	// Replace sentinels with characters.
 	if !rawHTML {
