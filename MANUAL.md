@@ -666,6 +666,12 @@ dbname: "sriracha"
 # addition to their username and password. Enabling this option increases security.
 #require2fa: false
 
+# Account login session limit. When ths limit is exceeded, the oldest session is removed.
+#sessionlimit: 5
+
+# Account login session time (in seconds). Sessions unused for this duration will expire.
+#sessiontime: 2592000 # 30 days.
+
 # Do not record post author IP addresses. When this option is enabled, it is
 # not possible for staff members to ban visitors. You should only enable this
 # option if you are running Sriracha somewhere other than the public Internet.

@@ -71,7 +71,7 @@ TWOFACTORKEY:
 	}
 }
 
-func (s *Server) twoFactorSession(accountID int, key []byte) *twoFactorSession {
+func (s *Server) twoFactorSession(accountID int, key []byte, accountKey string) *twoFactorSession {
 	var existing *twoFactorSession
 	now := time.Now().Unix()
 	s.twoFactorSessions = slices.DeleteFunc(s.twoFactorSessions, func(twoFactor *twoFactorSession) bool {
@@ -90,12 +90,16 @@ func (s *Server) twoFactorSession(accountID int, key []byte) *twoFactorSession {
 	})
 	if existing != nil {
 		existing.timestamp = now
+		if accountKey != "" {
+			existing.accountKey = accountKey
+		}
 		return existing
 	}
 	session := &twoFactorSession{
-		key:       s.twoFactorKey(),
-		account:   accountID,
-		timestamp: now,
+		key:        s.twoFactorKey(),
+		account:    accountID,
+		accountKey: accountKey,
+		timestamp:  now,
 	}
 	s.twoFactorSessions = append(s.twoFactorSessions, session)
 	return session
@@ -118,7 +122,7 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 			key = []byte(cookies[0].Value)
 		}
 	}
-	session := s.twoFactorSession(data.Account.ID, key)
+	session := s.twoFactorSession(data.Account.ID, key, "")
 	data.Extra3 = string(session.key)
 	password := FormString(r, "password")
 	if password != "" {

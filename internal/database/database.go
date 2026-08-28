@@ -86,7 +86,7 @@ func Connect(c *Config) (*pgxpool.Pool, error) {
 		return nil, fmt.Errorf("failed to upgrade database: %w", err)
 	}
 
-	db.createSuperAdminAccount(c.SaltPass)
+	db.createSuperAdminAccount()
 
 	_, err = conn.Exec(context.Background(), "COMMIT")
 	if err != nil {
@@ -440,7 +440,7 @@ func (db *DB) SaveFloat(key string, value float64) {
 }
 
 func (db *DB) newSessionKey() string {
-	const keyLength = 48
+	const keyLength = 96
 	buf := make([]byte, keyLength)
 	for {
 		_, err := rand.Read(buf)
@@ -450,9 +450,9 @@ func (db *DB) newSessionKey() string {
 		sessionKey := base64.URLEncoding.EncodeToString(buf)
 
 		var numAccounts int
-		err = db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM account WHERE session = $1", sessionKey).Scan(&numAccounts)
+		err = db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM account_session WHERE key = $1", sessionKey).Scan(&numAccounts)
 		if err != nil {
-			dbErr(fmt.Errorf("failed to select number of accounts with session key: %w", err))
+			dbErr(fmt.Errorf("failed to select existing account sessions: %w", err))
 		} else if numAccounts == 0 {
 			return sessionKey
 		}

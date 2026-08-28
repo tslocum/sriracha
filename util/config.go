@@ -60,6 +60,9 @@ type Config struct {
 
 	Require2FA bool // Require two-factor authentication.
 
+	SessionLimit int   // Account login session limit.
+	SessionTime  int64 // Account login session expiration time, in seconds.
+
 	NoIP bool // Do not record post author IP addresses.
 
 	MinPageBuffer int // Initial static page buffer size, in bytes.

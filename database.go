@@ -36,8 +36,10 @@ type DB interface {
 	UpdateAccountLastActive(id int)
 	UpdateAccountStyle(id int, style string)
 	UpdateAccountLocale(id int, locale string)
-	LoginAccount(username string, password string) *Account
+	LoginAccount(username string, password string, newSession bool) (*Account, string)
 	CheckAccountPassword(username string, password string) *Account
+	ExpireAccountSessions()
+	DeleteAccountSession(key string)
 
 	// Ban.
 	AddBan(b *Ban)

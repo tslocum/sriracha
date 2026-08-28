@@ -78,6 +78,8 @@ const (
 	defaultServerRefresh        = 300 // 5 minutes.
 	defaultServerDateTimeFormat = DefaultDateTimeFormatHTML
 
+	defaultServerSessionLimit  = 5
+	defaultServerSessionTime   = 2592000  // 30 days.
 	defaultServerMinPageBuffer = 500000   // 500 KB.
 	defaultServerMaxPageBuffer = 4000000  // 4 MB.
 	defaultServerMaxFormBuffer = 16000000 // 16 MB.
@@ -252,12 +254,13 @@ type rebuildInfo struct {
 
 // twoFactorSession represents a pending or completed two-factor authentication session.
 type twoFactorSession struct {
-	key       []byte
-	account   int
-	timestamp int64
-	secret    string
-	loggedIn  bool
-	validated bool
+	key        []byte
+	account    int
+	accountKey string
+	timestamp  int64
+	secret     string
+	loggedIn   bool
+	validated  bool
 }
 
 const entriesPerPage = 10
@@ -513,6 +516,13 @@ func (s *Server) parseConfig(configFile string) error {
 
 	if len(config.Styles) == 0 {
 		config.Styles = []string{"futaba", "burichan", "sriracha"}
+	}
+
+	if config.SessionLimit <= 0 {
+		config.SessionLimit = defaultServerSessionLimit
+	}
+	if config.SessionTime <= 0 {
+		config.SessionTime = defaultServerSessionTime
 	}
 
 	defaultAccess := map[string]string{
@@ -1519,7 +1529,11 @@ func (s *Server) httpResponse(r *http.Request) (*http.Response, error) {
 
 // buildData returns a new template data instance.
 func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) *templateData {
+	cookies := r.CookiesNamed("sriracha_session")
 	if strings.HasPrefix(r.URL.Path, "/sriracha/logout") {
+		if len(cookies) > 0 {
+			db.DeleteAccountSession(cookies[0].Value)
+		}
 		http.SetCookie(w, &http.Cookie{
 			Name:  "sriracha_session",
 			Value: "",
@@ -1534,7 +1548,6 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 		return s.newTemplateData(db)
 	}
 
-	cookies := r.CookiesNamed("sriracha_session")
 	if len(cookies) > 0 {
 		account := db.AccountBySessionKey(cookies[0].Value)
 		if account != nil {
@@ -1546,7 +1559,7 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 
 	cookies = r.CookiesNamed("sriracha_totp")
 	if len(cookies) > 0 {
-		session := s.twoFactorSession(0, []byte(cookies[0].Value))
+		session := s.twoFactorSession(0, []byte(cookies[0].Value), "")
 		if session.account != 0 && !session.validated && len(db.TwoFactorsByAccount(session.account)) > 0 {
 			key := []byte(FormString(r, "key"))
 			if len(key) == 0 {
@@ -1571,7 +1584,7 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 						if session.validated {
 							http.SetCookie(w, &http.Cookie{
 								Name:  "sriracha_session",
-								Value: account.Session,
+								Value: session.accountKey,
 								Path:  "/",
 							})
 						} else {
@@ -1983,10 +1996,6 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if data.Account != nil {
-		db.UpdateAccountLastActive(data.Account.ID)
-	}
-
 	if len(data.Info) != 0 {
 		data.Template = "manage_error"
 		data.execute(w)
@@ -2034,10 +2043,10 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 				}
 
 				// Verify username and password.
-				account := db.LoginAccount(username, password)
+				account, sessionKey := db.LoginAccount(username, password, true)
 				if account != nil {
 					if len(db.TwoFactorsByAccount(account.ID)) > 0 {
-						session := s.twoFactorSession(account.ID, nil)
+						session := s.twoFactorSession(account.ID, nil, sessionKey)
 						http.SetCookie(w, &http.Cookie{
 							Name:  "sriracha_totp",
 							Value: string(session.key),
@@ -2053,7 +2062,7 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 					}
 					http.SetCookie(w, &http.Cookie{
 						Name:  "sriracha_session",
-						Value: account.Session,
+						Value: sessionKey,
 						Path:  "/",
 					})
 					if s.config.Require2FA {
@@ -2219,6 +2228,8 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 
 	db := s.begin()
 	defer db.Commit()
+
+	db.ExpireAccountSessions()
 
 	db.DeleteExpiredSubscriptions()
 

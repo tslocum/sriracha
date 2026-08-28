@@ -7,12 +7,19 @@ var dbSchema = []string{ // Version 1.
 	password text NOT NULL,
 	role integer NOT NULL,
 	lastactive bigint NOT NULL,
-	session varchar(64) NOT NULL
+	session varchar(64) NOT NULL -- v22: Removed.
 	-- v2: style varchar(64) NOT NULL DEFAULT ''
 	-- v6: locale varchar(64) NOT NULL DEFAULT ''
 );
 CREATE UNIQUE INDEX ON account (username);
 CREATE UNIQUE INDEX ON account (session);
+
+-- v22: CREATE TABLE account_session (
+-- v22: 	key varchar(128) PRIMARY KEY,
+-- v22: 	account smallint NULL REFERENCES account (id) ON DELETE CASCADE,
+-- v22: 	lastactive bigint NOT NULL
+-- v22: );
+-- v22: CREATE INDEX ON account_session (account);
 
 CREATE TABLE ban (
 	id serial PRIMARY KEY,
@@ -398,4 +405,14 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 	// Version 21.
 	`ALTER TABLE board ADD COLUMN archive smallint NOT NULL DEFAULT 1;
 	UPDATE config SET value = '21' WHERE name = 'version';`,
+	// Version 22.
+	`CREATE TABLE account_session (
+		key varchar(128) PRIMARY KEY,
+		account smallint NULL REFERENCES account (id) ON DELETE CASCADE,
+		lastactive bigint NOT NULL
+	);
+	CREATE INDEX ON account_session (account);
+	INSERT INTO account_session SELECT session, id, lastactive FROM account;
+	ALTER TABLE account DROP COLUMN session;
+	UPDATE config SET value = '22' WHERE name = 'version';`,
 }

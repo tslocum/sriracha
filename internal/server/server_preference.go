@@ -59,7 +59,7 @@ func (s *Server) servePreference(data *templateData, db serverDB, w http.Respons
 				return
 			}
 
-			match := db.LoginAccount(data.Account.Username, oldPass)
+			match, _ := db.LoginAccount(data.Account.Username, oldPass, false)
 			if match == nil {
 				data.ManageError("Current password is incorrect")
 				return

@@ -13,12 +13,10 @@ import (
 )
 
 func (db *DB) AddAccount(a *Account, password string) {
-	sessionKey := db.newSessionKey()
-	err := db.conn.QueryRow(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4, $5, $6) RETURNING id",
+	err := db.conn.QueryRow(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4, $5) RETURNING id",
 		a.Username,
 		encryptPassword(db.config.SaltPass, password),
 		a.Role,
-		sessionKey,
 		a.Style,
 		a.Locale,
 	).Scan(&a.ID)
@@ -27,7 +25,14 @@ func (db *DB) AddAccount(a *Account, password string) {
 	}
 }
 
-func (db *DB) createSuperAdminAccount(salt string) {
+func (db *DB) deleteAccountSessions(accountID int) {
+	_, err := db.conn.Exec(context.Background(), "DELETE FROM account_session WHERE account = $1", accountID)
+	if err != nil {
+		dbErr(fmt.Errorf("failed to delete account sessions: %w", err))
+	}
+}
+
+func (db *DB) createSuperAdminAccount() {
 	var numAdmins int
 	err := db.conn.QueryRow(context.Background(), "SELECT COUNT(*) FROM account WHERE role = $1", RoleSuperAdmin).Scan(&numAdmins)
 	if err != nil {
@@ -39,20 +44,40 @@ func (db *DB) createSuperAdminAccount(salt string) {
 	if err != nil {
 		dbErr(fmt.Errorf("failed to select number of super-administrator accounts: %w", err))
 	} else if numAdmins > 0 {
-		sessionKey := db.newSessionKey()
-		_, err = db.conn.Exec(context.Background(), "UPDATE account SET password = $1, role = $2, session = $3 WHERE username = 'admin'",
-			encryptPassword(salt, "admin"),
-			RoleSuperAdmin,
-			sessionKey,
-		)
-		if err != nil {
-			dbErr(fmt.Errorf("failed to insert account: %w", err))
-		}
+		a := db.AccountByUsername("admin")
+		db.UpdateAccountPassword(a, "admin")
+		a.Role = RoleSuperAdmin
+		db.UpdateAccountRole(a)
 		return
 	}
-	_, err = db.conn.Exec(context.Background(), "INSERT INTO account VALUES (DEFAULT, 'admin', $1, $2, 0, '')", encryptPassword(db.config.SaltPass, "admin"), RoleSuperAdmin)
+	a := &Account{
+		Username: "admin",
+		Role:     RoleSuperAdmin,
+	}
+	db.AddAccount(a, "admin")
+}
+
+func (db *DB) addAccountSession(accountID int) string {
+	sessionKey := db.newSessionKey()
+	_, err := db.conn.Exec(context.Background(), "INSERT INTO account_session VALUES ($1, $2, $3)",
+		sessionKey,
+		accountID,
+		time.Now().Unix(),
+	)
 	if err != nil {
-		dbErr(fmt.Errorf("failed to insert account: %w", err))
+		dbErr(fmt.Errorf("failed to insert account session: %w", err))
+	}
+	_, err = db.conn.Exec(context.Background(), "DELETE FROM account_session WHERE key IN (SELECT key FROM account_session WHERE account = $1 ORDER BY lastactive DESC OFFSET $2)", accountID, db.config.SessionLimit)
+	if err != nil {
+		dbErr(fmt.Errorf("failed to enforce account session limit: %w", err))
+	}
+	return sessionKey
+}
+
+func (db *DB) ExpireAccountSessions() {
+	_, err := db.conn.Exec(context.Background(), "DELETE FROM account_session WHERE lastactive <= $1", time.Now().Unix()-db.config.SessionTime)
+	if err != nil {
+		dbErr(fmt.Errorf("failed to expire account sessions: %w", err))
 	}
 }
 
@@ -84,12 +109,21 @@ func (db *DB) AccountBySessionKey(sessionKey string) *Account {
 		return nil
 	}
 
-	a := &Account{}
-	err := scanAccount(a, db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE session = $1 AND role != $2", sessionKey, RoleDisabled))
-	if err == pgx.ErrNoRows {
+	var accountID int
+	err := db.conn.QueryRow(context.Background(), "SELECT account FROM account_session WHERE key = $1", sessionKey).Scan(&accountID)
+	if err == pgx.ErrNoRows || accountID <= 0 {
 		return nil
 	} else if err != nil {
-		dbErr(fmt.Errorf("failed to select account: %w", err))
+		dbErr(fmt.Errorf("failed to select account by session: %w", err))
+	}
+	a := db.AccountByID(accountID)
+	if a == nil || a.Role == RoleDisabled {
+		return nil
+	}
+	db.UpdateAccountLastActive(a.ID)
+	_, err = db.conn.Exec(context.Background(), "UPDATE account_session SET lastactive = $1 WHERE key = $2", time.Now().Unix(), sessionKey)
+	if err != nil {
+		dbErr(fmt.Errorf("failed to update account session last active timestamp: %w", err))
 	}
 	return a
 }
@@ -118,11 +152,11 @@ func (db *DB) UpdateAccountUsername(a *Account) {
 	if a == nil || a.ID <= 0 {
 		dbErr(fmt.Errorf("invalid account: %v", a))
 	}
-	a.Session = db.newSessionKey()
-	_, err := db.conn.Exec(context.Background(), "UPDATE account SET username = $1, session = $2 WHERE id = $3", a.Username, a.Session, a.ID)
+	_, err := db.conn.Exec(context.Background(), "UPDATE account SET username = $1 WHERE id = $2", a.Username, a.ID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to update account: %w", err))
 	}
+	db.deleteAccountSessions(a.ID)
 }
 
 func (db *DB) UpdateAccountRole(a *Account) {
@@ -133,6 +167,7 @@ func (db *DB) UpdateAccountRole(a *Account) {
 	if err != nil {
 		dbErr(fmt.Errorf("failed to update account: %w", err))
 	}
+	db.deleteAccountSessions(a.ID)
 }
 
 func (db *DB) UpdateAccountPassword(a *Account, password string) {
@@ -140,11 +175,11 @@ func (db *DB) UpdateAccountPassword(a *Account, password string) {
 		dbErr(fmt.Errorf("invalid account ID %d", a.ID))
 	}
 	a.Password = encryptPassword(db.config.SaltPass, password)
-	a.Session = db.newSessionKey()
-	_, err := db.conn.Exec(context.Background(), "UPDATE account SET password = $1, session = $2 WHERE id = $3", a.Password, a.Session, a.ID)
+	_, err := db.conn.Exec(context.Background(), "UPDATE account SET password = $1 WHERE id = $2", a.Password, a.ID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to update account: %w", err))
 	}
+	db.deleteAccountSessions(a.ID)
 }
 
 func (db *DB) UpdateAccountLastActive(id int) {
@@ -177,22 +212,21 @@ func (db *DB) UpdateAccountLocale(id int, locale string) {
 	}
 }
 
-func (db *DB) LoginAccount(username string, password string) *Account {
+func (db *DB) LoginAccount(username string, password string, newSession bool) (*Account, string) {
 	a := &Account{}
 	err := scanAccount(a, db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE username = $1 AND role != $2", username, RoleDisabled))
 	if err == pgx.ErrNoRows {
-		return nil
+		return nil, ""
 	} else if err != nil {
 		dbErr(fmt.Errorf("failed to select account: %w", err))
 	} else if a.ID == 0 || !comparePassword(db.config.SaltPass, password, a.Password) {
-		return nil
+		return nil, ""
 	}
-	a.Session = db.newSessionKey()
-	_, err = db.conn.Exec(context.Background(), "UPDATE account SET session = $1 WHERE id = $2", a.Session, a.ID)
-	if err != nil {
-		dbErr(fmt.Errorf("failed to update account: %w", err))
+	var key string
+	if newSession {
+		key = db.addAccountSession(a.ID)
 	}
-	return a
+	return a, key
 }
 
 func (db *DB) CheckAccountPassword(username string, password string) *Account {
@@ -208,6 +242,13 @@ func (db *DB) CheckAccountPassword(username string, password string) *Account {
 	return a
 }
 
+func (db *DB) DeleteAccountSession(key string) {
+	_, err := db.conn.Exec(context.Background(), "DELETE FROM account_session WHERE key = $1", key)
+	if err != nil {
+		dbErr(fmt.Errorf("failed to delete account session: %w", err))
+	}
+}
+
 func scanAccount(a *Account, row pgx.Row) error {
 	return row.Scan(
 		&a.ID,
@@ -215,7 +256,6 @@ func scanAccount(a *Account, row pgx.Row) error {
 		&a.Password,
 		&a.Role,
 		&a.LastActive,
-		&a.Session,
 		&a.Style,
 		&a.Locale,
 	)

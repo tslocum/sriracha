@@ -39,7 +39,6 @@ type Account struct {
 	Password   string
 	Role       AccountRole
 	LastActive int64
-	Session    string
 	Style      string
 	Locale     string
 }
