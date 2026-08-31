@@ -12,18 +12,18 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strconv"
 	"strings"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
+	"github.com/dlclark/regexp2/v2"
+	"github.com/dlclark/regexp2/v2/compat"
 	"github.com/gabriel-vasile/mimetype"
-
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var ytEmbedPattern = regexp.MustCompile(`\/\/www\.youtube\.com\/embed\/([0-9A-Za-z_\-]+)`)
+var ytEmbedPattern = compat.MustCompile(`\/\/www\.youtube\.com\/embed\/([0-9A-Za-z_\-]+)`)
 
 // importHandler describes the required methods for handling importing posts from an external database.
 type importHandler interface {
@@ -490,27 +490,28 @@ func (s *Server) serveImport(data *templateData, db serverDB, w http.ResponseWri
 
 		newIDs := make(map[int]int)
 		for _, p := range info.posts {
-			carriageReturn := regexp.MustCompile(`(?s)\r.?`)
-			p.Message = carriageReturn.ReplaceAllStringFunc(p.Message, func(s string) string {
-				if len(s) == 1 || s[1] == '\n' {
+			carriageReturn := compat.MustCompile(`(?s)\r.?`)
+			p.Message = ReplaceAllStringFunc(carriageReturn, p.Message, func(match regexp2.Match) string {
+				groups := match.Groups()
+				if len(groups) == 1 || groups[1].String() == "\n" {
 					return "\n"
 				}
-				return "\n" + string(s[1])
+				return "\n" + groups[1].String()
 			})
 
-			resPattern := regexp.MustCompile(`<a href="[^"]*res\/([0-9]+).html#([0-9]+)" class="([A-Aa-z]+)">&gt;&gt;([0-9]+)(\(OP\))?</a>`)
-			p.Message = resPattern.ReplaceAllStringFunc(p.Message, func(s string) string {
-				match := resPattern.FindStringSubmatch(s)
-				threadID := ParseInt(match[1])
-				postID := ParseInt(match[2])
+			resPattern := compat.MustCompile(`<a href="[^"]*res\/([0-9]+).html#([0-9]+)" class="([A-Aa-z]+)">&gt;&gt;([0-9]+)(\(OP\))?</a>`)
+			p.Message = ReplaceAllStringFunc(resPattern, p.Message, func(match regexp2.Match) string {
+				groups := match.Groups()
+				threadID := ParseInt(groups[1].String())
+				postID := ParseInt(groups[2].String())
 				if newIDs[threadID] == 0 || newIDs[postID] == 0 {
-					return s
+					return match.String()
 				}
 				var extra string
 				if postID == threadID {
 					extra = "(OP)"
 				}
-				return fmt.Sprintf(`<a href="%sres/%d.html#%d" class="%s">&gt;&gt;%d%s</a>`, b.Path(), newIDs[threadID], newIDs[postID], match[3], newIDs[postID], extra)
+				return fmt.Sprintf(`<a href="%sres/%d.html#%d" class="%s">&gt;&gt;%d%s</a>`, b.Path(), newIDs[threadID], newIDs[postID], groups[3].String(), newIDs[postID], extra)
 			})
 
 			p.Message = strings.TrimSuffix(p.Message, "<br>")

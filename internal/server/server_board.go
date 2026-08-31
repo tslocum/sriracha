@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -18,6 +17,8 @@ import (
 
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
+	"github.com/dlclark/regexp2/v2"
+	"github.com/dlclark/regexp2/v2/compat"
 )
 
 func (s *Server) loadGlobalBoardSettings(db serverDB, b *Board) {
@@ -754,7 +755,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		if b.Dir != "" {
 			var skipDeleteDir bool
 			boardPath := filepath.Join(s.config.Root, b.Dir)
-			pattern := regexp.MustCompile(`^(index|catalog|[0-9]+).html$`)
+			pattern := compat.MustCompile(`^(index|catalog|[0-9]+).html$`)
 			filepath.WalkDir(boardPath, func(path string, d fs.DirEntry, err error) error {
 				if !d.IsDir() && !pattern.MatchString(d.Name()) && err == nil {
 					skipDeleteDir = true
@@ -880,14 +881,14 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 				for _, info := range db.AllThreads(FilterAny, data.Manage.Board) {
 					for _, post := range db.AllPostsInThread(FilterAny, info[0]) {
 						var modified bool
-						resPattern, err := regexp.Compile(`<a href="` + regexp.QuoteMeta(oldPath) + `res\/([0-9]+).html#([0-9]+)"`)
+						resPattern, err := compat.Compile(`<a href="` + regexp2.Escape(oldPath) + `res\/([0-9]+).html#([0-9]+)"`)
 						if err != nil {
 							log.Fatalf("failed to compile res pattern: %s", err)
 						}
-						post.Message = resPattern.ReplaceAllStringFunc(post.Message, func(s string) string {
+						post.Message = ReplaceAllStringFunc(resPattern, post.Message, func(match regexp2.Match) string {
 							modified = true
-							match := resPattern.FindStringSubmatch(s)
-							return fmt.Sprintf(`<a href="%sres/%s.html#%s"`, data.Manage.Board.Path(), match[1], match[2])
+							groups := match.Groups()
+							return fmt.Sprintf(`<a href="%sres/%s.html#%s"`, data.Manage.Board.Path(), groups[1].String(), groups[2].String())
 						})
 						if modified {
 							db.UpdatePostMessage(post.ID, post.Message)

@@ -4,9 +4,12 @@ import (
 	"html"
 	"html/template"
 	"log"
-	"regexp"
 	"strings"
 	"time"
+
+	. "codeberg.org/tslocum/sriracha/util"
+	"github.com/dlclark/regexp2/v2"
+	"github.com/dlclark/regexp2/v2/compat"
 )
 
 type Log struct {
@@ -28,23 +31,24 @@ func (l *Log) formatLabel(message string) template.HTML {
 	}
 	message = html.EscapeString(message)
 
-	rgxp, err := regexp.Compile(`&gt;&gt;/([0-9A-Za-z_-]+)/([0-9]+)`)
+	rgxp, err := compat.Compile(`&gt;&gt;/([0-9A-Za-z_-]+)/([0-9]+)`)
 	if err != nil {
 		log.Fatal(err)
 	}
-	message = rgxp.ReplaceAllStringFunc(message, func(s string) string {
+	message = ReplaceAllStringFunc(rgxp, message, func(match regexp2.Match) string {
+		s := match.String()
 		if strings.HasPrefix(s, "&gt;&gt;/post/") {
-			return rgxp.ReplaceAllString(s, `<a href="/sriracha/$1/$2">&gt;&gt;$2</a>`)
+			return ReplaceAllString(rgxp, s, `<a href="/sriracha/$1/$2">&gt;&gt;$2</a>`)
 		}
-		return rgxp.ReplaceAllString(s, `<a href="/sriracha/$1/$2">$1 #$2</a>`)
+		return ReplaceAllString(rgxp, s, `<a href="/sriracha/$1/$2">$1 #$2</a>`)
 	})
 
-	rgxp, err = regexp.Compile(`&gt;&gt;/([0-9A-Za-z_-]+)/([0-9A-Za-z_-]+)`)
+	rgxp, err = compat.Compile(`&gt;&gt;/([0-9A-Za-z_-]+)/([0-9A-Za-z_-]+)`)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return template.HTML(rgxp.ReplaceAllStringFunc(message, func(s string) string {
-		return rgxp.ReplaceAllString(s, `<a href="/sriracha/$1/$2">$1 $2</a>`)
+	return template.HTML(ReplaceAllStringFunc(rgxp, message, func(match regexp2.Match) string {
+		return ReplaceAllString(rgxp, match.String(), `<a href="/sriracha/$1/$2">$1 $2</a>`)
 	}))
 }
 

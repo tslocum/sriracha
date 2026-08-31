@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"regexp"
 	"slices"
 	"strings"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
+	"github.com/dlclark/regexp2/v2"
+	"github.com/dlclark/regexp2/v2/compat"
 )
 
 type vichanImport struct {
@@ -84,7 +85,7 @@ func (v *vichanImport) Posts(table string) []*Post {
 	}
 	defer rows.Close()
 
-	resPattern := regexp.MustCompile(`<a onclick="highlightReply\('([0-9]+)', event\);" href="[^"]*res/([0-9]+).html#([0-9]+)">&gt;&gt;([0-9]+)</a>`)
+	resPattern := compat.MustCompile(`<a onclick="highlightReply\('([0-9]+)', event\);" href="[^"]*res/([0-9]+).html#([0-9]+)">&gt;&gt;([0-9]+)</a>`)
 
 	var pending []*Post
 
@@ -169,10 +170,10 @@ func (v *vichanImport) Posts(table string) []*Post {
 		p.Message = strings.ReplaceAll(p.Message, `<span class="quote">`, `<span class="unkfunc">`)
 
 		// Replace reflinks.
-		p.Message = resPattern.ReplaceAllStringFunc(p.Message, func(s string) string {
-			match := resPattern.FindStringSubmatch(s)
-			postID := ParseInt(match[1])
-			threadID := ParseInt(match[2])
+		p.Message = ReplaceAllStringFunc(resPattern, p.Message, func(match regexp2.Match) string {
+			groups := match.Groups()
+			postID := ParseInt(groups[1].String())
+			threadID := ParseInt(groups[2].String())
 			class := "refreply"
 			if postID == threadID {
 				class = "refop"

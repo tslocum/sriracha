@@ -20,7 +20,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -30,6 +29,8 @@ import (
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/aquilax/tripcode"
+	"github.com/dlclark/regexp2/v2"
+	"github.com/dlclark/regexp2/v2/compat"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/nfnt/resize"
 	"golang.org/x/text/transform"
@@ -967,14 +968,15 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 
 	if !rawHTML {
 		if post.Board.WordBreak != 0 {
-			pattern, err := regexp.Compile(`[^\s]{` + strconv.Itoa(post.Board.WordBreak) + `,}`)
+			pattern, err := compat.Compile(`[^\s]{` + strconv.Itoa(post.Board.WordBreak) + `,}`)
 			if err != nil {
 				log.Fatal(err)
 			}
 
 			buf := &strings.Builder{}
-			post.Message = pattern.ReplaceAllStringFunc(post.Message, func(s string) string {
+			post.Message = ReplaceAllStringFunc(pattern, post.Message, func(match regexp2.Match) string {
 				buf.Reset()
+				s := match.String()
 				for i, r := range s {
 					if i != 0 && i%post.Board.WordBreak == 0 {
 						buf.WriteRune('\n')
@@ -1001,18 +1003,19 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		db.SetPlugin("")
 
 		var foundURL bool
-		post.Message = URLPattern.ReplaceAllStringFunc(post.Message, func(s string) string {
+		post.Message = ReplaceAllStringFunc(URLPattern, post.Message, func(match regexp2.Match) string {
 			foundURL = true
-			match := URLPattern.FindStringSubmatch(s)
-			return fmt.Sprintf(`<a href="%s" target="_blank">%s</a>`, match[1], match[1])
+			groups := match.Groups()
+			return fmt.Sprintf(`<a href="%s" target="_blank">%s</a>`, groups[1].String(), groups[1].String())
 		})
 		if foundURL {
-			post.Message = FixURLPattern1.ReplaceAllString(post.Message, `(<a href="$1" target="_blank">$2</a>)`)
-			post.Message = FixURLPattern2.ReplaceAllString(post.Message, `<a href="$1" target="_blank">$2</a>.`)
-			post.Message = FixURLPattern3.ReplaceAllString(post.Message, `<a href="$1" target="_blank">$2</a>,`)
+			post.Message = ReplaceAllString(FixURLPattern1, post.Message, `(<a href="$1" target="_blank">$2</a>)`)
+			post.Message = ReplaceAllString(FixURLPattern2, post.Message, `<a href="$1" target="_blank">$2</a>.`)
+			post.Message = ReplaceAllString(FixURLPattern3, post.Message, `<a href="$1" target="_blank">$2</a>,`)
 		}
 
-		post.Message = RefLinkPattern.ReplaceAllStringFunc(post.Message, func(s string) string {
+		post.Message = ReplaceAllStringFunc(RefLinkPattern, post.Message, func(match regexp2.Match) string {
+			s := match.String()
 			postID, err := strconv.Atoi(s[8:])
 			if err != nil || postID <= 0 {
 				return s
@@ -1031,10 +1034,11 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		})
 
 		var allBoards []*Board
-		post.Message = BoardLinkPattern.ReplaceAllStringFunc(post.Message, func(s string) string {
+		post.Message = ReplaceAllStringFunc(BoardLinkPattern, post.Message, func(match regexp2.Match) string {
 			if allBoards == nil {
 				allBoards = db.AllBoards()
 			}
+			s := match.String()
 			path := strings.TrimSuffix(strings.TrimPrefix(s[12:], "/"), "/")
 			for _, b := range allBoards {
 				if b.Dir == path {
@@ -1047,9 +1051,9 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		var quote bool
 		lines := strings.Split(post.Message, "\n")
 		for i := range lines {
-			lines[i] = QuotePattern.ReplaceAllStringFunc(lines[i], func(s string) string {
+			lines[i] = ReplaceAllStringFunc(QuotePattern, lines[i], func(match regexp2.Match) string {
 				quote = true
-				return `<span class="unkfunc">` + s + `</span>`
+				return `<span class="unkfunc">` + match.String() + `</span>`
 			})
 		}
 		if quote {
@@ -1363,7 +1367,7 @@ func isNonSpacingMark(r rune) bool {
 	return unicode.Is(unicode.Mn, r)
 }
 
-func matchKeyword(t transform.Transformer, r *regexp.Regexp, message ...string) bool {
+func matchKeyword(t transform.Transformer, r *compat.Regexp, message ...string) bool {
 	var result string
 	var err error
 	for _, msg := range message {

@@ -6,7 +6,6 @@ import (
 	"html"
 	"html/template"
 	"log"
-	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -14,10 +13,13 @@ import (
 	"codeberg.org/tslocum/bbcode"
 	"codeberg.org/tslocum/sriracha"
 	. "codeberg.org/tslocum/sriracha/model"
+	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/alecthomas/chroma/v2"
 	htmlformatter "github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/alecthomas/chroma/v2/lexers"
 	"github.com/alecthomas/chroma/v2/styles"
+	"github.com/dlclark/regexp2/v2"
+	"github.com/dlclark/regexp2/v2/compat"
 )
 
 const (
@@ -41,7 +43,7 @@ const (
 	maxSize = 100
 )
 
-var codePattern = regexp.MustCompile(`(?ms)\[code=?([^\]]+)?\].*?\[\/code\]`)
+var codePattern = compat.MustCompile(`(?ms)\[code=?([^\]]+)?\].*?\[\/code\]`)
 
 var shortTags = map[string]string{
 	"bold":          "b",
@@ -357,7 +359,7 @@ func (f *BBCode) rebuildCompiler() {
 		f.compiler.SetTag("url", nil)
 		return
 	}
-	validURL, err := regexp.Compile(`^([a-z][a-z0-9+\-.]*)://.*`)
+	validURL, err := compat.Compile(`^([a-z][a-z0-9+\-.]*)://.*`)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -380,7 +382,8 @@ func (f *BBCode) Post(db sriracha.DB, post *Post) error {
 	}
 
 	bracketSentinel := byte('\x1e') // Record separator
-	post.Message = codePattern.ReplaceAllStringFunc(post.Message, func(s string) string {
+	post.Message = ReplaceAllStringFunc(codePattern, post.Message, func(match regexp2.Match) string {
+		s := match.String()
 		firstBracket := strings.IndexByte(s, '[')
 		lastBracket := strings.LastIndexByte(s, '[')
 		if firstBracket == -1 || lastBracket == -1 {

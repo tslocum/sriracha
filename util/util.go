@@ -4,15 +4,17 @@ package util
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"math"
 	"net/http"
 	"net/mail"
-	"regexp"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/dlclark/regexp2/v2"
+	"github.com/dlclark/regexp2/v2/compat"
 	"golang.org/x/exp/constraints"
 )
 
@@ -25,22 +27,22 @@ const (
 )
 
 var (
-	Alphanumeric           = regexp.MustCompile(`^[0-9A-Za-z]+$`)
-	AlphanumericAndSymbols = regexp.MustCompile(`^[0-9A-Za-z_\-]+$`)
-	FileNamePattern        = regexp.MustCompile(`^[0-9A-Za-z_\-.]+$`)
-	FilePathPattern        = regexp.MustCompile(`^[0-9A-Za-z_\-/.]+$`)
+	Alphanumeric           = compat.MustCompile(`^[0-9A-Za-z]+$`)
+	AlphanumericAndSymbols = compat.MustCompile(`^[0-9A-Za-z_\-]+$`)
+	FileNamePattern        = compat.MustCompile(`^[0-9A-Za-z_\-.]+$`)
+	FilePathPattern        = compat.MustCompile(`^[0-9A-Za-z_\-/.]+$`)
 
-	QuotePattern = regexp.MustCompile(`^&gt;(.*)$`)
+	QuotePattern = compat.MustCompile(`^&gt;(.*)$`)
 
-	RefLinkPattern   = regexp.MustCompile(`&gt;&gt;([0-9]+)`)
-	BoardLinkPattern = regexp.MustCompile(`&gt;&gt;&gt;\/([0-9A-Za-z_-]+)?\/?`)
+	RefLinkPattern   = compat.MustCompile(`&gt;&gt;([0-9]+)`)
+	BoardLinkPattern = compat.MustCompile(`&gt;&gt;&gt;\/([0-9A-Za-z_-]+)?\/?`)
 
-	URLPattern     = regexp.MustCompile(`(?i)(((f|ht)tp(s)?:\/\/)[-a-zA-Zа-яА-Я()0-9@%\!_+.,~#?&;:|\'\/=]+)`)
-	FixURLPattern1 = regexp.MustCompile(`(?i)\(\<a href\=\"(.*)\)"\ target\=\"\_blank\">(.*)\)\<\/a>`)
-	FixURLPattern2 = regexp.MustCompile(`(?i)\<a href\=\"(.*)\."\ target\=\"\_blank\">(.*)\.\<\/a>`)
-	FixURLPattern3 = regexp.MustCompile(`(?i)\<a href\=\"(.*)\,"\ target\=\"\_blank\">(.*)\,\<\/a>`)
+	URLPattern     = compat.MustCompile(`(?i)(((f|ht)tp(s)?:\/\/)[-a-zA-Zа-яА-Я()0-9@%\!_+.,~#?&;:|\'\/=]+)`)
+	FixURLPattern1 = compat.MustCompile(`(?i)\(\<a href\=\"(.*)\)"\ target\=\"_blank\">(.*)\)\<\/a>`)
+	FixURLPattern2 = compat.MustCompile(`(?i)\<a href\=\"(.*)\."\ target\=\"_blank\">(.*)\.\<\/a>`)
+	FixURLPattern3 = compat.MustCompile(`(?i)\<a href\=\"(.*)\,"\ target\=\"_blank\">(.*)\,\<\/a>`)
 
-	HTMLTemplate = regexp.MustCompile(`^.*{{.*}}.*$`)
+	HTMLTemplate = compat.MustCompile(`^.*{{.*}}.*$`)
 
 	DateTimeFormatPlain = DefaultDateTimeFormatPlain
 	DateTimeFormatHTML  = DefaultDateTimeFormatHTML
@@ -167,6 +169,22 @@ func ParseEmail(address string) string {
 		return ""
 	}
 	return a.Address
+}
+
+func ReplaceAllString(r *compat.Regexp, input, replacement string) string {
+	output, err := r.Unwrap().Replace(input, replacement, -1, -1)
+	if err != nil {
+		log.Panicf("regular expression %s timed out: %w", r.String(), err)
+	}
+	return output
+}
+
+func ReplaceAllStringFunc(r *compat.Regexp, input string, evaluator regexp2.MatchEvaluator) string {
+	output, err := r.Unwrap().ReplaceFunc(input, evaluator, -1, -1)
+	if err != nil {
+		log.Panicf("regular expression %s timed out: %w", r.String(), err)
+	}
+	return output
 }
 
 func MIMEToExt(mimeType string) string {

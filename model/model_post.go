@@ -15,25 +15,25 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strconv"
 	"strings"
 
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/dlclark/regexp2/v2/compat"
 )
 
 // audioMIME is a regular expression of an audio MIME type.
-var audioMIME = regexp.MustCompile(`^audio/.*`)
+var audioMIME = compat.MustCompile(`^audio/.*`)
 
 // videoMIME is a regular expression of a video MIME type.
-var videoMIME = regexp.MustCompile(`^video/.*`)
+var videoMIME = compat.MustCompile(`^video/.*`)
 
 // imageMIME is a regular expression of an image MIME type.
-var imageMIME = regexp.MustCompile(`^image/.*`)
+var imageMIME = compat.MustCompile(`^image/.*`)
 
 // notExpandable is a regular expression of MIME types which lack wide support for inline playback.
-var notExpandable = regexp.MustCompile(`^((audio/midi)|(video/(mpeg|ogg|x-matroska|x-msvideo)))$`)
+var notExpandable = compat.MustCompile(`^((audio/midi)|(video/(mpeg|ogg|x-matroska|x-msvideo)))$`)
 
 type PostModerated int
 

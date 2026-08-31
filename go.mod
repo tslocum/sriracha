@@ -9,6 +9,7 @@ require (
 	github.com/alecthomas/chroma/v2 v2.27.0
 	github.com/alexedwards/argon2id v1.0.0
 	github.com/aquilax/tripcode v1.0.1
+	github.com/dlclark/regexp2/v2 v2.7.1
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/gabriel-vasile/mimetype v1.4.15
 	github.com/go-sql-driver/mysql v1.10.0
@@ -31,7 +32,6 @@ require (
 	filippo.io/edwards25519 v1.2.0 // indirect
 	github.com/andybalholm/cascadia v1.3.4 // indirect
 	github.com/boombuler/barcode v1.1.0 // indirect
-	github.com/dlclark/regexp2/v2 v2.7.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/google/uuid v1.6.0 // indirect

@@ -5,13 +5,13 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
+	"github.com/dlclark/regexp2/v2/compat"
 )
 
 func (s *Server) loadBanForm(db serverDB, r *http.Request, b *Ban) error {
@@ -170,7 +170,7 @@ func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter
 		ip := FormString(r, "ip")
 		if strings.ContainsRune(ip, '*') {
 			pattern := strings.ReplaceAll(strings.ReplaceAll(ip, ".", `\.`), "*", ".*")
-			_, err := regexp.Compile(pattern)
+			_, err := compat.Compile(pattern)
 			if err != nil {
 				data.ManageError(fmt.Sprintf("failed to compile ban `%s` as regular expression: %s", pattern, err))
 				return

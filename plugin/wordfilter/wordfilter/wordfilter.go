@@ -2,13 +2,14 @@ package wordfilter
 
 import (
 	"log"
-	"regexp"
 	"slices"
 	"strconv"
 	"strings"
 
 	"codeberg.org/tslocum/sriracha"
 	. "codeberg.org/tslocum/sriracha/model"
+	. "codeberg.org/tslocum/sriracha/util"
+	"github.com/dlclark/regexp2/v2/compat"
 )
 
 const (
@@ -25,7 +26,7 @@ type filter struct {
 	Replace string
 	Boards  []int
 
-	pattern *regexp.Regexp
+	pattern *compat.Regexp
 }
 
 type Wordfilter struct {
@@ -61,7 +62,7 @@ func (w *Wordfilter) Update(db sriracha.DB, key string) error {
 				continue
 			}
 
-			pattern, err := regexp.Compile(split[0])
+			pattern, err := compat.Compile(split[0])
 			if err != nil {
 				log.Printf("warning: failed to parse `%s` as regular expression: %s", split[0], err)
 				continue
@@ -92,7 +93,7 @@ func (w *Wordfilter) Post(db sriracha.DB, post *Post) error {
 		if len(f.Boards) != 0 && !slices.Contains(f.Boards, post.Board.ID) {
 			continue
 		}
-		post.Message = f.pattern.ReplaceAllString(post.Message, f.Replace)
+		post.Message = ReplaceAllString(f.pattern, post.Message, f.Replace)
 	}
 	return nil
 }

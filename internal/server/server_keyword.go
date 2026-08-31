@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"regexp"
 	"slices"
 	"strconv"
 	"strings"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
+	"github.com/dlclark/regexp2/v2/compat"
 )
 
 func (s *Server) loadGlobalKeywordSettings(db serverDB, k *Keyword) {
@@ -118,7 +118,7 @@ func (s *Server) serveKeyword(data *templateData, db serverDB, w http.ResponseWr
 		if r.Method != http.MethodPost {
 			return
 		}
-		rgxp, err := regexp.Compile(data.Manage.Keyword.Text)
+		rgxp, err := compat.Compile(data.Manage.Keyword.Text)
 		if err != nil {
 			data.ManageError(fmt.Sprintf("Failed to compile regular expression: %s", err))
 		}

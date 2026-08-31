@@ -27,7 +27,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"regexp"
 	"runtime"
 	"runtime/debug"
 	"runtime/trace"
@@ -47,6 +46,7 @@ import (
 	"codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
+	"github.com/dlclark/regexp2/v2/compat"
 	"github.com/fsnotify/fsnotify"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -242,7 +242,7 @@ func (opt *ServerOptions) RefreshLabelValue() int {
 
 type cachedKeyword struct {
 	id int            // ID.
-	p  *regexp.Regexp // Pattern.
+	p  *compat.Regexp // Pattern.
 	a  string         // Action.
 }
 
@@ -269,7 +269,7 @@ const entriesPerPage = 10
 type Server struct {
 	Boards []*Board
 
-	rangeBans map[*Ban]*regexp.Regexp
+	rangeBans map[*Ban]*compat.Regexp
 
 	captchaCache     map[string]string
 	captchaCacheLock sync.Mutex
@@ -290,7 +290,7 @@ type Server struct {
 	customTemplates []string
 
 	notifications          []notification
-	notificationsPattern   *regexp.Regexp
+	notificationsPattern   *compat.Regexp
 	notificationsWaitGroup sync.WaitGroup
 	shutdownNotifications  chan struct{}
 
@@ -609,7 +609,7 @@ func (s *Server) parseConfig(configFile string) error {
 	s.config = config
 
 	if s.config.MailDomains != "" {
-		s.notificationsPattern, err = regexp.Compile(s.config.MailDomains)
+		s.notificationsPattern, err = compat.Compile(s.config.MailDomains)
 		if err != nil {
 			return fmt.Errorf("failed to parse maildomains regular expression: %s", err)
 		}
@@ -1398,7 +1398,7 @@ func (s *Server) refreshKeywordCache(db serverDB) {
 			id: k.ID,
 			a:  k.Action,
 		}
-		kw.p, err = regexp.Compile(k.Text)
+		kw.p, err = compat.Compile(k.Text)
 		if err != nil {
 			log.Fatalf("failed to parse keyword %s as regular expression: %s", k.Text, err)
 		}
@@ -1916,10 +1916,10 @@ func (s *Server) removeInvalidBoardOptions(db serverDB) {
 
 // reloadBans refreshes the range ban regular expression cache.
 func (s *Server) reloadBans(db serverDB) {
-	var rangeBans = make(map[*Ban]*regexp.Regexp)
+	var rangeBans = make(map[*Ban]*compat.Regexp)
 	bans := db.AllActiveBans(true)
 	for _, ban := range bans {
-		pattern, err := regexp.Compile(ban.IP[2:])
+		pattern, err := compat.Compile(ban.IP[2:])
 		if err != nil {
 			log.Printf("warning: failed to compile IP range ban `%s` as regular expression: %s", ban.IP[2:], err)
 			return
@@ -2303,8 +2303,8 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-var staticPattern = regexp.MustCompile(`^/(banner|captcha|static)/.*$`)
-var srcThumbPattern = regexp.MustCompile(`^.*/(src|thumb)/.*$`)
+var staticPattern = compat.MustCompile(`^/(banner|captcha|static)/.*$`)
+var srcThumbPattern = compat.MustCompile(`^.*/(src|thumb)/.*$`)
 
 func withCacheHeader(fs http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

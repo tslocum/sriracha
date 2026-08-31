@@ -2,11 +2,11 @@ package model
 
 import (
 	"fmt"
-	"regexp"
 	"slices"
 	"strings"
 
 	. "codeberg.org/tslocum/sriracha/util"
+	"github.com/dlclark/regexp2/v2/compat"
 )
 
 type Keyword struct {
@@ -23,7 +23,7 @@ func (k *Keyword) Validate() error {
 	case !slices.Contains(AllActions, k.Action):
 		return fmt.Errorf("action must be set")
 	}
-	_, err := regexp.Compile(k.Text)
+	_, err := compat.Compile(k.Text)
 	if err != nil {
 		return fmt.Errorf("keyword `%s` is invalid: %s", k.Text, err)
 	}
