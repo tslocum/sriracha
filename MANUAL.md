@@ -1585,12 +1585,15 @@ Keywords are [regular expressions](https://en.wikipedia.org/wiki/Regular_express
 when detected, trigger automatic moderation.
 
 A built-in keyword tester is included. To test building a regular expression,
-use an expression testing website with the Go (or "Golang") format selected.
+use an expression testing website with the PCRE format selected.
 
 Sriracha normalizes text before detecting keywords. This avoids the need to
 create multiple keywords for each possible accent character variation.
 
-Write keywords using only characters without accents.
+Thus, you should only use characters without accents when writing keywords.
+
+Sriracha uses the [regexp2](https://github.com/dlclark/regexp2) reguar expression engine,
+which supports [additional syntax](https://github.com/dlclark/regexp2#additional-perl-and-pcre-syntax).
 
 #### Global settings
 
