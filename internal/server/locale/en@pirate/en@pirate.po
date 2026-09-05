@@ -855,6 +855,11 @@ msgstr ""
 msgid "Log Out"
 msgstr "Weigh Anchor"
 
+msgid "Log Out %d Session"
+msgid_plural "Log Out %d Sessions"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Logs"
 msgstr "Captain's Log"
 

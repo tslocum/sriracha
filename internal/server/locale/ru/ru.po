@@ -867,6 +867,12 @@ msgstr ""
 msgid "Log Out"
 msgstr "Выйти"
 
+msgid "Log Out %d Session"
+msgid_plural "Log Out %d Sessions"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
 msgid "Logs"
 msgstr "Журналы"
 

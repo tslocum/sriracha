@@ -871,6 +871,11 @@ msgstr "Hyni ne sistem"
 msgid "Log Out"
 msgstr "Dilni nga sistemi"
 
+msgid "Log Out %d Session"
+msgid_plural "Log Out %d Sessions"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Logs"
 msgstr "Logs"
 

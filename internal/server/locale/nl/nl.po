@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-08-21 15:56+0000\n"
+"PO-Revision-Date: 2026-08-28 08:26+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -355,7 +355,7 @@ msgid "Click to refresh."
 msgstr "Klik om te herladen."
 
 msgid "Color Identifiers"
-msgstr ""
+msgstr "Kleuridentificatie"
 
 msgid "Configure"
 msgstr "Instellen"
@@ -892,6 +892,11 @@ msgstr "Inloggen"
 
 msgid "Log Out"
 msgstr "Uitloggen"
+
+msgid "Log Out %d Session"
+msgid_plural "Log Out %d Sessions"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Logs"
 msgstr "Logboeken"
@@ -1865,6 +1870,7 @@ msgstr ""
 
 msgid "Whether identifiers are randomly colored."
 msgstr ""
+"Of identificatie moet plaatsvinden op basis van een willekeurige kleur."
 
 msgid ""
 "Whether moderator approval is required before displaying newly created posts."
