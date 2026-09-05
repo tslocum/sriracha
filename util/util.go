@@ -37,7 +37,7 @@ var (
 	RefLinkPattern   = compat.MustCompile(`&gt;&gt;([0-9]+)`)
 	BoardLinkPattern = compat.MustCompile(`&gt;&gt;&gt;\/([0-9A-Za-z_-]+)?\/?`)
 
-	URLPattern     = compat.MustCompile(`(?i)(((f|ht)tp(s)?:\/\/)[-a-zA-Zа-яА-Я()0-9@%\!_+.,~#?&;:|\'\/=]+)`)
+	URLPattern     = compat.MustCompile(`(?i)(?<!href=")(((f|ht)tp(s)?:\/\/)[-a-zA-Zа-яА-Я()0-9@%\!_+.,~#?&;:|\'\/=]+)`)
 	FixURLPattern1 = compat.MustCompile(`(?i)\(\<a href\=\"(.*)\)"\ target\=\"_blank\">(.*)\)\<\/a>`)
 	FixURLPattern2 = compat.MustCompile(`(?i)\<a href\=\"(.*)\."\ target\=\"_blank\">(.*)\.\<\/a>`)
 	FixURLPattern3 = compat.MustCompile(`(?i)\<a href\=\"(.*)\,"\ target\=\"_blank\">(.*)\,\<\/a>`)
@@ -174,7 +174,7 @@ func ParseEmail(address string) string {
 func ReplaceAllString(r *compat.Regexp, input, replacement string) string {
 	output, err := r.Unwrap().Replace(input, replacement, -1, -1)
 	if err != nil {
-		log.Panicf("regular expression %s timed out: %w", r.String(), err)
+		log.Panicf("regular expression %s timed out: %s", r.String(), err)
 	}
 	return output
 }
@@ -182,7 +182,7 @@ func ReplaceAllString(r *compat.Regexp, input, replacement string) string {
 func ReplaceAllStringFunc(r *compat.Regexp, input string, evaluator regexp2.MatchEvaluator) string {
 	output, err := r.Unwrap().ReplaceFunc(input, evaluator, -1, -1)
 	if err != nil {
-		log.Panicf("regular expression %s timed out: %w", r.String(), err)
+		log.Panicf("regular expression %s timed out: %s", r.String(), err)
 	}
 	return output
 }
