@@ -823,6 +823,11 @@ msgstr ""
 msgid "Log Out"
 msgstr ""
 
+msgid "Log Out %d Session"
+msgid_plural "Log Out %d Sessions"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Logs"
 msgstr ""
 

@@ -83,6 +83,7 @@ type templateData struct {
 	Extra2        string
 	Extra3        string
 	Extra4        string
+	ExtraInt      int
 	Opt           *ServerOptions
 	Manage        *manageData
 	Template      string

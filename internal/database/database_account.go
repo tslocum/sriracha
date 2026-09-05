@@ -73,6 +73,25 @@ func (db *DB) addAccountSession(accountID int) string {
 	}
 	return sessionKey
 }
+func (db *DB) AccountSessionKeys(accountID int) []string {
+	rows, err := db.conn.Query(context.Background(), "SELECT key FROM account_session")
+	if err != nil {
+		dbErr(fmt.Errorf("failed to select account sessions: %w", err))
+	}
+	var keys []string
+	for rows.Next() {
+		var key string
+		err := rows.Scan(&key)
+		if err != nil {
+			dbErr(fmt.Errorf("failed to select account sessions: %w", err))
+		}
+		keys = append(keys, key)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select account sessions: %w", rows.Err()))
+	}
+	return keys
+}
 
 func (db *DB) ExpireAccountSessions() {
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM account_session WHERE lastactive <= $1", time.Now().Unix()-db.config.SessionTime)

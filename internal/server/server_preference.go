@@ -17,6 +17,7 @@ func (s *Server) servePreference(data *templateData, db serverDB, w http.Respons
 	}
 
 	data.Template = "manage_preference"
+	data.ExtraInt = len(db.AccountSessionKeys(data.Account.ID))
 	if r.Method == http.MethodPost {
 		switch FormString(r, "action") {
 		case "style":

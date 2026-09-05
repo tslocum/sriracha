@@ -78,4 +78,10 @@
         </div>
     </fieldset>
 </div>
+{{if gt .ExtraInt 1}}
+    <br>
+    <form method="get" action="/sriracha/logout/all">
+        <input type="submit" value="{{TN "Log Out %d Session" "Log Out %d Sessions" .ExtraInt}}">
+    </form><br>
+{{end}}
 {{template "manage_end.gohtml" .}}

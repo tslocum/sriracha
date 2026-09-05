@@ -19,6 +19,7 @@ func (db *DB) AddTwoFactor(t *TwoFactor) {
 	if err != nil {
 		dbErr(fmt.Errorf("failed to insert two-factor device: %w", err))
 	}
+	db.deleteAccountSessions(t.Account)
 }
 
 func (db *DB) TwoFactorByID(id int) *TwoFactor {
@@ -69,10 +70,15 @@ func (db *DB) DeleteTwoFactor(id int) {
 	if id == 0 {
 		return
 	}
+	t := db.TwoFactorByID(id)
+	if t == nil {
+		return
+	}
 	_, err := db.conn.Exec(context.Background(), "DELETE FROM twofactor WHERE id = $1", id)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to delete two-factor device: %w", err))
 	}
+	db.deleteAccountSessions(t.Account)
 }
 
 func scanTwoFactor(t *TwoFactor, row pgx.Row) error {

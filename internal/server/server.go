@@ -1532,7 +1532,16 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 	cookies := r.CookiesNamed("sriracha_session")
 	if strings.HasPrefix(r.URL.Path, "/sriracha/logout") {
 		if len(cookies) > 0 {
-			db.DeleteAccountSession(cookies[0].Value)
+			if strings.HasPrefix(r.URL.Path, "/sriracha/logout/all") {
+				account := db.AccountBySessionKey(cookies[0].Value)
+				if account != nil {
+					for _, key := range db.AccountSessionKeys(account.ID) {
+						db.DeleteAccountSession(key)
+					}
+				}
+			} else {
+				db.DeleteAccountSession(cookies[0].Value)
+			}
 		}
 		http.SetCookie(w, &http.Cookie{
 			Name:  "sriracha_session",

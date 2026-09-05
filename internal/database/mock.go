@@ -102,6 +102,7 @@ func (db *mockDB) SaveFloat(key string, value float64)        {}
 
 // Account.
 func (db *mockDB) AddAccount(a *Account, password string)            {}
+func (db *mockDB) AccountSessionKeys(accountID int) []string         { return nil }
 func (db *mockDB) ExpireAccountSessions()                            {}
 func (db *mockDB) AccountByID(id int) *Account                       { return nil }
 func (db *mockDB) AccountByUsername(username string) *Account        { return nil }

@@ -38,6 +38,7 @@ type DB interface {
 	UpdateAccountLocale(id int, locale string)
 	LoginAccount(username string, password string, newSession bool) (*Account, string)
 	CheckAccountPassword(username string, password string) *Account
+	AccountSessionKeys(accountID int) []string
 	ExpireAccountSessions()
 	DeleteAccountSession(key string)
 
