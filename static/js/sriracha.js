@@ -709,7 +709,7 @@ function setStyle(style) {
             flexStyle.remove();
         }
     }
-    document.cookie = 'sriracha_style=' + style + '; expires=Tue, 19 Jan 2038 03:14:07 UTC; path=/; SameSite=Strict';
+    document.cookie = 'sriracha_style=' + style + '; Max-Age=31536000; path=/; SameSite=Strict'; // Expire after one year.
 
     var stylesheet = document.getElementById('mainStylesheet');
     if (!stylesheet) {

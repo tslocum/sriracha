@@ -1527,6 +1527,20 @@ func (s *Server) httpResponse(r *http.Request) (*http.Response, error) {
 	return s.httpClient.Do(r)
 }
 
+// setSecureCookie sets a cookie with security features enabled.
+func (s *Server) setSecureCookie(w http.ResponseWriter, r *http.Request, name string, value string) {
+	const oneYear = 31536000
+	http.SetCookie(w, &http.Cookie{
+		Name:     name,
+		Value:    value,
+		Path:     "/",
+		MaxAge:   oneYear,
+		Secure:   r.TLS != nil,
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
+	})
+}
+
 // buildData returns a new template data instance.
 func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) *templateData {
 	cookies := r.CookiesNamed("sriracha_session")
@@ -1543,16 +1557,8 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 				db.DeleteAccountSession(cookies[0].Value)
 			}
 		}
-		http.SetCookie(w, &http.Cookie{
-			Name:  "sriracha_session",
-			Value: "",
-			Path:  "/",
-		})
-		http.SetCookie(w, &http.Cookie{
-			Name:  "sriracha_totp",
-			Value: "",
-			Path:  "/",
-		})
+		s.setSecureCookie(w, r, "sriracha_session", "")
+		s.setSecureCookie(w, r, "sriracha_totp", "")
 		http.Redirect(w, r, "/sriracha/", http.StatusFound)
 		return s.newTemplateData(db)
 	}
@@ -1591,11 +1597,7 @@ func (s *Server) buildData(db serverDB, w http.ResponseWriter, r *http.Request) 
 							}
 						}
 						if session.validated {
-							http.SetCookie(w, &http.Cookie{
-								Name:  "sriracha_session",
-								Value: session.accountKey,
-								Path:  "/",
-							})
+							s.setSecureCookie(w, r, "sriracha_session", session.accountKey)
 						} else {
 							session.timestamp = 0
 						}
@@ -2056,11 +2058,7 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 				if account != nil {
 					if len(db.TwoFactorsByAccount(account.ID)) > 0 {
 						session := s.twoFactorSession(account.ID, nil, sessionKey)
-						http.SetCookie(w, &http.Cookie{
-							Name:  "sriracha_totp",
-							Value: string(session.key),
-							Path:  "/",
-						})
+						s.setSecureCookie(w, r, "sriracha_totp", string(session.key))
 						data := s.newTemplateData(db)
 						data.Account = nil
 						data.Template = "manage_login"
@@ -2069,11 +2067,7 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 						data.execute(w)
 						return
 					}
-					http.SetCookie(w, &http.Cookie{
-						Name:  "sriracha_session",
-						Value: sessionKey,
-						Path:  "/",
-					})
+					s.setSecureCookie(w, r, "sriracha_session", sessionKey)
 					if s.config.Require2FA {
 						data.Redirect(w, r, "/sriracha/preference/")
 					} else {
