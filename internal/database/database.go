@@ -8,9 +8,10 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 	"runtime"
-	"runtime/debug"
+	"runtime/pprof"
 	"strconv"
 	"strings"
 
@@ -487,7 +488,7 @@ func dbErr(err error) {
 	}
 
 	log.Println("STACK TRACE:")
-	debug.PrintStack()
+	pprof.Lookup("goroutine").WriteTo(os.Stderr, 2)
 
 	log.Println("SRIRACHA ENCOUNTERED A FATAL DATABASE ERROR!")
 	var pgErr *pgconn.PgError
