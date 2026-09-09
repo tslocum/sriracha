@@ -14,6 +14,7 @@ import (
 	"runtime/pprof"
 	"strconv"
 	"strings"
+	"sync"
 
 	"codeberg.org/tslocum/sriracha"
 	. "codeberg.org/tslocum/sriracha/model"
@@ -475,7 +476,11 @@ func (db *DB) TestConn() {
 	_ = dummy
 }
 
+var dbErrLock = &sync.Mutex{}
+
 func dbErr(err error) {
+	dbErrLock.Lock() // Prevent simultaneoous errors from printing at the same time.
+
 	wrappedErr := err
 	for {
 		if wrappedErr == pgx.ErrNoRows {
@@ -497,7 +502,8 @@ func dbErr(err error) {
 		log.Printf("  ERROR MESSAGE: %s", pgErr.Message)
 	}
 
-	log.Fatal(err)
+	log.Println(err) // When using a debugger, set a breakpoint on this line.
+	os.Exit(1)
 }
 
 // Validate database interface during compilation.
