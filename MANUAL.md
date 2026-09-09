@@ -14,7 +14,7 @@
 
 [Go to top](#sections)
 
-A [quick start guide](https://codeberg.org/tslocum/sriracha/src/branch/main/QUICKSTART.md) is available.
+A [quick start guide](https://codeberg.org/tslocum/sriracha/src/branch/main/QUICKSTART.md) is also available (requires Docker).
 
 ### 1. Create root directory
 
@@ -116,6 +116,9 @@ specified via the `--config` option:
 If no configuration file path is specified, the default path
 `~/.config/sriracha/config.yml` is used.
 
+Copy the entire contents of the [example config.yml](#example-configuration-config-yml)
+and read the full description of each option before configuring.
+
 The timezone may be specified via the `TZ` environment variable:
 
 `TZ=America/Los_Angeles sriracha`
@@ -196,6 +199,17 @@ Categories may be used to organize boards. When at least one category exists, on
 categorized boards are displayed in the site index and navigation header. When no
 categories exist, all visible boards are displayed.
 
+### MIME types
+
+Visitors may only upload files matching the configured
+[MIME type](https://en.wikipedia.org/wiki/Media_type) whitelist.
+
+See [this page](https://github.com/gabriel-vasile/mimetype/blob/master/supported_mimes.md)
+for a list of all MIME types Sriracha recognizes by default.
+
+Support for additional MIME types may be added via plugins which subscribe to
+[Attach](#attach-event) events.
+
 ### Stripping metadata
 
 Enable the 'Strip Metadata' option in Settings to strip many types of metadata
@@ -206,16 +220,6 @@ a free and open source program which handles the manipulation of metadata.
 
 ExifTool will strip all recognized metadata, including potentially helpful metadata,
 which may reduce rendering quality. File corruption is also possible.
-
-### Post batching
-
-When a visitor creates a new post, and less than ten seconds have passed since
-someone last created a post, static files are not immediately updated.
-
-Once either a full second passes without any new posts being created, or ten
-seconds pass, static files are updated and visitors are redirected.
-
-Post batching conserves system resources and is invisible to visitors.
 
 ### Embed services
 
@@ -487,6 +491,16 @@ mem = (maxconns * maxformbuffer) + (numcpu * maxpagebuffer)
 ```
 
 Replace `numcpu` with the number of CPU cores available to Sriracha.
+
+### Post batching
+
+When a visitor creates a new post, and less than ten seconds have passed since
+someone last created a post, static files are not immediately updated.
+
+Once either a full second passes without any new posts being created, or ten
+seconds pass, static files are updated and visitors are redirected.
+
+Post batching conserves system resources and is invisible to visitors.
 
 ### Performance
 
@@ -1119,6 +1133,9 @@ type PluginWithCron interface {
 
 Administrators may view current version information in the settings page.
 
+Sriracha always supports upgrading to the latest release from any previous release.
+You do not need to upgrade incrementally, even between major versions.
+
 ### 1. Back everything up
 
 Before going any further, back everything up on the server. This includes files
@@ -1206,7 +1223,7 @@ Sriracha supports importing posts from [TinyIB](https://codeberg.org/tslocum/tin
 - **Only PostgreSQL is supported**
   - Sriracha only supports the [PostgreSQL](https://www.postgresql.org) database system.
 - **Account roles have different capabilities**
-  - See the administrator and moderator [guides](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#guides)
+  - See the administrator and moderator [guides](#guides)
 for a list of role capabilities.
 - **Single auto-increment post ID**
   - Sriracha uses one auto-incrementing post ID for all boards. When only one board
