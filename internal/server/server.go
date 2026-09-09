@@ -3013,7 +3013,7 @@ func (s *Server) Run() error {
 	go s.handleRefreshDiskSpace()
 
 	// Start page builders.
-	for i := 0; i < runtime.NumCPU(); i++ {
+	for i := 0; i < runtime.GOMAXPROCS(-1); i++ {
 		go s._build()
 	}
 

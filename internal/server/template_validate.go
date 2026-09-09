@@ -192,7 +192,7 @@ func (s *Server) validateTemplates(ts *Server, verbose bool) error {
 	img := db.BoardByDir("img")
 	forum := db.BoardByDir("forum")
 
-	numCPU := runtime.NumCPU()
+	numCPU := runtime.GOMAXPROCS(-1)
 	for i := 0; i < numCPU; i++ {
 		go ts._validateTemplates(db, allBoards, img, forum, process, wg, errors, verbose)
 	}

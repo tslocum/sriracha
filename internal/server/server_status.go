@@ -164,7 +164,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 			return
 		}
 		data.Template = "manage_info"
-		numCPU := runtime.NumCPU()
+		numCPU := runtime.GOMAXPROCS(-1)
 		worstCase := int64(s.config.MaxConns)*s.config.MaxFormBuffer + int64(numCPU)*int64(s.config.MaxPageBuffer)
 		data.Message = template.HTML(fmt.Sprintf(`<h2 class="managetitle">Memory Configuration</h2>
 			<table class="managetable"><tbody>
