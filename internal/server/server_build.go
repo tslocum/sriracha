@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 	"math"
 	"os"
@@ -49,6 +50,7 @@ type buildInfo struct {
 	customPage *Page
 	db         serverDB
 	postIDs    [][]int
+	tpl        *template.Template
 	buf        *bytes.Buffer
 	wg         *sync.WaitGroup
 	delta      *atomic.Int32
@@ -65,6 +67,7 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 	}
 
 	data := s.newTemplateData(db, info.buf)
+	data.tpl = info.tpl
 	data.Board = board
 	data.Boards = db.AllBoards()
 
@@ -173,6 +176,7 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 		return
 	}
 	data := s.newTemplateData(db, info.buf)
+	data.tpl = info.tpl
 	data.Board = board
 	data.Boards = db.AllBoards()
 	data.ReplyMode = 1
@@ -266,7 +270,6 @@ func (s *Server) _queueBoardIndexes(info *buildInfo) {
 		}
 	}
 	s.indexCacheLock.Unlock()
-	var buf *bytes.Buffer
 	for build := buildBoardIndex; build <= buildBoardCatalog; build++ {
 		info := &buildInfo{
 			build:   build,
@@ -278,22 +281,9 @@ func (s *Server) _queueBoardIndexes(info *buildInfo) {
 			delta:   info.delta,
 		}
 		wg.Add(1)
-		select {
-		case s.buildQueue <- info:
-		default:
-			if buf == nil {
-				buf = bytes.NewBuffer(make([]byte, s.config.MinPageBuffer))
-			}
-			buf.Reset()
-			info.buf = buf
-			info.db = db
-			if build == buildBoardIndex {
-				s._buildBoardIndex(info)
-			} else {
-				s._buildBoardCatalog(info)
-			}
-			wg.Done()
-		}
+		go func() {
+			s.buildQueue <- info
+		}()
 		if build == buildBoardIndex {
 			for page := 1; page < pages; page++ {
 				info := &buildInfo{
@@ -307,18 +297,9 @@ func (s *Server) _queueBoardIndexes(info *buildInfo) {
 					delta:   info.delta,
 				}
 				wg.Add(1)
-				select {
-				case s.buildQueue <- info:
-				default:
-					if buf == nil {
-						buf = bytes.NewBuffer(make([]byte, s.config.MinPageBuffer))
-					}
-					buf.Reset()
-					info.buf = buf
-					info.db = db
-					s._buildBoardIndex(info)
-					wg.Done()
-				}
+				go func() {
+					s.buildQueue <- info
+				}()
 			}
 		}
 	}
@@ -345,6 +326,7 @@ func (s *Server) _buildBoardThread(info *buildInfo) {
 	}
 
 	data := s.newTemplateData(db, info.buf)
+	data.tpl = info.tpl
 	data.Board = board
 	data.Boards = db.AllBoards()
 	data.Threads = [][]*Post{posts}
@@ -380,6 +362,7 @@ func (s *Server) _buildNewsIndex(info *buildInfo) {
 	page := info.page
 
 	data := s.newTemplateData(db, info.buf)
+	data.tpl = info.tpl
 	data.Boards = db.AllBoards()
 	data.Template = "news"
 
@@ -411,6 +394,7 @@ func (s *Server) _buildNewsIndex(info *buildInfo) {
 	data.Page = page
 
 	subData := s.newTemplateData(db, info.buf)
+	subData.tpl = info.tpl
 	buf := &bytes.Buffer{}
 	for _, n := range data.AllNews {
 		if !HTMLTemplate.MatchString(n.Message) {
@@ -467,6 +451,7 @@ func (s *Server) _buildNewsEntry(info *buildInfo) {
 	}
 
 	data := s.newTemplateData(db, info.buf)
+	data.tpl = info.tpl
 	data.Boards = db.AllBoards()
 	data.Template = "news"
 	data.AllNews = []*News{n}
@@ -483,6 +468,7 @@ func (s *Server) _buildNewsEntry(info *buildInfo) {
 
 	if HTMLTemplate.MatchString(n.Message) {
 		subData := s.newTemplateData(db, info.buf)
+		subData.tpl = info.tpl
 		buf := &bytes.Buffer{}
 		subData.Boards = data.Boards
 		subData.Template = "line"
@@ -531,6 +517,7 @@ func (s *Server) _buildPage(info *buildInfo) {
 	db := info.db
 
 	data := s.newTemplateData(db, info.buf)
+	data.tpl = info.tpl
 	data.Boards = db.AllBoards()
 	data.Template = "page"
 	p := info.customPage
@@ -592,6 +579,7 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 		return
 	}
 	data := s.newTemplateData(db, info.buf)
+	data.tpl = info.tpl
 	data.Template = "index"
 
 	data.Boards = keep
@@ -601,6 +589,7 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 		if len(allNews) > 0 {
 			n := allNews[0]
 			subData := s.newTemplateData(db, info.buf)
+			subData.tpl = info.tpl
 			buf := &bytes.Buffer{}
 			subData.Boards = allBoards
 			subData.Template = "line"
@@ -741,11 +730,18 @@ func (s *Server) _build() {
 	// Initialize write buffer.
 	buf := bytes.NewBuffer(make([]byte, s.config.MinPageBuffer))
 
+	// Clone templates. Each builder must use its own copy of templates to prevent race conditions.
+	tpl, err := s.tplOriginal.Clone()
+	if err != nil {
+		log.Fatalf("failed to clone templates: %s", err)
+	}
+
 	for {
 		info := <-s.buildQueue
 		db := s.beginReadOnly()
 		info.db = db
 		info.buf = buf
+		info.tpl = tpl
 
 		// Handle build request.
 		switch info.build {
