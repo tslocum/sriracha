@@ -912,6 +912,16 @@ function onDOMContentLoaded(e) {
     var postForm = document.getElementById("postform");
     if (postForm) {
         postForm.addEventListener("submit", onSubmit);
+
+        // Open post form when Alt+Shift+M is pressed.
+        document.addEventListener('keydown', (e) => {
+            if (e.altKey && e.shiftKey && (e.key == 'M' || e.key == 'm')) {
+                var details = document.getElementById("postdetails");
+                if (details) {
+                   details.open = true;
+                }
+            }
+        });
     }
 }
 
