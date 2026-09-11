@@ -763,6 +763,9 @@ msgstr ""
 msgid "Invalid or deleted post."
 msgstr ""
 
+msgid "Jump to a form field when adding a new post by pressing Alt, Shift and:"
+msgstr ""
+
 msgid "Keyword"
 msgstr ""
 
@@ -1011,6 +1014,9 @@ msgid "Name of the board, which is displayed in the page title and header."
 msgstr ""
 
 msgid "Name shown when no name is entered. Separate multiple names with | (pipe character). May be blank."
+msgstr ""
+
+msgid "Navigate"
 msgstr ""
 
 msgid "Navigation"
