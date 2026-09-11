@@ -117,6 +117,9 @@
 				{{else}}
 					[<a href="/sriracha/board/mod/{{.Board.ID}}{{if .ArchiveMode}}?archive=1{{end}}">{{T "Return"}}</a>]
 				{{end}}
+				{{if and (not .Preview) (or (eq .Template "imgboard_page")  (eq .Template "forum_page"))}}
+					[<a href="#footer" onclick="javascript:window.scrollTo(0, document.body.scrollHeight);return false;">▼</a>]
+				{{end}}
 			</span>
 		{{else if .ModMode}}
 			<span class="threadui">
