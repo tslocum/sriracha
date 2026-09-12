@@ -352,7 +352,26 @@ function quotePost(postID) {
     if (details) {
         details.open = true;
     }
+
+    // Add reflink.
     message.value = message.value + '>>' + postID + "\n";
+
+    // Add quote.
+    var selection = window.getSelection();
+    if (selection && selection.focusNode) {
+        var postSubject = document.querySelector("#post" + postID + " .filetitle");
+        var postMessage = document.querySelector("#post" + postID + " .message");
+        if ((postSubject && postSubject.contains(selection.focusNode)) || (postMessage && postMessage.contains(selection.focusNode))) {
+            var quote = window.getSelection().toString().trim();
+            if (quote) {
+                var split = quote.split(/\r?\n/);
+                for (var i = 0; i < split.length; i++) {
+                    message.value = message.value + '> ' + split[i] + "\n";
+                }
+            }
+        }
+    }
+
     message.focus();
     if (details) {
         details.scrollIntoView();

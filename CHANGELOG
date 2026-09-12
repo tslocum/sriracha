@@ -1,5 +1,6 @@
 2.1.2:
 - Add navigation links to jump to top and bottom of thread pages
+- Quote selected text when replying to a post
 
 2.1.1:
 - Fix race condition when accessing database via templates
