@@ -670,7 +670,7 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 				Month: db.NumPosts(b, thirtyDays),
 				Total: db.NumPosts(b, 0),
 			}
-			boardStats.Hour = float64(int(float64(boardStats.Month)/hours*100)) / 100
+			boardStats.Hour = float64(int(float64(boardStats.Month)/(hours*60)*10000)) / 10000
 
 			recent := db.LastPostByBoard(b)
 			if recent != nil {
@@ -682,7 +682,7 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 			serverStats.Total += boardStats.Total
 		}
 	}
-	serverStats.Hour = float64(int(float64(serverStats.Month)/hours*100)) / 100
+	serverStats.Hour = float64(int(float64(serverStats.Month)/(hours*60)*10000)) / 10000
 
 	if s.statsCache != nil && reflect.DeepEqual(serverStats, s.statsCache) {
 		return
