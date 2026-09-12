@@ -670,6 +670,9 @@ msgstr ""
 msgid "Hidden"
 msgstr ""
 
+msgid "Hide"
+msgstr ""
+
 msgid "Hide everywhere"
 msgstr ""
 
@@ -1260,6 +1263,9 @@ msgid "Preferences"
 msgstr ""
 
 msgid "Prefix a line of text with > (greater-than sign) to quote a message:"
+msgstr ""
+
+msgid "Press Control, Alt or Shift and click on a post's checkbox to hide it."
 msgstr ""
 
 msgid "Preview"

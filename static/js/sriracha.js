@@ -588,6 +588,39 @@ function closePostPreview() {
     }
 }
 
+function replacePost(postID, message) {
+    var post = document.getElementById('post' + postID);
+    if (!post || !post.parentElement) {
+        return;
+    }
+    var container = post.parentElement;
+    var prefix = '<div id="post' + postID + '" style="padding: 2px;">';
+    var suffix = '</div>';
+    if (container.classList.contains('op')) {
+        container = post.parentElement.parentElement;
+        prefix += '<div>';
+        suffix += '</div>';
+    }
+    container.innerHTML = prefix + message + suffix;
+}
+
+function _hidePost(postID) {
+    replacePost(postID, '[<a href="#" onclick="javascript:showPost(' + postID + ');return false;">Show</a>] No.' + postID + ' is hidden.');
+}
+
+function hidePost(postID) {
+    var date = new Date();
+    date.setHours(0,0,0,0);
+    localStorage.setItem("hide_" + postID, Math.floor(date / 1000));
+
+    _hidePost(postID);
+}
+
+function showPost(postID) {
+    localStorage.removeItem("hide_" + postID);
+    replacePost(postID, 'No.' + postID + ' unhidden. Refresh to view.');
+}
+
 function setPostAttributes(element) {
     var base_url = window.location.pathname;
     var resIndex = base_url.indexOf('/res/');
@@ -658,6 +691,22 @@ function setPostAttributes(element) {
                 el.addEventListener("contextmenu", function(e) {
                     e.preventDefault();
                 });
+            }
+        }
+
+        if (postID > 0) {
+            if (localStorage.getItem("hide_" + postID)) {
+                _hidePost(postID);
+            } else {
+                var checkbox = document.querySelector('#post' + postID + ' input[type=checkbox]');
+                if (checkbox) {
+                    checkbox.addEventListener("click", function(e) {
+                        if (e.ctrlKey || e.altKey || e.shiftKey) {
+                            hidePost(postID);
+                            e.preventDefault();
+                        }
+                    });
+                }
             }
         }
     });
@@ -853,6 +902,32 @@ function onSubmit(e) {
     return true;
 }
 
+async function expireHiddenPosts() {
+    // Check for expired hidden posts once per day.
+    var lastExpire = localStorage.getItem("hide_expire");
+    if (!lastExpire) {
+        lastExpire = 0;
+    }
+    var midnight = new Date();
+    midnight.setHours(0,0,0,0);
+    var midnightTimestamp = Math.floor(midnight.getTime() / 1000);
+    if (lastExpire >= midnightTimestamp) {
+        return;
+    }
+
+    // Expire hidden posts after one year.
+    const oneYear = 31536000;
+    var date = new Date();
+    var expireTime = Math.floor(date.getTime() / 1000) - oneYear;
+    for (let [key, value] of Object.entries(localStorage)) {
+        if (!key.startsWith("hide_") || value > expireTime) {
+            continue;
+        }
+        localStorage.removeItem(key);
+    }
+    localStorage.setItem('hide_expire', midnightTimestamp);
+}
+
 function onDOMContentLoaded(e) {
     // Parse thread ID.
     var result = window.location.pathname.match(/.*\/res\/([0-9]+)\.html$/);
@@ -942,6 +1017,8 @@ function onDOMContentLoaded(e) {
             }
         });
     }
+
+    expireHiddenPosts();
 }
 
 document.addEventListener("dragover", onDragOver);
