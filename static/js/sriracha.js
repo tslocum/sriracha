@@ -956,7 +956,11 @@ function onDOMContentLoaded(e) {
         }
         setStatusIndicator(threadStatusNormal);
         if (!refreshTimeout) {
-            refreshTimeout = setTimeout(function() { fetchPosts(window.location.href, true); }, autoRefreshDelay*1000);
+            var delay = autoRefreshDelay*1000;
+            if (performance.getEntriesByType("navigation")[0].type == "back_forward") {
+                delay = 0;
+            }
+            refreshTimeout = setTimeout(function() { fetchPosts(window.location.href, true); }, delay);
         }
     }
 
