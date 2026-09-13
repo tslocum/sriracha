@@ -33,11 +33,13 @@ ol, ul {
                     </a>
                 </span><br>
                 <div class="entry">
-                    {{T "Press Control, Alt or Shift and click on a post's checkbox to hide it."}}<br>
+                    <span class="mouseinfo">{{T "Press Control, Alt or Shift and click on a post's checkbox to hide it."}}</span>
+                    <span class="touchinfo" style="display: none;">{{T "Long press a post's checkbox to hide it."}}</span>
+                    <br>
                 </div><br>
             </div>
 
-            <div class="js">
+            <div class="js mouseinfo">
                 <span class="guidetitle">
                     <a id="expand" href="#expand">
                         {{T "Expand"}}
@@ -150,6 +152,15 @@ ol, ul {
             var js = document.getElementsByClassName("js");
             for (const el of js) {
                 el.style.display = "block";
+            }
+            const showTouchHelp = window.matchMedia("(pointer: coarse)").matches;
+            if (showTouchHelp) {
+                for (const el of document.getElementsByClassName("mouseinfo")) {
+                    el.style.display = "none";
+                }
+                for (const el of document.getElementsByClassName("touchinfo")) {
+                    el.style.display = "inline";
+                }
             }
             </script>
         </div>

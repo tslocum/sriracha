@@ -21,7 +21,7 @@ var threadStatusDeleted = 3;
 // verbose is a flag which enables verbose logging.
 const verbose = false;
 
-const touchScreen = window.matchMedia("(pointer: coarse)").matches
+const touchScreen = window.matchMedia("(pointer: coarse)").matches;
 
 function updateTitle() {
     if (originalTitle == "") {
@@ -700,12 +700,19 @@ function setPostAttributes(element) {
             } else {
                 var checkbox = document.querySelector('#post' + postID + ' input[type=checkbox]');
                 if (checkbox) {
-                    checkbox.addEventListener("click", function(e) {
-                        if (e.ctrlKey || e.altKey || e.shiftKey) {
+                    if (touchScreen) {
+                        checkbox.addEventListener("contextmenu", function(e) {
                             hidePost(postID);
                             e.preventDefault();
-                        }
-                    });
+                        });
+                    } else {
+                        checkbox.addEventListener("click", function(e) {
+                            if (e.ctrlKey || e.altKey || e.shiftKey) {
+                                hidePost(postID);
+                                e.preventDefault();
+                            }
+                        });
+                    }
                 }
             }
         }
