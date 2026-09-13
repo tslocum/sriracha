@@ -140,10 +140,14 @@ ol, ul {
                     <li><b>S</b> - {{T "Subject"}}</li>
                     <li><b>M</b> - {{T "Message"}}</li>
                     <li><b>C</b> - CAPTCHA</li>
+                    {{if .Opt.Spoiler}}
+                        <li><b>R</b> - {{T "Spoiler"}}</li>
+                    {{end}}
                     <li><b>F</b> - {{T "File"}}</li>
                     <li><b>O</b> - Oekaki</li>
-                    <li><b>X</b> - {{T "Embed"}}</li>
+                    <li><b>D</b> - {{T "Embed"}}</li>
                     <li><b>P</b> - {{T "Password"}}</li>
+                    <li><b>A</b> - {{T "Preview"}}</li>
                     <li><b>Z</b> - {{T "Submit"}}</li>
                 </ul>
             </div>
