@@ -636,6 +636,10 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 		if postID > 0 {
 			data.Threads = [][]*Post{db.AllPostsInThread(postFilter, postID)}
 			data.ReplyMode = postID
+			if len(data.Threads) == 0 || len(data.Threads[0]) == 0 {
+				data.ManageError("Invalid or deleted post")
+				return false
+			}
 		} else {
 			allThreads := db.AllThreads(postFilter, b)
 
@@ -657,11 +661,7 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 				data.Threads = append(data.Threads, posts)
 			}
 		}
-		if len(data.Threads) == 0 || len(data.Threads[0]) == 0 {
-			data.ManageError("Invalid or deleted post")
-			return false
-		}
-		if len(data.Threads[0]) > 0 && data.Threads[0][0] != nil && data.Threads[0][0].Archived() {
+		if len(data.Threads) > 0 && len(data.Threads[0]) > 0 && data.Threads[0][0] != nil && data.Threads[0][0].Archived() {
 			data.ArchiveMode = true
 		}
 		return false
