@@ -588,24 +588,31 @@ function closePostPreview() {
     }
 }
 
-function replacePost(postID, message) {
+function replacePost(postID, message, hide) {
     var post = document.getElementById('post' + postID);
     if (!post || !post.parentElement) {
         return;
     }
     var container = post.parentElement;
-    var prefix = '<div id="post' + postID + '" style="padding: 2px;">';
-    var suffix = '</div>';
+    var prefix = '<div id="' + postID + '"><div id="post' + postID + '" style="padding: 2px;">';
+    var suffix = '</div></div>';
     if (container.classList.contains('op')) {
         container = post.parentElement.parentElement;
         prefix += '<div>';
         suffix += '</div>';
     }
+    var original = container.innerHTML;
     container.innerHTML = prefix + message + suffix;
+    if (hide) {
+        var div = document.createElement('div');
+        div.style.display = "none";
+        div.innerHTML = original;
+        document.body.appendChild(div);
+    }
 }
 
 function _hidePost(postID) {
-    replacePost(postID, '[<a href="#" onclick="javascript:showPost(' + postID + ');return false;">Show</a>] No.' + postID + ' is hidden.');
+    replacePost(postID, '[<a href="#" onclick="javascript:showPost(' + postID + ');return false;">Show</a>] No.' + postID + ' is hidden.', true);
 }
 
 function hidePost(postID) {
@@ -618,7 +625,7 @@ function hidePost(postID) {
 
 function showPost(postID) {
     localStorage.removeItem("hide_" + postID);
-    replacePost(postID, 'No.' + postID + ' unhidden. Refresh to view.');
+    replacePost(postID, 'No.' + postID + ' unhidden. Refresh to view.', false);
 }
 
 function setPostAttributes(element) {
