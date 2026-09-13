@@ -288,6 +288,7 @@ type Server struct {
 	tpl             *template.Template // Template collection used when executing most web requests.
 	tplOriginal     *template.Template // Original template collection. This is needed because a template collection can't be extended once it has been used.
 	customTemplates []string
+	reloadTemplates []chan struct{}
 
 	notifications          []notification
 	notificationsPattern   *compat.Regexp
@@ -1172,6 +1173,10 @@ func (s *Server) _watchTemplates(officialDir string, watcher *fsnotify.Watcher) 
 					haveError = false
 					fmt.Println("Validated updated template files.")
 				}
+			}
+
+			for i := range s.reloadTemplates {
+				s.reloadTemplates[i] <- struct{}{}
 			}
 
 			s.lock.Unlock()
@@ -3013,8 +3018,11 @@ func (s *Server) Run() error {
 	go s.handleRefreshDiskSpace()
 
 	// Start page builders.
-	for i := 0; i < runtime.GOMAXPROCS(-1); i++ {
-		go s._build()
+	builders := runtime.GOMAXPROCS(-1)
+	s.reloadTemplates = make([]chan struct{}, builders)
+	for i := 0; i < builders; i++ {
+		s.reloadTemplates[i] = make(chan struct{})
+		go s._build(s.reloadTemplates[i])
 	}
 
 	// Rebuild everything on startup when explicitly requested and after upgrading.

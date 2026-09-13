@@ -726,7 +726,7 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 }
 
 // _build handles the static page build queue.
-func (s *Server) _build() {
+func (s *Server) _build(reload chan struct{}) {
 	// Initialize write buffer.
 	buf := bytes.NewBuffer(make([]byte, s.config.MinPageBuffer))
 
@@ -736,8 +736,18 @@ func (s *Server) _build() {
 		log.Fatalf("failed to clone templates: %s", err)
 	}
 
+	var info *buildInfo
 	for {
-		info := <-s.buildQueue
+		select {
+		case <-reload:
+			tpl, err = s.tplOriginal.Clone()
+			if err != nil {
+				log.Fatalf("failed to clone templates: %s", err)
+			}
+			continue
+		case info = <-s.buildQueue:
+		}
+
 		db := s.beginReadOnly()
 		info.db = db
 		info.buf = buf
