@@ -574,6 +574,7 @@ The following locales have partial or full translations:
 | `nl`      | Dutch                |
 | `fi`      | Finnish              |
 | `ru`      | Russian              |
+| `sv`      | Swedish              |
 
 Sriracha relies on the assistance of volunteer translators. If you are multilingual,
 please [help translate Sriracha](https://translate.codeberg.org/projects/sriracha/sriracha/).

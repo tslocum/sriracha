@@ -704,6 +704,9 @@ msgstr ""
 msgid "Hidden"
 msgstr ""
 
+msgid "Hide"
+msgstr ""
+
 msgid "Hide everywhere"
 msgstr "Fshihe gjithkah"
 
@@ -804,6 +807,9 @@ msgid "Invalid email."
 msgstr ""
 
 msgid "Invalid or deleted post."
+msgstr ""
+
+msgid "Jump to a form field when adding a new post by pressing Alt, Shift and:"
 msgstr ""
 
 msgid "Keyword"
@@ -1082,6 +1088,9 @@ msgstr ""
 "Emri qe shfaqet kur nuk ipet asnje emer. Ndani emrat e ndryshem me | "
 "(karakter pipe). Mund te jete bosh."
 
+msgid "Navigate"
+msgstr ""
+
 msgid "Navigation"
 msgstr "Navigacioni"
 
@@ -1348,6 +1357,9 @@ msgid "Preferences"
 msgstr "Preferencat"
 
 msgid "Prefix a line of text with > (greater-than sign) to quote a message:"
+msgstr ""
+
+msgid "Press Control, Alt or Shift and click on a post's checkbox to hide it."
 msgstr ""
 
 msgid "Preview"

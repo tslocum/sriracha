@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-03-13 04:53+0000\n"
-"Last-Translator: tslocum <tslocum@noreply.codeberg.org>\n"
+"PO-Revision-Date: 2026-09-13 07:14+0000\n"
+"Last-Translator: yeager <yeager@noreply.codeberg.org>\n"
 "Language-Team: Swedish <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/sv/>\n"
 "Language: sv\n"
@@ -9,1846 +9,1957 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 2026.8.1\n"
 
 msgid "%d existing ban"
 msgid_plural "%d existing bans"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d befintlig avstängning"
+msgstr[1] "%d befintliga avstängningar"
 
 msgid "%d new post"
 msgid_plural "%d new posts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d nytt inlägg"
+msgstr[1] "%d nya inlägg"
 
 msgid "%d pending moderation request"
 msgid_plural "%d pending moderation requests"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d väntande modereringsbegäran"
+msgstr[1] "%d väntande modereringsbegäranden"
 
 msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d inlägg har utelämnats. Klicka på Svara för att visa det."
+msgstr[1] "%d inlägg har utelämnats. Klicka på Svara för att visa dem."
 
 msgid "%d previous ban"
 msgid_plural "%d previous bans"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d tidigare avstängning"
+msgstr[1] "%d tidigare avstängningar"
 
 msgid "%d report"
 msgid_plural "%d reports"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d rapport"
+msgstr[1] "%d rapporter"
 
 msgid "%s Devices"
-msgstr ""
+msgstr "%s-enheter"
 
 msgid "%s connections."
-msgstr ""
+msgstr "%s anslutningar."
 
 msgid "%s imageboard and forum server"
-msgstr ""
+msgstr "Bildforums- och forumservern %s"
 
 msgid "%s memory usage."
-msgstr ""
+msgstr "%s minnesanvändning."
 
 msgid "%s passcode"
-msgstr ""
+msgstr "Engångskod för %s"
 
 msgid "%s uptime."
-msgstr ""
+msgstr "%s drifttid."
 
 msgid "%s version."
-msgstr ""
+msgstr "%s version."
 
 msgid "(Mentioned) %s"
-msgstr ""
+msgstr "(Nämnd) %s"
 
 msgid "1 Day"
-msgstr ""
+msgstr "1 dag"
 
 msgid "1 Hour"
-msgstr ""
+msgstr "1 timme"
 
 msgid "1 Month"
-msgstr ""
+msgstr "1 månad"
 
 msgid "1 Week"
-msgstr ""
+msgstr "1 vecka"
 
 msgid "2 Days"
-msgstr ""
+msgstr "2 dagar"
 
 msgid "2 Weeks"
-msgstr ""
+msgstr "2 veckor"
 
 msgid "A file %s or larger is required."
-msgstr ""
+msgstr "En fil på minst %s krävs."
 
 msgid "A file is required."
-msgstr ""
+msgstr "En fil krävs."
 
 msgid "Access Key"
-msgstr ""
+msgstr "Åtkomstnyckel"
 
 msgid "Accounts"
-msgstr ""
+msgstr "Konton"
 
 msgid "Action"
-msgstr ""
+msgstr "Åtgärd"
 
 msgid "Action taken when the keyword is detected."
-msgstr ""
+msgstr "Åtgärd som vidtas när nyckelordet upptäcks."
 
 msgid "Action taken when the threshold amount is exceeded."
-msgstr ""
+msgstr "Åtgärd som vidtas när tröskelvärdet överskrids."
 
 msgid "Active"
-msgstr ""
+msgstr "Aktiv"
 
 msgid "Add"
-msgstr ""
+msgstr "Lägg till"
 
 msgid "Add %s Device"
-msgstr ""
+msgstr "Lägg till %s-enhet"
 
 msgid "Add Account"
-msgstr ""
+msgstr "Lägg till konto"
 
 msgid "Add Ban"
-msgstr ""
+msgstr "Lägg till avstängning"
 
 msgid "Add Banner"
-msgstr ""
+msgstr "Lägg till banderoll"
 
 msgid "Add Board"
-msgstr ""
+msgstr "Lägg till tavla"
 
 msgid "Add Category"
-msgstr ""
+msgstr "Lägg till kategori"
 
 msgid "Add Keyword"
-msgstr ""
+msgstr "Lägg till nyckelord"
 
 msgid "Add News"
-msgstr ""
+msgstr "Lägg till nyhet"
 
 msgid "Add Page"
-msgstr ""
+msgstr "Lägg till sida"
 
 msgid "Add Threshold"
-msgstr ""
+msgstr "Lägg till tröskelvärde"
 
 msgid "Add board to %s"
-msgstr ""
+msgstr "Lägg till tavla i %s"
 
 msgid "Add notice"
-msgstr ""
+msgstr "Lägg till meddelande"
 
 msgid "Added"
-msgstr ""
+msgstr "Tillagd"
 
 msgid "Added %s device."
-msgstr ""
+msgstr "Lade till %s-enhet."
 
 msgid "Admin"
-msgstr ""
+msgstr "Administratör"
 
 msgid "Administrator"
-msgstr ""
+msgstr "Administratör"
 
 msgid "Administrators have full access except for managing accounts."
-msgstr ""
+msgstr "Administratörer har full åtkomst utom till kontohantering."
 
 msgid "All"
-msgstr ""
+msgstr "Alla"
 
 msgid "All board options will be duplicated except those below."
-msgstr ""
+msgstr "Alla tavlans alternativ kopieras utom de nedan."
 
 msgid ""
 "All boards are locked because Sriracha is running in import mode. Please try "
 "again later."
 msgstr ""
+"Alla tavlor är låsta eftersom Sriracha körs i importläge. Försök igen senare."
 
 msgid "All new posts"
-msgstr ""
+msgstr "Alla nya inlägg"
 
 msgid "All posts"
-msgstr ""
+msgstr "Alla inlägg"
 
 msgid "Allow all"
-msgstr ""
+msgstr "Tillåt alla"
 
 msgid "Allow moderators to post site news."
-msgstr ""
+msgstr "Tillåt moderatorer att publicera webbplatsnyheter."
 
 msgid ""
 "Alphanumeric management panel access key. When set, staff members must visit "
 "%s to log in."
 msgstr ""
+"Alfanumerisk åtkomstnyckel till hanteringspanelen. När den är inställd måste "
+"personalen besöka %s för att logga in."
 
 msgid "Amount"
-msgstr ""
+msgstr "Antal"
 
 msgid "An attachment is required."
-msgstr ""
+msgstr "En bilaga krävs."
 
 msgid "Anywhere"
-msgstr ""
+msgstr "Överallt"
 
 msgid "Appearance"
-msgstr ""
+msgstr "Utseende"
 
 msgid "Appears in %s and search results for the site index."
-msgstr ""
+msgstr "Visas i %s och i sökresultaten för webbplatsindexet."
 
 msgid "Appears in page title and header."
-msgstr ""
+msgstr "Visas i sidans titel och rubrik."
 
 msgid "Approve"
-msgstr ""
+msgstr "Godkänn"
 
 msgid "Approve all"
-msgstr ""
+msgstr "Godkänn alla"
 
 msgid "Archive"
-msgstr ""
+msgstr "Arkivera"
 
 msgid "Archive all"
-msgstr ""
+msgstr "Arkivera alla"
 
 msgid "Archive mode"
-msgstr ""
+msgstr "Arkiveringsläge"
 
 msgid ""
 "Archive threads (instead of deleting them) when the thread limit is exceeded."
 msgstr ""
+"Arkivera trådar i stället för att ta bort dem när trådgränsen överskrids."
 
 msgid "Archived"
-msgstr ""
+msgstr "Arkiverad"
 
 msgid "Artwork title:"
-msgstr ""
+msgstr "Konstverkets titel:"
 
 msgid "Attachment"
-msgstr ""
+msgstr "Bilaga"
 
 msgid "Attachments"
-msgstr ""
+msgstr "Bilagor"
 
 msgid "Author"
-msgstr ""
+msgstr "Upphovsperson"
 
 msgid "Auto Refresh"
-msgstr ""
+msgstr "Uppdatera automatiskt"
 
 msgid "Automatic"
-msgstr ""
+msgstr "Automatisk"
 
 msgid "Available embed services. Visit board settings to enable usage."
 msgstr ""
+"Tillgängliga inbäddningstjänster. Gå till tavlans inställningar för att "
+"aktivera dem."
 
 msgid "Backlinks"
-msgstr ""
+msgstr "Bakåtlänkar"
 
 msgid "Backup all files and databases before importing posts."
-msgstr ""
+msgstr "Säkerhetskopiera alla filer och databaser innan du importerar inlägg."
 
 msgid "Ban"
-msgstr ""
+msgstr "Stäng av"
 
 msgid "Ban %d post"
 msgid_plural "Ban %d posts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Stäng av %d inlägg"
+msgstr[1] "Stäng av %d inlägg"
 
 msgid "Ban ID"
-msgstr ""
+msgstr "Avstängnings-ID"
 
 msgid "Ban file"
-msgstr ""
+msgstr "Stäng av fil"
 
 msgid "Banned"
-msgstr ""
+msgstr "Avstängd"
 
 msgid "Banned %d post"
 msgid_plural "Banned %d posts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Stängde av %d inlägg"
+msgstr[1] "Stängde av %d inlägg"
 
 msgid "Banners"
-msgstr ""
+msgstr "Banderoller"
 
 msgid "Bans"
-msgstr ""
+msgstr "Avstängningar"
 
 msgid "Board"
-msgstr ""
+msgstr "Tavla"
 
 msgid "Board description, which is used by search engines."
-msgstr ""
+msgstr "Tavlans beskrivning, som används av sökmotorer."
 
 msgid "Board locked. No new posts may be created."
-msgstr ""
+msgstr "Tavlan är låst. Inga nya inlägg kan skapas."
 
 msgid "Board locked. You may only reply to threads."
-msgstr ""
+msgstr "Tavlan är låst. Du kan endast svara på trådar."
 
 msgid "Boards"
-msgstr ""
+msgstr "Tavlor"
 
 msgid "Boards where the banner is displayed."
-msgstr ""
+msgstr "Tavlor där banderollen visas."
 
 msgid "Boards where the keyword applies."
-msgstr ""
+msgstr "Tavlor som nyckelordet gäller."
 
 msgid "Capcode"
-msgstr ""
+msgstr "Capcode"
 
 msgid "Catalog"
-msgstr ""
+msgstr "Katalog"
 
 msgid "Catalog mode"
-msgstr ""
+msgstr "Katalogläge"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategorier"
 
 msgid "Change Locale"
-msgstr ""
+msgstr "Byt språk"
 
 msgid "Change Password"
-msgstr ""
+msgstr "Byt lösenord"
 
 msgid "Change Style"
-msgstr ""
+msgstr "Byt stil"
 
 msgid "Choose where to import posts"
-msgstr ""
+msgstr "Välj var inlägg ska importeras"
 
 msgid "Click 'Delete'."
-msgstr ""
+msgstr "Klicka på 'Ta bort'."
 
 msgid "Click a post ID next to 'No.' to reply quickly:"
-msgstr ""
+msgstr "Klicka på ett inläggs-ID bredvid 'Nr.' för att svara snabbt:"
 
 msgid "Click the confirmation link emailed to you."
-msgstr ""
+msgstr "Klicka på bekräftelselänken som skickades till dig via e-post."
 
 msgid "Click to refresh."
-msgstr ""
+msgstr "Klicka för att uppdatera."
 
 msgid "Color Identifiers"
-msgstr ""
+msgstr "Färgidentifierare"
 
 msgid "Configure"
-msgstr ""
+msgstr "Konfigurera"
 
 msgid "Confirm"
-msgstr ""
+msgstr "Bekräfta"
 
 msgid "Connections"
-msgstr ""
+msgstr "Anslutningar"
 
 msgid "Content"
-msgstr ""
+msgstr "Innehåll"
 
 msgid "Create a new drawing."
-msgstr ""
+msgstr "Skapa en ny teckning."
 
 msgid "Current"
-msgstr ""
+msgstr "Aktuell"
 
 msgid "Currently %d unique user post."
 msgid_plural "Currently %d unique user posts."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "För närvarande %d unikt användarinlägg."
+msgstr[1] "För närvarande %d unika användarinlägg."
 
 msgid "Date"
-msgstr ""
+msgstr "Datum"
 
 msgid "Date and time when the news item was published, or will be published."
-msgstr ""
+msgstr "Datum och tid när nyheten publicerades eller ska publiceras."
 
 msgid "Date/Time Format"
-msgstr ""
+msgstr "Datum-/tidsformat"
 
 msgid "Default"
-msgstr ""
+msgstr "Standard"
 
 msgid "Default Name"
-msgstr ""
+msgstr "Standardnamn"
 
 msgid "Default oekaki canvas height."
-msgstr ""
+msgstr "Standardhöjd för Oekaki-ritområdet."
 
 msgid "Default oekaki canvas width."
-msgstr ""
+msgstr "Standardbredd för Oekaki-ritområdet."
 
 msgid ""
 "Default page style. Visitors may choose alternative styles in their browser "
 "settings."
 msgstr ""
+"Standardsidstil. Besökare kan välja alternativa stilar i webbläsarens "
+"inställningar."
 
 msgid "Delay"
-msgstr ""
+msgstr "Fördröjning"
 
 msgid ""
 "Delay (in seconds) visitors must wait before posting again. Set to 0 to "
 "disable."
 msgstr ""
+"Fördröjning i sekunder som besökare måste vänta innan de kan publicera igen. "
+"Ange 0 för att inaktivera."
 
 msgid ""
 "Delay (in seconds) visitors must wait between searches. Only post subjects "
 "and messages are searchable. Set to 0 to disable searching."
 msgstr ""
+"Fördröjning i sekunder som besökare måste vänta mellan sökningar. Endast "
+"inläggsämnen och meddelanden är sökbara. Ange 0 för att inaktivera sökning."
 
 msgid "Delete"
-msgstr ""
+msgstr "Ta bort"
 
 msgid "Delete %d post"
 msgid_plural "Delete %d posts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ta bort %d inlägg"
+msgstr[1] "Ta bort %d inlägg"
 
 msgid "Delete %s"
-msgstr ""
+msgstr "Ta bort %s"
 
 msgid "Delete & ban"
-msgstr ""
+msgstr "Ta bort och stäng av"
 
 msgid "Delete & ban %d post"
 msgid_plural "Delete & ban %d posts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ta bort och stäng av %d inlägg"
+msgstr[1] "Ta bort och stäng av %d inlägg"
 
 msgid "Delete & ban for 1 hour"
-msgstr ""
+msgstr "Ta bort och stäng av i 1 timme"
 
 msgid "Delete & ban for 1 day"
-msgstr ""
+msgstr "Ta bort och stäng av i 1 dag"
 
 msgid "Delete & ban for 2 days"
-msgstr ""
+msgstr "Ta bort och stäng av i 2 dagar"
 
 msgid "Delete & ban for 1 week"
-msgstr ""
+msgstr "Ta bort och stäng av i 1 vecka"
 
 msgid "Delete & ban for 2 weeks"
-msgstr ""
+msgstr "Ta bort och stäng av i 2 veckor"
 
 msgid "Delete & ban for 1 month"
-msgstr ""
+msgstr "Ta bort och stäng av i 1 månad"
 
 msgid "Delete & ban permanently"
-msgstr ""
+msgstr "Ta bort och stäng av permanent"
 
 msgid "Delete Attachment"
-msgstr ""
+msgstr "Ta bort bilaga"
 
 msgid "Delete Post"
-msgstr ""
+msgstr "Ta bort inlägg"
 
 msgid "Deleted %d post"
 msgid_plural "Deleted %d posts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tog bort %d inlägg"
+msgstr[1] "Tog bort %d inlägg"
 
 msgid "Deleted %s."
-msgstr ""
+msgstr "Tog bort %s."
 
 msgid "Deleted & banned %d post"
 msgid_plural "Deleted & banned %d posts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tog bort och stängde av %d inlägg"
+msgstr[1] "Tog bort och stängde av %d inlägg"
 
 msgid "Delete attachment from %s"
-msgstr ""
+msgstr "Ta bort bilaga från %s"
 
 msgid "Deleted attachment."
-msgstr ""
+msgstr "Bilagan har tagits bort."
 
 msgid "Deleted by author"
-msgstr ""
+msgstr "Borttagen av skribenten"
 
 msgid "Deleted by moderator"
-msgstr ""
+msgstr "Borttagen av moderator"
 
 msgid "Description"
-msgstr ""
+msgstr "Beskrivning"
 
 msgid "Deselect"
-msgstr ""
+msgstr "Avmarkera"
 
 msgid "Details"
-msgstr ""
+msgstr "Detaljer"
 
 msgid "Detected banned file."
-msgstr ""
+msgstr "En avstängd fil upptäcktes."
 
 msgid "Detected banned keyword."
-msgstr ""
+msgstr "Ett avstängt nyckelord upptäcktes."
 
 msgid "Device"
-msgstr ""
+msgstr "Enhet"
 
 msgid "Dimensions"
-msgstr ""
+msgstr "Mått"
 
 msgid "Dir"
-msgstr ""
+msgstr "Katalog"
 
 msgid "Directory"
-msgstr ""
+msgstr "Katalog"
 
 msgid ""
 "Directory where the board files are located. Leave blank to place the board "
 "at the server root."
 msgstr ""
+"Katalog där tavlans filer finns. Lämna tomt för att placera tavlan vid "
+"serverroten."
 
 msgid ""
 "Directory where the overboard files are located. Leave blank to disable. To "
 "write the overboard at the root directory, enter \"/\"."
 msgstr ""
+"Katalog där övertavlans filer finns. Lämna tomt för att inaktivera. Ange \"/"
+"\" för att skriva övertavlan i rotkatalogen."
 
 msgid "Disable"
-msgstr ""
+msgstr "Inaktivera"
 
 msgid "Disable All"
-msgstr ""
+msgstr "Inaktivera alla"
 
 msgid "Disabled"
-msgstr ""
+msgstr "Inaktiverad"
 
 msgid "Disallow visitor and staff posts"
-msgstr ""
+msgstr "Tillåt inte inlägg från besökare eller personal"
 
 msgid "Disallow visitor posts"
-msgstr ""
+msgstr "Tillåt inte inlägg från besökare"
 
 msgid "Disallow visitor threads"
-msgstr ""
+msgstr "Tillåt inte trådar från besökare"
 
 msgid "Displayed in site index."
-msgstr ""
+msgstr "Visas i webbplatsindexet."
 
 msgid "Do not import"
-msgstr ""
+msgstr "Importera inte"
 
 msgid "Do not share with staff"
-msgstr ""
+msgstr "Dela inte med personalen"
 
 msgid "Documentation"
-msgstr ""
+msgstr "Dokumentation"
 
 msgid "Dry run complete."
-msgstr ""
+msgstr "Testkörningen är klar."
 
 msgid "Duplicate"
-msgstr ""
+msgstr "Duplicera"
 
 msgid "Duplicate Board"
-msgstr ""
+msgstr "Duplicera tavla"
 
 msgid "Duplicate embed detected."
-msgstr ""
+msgstr "Dubblett av inbäddning upptäcktes."
 
 msgid "Duplicate file detected."
-msgstr ""
+msgstr "Dubblett av fil upptäcktes."
 
 msgid "Duration"
-msgstr ""
+msgstr "Varaktighet"
 
 msgid "Duration (in seconds) of recent events to match against."
-msgstr ""
+msgstr "Varaktighet i sekunder för de senaste händelser som ska matchas."
 
 msgid "Email"
-msgstr ""
+msgstr "E-post"
 
 msgid "Email notifications are disabled."
-msgstr ""
+msgstr "E-postaviseringar är inaktiverade."
 
 msgid "Embed"
-msgstr ""
+msgstr "Bädda in"
 
 msgid "Embed Services"
-msgstr ""
+msgstr "Inbäddningstjänster"
 
 msgid "Enable"
-msgstr ""
+msgstr "Aktivera"
 
 msgid "Enable - Write to %s"
-msgstr ""
+msgstr "Aktivera – skriv till %s"
 
 msgid "Enable All"
-msgstr ""
+msgstr "Aktivera alla"
 
 msgid "Enter the passcode generated by the authenticator application:"
-msgstr ""
+msgstr "Ange engångskoden som skapades av autentiseringsappen:"
 
 msgid "Enter your password."
-msgstr ""
+msgstr "Ange ditt lösenord."
 
 msgid "Error: %s"
-msgstr ""
+msgstr "Fel: %s"
 
 msgid "Event"
-msgstr ""
+msgstr "Händelse"
 
 msgid "Everyone"
-msgstr ""
+msgstr "Alla"
 
 msgid "Exceeded %s threshold."
-msgstr ""
+msgstr "Överskred tröskelvärdet %s."
 
 msgid "Exit"
-msgstr ""
+msgstr "Avsluta"
 
 msgid "Expand"
-msgstr ""
+msgstr "Fäll ut"
 
 msgid "Expired"
-msgstr ""
+msgstr "Har upphört"
 
 msgid "Expires"
-msgstr ""
+msgstr "Upphör"
 
 msgid "Export"
-msgstr ""
+msgstr "Exportera"
 
 msgid "Export files loaded."
-msgstr ""
+msgstr "Exportfiler har lästs in."
 
 msgid "Failed to create thumbnail: %s"
-msgstr ""
+msgstr "Kunde inte skapa miniatyrbild: %s"
 
 msgid "Failed to embed media."
-msgstr ""
+msgstr "Kunde inte bädda in media."
 
 msgid "Failed to refresh page. Retrying..."
-msgstr ""
+msgstr "Kunde inte uppdatera sidan. Försöker igen …"
 
 msgid "Failed to send confirmation link. Please try again later."
-msgstr ""
+msgstr "Kunde inte skicka bekräftelselänken. Försök igen senare."
 
 msgid "File"
-msgstr ""
+msgstr "Fil"
 
 msgid "File Types"
-msgstr ""
+msgstr "Filtyper"
 
 msgid "File name."
-msgstr ""
+msgstr "Filnamn."
 
 msgid ""
 "File path (excluding .html suffix) of the moderation queue status page. "
 "Leave blank to disable."
 msgstr ""
+"Filsökväg utan filändelsen .html för statusidan till modereringskön. Lämna "
+"tomt för att inaktivera."
 
 msgid "File uploads are not allowed."
-msgstr ""
+msgstr "Filuppladdningar är inte tillåtna."
 
 msgid "Files"
-msgstr ""
+msgstr "Filer"
 
 msgid "For post deletion."
-msgstr ""
+msgstr "För borttagning av inlägg."
 
 msgid "Forum"
-msgstr ""
+msgstr "Forum"
 
 msgid "Gallery"
-msgstr ""
+msgstr "Galleri"
 
 msgid "Global"
-msgstr ""
+msgstr "Global"
 
 msgid ""
 "Global tripcodes are the same on all websites. Secure tripcodes are unique."
 msgstr ""
+"Globala tripkoder är samma på alla webbplatser. Säkra tripkoder är unika."
 
 msgid "Go Back"
-msgstr ""
+msgstr "Gå tillbaka"
 
 msgid "Go back, uncheck '%s' and resubmit to post."
-msgstr ""
+msgstr "Gå tillbaka, avmarkera '%s' och skicka igen för att publicera."
 
 msgid "HTML content of the page. Go HTML template actions are supported."
-msgstr ""
+msgstr "Sidans HTML-innehåll. Åtgärder för Go HTML-mallar stöds."
 
 msgid "HTML-formatted text."
-msgstr ""
+msgstr "HTML-formaterad text."
 
 msgid "HTML-formatted text shown in the new post form."
-msgstr ""
+msgstr "HTML-formaterad text som visas i formuläret för nytt inlägg."
 
 msgid "Help translate Sriracha"
-msgstr ""
+msgstr "Hjälp till att översätta Sriracha"
 
 msgid "Helpful information is available in the %s."
-msgstr ""
+msgstr "Hjälpsam information finns i %s."
 
 msgid "Hidden"
-msgstr ""
+msgstr "Dold"
+
+msgid "Hide"
+msgstr "Dölj"
 
 msgid "Hide everywhere"
-msgstr ""
+msgstr "Dölj överallt"
 
 msgid "Hide from index"
-msgstr ""
+msgstr "Dölj från indexsidan"
 
 msgid "Hide from overboard"
-msgstr ""
+msgstr "Dölj från övertavlan"
 
 msgid "Hide until approved"
-msgstr ""
+msgstr "Dölj tills godkänt"
 
 msgid "Home"
-msgstr ""
+msgstr "Hem"
 
 msgid "Home address. May be a path or URL. Used in return links."
 msgstr ""
+"Startsidesadress. Kan vara en sökväg eller webbadress. Används i återlänkar."
 
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 msgid "IP Address"
-msgstr ""
+msgstr "IP-adress"
 
 msgid ""
 "IP address to ban. Wildcards (*) may be used to ban a range of addresses."
 msgstr ""
+"IP-adress att stänga av. Jokertecken (*) kan användas för att stänga av ett "
+"adressintervall."
 
 msgid "Icon"
-msgstr ""
+msgstr "Ikon"
 
 msgid "Idenifiers"
-msgstr ""
+msgstr "Identifierare"
 
 msgid "If you enter a password when creating a post, you may delete it later."
 msgstr ""
+"Om du anger ett lösenord när du skapar ett inlägg kan du ta bort det senare."
 
 msgid "Imageboard"
-msgstr ""
+msgstr "Bildforum"
 
 msgid ""
 "Imageboards show threads and recent replies on index pages. Forums only show "
 "thread information on index pages."
 msgstr ""
+"Bildforum visar trådar och senaste svar på indexsidor. Forum visar bara "
+"trådinformation på indexsidor."
 
 msgid "Images greater than %[1]dx%[2]d will be thumbnailed."
-msgstr ""
+msgstr "Bilder större än %[1]dx%[2]d får miniatyrbilder."
 
 msgid "Import"
-msgstr ""
+msgstr "Importera"
 
 msgid "Import complete."
-msgstr ""
+msgstr "Importen är klar."
 
 msgid "Import mode enabled. Visitors are forbidden from posting."
-msgstr ""
+msgstr "Importläget är aktiverat. Besökare får inte publicera."
 
 msgid "Index Replies"
-msgstr ""
+msgstr "Visa svar på indexsidan"
 
 msgid "Index Threads"
-msgstr ""
+msgstr "Visa trådar på indexsidan"
 
 msgid "Incorrect CAPTCHA text. Please try again."
-msgstr ""
+msgstr "Fel CAPTCHA-text. Försök igen."
 
 msgid "Incorrect password."
-msgstr ""
+msgstr "Fel lösenord."
 
 msgid "Individual board"
-msgstr ""
+msgstr "Enskild tavla"
 
 msgid "Individual visitor"
-msgstr ""
+msgstr "Enskild besökare"
 
 msgid "Info"
-msgstr ""
+msgstr "Information"
 
 msgid "Instance Limit"
-msgstr ""
+msgstr "Instansgräns"
 
 msgid "Invalid access key."
-msgstr ""
+msgstr "Ogiltig åtkomstnyckel."
 
 msgid "Invalid board."
-msgstr ""
+msgstr "Ogiltig tavla."
 
 msgid "Invalid confirmation key."
-msgstr ""
+msgstr "Ogiltig bekräftelsenyckel."
 
 msgid "Invalid email."
-msgstr ""
+msgstr "Ogiltig e-postadress."
 
 msgid "Invalid or deleted post."
+msgstr "Ogiltigt eller borttaget inlägg."
+
+msgid "Jump to a form field when adding a new post by pressing Alt, Shift and:"
 msgstr ""
+"Gå till ett formulärfält när du lägger till ett nytt inlägg genom att trycka "
+"på Alt, Skift och:"
 
 msgid "Keyword"
-msgstr ""
+msgstr "Nyckelord"
 
 msgid "Keywords"
-msgstr ""
+msgstr "Nyckelord"
 
 msgid "Last Active"
-msgstr ""
+msgstr "Senast aktiv"
 
 msgid ""
 "Leave blank to hide until a date is set. News items with publish dates in "
 "the future are hidden until that date."
 msgstr ""
+"Lämna tomt för att dölja tills ett datum har angetts. Nyheter med "
+"publiceringsdatum i framtiden döljs fram till det datumet."
 
 msgid "Leave blank to keep current password."
-msgstr ""
+msgstr "Lämna tomt för att behålla aktuellt lösenord."
 
 msgid "Left-click a thumbnail to expand an attachment."
-msgstr ""
+msgstr "Vänsterklicka på en miniatyrbild för att fälla ut en bilaga."
 
 msgid "Lift"
-msgstr ""
+msgstr "Häv"
 
 msgid "Lift File Ban"
-msgstr ""
+msgstr "Häv filavstängning"
 
 msgid "Lifted"
-msgstr ""
+msgstr "Hävd"
 
 msgid "Link"
-msgstr ""
+msgstr "Länk"
 
 msgid "Link to boards in page header."
-msgstr ""
+msgstr "Länka till tavlor i sidhuvudet."
 
 msgid "Local"
-msgstr ""
+msgstr "Lokal"
 
 msgid ""
 "Local settings are configured individually. Global settings are universal."
 msgstr ""
+"Lokala inställningar konfigureras var för sig. Globala inställningar gäller "
+"överallt."
 
 msgid "Locale"
-msgstr ""
+msgstr "Språk"
 
 msgid "Locale used when writing board pages."
-msgstr ""
+msgstr "Språk som används när tavlans sidor skapas."
 
 msgid "Location"
-msgstr ""
+msgstr "Plats"
 
 msgid "Lock"
-msgstr ""
+msgstr "Lås"
 
 msgid "Locked"
-msgstr ""
+msgstr "Låst"
 
 msgid "Log In"
-msgstr ""
+msgstr "Logga in"
 
 msgid "Log Out"
-msgstr ""
+msgstr "Logga ut"
 
 msgid "Log Out %d Session"
 msgid_plural "Log Out %d Sessions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Logga ut %d session"
+msgstr[1] "Logga ut %d sessioner"
 
 msgid "Logs"
-msgstr ""
+msgstr "Loggar"
 
 msgid "Manage"
-msgstr ""
+msgstr "Hantera"
 
 msgid "Manage %s"
-msgstr ""
+msgstr "Hantera %s"
 
 msgid "Manage %s Devices"
-msgstr ""
+msgstr "Hantera %s-enheter"
 
 msgid "Manage Banners"
-msgstr ""
+msgstr "Hantera banderoller"
 
 msgid "Manage Boards"
-msgstr ""
+msgstr "Hantera tavlor"
 
 msgid "Manage Categories"
-msgstr ""
+msgstr "Hantera kategorier"
 
 msgid "Manage Subscriptions"
-msgstr ""
+msgstr "Hantera prenumerationer"
 
 msgid "Manage Thresholds"
-msgstr ""
+msgstr "Hantera tröskelvärden"
 
 msgid "Manage mode"
-msgstr ""
+msgstr "Hanteringsläge"
 
 msgid "Manual"
-msgstr ""
+msgstr "Manuell"
 
 msgid "Max Email Length"
-msgstr ""
+msgstr "Maximal e-postlängd"
 
 msgid "Max Message Length"
-msgstr ""
+msgstr "Maximal meddelandelängd"
 
 msgid "Max Name Length"
-msgstr ""
+msgstr "Maximal namnlängd"
 
 msgid "Max Reply File Size"
-msgstr ""
+msgstr "Maximal filstorlek för svar"
 
 msgid "Max Replies"
-msgstr ""
+msgstr "Maximalt antal svar"
 
 msgid "Max Subject Length"
-msgstr ""
+msgstr "Maximal ämneslängd"
 
 msgid "Max Thread File Size"
-msgstr ""
+msgstr "Maximal filstorlek för tråd"
 
 msgid "Max Threads"
-msgstr ""
+msgstr "Maximalt antal trådar"
 
 msgid ""
 "Maximum file size (in megabytes) when creating a thread. Set to 0 to disable "
 "file uploads."
 msgstr ""
+"Största filstorlek i megabyte när en tråd skapas. Ange 0 för att inaktivera "
+"filuppladdningar."
 
 msgid ""
 "Maximum file size (in megabytes) when replying. Set to 0 to disable file "
 "uploads."
 msgstr ""
+"Största filstorlek i megabyte vid svar. Ange 0 för att inaktivera "
+"filuppladdningar."
 
 msgid "Maximum file size allowed is %s."
-msgstr ""
+msgstr "Största tillåtna filstorlek är %s."
 
 msgid "Maximum height of thumbnails."
-msgstr ""
+msgstr "Största höjd på miniatyrbilder."
 
 msgid "Maximum length of the email field."
-msgstr ""
+msgstr "Största längd för e-postfältet."
 
 msgid "Maximum length of the message field."
-msgstr ""
+msgstr "Största längd för meddelandefältet."
 
 msgid "Maximum length of the name field."
-msgstr ""
+msgstr "Största längd för namnfältet."
 
 msgid "Maximum length of the subject field."
-msgstr ""
+msgstr "Största längd för ämnesfältet."
 
 msgid ""
 "Maximum number of replies to a thread before the thread stops being bumped "
 "to the front. Set to 0 to disable."
 msgstr ""
+"Största antal svar på en tråd innan den inte längre flyttas längst fram. "
+"Ange 0 för att inaktivera."
 
 msgid ""
 "Maximum number of threads in board. Once this limit is reached, the oldest "
 "threads are pruned. Set to 0 to disable."
 msgstr ""
+"Största antal trådar på tavlan. När gränsen nås tas de äldsta trådarna bort. "
+"Ange 0 för att inaktivera."
 
 msgid "Maximum width of thumbnails."
-msgstr ""
+msgstr "Största bredd på miniatyrbilder."
 
 msgid "Maximum word length. Set to 0 to never break long words."
-msgstr ""
+msgstr "Största ordlängd. Ange 0 för att aldrig bryta långa ord."
 
 msgid "Memory"
-msgstr ""
+msgstr "Minne"
 
 msgid "Message"
-msgstr ""
+msgstr "Meddelande"
 
 msgid "Message shown when the visitor attempts to post. Optional."
-msgstr ""
+msgstr "Meddelande som visas när besökaren försöker publicera. Valfritt."
 
 msgid "Middle-click a thumbnail to open an attachment in a new tab."
-msgstr ""
+msgstr "Mellanklicka på en miniatyrbild för att öppna en bilaga på en ny flik."
 
 msgid "Min Email Length"
-msgstr ""
+msgstr "Minsta e-postlängd"
 
 msgid "Min Message Length"
-msgstr ""
+msgstr "Minsta meddelandelängd"
 
 msgid "Min Name Length"
-msgstr ""
+msgstr "Minsta namnlängd"
 
 msgid "Min Subject Length"
-msgstr ""
+msgstr "Minsta ämneslängd"
 
 msgid "Min Reply File Size"
-msgstr ""
+msgstr "Minsta filstorlek för svar"
 
 msgid "Min Thread File Size"
-msgstr ""
+msgstr "Minsta filstorlek för tråd"
 
 msgid "Minimum file size (in megabytes) when creating a thread."
-msgstr ""
+msgstr "Minsta filstorlek i megabyte när en tråd skapas."
 
 msgid "Minimum file size (in megabytes) when replying."
-msgstr ""
+msgstr "Minsta filstorlek i megabyte vid svar."
 
 msgid "Minimum length of the email field."
-msgstr ""
+msgstr "Minsta längd för e-postfältet."
 
 msgid "Minimum length of the message field."
-msgstr ""
+msgstr "Minsta längd för meddelandefältet."
 
 msgid "Minimum length of the name field."
-msgstr ""
+msgstr "Minsta längd för namnfältet."
 
 msgid "Minimum length of the subject field."
-msgstr ""
+msgstr "Minsta längd för ämnesfältet."
 
 msgid "Mod"
-msgstr ""
+msgstr "Moderator"
 
 msgid "Mod Queue"
-msgstr ""
+msgstr "Modereringskö"
 
 msgid "Mod mode"
-msgstr ""
+msgstr "Moderatorläge"
 
 msgid "Mod mode: Reply"
-msgstr ""
+msgstr "Moderatorläge: Svara"
 
 msgid "Mod mode: View"
-msgstr ""
+msgstr "Moderatorläge: Visa"
 
 msgid "Moderate"
-msgstr ""
+msgstr "Moderera"
 
 msgid "Moderate %d post"
 msgid_plural "Moderate %d posts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Moderera %d inlägg"
+msgstr[1] "Moderera %d inlägg"
 
 msgid "Moderator"
-msgstr ""
+msgstr "Moderator"
 
 msgid ""
 "Moderators may only perform certain actions. See moderator guide for more "
 "info."
 msgstr ""
+"Moderatorer får bara utföra vissa åtgärder. Se moderatorguiden för mer "
+"information."
 
 msgid "Move"
-msgstr ""
+msgstr "Flytta"
 
 msgid "Moved thread from %[1]s to %[2]s."
-msgstr ""
+msgstr "Flyttade tråd från %[1]s till %[2]s."
 
 msgid "Name"
-msgstr ""
+msgstr "Namn"
 
 msgid "Name of the board, which is displayed in the page title and header."
-msgstr ""
+msgstr "Tavlans namn, som visas i sidans titel och rubrik."
 
 msgid ""
 "Name shown when no name is entered. Separate multiple names with | (pipe "
 "character). May be blank."
 msgstr ""
+"Namn som visas när inget namn anges. Separera flera namn med | (lodrätt "
+"streck). Kan lämnas tomt."
+
+msgid "Navigate"
+msgstr "Navigera"
 
 msgid "Navigation"
-msgstr ""
+msgstr "Navigering"
 
 msgid "Never"
-msgstr ""
+msgstr "Aldrig"
 
 msgid "New"
-msgstr ""
+msgstr "Ny"
 
 msgid "New (confirm)"
-msgstr ""
+msgstr "Ny (bekräfta)"
 
 msgid "New Posts"
-msgstr ""
+msgstr "Nya inlägg"
 
 msgid "New drawing..."
-msgstr ""
+msgstr "Ny teckning …"
 
 msgid "New threads only"
-msgstr ""
+msgstr "Endast nya trådar"
 
 msgid "News"
-msgstr ""
+msgstr "Nyheter"
 
 msgid "Next"
-msgstr ""
+msgstr "Nästa"
 
 msgid "No active subscriptions."
-msgstr ""
+msgstr "Inga aktiva prenumerationer."
 
 msgid "No board specified."
-msgstr ""
+msgstr "Ingen tavla angavs."
 
 msgid "No configuration options."
-msgstr ""
+msgstr "Inga konfigurationsalternativ."
 
 msgid "No matching posts were found."
-msgstr ""
+msgstr "Inga matchande inlägg hittades."
 
 msgid "No news is good news."
-msgstr ""
+msgstr "Inga nyheter är goda nyheter."
 
 msgid "No pending moderation requests."
-msgstr ""
+msgstr "Inga väntande modereringsbegäranden."
 
 msgid "No post selected."
-msgstr ""
+msgstr "Inget inlägg är valt."
 
 msgid "No reason provided."
-msgstr ""
+msgstr "Ingen orsak angavs."
 
 msgid "No subject"
-msgstr ""
+msgstr "Inget ämne"
 
 msgid "No two-factor authentication devices."
-msgstr ""
+msgstr "Inga tvåfaktorsautentiseringsenheter."
 
 msgid "None"
-msgstr ""
+msgstr "Inget"
 
 msgid "Notice"
-msgstr ""
+msgstr "Meddelande"
 
 msgid "Notifications are disabled. Click to enable."
-msgstr ""
+msgstr "Aviseringar är inaktiverade. Klicka för att aktivera."
 
 msgid "Notifications are enabled. Click to disable."
-msgstr ""
+msgstr "Aviseringar är aktiverade. Klicka för att inaktivera."
 
 msgid "Notify"
-msgstr ""
+msgstr "Avisera"
 
 msgid ""
 "Number of files visitors may upload at once. A new post is created for each "
 "uploaded file."
 msgstr ""
+"Antal filer som besökare kan ladda upp samtidigt. Ett nytt inlägg skapas för "
+"varje uppladdad fil."
 
 msgid ""
 "Number of message lines to display in post preview on board index pages. Set "
 "to 0 to show all."
 msgstr ""
+"Antal meddelanderader som visas i förhandsvisningen av inlägg på tavlans "
+"indexsidor. Ange 0 för att visa alla."
 
 msgid ""
 "Number of replies to show per board index thread. Set to 0 to show none."
 msgstr ""
+"Antal svar som visas per tråd på tavlans indexsida. Ange 0 för att inte visa "
+"några."
 
 msgid ""
 "Number of replies to show per overboard index page. Set to 0 to show all."
 msgstr ""
+"Antal svar som visas per indexsida för övertavlan. Ange 0 för att visa alla."
 
 msgid "Number of threads to show per board index page. Set to 0 to show all."
 msgstr ""
+"Antal trådar som visas per indexsida för tavlan. Ange 0 för att visa alla."
 
 msgid ""
 "Number of threads to show per overboard index page. Set to 0 to show all."
 msgstr ""
+"Antal trådar som visas per indexsida för övertavlan. Ange 0 för att visa "
+"alla."
 
 msgid "Oekaki Height"
-msgstr ""
+msgstr "Oekaki-höjd"
 
 msgid "Oekaki Width"
-msgstr ""
+msgstr "Oekaki-bredd"
 
 msgid "Only %d devices may be added. Remove a device before adding another."
 msgstr ""
+"Endast %d enheter kan läggas till. Ta bort en enhet innan du lägger till en "
+"annan."
 
 msgid "Only %d file may be uploaded at once."
 msgid_plural "Only %d files may be uploaded at once."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Endast %d fil kan laddas upp åt gången."
+msgstr[1] "Endast %d filer kan laddas upp åt gången."
 
 msgid "Only active posts may be deleted."
-msgstr ""
+msgstr "Endast aktiva inlägg kan tas bort."
 
 msgid "Only thumbnails are displayed."
-msgstr ""
+msgstr "Endast miniatyrbilder visas."
 
 msgid "Optional."
-msgstr ""
+msgstr "Valfritt."
 
 msgid "Overboard"
-msgstr ""
+msgstr "Övertavla"
 
 msgid "Pages"
-msgstr ""
+msgstr "Sidor"
 
 msgid "Parent"
-msgstr ""
+msgstr "Överordnad"
 
 msgid "Parent category."
-msgstr ""
+msgstr "Överordnad kategori."
 
 msgid "Passcode"
-msgstr ""
+msgstr "Engångskod"
 
 msgid "Password"
-msgstr ""
+msgstr "Lösenord"
 
 msgid ""
 "Password protection enabled. You must enter an allowed password to post."
 msgstr ""
+"Lösenordsskydd är aktiverat. Du måste ange ett tillåtet lösenord för att "
+"publicera."
 
 msgid "Paste a YouTube URL."
-msgstr ""
+msgstr "Klistra in en YouTube-webbadress."
 
 msgid "Path"
-msgstr ""
+msgstr "Sökväg"
 
 msgid "Performance"
-msgstr ""
+msgstr "Prestanda"
 
 msgid "Permanently ban uploaded file."
-msgstr ""
+msgstr "Spärra uppladdad fil permanent."
 
 msgid "Please confirm your subscription by clicking the link emailed to you."
 msgstr ""
+"Bekräfta din prenumeration genom att klicka på länken som skickades till dig "
+"via e-post."
 
 msgid "Please enter a name."
-msgstr ""
+msgstr "Ange ett namn."
 
 msgid "Please enter a name at least %d characters long."
-msgstr ""
+msgstr "Ange ett namn med minst %d tecken."
 
 msgid "Please enter a subject."
-msgstr ""
+msgstr "Ange ett ämne."
 
 msgid "Please enter a subject at least %d characters long."
-msgstr ""
+msgstr "Ange ett ämne med minst %d tecken."
 
 msgid "Please enter a message."
-msgstr ""
+msgstr "Ange ett meddelande."
 
 msgid "Please enter a message at least %d characters long."
-msgstr ""
+msgstr "Ange ett meddelande med minst %d tecken."
 
 msgid "Please enter an email address."
-msgstr ""
+msgstr "Ange en e-postadress."
 
 msgid "Please enter an email address at least %d characters long."
-msgstr ""
+msgstr "Ange en e-postadress med minst %d tecken."
 
 msgid "Please enter an embed URL."
-msgstr ""
+msgstr "Ange en webbadress för inbäddning."
 
 msgid "Please enter an embed URL or enter a message."
-msgstr ""
+msgstr "Ange en webbadress för inbäddning eller skriv ett meddelande."
 
 msgid "Please restart Sriracha without any import options."
-msgstr ""
+msgstr "Starta om Sriracha utan importalternativ."
 
 msgid "Please upload a file or enter a message."
-msgstr ""
+msgstr "Ladda upp en fil eller skriv ett meddelande."
 
 msgid "Please upload a file or enter an embed URL."
-msgstr ""
+msgstr "Ladda upp en fil eller ange en webbadress för inbäddning."
 
 msgid "Please upload a file."
-msgstr ""
+msgstr "Ladda upp en fil."
 
 msgid "Please upload a file, enter an embed URL or enter a message."
 msgstr ""
+"Ladda upp en fil, ange en webbadress för inbäddning eller skriv ett "
+"meddelande."
 
 msgid "Please wait %[1]s before creating a new %[2]s."
-msgstr ""
+msgstr "Vänta %[1]s innan du skapar en ny %[2]s."
 
 msgid "Please wait %s before reporting a post."
-msgstr ""
+msgstr "Vänta %s innan du rapporterar ett inlägg."
 
 msgid "Please wait %s before searching again."
-msgstr ""
+msgstr "Vänta %s innan du söker igen."
 
 msgid "Plugins"
-msgstr ""
+msgstr "Insticksprogram"
 
 msgid ""
 "Positive values specify global instances allowed. Negative values specify "
 "board-specific instances allowed. Zero allows unlimited instances."
 msgstr ""
+"Positiva värden anger tillåtna globala instanser. Negativa värden anger "
+"tillåtna instanser specifika för tavlan. Noll tillåter obegränsat antal "
+"instanser."
 
 msgid "Post"
-msgstr ""
+msgstr "Inlägg"
 
 msgid "Post reply"
-msgstr ""
+msgstr "Publicera svar"
 
 msgid "Post thread"
-msgstr ""
+msgstr "Publicera tråd"
 
 msgid "Post truncated. Click Reply to view."
-msgstr ""
+msgstr "Inlägget har kortats av. Klicka på Svara för att visa det."
 
 msgid "Posting is currently disabled: not enough free disk space."
 msgstr ""
+"Publicering är för närvarande inaktiverad: inte tillräckligt med ledigt "
+"diskutrymme."
 
 msgid "Posting mode: Preview"
-msgstr ""
+msgstr "Publiceringsläge: Förhandsvisa"
 
 msgid "Posting mode: Reply"
-msgstr ""
+msgstr "Publiceringsläge: Svara"
 
 msgid "Posts"
-msgstr ""
+msgstr "Inlägg"
 
 msgid "Posts with attachments"
-msgstr ""
+msgstr "Inlägg med bilagor"
 
 #. TRANSLATORS: The word 'Preferences' is used in reference to user-specific preferences.
 msgid "Preferences"
-msgstr ""
+msgstr "Inställningar"
 
 msgid "Prefix a line of text with > (greater-than sign) to quote a message:"
 msgstr ""
+"Inled en textrad med > (större än-tecken) för att citera ett meddelande:"
+
+msgid "Press Control, Alt or Shift and click on a post's checkbox to hide it."
+msgstr ""
+"Tryck på Ctrl, Alt eller Skift och klicka på ett inläggs kryssruta för att "
+"dölja det."
 
 msgid "Preview"
-msgstr ""
+msgstr "Förhandsvisa"
 
 msgid "Previous"
-msgstr ""
+msgstr "Föregående"
 
 msgid "Pruned Threads"
-msgstr ""
+msgstr "Borttagna trådar"
 
 msgid "Query"
-msgstr ""
+msgstr "Sökfråga"
 
 msgid "Quote"
-msgstr ""
+msgstr "Citera"
 
 msgid "Ready to import posts."
-msgstr ""
+msgstr "Redo att importera inlägg."
 
 msgid "Ready to start dry run."
-msgstr ""
+msgstr "Redo att starta testkörningen."
 
 msgid "Reason"
-msgstr ""
+msgstr "Orsak"
 
 msgid "Reason: %s"
-msgstr ""
+msgstr "Orsak: %s"
 
 msgid "Rebuild"
-msgstr ""
+msgstr "Bygg om"
 
 msgid "Rebuild All"
-msgstr ""
+msgstr "Bygg om alla"
 
 msgid "Rebuilt %s."
-msgstr ""
+msgstr "Byggde om %s."
 
 msgid "Rebuilt all pages."
-msgstr ""
+msgstr "Byggde om alla sidor."
 
 msgid "Refresh paused. Click to resume."
-msgstr ""
+msgstr "Uppdateringen är pausad. Klicka för att återuppta."
 
 msgid "Refreshing page every minute. Click to pause."
-msgstr ""
+msgstr "Uppdaterar sidan varje minut. Klicka för att pausa."
 
 msgid "Refreshing page every %d minutes. Click to pause."
-msgstr ""
+msgstr "Uppdaterar sidan var %d:e minut. Klicka för att pausa."
 
 msgid "Refreshing page every %d seconds. Click to pause."
-msgstr ""
+msgstr "Uppdaterar sidan var %d:e sekund. Klicka för att pausa."
 
 msgid "Regular expression to search for when a new post is created."
-msgstr ""
+msgstr "Reguljärt uttryck att söka efter när ett nytt inlägg skapas."
 
 msgid ""
 "Relative file path where the page is located, excluding the .html suffix."
-msgstr ""
+msgstr "Relativ filsökväg där sidan finns, utan filändelsen .html."
 
 msgid "Remove"
-msgstr ""
+msgstr "Ta bort"
 
 msgid "Remove device?"
-msgstr ""
+msgstr "Ta bort enhet?"
 
 msgid "Rename"
-msgstr ""
+msgstr "Byt namn"
 
 msgid "Rename Device"
-msgstr ""
+msgstr "Byt namn på enhet"
 
 msgid "Render format of timestamps. Include %s tags where applicable."
 msgstr ""
+"Renderingsformat för tidsstämplar. Använd %s-taggar där det är tillämpligt."
 
 msgid "Replies"
-msgstr ""
+msgstr "Svar"
 
 msgid "Reply"
-msgstr ""
+msgstr "Svara"
 
 msgid "Report"
-msgstr ""
+msgstr "Rapportera"
 
 msgid "Reports"
-msgstr ""
+msgstr "Rapporter"
 
 msgid "Reported No.%d"
-msgstr ""
+msgstr "Rapporterad nr %d"
 
 msgid "Require Approval"
-msgstr ""
+msgstr "Kräv godkännande"
 
 msgid "Require Attachment"
-msgstr ""
+msgstr "Kräv bilaga"
 
 msgid "Require visitors to include an attachment when posting."
-msgstr ""
+msgstr "Kräv att besökare bifogar en bilaga vid publicering."
 
 msgid "Required."
-msgstr ""
+msgstr "Obligatoriskt."
 
 msgid "Reset"
-msgstr ""
+msgstr "Återställ"
 
 msgid "Reset all configuration options?"
-msgstr ""
+msgstr "Återställa alla konfigurationsalternativ?"
 
 msgid "Reset all settings?"
-msgstr ""
+msgstr "Återställa alla inställningar?"
 
 msgid "Reset board configuration?"
-msgstr ""
+msgstr "Återställa tavlans konfiguration?"
 
 msgid "Restrict New Posts"
-msgstr ""
+msgstr "Begränsa nya inlägg"
 
 msgid "Return"
-msgstr ""
+msgstr "Återgå"
 
 msgid "Robot 9000 mode enabled. Post message must be unique."
-msgstr ""
+msgstr "Robot 9000-läge är aktiverat. Inläggsmeddelandet måste vara unikt."
 
 msgid "Role"
-msgstr ""
+msgstr "Roll"
 
 msgid "Rules"
-msgstr ""
+msgstr "Regler"
 
 msgid "Scale"
-msgstr ""
+msgstr "Skala"
 
 msgid "Scan the following QR code using an authenticator application:"
-msgstr ""
+msgstr "Skanna följande QR-kod med en autentiseringsapp:"
 
 msgid "Scroll down to the bottom of the page."
-msgstr ""
+msgstr "Bläddra ned till sidans nederkant."
 
 msgid "Search"
-msgstr ""
+msgstr "Sök"
 
 msgid ""
 "Seconds between automatic refreshes when viewing a board index or thread "
 "page. Set to 0 to disable."
 msgstr ""
+"Sekunder mellan automatiska uppdateringar när en tavlas index- eller "
+"trådsida visas. Ange 0 för att inaktivera."
 
 msgid "Security"
-msgstr ""
+msgstr "Säkerhet"
 
 msgid "Select the checkbox next to your post's ID."
-msgstr ""
+msgstr "Markera kryssrutan bredvid ditt inläggs ID."
 
 #. TRANSLATORS: The word 'Settings' is used in reference to system-wide settings.
 msgid "Settings"
-msgstr ""
+msgstr "Inställningar"
 
 msgid "Share"
-msgstr ""
+msgstr "Dela"
 
 msgid "Share with staff"
-msgstr ""
+msgstr "Dela med personalen"
 
 msgid "Shared news items may be updated by other staff members."
-msgstr ""
+msgstr "Delade nyheter kan uppdateras av andra i personalen."
 
 msgid "Show %s secret"
-msgstr ""
+msgstr "Visa hemlighet för %s"
 
 msgid "Show everywhere"
-msgstr ""
+msgstr "Visa överallt"
 
 msgid "Site Description"
-msgstr ""
+msgstr "Webbplatsbeskrivning"
 
 msgid "Site Home"
-msgstr ""
+msgstr "Webbplatsens startsida"
 
 msgid "Site Index"
-msgstr ""
+msgstr "Webbplatsindex"
 
 msgid "Site Name"
-msgstr ""
+msgstr "Webbplatsnamn"
 
 msgid "Site News"
-msgstr ""
+msgstr "Webbplatsnyheter"
 
 msgid "Sorry, only the following email address domains are allowed: %s"
-msgstr ""
+msgstr "Tyvärr är endast följande e-postdomäner tillåtna: %s"
 
 msgid "Spoiler"
-msgstr ""
+msgstr "Spoiler"
 
 msgid "Sriracha is not running in import mode."
-msgstr ""
+msgstr "Sriracha körs inte i importläge."
 
 msgid "Start Dry Run"
-msgstr ""
+msgstr "Starta testkörning"
 
 msgid "Start Import"
-msgstr ""
+msgstr "Starta import"
 
 msgid "Statistics"
-msgstr ""
+msgstr "Statistik"
 
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 msgid "Stickied"
-msgstr ""
+msgstr "Fäst"
 
 msgid "Sticky"
-msgstr ""
+msgstr "Fäst"
 
 msgid "Strip Metadata"
-msgstr ""
+msgstr "Ta bort metadata"
 
 msgid "Strip Original Names"
-msgstr ""
+msgstr "Ta bort ursprungliga namn"
 
 msgid ""
 "Strip metadata (including %[1]s tags) from attachments. Enabling this option "
 "will also enable '%[2]s'."
 msgstr ""
+"Ta bort metadata, inklusive %[1]s-taggar, från bilagor. Om du aktiverar "
+"detta aktiveras även '%[2]s'."
 
 msgid "Strip original file names from attachments."
-msgstr ""
+msgstr "Ta bort ursprungliga filnamn från bilagor."
 
 msgid "Style"
-msgstr ""
+msgstr "Stil"
 
 msgid "Subject"
-msgstr ""
+msgstr "Ämne"
 
 msgid "Submit"
-msgstr ""
+msgstr "Skicka"
 
 msgid "Subscribe"
-msgstr ""
+msgstr "Prenumerera"
 
 msgid "Subscribe to %s"
-msgstr ""
+msgstr "Prenumerera på %s"
 
 msgid "Subscribe to request a confirmation link."
-msgstr ""
+msgstr "Prenumerera för att begära en bekräftelselänk."
 
 msgid "Subscription confirmed."
-msgstr ""
+msgstr "Prenumerationen har bekräftats."
 
 msgid "Super-administrator"
-msgstr ""
+msgstr "Huvudadministratör"
 
 msgid "Super-administrators have full access."
-msgstr ""
+msgstr "Huvudadministratörer har full åtkomst."
 
 msgid "Supported BBCode tags are %s."
-msgstr ""
+msgstr "BBCode-taggar som stöds är %s."
 
 msgid "Supported file types are %s."
-msgstr ""
+msgstr "Följande filtyper stöds: %s."
 
 msgid "Test"
-msgstr ""
+msgstr "Testa"
 
 msgid "Text"
-msgstr ""
+msgstr "Text"
 
 msgid "Text to test for a keyword match."
-msgstr ""
+msgstr "Text att testa för träff på nyckelord."
 
 msgid "That embed has already been posted."
-msgstr ""
+msgstr "Den inbäddningen har redan publicerats."
 
 msgid "That file has already been posted."
-msgstr ""
+msgstr "Den filen har redan publicerats."
 
 msgid "This ban is permanent."
-msgstr ""
+msgstr "Den här avstängningen är permanent."
 
 msgid "This ban will expire at %s."
-msgstr ""
+msgstr "Den här avstängningen upphör %s."
 
 msgid ""
 "This setting is purely cosmetic. To actually prevent access, configure your "
 "HTTPS server to require password authorization."
 msgstr ""
+"Den här inställningen är endast kosmetisk. För att faktiskt förhindra "
+"åtkomst måste du konfigurera HTTPS-servern så att den kräver "
+"lösenordsautentisering."
 
 msgid "Thread"
-msgstr ""
+msgstr "Tråd"
 
 msgid "Thread archived %s."
-msgstr ""
+msgstr "Tråden arkiverades %s."
 
 msgid "Thread deleted."
-msgstr ""
+msgstr "Tråden har tagits bort."
 
 msgid "Threads"
-msgstr ""
+msgstr "Trådar"
 
 msgid "Threshold"
-msgstr ""
+msgstr "Tröskelvärde"
 
 msgid "Thresholds"
-msgstr ""
+msgstr "Tröskelvärden"
 
 msgid "Thumbnail Height"
-msgstr ""
+msgstr "Miniatyrbildshöjd"
 
 msgid "Thumbnail Width"
-msgstr ""
+msgstr "Miniatyrbildsbredd"
 
 msgid "To delete a post:"
-msgstr ""
+msgstr "Så här tar du bort ett inlägg:"
 
 msgid "Tripcode"
-msgstr ""
+msgstr "Tripkod"
 
 msgid "Truncate"
-msgstr ""
+msgstr "Korta av"
 
 msgid "Two-Factor Authentication"
-msgstr ""
+msgstr "Tvåfaktorsautentisering"
 
 msgid ""
 "Two-factor authentication is required. You may only access your preferences "
 "until a %s device is added."
 msgstr ""
+"Tvåfaktorsautentisering krävs. Du kan bara komma åt dina inställningar tills "
+"en %s-enhet har lagts till."
 
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 msgid "Type >> and a post ID to reply to a post:"
-msgstr ""
+msgstr "Skriv >> följt av ett inläggs-ID för att svara på ett inlägg:"
 
 msgid "Type >>> and a board directory to link to a board:"
-msgstr ""
+msgstr "Skriv >>> följt av en tavlas katalog för att länka till en tavla:"
 
 msgid "Type # (hash) and some text in the name field to add a global tripcode:"
 msgstr ""
+"Skriv # (hashtecken) följt av text i namnfältet för att lägga till en global "
+"tripkod:"
 
 msgid "Type ## and some text in the name field to add a secure tripcode:"
 msgstr ""
+"Skriv ## följt av text i namnfältet för att lägga till en säker tripkod:"
 
 msgid "Unarchive"
-msgstr ""
+msgstr "Avarkivera"
 
 msgid "Unknown"
-msgstr ""
+msgstr "Okänd"
 
 msgid "Unlock"
-msgstr ""
+msgstr "Lås upp"
 
 msgid "Unpublished"
-msgstr ""
+msgstr "Opublicerad"
 
 msgid "Unspoiler"
-msgstr ""
+msgstr "Visa spoiler"
 
 msgid "Unsticky"
-msgstr ""
+msgstr "Lossa"
 
 msgid "Unsubscribe"
-msgstr ""
+msgstr "Avsluta prenumeration"
 
 msgid "Unsupported file format."
-msgstr ""
+msgstr "Filformatet stöds inte."
 
 msgid "Unused"
-msgstr ""
+msgstr "Oanvänd"
 
 msgid "Update"
-msgstr ""
+msgstr "Uppdatera"
 
 msgid "Update %s"
-msgstr ""
+msgstr "Uppdatera %s"
 
 msgid "Update Settings"
-msgstr ""
+msgstr "Uppdatera inställningar"
 
 msgid "Upload a %[1]dx%[2]d %[3]s image."
-msgstr ""
+msgstr "Ladda upp en %[1]dx%[2]d %[3]s-bild."
 
 msgid "Uptime"
-msgstr ""
+msgstr "Drifttid"
 
 msgid "Used"
-msgstr ""
+msgstr "Använd"
 
 msgid "Used to log in and audit actions."
-msgstr ""
+msgstr "Används för inloggning och granskning av åtgärder."
 
 msgid "User"
-msgstr ""
+msgstr "Användare"
 
 msgid "Username"
-msgstr ""
+msgstr "Användarnamn"
 
 msgid ""
 "Values greater than 75 are not supported when using the default database "
 "schema."
-msgstr ""
+msgstr "Värden över 75 stöds inte när standarddatabasschemat används."
 
 msgid "Version"
-msgstr ""
+msgstr "Version"
 
 msgid "View"
-msgstr ""
+msgstr "Visa"
 
 msgid "View latest"
-msgstr ""
+msgstr "Visa senaste"
 
 msgid "View posts by author"
-msgstr ""
+msgstr "Visa inlägg från skribenten"
 
 msgid "View Sriracha manual subsection"
-msgstr ""
+msgstr "Visa underavsnitt i Sriracha-handboken"
 
 msgid "Visibility"
-msgstr ""
+msgstr "Synlighet"
 
 msgid "Visible"
-msgstr ""
+msgstr "Synlig"
 
 msgid ""
 "Visitors may embed media from selected services instead of uploading a file."
 msgstr ""
+"Besökare kan bädda in media från valda tjänster i stället för att ladda upp "
+"en fil."
 
 msgid "Visitors may upload the selected types of files."
-msgstr ""
+msgstr "Besökare kan ladda upp de valda filtyperna."
 
 msgid "visitor guide"
-msgstr ""
+msgstr "besöksguiden"
 
 msgid "Warning"
-msgstr ""
+msgstr "Varning"
 
 msgid ""
 "Warning: The hard drive containing the directory %[1]s is full: only %[2]s "
 "of free space remains. Posting is disabled."
 msgstr ""
+"Varning: Hårddisken som innehåller katalogen %[1]s är full. Endast %[2]s "
+"ledigt utrymme återstår. Publicering är inaktiverad."
 
 msgid ""
 "Warning: The hard drive containing the directory %[1]s is nearly full: only "
 "%[2]s of free space remains."
 msgstr ""
+"Varning: Hårddisken som innehåller katalogen %[1]s är nästan full. Endast "
+"%[2]s ledigt utrymme återstår."
 
 msgid "When %[1]s adds more than %[2]d %[3]s %[4]s within %[5]s, %[6]s."
-msgstr ""
+msgstr "När %[1]s lägger till fler än %[2]d %[3]s %[4]s inom %[5]s, %[6]s."
 
 msgid "When %s is mentioned."
-msgstr ""
+msgstr "När %s nämns."
 
 msgid "When %s receives new replies."
-msgstr ""
+msgstr "När %s får nya svar."
 
 msgid "When this amount is exceeded the selected action is taken."
-msgstr ""
+msgstr "När detta antal överskrids vidtas den valda åtgärden."
 
 msgid ""
 "Whether identifiers are displayed for each post. Identifiers are generated "
 "based on IP address hashes."
 msgstr ""
+"Om identifierare visas för varje inlägg. Identifierare genereras utifrån "
+"hashar av IP-adresser."
 
 msgid "Whether identifiers are randomly colored."
-msgstr ""
+msgstr "Om identifierare får slumpmässiga färger."
 
 msgid ""
 "Whether moderator approval is required before displaying newly created posts."
-msgstr ""
+msgstr "Om moderatorns godkännande krävs innan nya inlägg visas."
 
 msgid "Whether new posts may be created."
-msgstr ""
+msgstr "Om nya inlägg får skapas."
 
 msgid ""
 "Whether per-board and site-wide statistics are written to a file named %s."
 msgstr ""
+"Om statistik per tavla och för hela webbplatsen skrivs till en fil med "
+"namnet %s."
 
 msgid ""
 "Whether reference links are displayed next to No.## pointing to all visible "
 "replies mentioning a post."
 msgstr ""
+"Om referenslänkar visas bredvid nr ## och pekar på alla synliga svar som "
+"nämner ett inlägg."
 
 msgid "Whether the banner is displayed in custom pages."
-msgstr ""
+msgstr "Om banderollen visas på egna sidor."
 
 msgid "Whether the banner is displayed in news pages."
-msgstr ""
+msgstr "Om banderollen visas på nyhetssidor."
 
 msgid "Whether the banner is displayed in overboard pages."
-msgstr ""
+msgstr "Om banderollen visas på övertavlans sidor."
 
 msgid "Whether the threshold is for individual boards or everywhere."
-msgstr ""
+msgstr "Om tröskelvärdet gäller enskilda tavlor eller överallt."
 
 msgid "Whether the threshold is for individual visitors or everyone."
-msgstr ""
+msgstr "Om tröskelvärdet gäller enskilda besökare eller alla."
 
 msgid ""
 "Whether visitors and staff members may mark attachment thumbnails as "
 "spoilers."
 msgstr ""
+"Om besökare och personal kan markera miniatyrbilder för bilagor som spoilers."
 
 msgid "Whether visitors may browse attachments as an image gallery."
-msgstr ""
+msgstr "Om besökare kan bläddra bland bilagor som ett bildgalleri."
 
 msgid "Whether visitors may create and submit drawings."
-msgstr ""
+msgstr "Om besökare kan skapa och skicka teckningar."
 
 msgid "Whether visitors may report posts."
-msgstr ""
+msgstr "Om besökare kan rapportera inlägg."
 
 msgid "Whether visitors must pass a CAPTCHA when posting."
-msgstr ""
+msgstr "Om besökare måste klara en CAPTCHA vid publicering."
 
 msgid "Which type of visitor interaction the threshold monitors."
-msgstr ""
+msgstr "Vilken typ av besökarinteraktion tröskelvärdet övervakar."
 
 msgid "Word Break"
-msgstr ""
+msgstr "Radbrytning"
 
 msgid ""
 "Write site index page, which contains the most recent news item, links to "
 "boards and the most recent posts."
 msgstr ""
+"Skriv webbplatsens indexsida, som innehåller den senaste nyheten, länkar "
+"till tavlor och de senaste inläggen."
 
 msgid ""
 "You already requested a confirmation link. You may request another "
 "confirmation link when 24 hours have passed."
 msgstr ""
+"Du har redan begärt en bekräftelselänk. Du kan begära en ny när 24 timmar "
+"har gått."
 
 msgid "You are banned."
-msgstr ""
+msgstr "Du är avstängd."
 
 msgid "Your email address is unconfirmed."
-msgstr ""
+msgstr "Din e-postadress är inte bekräftad."
 
 msgid "Your post will be shown once it has been approved."
-msgstr ""
+msgstr "Ditt inlägg visas när det har godkänts."
 
 msgid "an individual visitor"
-msgstr ""
+msgstr "en enskild besökare"
 
 msgid "and"
-msgstr ""
+msgstr "och"
 
 msgid "in an individual board"
-msgstr ""
+msgstr "på en enskild tavla"

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-09-07 11:25+0000\n"
+"PO-Revision-Date: 2026-09-14 15:21+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -722,6 +722,9 @@ msgstr "Nuttige informatie is beschikbaar op %s."
 msgid "Hidden"
 msgstr "Verborgen"
 
+msgid "Hide"
+msgstr "Verbergen"
+
 msgid "Hide everywhere"
 msgstr "Overal verbergen"
 
@@ -825,6 +828,10 @@ msgstr "Ongeldig e-mailadres."
 
 msgid "Invalid or deleted post."
 msgstr "Ongeldig of verwijderd bericht."
+
+msgid "Jump to a form field when adding a new post by pressing Alt, Shift and:"
+msgstr ""
+"Ga op een nieuw bericht naar een ander veld door te drukken Alt, Shift en:"
 
 msgid "Keyword"
 msgstr "Trefwoord"
@@ -1111,6 +1118,9 @@ msgstr ""
 "De naam die moet worden getoond als er niks is ingevuld. Scheid namen met "
 "een | (sluisteken). Mag leeg worden gelaten."
 
+msgid "Navigate"
+msgstr "Navigeren"
+
 msgid "Navigation"
 msgstr "Navigatie"
 
@@ -1384,6 +1394,11 @@ msgstr "Instellingen"
 msgid "Prefix a line of text with > (greater-than sign) to quote a message:"
 msgstr ""
 "Voorzie een tekstregel van > (groter-danteken) om een bericht te citeren:"
+
+msgid "Press Control, Alt or Shift and click on a post's checkbox to hide it."
+msgstr ""
+"Houd Control, Alt of Shift ingedrukt en kruis een bericht aan om het te "
+"verbergen."
 
 msgid "Preview"
 msgstr "Voorvertonen"
