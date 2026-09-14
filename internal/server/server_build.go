@@ -140,7 +140,7 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 	writePath := filepath.Join(s.config.Root, board.Dir, "_"+fileName)
 	filePath := filepath.Join(s.config.Root, board.Dir, fileName)
 
-	indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	indexFile, err := os.OpenFile(writePath, NewFileFlags, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -192,7 +192,7 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 	writePath := filepath.Join(s.config.Root, board.Dir, "_"+fileName)
 	filePath := filepath.Join(s.config.Root, board.Dir, fileName)
 
-	catalogFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	catalogFile, err := os.OpenFile(writePath, NewFileFlags, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -320,7 +320,7 @@ func (s *Server) _buildBoardThread(info *buildInfo) {
 	writePath := filepath.Join(s.config.Root, board.Dir, "res", fmt.Sprintf("_%d.html", postID))
 	filePath := filepath.Join(s.config.Root, board.Dir, "res", fmt.Sprintf("%d.html", postID))
 
-	f, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	f, err := os.OpenFile(writePath, NewFileFlags, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -379,7 +379,7 @@ func (s *Server) _buildNewsIndex(info *buildInfo) {
 	writePath := filepath.Join(s.config.Root, "_"+fileName)
 	filePath := filepath.Join(s.config.Root, fileName)
 
-	indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	indexFile, err := os.OpenFile(writePath, NewFileFlags, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -461,7 +461,7 @@ func (s *Server) _buildNewsEntry(info *buildInfo) {
 	writePath := filepath.Join(s.config.Root, fmt.Sprintf("_news-%d.html", n.ID))
 	filePath := filepath.Join(s.config.Root, fmt.Sprintf("news-%d.html", n.ID))
 
-	itemFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	itemFile, err := os.OpenFile(writePath, NewFileFlags, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -525,7 +525,7 @@ func (s *Server) _buildPage(info *buildInfo) {
 	writePath := filepath.Join(s.config.Root, p.Path+"_.html")
 	filePath := filepath.Join(s.config.Root, p.Path+".html")
 
-	pageFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	pageFile, err := os.OpenFile(writePath, NewFileFlags, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -623,7 +623,7 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 	writePath := filepath.Join(s.config.Root, "_"+fileName)
 	filePath := filepath.Join(s.config.Root, fileName)
 
-	indexFile, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	indexFile, err := os.OpenFile(writePath, NewFileFlags, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -691,7 +691,7 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 	writePath := filepath.Join(s.config.Root, "stats_.json")
 	filePath := filepath.Join(s.config.Root, "stats.json")
 
-	file, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	file, err := os.OpenFile(writePath, NewFileFlags, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}

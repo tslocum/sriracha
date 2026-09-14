@@ -160,11 +160,11 @@ func (data *templateData) G(str string) string {
 	return G(data.Board, data.Account, str)
 }
 
-func (data *templateData) Get(str string, vars ...interface{}) string {
+func (data *templateData) Get(str string, vars ...any) string {
 	return Get(data.Board, data.Account, str, vars...)
 }
 
-func (data *templateData) GetHTML(str string, vars ...interface{}) template.HTML {
+func (data *templateData) GetHTML(str string, vars ...any) template.HTML {
 	return GetHTML(data.Board, data.Account, str, vars...)
 }
 
@@ -373,7 +373,7 @@ func (s *Server) newTemplateFuncMap(db serverDB, locale string) template.FuncMap
 	}
 
 	// Localization.
-	f["T"] = func(message string, vars ...interface{}) string {
+	f["T"] = func(message string, vars ...any) string {
 		if !strings.ContainsRune(message, '%') {
 			return gotext.GetD(domain, message)
 		}

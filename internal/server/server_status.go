@@ -248,6 +248,50 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		return
 	}
 
+	// Allow super-administrators to archive all threads in a board.
+	if r.URL.Query().Has("archiveBoard") {
+		if data.forbidden(w, RoleSuperAdmin) {
+			return
+		}
+		data.Template = "manage_info"
+		boardID, err := strconv.Atoi(r.URL.Query().Get("archiveBoard"))
+		if err != nil || boardID <= 0 {
+			data.ManageError("Invalid board.")
+			return
+		}
+		board := db.BoardByID(boardID)
+		if board == nil {
+			data.ManageError("Invalid board.")
+			return
+		}
+		for _, threadInfo := range db.AllThreads(FilterAny, board) {
+			post := db.PostByID(threadInfo[0])
+			if post.Moderated == ModeratedArchived {
+				continue
+			}
+			for _, p := range db.AllPostsInThread(FilterAny, post.ID) {
+				db.ModeratePost(p.ID, ModeratedArchived)
+				db.DeleteReports(p)
+			}
+			if post.Stickied {
+				db.StickyPost(post.ID, false)
+			}
+			if post.Locked {
+				db.LockPost(post.ID, false)
+			}
+		}
+		s.log(db, data.Account, board, fmt.Sprintf("Archived >>/board/%d", board.ID), "")
+
+		wg := &sync.WaitGroup{}
+		delta := &atomic.Int32{}
+		db.SoftCommit()
+		s.rebuildBoard(db, wg, delta, board)
+		s.writeSiteIndex(wg, delta)
+		wg.Wait()
+
+		data.Info = "Archived board."
+	}
+
 	// Allow super-administrators to scan for unexpected files.
 	if r.URL.Query().Has("scanFiles") {
 		if data.forbidden(w, RoleSuperAdmin) {

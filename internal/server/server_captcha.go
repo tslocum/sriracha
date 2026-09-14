@@ -63,7 +63,7 @@ func (s *Server) serveCAPTCHA(db serverDB, w http.ResponseWriter, r *http.Reques
 	c.Image = db.NewCAPTCHAImage()
 	c.Text = strings.ToLower(challenge.Text)
 
-	f, err := os.OpenFile(filepath.Join(s.config.Root, "captcha", c.Image+".png"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	f, err := os.OpenFile(filepath.Join(s.config.Root, "captcha", c.Image+".png"), NewFileFlags, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}

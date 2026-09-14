@@ -38,7 +38,7 @@ func G(board *Board, account *Account, str string) string {
 	return gotext.GD(domain, str)
 }
 
-func Get(board *Board, account *Account, str string, vars ...interface{}) string {
+func Get(board *Board, account *Account, str string, vars ...any) string {
 	var domain string
 	if account != nil && account.Locale != "" {
 		domain = Domain(account.Locale)
@@ -50,7 +50,7 @@ func Get(board *Board, account *Account, str string, vars ...interface{}) string
 	return gotext.GetD(domain, str, vars...)
 }
 
-func GetHTML(board *Board, account *Account, str string, vars ...interface{}) template.HTML {
+func GetHTML(board *Board, account *Account, str string, vars ...any) template.HTML {
 	return template.HTML(Get(board, account, str, vars...))
 }
 

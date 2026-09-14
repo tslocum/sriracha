@@ -8,6 +8,7 @@ import (
 	"math"
 	"net/http"
 	"net/mail"
+	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -20,6 +21,7 @@ import (
 
 const NewDirPermission = 0755
 const NewFilePermission = 0644
+const NewFileFlags = os.O_WRONLY | os.O_CREATE | os.O_TRUNC
 
 const (
 	DefaultDateTimeFormatPlain = "2006/01/02(Mon)15:04:05"

@@ -125,7 +125,7 @@ func (s *Server) exportPosts(db serverDB, exportPath string) error {
 	if !os.IsNotExist(err) {
 		return fmt.Errorf("file %s already exists", exportPath)
 	}
-	zipFile, err := os.OpenFile(exportPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	zipFile, err := os.OpenFile(exportPath, NewFileFlags, NewFilePermission)
 	if err != nil {
 		return fmt.Errorf("failed to open zip file %s: %s", exportPath, err)
 	}

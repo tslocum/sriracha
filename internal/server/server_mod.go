@@ -180,7 +180,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				if err != nil {
 					return fmt.Errorf("Failed to move thread: Failed to open source file /%s/%s: %s", dirName, fileName, err)
 				}
-				dstFile, err := os.OpenFile(dstPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+				dstFile, err := os.OpenFile(dstPath, NewFileFlags, NewFilePermission)
 				if err != nil {
 					srcFile.Close()
 					return fmt.Errorf("Failed to move thread: Failed to open destination file /%s/%s: %s", dirName, fileName, err)

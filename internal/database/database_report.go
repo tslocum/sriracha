@@ -37,7 +37,7 @@ func (db *DB) AllReports() []*Report {
 		}
 		var ids [2]int
 		for _, colValue := range colValues {
-			for i, v := range colValue.([]interface{}) {
+			for i, v := range colValue.([]any) {
 				ids[i] = ParseInt(fmt.Sprintf("%d", v)) // Type may be int16 or int32.
 			}
 		}

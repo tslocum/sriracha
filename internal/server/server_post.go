@@ -69,7 +69,7 @@ func resizeImage(b *Board, r io.Reader, mimeType string) (image.Image, error) {
 }
 
 func writeImage(img image.Image, mimeType string, filePath string) error {
-	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	file, err := os.OpenFile(filePath, NewFileFlags, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -385,7 +385,7 @@ func (s *Server) loadPostFile(db serverDB, r *http.Request, p *Post, fileHeader 
 	srcPath := filepath.Join(s.config.Root, p.Board.Dir, "src", p.File)
 	thumbPath := filepath.Join(s.config.Root, p.Board.Dir, "thumb", p.Thumb)
 
-	file, err := os.OpenFile(srcPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	file, err := os.OpenFile(srcPath, NewFileFlags, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -1773,7 +1773,7 @@ func (s *Server) writeModQueue(db serverDB) {
 	writePath := filepath.Join(s.config.Root, s.opt.ModQueue+"_.html")
 	filePath := filepath.Join(s.config.Root, s.opt.ModQueue+".html")
 
-	file, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	file, err := os.OpenFile(writePath, NewFileFlags, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -1892,7 +1892,7 @@ func (s *Server) writeVisitorGuide(db serverDB) {
 	writePath := filepath.Join(s.config.Root, "_guide.html")
 	filePath := filepath.Join(s.config.Root, "guide.html")
 
-	file, err := os.OpenFile(writePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, NewFilePermission)
+	file, err := os.OpenFile(writePath, NewFileFlags, NewFilePermission)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -3264,7 +3264,7 @@ func pluginByName(name string) (any, *pluginInfo) {
 }
 
 // FormatValue formats a value as a human-readable string.
-func FormatValue(v interface{}) interface{} {
+func FormatValue(v any) string {
 	if role, ok := v.(AccountRole); ok {
 		return FormatRole(role)
 	} else if t, ok := v.(BoardType); ok {
@@ -3282,11 +3282,11 @@ func FormatValue(v interface{}) interface{} {
 	} else if t, ok := v.(ThresholdEvent); ok {
 		return FormatThresholdEvent(t)
 	}
-	return v
+	return fmt.Sprintf("%+v", v)
 }
 
 // printChanges returns the difference between two structs as a human-readable string.
-func printChanges(old interface{}, new interface{}) string {
+func printChanges(old any, new any) string {
 	const mask = "***"
 	diff, err := diff.Diff(old, new)
 	if err != nil {
@@ -3402,7 +3402,7 @@ func traceStart() {
 	}
 	fmt.Printf("Warning: Writing high precision tracing information to %s. Performance will be significantly reduced.\n", traceFilePath)
 	var err error
-	traceFile, err = os.OpenFile(traceFilePath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, NewFilePermission)
+	traceFile, err = os.OpenFile(traceFilePath, NewFileFlags, NewFilePermission)
 	if err != nil {
 		log.Fatalf("failed to open file %s for tracing: %s", traceFilePath, err)
 	}

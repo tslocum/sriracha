@@ -1698,6 +1698,12 @@ may rebuild all `nameblock` fields by visiting `/sriracha/?rebuildNameblocks`.
 
 Super-administrators may rebuild all reflinks `>>###` by visiting `/sriracha/?rebuildReflinks`.
 
+#### Archive board
+
+Super-administrators may archive all posts in a board by visiting `/sriracha/?archiveBoard=BOARDID`.
+
+Board IDs are available in the update board URL.
+
 #### Verify memory configuration
 
 Super-administrators may view detailed information related to memory usage,
