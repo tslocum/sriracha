@@ -281,9 +281,13 @@ func (s *Server) _queueBoardIndexes(info *buildInfo) {
 			delta:   info.delta,
 		}
 		wg.Add(1)
-		go func() {
-			s.buildQueue <- info
-		}()
+		select {
+		case s.buildQueue <- info:
+		default:
+			go func() {
+				s.buildQueue <- info
+			}()
+		}
 		if build == buildBoardIndex {
 			for page := 1; page < pages; page++ {
 				info := &buildInfo{
@@ -297,9 +301,13 @@ func (s *Server) _queueBoardIndexes(info *buildInfo) {
 					delta:   info.delta,
 				}
 				wg.Add(1)
-				go func() {
-					s.buildQueue <- info
-				}()
+				select {
+				case s.buildQueue <- info:
+				default:
+					go func() {
+						s.buildQueue <- info
+					}()
+				}
 			}
 		}
 	}

@@ -290,6 +290,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		wg.Wait()
 
 		data.Info = "Archived board."
+		return
 	}
 
 	// Allow super-administrators to scan for unexpected files.

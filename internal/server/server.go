@@ -209,6 +209,7 @@ type ServerOptions struct {
 	NearDisks        [][]string
 	FuncMaps         map[string]template.FuncMap
 	trace            bool
+	benchmark        bool
 	smokeTest        bool
 }
 
@@ -2723,6 +2724,7 @@ func (s *Server) Run() error {
 	if err != nil {
 		return fmt.Errorf("failed to set default server configuration: %s", err)
 	}
+	s.opt.benchmark = benchmark > 0
 	s.opt.smokeTest = smokeTest
 
 	// Recover account.
@@ -3234,7 +3236,7 @@ func (s *Server) imageDimensions(reader io.Reader) (int, int) {
 
 // Stop shuts down the server gracefully.
 func (s *Server) Stop() {
-	if !s.opt.smokeTest {
+	if !s.opt.benchmark && !s.opt.smokeTest {
 		fmt.Println("Shutting down...")
 	}
 
