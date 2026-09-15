@@ -585,17 +585,27 @@ func (s *Server) parseConfig(configFile string) error {
 		config.SessionTime = defaultServerSessionTime
 	}
 
-	if len(config.Whitelists) > 0 {
-		s.whitelists = make([]*compat.Regexp, len(config.Whitelists))
-		for i, filePath := range config.Whitelists {
-			s.parseList(filePath, i, false)
+	if len(config.Whitelists) > 0 || len(config.Blacklists) > 0 {
+		watcher, err := fsnotify.NewWatcher()
+		if err != nil {
+			log.Fatal(err)
 		}
-	}
+		go s._watchLists(watcher)
 
-	if len(config.Blacklists) > 0 {
-		s.blacklists = make([]*compat.Regexp, len(config.Blacklists))
-		for i, filePath := range config.Blacklists {
-			s.parseList(filePath, i, true)
+		if len(config.Whitelists) > 0 {
+			s.whitelists = make([]*compat.Regexp, len(config.Whitelists))
+			for i, filePath := range config.Whitelists {
+				s.parseList(filePath, i, false)
+				watcher.Add(filePath)
+			}
+		}
+
+		if len(config.Blacklists) > 0 {
+			s.blacklists = make([]*compat.Regexp, len(config.Blacklists))
+			for i, filePath := range config.Blacklists {
+				s.parseList(filePath, i, true)
+				watcher.Add(filePath)
+			}
 		}
 	}
 
@@ -1275,6 +1285,35 @@ func (s *Server) watchTemplates(officialDir string) error {
 		err = watcher.Add(s.config.Template)
 	}
 	return err
+}
+
+func (s *Server) _watchLists(watcher *fsnotify.Watcher) {
+	for {
+		select {
+		case event, ok := <-watcher.Events:
+			if !ok {
+				return
+			} else if !event.Has(fsnotify.Write) {
+				continue
+			}
+			s.lock.Lock()
+
+			if slices.Contains(s.config.Whitelists, event.Name) {
+				index := slices.Index(s.config.Whitelists, event.Name)
+				s.parseList(s.config.Whitelists[index], index, false)
+			} else if slices.Contains(s.config.Blacklists, event.Name) {
+				index := slices.Index(s.config.Blacklists, event.Name)
+				s.parseList(s.config.Blacklists[index], index, true)
+			}
+
+			s.lock.Unlock()
+		case err, ok := <-watcher.Errors:
+			if !ok {
+				return
+			}
+			log.Printf("fsnotify error: %s", err)
+		}
+	}
 }
 
 // log adds an entry to the audit log.
@@ -2320,10 +2359,6 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 
 	// Check IP blacklists.
 	for _, pattern := range s.blacklists {
-		t1 := time.Now()
-		pattern.MatchString(ip)
-		t2 := time.Since(t1)
-		log.Println(pattern, t2)
 		if pattern.MatchString(ip) {
 			data := s.buildData(db, w, r)
 			data.ManageError(data.G("You are banned.") + " " + data.G("Your IP address is blacklisted."))
