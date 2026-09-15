@@ -78,7 +78,7 @@
 			{{end}}
 			{{if ne .Template "index"}}
 				{{if and (ne .Template "news") (ne .Template "search")}}
-					{{if eq .Opt.AccessKey ""}}
+					{{if or (eq .Opt.AccessKey "") .ModMode}}
 						[<a href="/sriracha/" style="text-decoration: underline;">{{T "Manage"}}</a>]
 					{{end}}
 				{{else if or (eq .Opt.SiteIndex 1) (eq .Opt.News 2)}}
