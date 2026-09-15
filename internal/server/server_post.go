@@ -711,10 +711,12 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 
 	if !s.config.NoIP {
 		var whitelisted bool
-		for _, pattern := range s.whitelists {
-			if pattern.MatchString(s.requestIP(r)) {
-				whitelisted = true
-				break
+		for _, patterns := range s.whitelists {
+			for _, pattern := range patterns {
+				if pattern.MatchString(s.requestIP(r)) {
+					whitelisted = true
+					break
+				}
 			}
 		}
 		if !whitelisted {
