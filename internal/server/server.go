@@ -2,6 +2,7 @@
 package server
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"crypto/md5"
@@ -284,6 +285,9 @@ type Server struct {
 	auditPool *pgxpool.Pool
 	opt       ServerOptions
 
+	whitelists []*compat.Regexp
+	blacklists []*compat.Regexp
+
 	importDatabases []*importInfo
 
 	tpl             *template.Template // Template collection used when executing most web requests.
@@ -432,6 +436,60 @@ func (s *Server) forbidden(w http.ResponseWriter, data *templateData, action str
 	return data.forbidden(w, required)
 }
 
+// parseLists parses an IP whitelist or blacklist file.
+func (s *Server) parseList(filePath string, index int, blacklist bool) {
+	var listLabel string
+	if blacklist {
+		listLabel = "blacklist"
+	} else {
+		listLabel = "whitelist"
+	}
+
+	f, err := os.Open(filePath)
+	if err != nil {
+		log.Fatalf("failed to open IP %s file %s: %s", listLabel, filePath, err)
+	}
+
+	var entries [][]byte
+
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		line := scanner.Bytes()
+		if len(line) == 0 || line[0] == '#' {
+			continue
+		}
+		entry := make([]byte, len(line))
+		copy(entry, line)
+		entry = bytes.ReplaceAll(entry, []byte("."), []byte(`\.`))
+		entry = bytes.ReplaceAll(entry, []byte("*"), []byte(".*"))
+		entries = append(entries, entry)
+	}
+	if scanner.Err() != nil {
+		log.Fatalf("failed to read IP %s file %s: %s", listLabel, filePath, err)
+	}
+
+	f.Close()
+
+	var r *compat.Regexp
+	if len(entries) == 0 {
+		r, err = compat.Compile(`^DISABLED$`)
+		if err != nil {
+			log.Fatalf("failed to parse IP %s file %s: %s", listLabel, filePath, err)
+		}
+	} else {
+		pattern := append(append([]byte("^("), bytes.Join(entries, []byte("|"))...), []byte(")$")...)
+		r, err = compat.Compile(string(pattern))
+		if err != nil {
+			log.Fatalf("failed to parse IP %s file %s: %s", listLabel, filePath, err)
+		}
+	}
+	if blacklist {
+		s.blacklists[index] = r
+	} else {
+		s.whitelists[index] = r
+	}
+}
+
 // parseConfig parses a YAML configuration file.
 func (s *Server) parseConfig(configFile string) error {
 	buf, err := os.ReadFile(configFile)
@@ -525,6 +583,20 @@ func (s *Server) parseConfig(configFile string) error {
 	}
 	if config.SessionTime <= 0 {
 		config.SessionTime = defaultServerSessionTime
+	}
+
+	if len(config.Whitelists) > 0 {
+		s.whitelists = make([]*compat.Regexp, len(config.Whitelists))
+		for i, filePath := range config.Whitelists {
+			s.parseList(filePath, i, false)
+		}
+	}
+
+	if len(config.Blacklists) > 0 {
+		s.blacklists = make([]*compat.Regexp, len(config.Blacklists))
+		for i, filePath := range config.Blacklists {
+			s.parseList(filePath, i, true)
+		}
 	}
 
 	defaultAccess := map[string]string{
@@ -2244,6 +2316,21 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 
 	if db.LiftExpiredBans() > 0 {
 		s.reloadBans(db)
+	}
+
+	// Check IP blacklists.
+	for _, pattern := range s.blacklists {
+		t1 := time.Now()
+		pattern.MatchString(ip)
+		t2 := time.Since(t1)
+		log.Println(pattern, t2)
+		if pattern.MatchString(ip) {
+			data := s.buildData(db, w, r)
+			data.ManageError(data.G("You are banned.") + " " + data.G("Your IP address is blacklisted."))
+			data.execute(w)
+			s.lock.Unlock()
+			return
+		}
 	}
 
 	// Check IP range ban.

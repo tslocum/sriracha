@@ -1773,6 +1773,9 @@ msgstr ""
 msgid "Your email address is unconfirmed."
 msgstr ""
 
+msgid "Your IP address is blacklisted."
+msgstr ""
+
 msgid "Your post will be shown once it has been approved."
 msgstr ""
 

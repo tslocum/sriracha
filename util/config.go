@@ -65,6 +65,9 @@ type Config struct {
 
 	NoIP bool // Do not record post author IP addresses.
 
+	Whitelists []string // IP whitelist file paths.
+	Blacklists []string // IP blacklist file paths.
+
 	MinPageBuffer int // Initial static page buffer size, in bytes.
 	MaxPageBuffer int // Maximum static page buffer size, in bytes.
 

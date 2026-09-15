@@ -692,6 +692,18 @@ dbname: "sriracha"
 # option if you are running Sriracha somewhere other than the public Internet.
 #noip: false
 
+# IP address whitelist files, containing one IP address or range on each line.
+# Any modifications to these files will be detected and applied automatically.
+#whitelists:
+#  - "/path/to/whitelist1.txt"
+#  - "/path/to/whitelist2.txt"
+
+# IP address blacklist files, containing one IP address or range on each line.
+# Any modifications to these files will be detected and applied automatically.
+#blacklists:
+#  - "/path/to/blacklist1.txt"
+#  - "/path/to/blacklist2.txt"
+
 # Minimum static page buffer size. This is the initial size of each buffer.
 # You probably don't need to change this. If you do change it, confirm any
 # expected performance improvements by running benchmarks before and after.
