@@ -82,16 +82,6 @@
                         </td>
                     </tr>
                 {{end}}
-                {{if .Board.Oekaki}}
-                    <tr>
-                        <td class="postblock">
-                            Oekaki
-                        </td>
-                        <td colspan="2">
-                            <button type="submit" name="oekaki" value="1" accesskey="o">{{T "New drawing..."}}</button> <small>{{T "Create a new drawing."}}</small>
-                        </td>
-                    </tr>
-                {{end}}
                 {{if ne (len .Board.Embeds) 0}}
                     <tr>
                         <td class="postblock">
@@ -115,7 +105,10 @@
                         {{T "Submit"}}
                     </td>
                     <td colspan="2">
-                        <input type="submit" value="{{T "Submit"}}" accesskey="z">
+                        <input type="submit" value="{{T "Submit"}}" title="{{T "Submit post."}}" accesskey="z">
+                        {{if .Board.Oekaki}}
+                            &nbsp;<button type="submit" name="oekaki" value="1" title="{{T "Create a new drawing."}}" accesskey="o">{{T "New drawing..."}}</button>
+                        {{end}}
                         &nbsp;<label for="preview" style="float: right;"><input type="checkbox" id="preview" name="preview" value="1" accesskey="a"{{if $.Preview}} checked{{end}}><small>{{T "Preview"}}</small></label>
                         {{if and .ModMode (or (May "post.sticky" .Account .Opt.Access) (May "post.lock" .Account .Opt.Access))}}
                             {{$stickied := false}}
