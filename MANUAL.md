@@ -677,16 +677,6 @@ dbname: "sriracha"
 #mentions:      60   # Duration (in minutes) mention notifications are batched together.
 #notifications: 1440 # Duration (in minutes) all other notifications are batched together.
 
-# Require two-factor authentication. When enabled, staff must enter a TOTP passcode in
-# addition to their username and password. Enabling this option increases security.
-#require2fa: false
-
-# Account login session limit. When ths limit is exceeded, the oldest session is removed.
-#sessionlimit: 5
-
-# Account login session time (in seconds). Sessions unused for this duration will expire.
-#sessiontime: 2592000 # 30 days.
-
 # Do not record post author IP addresses. When this option is enabled, it is
 # not possible for staff members to ban visitors. You should only enable this
 # option if you are running Sriracha somewhere other than the public Internet.
@@ -726,6 +716,24 @@ dbname: "sriracha"
 # Memory usage will increase by maxconns * maxformbuffer when fully saturated.
 #maxconns: 16
 
+# Free disk space warning threshold. A warning message is displayed to staff
+# members if and when the available free space drops below this threshold.
+#warnfree: 2000000000 # 2 GB.
+
+# Minimum free disk space. Many features, including adding new posts, will be
+# disabled if and when the available free space drops below this threshold.
+#minfree: 500000000 # 500 MB.
+
+# Require two-factor authentication. When enabled, staff must enter a TOTP passcode in
+# addition to their username and password. Enabling this option increases security.
+#require2fa: false
+
+# Account login session time (in seconds). Sessions unused for this duration will expire.
+#sessiontime: 2592000 # 30 days.
+
+# Account login session limit. When ths limit is exceeded, the oldest session is removed.
+#sessionlimit: 5
+
 # Access required to perform an action. Default values for all actions are listed below.
 #
 # Format: mod / admin / super-admin / disable (disallow all roles)
@@ -762,14 +770,6 @@ dbname: "sriracha"
 # executing all commands except SELECT and INSERT to prevent log tampering.
 # See https://pkg.go.dev/github.com/jackc/pgx/v5/pgconn#ParseConfig
 #audit: "postgresql://sriracha_audit:hunter2@localhost:5432/sriracha_audit"
-
-# Free disk space warning threshold. A warning message is displayed to staff
-# members if and when the available free space drops below this threshold.
-#warnfree: 2000000000 # 2 GB.
-
-# Minimum free disk space. Many features, including adding new posts, will be
-# disabled if and when the available free space drops below this threshold.
-#minfree: 500000000 # 500 MB.
 
 # Supported upload file types. Specify a file extension and a MIME type to
 # enable uploading files of that type. You may specify an image to use as the
