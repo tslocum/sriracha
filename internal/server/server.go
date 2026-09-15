@@ -438,16 +438,16 @@ func (s *Server) forbidden(w http.ResponseWriter, data *templateData, action str
 
 // parseLists parses an IP whitelist or blacklist file.
 func (s *Server) parseList(filePath string, index int, blacklist bool) {
-	var listLabel string
+	var label string
 	if blacklist {
-		listLabel = "blacklist"
+		label = "blacklist"
 	} else {
-		listLabel = "whitelist"
+		label = "whitelist"
 	}
 
 	f, err := os.Open(filePath)
 	if err != nil {
-		log.Fatalf("failed to open IP %s file %s: %s", listLabel, filePath, err)
+		log.Fatalf("failed to open IP %s file %s: %s", label, filePath, err)
 	}
 
 	var entries [][]byte
@@ -465,7 +465,7 @@ func (s *Server) parseList(filePath string, index int, blacklist bool) {
 		entries = append(entries, entry)
 	}
 	if scanner.Err() != nil {
-		log.Fatalf("failed to read IP %s file %s: %s", listLabel, filePath, err)
+		log.Fatalf("failed to read IP %s file %s: %s", label, filePath, err)
 	}
 
 	f.Close()
@@ -474,13 +474,13 @@ func (s *Server) parseList(filePath string, index int, blacklist bool) {
 	if len(entries) == 0 {
 		r, err = compat.Compile(`^DISABLED$`)
 		if err != nil {
-			log.Fatalf("failed to parse IP %s file %s: %s", listLabel, filePath, err)
+			log.Fatalf("failed to parse IP %s file %s: %s", label, filePath, err)
 		}
 	} else {
 		pattern := append(append([]byte("^("), bytes.Join(entries, []byte("|"))...), []byte(")$")...)
 		r, err = compat.Compile(string(pattern))
 		if err != nil {
-			log.Fatalf("failed to parse IP %s file %s: %s", listLabel, filePath, err)
+			log.Fatalf("failed to parse IP %s file %s: %s", label, filePath, err)
 		}
 	}
 	if blacklist {

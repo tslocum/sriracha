@@ -710,7 +710,16 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 	}
 
 	if !s.config.NoIP {
-		post.IP = s.hashIP(r)
+		var whitelisted bool
+		for _, pattern := range s.whitelists {
+			if pattern.MatchString(s.requestIP(r)) {
+				whitelisted = true
+				break
+			}
+		}
+		if !whitelisted {
+			post.IP = s.hashIP(r)
+		}
 	}
 
 	err := s.loadPostForm(db, r, post)
