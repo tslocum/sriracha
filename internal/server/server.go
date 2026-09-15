@@ -285,8 +285,8 @@ type Server struct {
 	auditPool *pgxpool.Pool
 	opt       ServerOptions
 
-	whitelists [][]*compat.Regexp
-	blacklists [][]*compat.Regexp
+	whitelists map[byte][][]*compat.Regexp
+	blacklists map[byte][][]*compat.Regexp
 
 	importDatabases []*importInfo
 
@@ -352,6 +352,8 @@ func NewServer() *Server {
 			Banners: make(map[int][]*Banner),
 			Rules:   make(map[int][]template.HTML),
 		},
+		whitelists:            make(map[byte][][]*compat.Regexp),
+		blacklists:            make(map[byte][][]*compat.Regexp),
 		shutdownNotifications: make(chan struct{}),
 		indexCache:            make(map[int][][]int),
 		indexCacheLock:        &sync.Mutex{},
@@ -450,7 +452,7 @@ func (s *Server) parseList(filePath string, index int, blacklist bool) {
 		log.Fatalf("failed to open IP %s file %s: %s", label, filePath, err)
 	}
 
-	var entries [][]byte
+	entries := make(map[byte][][]byte)
 
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
@@ -462,7 +464,7 @@ func (s *Server) parseList(filePath string, index int, blacklist bool) {
 		copy(entry, line)
 		entry = bytes.ReplaceAll(entry, []byte("."), []byte(`\.`))
 		entry = bytes.ReplaceAll(entry, []byte("*"), []byte(".*"))
-		entries = append(entries, entry)
+		entries[entry[0]] = append(entries[entry[0]], entry)
 	}
 	if scanner.Err() != nil {
 		log.Fatalf("failed to read IP %s file %s: %s", label, filePath, err)
@@ -471,28 +473,30 @@ func (s *Server) parseList(filePath string, index int, blacklist bool) {
 	f.Close()
 
 	const entriesPerPattern = 10000
-	for start := 0; start < len(entries); start += entriesPerPattern {
-		var r *compat.Regexp
-		if len(entries) == 0 {
-			r, err = compat.Compile(`^DISABLED$`)
-			if err != nil {
-				log.Fatalf("failed to parse IP %s file %s: %s", label, filePath, err)
+	for prefixChar, prefixEntries := range entries {
+		for start := 0; start < len(prefixEntries); start += entriesPerPattern {
+			var r *compat.Regexp
+			if len(prefixEntries) == 0 {
+				r, err = compat.Compile(`^DISABLED$`)
+				if err != nil {
+					log.Fatalf("failed to parse IP %s file %s: %s", label, filePath, err)
+				}
+			} else {
+				end := start + entriesPerPattern
+				if end > len(prefixEntries) {
+					end = len(prefixEntries)
+				}
+				pattern := append(append([]byte("^("), bytes.Join(prefixEntries[start:end], []byte("|"))...), []byte(")$")...)
+				r, err = compat.Compile(string(pattern))
+				if err != nil {
+					log.Fatalf("failed to parse IP %s file %s: %s", label, filePath, err)
+				}
 			}
-		} else {
-			end := start + entriesPerPattern
-			if end > len(entries) {
-				end = len(entries)
+			if blacklist {
+				s.blacklists[prefixChar][index] = append(s.blacklists[prefixChar][index], r)
+			} else {
+				s.whitelists[prefixChar][index] = append(s.whitelists[prefixChar][index], r)
 			}
-			pattern := append(append([]byte("^("), bytes.Join(entries[start:end], []byte("|"))...), []byte(")$")...)
-			r, err = compat.Compile(string(pattern))
-			if err != nil {
-				log.Fatalf("failed to parse IP %s file %s: %s", label, filePath, err)
-			}
-		}
-		if blacklist {
-			s.blacklists[index] = append(s.blacklists[index], r)
-		} else {
-			s.whitelists[index] = append(s.whitelists[index], r)
 		}
 	}
 }
@@ -593,6 +597,18 @@ func (s *Server) parseConfig(configFile string) error {
 	}
 
 	if len(config.Whitelists) > 0 || len(config.Blacklists) > 0 {
+		const prefixChars = "0123456789abcdef"
+		if len(config.Whitelists) > 0 {
+			for _, prefixChar := range prefixChars {
+				s.whitelists[byte(prefixChar)] = make([][]*compat.Regexp, len(config.Whitelists))
+			}
+		}
+		if len(config.Blacklists) > 0 {
+			for _, prefixChar := range prefixChars {
+				s.blacklists[byte(prefixChar)] = make([][]*compat.Regexp, len(config.Blacklists))
+			}
+		}
+
 		watcher, err := fsnotify.NewWatcher()
 		if err != nil {
 			log.Fatal(err)
@@ -600,7 +616,6 @@ func (s *Server) parseConfig(configFile string) error {
 		go s._watchLists(watcher)
 
 		if len(config.Whitelists) > 0 {
-			s.whitelists = make([][]*compat.Regexp, len(config.Whitelists))
 			for i, filePath := range config.Whitelists {
 				s.parseList(filePath, i, false)
 				watcher.Add(filePath)
@@ -608,7 +623,6 @@ func (s *Server) parseConfig(configFile string) error {
 		}
 
 		if len(config.Blacklists) > 0 {
-			s.blacklists = make([][]*compat.Regexp, len(config.Blacklists))
 			for i, filePath := range config.Blacklists {
 				s.parseList(filePath, i, true)
 				watcher.Add(filePath)
@@ -1307,11 +1321,15 @@ func (s *Server) _watchLists(watcher *fsnotify.Watcher) {
 
 			if slices.Contains(s.config.Whitelists, event.Name) {
 				index := slices.Index(s.config.Whitelists, event.Name)
-				s.whitelists[index] = s.whitelists[index][:0]
+				for prefixChar := range s.whitelists {
+					s.whitelists[prefixChar][index] = s.whitelists[prefixChar][index][:0]
+				}
 				s.parseList(s.config.Whitelists[index], index, false)
 			} else if slices.Contains(s.config.Blacklists, event.Name) {
 				index := slices.Index(s.config.Blacklists, event.Name)
-				s.blacklists[index] = s.blacklists[index][:0]
+				for prefixChar := range s.whitelists {
+					s.blacklists[prefixChar][index] = s.blacklists[prefixChar][index][:0]
+				}
 				s.parseList(s.config.Blacklists[index], index, true)
 			}
 
@@ -2367,7 +2385,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check IP blacklists.
-	for _, patterns := range s.blacklists {
+	for _, patterns := range s.blacklists[ip[0]] {
 		for _, pattern := range patterns {
 			if pattern.MatchString(ip) {
 				data := s.buildData(db, w, r)
