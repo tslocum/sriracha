@@ -672,11 +672,13 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 	for _, c := range s.opt.Categories {
 		for _, b := range c.Boards {
 			boardStats := BoardStats{
-				Dir:   b.Dir,
-				Name:  b.Name,
-				About: b.Description,
-				Month: db.NumPosts(b, thirtyDays),
-				Total: db.NumPosts(b, 0),
+				Dir:     b.Dir,
+				Name:    b.Name,
+				About:   b.Description,
+				Month:   db.NumPosts(b, thirtyDays),
+				Threads: len(db.AllThreads(FilterVisible, b)),
+				Unique:  db.UniqueUserPosts(b),
+				Total:   db.NumPosts(b, 0),
 			}
 			boardStats.Hour = float64(int(float64(boardStats.Month)/(hours*60)*10000)) / 10000
 
@@ -687,10 +689,12 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 			serverStats.Boards = append(serverStats.Boards, boardStats)
 
 			serverStats.Month += boardStats.Month
+			serverStats.Threads += boardStats.Threads
 			serverStats.Total += boardStats.Total
 		}
 	}
 	serverStats.Hour = float64(int(float64(serverStats.Month)/(hours*60)*10000)) / 10000
+	serverStats.Unique = db.UniqueUserPosts(nil)
 
 	if s.statsCache != nil && reflect.DeepEqual(serverStats, s.statsCache) {
 		return

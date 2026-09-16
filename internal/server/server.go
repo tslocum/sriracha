@@ -145,13 +145,15 @@ const (
 const HashSize = 48 // Bytes.
 
 type BoardStats struct {
-	Dir    string
-	Name   string
-	About  string
-	Recent string
-	Hour   float64
-	Month  int
-	Total  int
+	Dir     string
+	Name    string
+	About   string
+	Recent  string
+	Hour    float64
+	Month   int
+	Threads int
+	Unique  int
+	Total   int
 }
 
 type ServerStats struct {
@@ -159,6 +161,8 @@ type ServerStats struct {
 	About     string
 	Hour      float64
 	Month     int
+	Threads   int
+	Unique    int
 	Total     int
 	Boards    []BoardStats
 	Generated int64

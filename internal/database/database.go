@@ -461,12 +461,16 @@ func (db *DB) newSessionKey() string {
 	}
 }
 
-func (db *DB) Exec(sql string, arguments ...any) (pgconn.CommandTag, error) {
-	return db.conn.Exec(context.Background(), sql, arguments...)
+func (db *DB) Exec(sql string, args ...any) (pgconn.CommandTag, error) {
+	return db.conn.Exec(context.Background(), sql, args...)
 }
 
-func (db *DB) QueryRow(sql string, arguments ...any) pgx.Row {
-	return db.conn.QueryRow(context.Background(), sql, arguments...)
+func (db *DB) Query(sql string, args ...any) (pgx.Rows, error) {
+	return db.conn.Query(context.Background(), sql, args...)
+}
+
+func (db *DB) QueryRow(sql string, args ...any) pgx.Row {
+	return db.conn.QueryRow(context.Background(), sql, args...)
 }
 
 // TestConn is a utility method for testing the database connection.
