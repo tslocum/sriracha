@@ -47,6 +47,7 @@ import (
 	"codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
+	"github.com/dlclark/regexp2/v2"
 	"github.com/dlclark/regexp2/v2/compat"
 	"github.com/fsnotify/fsnotify"
 	"github.com/jackc/pgx/v5"
@@ -439,7 +440,7 @@ func (s *Server) forbidden(w http.ResponseWriter, data *templateData, action str
 }
 
 // parseLists parses an IP whitelist or blacklist file.
-func (s *Server) parseList(filePath string, index int, blacklist bool) {
+func (s *Server) parseList(filePath string, index int, blacklist bool, wg *sync.WaitGroup) int {
 	var label string
 	if blacklist {
 		label = "blacklist"
@@ -454,6 +455,8 @@ func (s *Server) parseList(filePath string, index int, blacklist bool) {
 
 	entries := make(map[byte][][]byte)
 
+	var count int
+
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
 		line := scanner.Bytes()
@@ -465,6 +468,7 @@ func (s *Server) parseList(filePath string, index int, blacklist bool) {
 		entry = bytes.ReplaceAll(entry, []byte("."), []byte(`\.`))
 		entry = bytes.ReplaceAll(entry, []byte("*"), []byte(".*"))
 		entries[entry[0]] = append(entries[entry[0]], entry)
+		count++
 	}
 	if scanner.Err() != nil {
 		log.Fatalf("failed to read IP %s file %s: %s", label, filePath, err)
@@ -472,33 +476,58 @@ func (s *Server) parseList(filePath string, index int, blacklist bool) {
 
 	f.Close()
 
+	lock := &sync.Mutex{}
+
+	var regexpPrefix = []byte("^(")
+	var regexpSuffix = []byte(")$")
 	const entriesPerPattern = 10000
 	for prefixChar, prefixEntries := range entries {
 		for start := 0; start < len(prefixEntries); start += entriesPerPattern {
-			var r *compat.Regexp
-			if len(prefixEntries) == 0 {
-				r, err = compat.Compile(`^DISABLED$`)
-				if err != nil {
-					log.Fatalf("failed to parse IP %s file %s: %s", label, filePath, err)
+			wg.Go(func() {
+				var buf bytes.Buffer
+				var r *compat.Regexp
+				if len(prefixEntries) == 0 {
+					r, err = compat.Compile(`^DISABLED$`)
+					if err != nil {
+						log.Fatalf("failed to parse IP %s file %s: %s", label, filePath, err)
+					}
+				} else {
+					end := start + entriesPerPattern
+					if end > len(prefixEntries) {
+						end = len(prefixEntries)
+					}
+					buf.Write(regexpPrefix)
+					for i, entry := range prefixEntries[start:end] {
+						if i != 0 {
+							buf.WriteRune('|')
+						}
+						buf.Write(entry)
+					}
+					buf.Write(regexpSuffix)
+					r, err = compat.Compile(buf.String(), regexp2.OptionMaxBacktrackingStackSize(-1))
+					if err != nil {
+						log.Fatalf("failed to parse IP %s file %s: %s", label, filePath, err)
+					}
+					buf.Reset()
 				}
-			} else {
-				end := start + entriesPerPattern
-				if end > len(prefixEntries) {
-					end = len(prefixEntries)
+
+				lock.Lock()
+				if blacklist {
+					s.blacklists[prefixChar][index] = append(s.blacklists[prefixChar][index], r)
+				} else {
+					s.whitelists[prefixChar][index] = append(s.whitelists[prefixChar][index], r)
 				}
-				pattern := append(append([]byte("^("), bytes.Join(prefixEntries[start:end], []byte("|"))...), []byte(")$")...)
-				r, err = compat.Compile(string(pattern))
-				if err != nil {
-					log.Fatalf("failed to parse IP %s file %s: %s", label, filePath, err)
+				lock.Unlock()
+
+				// Print progress indicator during startup.
+				if s.config == nil {
+					fmt.Print(".")
 				}
-			}
-			if blacklist {
-				s.blacklists[prefixChar][index] = append(s.blacklists[prefixChar][index], r)
-			} else {
-				s.whitelists[prefixChar][index] = append(s.whitelists[prefixChar][index], r)
-			}
+			})
 		}
 	}
+
+	return count
 }
 
 // parseConfig parses a YAML configuration file.
@@ -597,6 +626,9 @@ func (s *Server) parseConfig(configFile string) error {
 	}
 
 	if len(config.Whitelists) > 0 || len(config.Blacklists) > 0 {
+		fmt.Print("Parsing IP lists...")
+		var count int
+
 		const prefixChars = "0123456789abcdef"
 		if len(config.Whitelists) > 0 {
 			for _, prefixChar := range prefixChars {
@@ -615,19 +647,35 @@ func (s *Server) parseConfig(configFile string) error {
 		}
 		go s._watchLists(watcher)
 
+		wg := &sync.WaitGroup{}
+		lock := &sync.Mutex{}
+
 		if len(config.Whitelists) > 0 {
 			for i, filePath := range config.Whitelists {
-				s.parseList(filePath, i, false)
 				watcher.Add(filePath)
+				wg.Go(func() {
+					c := s.parseList(filePath, i, false, wg)
+					lock.Lock()
+					count += c
+					lock.Unlock()
+				})
 			}
 		}
 
 		if len(config.Blacklists) > 0 {
 			for i, filePath := range config.Blacklists {
-				s.parseList(filePath, i, true)
 				watcher.Add(filePath)
+				wg.Go(func() {
+					c := s.parseList(filePath, i, true, wg)
+					lock.Lock()
+					count += c
+					lock.Unlock()
+				})
 			}
 		}
+
+		wg.Wait()
+		s.msgPrinter.Printf(" %d OK.\n", count)
 	}
 
 	defaultAccess := map[string]string{
@@ -1319,20 +1367,23 @@ func (s *Server) _watchLists(watcher *fsnotify.Watcher) {
 			}
 			s.lock.Lock()
 
+			wg := &sync.WaitGroup{}
+
 			if slices.Contains(s.config.Whitelists, event.Name) {
 				index := slices.Index(s.config.Whitelists, event.Name)
 				for prefixChar := range s.whitelists {
 					s.whitelists[prefixChar][index] = s.whitelists[prefixChar][index][:0]
 				}
-				s.parseList(s.config.Whitelists[index], index, false)
+				s.parseList(s.config.Whitelists[index], index, false, wg)
 			} else if slices.Contains(s.config.Blacklists, event.Name) {
 				index := slices.Index(s.config.Blacklists, event.Name)
 				for prefixChar := range s.whitelists {
 					s.blacklists[prefixChar][index] = s.blacklists[prefixChar][index][:0]
 				}
-				s.parseList(s.config.Blacklists[index], index, true)
+				s.parseList(s.config.Blacklists[index], index, true, wg)
 			}
 
+			wg.Wait()
 			s.lock.Unlock()
 		case err, ok := <-watcher.Errors:
 			if !ok {
