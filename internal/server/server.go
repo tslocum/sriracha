@@ -2018,7 +2018,7 @@ func (s *Server) rebuildAll(db serverDB) {
 		if traceDTime < 1 {
 			traceDTime = 1
 		}
-		traceLog(fmt.Sprintf("Built all static pages  %d CPU  %.1fx Speedup", cpuTime, float64(cpuTime)/float64(traceDTime)), traceD)
+		traceLog(fmt.Sprintf("Built all static pages  %d CPU  %.1fx Speedup", cpuTime/10, float64(cpuTime)/10/float64(traceDTime)), traceD)
 	}
 }
 
@@ -2740,7 +2740,7 @@ func (s *Server) handleRebuild() {
 			if traceDTime < 1 {
 				traceDTime = 1
 			}
-			msg += fmt.Sprintf("  %d CPU  %.1fx Speedup", cpuTime, float64(cpuTime)/float64(traceDTime))
+			msg += fmt.Sprintf("  %d CPU  %.1fx Speedup", cpuTime/10, float64(cpuTime)/10/float64(traceDTime))
 			traceLog(msg, traceD)
 		}
 

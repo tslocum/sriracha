@@ -49,8 +49,14 @@ func (s *Server) servePerformance(data *templateData, db serverDB, w http.Respon
 		}
 	})
 	data.Message = template.HTML(fmt.Sprintf(`<table class="managetable"><tbody><tr><th>Millis</th><th>%s</th></tr>`, data.G("Page")))
+	var msLabel string
 	for _, t := range timings {
-		data.Message += template.HTML(fmt.Sprintf(`<tr><td>%d</td><td><a href="%s">%s</a></td></tr>`, t.ms, strings.TrimSuffix(t.path, "index.html"), t.path))
+		if t.ms < 10 {
+			msLabel = fmt.Sprintf("0.%d", t.ms)
+		} else {
+			msLabel = fmt.Sprintf("%d", t.ms/10)
+		}
+		data.Message += template.HTML(fmt.Sprintf(`<tr><td>%s</td><td><a href="%s">%s</a></td></tr>`, msLabel, strings.TrimSuffix(t.path, "index.html"), t.path))
 	}
 	data.Message += `</tbody></table>`
 }

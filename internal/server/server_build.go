@@ -156,7 +156,7 @@ func (s *Server) _buildBoardIndex(info *buildInfo) {
 
 	traceD := time.Since(traceT)
 	traceLabel := board.Path() + fileName
-	ms := int32(traceD.Milliseconds())
+	ms := int32(traceD.Microseconds() / 100)
 	if s.opt.trace {
 		traceLog(traceLabel, traceD)
 		info.delta.Add(ms)
@@ -219,7 +219,7 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 
 	traceD := time.Since(traceT)
 	traceLabel := board.Path() + fileName
-	ms := int32(traceD.Milliseconds())
+	ms := int32(traceD.Microseconds() / 100)
 	if s.opt.trace {
 		traceLog(traceLabel, traceD)
 		info.delta.Add(ms)
@@ -353,7 +353,7 @@ func (s *Server) _buildBoardThread(info *buildInfo) {
 
 	traceD := time.Since(traceT)
 	traceLabel := board.Path() + fmt.Sprintf("res/%d.html", postID)
-	ms := int32(traceD.Milliseconds())
+	ms := int32(traceD.Microseconds() / 100)
 	if s.opt.trace {
 		traceLog(traceLabel, traceD)
 		info.delta.Add(ms)
@@ -439,7 +439,7 @@ func (s *Server) _buildNewsIndex(info *buildInfo) {
 
 	traceD := time.Since(traceT)
 	traceLabel := "/" + fileName
-	ms := int32(traceD.Milliseconds())
+	ms := int32(traceD.Microseconds() / 100)
 	if s.opt.trace {
 		traceLog(traceLabel, traceD)
 		info.delta.Add(ms)
@@ -509,7 +509,7 @@ func (s *Server) _buildNewsEntry(info *buildInfo) {
 
 	traceD := time.Since(traceT)
 	traceLabel := fmt.Sprintf("/news-%d.html", n.ID)
-	ms := int32(traceD.Milliseconds())
+	ms := int32(traceD.Microseconds() / 100)
 	if s.opt.trace {
 		traceLog(traceLabel, traceD)
 		info.delta.Add(ms)
@@ -556,7 +556,7 @@ func (s *Server) _buildPage(info *buildInfo) {
 
 	traceD := time.Since(traceT)
 	traceLabel := fmt.Sprintf("/%s.html", p.Path)
-	ms := int32(traceD.Milliseconds())
+	ms := int32(traceD.Microseconds() / 100)
 	if s.opt.trace {
 		traceLog(traceLabel, traceD)
 		info.delta.Add(ms)
@@ -647,7 +647,7 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 
 	traceD := time.Since(traceT)
 	traceLabel := "/" + fileName
-	ms := int32(traceD.Milliseconds())
+	ms := int32(traceD.Microseconds() / 100)
 	if s.opt.trace {
 		traceLog(traceLabel, traceD)
 		info.delta.Add(ms)
@@ -723,7 +723,7 @@ func (s *Server) _buildStatistics(info *buildInfo) {
 
 	traceD := time.Since(traceT)
 	traceLabel := "/stats.json"
-	ms := int32(traceD.Milliseconds())
+	ms := int32(traceD.Microseconds() / 100)
 	if s.opt.trace {
 		traceLog(traceLabel, traceD)
 		info.delta.Add(ms)
