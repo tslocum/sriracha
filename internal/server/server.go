@@ -42,6 +42,7 @@ import (
 	_ "net/http/pprof"
 
 	"codeberg.org/tslocum/gotext"
+	"codeberg.org/tslocum/list2regexp"
 	"codeberg.org/tslocum/sriracha"
 	"codeberg.org/tslocum/sriracha/internal/database"
 	"codeberg.org/tslocum/sriracha/model"
@@ -469,26 +470,21 @@ func (s *Server) parseList(filePath string, index int, blacklist bool, wg *sync.
 		}
 		entry := make([]byte, len(line))
 		copy(entry, line)
-		entry = bytes.ReplaceAll(entry, []byte("."), []byte(`\.`))
-		entry = bytes.ReplaceAll(entry, []byte("*"), []byte(".*"))
 		entries[entry[0]] = append(entries[entry[0]], entry)
 		count++
 	}
 	if scanner.Err() != nil {
-		log.Fatalf("failed to read IP %s file %s: %s", label, filePath, err)
+		log.Fatalf("failed to read IP %s file %s: %s", label, filePath, scanner.Err())
 	}
 
 	f.Close()
 
 	lock := &sync.Mutex{}
 
-	var regexpPrefix = []byte("^(")
-	var regexpSuffix = []byte(")$")
 	const entriesPerPattern = 10000
 	for prefixChar, prefixEntries := range entries {
 		for start := 0; start < len(prefixEntries); start += entriesPerPattern {
 			wg.Go(func() {
-				var buf bytes.Buffer
 				var r *compat.Regexp
 				if len(prefixEntries) == 0 {
 					r, err = compat.Compile(`^DISABLED$`)
@@ -500,19 +496,15 @@ func (s *Server) parseList(filePath string, index int, blacklist bool, wg *sync.
 					if end > len(prefixEntries) {
 						end = len(prefixEntries)
 					}
-					buf.Write(regexpPrefix)
-					for i, entry := range prefixEntries[start:end] {
-						if i != 0 {
-							buf.WriteRune('|')
-						}
-						buf.Write(entry)
-					}
-					buf.Write(regexpSuffix)
-					r, err = compat.Compile(buf.String(), regexp2.OptionMaxBacktrackingStackSize(-1))
+					reader := bytes.NewReader(bytes.Join(prefixEntries[start:end], []byte("\n")))
+					_, patterns, err := list2regexp.ParseList(reader, list2regexp.EscapeAllowAsterisk, -1, true)
 					if err != nil {
 						log.Fatalf("failed to parse IP %s file %s: %s", label, filePath, err)
 					}
-					buf.Reset()
+					r, err = compat.Compile(patterns[0], regexp2.OptionMaxBacktrackingStackSize(-1))
+					if err != nil {
+						log.Fatalf("failed to compile regular expression for IP %s file %s: %s", label, filePath, err)
+					}
 				}
 
 				lock.Lock()

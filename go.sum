@@ -2,8 +2,12 @@ codeberg.org/tslocum/bbcode v0.0.0-20260210194643-496280381f96 h1:9vH5wPnvJwcQRD
 codeberg.org/tslocum/bbcode v0.0.0-20260210194643-496280381f96/go.mod h1:cN3RhquO0hDyr6L38E7JcLKjYSog1uSHTsC7KGrvmQA=
 codeberg.org/tslocum/gotext v0.0.0-20260702153535-d0250b83dac7 h1:zTVosEh8PFaE7SFDk/NfznA0bYMqo9imfTrlUbfm5tk=
 codeberg.org/tslocum/gotext v0.0.0-20260702153535-d0250b83dac7/go.mod h1:3AY1Lxzfh7o3LliRL5PtI3Am7lg20k2VFl2kLkg+T1Q=
+codeberg.org/tslocum/list2regexp v1.0.2 h1:iJ5P8IbLDyuDz1zIea71q+g3RrrUuwYo1uUun6Cv5vc=
+codeberg.org/tslocum/list2regexp v1.0.2/go.mod h1:Ig5D1sElNsrikvId1hSn7SVtomGlYtSzXAdT8hRtAaU=
 filippo.io/edwards25519 v1.2.0 h1:crnVqOiS4jqYleHd9vaKZ+HKtHfllngJIiOpNpoJsjo=
 filippo.io/edwards25519 v1.2.0/go.mod h1:xzAOLCNug/yB62zG1bQ8uziwrIqIuxhctzJT18Q77mc=
+github.com/3th1nk/cidr v0.3.0 h1:I6zyZXenmdnlbvioikvVNDbaUPoFd4d6wQ4reSJkcjY=
+github.com/3th1nk/cidr v0.3.0/go.mod h1:XsSQnS4rEYyB2veDfnIGgViulFpIITPKtp3f0VxpiLw=
 github.com/PuerkitoBio/goquery v1.13.0 h1:mqHbjD7Jmnul4DTR24LKTjo1uUmHUh072kteGV+xpFM=
 github.com/PuerkitoBio/goquery v1.13.0/go.mod h1:Hip5mdBL8K2wEGKJdr27sRaNwIdDajmCwB/ExUPwW+g=
 github.com/alecthomas/assert/v2 v2.11.0 h1:2Q9r3ki8+JYXvGsDyBXwH3LcJ+WK5D0gc5E8vS6K3D0=
@@ -75,11 +79,14 @@ github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec h1:W09IVJc94
 github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec/go.mod h1:qqbHyh8v60DhA7CoWK5oRCqLrMHRGoxYCSS9EjAz6Eo=
 github.com/rogpeppe/go-internal v1.14.1 h1:UQB4HGPB6osV0SQTLymcB4TgvyWu6ZyliaW0tI/otEQ=
 github.com/rogpeppe/go-internal v1.14.1/go.mod h1:MaRKkUm5W0goXpeCfT7UZI6fk/L7L7so1lCWt35ZSgc=
+github.com/smartystreets/mafsa v1.1.0 h1:xlU03HcgtFUQgw6kgcZN5ifi9ZIqJ8yAnacLo858hLo=
+github.com/smartystreets/mafsa v1.1.0/go.mod h1:pAyFUJ/pyyd4xV/j0yCQgdh7FtoI2X+NSxpfTT7wl5c=
 github.com/steambap/captcha v1.4.1 h1:OmMdxLCWCqJvsFaFYwRpvMckIuvI6s8s1LsBrBw97P0=
 github.com/steambap/captcha v1.4.1/go.mod h1:oC9T7IfEgnrhzjDz5Djf1H7GPffCzRMbsQfFkJmhlnk=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
+github.com/stretchr/testify v1.7.2/go.mod h1:R6va5+xMeoiuVRoj+gSkQ7d3FALtqAAGI1FQKckRals=
 github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu7U=
 github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
 github.com/vmihailenco/msgpack/v5 v5.4.1 h1:cQriyiUvjTwOHg8QZaPihLWeRAAVoCpE00IUPn0Bjt8=

@@ -1,10 +1,11 @@
 module codeberg.org/tslocum/sriracha
 
-go 1.26.0
+go 1.26.8
 
 require (
 	codeberg.org/tslocum/bbcode v0.0.0-20260210194643-496280381f96
 	codeberg.org/tslocum/gotext v0.0.0-20260702153535-d0250b83dac7
+	codeberg.org/tslocum/list2regexp v1.0.2
 	github.com/PuerkitoBio/goquery v1.13.0
 	github.com/alecthomas/chroma/v2 v2.27.0
 	github.com/alexedwards/argon2id v1.0.0
@@ -30,6 +31,7 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.2.0 // indirect
+	github.com/3th1nk/cidr v0.3.0 // indirect
 	github.com/andybalholm/cascadia v1.3.5 // indirect
 	github.com/boombuler/barcode v1.1.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
@@ -43,6 +45,7 @@ require (
 	github.com/ncruces/go-strftime v1.0.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
+	github.com/smartystreets/mafsa v1.1.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	gitlab.com/nyarla/go-crypt v0.0.0-20160106005555-d9a5dc2b789b // indirect
