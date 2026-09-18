@@ -1,5 +1,5 @@
 # https://hub.docker.com/_/alpine/tags
-FROM alpine:3.24.1 AS build
+FROM alpine:3.24.2 AS build
 
 # Install timezone data and Go compiler.
 RUN apk add --no-cache tzdata go
@@ -30,7 +30,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     cd /usr/src/sriracha && \
     find . -type f -name '*.go' -delete
 
-FROM alpine:3.24.1
+FROM alpine:3.24.2
 
 # Set working directory.
 WORKDIR /usr/share/sriracha
