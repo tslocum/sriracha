@@ -427,6 +427,14 @@ details {
 		margin-right: 10px;
 	}
 
+	.filesize {
+		display: inline-block;
+		width: calc(100% - 10px);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
 	.reply .filesize {
 		margin-left: 10px;
 	}

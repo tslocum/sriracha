@@ -497,7 +497,7 @@ func (s *Server) parseList(filePath string, index int, blacklist bool, wg *sync.
 						end = len(prefixEntries)
 					}
 					reader := bytes.NewReader(bytes.Join(prefixEntries[start:end], []byte("\n")))
-					_, patterns, err := list2regexp.ParseList(reader, list2regexp.EscapeAllowAsterisk, -1, true)
+					patterns, _, err := list2regexp.ParseList(reader, list2regexp.EscapeAllowAsterisk, -1, true)
 					if err != nil {
 						log.Fatalf("failed to parse IP %s file %s: %s", label, filePath, err)
 					}
