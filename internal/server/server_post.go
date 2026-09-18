@@ -447,6 +447,63 @@ func (s *Server) loadPostFile(db serverDB, r *http.Request, p *Post, fileHeader 
 		p.FileWidth, p.FileHeight = imgWidth, imgHeight
 
 		formFile.Seek(0, 0)
+		if p.FileMIME == "image/gif" && s.opt.ImageMagick {
+			// Verify ImageMagick is installed and accessible.
+			convertPath, err := exec.LookPath("convert")
+			if err != nil || convertPath == "" {
+				log.Fatal(fmt.Errorf("error: the 'ImageMagick' option is enabled, but ImageMagick is not installed (or its 'convert' command is inaccessible)"))
+			}
+
+			var dimensions string
+			if p.FileWidth > p.FileHeight {
+				dimensions = fmt.Sprintf("%dx", p.Board.ThumbWidth)
+			} else {
+				dimensions = fmt.Sprintf("x%d", p.Board.ThumbHeight)
+			}
+
+			cmd := exec.Command("convert", "-", "-auto-orient", "-thumbnail", dimensions, "-coalesce", "-layers", "OptimizeFrame", "-depth", "4", "-type", "palettealpha", thumbPath)
+			stdin, err := cmd.StdinPipe()
+			if err != nil {
+				return errors.New(Get(p.Board, nil, "Failed to create thumbnail: %s", err))
+			}
+			cmd.Stderr = os.Stderr
+			stdout, err := cmd.StdoutPipe()
+			if err != nil {
+				return errors.New(Get(p.Board, nil, "Failed to create thumbnail: %s", err))
+			}
+			buf := &bytes.Buffer{}
+			wg := &sync.WaitGroup{}
+			wg.Go(func() {
+				io.Copy(buf, stdout)
+			})
+			wg.Go(func() {
+				io.Copy(stdin, formFile)
+				stdin.Close()
+			})
+			err = cmd.Start()
+			if err != nil {
+				return errors.New(Get(p.Board, nil, "Failed to create thumbnail: %s", err))
+			}
+			err = cmd.Wait()
+			if err != nil {
+				return errors.New(Get(p.Board, nil, "Failed to create thumbnail: %s", err))
+			}
+			wg.Wait()
+
+			f, err := os.Open(thumbPath)
+			if err != nil {
+				return errors.New(Get(p.Board, nil, "Failed to create thumbnail: %s", err))
+			}
+			defer f.Close()
+
+			thumbImg, err := gif.Decode(f)
+			if err != nil {
+				return errors.New(Get(p.Board, nil, "Failed to create thumbnail: %s", err))
+			}
+			bounds := thumbImg.Bounds()
+			p.ThumbWidth, p.ThumbHeight = bounds.Dx(), bounds.Dy()
+			return nil
+		}
 		return createPostThumbnail(p, formFile, p.FileMIME, false, thumbPath)
 	}
 

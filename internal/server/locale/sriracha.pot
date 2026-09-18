@@ -640,6 +640,9 @@ msgstr ""
 msgid "Gallery"
 msgstr ""
 
+msgid "Generate animated thumbnails for GIF images using %s."
+msgstr ""
+
 msgid "Global"
 msgstr ""
 

@@ -97,6 +97,9 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		s.opt.StripOriginal = false
 		db.SaveBool("striporiginal", s.opt.StripOriginal)
 
+		s.opt.ImageMagick = false
+		db.SaveBool("imagemagick", s.opt.ImageMagick)
+
 		s.opt.OekakiWidth = defaultServerOekakiWidth
 		db.SaveInt("oekakiwidth", s.opt.OekakiWidth)
 
@@ -273,6 +276,10 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		}
 		db.SaveBool("striporiginal", stripOriginal)
 		s.opt.StripOriginal = stripOriginal
+
+		imageMagick := FormBool(r, "imagemagick")
+		db.SaveBool("imagemagick", imageMagick)
+		s.opt.ImageMagick = imageMagick
 
 		oekakiWidth := FormInt(r, "oekakiwidth")
 		db.SaveInt("oekakiwidth", oekakiWidth)

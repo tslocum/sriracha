@@ -1,3 +1,6 @@
+2.1.4:
+- Support creating animated GIF thumbnails using ImageMagick
+
 2.1.3:
 - Include thread count and unique user post count in stats.json
 - Support configuring IP address whitelist and blacklist files

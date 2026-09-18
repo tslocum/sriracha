@@ -185,6 +185,7 @@ type ServerOptions struct {
 	Embeds           [][2]string
 	StripMetadata    bool
 	StripOriginal    bool
+	ImageMagick      bool
 	OekakiWidth      int
 	OekakiHeight     int
 	Overboard        string
@@ -1003,6 +1004,8 @@ func (s *Server) loadServerConfig() error {
 	} else {
 		s.opt.StripOriginal = db.GetBool("striporiginal")
 	}
+
+	s.opt.ImageMagick = db.GetBool("imagemagick")
 
 	oekakiWidth := db.GetInt("oekakiwidth")
 	if oekakiWidth == 0 {

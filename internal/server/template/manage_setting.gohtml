@@ -171,6 +171,14 @@
             <th><br>{{T "Attachments"}}</th><td>&nbsp;</td>
         </tr>
         <tr>
+            <td class="postblock"><label for="imagemagick">ImageMagick</label></td>
+            <td><select name="imagemagick" style="width: 100%;">
+                <option value="0"{{if not .Opt.ImageMagick}} selected{{end}}>✗ {{T "Disable"}}</option>
+                <option value="1"{{if .Opt.ImageMagick}} selected{{end}}>✓ {{T "Enable"}}</option>
+            </select></td>
+            <td>{{T "Generate animated thumbnails for GIF images using %s." "ImageMagick"}}</td>
+        </tr>
+        <tr>
             <td class="postblock"><label for="stripmetadata">{{T "Strip Metadata"}}</label></td>
             <td><select name="stripmetadata" style="width: 100%;">
                 <option value="0"{{if not .Opt.StripMetadata}} selected{{end}}>✗ {{T "Disable"}}</option>
