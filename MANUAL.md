@@ -1625,6 +1625,44 @@ By default, only one instance of an attachment is allowed across the entire site
 When someone uploads a file or embeds a URL which has already been posted, they
 will receive an error message containing a link the existing post.
 
+#### Wordfilters
+
+Wordfilters may be used to find and replace text in post messages.
+
+While simple plain-text replacements are supported, more complex text
+replacements are also possible.
+
+For example, [sriracha.rocket9labs.com](https://sriracha.rocket9labs.com)
+defines the following wordfilters:
+
+\>\>donate -> [>>donate](https://liberapay.com/rocket9labs.com)
+
+```
+&gt;&gt;donate
+<a href="https://liberapay.com/rocket9labs.com" target="_blank">&gt;&gt;donate</a>
+```
+
+\>\>issues/1 -> [>>issues/1](https://codeberg.org/tslocum/sriracha/issues/1)
+
+```
+&gt;&gt;issues/([0-9]+)
+<a href="https://codeberg.org/tslocum/sriracha/issues/$1" target="_blank">&gt;&gt;issues/$1</a>
+```
+
+\>\>commit/d8e901191a1a1c2d06ec15d2acfa008b935adf94 -> [>>commit/d8e901191a1a1c2d06ec15d2acfa008b935adf94](https://codeberg.org/tslocum/sriracha/commit/d8e901191a1a1c2d06ec15d2acfa008b935adf94)
+
+```
+&gt;&gt;commit/([0-9a-z]+)
+<a href="https://codeberg.org/tslocum/sriracha/commit/$1" target="_blank">&gt;&gt;commit/$1</a>
+```
+
+\>\>manual#wordfilters -> [>>manual#wordfilters](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#wordfilters)
+
+```
+&gt;&gt;manual(#[0-9a-z\-]+)?
+<a href="https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md$1" target="_blank">&gt;&gt;manual$1</a>
+```
+
 #### Keywords
 
 Keywords are [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) which,
