@@ -11,6 +11,8 @@ import (
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/dlclark/regexp2/v2/compat"
+	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
 )
 
 func (s *Server) loadGlobalKeywordSettings(db serverDB, k *Keyword) {
@@ -118,7 +120,7 @@ func (s *Server) serveKeyword(data *templateData, db serverDB, w http.ResponseWr
 		if r.Method != http.MethodPost {
 			return
 		}
-		rgxp, err := compat.Compile(data.Manage.Keyword.Text)
+		reg, err := compat.Compile(data.Manage.Keyword.Text)
 		if err != nil {
 			data.ManageError(fmt.Sprintf("Failed to compile regular expression: %s", err))
 		}
@@ -126,7 +128,9 @@ func (s *Server) serveKeyword(data *templateData, db serverDB, w http.ResponseWr
 		message := r.FormValue("message")
 		data.Extra = message
 
-		match := rgxp.MatchString(message)
+		t := transform.Chain(norm.NFD, transform.RemoveFunc(isNonSpacingMark), norm.NFC)
+		match := matchKeyword(t, reg, message)
+
 		matchLabel := "NO MATCH"
 		if match {
 			matchLabel = "MATCH FOUND"

@@ -1445,7 +1445,7 @@ func matchKeyword(t transform.Transformer, r *compat.Regexp, message ...string) 
 		if err == nil {
 			msg = result
 		}
-		if r.MatchString(msg) {
+		if r.MatchString(strings.ToLower(msg)) {
 			return true
 		}
 	}

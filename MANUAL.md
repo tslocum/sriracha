@@ -1672,9 +1672,9 @@ A built-in keyword tester is included. To test building a regular expression,
 use an expression testing website with the PCRE format selected.
 
 Sriracha normalizes text before detecting keywords. This avoids the need to
-create multiple keywords for each possible accent character variation.
+create multiple keywords for each possible case and accent character variation.
 
-Thus, you should only use characters without accents when writing keywords.
+Thus, you should only use lowercase characters without accents when writing keywords.
 
 Sriracha uses the [regexp2](https://github.com/dlclark/regexp2) reguar expression engine,
 which supports [additional syntax](https://github.com/dlclark/regexp2#additional-perl-and-pcre-syntax).
