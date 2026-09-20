@@ -201,6 +201,10 @@ img, audio, video {
 	white-space: nowrap;
 }
 
+.userdelete label {
+	vertical-align: middle;
+}
+
 .doubledash {
 	vertical-align: top;
 	clear: both;
