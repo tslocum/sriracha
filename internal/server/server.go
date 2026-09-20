@@ -30,6 +30,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"runtime/debug"
+	"runtime/pprof"
 	"runtime/trace"
 	"slices"
 	"strconv"
@@ -2346,8 +2347,18 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	// Acquire semaphore.
 	s.connSemaphore <- struct{}{}
 
-	// Release semaphore after serving request.
 	defer func() {
+		// Panics while serving HTTP requests are recovered by default.
+		// This results in an invalid application state. Exit instead.
+		if err := recover(); err != nil {
+			log.Println("STACK TRACE:")
+			pprof.Lookup("goroutine").WriteTo(os.Stderr, 2)
+			fmt.Fprintln(os.Stderr)
+
+			log.Fatalf("PANIC: %+v", err)
+		}
+
+		// Release semaphore after serving request.
 		if unlocked {
 			return
 		}

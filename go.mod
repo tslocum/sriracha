@@ -5,7 +5,7 @@ go 1.26.8
 require (
 	codeberg.org/tslocum/bbcode v0.0.0-20260210194643-496280381f96
 	codeberg.org/tslocum/gotext v0.0.0-20260702153535-d0250b83dac7
-	codeberg.org/tslocum/list2regexp v1.0.3
+	codeberg.org/tslocum/list2regexp v1.0.4
 	github.com/PuerkitoBio/goquery v1.13.0
 	github.com/alecthomas/chroma/v2 v2.27.0
 	github.com/alexedwards/argon2id v1.0.0
