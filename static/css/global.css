@@ -434,7 +434,7 @@ details {
 	font-family: IPAMonaPGothic, 'IPA モナー Pゴシック', Monapo, Mona, submona;
 }
 
-@media all and (max-width: 600px) {
+@media all and (max-width: 750px) {
 	* {
 		box-sizing: border-box;
 	}
@@ -497,7 +497,6 @@ details {
 
 	.statusfieldset {
 		width: 100%;
-		box-sizing: border-box;
 	}
 
 	.codeblock table {
