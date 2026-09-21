@@ -16,37 +16,31 @@
         <input type="hidden" name="confirmation" value="1">
         {{end}}
         <input type="submit" hidden>
-        <table class="manageform">
+        <div class="managegrid">
             {{if and (eq .Manage.Ban nil) (eq .Extra "")}}
-                <tr>
-                    <td class="postblock"><label for="ip">{{T "IP Address"}}</label></td>
-                    <td><input type="text" name="ip"></td>
-                    <td>{{T "IP address to ban. Wildcards (*) may be used to ban a range of addresses."}}</td>
-                </tr>
+                <div class="postblock"><label for="ip">{{T "IP Address"}}</label></div>
+                <div><input type="text" name="ip"></div>
+                <div>{{T "IP address to ban. Wildcards (*) may be used to ban a range of addresses."}}</div>
             {{end}}
-            <tr>
-                <td class="postblock"><label for="expire">{{T "Expires"}}</label></td>
-                <td><input type="text" name="expire" value="{{if ne .Manage.Ban nil}}{{FormatDateInput .Manage.Ban.Expire}}{{end}}"></td>
-                <td><small><button onclick="document.sriracha.expire.value='{{FormatDateInput (Add64 Now 3600)}}';document.sriracha.reason.focus();return false;">{{T "1 Hour"}}</button>&nbsp;<button onclick="document.sriracha.expire.value='{{FormatDateInput (Add64 Now 86400)}}';document.sriracha.reason.focus();return false;">{{T "1 Day"}}</button>&nbsp;<button onclick="document.sriracha.expire.value='{{FormatDateInput (Add64 Now 172800)}}';document.sriracha.reason.focus();return false;">{{T "2 Days"}}</button>&nbsp;<button onclick="document.sriracha.expire.value='{{FormatDateInput (Add64 Now 604800)}}';document.sriracha.reason.focus();return false;">{{T "1 Week"}}</button>&nbsp;<button onclick="document.sriracha.expire.value='{{FormatDateInput (Add64 Now 1209600)}}';document.sriracha.reason.focus();return false;">{{T "2 Weeks"}}</button>&nbsp;<button onclick="document.sriracha.expire.value='{{FormatDateInput (Add64 Now 2592000)}}';document.sriracha.reason.focus();return false;">{{T "1 Month"}}</button>&nbsp;<button onclick="document.sriracha.expire.value='';document.sriracha.reason.focus();return false;">{{T "Never"}}</button></small></td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="reason">{{T "Reason"}}</label></td>
-                <td><input type="text" name="reason" value="{{if ne .Manage.Ban nil}}{{.Manage.Ban.Reason}}{{end}}"></td>
-                <td>{{T "Message shown when the visitor attempts to post. Optional."}}</td>
-            </tr>
+
+            <div class="postblock"><label for="expire">{{T "Expires"}}</label></div>
+            <div><input type="text" name="expire" value="{{if ne .Manage.Ban nil}}{{FormatDateInput .Manage.Ban.Expire}}{{end}}"></div>
+            <div><small><button onclick="document.sriracha.expire.value='{{FormatDateInput (Add64 Now 3600)}}';document.sriracha.reason.focus();return false;">{{T "1 Hour"}}</button>&nbsp;<button onclick="document.sriracha.expire.value='{{FormatDateInput (Add64 Now 86400)}}';document.sriracha.reason.focus();return false;">{{T "1 Day"}}</button>&nbsp;<button onclick="document.sriracha.expire.value='{{FormatDateInput (Add64 Now 172800)}}';document.sriracha.reason.focus();return false;">{{T "2 Days"}}</button>&nbsp;<button onclick="document.sriracha.expire.value='{{FormatDateInput (Add64 Now 604800)}}';document.sriracha.reason.focus();return false;">{{T "1 Week"}}</button>&nbsp;<button onclick="document.sriracha.expire.value='{{FormatDateInput (Add64 Now 1209600)}}';document.sriracha.reason.focus();return false;">{{T "2 Weeks"}}</button>&nbsp;<button onclick="document.sriracha.expire.value='{{FormatDateInput (Add64 Now 2592000)}}';document.sriracha.reason.focus();return false;">{{T "1 Month"}}</button>&nbsp;<button onclick="document.sriracha.expire.value='';document.sriracha.reason.focus();return false;">{{T "Never"}}</button></small></div>
+
+            <div class="postblock"><label for="reason">{{T "Reason"}}</label></div>
+            <div><input type="text" name="reason" value="{{if ne .Manage.Ban nil}}{{.Manage.Ban.Reason}}{{end}}"></div>
+            <div>{{T "Message shown when the visitor attempts to post. Optional."}}</div>
+
             {{if and (May "banfile.add" $.Account $.Opt.Access) (and (and (eq .Manage.Ban nil) (ne .Extra "") (ne .Extra2 "")))}}
-                <tr>
-                    <td class="postblock"><label for="banfile">{{T "File"}}</label></td>
-                    <td><label><input type="checkbox" name="banfile" value="{{.Extra2}}"> {{T "Ban file"}}</label></td>
-                    <td>{{T "Permanently ban uploaded file."}}</td>
-                </tr>
+                <div class="postblock"><label for="banfile">{{T "File"}}</label></div>
+                <div><label><input type="checkbox" name="banfile" value="{{.Extra2}}"> {{T "Ban file"}}</label></div>
+                <div>{{T "Permanently ban uploaded file."}}</div>
             {{end}}
-            <tr>
-                <td>&nbsp;</td>
-                <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.Ban nil}}{{if eq .Template "manage_mod"}}{{if eq .Extra "db"}}{{T "Delete & ban"}}{{else}}{{T "Ban"}}{{end}}{{else}}{{T "Add"}}{{end}}{{else}}{{T "Update"}}{{end}}"></td>
-                <td>&nbsp;</td>
-            </tr>
-        </table>
+
+            <div>&nbsp;</div>
+            <div align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.Ban nil}}{{if eq .Template "manage_mod"}}{{if eq .Extra "db"}}{{T "Delete & ban"}}{{else}}{{T "Ban"}}{{end}}{{else}}{{T "Add"}}{{end}}{{else}}{{T "Update"}}{{end}}"></div>
+            <div>&nbsp;</div>
+        </div>
         </form>
     </fieldset><br>
     {{if or (ne .Manage.Ban nil) (ne .Template "manage_ban")}}
@@ -84,18 +78,15 @@
     <br><form method="post" enctype="multipart/form-data">
         <fieldset>
         <legend>{{T "Lift File Ban"}}</legend>
-        <table class="manageform">
-            <tr>
-                <td class="postblock"><label for="liftfile">{{T "File"}}</label></td>
-                <td><input type="file" name="liftfile"></td>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Lift"}}"></td>
-                <td>&nbsp;</td>
-            </tr>
-        </table>
+        <div class="managegrid">
+            <div class="postblock"><label for="liftfile">{{T "File"}}</label></div>
+            <div><input type="file" name="liftfile"></div>
+            <div>&nbsp;</div>
+
+            <div>&nbsp;</div>
+            <div align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Lift"}}"></div>
+            <div>&nbsp;</div>
+        </div>
         </fieldset>
     </form><br>
 {{end}}
@@ -105,18 +96,15 @@
         <input type="hidden" name="search" value="1">
         <fieldset>
         <legend>{{T "Search"}}</legend>
-        <table class="manageform">
-            <tr>
-                <td class="postblock"><label for="id">{{T "Ban ID"}}</label></td>
-                <td><input type="text" name="id"></td>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Search"}}"></td>
-                <td>&nbsp;</td>
-            </tr>
-        </table>
+        <div class="managegrid">
+            <div class="postblock"><label for="id">{{T "Ban ID"}}</label></div>
+            <div><input type="text" name="id"></div>
+            <div>&nbsp;</div>
+
+            <div>&nbsp;</div>
+            <div align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Search"}}"></div>
+            <div>&nbsp;</div>
+        </div>
         </fieldset>
     </form><br>
 {{end}}

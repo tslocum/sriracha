@@ -29,37 +29,32 @@
 <form method="post">
     <fieldset>
     {{if ne .Manage.Account nil}}<legend>{{T "Update %s" .Manage.Account.Username}}</legend>{{end}}
-    <table class="manageform">
-        <tr>
-            <td class="postblock"><label for="dir">{{T "Username"}}</label></td>
-            <td><input type="text" name="username" value="{{if ne .Manage.Account nil}}{{.Manage.Account.Username}}{{end}}" autocomplete="off"></td>
-            <td>{{T "Used to log in and audit actions."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="name">{{T "Password"}}</label></td>
-            <td><input type="password" name="password" autocomplete="off"></td>
-            <td>{{if eq .Manage.Account nil}}{{T "Required."}}{{else}}{{T "Leave blank to keep current password."}}{{end}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="role">{{T "Role"}}</label></td>
-            <td><select name="role" style="width: 100%;">
-                <option value="1"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 1)}} selected{{end}}>{{T "Super-administrator"}}</option>
-                <option value="2"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 2)}} selected{{end}}>{{T "Administrator"}}</option>
-                <option value="3"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 3)}} selected{{end}}>{{T "Moderator"}}</option>
-                <option value="99"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 99)}} selected{{end}}>{{T "Disabled"}}</option>
-            </select></td>
-            <td>
-                {{T "Super-administrators have full access."}}<br>
-                {{T "Administrators have full access except for managing accounts."}}<br>
-                {{T "Moderators may only perform certain actions. See moderator guide for more info."}}
-            </td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.Account nil}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
-            <td>&nbsp;</td>
-        </tr>
-    </table>
+    <div class="managegrid">
+        <div class="postblock"><label for="dir">{{T "Username"}}</label></div>
+        <div><input type="text" name="username" value="{{if ne .Manage.Account nil}}{{.Manage.Account.Username}}{{end}}" autocomplete="off"></div>
+        <div>{{T "Used to log in and audit actions."}}</div>
+
+        <div class="postblock"><label for="name">{{T "Password"}}</label></div>
+        <div><input type="password" name="password" autocomplete="off"></div>
+        <div>{{if eq .Manage.Account nil}}{{T "Required."}}{{else}}{{T "Leave blank to keep current password."}}{{end}}</div>
+
+        <div class="postblock"><label for="role">{{T "Role"}}</label></div>
+        <div><select name="role" style="width: 100%;">
+            <option value="1"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 1)}} selected{{end}}>{{T "Super-administrator"}}</option>
+            <option value="2"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 2)}} selected{{end}}>{{T "Administrator"}}</option>
+            <option value="3"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 3)}} selected{{end}}>{{T "Moderator"}}</option>
+            <option value="99"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 99)}} selected{{end}}>{{T "Disabled"}}</option>
+        </select></div>
+        <div>
+            {{T "Super-administrators have full access."}}<br>
+            {{T "Administrators have full access except for managing accounts."}}<br>
+            {{T "Moderators may only perform certain actions. See moderator guide for more info."}}
+        </div>
+
+        <div>&nbsp;</div>
+        <div align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.Account nil}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></div>
+        <div>&nbsp;</div>
+    </div>
     </fieldset>
 </form>
 {{if eq .Manage.Account nil}}
