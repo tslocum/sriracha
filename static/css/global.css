@@ -256,7 +256,25 @@ legend {
 	margin-bottom: 10px;
 }
 
-.manageform input:not([type=checkbox]), .manageform select, .manageform textarea {
+.managegrid {
+    display: grid;
+    grid-template-columns: 200px minmax(300px, 1fr) auto;
+    grid-gap: 3px;
+}
+
+.statusgrid {
+	grid-template-columns: 200px 200px auto;
+}
+
+.gridheader {
+	font-weight: bold;
+}
+
+.gridinfo {
+	grid-column: 2/-1;
+}
+
+.manageform input:not([type=checkbox]), .manageform select, .manageform textarea, .managegrid input:not([type=checkbox]), .managegrid select, .managegrid textarea {
 	width: 100%;
 	box-sizing: border-box;
 }
@@ -417,7 +435,7 @@ details {
 }
 
 @media all and (max-width: 600px) {
-	input, textarea, select {
+	* {
 		box-sizing: border-box;
 	}
 
@@ -443,7 +461,7 @@ details {
 		margin-left: 10px;
 	}
 
-	label {
+	:not(.postblock) > label {
 		font-size: 0.75em;
 	}
 
@@ -463,6 +481,23 @@ details {
 	table:not(.userdelete) {
 		width: 100%;
 		table-layout: fixed;
+	}
+
+	.managegrid {
+		grid-template-columns: 1fr;
+	}
+
+	.managegrid .postblock:not(:first-child) {
+		margin-top: 1em;
+	}
+
+	.gridinfo {
+		grid-column: auto;
+	}
+
+	.statusfieldset {
+		width: 100%;
+		box-sizing: border-box;
 	}
 
 	.codeblock table {

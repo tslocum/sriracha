@@ -1,607 +1,522 @@
 {{template "manage_begin.gohtml" .}}
 <h2 class="managetitle">{{T "Settings"}}{{Help "global-settings"}}</h2>
 {{if Contains .Extra "DEV"}}<b>Warning:</b> You are running an unsupported version of Sriracha. Install an <a href="https://codeberg.org/tslocum/sriracha/releases">official version</a> to receive support.<br>{{end}}
-<fieldset>
+<fieldset class="statusfieldset">
 <legend>{{T "Status"}}</legend>
-<table class="manageform">
-    <tr>
-        <td class="postblock"><label for="version">{{T "Version"}}</label></td>
-        <td><input type="text" name="version" value="{{.Extra}}" disabled></input></td>
-        <td>{{T "%s version." "Sriracha"}} [<a href="https://codeberg.org/tslocum/sriracha/releases/latest" target="_blank">{{T "View latest"}}</a>]</td>
-    </tr>
-    <tr>
-        <td class="postblock"><label for="uptime">{{T "Uptime"}}</label></td>
-        <td><input type="text" name="uptime" value="{{.Extra3}}" disabled></input></td>
-        <td>{{T "%s uptime." "Sriracha"}}</td>
-    </tr>
-    <tr>
-        <td class="postblock"><label for="memory">{{T "Memory"}}</label></td>
-        <td><input type="text" name="memory" value="{{.Extra2}}" disabled></input></td>
-        <td>{{T "%s memory usage." "Sriracha"}}</td>
-    </tr>
-    <tr>
-        <td class="postblock"><label for="memory">{{T "Connections"}}</label></td>
-        <td><input type="text" name="connections" value="{{.Extra4}}" disabled></input></td>
-        <td>{{T "%s connections." "Sriracha"}}</td>
-    </tr>
-</table>
+<div class="managegrid statusgrid">
+    <div class="postblock"><label for="version">{{T "Version"}}</label></div>
+    <div><input type="text" name="version" value="{{.Extra}}" disabled></input></div>
+    <div>{{T "%s version." "Sriracha"}} [<a href="https://codeberg.org/tslocum/sriracha/releases/latest" target="_blank">{{T "View latest"}}</a>]</div>
+
+    <div class="postblock"><label for="uptime">{{T "Uptime"}}</label></div>
+    <div><input type="text" name="uptime" value="{{.Extra3}}" disabled></input></div>
+    <div>{{T "%s uptime." "Sriracha"}}</div>
+
+    <div class="postblock"><label for="memory">{{T "Memory"}}</label></div>
+    <div><input type="text" name="memory" value="{{.Extra2}}" disabled></input></div>
+    <div>{{T "%s memory usage." "Sriracha"}}</div>
+
+    <div class="postblock"><label for="memory">{{T "Connections"}}</label></div>
+    <div><input type="text" name="connections" value="{{.Extra4}}" disabled></input></div>
+    <div>{{T "%s connections." "Sriracha"}}</div>
+</div>
 </fieldset><br><br>
 <form method="post" enctype="multipart/form-data">
     <fieldset>
     <legend>{{T "Update Settings"}}</legend>
-    <table class="manageform">
-        <tr>
-            <td class="postblock"><label for="sitename">{{T "Site Name"}}</label></td>
-            <td><input type="text" name="sitename" value="{{.Opt.SiteName}}"></input></td>
-            <td>{{T "Appears in page title and header."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="sitedescription">{{T "Site Description"}}</label></td>
-            <td><input type="text" name="sitedescription" value="{{.Opt.SiteDescription}}"></input></td>
-            <td>{{T "Appears in %s and search results for the site index." "stats.json"}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="sitehome">{{T "Site Home"}}</label></td>
-            <td><input type="text" name="sitehome" value="{{.Opt.SiteHome}}"></input></td>
-            <td>{{T "Home address. May be a path or URL. Used in return links."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="news">{{T "Site News"}}</label></td>
-            <td><select name="news" style="width: 100%;">
+    <div class="managegrid">
+            <div class="postblock"><label for="sitename">{{T "Site Name"}}</label></div>
+            <div><input type="text" name="sitename" value="{{.Opt.SiteName}}"></input></div>
+            <div>{{T "Appears in page title and header."}}</div>
+
+            <div class="postblock"><label for="sitedescription">{{T "Site Description"}}</label></div>
+            <div><input type="text" name="sitedescription" value="{{.Opt.SiteDescription}}"></input></div>
+            <div>{{T "Appears in %s and search results for the site index." "stats.json"}}</div>
+
+            <div class="postblock"><label for="sitehome">{{T "Site Home"}}</label></div>
+            <div><input type="text" name="sitehome" value="{{.Opt.SiteHome}}"></input></div>
+            <div>{{T "Home address. May be a path or URL. Used in return links."}}</div>
+
+            <div class="postblock"><label for="news">{{T "Site News"}}</label></div>
+            <div><select name="news" style="width: 100%;">
                 <option value="0"{{if eq .Opt.News 0}} selected{{end}}>✗ {{T "Disable"}}</option>
                 <option value="1"{{if eq .Opt.News 1}} selected{{end}}>✓ {{T "Enable - Write to %s" "news.html"}}</option>
                 <option value="2"{{if eq .Opt.News 2}} selected{{end}}>✓ {{T "Enable - Write to %s" "index.html"}}</option>
-            </select></td>
-            <td>{{T "Allow moderators to post site news."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="siteindex">{{T "Site Index"}}</label></td>
-            <td><select name="siteindex" style="width: 100%;">
+            </select></div>
+            <div>{{T "Allow moderators to post site news."}}</div>
+
+            <div class="postblock"><label for="siteindex">{{T "Site Index"}}</label></div>
+            <div><select name="siteindex" style="width: 100%;">
                 <option value="0"{{if eq .Opt.SiteIndex 0}} selected{{end}}>✗ {{T "Disable"}}</option>
                 <option value="2"{{if eq .Opt.SiteIndex 2}} selected{{end}}>✓ {{T "Enable - Write to %s" "nav.html"}}</option>
                 <option value="1"{{if eq .Opt.SiteIndex 1}} selected{{end}}>✓ {{T "Enable - Write to %s" "index.html"}}</option>
-            </select></td>
-            <td>{{T "Write site index page, which contains the most recent news item, links to boards and the most recent posts."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="boardindex">{{T "Navigation"}}</label></td>
-            <td><select name="boardindex" style="width: 100%;">
+            </select></div>
+            <div>{{T "Write site index page, which contains the most recent news item, links to boards and the most recent posts."}}</div>
+
+            <div class="postblock"><label for="boardindex">{{T "Navigation"}}</label></div>
+            <div><select name="boardindex" style="width: 100%;">
                 <option value="0"{{if not .Opt.BoardIndex}} selected{{end}}>✗ {{T "Disable"}}</option>
                 <option value="1"{{if .Opt.BoardIndex}} selected{{end}}>✓ {{T "Enable"}}</option>
-            </select></td>
-            <td>{{T "Link to boards in page header."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="statistics">{{T "Statistics"}}</label></td>
-            <td><select name="statistics" style="width: 100%;">
+            </select></div>
+            <div>{{T "Link to boards in page header."}}</div>
+
+            <div class="postblock"><label for="statistics">{{T "Statistics"}}</label></div>
+            <div><select name="statistics" style="width: 100%;">
                 <option value="0"{{if not .Opt.Statistics}} selected{{end}}>✗ {{T "Disable"}}</option>
                 <option value="1"{{if .Opt.Statistics}} selected{{end}}>✓ {{T "Enable"}}</option>
-            </select></td>
-            <td>{{T "Whether per-board and site-wide statistics are written to a file named %s." "stats.json"}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="captcha">CAPTCHA</label></td>
-            <td><select name="captcha" style="width: 100%;">
+            </select></div>
+            <div>{{T "Whether per-board and site-wide statistics are written to a file named %s." "stats.json"}}</div>
+
+            <div class="postblock"><label for="captcha">CAPTCHA</label></div>
+            <div><select name="captcha" style="width: 100%;">
                 <option value="0"{{if not .Opt.CAPTCHA}} selected{{end}}>✗ {{T "Disable"}}</option>
                 <option value="1"{{if .Opt.CAPTCHA}} selected{{end}}>✓ {{T "Enable"}}</option>
-            </select></td>
-            <td>{{T "Whether visitors must pass a CAPTCHA when posting."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="spoiler">{{T "Spoiler"}}</label></td>
-            <td><select name="spoiler" style="width: 100%;">
+            </select></div>
+            <div>{{T "Whether visitors must pass a CAPTCHA when posting."}}</div>
+
+            <div class="postblock"><label for="spoiler">{{T "Spoiler"}}</label></div>
+            <div><select name="spoiler" style="width: 100%;">
                 <option value="0"{{if not .Opt.Spoiler}} selected{{end}}>✗ {{T "Disable"}}</option>
                 <option value="1"{{if .Opt.Spoiler}} selected{{end}}>✓ {{T "Enable"}}</option>
-            </select></td>
-            <td>{{T "Whether visitors and staff members may mark attachment thumbnails as spoilers."}}</td>
-        </tr>
+            </select></div>
+            <div>{{T "Whether visitors and staff members may mark attachment thumbnails as spoilers."}}</div>
+
         {{if .Opt.Identifiers}}
-            <tr>
-                <td class="postblock"><label for="coloridentifiers">{{T "Color Identifiers"}}</label></td>
-                <td><select name="coloridentifiers" style="width: 100%;">
+                <div class="postblock"><label for="coloridentifiers">{{T "Color Identifiers"}}</label></div>
+                <div><select name="coloridentifiers" style="width: 100%;">
                     <option value="0"{{if not .Opt.ColorIdentifiers}} selected{{end}}>✗ {{T "Disable"}}</option>
                     <option value="1"{{if .Opt.ColorIdentifiers}} selected{{end}}>✓ {{T "Enable"}}</option>
-                </select></td>
-                <td>{{T "Whether identifiers are randomly colored."}}</td>
-            </tr>
+                </select></div>
+                <div>{{T "Whether identifiers are randomly colored."}}</div>
         {{end}}
-        <tr>
-            <td class="postblock"><label for="accesskey">{{T "Access Key"}}</label></td>
-            <td><input type="text" name="accesskey" value="{{.Opt.AccessKey}}"></input></td>
-            <td>{{T "Alphanumeric management panel access key. When set, staff members must visit %s to log in." "/sriracha?k=ACCESSKEY"}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="modqueue">{{T "Mod Queue"}}</label></td>
-            <td><input type="text" name="modqueue" value="{{.Opt.ModQueue}}"></input></td>
-            <td>{{T "File path (excluding .html suffix) of the moderation queue status page. Leave blank to disable."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="search">{{T "Search"}}</label></td>
-            <td><input type="text" name="search" value="{{.Opt.Search}}"></input></td>
-            <td>{{T "Delay (in seconds) visitors must wait between searches. Only post subjects and messages are searchable. Set to 0 to disable searching."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="refresh">{{T "Auto Refresh"}}</label></td>
-            <td><input type="text" name="refresh" value="{{.Opt.Refresh}}"></input></td>
-            <td>{{T "Seconds between automatic refreshes when viewing a board index or thread page. Set to 0 to disable."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="datetimeformat">{{T "Date/Time Format"}}</label></td>
-            <td><input type="text" name="datetimeformat" value="{{.Opt.DateTimeFormat}}"></input></td>
-            <td>{{T "Render format of timestamps. Include %s tags where applicable." "<wbr>"}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="icon">{{T "Icon"}}</label></td>
-            <td>
+
+            <div class="postblock"><label for="accesskey">{{T "Access Key"}}</label></div>
+            <div><input type="text" name="accesskey" value="{{.Opt.AccessKey}}"></input></div>
+            <div>{{T "Alphanumeric management panel access key. When set, staff members must visit %s to log in." "/sriracha?k=ACCESSKEY"}}</div>
+
+            <div class="postblock"><label for="modqueue">{{T "Mod Queue"}}</label></div>
+            <div><input type="text" name="modqueue" value="{{.Opt.ModQueue}}"></input></div>
+            <div>{{T "File path (excluding .html suffix) of the moderation queue status page. Leave blank to disable."}}</div>
+
+            <div class="postblock"><label for="search">{{T "Search"}}</label></div>
+            <div><input type="text" name="search" value="{{.Opt.Search}}"></input></div>
+            <div>{{T "Delay (in seconds) visitors must wait between searches. Only post subjects and messages are searchable. Set to 0 to disable searching."}}</div>
+
+            <div class="postblock"><label for="refresh">{{T "Auto Refresh"}}</label></div>
+            <div><input type="text" name="refresh" value="{{.Opt.Refresh}}"></input></div>
+            <div>{{T "Seconds between automatic refreshes when viewing a board index or thread page. Set to 0 to disable."}}</div>
+
+            <div class="postblock"><label for="datetimeformat">{{T "Date/Time Format"}}</label></div>
+            <div><input type="text" name="datetimeformat" value="{{.Opt.DateTimeFormat}}"></input></div>
+            <div>{{T "Render format of timestamps. Include %s tags where applicable." "<wbr>"}}</div>
+
+            <div class="postblock"><label for="icon">{{T "Icon"}}</label></div>
+            <div>
                 {{if ne .Opt.IconWidth 0}}
                     <a href="/banner/icon.png" target="_blank"><img src="/banner/icon.png" border="0" style="max-width: 128px;height: auto;"></a>
                     <label style="vertical-align: top;"><input type="checkbox" name="deleteicon" value="1"> {{T "Delete"}}</label><br>
                 {{end}}
                 <input type="file" name="icon">
-            </td>
-            <td>{{T "Upload a %[1]dx%[2]d %[3]s image." 512 512 "PNG"}}</td>
-        </tr>
-        <tr>
-            <th><br>{{T "Overboard"}}</th><td>&nbsp;</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="overboard">{{T "Directory"}}</label></td>
-            <td><input type="text" name="overboard" value="{{.Opt.Overboard}}"></input></td>
-            <td>{{T "Directory where the overboard files are located. Leave blank to disable. To write the overboard at the root directory, enter \"/\"."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="overboardtype">{{T "Type"}}</label></td>
-            <td><select name="overboardtype" style="width: 100%;">
+            </div>
+            <div>{{T "Upload a %[1]dx%[2]d %[3]s image." 512 512 "PNG"}}</div>
+
+            <div class="gridheader"><br>{{T "Overboard"}}</div><div class="gridinfo">&nbsp;</div>
+
+            <div class="postblock"><label for="overboard">{{T "Directory"}}</label></div>
+            <div><input type="text" name="overboard" value="{{.Opt.Overboard}}"></input></div>
+            <div>{{T "Directory where the overboard files are located. Leave blank to disable. To write the overboard at the root directory, enter \"/\"."}}</div>
+
+            <div class="postblock"><label for="overboardtype">{{T "Type"}}</label></div>
+            <div><select name="overboardtype" style="width: 100%;">
                 <option value="0"{{if eq .Opt.OverboardType 0}} selected{{end}}>{{T "Imageboard"}}</option>
                 <option value="1"{{if eq .Opt.OverboardType 1}} selected{{end}}>{{T "Forum"}}</option>
-            </select></td>
-            <td>{{T "Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="overboardthreads">{{T "Threads"}}</label></td>
-            <td><input type="text" name="overboardthreads" value="{{.Opt.OverboardThreads}}"></input></td>
-            <td>{{T "Number of threads to show per overboard index page. Set to 0 to show all."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="overboardreplies">{{T "Replies"}}</label></td>
-            <td><input type="text" name="overboardreplies" value="{{.Opt.OverboardReplies}}"></input></td>
-            <td>{{T "Number of replies to show per overboard index thread. Set to 0 to show none."}}</td>
-        </tr>
-        <tr>
-            <th><br>{{T "Attachments"}}</th><td>&nbsp;</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="imagemagick">ImageMagick</label></td>
-            <td><select name="imagemagick" style="width: 100%;">
+            </select></div>
+            <div>{{T "Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages."}}</div>
+
+            <div class="postblock"><label for="overboardthreads">{{T "Threads"}}</label></div>
+            <div><input type="text" name="overboardthreads" value="{{.Opt.OverboardThreads}}"></input></div>
+            <div>{{T "Number of threads to show per overboard index page. Set to 0 to show all."}}</div>
+
+            <div class="postblock"><label for="overboardreplies">{{T "Replies"}}</label></div>
+            <div><input type="text" name="overboardreplies" value="{{.Opt.OverboardReplies}}"></input></div>
+            <div>{{T "Number of replies to show per overboard index thread. Set to 0 to show none."}}</div>
+
+            <div class="gridheader"><br>{{T "Attachments"}}</div><div class="gridinfo">&nbsp;</div>
+
+            <div class="postblock"><label for="imagemagick">ImageMagick</label></div>
+            <div><select name="imagemagick" style="width: 100%;">
                 <option value="0"{{if not .Opt.ImageMagick}} selected{{end}}>✗ {{T "Disable"}}</option>
                 <option value="1"{{if .Opt.ImageMagick}} selected{{end}}>✓ {{T "Enable"}}</option>
-            </select></td>
-            <td>{{T "Generate animated thumbnails for GIF images using %s." "ImageMagick"}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="stripmetadata">{{T "Strip Metadata"}}</label></td>
-            <td><select name="stripmetadata" style="width: 100%;">
+            </select></div>
+            <div>{{T "Generate animated thumbnails for GIF images using %s." "ImageMagick"}}</div>
+
+            <div class="postblock"><label for="stripmetadata">{{T "Strip Metadata"}}</label></div>
+            <div><select name="stripmetadata" style="width: 100%;">
                 <option value="0"{{if not .Opt.StripMetadata}} selected{{end}}>✗ {{T "Disable"}}</option>
                 <option value="1"{{if .Opt.StripMetadata}} selected{{end}}>✓ {{T "Enable"}}</option>
-            </select></td>
-            <td>{{T "Strip metadata (including %[1]s tags) from attachments. Enabling this option will also enable '%[2]s'." "Exif" (T "Strip Original Names")}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="striporiginal">{{T "Strip Original Names"}}</label></td>
-            <td><select name="striporiginal" style="width: 100%;">
+            </select></div>
+            <div>{{T "Strip metadata (including %[1]s tags) from attachments. Enabling this option will also enable '%[2]s'." "Exif" (T "Strip Original Names")}}</div>
+
+            <div class="postblock"><label for="striporiginal">{{T "Strip Original Names"}}</label></div>
+            <div><select name="striporiginal" style="width: 100%;">
                 <option value="0"{{if not .Opt.StripOriginal}} selected{{end}}>✗ {{T "Disable"}}</option>
                 <option value="1"{{if .Opt.StripOriginal}} selected{{end}}>✓ {{T "Enable"}}</option>
-            </select></td>
-            <td>{{T "Strip original file names from attachments."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="oekakiwidth">{{T "Oekaki Width"}}</label></td>
-            <td><input type="text" name="oekakiwidth" value="{{.Opt.OekakiWidth}}"></input></td>
-            <td>{{T "Default oekaki canvas width."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="oekakiheight">{{T "Oekaki Height"}}</label></td>
-            <td><input type="text" name="oekakiheight" value="{{.Opt.OekakiHeight}}"></input></td>
-            <td>{{T "Default oekaki canvas height."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="captcha">{{T "Embed Services"}}</label></td>
-            <td>
+            </select></div>
+            <div>{{T "Strip original file names from attachments."}}</div>
+
+            <div class="postblock"><label for="oekakiwidth">{{T "Oekaki Width"}}</label></div>
+            <div><input type="text" name="oekakiwidth" value="{{.Opt.OekakiWidth}}"></input></div>
+            <div>{{T "Default oekaki canvas width."}}</div>
+
+            <div class="postblock"><label for="oekakiheight">{{T "Oekaki Height"}}</label></div>
+            <div><input type="text" name="oekakiheight" value="{{.Opt.OekakiHeight}}"></input></div>
+            <div>{{T "Default oekaki canvas height."}}</div>
+
+            <div class="postblock"><label for="captcha">{{T "Embed Services"}}</label></div>
+            <div>
                 {{range $i, $info := .Opt.Embeds}}
                     <textarea name="embeds{{$i | ZeroPadTo3}}" rows="4" cols="80" placeholder="Unused">{{index $info 0}} {{index $info 1}}</textarea><br>
                 {{end}}
                 <textarea name="embeds{{len .Opt.Embeds | ZeroPadTo3}}" rows="4" cols="80" placeholder="{{T "Unused"}}"></textarea>
-            </td>
-            <td>{{T "Available embed services. Visit board settings to enable usage."}}<br>
-            Format: <pre style="display: inline-block;border: 1px solid;padding: 2px;">Name https://service.com/path/to/oembed?url=SRIRACHA_EMBED</pre></td>
-        </tr>
-        <tr>
-            <th><br>{{T "Boards"}}: {{T "Appearance"}}</div><div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td colspan="2"><br>{{T "Local settings are configured individually. Global settings are universal."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.type">{{T "Type"}}</label></td>
-            <td><select name="board.type" style="width: 100%;">
+            </div>
+            <div>{{T "Available embed services. Visit board settings to enable usage."}}<br><br>
+            Format: <div style="display: inline-block;border: 1px solid;padding: 2px;">Name https://service.com/path/to/oembed?url=SRIRACHA_EMBED</div></div>
+
+            <div class="gridheader"><br>{{T "Boards"}}: {{T "Appearance"}}<div class="globe"> <span title="{{T "Global"}}">🌐</span></div></div><div class="gridinfo"><br>{{T "Local settings are configured individually. Global settings are universal."}}</div>
+
+            <div class="postblock"><label for="board.type">{{T "Type"}}</label></div>
+            <div><select name="board.type" style="width: 100%;">
                 <option value="0"{{if not (Global "board.type")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.type"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.hide">{{T "Visibility"}}</label></td>
-            <td><select name="board.hide" style="width: 100%;">
+            </select></div>
+            <div>{{T "Imageboards show threads and recent replies on index pages. Forums only show thread information on index pages."}}</div>
+
+            <div class="postblock"><label for="board.hide">{{T "Visibility"}}</label></div>
+            <div><select name="board.hide" style="width: 100%;">
                 <option value="0"{{if not (Global "board.hide")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.hide"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "This setting is purely cosmetic. To actually prevent access, configure your HTTPS server to require password authorization."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.locale">{{T "Locale"}}</label></td>
-            <td><select name="board.locale" style="width: 100%;">
+            </select></div>
+            <div>{{T "This setting is purely cosmetic. To actually prevent access, configure your HTTPS server to require password authorization."}}</div>
+
+            <div class="postblock"><label for="board.locale">{{T "Locale"}}</label></div>
+            <div><select name="board.locale" style="width: 100%;">
                 <option value="0"{{if not (Global "board.locale")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.locale"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Locale used when writing board pages."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.style">{{T "Style"}}</label></td>
-            <td><select name="board.style" style="width: 100%;">
+            </select></div>
+            <div>{{T "Locale used when writing board pages."}}</div>
+
+            <div class="postblock"><label for="board.style">{{T "Style"}}</label></div>
+            <div><select name="board.style" style="width: 100%;">
                 <option value="0"{{if not (Global "board.style")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.style"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Default page style. Visitors may choose alternative styles in their browser settings."}}</td>
-        </tr>
+            </select></div>
+            <div>{{T "Default page style. Visitors may choose alternative styles in their browser settings."}}</div>
+
         {{if .Opt.Identifiers}}
-            <tr>
-                <td class="postblock"><label for="board.identifiers">{{T "Identifiers"}}</label></td>
-                <td><select name="board.identifiers" style="width: 100%;">
+                <div class="postblock"><label for="board.identifiers">{{T "Identifiers"}}</label></div>
+                <div><select name="board.identifiers" style="width: 100%;">
                     <option value="0"{{if not (Global "board.identifiers")}} selected{{end}}>✗ {{T "Local"}}</option>
                     <option value="1"{{if Global "board.identifiers"}} selected{{end}}>✓ {{T "Global"}}</option>
-                </select></td>
-                <td>{{T "Whether identifiers are displayed for each post. Identifiers are generated based on IP address hashes."}}</td>
-            </tr>
+                </select></div>
+                <div>{{T "Whether identifiers are displayed for each post. Identifiers are generated based on IP address hashes."}}</div>
         {{end}}
-        <tr>
-            <td class="postblock"><label for="board.backlinks">{{T "Backlinks"}}</label></td>
-            <td><select name="board.backlinks" style="width: 100%;">
+
+            <div class="postblock"><label for="board.backlinks">{{T "Backlinks"}}</label></div>
+            <div><select name="board.backlinks" style="width: 100%;">
                 <option value="0"{{if not (Global "board.backlinks")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.backlinks"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Whether reference links are displayed next to No.## pointing to all visible replies mentioning a post."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.defaultname">{{T "Default Name"}}</label></td>
-            <td><select name="board.defaultname" style="width: 100%;">
+            </select></div>
+            <div>{{T "Whether reference links are displayed next to No.## pointing to all visible replies mentioning a post."}}</div>
+
+            <div class="postblock"><label for="board.defaultname">{{T "Default Name"}}</label></div>
+            <div><select name="board.defaultname" style="width: 100%;">
                 <option value="0"{{if not (Global "board.defaultname")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.defaultname"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Name shown when no name is entered. Separate multiple names with | (pipe character). May be blank."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.threads">{{T "Index Threads"}}</label></td>
-            <td><select name="board.threads" style="width: 100%;">
+            </select></div>
+            <div>{{T "Name shown when no name is entered. Separate multiple names with | (pipe character). May be blank."}}</div>
+
+            <div class="postblock"><label for="board.threads">{{T "Index Threads"}}</label></div>
+            <div><select name="board.threads" style="width: 100%;">
                 <option value="0"{{if not (Global "board.threads")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.threads"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Number of threads to show per board index page. Set to 0 to show all."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.replies">{{T "Index Replies"}}</label></td>
-            <td><select name="board.replies" style="width: 100%;">
+            </select></div>
+            <div>{{T "Number of threads to show per board index page. Set to 0 to show all."}}</div>
+
+            <div class="postblock"><label for="board.replies">{{T "Index Replies"}}</label></div>
+            <div><select name="board.replies" style="width: 100%;">
                 <option value="0"{{if not (Global "board.replies")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.replies"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Number of replies to show per board index thread. Set to 0 to show none."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.truncate">{{T "Truncate"}}</label></td>
-            <td><select name="board.truncate" style="width: 100%;">
+            </select></div>
+            <div>{{T "Number of replies to show per board index thread. Set to 0 to show none."}}</div>
+
+            <div class="postblock"><label for="board.truncate">{{T "Truncate"}}</label></div>
+            <div><select name="board.truncate" style="width: 100%;">
                 <option value="0"{{if not (Global "board.truncate")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.truncate"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Number of message lines to display in post preview on board index pages. Set to 0 to show all."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.rules">{{T "Rules"}}</label></td>
-            <td><select name="board.rules" style="width: 100%;">
+            </select></div>
+            <div>{{T "Number of message lines to display in post preview on board index pages. Set to 0 to show all."}}</div>
+
+            <div class="postblock"><label for="board.rules">{{T "Rules"}}</label></div>
+            <div><select name="board.rules" style="width: 100%;">
                 <option value="0"{{if not (Global "board.rules")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.rules"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "HTML-formatted text shown in the new post form."}}</td>
-        </tr>
-        <tr>
-            <th>{{T "Boards"}}: {{T "Posts"}}</div><div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td colspan="2">&nbsp;</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.lock">{{T "Restrict New Posts"}}</label></td>
-            <td><select name="board.lock" style="width: 100%;">
+            </select></div>
+            <div>{{T "HTML-formatted text shown in the new post form."}}</div>
+
+            <div class="gridheader">{{T "Boards"}}: {{T "Posts"}}<div class="globe"> <span title="{{T "Global"}}">🌐</span></div></div><div class="gridinfo">&nbsp;</div>
+
+            <div class="postblock"><label for="board.lock">{{T "Restrict New Posts"}}</label></div>
+            <div><select name="board.lock" style="width: 100%;">
                 <option value="0"{{if not (Global "board.lock")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.lock"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Whether new posts may be created."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.approval">{{T "Require Approval"}}</label></td>
-            <td><select name="board.approval" style="width: 100%;">
+            </select></div>
+            <div>{{T "Whether new posts may be created."}}</div>
+
+            <div class="postblock"><label for="board.approval">{{T "Require Approval"}}</label></div>
+            <div><select name="board.approval" style="width: 100%;">
                 <option value="0"{{if not (Global "board.approval")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.approval"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Whether moderator approval is required before displaying newly created posts."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.reports">{{T "Reports"}}</label></td>
-            <td><select name="board.reports" style="width: 100%;">
+            </select></div>
+            <div>{{T "Whether moderator approval is required before displaying newly created posts."}}</div>
+
+            <div class="postblock"><label for="board.reports">{{T "Reports"}}</label></div>
+            <div><select name="board.reports" style="width: 100%;">
                 <option value="0"{{if not (Global "board.reports")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.reports"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Whether visitors may report posts."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.archive">{{T "Archive"}}</label></td>
-            <td><select name="board.archive" style="width: 100%;">
+            </select></div>
+            <div>{{T "Whether visitors may report posts."}}</div>
+
+            <div class="postblock"><label for="board.archive">{{T "Archive"}}</label></div>
+            <div><select name="board.archive" style="width: 100%;">
                 <option value="0"{{if not (Global "board.archive")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.archive"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Archive threads (instead of deleting them) when the thread limit is exceeded."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.maxthreads">{{T "Max Threads"}}</label></td>
-            <td><select name="board.maxthreads" style="width: 100%;">
+            </select></div>
+            <div>{{T "Archive threads (instead of deleting them) when the thread limit is exceeded."}}</div>
+
+            <div class="postblock"><label for="board.maxthreads">{{T "Max Threads"}}</label></div>
+            <div><select name="board.maxthreads" style="width: 100%;">
                 <option value="0"{{if not (Global "board.maxthreads")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.maxthreads"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Maximum number of threads in board. Once this limit is reached, the oldest threads are pruned. Set to 0 to disable."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.maxreplies">{{T "Max Replies"}}</label></td>
-            <td><select name="board.maxreplies" style="width: 100%;">
+            </select></div>
+            <div>{{T "Maximum number of threads in board. Once this limit is reached, the oldest threads are pruned. Set to 0 to disable."}}</div>
+
+            <div class="postblock"><label for="board.maxreplies">{{T "Max Replies"}}</label></div>
+            <div><select name="board.maxreplies" style="width: 100%;">
                 <option value="0"{{if not (Global "board.maxreplies")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.maxreplies"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Maximum number of replies to a thread before the thread stops being bumped to the front. Set to 0 to disable."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.minname">{{T "Min Name Length"}}</label></td>
-            <td><select name="board.minname" style="width: 100%;">
+            </select></div>
+            <div>{{T "Maximum number of replies to a thread before the thread stops being bumped to the front. Set to 0 to disable."}}</div>
+
+            <div class="postblock"><label for="board.minname">{{T "Min Name Length"}}</label></div>
+            <div><select name="board.minname" style="width: 100%;">
                 <option value="0"{{if not (Global "board.minname")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.minname"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Minimum length of the name field."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.maxname">{{T "Max Name Length"}}</label></td>
-            <td><select name="board.maxname" style="width: 100%;">
+            </select></div>
+            <div>{{T "Minimum length of the name field."}}</div>
+
+            <div class="postblock"><label for="board.maxname">{{T "Max Name Length"}}</label></div>
+            <div><select name="board.maxname" style="width: 100%;">
                 <option value="0"{{if not (Global "board.maxname")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.maxname"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Maximum length of the name field."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.minemail">{{T "Min Email Length"}}</label></td>
-            <td><select name="board.minemail" style="width: 100%;">
+            </select></div>
+            <div>{{T "Maximum length of the name field."}}</div>
+
+            <div class="postblock"><label for="board.minemail">{{T "Min Email Length"}}</label></div>
+            <div><select name="board.minemail" style="width: 100%;">
                 <option value="0"{{if not (Global "board.minemail")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.minemail"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Minimum length of the email field."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.maxemail">{{T "Max Email Length"}}</label></td>
-            <td><select name="board.maxemail" style="width: 100%;">
+            </select></div>
+            <div>{{T "Minimum length of the email field."}}</div>
+
+            <div class="postblock"><label for="board.maxemail">{{T "Max Email Length"}}</label></div>
+            <div><select name="board.maxemail" style="width: 100%;">
                 <option value="0"{{if not (Global "board.maxemail")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.maxemail"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Maximum length of the email field."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.minsubject">{{T "Min Subject Length"}}</label></td>
-            <td><select name="board.minsubject" style="width: 100%;">
+            </select></div>
+            <div>{{T "Maximum length of the email field."}}</div>
+
+            <div class="postblock"><label for="board.minsubject">{{T "Min Subject Length"}}</label></div>
+            <div><select name="board.minsubject" style="width: 100%;">
                 <option value="0"{{if not (Global "board.minsubject")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.minsubject"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Minimum length of the subject field."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.maxsubject">{{T "Max Subject Length"}}</label></td>
-            <td><select name="board.maxsubject" style="width: 100%;">
+            </select></div>
+            <div>{{T "Minimum length of the subject field."}}</div>
+
+            <div class="postblock"><label for="board.maxsubject">{{T "Max Subject Length"}}</label></div>
+            <div><select name="board.maxsubject" style="width: 100%;">
                 <option value="0"{{if not (Global "board.maxsubject")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.maxsubject"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Maximum length of the subject field."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.minmessage">{{T "Min Message Length"}}</label></td>
-            <td><select name="board.minmessage" style="width: 100%;">
+            </select></div>
+            <div>{{T "Maximum length of the subject field."}}</div>
+
+            <div class="postblock"><label for="board.minmessage">{{T "Min Message Length"}}</label></div>
+            <div><select name="board.minmessage" style="width: 100%;">
                 <option value="0"{{if not (Global "board.minmessage")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.minmessage"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Minimum length of the message field."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.maxmessage">{{T "Max Message Length"}}</label></td>
-            <td><select name="board.maxmessage" style="width: 100%;">
+            </select></div>
+            <div>{{T "Minimum length of the message field."}}</div>
+
+            <div class="postblock"><label for="board.maxmessage">{{T "Max Message Length"}}</label></div>
+            <div><select name="board.maxmessage" style="width: 100%;">
                 <option value="0"{{if not (Global "board.maxmessage")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.maxmessage"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Maximum length of the message field."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.wordbreak">{{T "Word Break"}}</label></td>
-            <td><select name="board.wordbreak" style="width: 100%;">
+            </select></div>
+            <div>{{T "Maximum length of the message field."}}</div>
+
+            <div class="postblock"><label for="board.wordbreak">{{T "Word Break"}}</label></div>
+            <div><select name="board.wordbreak" style="width: 100%;">
                 <option value="0"{{if not (Global "board.wordbreak")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.wordbreak"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Maximum word length. Set to 0 to never break long words."}}</td>
-        </tr>
-        <tr>
-            <th>{{T "Boards"}}: {{T "Attachments"}}</div><div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td colspan="2">&nbsp;</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.files">{{T "Files"}}</label></td>
-            <td><select name="board.files" style="width: 100%;">
+            </select></div>
+            <div>{{T "Maximum word length. Set to 0 to never break long words."}}</div>
+
+            <div class="gridheader">{{T "Boards"}}: {{T "Attachments"}}<div class="globe"> <span title="{{T "Global"}}">🌐</span></div></div><div class="gridinfo">&nbsp;</div>
+
+            <div class="postblock"><label for="board.files">{{T "Files"}}</label></div>
+            <div><select name="board.files" style="width: 100%;">
                 <option value="0"{{if not (Global "board.files")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.files"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Number of files visitors may upload at once. A new post is created for each uploaded file."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.instances">{{T "Instance Limit"}}</label></td>
-            <td><select name="board.instances" style="width: 100%;">
+            </select></div>
+            <div>{{T "Number of files visitors may upload at once. A new post is created for each uploaded file."}}</div>
+
+            <div class="postblock"><label for="board.instances">{{T "Instance Limit"}}</label></div>
+            <div><select name="board.instances" style="width: 100%;">
                 <option value="0"{{if not (Global "board.instances")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.instances"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Positive values specify global instances allowed. Negative values specify board-specific instances allowed. Zero allows unlimited instances."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.minsizethread">{{T "Min Thread File Size"}}</label></td>
-            <td><select name="board.minsizethread" style="width: 100%;">
+            </select></div>
+            <div>{{T "Positive values specify global instances allowed. Negative values specify board-specific instances allowed. Zero allows unlimited instances."}}</div>
+
+            <div class="postblock"><label for="board.minsizethread">{{T "Min Thread File Size"}}</label></div>
+            <div><select name="board.minsizethread" style="width: 100%;">
                 <option value="0"{{if not (Global "board.minsizethread")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.minsizethread"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Minimum file size (in megabytes) when creating a thread."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.maxsizethread">{{T "Max Thread File Size"}}</label></td>
-            <td><select name="board.maxsizethread" style="width: 100%;">
+            </select></div>
+            <div>{{T "Minimum file size (in megabytes) when creating a thread."}}</div>
+
+            <div class="postblock"><label for="board.maxsizethread">{{T "Max Thread File Size"}}</label></div>
+            <div><select name="board.maxsizethread" style="width: 100%;">
                 <option value="0"{{if not (Global "board.maxsizethread")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.maxsizethread"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Maximum file size (in megabytes) when creating a thread. Set to 0 to disable file uploads."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.minsizereply">{{T "Min Reply File Size"}}</label></td>
-            <td><select name="board.minsizereply" style="width: 100%;">
+            </select></div>
+            <div>{{T "Maximum file size (in megabytes) when creating a thread. Set to 0 to disable file uploads."}}</div>
+
+            <div class="postblock"><label for="board.minsizereply">{{T "Min Reply File Size"}}</label></div>
+            <div><select name="board.minsizereply" style="width: 100%;">
                 <option value="0"{{if not (Global "board.minsizereply")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.minsizereply"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Minimum file size (in megabytes) when replying."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.maxsizereply">{{T "Max Reply File Size"}}</label></td>
-            <td><select name="board.maxsizereply" style="width: 100%;">
+            </select></div>
+            <div>{{T "Minimum file size (in megabytes) when replying."}}</div>
+
+            <div class="postblock"><label for="board.maxsizereply">{{T "Max Reply File Size"}}</label></div>
+            <div><select name="board.maxsizereply" style="width: 100%;">
                 <option value="0"{{if not (Global "board.maxsizereply")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.maxsizereply"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Maximum file size (in megabytes) when replying. Set to 0 to disable file uploads."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.thumbwidth">{{T "Thumbnail Width"}}</label></td>
-            <td><select name="board.thumbwidth" style="width: 100%;">
+            </select></div>
+            <div>{{T "Maximum file size (in megabytes) when replying. Set to 0 to disable file uploads."}}</div>
+
+            <div class="postblock"><label for="board.thumbwidth">{{T "Thumbnail Width"}}</label></div>
+            <div><select name="board.thumbwidth" style="width: 100%;">
                 <option value="0"{{if not (Global "board.thumbwidth")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.thumbwidth"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Maximum width of thumbnails."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.thumbheight">{{T "Thumbnail Height"}}</label></td>
-            <td><select name="board.thumbheight" style="width: 100%;">
+            </select></div>
+            <div>{{T "Maximum width of thumbnails."}}</div>
+
+            <div class="postblock"><label for="board.thumbheight">{{T "Thumbnail Height"}}</label></div>
+            <div><select name="board.thumbheight" style="width: 100%;">
                 <option value="0"{{if not (Global "board.thumbheight")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.thumbheight"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Maximum height of thumbnails."}}</td>
-        </tr>
+            </select></div>
+            <div>{{T "Maximum height of thumbnails."}}</div>
+
         {{if ne (len .Opt.Uploads) 0}}
-            <tr>
-                <td class="postblock"><label for="board.uploads">{{T "File Types"}}</label></td>
-                <td><select name="board.uploads" style="width: 100%;">
+                <div class="postblock"><label for="board.uploads">{{T "File Types"}}</label></div>
+                <div><select name="board.uploads" style="width: 100%;">
                     <option value="0"{{if not (Global "board.uploads")}} selected{{end}}>✗ {{T "Local"}}</option>
                     <option value="1"{{if Global "board.uploads"}} selected{{end}}>✓ {{T "Global"}}</option>
-                </select></td>
-                <td>{{T "Visitors may upload the selected types of files."}}</td>
-            </tr>
+                </select></div>
+                <div>{{T "Visitors may upload the selected types of files."}}</div>
         {{end}}
+
         {{if ne (len .Opt.Embeds) 0}}
-            <tr>
-                <td class="postblock"><label for="board.embeds">{{T "Embed Services"}}</label></td>
-                <td><select name="board.embeds" style="width: 100%;">
+                <div class="postblock"><label for="board.embeds">{{T "Embed Services"}}</label></div>
+                <div><select name="board.embeds" style="width: 100%;">
                     <option value="0"{{if not (Global "board.embeds")}} selected{{end}}>✗ {{T "Local"}}</option>
                     <option value="1"{{if Global "board.embeds"}} selected{{end}}>✓ {{T "Global"}}</option>
-                </select></td>
-                <td>{{T "Visitors may embed media from selected services instead of uploading a file."}}</td>
-            </tr>
+                </select></div>
+                <div>{{T "Visitors may embed media from selected services instead of uploading a file."}}</div>
         {{end}}
-        <tr>
-            <td class="postblock"><label for="board.oekaki">Oekaki</label></td>
-            <td><select name="board.oekaki" style="width: 100%;">
+
+            <div class="postblock"><label for="board.oekaki">Oekaki</label></div>
+            <div><select name="board.oekaki" style="width: 100%;">
                 <option value="0"{{if not (Global "board.oekaki")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.oekaki"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Whether visitors may create and submit drawings."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.gallery">{{T "Gallery"}}</label></td>
-            <td><select name="board.gallery" style="width: 100%;">
+            </select></div>
+            <div>{{T "Whether visitors may create and submit drawings."}}</div>
+
+            <div class="postblock"><label for="board.gallery">{{T "Gallery"}}</label></div>
+            <div><select name="board.gallery" style="width: 100%;">
                 <option value="0"{{if not (Global "board.gallery")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.gallery"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Whether visitors may browse attachments as an image gallery."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="board.require">{{T "Require Attachment"}}</label></td>
-            <td><select name="board.require" style="width: 100%;">
+            </select></div>
+            <div>{{T "Whether visitors may browse attachments as an image gallery."}}</div>
+
+            <div class="postblock"><label for="board.require">{{T "Require Attachment"}}</label></div>
+            <div><select name="board.require" style="width: 100%;">
                 <option value="0"{{if not (Global "board.require")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "board.require"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Require visitors to include an attachment when posting."}}</td>
-        </tr>
-        <tr>
-            <th><br>{{T "Banners"}}<div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td>&nbsp;</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="banner.boards">{{T "Boards"}}</label></td>
-            <td><select name="banner.boards" style="width: 100%;">
+            </select></div>
+            <div>{{T "Require visitors to include an attachment when posting."}}</div>
+
+            <div class="gridheader"><br>{{T "Banners"}}<div class="globe"> <span title="{{T "Global"}}">🌐</span></div></div><div class="gridinfo">&nbsp;</div>
+
+            <div class="postblock"><label for="banner.boards">{{T "Boards"}}</label></div>
+            <div><select name="banner.boards" style="width: 100%;">
                 <option value="0"{{if not (Global "banner.boards")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "banner.boards"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Boards where the banner is displayed."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="banner.overboard">{{T "Overboard"}}</label></td>
-            <td><select name="banner.overboard" style="width: 100%;">
+            </select></div>
+            <div>{{T "Boards where the banner is displayed."}}</div>
+
+            <div class="postblock"><label for="banner.overboard">{{T "Overboard"}}</label></div>
+            <div><select name="banner.overboard" style="width: 100%;">
                 <option value="0"{{if not (Global "banner.overboard")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "banner.overboard"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Whether the banner is displayed in overboard pages."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="banner.news">{{T "News"}}</label></td>
-            <td><select name="banner.news" style="width: 100%;">
+            </select></div>
+            <div>{{T "Whether the banner is displayed in overboard pages."}}</div>
+
+            <div class="postblock"><label for="banner.news">{{T "News"}}</label></div>
+            <div><select name="banner.news" style="width: 100%;">
                 <option value="0"{{if not (Global "banner.news")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "banner.news"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Whether the banner is displayed in news pages."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="banner.pages">{{T "Pages"}}</label></td>
-            <td><select name="banner.pages" style="width: 100%;">
+            </select></div>
+            <div>{{T "Whether the banner is displayed in news pages."}}</div>
+
+            <div class="postblock"><label for="banner.pages">{{T "Pages"}}</label></div>
+            <div><select name="banner.pages" style="width: 100%;">
                 <option value="0"{{if not (Global "banner.pages")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "banner.pages"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Whether the banner is displayed in custom pages."}}</td>
-        </tr>
-        <tr>
-            <th><br>{{T "Keywords"}}<div class="globe"> <span title="{{T "Global"}}">🌐</span></div></th><td>&nbsp;</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="keyword.action">{{T "Action"}}</label></td>
-            <td><select name="keyword.action" style="width: 100%;">
+            </select></div>
+            <div>{{T "Whether the banner is displayed in custom pages."}}</div>
+
+            <div class="gridheader"><br>{{T "Keywords"}}<div class="globe"> <span title="{{T "Global"}}">🌐</span></div></div><div class="gridinfo">&nbsp;</div>
+
+            <div class="postblock"><label for="keyword.action">{{T "Action"}}</label></div>
+            <div><select name="keyword.action" style="width: 100%;">
                 <option value="0"{{if not (Global "keyword.action")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "keyword.action"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Action taken when the keyword is detected."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="keyword.boards">{{T "Boards"}}</label></td>
-            <td><select name="keyword.boards" style="width: 100%;">
+            </select></div>
+            <div>{{T "Action taken when the keyword is detected."}}</div>
+
+            <div class="postblock"><label for="keyword.boards">{{T "Boards"}}</label></div>
+            <div><select name="keyword.boards" style="width: 100%;">
                 <option value="0"{{if not (Global "keyword.boards")}} selected{{end}}>✗ {{T "Local"}}</option>
                 <option value="1"{{if Global "keyword.boards"}} selected{{end}}>✓ {{T "Global"}}</option>
-            </select></td>
-            <td>{{T "Boards where the keyword applies."}}</td>
-        </tr>
-        <tr>
-            <td style="vertical-align: middle;">&nbsp;[<a href="/sriracha/setting/reset" onclick="return confirm('{{T "Reset all settings?"}}');">{{T "Reset"}}</a>]</td>
-            <td align="right" style="vertical-align: middle;"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Update"}}"></td>
-            <td style="vertical-align: middle;"><label><input type="checkbox" name="rebuild" value="1" checked>{{T "Rebuild"}}</label></td>
-        </tr>
-    </table>
+            </select></div>
+            <div>{{T "Boards where the keyword applies."}}</div>
+
+            <div style="vertical-align: middle;">&nbsp;[<a href="/sriracha/setting/reset" onclick="return confirm('{{T "Reset all settings?"}}');">{{T "Reset"}}</a>]</div>
+            <div align="right" style="vertical-align: middle;"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Update"}}"></div>
+            <div style="vertical-align: middle;"><label style="vertical-align: middle;"><input type="checkbox" name="rebuild" value="1" checked>{{T "Rebuild"}}</label></div>
+    </div>
     </fieldset>
 </form><br><br>
 <form method="get" action="/sriracha/performance/"><input type="submit" value="{{T "Performance"}}"></form> &nbsp;
