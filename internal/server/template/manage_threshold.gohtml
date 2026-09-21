@@ -30,64 +30,56 @@
         {{if and (ne .Manage.Threshold nil) (ne .Manage.Threshold.ID 0)}}
             <legend>{{T "Update"}} #{{.Manage.Threshold.ID}}</legend>
         {{end}}
-        <table class="manageform">
-            <tr>
-                <td class="postblock"><label for="everyone">{{T "Scale"}}</label></td>
-                <td><select name="everyone" style="width: 100%;">
-                    <option value="0"{{if not .Manage.Threshold.Everyone}} selected{{end}}>{{T "Individual visitor"}}</option>
-                    <option value="1"{{if .Manage.Threshold.Everyone}} selected{{end}}>{{T "Everyone"}}</option>
-                </select></td>
-                <td>{{T "Whether the threshold is for individual visitors or everyone."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="amount">{{T "Amount"}}</label></td>
-                <td><input type="text" name="amount" value="{{.Manage.Threshold.Amount}}" style="width: 100%;"></td>
-                <td>{{T "When this amount is exceeded the selected action is taken."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="event">{{T "Event"}}</label></td>
-                <td><select name="event" style="width: 100%;">
-                    <option value="0"{{if eq .Manage.Threshold.Event 0}} selected{{end}}>{{T "Post"}}</option>
-                    <option value="1"{{if eq .Manage.Threshold.Event 1}} selected{{end}}>{{T "Thread"}}</option>
-                    <option value="2"{{if eq .Manage.Threshold.Event 2}} selected{{end}}>{{T "Report"}}</option>
-                </select></td>
-                <td>{{T "Which type of visitor interaction the threshold monitors."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="anywhere">{{T "Location"}}</label></td>
-                <td><select name="anywhere" style="width: 100%;">
-                    <option value="0"{{if not .Manage.Threshold.Anywhere}} selected{{end}}>{{T "Individual board"}}</option>
-                    <option value="1"{{if .Manage.Threshold.Anywhere}} selected{{end}}>{{T "Anywhere"}}</option>
-                </select></td>
-                <td>{{T "Whether the threshold is for individual boards or anywhere."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="duration">{{T "Duration"}}</label></td>
-                <td><input type="text" name="duration" value="{{.Manage.Threshold.Duration}}" style="width: 100%;"></td>
-                <td>{{T "Duration (in seconds) of recent events to match against."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="action">{{T "Action"}}</label></td>
-                <td><select name="action" style="width: 100%;">
-                    <option value="hide"{{if eq .Manage.Threshold.Action "hide"}} selected{{end}}>{{T "Hide until approved"}}</option>
-                    <option value="report"{{if eq .Manage.Threshold.Action "report"}} selected{{end}}>{{T "Report"}}</option>
-                    <option value="delete"{{if eq .Manage.Threshold.Action "delete"}} selected{{end}}>{{T "Delete"}}</option>
-                    <option value="ban1h"{{if eq .Manage.Threshold.Action "ban1h"}} selected{{end}}>{{T "Delete & ban for 1 hour"}}</option>
-                    <option value="ban1d"{{if eq .Manage.Threshold.Action "ban1d"}} selected{{end}}>{{T "Delete & ban for 1 day"}}</option>
-                    <option value="ban2d"{{if eq .Manage.Threshold.Action "ban2d"}} selected{{end}}>{{T "Delete & ban for 2 days"}}</option>
-                    <option value="ban1w"{{if eq .Manage.Threshold.Action "ban1w"}} selected{{end}}>{{T "Delete & ban for 1 week"}}</option>
-                    <option value="ban2w"{{if eq .Manage.Threshold.Action "ban2w"}} selected{{end}}>{{T "Delete & ban for 2 weeks"}}</option>
-                    <option value="ban1m"{{if eq .Manage.Threshold.Action "ban1m"}} selected{{end}}>{{T "Delete & ban for 1 month"}}</option>
-                    <option value="ban0"{{if eq .Manage.Threshold.Action "ban0"}} selected{{end}}>{{T "Delete & ban permanently"}}</option>
-                </select></td>
-                <td>{{T "Action taken when the threshold amount is exceeded."}}</td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if or (eq .Manage.Threshold nil) (eq .Manage.Threshold.ID 0)}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
-                <td>&nbsp;</td>
-            </tr>
-        </table>
+        <div class="managegrid">
+            <div class="postblock"><label for="everyone">{{T "Scale"}}</label></div>
+            <div><select name="everyone" style="width: 100%;">
+                <option value="0"{{if not .Manage.Threshold.Everyone}} selected{{end}}>{{T "Individual visitor"}}</option>
+                <option value="1"{{if .Manage.Threshold.Everyone}} selected{{end}}>{{T "Everyone"}}</option>
+            </select></div>
+            <div>{{T "Whether the threshold is for individual visitors or everyone."}}</div>
+
+            <div class="postblock"><label for="amount">{{T "Amount"}}</label></div>
+            <div><input type="text" name="amount" value="{{.Manage.Threshold.Amount}}" style="width: 100%;"></div>
+            <div>{{T "When this amount is exceeded the selected action is taken."}}</div>
+
+            <div class="postblock"><label for="event">{{T "Event"}}</label></div>
+            <div><select name="event" style="width: 100%;">
+                <option value="0"{{if eq .Manage.Threshold.Event 0}} selected{{end}}>{{T "Post"}}</option>
+                <option value="1"{{if eq .Manage.Threshold.Event 1}} selected{{end}}>{{T "Thread"}}</option>
+                <option value="2"{{if eq .Manage.Threshold.Event 2}} selected{{end}}>{{T "Report"}}</option>
+            </select></div>
+            <div>{{T "Which type of visitor interaction the threshold monitors."}}</div>
+
+            <div class="postblock"><label for="anywhere">{{T "Location"}}</label></div>
+            <div><select name="anywhere" style="width: 100%;">
+                <option value="0"{{if not .Manage.Threshold.Anywhere}} selected{{end}}>{{T "Individual board"}}</option>
+                <option value="1"{{if .Manage.Threshold.Anywhere}} selected{{end}}>{{T "Anywhere"}}</option>
+            </select></div>
+            <div>{{T "Whether the threshold is for individual boards or anywhere."}}</div>
+
+            <div class="postblock"><label for="duration">{{T "Duration"}}</label></div>
+            <div><input type="text" name="duration" value="{{.Manage.Threshold.Duration}}" style="width: 100%;"></div>
+            <div>{{T "Duration (in seconds) of recent events to match against."}}</div>
+
+            <div class="postblock"><label for="action">{{T "Action"}}</label></div>
+            <div><select name="action" style="width: 100%;">
+                <option value="hide"{{if eq .Manage.Threshold.Action "hide"}} selected{{end}}>{{T "Hide until approved"}}</option>
+                <option value="report"{{if eq .Manage.Threshold.Action "report"}} selected{{end}}>{{T "Report"}}</option>
+                <option value="delete"{{if eq .Manage.Threshold.Action "delete"}} selected{{end}}>{{T "Delete"}}</option>
+                <option value="ban1h"{{if eq .Manage.Threshold.Action "ban1h"}} selected{{end}}>{{T "Delete & ban for 1 hour"}}</option>
+                <option value="ban1d"{{if eq .Manage.Threshold.Action "ban1d"}} selected{{end}}>{{T "Delete & ban for 1 day"}}</option>
+                <option value="ban2d"{{if eq .Manage.Threshold.Action "ban2d"}} selected{{end}}>{{T "Delete & ban for 2 days"}}</option>
+                <option value="ban1w"{{if eq .Manage.Threshold.Action "ban1w"}} selected{{end}}>{{T "Delete & ban for 1 week"}}</option>
+                <option value="ban2w"{{if eq .Manage.Threshold.Action "ban2w"}} selected{{end}}>{{T "Delete & ban for 2 weeks"}}</option>
+                <option value="ban1m"{{if eq .Manage.Threshold.Action "ban1m"}} selected{{end}}>{{T "Delete & ban for 1 month"}}</option>
+                <option value="ban0"{{if eq .Manage.Threshold.Action "ban0"}} selected{{end}}>{{T "Delete & ban permanently"}}</option>
+            </select></div>
+            <div>{{T "Action taken when the threshold amount is exceeded."}}</div>
+
+            <div>&nbsp;</div>
+            <div align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if or (eq .Manage.Threshold nil) (eq .Manage.Threshold.ID 0)}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></div>
+            <div>&nbsp;</div>
+        </div>
         </fieldset>
     </form>
     {{if eq .Manage.Threshold.ID 0}}
