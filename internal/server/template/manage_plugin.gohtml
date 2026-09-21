@@ -11,77 +11,74 @@
         {{if eq (len .Manage.Plugin.Config) 0}}
             {{T "No configuration options."}}
         {{else}}
-            <table class="manageform">
+            <div class="managegrid">
                 {{range $i, $option := .Manage.Plugin.Config}}
-                    <tr>
-                        <td class="postblock"><label for="config_{{$option.Name}}">{{$option.Name | UnderscoreTitle}}</label></td>
-                        <td>
-                            {{if eq .Type 0}}{{/* Boolean */}}
-                                <select name="config_{{.Name}}" style="width: 100%;">
-                                    <option value="0"{{if ne .Value "1"}} selected{{end}}>✗ {{T "Disable"}}</option>
-                                    <option value="1"{{if eq .Value "1"}} selected{{end}}>✓ {{T "Enable"}}</option>
-                                </select>
-                            {{else if or (eq .Type 1) (eq .Type 2)}}{{/* Integer or Float */}}
-                                {{if eq .Multiple true}}
-                                    {{range $i, $value := .Values}}
-                                        <input name="config_{{$option.Name}}{{$i}}" placeholder="Unused" value="{{$value}}"><br>
-                                    {{end}}
-                                    <input name="config_{{$option.Name}}{{len .Values}}" placeholder="Unused">
-                                {{else}}
-                                    <input name="config_{{.Name}}" value="{{.Value}}">
+                    <div class="postblock"><label for="config_{{$option.Name}}">{{$option.Name | UnderscoreTitle}}</label></div>
+                    <div>
+                        {{if eq .Type 0}}{{/* Boolean */}}
+                            <select name="config_{{.Name}}" style="width: 100%;">
+                                <option value="0"{{if ne .Value "1"}} selected{{end}}>✗ {{T "Disable"}}</option>
+                                <option value="1"{{if eq .Value "1"}} selected{{end}}>✓ {{T "Enable"}}</option>
+                            </select>
+                        {{else if or (eq .Type 1) (eq .Type 2)}}{{/* Integer or Float */}}
+                            {{if eq .Multiple true}}
+                                {{range $i, $value := .Values}}
+                                    <input name="config_{{$option.Name}}{{$i}}" placeholder="Unused" value="{{$value}}"><br>
                                 {{end}}
-                            {{else if eq .Type 3}}{{/* Enum */}}
-                                {{if eq .Multiple true}}
-                                    {{range $i, $value := .Options}}
-                                        {{if ne $i 0}}
-                                            <br>
-                                        {{end}}
-                                        <label><input type="checkbox" name="config_{{$option.Name}}" value="{{$i}}"{{if $option.HaveInt $i}} checked{{end}}> {{$value}}</label>
-                                    {{end}}
-                                {{else}}
-                                    <select name="config_{{.Name}}" style="width: 100%;">
-                                        {{range $i, $value := .Options}}
-                                            <option value="{{$i}}"{{if $option.HaveInt $i}} selected{{end}}>{{$value}}</option>
-                                        {{end}}
-                                    </select>
-                                {{end}}
-                            {{else if eq .Type 4}}{{/* String */}}
-                                {{if eq .Multiple true}}
-                                    {{range $i, $value := .Values}}
-                                        <textarea name="config_{{$option.Name}}{{$i}}" rows="4" cols="80" placeholder="Unused">{{$value}}</textarea><br>
-                                    {{end}}
-                                    <textarea name="config_{{$option.Name}}{{len .Values}}" rows="4" cols="80" placeholder="Unused"></textarea>
-                                {{else}}
-                                    <textarea name="config_{{.Name}}" rows="4" cols="80" >{{.Value}}</textarea>
-                                {{end}}
-                            {{else if eq .Type 5}}{{/* Board */}}
-                                {{if eq .Multiple true}}
-                                    {{range $i, $board := $.Boards}}
-                                        {{if ne $i 0}}
-                                            <br>
-                                        {{end}}
-                                        <label><input type="checkbox" name="config_{{$option.Name}}" value="{{$board.ID}}"{{if $option.HaveInt $board.ID}} checked{{end}}> {{$board.Path}} {{$board.Name}}</label>
-                                    {{end}}
-                                {{else}}
-                                    <select name="config_{{.Name}}" style="width: 100%;">
-                                        {{range $i, $board := $.Boards}}
-                                            <option value="{{$board.ID}}"{{if $option.HaveInt $board.ID}} selected{{end}}>{{$board.Path}} {{$board.Name}}</option>
-                                        {{end}}
-                                    </select>
-                                {{end}}
-                            {{else}}{{/* Unknown */}}
-                                {{T "Unknown"}}
+                                <input name="config_{{$option.Name}}{{len .Values}}" placeholder="Unused">
+                            {{else}}
+                                <input name="config_{{.Name}}" value="{{.Value}}">
                             {{end}}
-                        </td>
-                        <td>{{$option.Info | Format}}</td>
-                    </tr>
+                        {{else if eq .Type 3}}{{/* Enum */}}
+                            {{if eq .Multiple true}}
+                                {{range $i, $value := .Options}}
+                                    {{if ne $i 0}}
+                                        <br>
+                                    {{end}}
+                                    <label><input type="checkbox" name="config_{{$option.Name}}" value="{{$i}}"{{if $option.HaveInt $i}} checked{{end}}> {{$value}}</label>
+                                {{end}}
+                            {{else}}
+                                <select name="config_{{.Name}}" style="width: 100%;">
+                                    {{range $i, $value := .Options}}
+                                        <option value="{{$i}}"{{if $option.HaveInt $i}} selected{{end}}>{{$value}}</option>
+                                    {{end}}
+                                </select>
+                            {{end}}
+                        {{else if eq .Type 4}}{{/* String */}}
+                            {{if eq .Multiple true}}
+                                {{range $i, $value := .Values}}
+                                    <textarea name="config_{{$option.Name}}{{$i}}" rows="4" cols="80" placeholder="Unused">{{$value}}</textarea><br>
+                                {{end}}
+                                <textarea name="config_{{$option.Name}}{{len .Values}}" rows="4" cols="80" placeholder="Unused"></textarea>
+                            {{else}}
+                                <textarea name="config_{{.Name}}" rows="4" cols="80" >{{.Value}}</textarea>
+                            {{end}}
+                        {{else if eq .Type 5}}{{/* Board */}}
+                            {{if eq .Multiple true}}
+                                {{range $i, $board := $.Boards}}
+                                    {{if ne $i 0}}
+                                        <br>
+                                    {{end}}
+                                    <label><input type="checkbox" name="config_{{$option.Name}}" value="{{$board.ID}}"{{if $option.HaveInt $board.ID}} checked{{end}}> {{$board.Path}} {{$board.Name}}</label>
+                                {{end}}
+                            {{else}}
+                                <select name="config_{{.Name}}" style="width: 100%;">
+                                    {{range $i, $board := $.Boards}}
+                                        <option value="{{$board.ID}}"{{if $option.HaveInt $board.ID}} selected{{end}}>{{$board.Path}} {{$board.Name}}</option>
+                                    {{end}}
+                                </select>
+                            {{end}}
+                        {{else}}{{/* Unknown */}}
+                            {{T "Unknown"}}
+                        {{end}}
+                    </div>
+                    <div>{{$option.Info | Format}}</div>
                 {{end}}
-                <tr>
-                    <td style="vertical-align: middle;">&nbsp;[<a href="/sriracha/plugin/reset/{{.Manage.Plugin.Name | ToLower}}" onclick="return confirm('{{T "Reset all configuration options?"}}');">{{T "Reset"}}</a>]</td>
-                    <td align="right" style="vertical-align: middle;"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Update"}}"></td>
-                    <td>&nbsp;</td>
-                </tr>
-            </table>
+
+                <div style="vertical-align: middle;">&nbsp;[<a href="/sriracha/plugin/reset/{{.Manage.Plugin.Name | ToLower}}" onclick="return confirm('{{T "Reset all configuration options?"}}');">{{T "Reset"}}</a>]</div>
+                <div align="right" style="vertical-align: middle;"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Update"}}"></div>
+                <div>&nbsp;</div>
+            </div>
         {{end}}
         </fieldset>
     </form><br>

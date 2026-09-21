@@ -69,46 +69,39 @@
 <form method="post">
     <fieldset>
     {{if ne .Manage.News nil}}<legend>{{if .Manage.News.MayUpdate $.Account}}{{T "Update"}} {{end}}{{if ne .Manage.News.Subject ""}}{{.Manage.News.Subject}}{{else}}#{{.Manage.News.ID}}{{end}}</legend>{{end}}
-    <table class="manageform">
-        <tr>
-            <td class="postblock"><label for="timestamp">{{T "Date"}}</label></td>
-            <td><input type="text" name="timestamp" value="{{if ne .Manage.News nil}}{{FormatDateInput .Manage.News.Timestamp}}{{end}}"></td>
-            <td>{{T "Date and time when the news item was published, or will be published."}} Format: <span style="border: 1px solid;padding: 2px;">YYYY/MM/DD HH:MM</span><br>
-            {{T "Leave blank to hide until a date is set. News items with publish dates in the future are hidden until that date."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="name">{{T "Name"}}</label></td>
-            <td><input type="text" name="name" value="{{if ne .Manage.News nil}}{{.Manage.News.Name}}{{end}}"></td>
-            <td>{{T "Optional."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="subject">{{T "Subject"}}</label></td>
-            <td><input type="text" name="subject" value="{{if ne .Manage.News nil}}{{.Manage.News.Subject}}{{end}}"></td>
-            <td>{{T "Optional."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="message">{{T "Message"}}</label></td>
-            <td><textarea name="message" rows="4" cols="80">{{if ne .Manage.News nil}}{{.Manage.News.Message}}{{end}}</textarea>
-            <td>{{T "HTML content of the page. Go HTML template actions are supported."}}</td>
-        </tr>
+    <div class="managegrid">
+        <div class="postblock"><label for="timestamp">{{T "Date"}}</label></div>
+        <div><input type="text" name="timestamp" value="{{if ne .Manage.News nil}}{{FormatDateInput .Manage.News.Timestamp}}{{end}}"></div>
+        <div>{{T "Date and time when the news item was published, or will be published."}} Format: <span style="border: 1px solid;padding: 2px;">YYYY/MM/DD HH:MM</span><br>
+        {{T "Leave blank to hide until a date is set. News items with publish dates in the future are hidden until that date."}}</div>
+
+        <div class="postblock"><label for="name">{{T "Name"}}</label></div>
+        <div><input type="text" name="name" value="{{if ne .Manage.News nil}}{{.Manage.News.Name}}{{end}}"></div>
+        <div>{{T "Optional."}}</div>
+
+        <div class="postblock"><label for="subject">{{T "Subject"}}</label></div>
+        <div><input type="text" name="subject" value="{{if ne .Manage.News nil}}{{.Manage.News.Subject}}{{end}}"></div>
+        <div>{{T "Optional."}}</div>
+
+        <div class="postblock"><label for="message">{{T "Message"}}</label></div>
+        <div><textarea name="message" rows="4" cols="80">{{if ne .Manage.News nil}}{{.Manage.News.Message}}{{end}}</textarea></div>
+        <div>{{T "HTML content of the page. Go HTML template actions are supported."}}</div>
+
         {{if or (eq .Manage.News nil) (and (ne .Manage.News.Account nil) (eq .Manage.News.Account.ID .Account.ID))}}
-            <tr>
-                <td class="postblock"><label for="share">{{T "Share"}}</label></td>
-                <td><select name="share" style="width: 100%;">
-                    <option value="0"{{if and (ne .Manage.News nil) (not .Manage.News.Share)}} selected{{end}}>{{T "Do not share with staff"}}</option>
-                    <option value="1"{{if and (ne .Manage.News nil) .Manage.News.Share}} selected{{end}}>{{T "Share with staff"}}</option>
-                </select></td>
-                <td>{{T "Shared news items may be updated by other staff members."}}</td>
-            </tr>
+            <div class="postblock"><label for="share">{{T "Share"}}</label></div>
+            <div><select name="share" style="width: 100%;">
+                <option value="0"{{if and (ne .Manage.News nil) (not .Manage.News.Share)}} selected{{end}}>{{T "Do not share with staff"}}</option>
+                <option value="1"{{if and (ne .Manage.News nil) .Manage.News.Share}} selected{{end}}>{{T "Share with staff"}}</option>
+            </select></div>
+            <div>{{T "Shared news items may be updated by other staff members."}}</div>
         {{end}}
+
         {{if or (eq .Manage.News nil) (.Manage.News.MayUpdate .Account)}}
-            <tr>
-                <td>&nbsp;</td>
-                <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.News nil}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
-                <td>&nbsp;</td>
-            </tr>
+            <div>&nbsp;</div>
+            <div align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.News nil}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></div>
+            <div>&nbsp;</div>
         {{end}}
-    </table>
+    </div>
     </fieldset>
 </form>
 {{if eq .Manage.News nil}}

@@ -76,47 +76,42 @@
     <form method="post">
         <fieldset>
         {{if ne .Manage.Keyword.ID 0}}<legend>{{T "Update"}} {{.Manage.Keyword.Text}}</legend>{{end}}
-        <table class="manageform">
-            <tr>
-                <td class="postblock"><label for="text">{{T "Text"}}</label></td>
-                <td><input type="text" name="text" value="{{.Manage.Keyword.Text}}"></td>
-                <td>{{T "Regular expression to search for when a new post is created."}}</td>
-            </tr>
+        <div class="managegrid">
+            <div class="postblock"><label for="text">{{T "Text"}}</label></div>
+            <div><input type="text" name="text" value="{{.Manage.Keyword.Text}}"></div>
+            <div>{{T "Regular expression to search for when a new post is created."}}</div>
+
             {{if or (ne .Manage.Keyword.ID 0) (not (Global "keyword.action"))}}
-                <tr>
-                    <td class="postblock"><label for="action">{{T "Action"}}{{Globe "keyword.action"}}</label></td>
-                    <td><select name="action" style="width: 100%;">
-                        <option value="hide"{{if eq .Manage.Keyword.Action "hide"}} selected{{end}}>{{T "Hide until approved"}}</option>
-                        <option value="report"{{if eq .Manage.Keyword.Action "report"}} selected{{end}}>{{T "Report"}}</option>
-                        <option value="delete"{{if eq .Manage.Keyword.Action "delete"}} selected{{end}}>{{T "Delete"}}</option>
-                        <option value="ban1h"{{if eq .Manage.Keyword.Action "ban1h"}} selected{{end}}>{{T "Delete & ban for 1 hour"}}</option>
-                        <option value="ban1d"{{if eq .Manage.Keyword.Action "ban1d"}} selected{{end}}>{{T "Delete & ban for 1 day"}}</option>
-                        <option value="ban2d"{{if eq .Manage.Keyword.Action "ban2d"}} selected{{end}}>{{T "Delete & ban for 2 days"}}</option>
-                        <option value="ban1w"{{if eq .Manage.Keyword.Action "ban1w"}} selected{{end}}>{{T "Delete & ban for 1 week"}}</option>
-                        <option value="ban2w"{{if eq .Manage.Keyword.Action "ban2w"}} selected{{end}}>{{T "Delete & ban for 2 weeks"}}</option>
-                        <option value="ban1m"{{if eq .Manage.Keyword.Action "ban1m"}} selected{{end}}>{{T "Delete & ban for 1 month"}}</option>
-                        <option value="ban0"{{if eq .Manage.Keyword.Action "ban0"}} selected{{end}}>{{T "Delete & ban permanently"}}</option>
-                    </select></td>
-                    <td>{{T "Action taken when the keyword is detected."}}</td>
-                </tr>
+                <div class="postblock"><label for="action">{{T "Action"}}{{Globe "keyword.action"}}</label></div>
+                <div><select name="action" style="width: 100%;">
+                    <option value="hide"{{if eq .Manage.Keyword.Action "hide"}} selected{{end}}>{{T "Hide until approved"}}</option>
+                    <option value="report"{{if eq .Manage.Keyword.Action "report"}} selected{{end}}>{{T "Report"}}</option>
+                    <option value="delete"{{if eq .Manage.Keyword.Action "delete"}} selected{{end}}>{{T "Delete"}}</option>
+                    <option value="ban1h"{{if eq .Manage.Keyword.Action "ban1h"}} selected{{end}}>{{T "Delete & ban for 1 hour"}}</option>
+                    <option value="ban1d"{{if eq .Manage.Keyword.Action "ban1d"}} selected{{end}}>{{T "Delete & ban for 1 day"}}</option>
+                    <option value="ban2d"{{if eq .Manage.Keyword.Action "ban2d"}} selected{{end}}>{{T "Delete & ban for 2 days"}}</option>
+                    <option value="ban1w"{{if eq .Manage.Keyword.Action "ban1w"}} selected{{end}}>{{T "Delete & ban for 1 week"}}</option>
+                    <option value="ban2w"{{if eq .Manage.Keyword.Action "ban2w"}} selected{{end}}>{{T "Delete & ban for 2 weeks"}}</option>
+                    <option value="ban1m"{{if eq .Manage.Keyword.Action "ban1m"}} selected{{end}}>{{T "Delete & ban for 1 month"}}</option>
+                    <option value="ban0"{{if eq .Manage.Keyword.Action "ban0"}} selected{{end}}>{{T "Delete & ban permanently"}}</option>
+                </select></div>
+                <div>{{T "Action taken when the keyword is detected."}}</div>
             {{end}}
+
             {{if or (ne .Manage.Keyword.ID 0) (not (Global "keyword.boards"))}}
-                <tr>
-                    <td class="postblock"><label for="boards">{{T "Boards"}}{{Globe "keyword.boards"}}</label></td>
-                    <td>{{template "manage_input_board.gohtml" (Slice .Boards .Manage.Keyword)}}</td>
-                    <td>
-                        {{T "Boards where the keyword applies."}}<br>
-                        &nbsp;&nbsp;<a href="#" onclick="return setAllBoards(true);">{{T "Enable All"}}</a><br>
-                        &nbsp;&nbsp;<a href="#" onclick="return setAllBoards(false);">{{T "Disable All"}}</a>
-                    </td>
-                </tr>
+                <div class="postblock"><label for="boards">{{T "Boards"}}{{Globe "keyword.boards"}}</label></div>
+                <div>{{template "manage_input_board.gohtml" (Slice .Boards .Manage.Keyword)}}</div>
+                <div>
+                    {{T "Boards where the keyword applies."}}<br>
+                    &nbsp;&nbsp;<a href="#" onclick="return setAllBoards(true);">{{T "Enable All"}}</a><br>
+                    &nbsp;&nbsp;<a href="#" onclick="return setAllBoards(false);">{{T "Disable All"}}</a>
+                </div>
             {{end}}
-            <tr>
-                <td>&nbsp;</td>
-                <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.Keyword.ID 0}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></td>
-                <td>&nbsp;</td>
-            </tr>
-        </table>
+
+            <div>&nbsp;</div>
+            <div align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.Keyword.ID 0}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></div>
+            <div>&nbsp;</div>
+        </div>
         </fieldset>
     </form>
     {{if eq .Manage.Keyword.ID 0}}

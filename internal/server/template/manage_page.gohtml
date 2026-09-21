@@ -77,34 +77,30 @@
         {{if and (ne .Manage.Page nil) (ne .Manage.Page.ID 0)}}
             <legend>{{T "Update"}} {{.Manage.Page.Path}}</legend>
         {{end}}
-        <table class="manageform">
-            <tr>
-                <td class="postblock"><label for="path">{{T "Path"}}</label></td>
-                <td><input type="text" name="path" value="{{if ne .Manage.Page nil}}{{.Manage.Page.Path}}{{end}}"></td>
-                <td>{{T "Relative file path where the page is located, excluding the .html suffix."}}</td>
-            </tr>
-            <tr>
-                <td class="postblock"><label for="content">{{T "Content"}}</label></td>
-                <td><textarea name="content" rows="24" cols="80">{{if ne .Manage.Page nil}}{{.Manage.Page.Content}}{{end}}</textarea></td>
-                <td>{{T "HTML content of the page. Go HTML template actions are supported."}}</td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                <td align="right">
-                    <table width="100%" style="border: 0px none;">
-                        <tr>
-                            <td width="50%">
-                                <input type="submit" class="managebutton" name="preview" value="{{T "Preview"}}">
-                            </td>
-                            <td width="50%">
-                                <input type="submit" class="managebutton" value="{{if or (eq .Manage.Page nil) (eq .Manage.Page.ID 0)}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}">
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-                <td>&nbsp;</td>
-            </tr>
-        </table>
+        <div class="managegrid">
+            <div class="postblock"><label for="path">{{T "Path"}}</label></div>
+            <div><input type="text" name="path" value="{{if ne .Manage.Page nil}}{{.Manage.Page.Path}}{{end}}"></div>
+            <div>{{T "Relative file path where the page is located, excluding the .html suffix."}}</div>
+
+            <div class="postblock"><label for="content">{{T "Content"}}</label></div>
+            <div><textarea name="content" rows="24" cols="80">{{if ne .Manage.Page nil}}{{.Manage.Page.Content}}{{end}}</textarea></div>
+            <div>{{T "HTML content of the page. Go HTML template actions are supported."}}</div>
+
+            <div>&nbsp;</div>
+            <div align="right">
+                <table width="100%" style="border: 0px none;">
+                    <tr>
+                        <div width="50%">
+                            <input type="submit" class="managebutton" name="preview" value="{{T "Preview"}}">
+                        </div>
+                        <div width="50%">
+                            <input type="submit" class="managebutton" value="{{if or (eq .Manage.Page nil) (eq .Manage.Page.ID 0)}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}">
+                        </div>
+                    </tr>
+                </table>
+            </div>
+            <div>&nbsp;</div>
+        </div>
         </fieldset>
     </form>
     {{if eq .Manage.Page.ID 0}}

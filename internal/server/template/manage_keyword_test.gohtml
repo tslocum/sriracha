@@ -6,23 +6,19 @@
 <form method="post">
     <fieldset>
     <legend>{{T "Test"}} {{.Manage.Keyword.Text}}</legend>
-    <table class="manageform">
-        <tr>
-            <td class="postblock"><label for="keyword">{{T "Keyword"}}</label></td>
-            <td><input type="text" name="keyword" value="{{.Manage.Keyword.Text}}" disabled></td>
-            <td>{{T "Regular expression to search for when a new post is created."}}</td>
-        </tr>
-        <tr>
-            <td class="postblock"><label for="message">{{T "Message"}}</label></td>
-            <td><textarea name="message" rows="4" oninput="document.getElementById('keywordresult').innerHTML = '';" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;width: 100%;">{{.Extra}}</textarea></td>
-            <td>{{T "Text to test for a keyword match."}}</td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Test"}}"></td>
-            <td id="keywordresult" style="vertical-align: middle;">{{.Message}}</td>
-        </tr>
-    </table>
+    <div class="managegrid">
+        <div class="postblock"><label for="keyword">{{T "Keyword"}}</label></div>
+        <div><input type="text" name="keyword" value="{{.Manage.Keyword.Text}}" disabled></div>
+        <div>{{T "Regular expression to search for when a new post is created."}}</div>
+
+        <div class="postblock"><label for="message">{{T "Message"}}</label></div>
+        <div><textarea name="message" rows="4" oninput="document.getElementById('keywordresult').innerHTML = '';" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;width: 100%;">{{.Extra}}</textarea></div>
+        <div>{{T "Text to test for a keyword match."}}</div>
+
+        <div>&nbsp;</div>
+        <div align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Test"}}"></div>
+        <div id="keywordresult" style="vertical-align: middle;">{{.Message}}</div>
+    </div>
     </fieldset>
 </form><br>
 {{template "manage_end.gohtml" .}}
