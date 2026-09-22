@@ -26,6 +26,7 @@ import (
 	"net/smtp"
 	"net/url"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"runtime"
@@ -1224,6 +1225,7 @@ func (s *Server) validateTemplateConfig(officialDir string) error {
 // custom templates are loaded from disk.
 func (s *Server) parseTemplates(officialDir string, customDir string, db serverDB) error {
 	s.customTemplates = s.customTemplates[:0]
+	var patches []string
 	wrapError := func(name string, err error) error {
 		var source string
 		if !slices.Contains(s.customTemplates, name) {
@@ -1240,6 +1242,12 @@ func (s *Server) parseTemplates(officialDir string, customDir string, db serverD
 		}
 		for _, f := range entries {
 			if !strings.HasSuffix(f.Name(), ".gohtml") {
+				if strings.HasSuffix(f.Name(), ".patch") {
+					if !custom {
+						return fmt.Errorf("found patch in official template directory: patches must be placed in the custom template directory")
+					}
+					patches = append(patches, f.Name())
+				}
 				continue
 			} else if custom {
 				s.customTemplates = append(s.customTemplates, f.Name())
@@ -1292,6 +1300,62 @@ func (s *Server) parseTemplates(officialDir string, customDir string, db serverD
 		err := parseDir(customDir, true)
 		if err != nil {
 			return err
+		}
+		if len(patches) > 0 {
+			// Verify GNU patch is installed and accessible.
+			patchPath, err := exec.LookPath("patch")
+			if err != nil || patchPath == "" {
+				log.Fatal(fmt.Errorf("error: custom template patches were found, but the GNU 'patch' command is not installed (or is inaccessible)"))
+			}
+
+			for _, patchFile := range patches {
+				patchPath := filepath.Join(customDir, patchFile)
+				templateName := strings.TrimSuffix(patchFile, ".patch") + ".gohtml"
+				var templateBytes []byte
+				if officialDir != "" {
+					templateBytes, err = os.ReadFile(filepath.Join(officialDir, templateName))
+					if err != nil {
+						return fmt.Errorf("failed to read official template file %s referenced by patch %s: %s", templateName, patchPath, err)
+					}
+				} else {
+					templateBytes, err = templateFS.ReadFile(filepath.Join("template", templateName))
+					if err != nil {
+						return fmt.Errorf("failed to read official template file %s referenced by patch %s: %s", templateName, patchPath, err)
+					}
+				}
+
+				tmpFile, err := os.CreateTemp("", templateName)
+				if err != nil {
+					return fmt.Errorf("failed to create temporary file: %s", err)
+				}
+				removeTemp := func() {
+					tmpFile.Close()
+					os.Remove(tmpFile.Name())
+				}
+				defer removeTemp()
+				_, err = tmpFile.Write(templateBytes)
+				if err != nil {
+					return fmt.Errorf("failed to write temporary file: %s", err)
+				}
+				tmpFile.Close()
+
+				cmd := exec.Command("patch", "--no-backup-if-mismatch", "-u", "-i", patchPath, tmpFile.Name())
+				cmd.Stderr = os.Stderr
+				err = cmd.Run()
+				if err != nil {
+					return fmt.Errorf("failed to apply patch file %s: %s", patchPath, err)
+				}
+				templateBytes, err = os.ReadFile(tmpFile.Name())
+				if err != nil {
+					return fmt.Errorf("failed to read temporary file: %s", err)
+				}
+				removeTemp()
+
+				_, err = s.tpl.New(templateName).Parse(string(templateBytes))
+				if err != nil {
+					return wrapError(templateName, err)
+				}
+			}
 		}
 	}
 

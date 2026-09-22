@@ -334,6 +334,66 @@ Support is not available for Sriracha installations using custom templates.
 
 Support is not available for creating or modifying custom template files.
 
+#### Template patches
+
+**Note:** This section only applies to templates without the `extra_` prefix.
+
+The easiest way to override an official template is to create a copy of the official template file.
+
+Whenever Sriracha is upgraded, the same steps of copying and updating templates must be repeated.
+
+This maintenance can be burdensome, especially when multiple official templates have been customized.
+Administrators may delay upgradng to the latest version in an effort to avoid this maintenance.
+
+To alleviate this, Sriracha supports loading template [patch files](https://en.wikipedia.org/wiki/Patch_%28Unix%29).
+
+After copying and updating an official template file by following the instructions above,
+generate a patch file in unified format (`-u`):
+
+```
+diff -u official/imgboard_page.gohtml custom/imgboard_page.gohtml
+```
+
+Save this patch using the same name as the official template but with the extension `.patch` instead of `.gohtml`.
+
+For example, a patch for `imgboard_page.gohtml` must be named `imgboard_page.patch`.
+
+Create a separate patch for each custom template file. Sriracha does not support loading patches containing changes to multiple files.
+
+The `tee` command may be used to view and save a newly generated patch:
+
+```
+trevor@laptop-linux:~$ diff -u official/imgboard_page.gohtml custom/imgboard_page.gohtml | tee template/imgboard_page.patch
+--- official/imgboard_page.gohtml       2026-09-22 09:10:01.193063863 -0700
++++ custom/imgboard_page.gohtml 2026-09-22 09:10:54.568228638 -0700
+@@ -104,7 +104,7 @@
+                                {{end}}
+                                {{if and (ne .ReplyMode 0) (not .ArchiveMode)}}
+                                        <td id="threadstatusdeleted" style="display: none;border: 0px none;color: red;font-weight: bold;">
+-                                               {{T "Thread deleted."}}
++                                               Thread sent to the shadow realm.
+                                        </td>
+                                {{end}}
+                        </tr>
+```
+
+To use the patch, instead of adding the customized `.gohtml` file to the custom
+template directory, add the patch file.
+
+When Sriracha starts, any patches in the custom template directory will be
+applied to the latest official templates.
+
+When an official template is extensively modified between versions, patches
+against the previous version may reference lines which have been removed.
+
+If such a patch cannot be applied, Sriracha will print an error message and exit.
+
+When this happens, the solution is to create a new patch against the latest official template file.
+
+Template patches reduce the maintenance burden of upgrading, but do not make the process maintenance-free.
+
+The only way to customize templates without requiring any maintenance is by overriding `extra_*.gohtml` files only.
+
 #### Template locations
 
 ```

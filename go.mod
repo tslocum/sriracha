@@ -5,7 +5,7 @@ go 1.26.8
 require (
 	codeberg.org/tslocum/bbcode v0.0.0-20260210194643-496280381f96
 	codeberg.org/tslocum/gotext v0.0.0-20260702153535-d0250b83dac7
-	codeberg.org/tslocum/list2regexp v1.0.4
+	codeberg.org/tslocum/list2regexp v1.0.5
 	github.com/PuerkitoBio/goquery v1.13.0
 	github.com/alecthomas/chroma/v2 v2.27.0
 	github.com/alexedwards/argon2id v1.0.0
@@ -52,7 +52,7 @@ require (
 	golang.org/x/crypto v0.57.0 // indirect
 	golang.org/x/image v0.46.0 // indirect
 	golang.org/x/sync v0.23.0 // indirect
-	modernc.org/libc v1.77.0 // indirect
+	modernc.org/libc v1.77.1 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.12.1 // indirect
 )
