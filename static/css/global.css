@@ -48,6 +48,10 @@ img, audio, video {
 }
 
 .postarea {
+	display: flex;
+	flex-wrap: wrap;
+	row-gap: 10px;
+	column-gap: 10px;
 	max-width: 100%;
 }
 
@@ -463,6 +467,10 @@ details {
 
 	:not(.postblock) > label {
 		font-size: 0.75em;
+	}
+
+	.postarea {
+		width: 100%;
 	}
 
 	.userdelete {

@@ -6,6 +6,7 @@ var setUnloadHandler = false;
 var haveFocus = false;
 var blinkTitle = false;
 var originalTitle = "";
+var quotePostID = 0;
 var viewThreadID = 0;
 var viewThreadModified = null;
 var newPostCount = 0;
@@ -373,6 +374,7 @@ function quotePost(postID) {
     }
 
     message.focus();
+    onMessageInput();
     if (details) {
         details.scrollIntoView();
         return false;
@@ -916,6 +918,44 @@ function onSubmit(e) {
     return true;
 }
 
+function onMessageInput() {
+    var message = document.getElementById("message");
+    if (!message) {
+        return;
+    }
+    var quotepreview = document.getElementById("quotepreview");
+    const match = [...message.value.matchAll(/(>>[0-9]+)/g)];
+    var postID = 0;
+    var postHTML = "";
+    if (match && match.length > 0) {
+        var m = match[match.length-1];
+        if (m.length > 1 && m[1].length > 2) {
+            postID = m[1].substring(2);
+            if (postID == quotePostID) {
+                return;
+            }
+            quotePostID = postID;
+            var postarea = document.querySelector(".postarea");
+            if (postarea) {
+                var post = document.getElementById("post" + postID);
+                if (post) {
+                    postHTML = post.innerHTML;
+                    if (!quotepreview) {
+                        quotepreview = document.createElement("div");
+                        quotepreview.id = "quotepreview";
+                        postarea.append(quotepreview);
+                    }
+                }
+            }
+        }
+    }
+    if (postHTML != "") {
+        quotepreview.innerHTML = "<fieldset><legend>No." + postID + "</legend>" + postHTML + "</fieldset>";
+    } else if (quotepreview) {
+        quotepreview.remove();
+    }
+}
+
 async function expireHiddenPosts() {
     // Check for expired hidden posts once per day.
     var lastExpire = localStorage.getItem("hide_expire");
@@ -988,6 +1028,14 @@ function onDOMContentLoaded(e) {
             setStyle(this.value);
             this.value = "";
         });
+    }
+
+    // Handle message input.
+    var message = document.getElementById("message");
+    if (message) {
+        message.addEventListener('input', function(e) {
+            onMessageInput();
+        })
     }
 
     // Quote post.
