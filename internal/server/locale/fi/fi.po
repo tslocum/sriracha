@@ -663,6 +663,9 @@ msgstr ""
 msgid "Gallery"
 msgstr ""
 
+msgid "Generate animated thumbnails for GIF images using %s."
+msgstr ""
+
 msgid "Global"
 msgstr ""
 
@@ -1448,6 +1451,9 @@ msgstr ""
 msgid "Rules"
 msgstr ""
 
+msgid "Running in safe mode because a custom template failed validation: %s"
+msgstr ""
+
 msgid "Scale"
 msgstr ""
 
@@ -1554,6 +1560,9 @@ msgstr "Aihe"
 
 msgid "Submit"
 msgstr "Lähetä"
+
+msgid "Submit post."
+msgstr ""
 
 msgid "Subscribe"
 msgstr ""
@@ -1852,6 +1861,9 @@ msgid "You are banned."
 msgstr ""
 
 msgid "Your email address is unconfirmed."
+msgstr ""
+
+msgid "Your IP address is blacklisted."
 msgstr ""
 
 msgid "Your post will be shown once it has been approved."

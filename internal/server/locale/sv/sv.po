@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-09-13 07:14+0000\n"
-"Last-Translator: yeager <yeager@noreply.codeberg.org>\n"
+"PO-Revision-Date: 2026-09-21 05:26+0000\n"
+"Last-Translator: bittin <bittin@noreply.codeberg.org>\n"
 "Language-Team: Swedish <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/sv/>\n"
 "Language: sv\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.8.1\n"
+"X-Generator: Weblate 2026.9.1\n"
 
 msgid "%d existing ban"
 msgid_plural "%d existing bans"
@@ -680,6 +680,9 @@ msgstr "Forum"
 
 msgid "Gallery"
 msgstr "Galleri"
+
+msgid "Generate animated thumbnails for GIF images using %s."
+msgstr "Generera animerade miniatyrbilder för GIF-bilder med hjälp av %s."
 
 msgid "Global"
 msgstr "Global"
@@ -1517,6 +1520,9 @@ msgstr "Roll"
 msgid "Rules"
 msgstr "Regler"
 
+msgid "Running in safe mode because a custom template failed validation: %s"
+msgstr ""
+
 msgid "Scale"
 msgstr "Skala"
 
@@ -1627,6 +1633,9 @@ msgstr "Ämne"
 
 msgid "Submit"
 msgstr "Skicka"
+
+msgid "Submit post."
+msgstr "Skicka inlägg."
 
 msgid "Subscribe"
 msgstr "Prenumerera"
@@ -1951,6 +1960,9 @@ msgstr "Du är avstängd."
 
 msgid "Your email address is unconfirmed."
 msgstr "Din e-postadress är inte bekräftad."
+
+msgid "Your IP address is blacklisted."
+msgstr "Din IP-adress är svartlistad."
 
 msgid "Your post will be shown once it has been approved."
 msgstr "Ditt inlägg visas när det har godkänts."

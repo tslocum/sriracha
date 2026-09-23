@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-09-14 15:21+0000\n"
+"PO-Revision-Date: 2026-09-19 22:06+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.8.1\n"
+"X-Generator: Weblate 2026.9.1\n"
 
 msgid "%d existing ban"
 msgid_plural "%d existing bans"
@@ -688,6 +688,9 @@ msgstr "Forum"
 
 msgid "Gallery"
 msgstr "Galerij"
+
+msgid "Generate animated thumbnails for GIF images using %s."
+msgstr "Maak bewegende miniaturen voor gif-afbeeldingen met behulp van %s."
 
 msgid "Global"
 msgstr "Globaal"
@@ -1529,6 +1532,9 @@ msgstr "Rol"
 msgid "Rules"
 msgstr "Regels"
 
+msgid "Running in safe mode because a custom template failed validation: %s"
+msgstr ""
+
 msgid "Scale"
 msgstr "Schaal"
 
@@ -1639,6 +1645,9 @@ msgstr "Onderwerp"
 
 msgid "Submit"
 msgstr "Versturen"
+
+msgid "Submit post."
+msgstr "Plaats het bericht."
 
 msgid "Subscribe"
 msgstr "Abonneren"
@@ -1971,6 +1980,9 @@ msgstr "Je bent verbannen."
 
 msgid "Your email address is unconfirmed."
 msgstr "Je e-mailadres is niet bevestigd."
+
+msgid "Your IP address is blacklisted."
+msgstr "Je ip-adres staat op de zwarte lijst."
 
 msgid "Your post will be shown once it has been approved."
 msgstr "Je bericht wordt na goedkeuring getoond."
