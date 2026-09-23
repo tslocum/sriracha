@@ -1,5 +1,6 @@
 2.1.6:
 - Support customizing templates via patch files
+- Fall back to running in safe mode when a custom template fails validation
 
 2.1.5:
 - Improve management panel layout on mobile devices

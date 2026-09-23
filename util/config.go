@@ -89,6 +89,7 @@ type Config struct {
 	ImportMode     bool
 	ImportComplete bool
 	StartTime      time.Time
+	TemplateError  error
 
 	// Obsolete fields.
 	Serve string // Replaced by HTTP option.

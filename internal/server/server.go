@@ -2359,6 +2359,8 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 	} else if s.config.Require2FA && len(db.TwoFactorsByAccount(data.Account.ID)) == 0 && !strings.HasPrefix(r.URL.Path, "/sriracha/preference") {
 		data.Redirect(w, r, "/sriracha/preference/")
 		return
+	} else if s.config.TemplateError != nil {
+		data.Info = Get(nil, data.Account, "Running in safe mode because a custom template failed validation: %s", s.config.TemplateError)
 	}
 
 	switch {
@@ -3074,7 +3076,16 @@ func (s *Server) Run() error {
 	// Parse template files.
 	err = s.parseTemplates(officialDir, s.config.Template, nil)
 	if err != nil {
-		return fmt.Errorf("failed to parse template files: %s", err)
+		if !devMode {
+			s.config.TemplateError = err
+			s.config.Template = ""
+			err = s.parseTemplates(officialDir, s.config.Template, nil)
+		}
+		if err != nil {
+			return fmt.Errorf("failed to parse template files: %s", err)
+		} else if s.config.TemplateError != nil {
+			log.Printf("WARNING: Sriracha is running in safe mode because a custom template failed validation: %s", s.config.TemplateError)
+		}
 	}
 
 	// Export posts.

@@ -1397,6 +1397,9 @@ msgstr ""
 msgid "Rules"
 msgstr ""
 
+msgid "Running in safe mode because a custom template failed validation: %s"
+msgstr ""
+
 msgid "Scale"
 msgstr ""
 
