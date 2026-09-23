@@ -931,21 +931,21 @@ function onMessageInput() {
         var m = match[match.length-1];
         if (m.length > 1 && m[1].length > 2) {
             postID = m[1].substring(2);
-            if (postID == quotePostID) {
-                return;
-            }
-            quotePostID = postID;
-            var postarea = document.querySelector(".postarea");
-            if (postarea) {
-                var post = document.getElementById("post" + postID);
-                if (post) {
-                    postHTML = post.innerHTML;
-                    if (!quotepreview) {
-                        quotepreview = document.createElement("div");
-                        quotepreview.id = "quotepreview";
-                        postarea.append(quotepreview);
-                    }
-                }
+        }
+    }
+    if (postID == quotePostID) {
+        return;
+    }
+    quotePostID = postID;
+    var postarea = document.querySelector(".postarea");
+    if (postarea) {
+        var post = document.getElementById("post" + postID);
+        if (post) {
+            postHTML = post.innerHTML;
+            if (!quotepreview) {
+                quotepreview = document.createElement("div");
+                quotepreview.id = "quotepreview";
+                postarea.append(quotepreview);
             }
         }
     }
