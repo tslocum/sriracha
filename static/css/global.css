@@ -107,6 +107,13 @@ img, audio, video {
 	padding: 1em 0.5em 1em 0.5em;
 }
 
+.thumb iframe {
+	width: 40vw;
+	max-width: 100%;
+	height: auto;
+	aspect-ratio: 16 / 9;
+}
+
 .forumpost {
 	padding-left: 0.25em;
 	padding-right: 0.25em;
@@ -455,6 +462,10 @@ details {
 		float: none;
 		margin-left: 10px;
 		margin-right: 10px;
+	}
+
+	.thumb iframe {
+		width: 100%;
 	}
 
 	.filesize {

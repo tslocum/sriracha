@@ -1,4 +1,5 @@
 2.1.7:
+- Scale embedded media based on screen size
 - Wrap long words (such as URLs) instead of overflowing
 
 2.1.6:
