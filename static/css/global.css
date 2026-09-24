@@ -1,3 +1,7 @@
+* {
+	overflow-wrap: anywhere;
+}
+
 body {
 	margin: 0;
 	padding: 8px;

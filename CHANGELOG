@@ -1,3 +1,6 @@
+2.1.7:
+- Wrap long words (such as URLs) instead of overflowing
+
 2.1.6:
 - Display post next to form when replying
 - Support customizing templates via patch files
