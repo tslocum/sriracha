@@ -156,7 +156,7 @@ hr {
 	border-left: 0px none;
 }
 
-.forumpost:target, .reply:target {
+.forumpost:target, .reply:target, .target {
 	border: 2px ridge #0010E0;
 }
 

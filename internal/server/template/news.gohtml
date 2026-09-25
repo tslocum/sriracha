@@ -3,13 +3,6 @@
 hr {
     max-width: 930px;
 }
-.reply {
-    border: 1px solid;
-    box-shadow: 2px 2px;
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
-	padding: 0.5rem;
-}
 </style>
 <hr style="width: 90%;">
 <div class="news">
@@ -20,7 +13,7 @@ hr {
         <hr>
     {{else}}
         {{range $i, $news := .AllNews}}
-            <div class="reply">
+            <div class="reply newsentry">
                 <a href="/news-{{.ID}}.html" style="text-decoration: none;color: inherit;">
                     <label style="cursor: pointer;">
                         {{if ne .Subject ""}}<span class="filetitle">{{.Subject}}</span>{{end}}

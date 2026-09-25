@@ -3,13 +3,6 @@
 hr {
     max-width: 930px;
 }
-.reply {
-    border: 1px solid;
-    box-shadow: 2px 2px;
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
-	padding: 0.5rem;
-}
 td {
     vertical-align: top;
 }
@@ -27,7 +20,7 @@ td {
 <div class="news">
     {{if ne .News nil}}
         <div style="text-align: center;margin-top: 0.75rem;margin-bottom: 1.5rem;">
-            <div class="reply" style="display: inline-block;text-align: left;margin: 0;">
+            <div class="reply newsentry" style="display: inline-block;text-align: left;margin: 0;">
                 <label style="cursor: pointer;">
                     <a href="/news.html" style="text-decoration: none;color: inherit;">
                         {{if ne .News.Subject ""}}<span class="filetitle">{{.News.Subject}}</span>{{end}}
@@ -42,7 +35,7 @@ td {
         </div>
     {{end}}
     <hr>
-    <div class="reply navindex">
+    <div class="reply newsentry navindex">
         <table style="border: 0;table-layout: fixed;width: 100%;">
             {{$needSpacer := false}}
             {{range $i, $category := .Opt.Categories}}
