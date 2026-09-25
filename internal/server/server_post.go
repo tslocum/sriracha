@@ -467,15 +467,7 @@ func (s *Server) loadPostFile(db serverDB, r *http.Request, p *Post, fileHeader 
 				return errors.New(Get(p.Board, nil, "Failed to create thumbnail: %s", err))
 			}
 			cmd.Stderr = os.Stderr
-			stdout, err := cmd.StdoutPipe()
-			if err != nil {
-				return errors.New(Get(p.Board, nil, "Failed to create thumbnail: %s", err))
-			}
-			buf := &bytes.Buffer{}
 			wg := &sync.WaitGroup{}
-			wg.Go(func() {
-				io.Copy(buf, stdout)
-			})
 			wg.Go(func() {
 				io.Copy(stdin, formFile)
 				stdin.Close()
