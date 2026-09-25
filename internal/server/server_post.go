@@ -378,7 +378,7 @@ func (s *Server) loadPostFile(db serverDB, r *http.Request, p *Post, fileHeader 
 	setFileAndThumb(p, s.config.Root, fileExt, thumbExt)
 
 	p.FileSize = fileHeader.Size
-	if oekakiPost && FormBool(r, "oekaki") {
+	if oekakiPost && FormString(r, "oekaki") != "" {
 		p.FileOriginal = FormString(r, "title")
 	}
 
@@ -795,7 +795,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		}
 	}
 
-	oekakiPost := b.Oekaki && FormBool(r, "oekaki")
+	oekakiPost := b.Oekaki && FormString(r, "oekaki") != ""
 
 	var addReport bool
 	var solvedCAPTCHA *CAPTCHA

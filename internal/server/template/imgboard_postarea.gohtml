@@ -107,7 +107,7 @@
                     <td colspan="2">
                         <input type="submit" value="{{T "Submit"}}" title="{{T "Submit post."}}" accesskey="z">
                         {{if .Board.Oekaki}}
-                            &nbsp;<button type="submit" name="oekaki" value="1" title="{{T "Create a new drawing."}}" accesskey="o">{{T "New drawing..."}}</button>
+                            &nbsp;<input type="submit" name="oekaki" value="{{T "New drawing..."}}" title="{{T "Create a new drawing."}}" accesskey="o">
                         {{end}}
                         &nbsp;<label for="preview" style="float: right;"><input type="checkbox" id="preview" name="preview" value="1" accesskey="a"{{if $.Preview}} checked{{end}}><small>{{T "Preview"}}</small></label>
                         {{if and .ModMode (or (May "post.sticky" .Account .Opt.Access) (May "post.lock" .Account .Opt.Access))}}
