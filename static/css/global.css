@@ -488,10 +488,6 @@ details {
 		margin-left: 10px;
 	}
 
-	:not(.postblock) > label {
-		font-size: 0.75em;
-	}
-
 	.postarea {
 		width: 100%;
 	}
