@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-09-19 22:06+0000\n"
+"PO-Revision-Date: 2026-09-25 00:56+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -1534,6 +1534,8 @@ msgstr "Regels"
 
 msgid "Running in safe mode because a custom template failed validation: %s"
 msgstr ""
+"Je bevindt je in de veilige modus, omdat een aangepast sjabloon niet kan "
+"worden geverifieerd: %s"
 
 msgid "Scale"
 msgstr "Schaal"
