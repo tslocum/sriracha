@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -105,7 +106,7 @@ CREATE TABLE post (
 	return f, nil
 }
 
-func (s *Server) exportPosts(db serverDB, exportPath string) error {
+func (s *Server) exportPosts(db serverDB, exportPath string, mini bool) error {
 	boards := db.AllBoards()
 	if len(boards) == 0 {
 		return fmt.Errorf("no boards available to export")
@@ -131,7 +132,7 @@ func (s *Server) exportPosts(db serverDB, exportPath string) error {
 	}
 	defer zipFile.Close()
 
-	zip := zip.NewWriter(zipFile)
+	z := zip.NewWriter(zipFile)
 
 	date := time.Now().Format("20060102")
 	for _, b := range boards {
@@ -150,13 +151,14 @@ func (s *Server) exportPosts(db serverDB, exportPath string) error {
 		if b.Description != "" {
 			fName += "_" + strings.ReplaceAll(strings.ToLower(b.Name), " ", "_")
 		}
+		boardName := fName
 		fName += ".db"
 
 		boardFile, err := s._exportBoardPosts(db, b, threads)
 		if err != nil {
 			return fmt.Errorf("failed to export board %s: %s", b.Path(), err)
 		}
-		zipBoardFile, err := zip.Create(fName)
+		zipBoardFile, err := z.Create(fName)
 		if err != nil {
 			return fmt.Errorf("failed to create file in zip archive: %s", err)
 		}
@@ -165,13 +167,84 @@ func (s *Server) exportPosts(db serverDB, exportPath string) error {
 			return fmt.Errorf("failed to write zip archive: %s", err)
 		}
 		boardFile.Close()
+		if !mini {
+			var boardDir, srcDir, thumbDir bool
+			for _, thread := range threads {
+				for _, p := range db.AllPostsInThread(FilterAny, thread[0]) {
+					if p.File != "" && !p.IsEmbed() {
+						if !boardDir {
+							_, err := z.Create(boardName + "/")
+							if err != nil {
+								return fmt.Errorf("failed to create directory in zip archive: %s", err)
+							}
+							boardDir = true
+						}
+						if !srcDir {
+							_, err := z.Create(filepath.Join(boardName, "src") + "/")
+							if err != nil {
+								return fmt.Errorf("failed to create directory in zip archive: %s", err)
+							}
+							srcDir = true
+						}
+						srcPath := filepath.Join(s.config.Root, p.Board.Dir, "src", p.File)
+						srcFile, err := os.Open(srcPath)
+						if err != nil {
+							return fmt.Errorf("failed to open file %s of post %d: %s", srcPath, p.ID, err)
+						}
+						srcZipFile, err := z.Create(filepath.Join(boardName, "src", p.File))
+						if err != nil {
+							return fmt.Errorf("failed to create file in zip archive: %s", err)
+						}
+						_, err = io.Copy(srcZipFile, srcFile)
+						if err != nil {
+							return fmt.Errorf("failed to write zip archive: %s", err)
+						}
+						srcFile.Close()
+					}
+					if p.Thumb != "" {
+						if !boardDir {
+							_, err := z.Create(boardName + "/")
+							if err != nil {
+								return fmt.Errorf("failed to create directory in zip archive: %s", err)
+							}
+							boardDir = true
+						}
+						if !thumbDir {
+							_, err := z.Create(filepath.Join(boardName, "thumb") + "/")
+							if err != nil {
+								return fmt.Errorf("failed to create directory in zip archive: %s", err)
+							}
+							thumbDir = true
+						}
+						thumbPath := filepath.Join(s.config.Root, p.Board.Dir, "thumb", p.Thumb)
+						thumbFile, err := os.Open(thumbPath)
+						if err != nil {
+							return fmt.Errorf("failed to open file %s of post %d: %s", thumbPath, p.ID, err)
+						}
+						thumbZipFile, err := z.Create(filepath.Join(boardName, "thumb", p.Thumb))
+						if err != nil {
+							return fmt.Errorf("failed to create file in zip archive: %s", err)
+						}
+						_, err = io.Copy(thumbZipFile, thumbFile)
+						if err != nil {
+							return fmt.Errorf("failed to write zip archive: %s", err)
+						}
+						thumbFile.Close()
+					}
+				}
+			}
+		}
 	}
 
-	err = zip.Close()
+	err = z.Close()
 	if err != nil {
 		return fmt.Errorf("failed to write zip archive: %s", err)
 	}
 
+	if !mini {
+		fmt.Printf("Exported post data and attachments to %s\n", exportPath)
+		return nil
+	}
 	fmt.Printf("Exported post data to %s\n", exportPath)
 	fmt.Printf("Warning: Attachment files are not included within the export. To import posts later, you will also need a copy of the src and thumb directories of each board.\n")
 	return nil

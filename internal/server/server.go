@@ -2883,6 +2883,7 @@ func (s *Server) Run() error {
 		configFile     string
 		disablePlugins string
 		exportPath     string
+		exportMiniPath string
 		importPath     string
 		devMode        bool
 		rebuild        bool
@@ -2895,7 +2896,8 @@ func (s *Server) Run() error {
 	)
 	flag.StringVar(&configFile, "config", "", "path to configuration file (default: ~/.config/sriracha/config.yml)")
 	flag.StringVar(&disablePlugins, "disable", "", "comma-separated list of built-in (official) plugins to disable")
-	flag.StringVar(&exportPath, "export", "", "export posts to zip file at specified path")
+	flag.StringVar(&exportPath, "export", "", "export post data and attachments to zip file at specified path")
+	flag.StringVar(&exportMiniPath, "export-mini", "", "export post data to zip file at specified path")
 	flag.StringVar(&importPath, "import", "", "import posts from zip file or sqlite database file at specified path")
 	flag.BoolVar(&devMode, "dev", false, "run in development mode (watch official and custom template files for changes)")
 	flag.BoolVar(&rebuild, "rebuild", false, "rebuild static files on startup")
@@ -3089,19 +3091,26 @@ func (s *Server) Run() error {
 	}
 
 	// Export posts.
-	if exportPath != "" {
+	if exportPath != "" || exportMiniPath != "" {
 		if !builtWithSQLite {
 			return errorMissingSQLite
+		}
+
+		export := exportPath
+		var exportMini bool
+		if export == "" {
+			export = exportMiniPath
+			exportMini = true
 		}
 
 		db := s.begin()
 		defer db.Commit()
 
-		if !strings.HasSuffix(strings.ToLower(exportPath), ".zip") {
-			exportPath += ".sriracha.zip"
+		if !strings.HasSuffix(strings.ToLower(export), ".zip") {
+			export += ".sriracha.zip"
 		}
 
-		err := s.exportPosts(db, exportPath)
+		err := s.exportPosts(db, export, exportMini)
 		if err != nil {
 			return fmt.Errorf("failed to export posts: %s", err)
 		}
