@@ -171,6 +171,10 @@ img, audio, video {
 	text-decoration: none;
 }
 
+#quotepreview .filesize a, #quotepreview .thumb {
+	pointer-events: none;
+}
+
 .hoverpost .touchreflink {
 	display: inline;
 	background-color: inherit;

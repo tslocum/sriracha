@@ -951,6 +951,10 @@ function onMessageInput() {
     }
     if (postHTML != "") {
         quotepreview.innerHTML = "<fieldset><legend>No." + postID + "</legend>" + postHTML + "</fieldset>";
+        var nodes = quotepreview.getElementsByTagName("*");
+        for(var i = 0; i < nodes.length; i++) {
+            nodes[i].id = "";
+        }
     } else if (quotepreview) {
         quotepreview.remove();
     }
