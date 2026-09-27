@@ -3391,7 +3391,7 @@ func (s *Server) Run() error {
 		fmt.Printf("Serving http://%s%s\n", s.config.HTTP, extra)
 	}
 	if s.config.Identifiers && s.config.SaltIdent == "" {
-		fmt.Println("Warning: Configuring an identifier generation salt is strongly recommended! Set saltident to a long string of random data which, once set, never changes.")
+		fmt.Println("Warning: Configuring an identifier generation salt will be required starting with Sriracha v2.2.0! Set saltident to a long string of random data which, once set, never changes.")
 	}
 	s.lock.Unlock()
 
