@@ -241,6 +241,11 @@ func (s *Server) exportPosts(db serverDB, exportPath string, mini bool) error {
 		}
 	}
 
+	err = z.SetComment("Sriracha version " + SrirachaVersion)
+	if err != nil {
+		return fmt.Errorf("failed to write zip comment: %s", err)
+	}
+
 	err = z.Close()
 	if err != nil {
 		return fmt.Errorf("failed to write zip archive: %s", err)
