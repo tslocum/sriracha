@@ -37,8 +37,10 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
+// postUploadFileLock prevents multiple uploads from being assigned the same name.
 var postUploadFileLock = &sync.Mutex{}
 
+// embedInfo represents an oEmbed service response.
 type embedInfo struct {
 	Title string `json:"title"`
 	Thumb string `json:"thumbnail_url"`

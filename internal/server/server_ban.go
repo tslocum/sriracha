@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -21,7 +22,7 @@ func (s *Server) loadBanForm(db serverDB, r *http.Request, b *Ban) error {
 	} else {
 		timestamp, err := time.ParseInLocation("2006/01/02 15:04", strings.ReplaceAll(expire, "-", "/"), time.Local)
 		if err != nil {
-			return fmt.Errorf("failed to parse expire date and time (format: YYYY/MM/DD HH:MM)")
+			return errors.New(Get(nil, nil, "Failed to parse date and time. Format: %s", "YYYY/MM/DD HH:MM"))
 		}
 		b.Expire = timestamp.Unix()
 	}
@@ -40,7 +41,7 @@ func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter
 		}
 		b := db.BanByID(deleteBanID)
 		if b == nil {
-			data.ManageError("Invalid or expired ban.")
+			data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("Ban"))))
 			return
 		}
 		liftReason := FormString(r, "reason")
@@ -65,7 +66,7 @@ func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter
 	if banID > 0 {
 		data.Manage.Ban = db.BanByID(banID)
 		if data.Manage.Ban == nil {
-			data.ManageError("Invalid or expired ban.")
+			data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("Ban"))))
 			return
 		}
 

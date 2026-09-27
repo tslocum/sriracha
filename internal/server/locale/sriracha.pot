@@ -38,10 +38,16 @@ msgstr[1] ""
 msgid "%s Devices"
 msgstr ""
 
+msgid "%s already exists."
+msgstr ""
+
 msgid "%s connections."
 msgstr ""
 
 msgid "%s imageboard and forum server"
+msgstr ""
+
+msgid "%s is required."
 msgstr ""
 
 msgid "%s memory usage."
@@ -162,6 +168,9 @@ msgid "All board options will be duplicated except those below."
 msgstr ""
 
 msgid "All boards are locked because Sriracha is running in import mode. Please try again later."
+msgstr ""
+
+msgid "All fields are required."
 msgstr ""
 
 msgid "All new posts"
@@ -607,6 +616,9 @@ msgstr ""
 msgid "Failed to embed media."
 msgstr ""
 
+msgid "Failed to parse date and time. Format: %s"
+msgstr ""
+
 msgid "Failed to refresh page. Retrying..."
 msgstr ""
 
@@ -752,6 +764,9 @@ msgid "Info"
 msgstr ""
 
 msgid "Instance Limit"
+msgstr ""
+
+msgid "Invalid %s."
 msgstr ""
 
 msgid "Invalid access key."
@@ -1157,6 +1172,9 @@ msgid "Password"
 msgstr ""
 
 msgid "Password protection enabled. You must enter an allowed password to post."
+msgstr ""
+
+msgid "Passwords do not match."
 msgstr ""
 
 msgid "Paste a YouTube URL."
@@ -1777,6 +1795,9 @@ msgid "You already requested a confirmation link. You may request another confir
 msgstr ""
 
 msgid "You are banned."
+msgstr ""
+
+msgid "You may not change your own role."
 msgstr ""
 
 msgid "Your email address is unconfirmed."

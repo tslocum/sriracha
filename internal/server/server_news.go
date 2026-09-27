@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -22,7 +23,7 @@ func (s *Server) loadNewsForm(db serverDB, r *http.Request, n *News, a *Account)
 	} else {
 		timestamp, err := time.ParseInLocation("2006/01/02 15:04", strings.ReplaceAll(ts, "-", "/"), time.Local)
 		if err != nil {
-			return fmt.Errorf("failed to parse publish date and time (format: YYYY/MM/DD HH:MM)")
+			return errors.New(Get(nil, nil, "Failed to parse date and time. Format: %s", "YYYY/MM/DD HH:MM"))
 		}
 		n.Timestamp = timestamp.Unix()
 	}

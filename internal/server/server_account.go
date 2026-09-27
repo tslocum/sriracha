@@ -36,14 +36,14 @@ func (s *Server) serveAccount(data *templateData, db serverDB, w http.ResponseWr
 			}
 
 			if data.Account.ID == data.Manage.Account.ID && data.Manage.Account.Role != RoleSuperAdmin {
-				data.ManageError("You may not change the role of your own account.")
+				data.ManageError(data.G("You may not change your own role."))
 				return
 			}
 
 			if data.Manage.Account.Username != oldUsername {
 				match := db.AccountByUsername(data.Manage.Account.Username)
 				if match != nil {
-					data.ManageError("New username already taken")
+					data.ManageError(data.Get("%s already exists.", data.G("Username")))
 					return
 				}
 
@@ -81,7 +81,7 @@ func (s *Server) serveAccount(data *templateData, db serverDB, w http.ResponseWr
 
 		password := r.FormValue("password")
 		if strings.TrimSpace(password) == "" {
-			data.ManageError("A password is required")
+			data.ManageError(data.Get("%s is required.", data.G("Password")))
 			return
 		}
 

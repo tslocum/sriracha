@@ -30,7 +30,7 @@ func (s *Server) servePreference(data *templateData, db serverDB, w http.Respons
 				}
 			}
 			if !foundStyle {
-				data.ManageError("Invalid style")
+				data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("Style"))))
 				return
 			}
 			db.UpdateAccountStyle(data.Account.ID, stylePreference)
@@ -51,18 +51,18 @@ func (s *Server) servePreference(data *templateData, db serverDB, w http.Respons
 			newPass := r.FormValue("new")
 			confirmPass := r.FormValue("confirmation")
 			if strings.TrimSpace(oldPass) == "" || strings.TrimSpace(newPass) == "" || strings.TrimSpace(confirmPass) == "" {
-				data.ManageError("All fields are required")
+				data.ManageError(data.G("All fields are required."))
 				return
 			}
 
 			if newPass != confirmPass {
-				data.ManageError("New passwords do not match")
+				data.ManageError(data.G("Passwords do not match."))
 				return
 			}
 
 			match, _ := db.LoginAccount(data.Account.Username, oldPass, false)
 			if match == nil {
-				data.ManageError("Current password is incorrect")
+				data.ManageError(data.G("Incorrect password."))
 				return
 			}
 
