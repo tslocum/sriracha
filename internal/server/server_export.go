@@ -2,6 +2,7 @@ package server
 
 import (
 	"archive/zip"
+	"compress/flate"
 	"database/sql"
 	"fmt"
 	"io"
@@ -133,6 +134,10 @@ func (s *Server) exportPosts(db serverDB, exportPath string, mini bool) error {
 	defer zipFile.Close()
 
 	z := zip.NewWriter(zipFile)
+
+	z.RegisterCompressor(zip.Deflate, func(out io.Writer) (io.WriteCloser, error) {
+		return flate.NewWriter(out, flate.BestCompression)
+	})
 
 	date := time.Now().Format("20060102")
 	for _, b := range boards {
