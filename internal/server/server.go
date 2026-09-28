@@ -2886,6 +2886,66 @@ func (s *Server) handleCron(info cronHandlerInfo) {
 	}
 }
 
+func (s *Server) handleAutoExport() {
+	for {
+		now := time.Now()
+		midnight := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location()).AddDate(0, 0, 1)
+		untilMidnight := time.Until(midnight)
+		if untilMidnight <= 0 {
+			midnight = midnight.AddDate(0, 0, 1)
+		}
+		time.Sleep(time.Until(midnight))
+
+		s.lock.Lock()
+
+		if s.opt.ExportDir != "" {
+			db := s.begin()
+
+			interval := db.GetInt("exportinterval")
+			nextExport := time.Time{}
+			lastExportDate := db.GetInt64("lastexport")
+			if lastExportDate > 0 {
+				nextExport = time.Unix(lastExportDate, 0).AddDate(0, 0, interval)
+				nextExport = time.Date(nextExport.Year(), nextExport.Month(), nextExport.Day(), 0, 0, 0, 0, now.Location())
+			}
+			if time.Now().Unix() >= nextExport.Unix() {
+				os.MkdirAll(s.opt.ExportDir, NewDirPermission)
+
+				exportName := time.Now().Format("20060102") + ".sriracha.zip"
+				err := s.exportPosts(db, filepath.Join(s.opt.ExportDir, exportName), false, false)
+				go s.refreshDiskSpace()
+				if err != nil {
+					log.Printf("WARNING: Failed to automatically export posts: %s", err)
+					log.Println("Retrying in 24 hours...")
+				} else {
+					entries, err := os.ReadDir(s.opt.ExportDir)
+					if err != nil {
+						log.Fatalf("failed to read export directory %s: %s", s.opt.ExportDir, err)
+					}
+					exportFilePattern := compat.MustCompile(`^[0-9]+\.sriracha\.zip$`)
+					var exportFiles []string
+					for _, entry := range entries {
+						if entry.IsDir() || !exportFilePattern.MatchString(entry.Name()) {
+							continue
+						}
+						exportFiles = append(exportFiles, entry.Name())
+					}
+					if len(exportFiles) > s.opt.ExportLimit {
+						for _, name := range exportFiles[:len(exportFiles)-s.opt.ExportLimit] {
+							os.Remove(filepath.Join(s.opt.ExportDir, name))
+						}
+					}
+					db.SaveInt64("lastexport", time.Now().Unix())
+				}
+			}
+
+			db.Commit()
+		}
+
+		s.lock.Unlock()
+	}
+}
+
 // Run initializes the server and starts listening for connections.
 func (s *Server) Run() error {
 	s.parseBuildInfo()
@@ -3130,7 +3190,7 @@ func (s *Server) Run() error {
 			export += ".sriracha.zip"
 		}
 
-		err := s.exportPosts(db, export, exportMini)
+		err := s.exportPosts(db, export, exportMini, true)
 		if err != nil {
 			return fmt.Errorf("failed to export posts: %s", err)
 		}
@@ -3419,6 +3479,8 @@ func (s *Server) Run() error {
 	for _, info := range allPluginCronHandlers {
 		go s.handleCron(info)
 	}
+
+	go s.handleAutoExport()
 
 	if benchmark > 0 {
 		s.handleBenchmark(benchmark)

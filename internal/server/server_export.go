@@ -107,7 +107,7 @@ CREATE TABLE post (
 	return f, nil
 }
 
-func (s *Server) exportPosts(db serverDB, exportPath string, mini bool) error {
+func (s *Server) exportPosts(db serverDB, exportPath string, mini bool, verbose bool) error {
 	boards := db.AllBoards()
 	if len(boards) == 0 {
 		return fmt.Errorf("no boards available to export")
@@ -145,7 +145,9 @@ func (s *Server) exportPosts(db serverDB, exportPath string, mini bool) error {
 		if len(threads) == 0 {
 			continue
 		}
-		fmt.Printf("Exporting %s...\n", b.Path())
+		if verbose {
+			fmt.Printf("Exporting %s...\n", b.Path())
+		}
 
 		fName := date
 		if b.Dir == "" {
@@ -251,7 +253,9 @@ func (s *Server) exportPosts(db serverDB, exportPath string, mini bool) error {
 		return fmt.Errorf("failed to write zip archive: %s", err)
 	}
 
-	if !mini {
+	if !verbose {
+		return nil
+	} else if !mini {
 		fmt.Printf("Exported post data and attachments to %s\n", exportPath)
 		return nil
 	}

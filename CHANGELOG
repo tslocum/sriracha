@@ -1,3 +1,6 @@
+2.1.8:
+- Support automatically exporting posts
+
 2.1.7:
 - Scale embedded media based on screen size
 - Wrap long words (such as URLs) instead of overflowing
