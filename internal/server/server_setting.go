@@ -150,6 +150,15 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		}
 		db.SaveMultiString("embeds", embeds)
 
+		s.opt.ExportDir = ""
+		db.SaveString("exportdir", s.opt.ExportDir)
+
+		s.opt.ExportInterval = defaultServerExportInterval
+		db.SaveInt("exportinterval", s.opt.ExportInterval)
+
+		s.opt.ExportLimit = defaultServerExportLimit
+		db.SaveInt("exportlimit", s.opt.ExportLimit)
+
 		s.opt.Global = nil
 		for _, setting := range allGlobalSettings {
 			db.SaveBool("global."+setting, false)
@@ -383,6 +392,18 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 			}
 		}
 		db.SaveMultiString("embeds", embeds)
+
+		exportDir := FormString(r, "exportdir")
+		db.SaveString("exportdir", exportDir)
+		s.opt.ExportDir = exportDir
+
+		exportInterval := FormInt(r, "exportinterval")
+		db.SaveInt("exportinterval", exportInterval)
+		s.opt.ExportInterval = exportInterval
+
+		exportLimit := FormInt(r, "exportlimit")
+		db.SaveInt("exportlimit", exportLimit)
+		s.opt.ExportLimit = exportLimit
 
 		s.opt.Global = nil
 		for _, setting := range allGlobalSettings {

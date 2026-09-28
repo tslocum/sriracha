@@ -239,10 +239,16 @@ msgstr ""
 msgid "Author"
 msgstr ""
 
+msgid "Auto Export"
+msgstr ""
+
 msgid "Auto Refresh"
 msgstr ""
 
 msgid "Automatic"
+msgstr ""
+
+msgid "Automatic export directory. Leave blank to disable."
 msgstr ""
 
 msgid "Available embed services. Visit board settings to enable usage."
@@ -766,6 +772,9 @@ msgstr ""
 msgid "Instance Limit"
 msgstr ""
 
+msgid "Interval"
+msgstr ""
+
 msgid "Invalid %s."
 msgstr ""
 
@@ -812,6 +821,9 @@ msgid "Lift File Ban"
 msgstr ""
 
 msgid "Lifted"
+msgstr ""
+
+msgid "Limit"
 msgstr ""
 
 msgid "Link"
@@ -1110,6 +1122,12 @@ msgid "Notifications are enabled. Click to disable."
 msgstr ""
 
 msgid "Notify"
+msgstr ""
+
+msgid "Number of exports to keep. When this limit is reached, the oldest export is deleted."
+msgstr ""
+
+msgid "Number of days between each export."
 msgstr ""
 
 msgid "Number of files visitors may upload at once. A new post is created for each uploaded file."

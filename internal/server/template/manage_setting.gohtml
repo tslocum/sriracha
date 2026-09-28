@@ -182,6 +182,20 @@
             <div>{{T "Available embed services. Visit board settings to enable usage."}}<br><br>
             Format: <div style="display: inline-block;border: 1px solid;padding: 2px;">Name https://service.com/path/to/oembed?url=SRIRACHA_EMBED</div></div>
 
+            <div class="gridheader"><br>{{T "Auto Export"}}</div><div class="gridinfo">&nbsp;</div>
+
+            <div class="postblock"><label for="exportdir">{{T "Directory"}}</label></div>
+            <div><input type="text" name="exportdir" value="{{.Opt.ExportDir}}"></input></div>
+            <div>{{T "Automatic export directory. Leave blank to disable."}}</div>
+
+            <div class="postblock"><label for="exportinterval">{{T "Interval"}}</label></div>
+            <div><input type="text" name="exportinterval" value="{{.Opt.ExportInterval}}"></input></div>
+            <div>{{T "Number of days between each export."}}</div>
+
+            <div class="postblock"><label for="exportlimit">{{T "Limit"}}</label></div>
+            <div><input type="text" name="exportlimit" value="{{.Opt.ExportLimit}}"></input></div>
+            <div>{{T "Number of exports to keep. When this limit is reached, the oldest export is deleted."}}</div>
+
             <div class="gridheader"><br>{{T "Boards"}}: {{T "Appearance"}}<div class="globe"> <span title="{{T "Global"}}">🌐</span></div></div><div class="gridinfo"><br>{{T "Local settings are configured individually. Global settings are universal."}}</div>
 
             <div class="postblock"><label for="board.type">{{T "Type"}}</label></div>

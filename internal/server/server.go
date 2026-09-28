@@ -82,6 +82,8 @@ const (
 	defaultServerSearch         = 30  // 30 seconds.
 	defaultServerRefresh        = 300 // 5 minutes.
 	defaultServerDateTimeFormat = DefaultDateTimeFormatHTML
+	defaultServerExportInterval = 7
+	defaultServerExportLimit    = 4
 
 	defaultServerSessionLimit  = 5
 	defaultServerSessionTime   = 2592000  // 30 days.
@@ -214,6 +216,9 @@ type ServerOptions struct {
 	IconHeight       int
 	Search           int
 	DateTimeFormat   string
+	ExportDir        string
+	ExportInterval   int
+	ExportLimit      int
 	Global           []string
 	FullDisks        [][]string
 	NearDisks        [][]string
@@ -1076,6 +1081,21 @@ func (s *Server) loadServerConfig() error {
 			s.opt.Embeds = append(s.opt.Embeds, [2]string{split[0], split[1]})
 		}
 	}
+
+	s.opt.ExportDir = db.GetString("exportdir")
+
+	exportInterval := db.GetInt("exportinterval")
+	if exportInterval == 0 {
+		exportInterval = defaultServerExportInterval
+	}
+	s.opt.ExportInterval = exportInterval
+
+	exportLimit := db.GetInt("exportlimit")
+	if exportLimit == 0 {
+		exportLimit = defaultServerExportLimit
+	}
+	s.opt.ExportLimit = exportLimit
+
 	s.opt.Global = nil
 	for _, setting := range allGlobalSettings {
 		if db.GetBool("global." + setting) {
