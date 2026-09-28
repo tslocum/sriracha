@@ -369,7 +369,7 @@ func (db *DB) PostsByIP(hash string) []*Post {
 	if hash == "" {
 		return nil
 	}
-	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE ip = $1", hash)
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE ip = $1 ORDER BY id DESC", hash)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
