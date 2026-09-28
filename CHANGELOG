@@ -1,4 +1,5 @@
 2.1.8:
+- Include attachments in exports
 - Support automatically exporting posts
 
 2.1.7:

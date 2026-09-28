@@ -1270,8 +1270,22 @@ export ZIP archive will be written:
 sriracha --export=/home/sriracha/export.zip
 ```
 
-Attachment files are not included within the export. To import posts later, you
-will also need a copy of the `src` and `thumb` directories of each board.
+Attachment files will be included within the export. To import posts, you will need
+to extract each board's `src` and `thumb` directories to the root directory.
+
+#### Minimal export
+
+The instructions above are for a full export. A minimal export may also be created:
+
+```bash
+sriracha --export-mini=/home/sriracha/export.zip
+```
+
+Minimal exports do not include attachment files, and should only be used when
+there is not enough disk space for a full export.
+
+To import posts from a minimal export, you will also need a copy of each board's
+`src` and `thumb` directories.
 
 ### Import posts
 
@@ -1284,8 +1298,9 @@ sriracha --import=/home/sriracha/export.zip
 
 Note: Posting is disabled when running in import mode.
 
-Attachment files are not included within the export. To import posts, you will
-also need a copy of the `src` and `thumb` directories of each board.
+To import posts, you will need a copy of each board's `src` and `thumb` directories.
+
+These directories may be extracted from full exports, or copied directly when using minimal exports.
 
 Log in to the Sriracha management panel as a super-administrator to complete the import.
 
