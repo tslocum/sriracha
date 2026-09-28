@@ -466,6 +466,10 @@ details {
 		box-sizing: border-box;
 	}
 
+	*:not(.replymode):not(.manageinfo):not(.errormessage) {
+		max-width: 100%;
+	}
+
 	input:not([type=checkbox]):not(#deletepost):not(#deletepostpassword), textarea, select:not(#switchStyle) {
 		width: 100%;
 	}

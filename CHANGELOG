@@ -1,6 +1,7 @@
 2.1.8:
 - Include attachments in exports
 - Support automatically exporting posts
+- Fix text overflowing page width on mobile devices
 
 2.1.7:
 - Scale embedded media based on screen size
