@@ -48,7 +48,7 @@ func (s *Server) serveSearch(db serverDB, w http.ResponseWriter, r *http.Request
 			ipHash := s.hashIP(r)
 			since := now - s.lastSearch[ipHash]
 			if since < int64(s.opt.Search) {
-				data.BoardError(w, Get(nil, data.Account, "Please wait %s before searching again.", time.Duration(int64(s.opt.Search)-since)*time.Second))
+				data.BoardError(w, data.Get("Please wait %s before searching again.", time.Duration(int64(s.opt.Search)-since)*time.Second))
 				return
 			}
 			s.lastSearch[ipHash] = now
@@ -66,7 +66,7 @@ func (s *Server) serveSearch(db serverDB, w http.ResponseWriter, r *http.Request
 		data.Pages = pageCount(len(results), searchPageSize)
 		results = pageSlice(results, data.Page, searchPageSize)
 		if len(results) == 0 {
-			data.Message = "<br>" + GetHTML(nil, data.Account, "No matching posts were found.") + "<br><br><hr>"
+			data.Message = "<br>" + data.GetHTML("No matching posts were found.") + "<br><br><hr>"
 		} else {
 			data.Message = "<br>"
 			out := &bytes.Buffer{}

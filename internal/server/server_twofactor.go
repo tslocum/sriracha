@@ -128,13 +128,13 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 	if password != "" {
 		match := db.CheckAccountPassword(data.Account.Username, password)
 		if match == nil {
-			data.ManageError("Incorrect password")
+			data.ManageError(data.Get("Incorrect password."))
 			return
 		}
 		session.loggedIn = true
 	}
 	if !session.loggedIn {
-		data.ManageError("Incorrect password")
+		data.ManageError(data.Get("Incorrect password."))
 		return
 	}
 	allDevices := db.TwoFactorsByAccount(data.Account.ID)
@@ -153,7 +153,7 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 			}
 		}
 		if !session.validated {
-			data.ManageError("Incorrect passcode")
+			data.ManageError(data.Get("Incorrect passcode."))
 			return
 		}
 	}
@@ -174,7 +174,7 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 		if passcode != "" && session.secret != "" {
 			ok, err := totp.ValidateCustom(passcode, session.secret, time.Now(), twoFactorValidateOptions)
 			if err != nil || !ok {
-				data.ManageError("Incorrect passcode")
+				data.ManageError(data.Get("Incorrect passcode."))
 				return
 			}
 			now := time.Now().Unix()
@@ -195,7 +195,7 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 		options := s.twoFactorOptions(data.Account, data.Manage.TwoFactor)
 		key, err := totp.Generate(options)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatalf("failed to generate two-factor authentication key: %s", err)
 		}
 		if data.Manage.TwoFactor.Secret == "" {
 			data.Manage.TwoFactor.Secret = key.Secret()
@@ -210,7 +210,7 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 	if deviceID > 0 {
 		device := db.TwoFactorByID(deviceID)
 		if device == nil || device.Account != data.Account.ID {
-			data.ManageError("Invalid or removed device.")
+			data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("Device"))))
 			return
 		}
 		data.Manage.TwoFactor = device
@@ -218,7 +218,7 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 			data.Manage.TwoFactor.Name = FormString(r, "name")
 			db.UpdateTwoFactor(data.Manage.TwoFactor)
 			data.Template = "manage_info"
-			data.Info = "Renamed device"
+			data.Info = data.G("Renamed device.")
 			return
 		}
 	}
@@ -228,7 +228,7 @@ func (s *Server) serveTwoFactor(data *templateData, db serverDB, w http.Response
 	if deviceID > 0 {
 		device := db.TwoFactorByID(deviceID)
 		if device == nil || device.Account != data.Account.ID {
-			data.ManageError("Invalid or removed device.")
+			data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("Device"))))
 			return
 		}
 		db.DeleteTwoFactor(device.ID)

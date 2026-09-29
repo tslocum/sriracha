@@ -147,7 +147,7 @@ func (data *templateData) forbidden(w http.ResponseWriter, required AccountRole)
 		return false
 	}
 	data.Template = "manage_error"
-	data.Info = "Access forbidden."
+	data.Info = data.G("Access denied.")
 	return true
 }
 

@@ -16,13 +16,13 @@ func (s *Server) serveReport(db serverDB, w http.ResponseWriter, r *http.Request
 
 	postID := FormInt(r, "post")
 	if postID <= 0 {
-		data.BoardError(w, Get(nil, data.Account, "No post selected."))
+		data.BoardError(w, data.Get("No post selected."))
 		return
 	}
 
 	post := db.PostByID(postID)
 	if post == nil {
-		data.BoardError(w, Get(nil, data.Account, "No post selected."))
+		data.BoardError(w, data.Get("No post selected."))
 		return
 	} else if post.Moderated == ModeratedVisible {
 		ipHash := s.hashIP(r)

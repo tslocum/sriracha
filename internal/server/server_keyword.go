@@ -113,7 +113,7 @@ func (s *Server) serveKeyword(data *templateData, db serverDB, w http.ResponseWr
 		data.Template = "manage_keyword_test"
 		k := db.KeywordByID(keywordID)
 		if k == nil {
-			data.ManageError("Invalid keyword.")
+			data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("Keyword"))))
 			return
 		}
 		data.Manage.Keyword = k
@@ -146,7 +146,7 @@ func (s *Server) serveKeyword(data *templateData, db serverDB, w http.ResponseWr
 		}
 		k := db.KeywordByID(deleteKeywordID)
 		if k == nil {
-			data.ManageError("Invalid keyword.")
+			data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("Keyword"))))
 			return
 		}
 		db.DeleteKeyword(k.ID)
@@ -165,7 +165,7 @@ func (s *Server) serveKeyword(data *templateData, db serverDB, w http.ResponseWr
 		}
 		data.Manage.Keyword = db.KeywordByID(keywordID)
 		if data.Manage.Keyword == nil {
-			data.ManageError("Invalid keyword.")
+			data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("Keyword"))))
 			return
 		}
 
@@ -183,7 +183,7 @@ func (s *Server) serveKeyword(data *templateData, db serverDB, w http.ResponseWr
 			if data.Manage.Keyword.Text != oldText {
 				match := db.KeywordByText(data.Manage.Keyword.Text)
 				if match != nil {
-					data.ManageError("Keyword text already exists")
+					data.ManageError(data.Get("%s already exists.", data.G("Keyword")))
 					return
 				}
 			}
@@ -217,7 +217,7 @@ func (s *Server) serveKeyword(data *templateData, db serverDB, w http.ResponseWr
 
 		match := db.KeywordByText(k.Text)
 		if match != nil {
-			data.ManageError("Keyword text already exists")
+			data.ManageError(data.Get("%s already exists.", data.G("Keyword")))
 			return
 		}
 

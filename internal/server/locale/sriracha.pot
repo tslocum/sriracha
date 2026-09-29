@@ -92,6 +92,9 @@ msgstr ""
 msgid "Access Key"
 msgstr ""
 
+msgid "Access denied."
+msgstr ""
+
 msgid "Accounts"
 msgstr ""
 
@@ -757,6 +760,9 @@ msgstr ""
 msgid "Incorrect CAPTCHA text. Please try again."
 msgstr ""
 
+msgid "Incorrect passcode."
+msgstr ""
+
 msgid "Incorrect password."
 msgstr ""
 
@@ -1376,6 +1382,9 @@ msgstr ""
 msgid "Rename Device"
 msgstr ""
 
+msgid "Renamed device."
+msgstr ""
+
 msgid "Render format of timestamps. Include %s tags where applicable."
 msgstr ""
 
@@ -1489,6 +1498,9 @@ msgid "Site Name"
 msgstr ""
 
 msgid "Site News"
+msgstr ""
+
+msgid "Sorry, only %d devices may be added. Remove a device before adding another."
 msgstr ""
 
 msgid "Sorry, only the following email address domains are allowed: %s"

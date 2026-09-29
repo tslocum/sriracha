@@ -39,14 +39,14 @@ func (s *Server) servePage(data *templateData, db serverDB, w http.ResponseWrite
 		if rebuildPageID > 0 {
 			p := db.PageByID(rebuildPageID)
 			if p == nil {
-				data.ManageError("Invalid page.")
+				data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("Page"))))
 				return
 			}
 			pages = append(pages, p)
-			data.Info = Get(nil, data.Account, "Rebuilt %s.", p.Path)
+			data.Info = data.Get("Rebuilt %s.", p.Path)
 		} else {
 			pages = db.AllPages()
-			data.Info = Get(nil, data.Account, "Rebuilt all pages.")
+			data.Info = data.Get("Rebuilt all pages.")
 		}
 		wg := &sync.WaitGroup{}
 		delta := &atomic.Int32{}
@@ -61,7 +61,7 @@ func (s *Server) servePage(data *templateData, db serverDB, w http.ResponseWrite
 		}
 		p := db.PageByID(deletePageID)
 		if p == nil {
-			data.ManageError("Invalid page.")
+			data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("Page"))))
 			return
 		}
 		db.DeletePage(p.ID)
@@ -84,7 +84,7 @@ func (s *Server) servePage(data *templateData, db serverDB, w http.ResponseWrite
 		}
 		p := db.PageByID(pageID)
 		if p == nil {
-			data.ManageError("Invalid page.")
+			data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("Page"))))
 			return
 		}
 		data.Manage.Page = p
@@ -120,7 +120,7 @@ func (s *Server) servePage(data *templateData, db serverDB, w http.ResponseWrite
 		if data.Manage.Page.Path != oldPath {
 			match := db.PageByPath(data.Manage.Page.Path)
 			if match != nil {
-				data.ManageError("Page with that path already exists")
+				data.ManageError(data.Get("%s already exists.", data.G("Page")))
 				return
 			}
 
@@ -162,13 +162,13 @@ func (s *Server) servePage(data *templateData, db serverDB, w http.ResponseWrite
 
 		match := db.PageByPath(p.Path)
 		if match != nil {
-			data.ManageError("Page with that path already exists")
+			data.ManageError(data.Get("%s already exists.", data.G("Page")))
 			return
 		}
 
 		_, err = os.Stat(filepath.Join(s.config.Root, p.Path+".html"))
 		if !os.IsNotExist(err) {
-			data.ManageError("File already exists at that path")
+			data.ManageError(data.Get("%s already exists.", data.G("File")))
 			return
 		}
 

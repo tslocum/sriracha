@@ -50,10 +50,10 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 	if deleteNewsID > 0 {
 		news := db.NewsByID(deleteNewsID)
 		if news == nil {
-			data.ManageError("Invalid news item.")
+			data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("News"))))
 			return
 		} else if !news.MayDelete(data.Account) {
-			data.ManageError("Access denied.")
+			data.ManageError(data.G("Access denied."))
 			return
 		}
 
@@ -80,13 +80,13 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 	if err == nil && newsID > 0 {
 		data.Manage.News = db.NewsByID(newsID)
 		if data.Manage.News == nil {
-			data.ManageError("Invalid news item.")
+			data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("News"))))
 			return
 		}
 
 		if data.Manage.News != nil && r.Method == http.MethodPost {
 			if !data.Manage.News.MayUpdate(data.Account) {
-				data.ManageError("Access denied.")
+				data.ManageError(data.G("Access denied."))
 				return
 			}
 			oldNews := *data.Manage.News

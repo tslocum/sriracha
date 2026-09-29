@@ -144,7 +144,7 @@ func (s *Server) serveSubscribe(db serverDB, w http.ResponseWriter, r *http.Requ
 	if r.Method == http.MethodPost {
 		email := FormString(r, "email")
 		if email == "" {
-			data.BoardError(w, "Enter your email address to subscribe.")
+			data.BoardError(w, data.Get("%s is required.", strings.ToLower(data.G("Email"))))
 			return
 		}
 
