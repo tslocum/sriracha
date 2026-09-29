@@ -2,10 +2,13 @@ module codeberg.org/tslocum/sriracha
 
 go 1.26.8
 
+// Pin cidr to v0.3.0 because newer versions are entirely written by AI.
+replace github.com/3th1nk/cidr => github.com/3th1nk/cidr v0.3.0
+
 require (
 	codeberg.org/tslocum/bbcode v0.0.0-20260210194643-496280381f96
 	codeberg.org/tslocum/gotext v0.0.0-20260702153535-d0250b83dac7
-	codeberg.org/tslocum/list2regexp v1.0.5
+	codeberg.org/tslocum/list2regexp v1.0.6-0.20260929191204-a6743d7ac826
 	github.com/PuerkitoBio/goquery v1.13.0
 	github.com/alecthomas/chroma/v2 v2.27.0
 	github.com/alexedwards/argon2id v1.0.0
@@ -26,12 +29,12 @@ require (
 	golang.org/x/term v0.46.0
 	golang.org/x/text v0.42.0
 	gopkg.in/yaml.v3 v3.0.1
-	modernc.org/sqlite v1.59.0
+	modernc.org/sqlite v1.60.1
 )
 
 require (
 	filippo.io/edwards25519 v1.2.0 // indirect
-	github.com/3th1nk/cidr v0.3.0 // indirect
+	github.com/3th1nk/cidr v0.4.0 // indirect
 	github.com/andybalholm/cascadia v1.3.5 // indirect
 	github.com/boombuler/barcode v1.1.0 // indirect
 	github.com/dustin/go-humanize v1.1.0 // indirect
@@ -42,7 +45,7 @@ require (
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
-	github.com/ncruces/go-strftime v1.0.0 // indirect
+	github.com/ncruces/go-strftime v1.1.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
 	github.com/smartystreets/mafsa v1.1.0 // indirect
