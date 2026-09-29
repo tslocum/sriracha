@@ -271,6 +271,9 @@ msgid_plural "Ban %d posts"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Ban Appeals"
+msgstr ""
+
 msgid "Ban ID"
 msgstr ""
 
@@ -1762,6 +1765,9 @@ msgid "When %s receives new replies."
 msgstr ""
 
 msgid "When this amount is exceeded the selected action is taken."
+msgstr ""
+
+msgid "Whether banned visitors may submit appeals."
 msgstr ""
 
 msgid "Whether identifiers are displayed for each post. Identifiers are generated based on IP address hashes."

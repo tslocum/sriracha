@@ -91,6 +91,9 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		s.opt.ColorIdentifiers = false
 		db.SaveBool("coloridentifiers", s.opt.ColorIdentifiers)
 
+		s.opt.Appeals = false
+		db.SaveBool("appeals", s.opt.Appeals)
+
 		s.opt.StripMetadata = false
 		db.SaveBool("stripmetadata", s.opt.StripMetadata)
 
@@ -270,6 +273,10 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		colorIdentifiers := FormBool(r, "coloridentifiers")
 		db.SaveBool("coloridentifiers", colorIdentifiers)
 		s.opt.ColorIdentifiers = colorIdentifiers
+
+		appeals := FormBool(r, "appeals")
+		db.SaveBool("appeals", appeals)
+		s.opt.Appeals = appeals
 
 		search := FormInt(r, "search")
 		db.SaveInt("search", search)

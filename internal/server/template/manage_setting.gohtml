@@ -81,14 +81,21 @@
             </select></div>
             <div>{{T "Whether visitors and staff members may mark attachment thumbnails as spoilers."}}</div>
 
-        {{if .Opt.Identifiers}}
+            {{if .Opt.Identifiers}}
                 <div class="postblock"><label for="coloridentifiers">{{T "Color Identifiers"}}</label></div>
                 <div><select name="coloridentifiers" style="width: 100%;">
                     <option value="0"{{if not .Opt.ColorIdentifiers}} selected{{end}}>✗ {{T "Disable"}}</option>
                     <option value="1"{{if .Opt.ColorIdentifiers}} selected{{end}}>✓ {{T "Enable"}}</option>
                 </select></div>
                 <div>{{T "Whether identifiers are randomly colored."}}</div>
-        {{end}}
+            {{end}}
+
+            <div class="postblock"><label for="appeals">{{T "Ban Appeals"}}</label></div>
+            <div><select name="appeals" style="width: 100%;">
+                <option value="0"{{if not .Opt.Appeals}} selected{{end}}>✗ {{T "Disable"}}</option>
+                <option value="1"{{if .Opt.Appeals}} selected{{end}}>✓ {{T "Enable"}}</option>
+            </select></div>
+            <div>{{T "Whether banned visitors may submit appeals."}}</div>
 
             <div class="postblock"><label for="accesskey">{{T "Access Key"}}</label></div>
             <div><input type="text" name="accesskey" value="{{.Opt.AccessKey}}"></input></div>
@@ -226,14 +233,14 @@
             </select></div>
             <div>{{T "Default page style. Visitors may choose alternative styles in their browser settings."}}</div>
 
-        {{if .Opt.Identifiers}}
+            {{if .Opt.Identifiers}}
                 <div class="postblock"><label for="board.identifiers">{{T "Identifiers"}}</label></div>
                 <div><select name="board.identifiers" style="width: 100%;">
                     <option value="0"{{if not (Global "board.identifiers")}} selected{{end}}>✗ {{T "Local"}}</option>
                     <option value="1"{{if Global "board.identifiers"}} selected{{end}}>✓ {{T "Global"}}</option>
                 </select></div>
                 <div>{{T "Whether identifiers are displayed for each post. Identifiers are generated based on IP address hashes."}}</div>
-        {{end}}
+            {{end}}
 
             <div class="postblock"><label for="board.backlinks">{{T "Backlinks"}}</label></div>
             <div><select name="board.backlinks" style="width: 100%;">
@@ -442,23 +449,23 @@
             </select></div>
             <div>{{T "Maximum height of thumbnails."}}</div>
 
-        {{if ne (len .Opt.Uploads) 0}}
+            {{if ne (len .Opt.Uploads) 0}}
                 <div class="postblock"><label for="board.uploads">{{T "File Types"}}</label></div>
                 <div><select name="board.uploads" style="width: 100%;">
                     <option value="0"{{if not (Global "board.uploads")}} selected{{end}}>✗ {{T "Local"}}</option>
                     <option value="1"{{if Global "board.uploads"}} selected{{end}}>✓ {{T "Global"}}</option>
                 </select></div>
                 <div>{{T "Visitors may upload the selected types of files."}}</div>
-        {{end}}
+            {{end}}
 
-        {{if ne (len .Opt.Embeds) 0}}
+            {{if ne (len .Opt.Embeds) 0}}
                 <div class="postblock"><label for="board.embeds">{{T "Embed Services"}}</label></div>
                 <div><select name="board.embeds" style="width: 100%;">
                     <option value="0"{{if not (Global "board.embeds")}} selected{{end}}>✗ {{T "Local"}}</option>
                     <option value="1"{{if Global "board.embeds"}} selected{{end}}>✓ {{T "Global"}}</option>
                 </select></div>
                 <div>{{T "Visitors may embed media from selected services instead of uploading a file."}}</div>
-        {{end}}
+            {{end}}
 
             <div class="postblock"><label for="board.oekaki">Oekaki</label></div>
             <div><select name="board.oekaki" style="width: 100%;">

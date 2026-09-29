@@ -35,6 +35,16 @@ CREATE UNIQUE INDEX ON ban (ip); -- v19: Removed.
 -- v19: CREATE UNIQUE INDEX ON ban (ip) WHERE liftedtimestamp = 0;
 -- v19: CREATE INDEX ON ban (liftedtimestamp);
 
+-- v23: CREATE TABLE banappeal (
+-- v23: 	id serial PRIMARY KEY,
+-- v23: 	ban integer REFERENCES ban (id) ON DELETE CASCADE,
+-- v23: 	timestamp bigint NOT NULL,
+-- v23: 	reason text NOT NULL,
+-- v23: 	outcome smallint NOT NULL,
+-- v23: 	outcometimestamp bigint NOT NULL,
+-- v23: 	outcomereason text NOT NULL
+-- v23: );
+
 -- v9: CREATE TABLE banfile (
 -- v9: 	hash char(64) PRIMARY KEY
 -- v9: );
@@ -415,4 +425,15 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 	INSERT INTO account_session SELECT session, id, lastactive FROM account;
 	ALTER TABLE account DROP COLUMN session;
 	UPDATE config SET value = '22' WHERE name = 'version';`,
+	// Version 23.
+	`CREATE TABLE banappeal (
+		id serial PRIMARY KEY,
+		ban integer REFERENCES ban (id) ON DELETE CASCADE,
+		timestamp bigint NOT NULL,
+		reason text NOT NULL,
+		outcome smallint NOT NULL,
+		outcometimestamp bigint NOT NULL,
+		outcomereason text NOT NULL
+	);
+	UPDATE config SET value = '23' WHERE name = 'version';`,
 }

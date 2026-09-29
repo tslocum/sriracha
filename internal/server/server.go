@@ -198,6 +198,7 @@ type ServerOptions struct {
 	OverboardReplies int
 	Identifiers      bool
 	ColorIdentifiers bool
+	Appeals          bool
 	Styles           [][2]string
 	Locale           string
 	Locales          map[string]string
@@ -1002,6 +1003,8 @@ func (s *Server) loadServerConfig() error {
 	}
 
 	s.opt.ColorIdentifiers = db.GetBool("coloridentifiers")
+
+	s.opt.Appeals = db.GetBool("appeals")
 
 	s.opt.StripMetadata = db.GetBool("stripmetadata")
 
