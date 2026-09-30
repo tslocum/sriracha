@@ -210,6 +210,7 @@ type ServerOptions struct {
 	Categories       []*categoryInfo
 	AccessKey        string
 	ModQueue         string
+	AdminQueue       string
 	Notifications    bool
 	DevMode          bool
 	RootDir          string
@@ -322,7 +323,8 @@ type Server struct {
 
 	lastSearch map[string]int64
 
-	modQueueSize int
+	modQueueSize   int
+	adminQueueSize int
 
 	buildQueue chan *buildInfo
 
@@ -374,6 +376,7 @@ func NewServer() *Server {
 		indexCacheLock:        &sync.Mutex{},
 		lastSearch:            make(map[string]int64),
 		modQueueSize:          -1,
+		adminQueueSize:        -1,
 		buildQueue:            make(chan *buildInfo),
 		rebuildQueue:          make(chan *rebuildInfo),
 		httpClient:            httpClient,
@@ -1042,6 +1045,8 @@ func (s *Server) loadServerConfig() error {
 	s.opt.AccessKey = db.GetString("accesskey")
 
 	s.opt.ModQueue = db.GetString("modqueue")
+
+	s.opt.AdminQueue = db.GetString("adminqueue")
 
 	s.opt.DateTimeFormat = db.GetString("datetimeformat")
 	s.dateTimeFormatUpdated()
@@ -1996,7 +2001,7 @@ func (s *Server) rebuildThread(db serverDB, wg *sync.WaitGroup, delta *atomic.In
 		s.writeSiteIndex(wg, delta)
 	}
 	s.writeStatistics(wg, delta)
-	s.writeModQueue(db)
+	s.writeStaffQueues(db)
 }
 
 func (s *Server) rebuildThreads(db serverDB, wg *sync.WaitGroup, delta *atomic.Int32, posts []*Post) {
@@ -2035,38 +2040,52 @@ func (s *Server) rebuildThreads(db serverDB, wg *sync.WaitGroup, delta *atomic.I
 	s.writeOverboards(db, wg, delta, activeBoards)
 	s.writeSiteIndex(wg, delta)
 	s.writeStatistics(wg, delta)
-	s.writeModQueue(db)
+	s.writeStaffQueues(db)
 }
 
-func (s *Server) writeModQueue(db serverDB) {
-	if s.opt.ModQueue == "" {
+func (s *Server) writeStaffQueues(db serverDB) {
+	if s.opt.ModQueue == "" && s.opt.AdminQueue == "" {
 		return
 	}
 
-	queueSize := len(db.PendingPosts()) + len(db.AllReports()) + len(db.PrunedThreads())
-	if queueSize == s.modQueueSize {
-		return
+	modQueueSize := len(db.PendingPosts()) + len(db.AllReports()) + len(db.PrunedThreads())
+	adminQueueSize := modQueueSize
+	if s.opt.Appeals {
+		appeals := len(db.PendingBanAppeals())
+		if s.config.Access["ban.appeal"] == "mod" {
+			modQueueSize += appeals
+		}
+		adminQueueSize += appeals
 	}
 
-	writePath := filepath.Join(s.config.Root, s.opt.ModQueue+"_.html")
-	filePath := filepath.Join(s.config.Root, s.opt.ModQueue+".html")
+	writeQueue := func(name string, size int) {
+		writePath := filepath.Join(s.config.Root, name+"_.html")
+		filePath := filepath.Join(s.config.Root, name+".html")
 
-	file, err := os.OpenFile(writePath, NewFileFlags, NewFilePermission)
-	if err != nil {
-		log.Fatal(err)
-	}
+		file, err := os.OpenFile(writePath, NewFileFlags, NewFilePermission)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	_, err = file.WriteString(strconv.Itoa(queueSize))
-	file.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
+		_, err = file.WriteString(strconv.Itoa(size))
+		file.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	err = os.Rename(writePath, filePath)
-	if err != nil {
-		log.Fatal(err)
+		err = os.Rename(writePath, filePath)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
-	s.modQueueSize = queueSize
+	if s.opt.ModQueue != "" && modQueueSize != s.modQueueSize {
+		writeQueue(s.opt.ModQueue, modQueueSize)
+		s.modQueueSize = modQueueSize
+	}
+	if s.opt.AdminQueue != "" && adminQueueSize != s.adminQueueSize {
+		writeQueue(s.opt.AdminQueue, adminQueueSize)
+		s.adminQueueSize = adminQueueSize
+	}
 }
 
 // rebuildAll rebuilds all board, overboard, news and custom pages.
@@ -2095,7 +2114,7 @@ func (s *Server) rebuildAll(db serverDB) {
 	}
 	s.writeSiteIndex(wg, delta)
 	s.writeStatistics(wg, delta)
-	s.writeModQueue(db)
+	s.writeStaffQueues(db)
 	s.writeVisitorGuide(db)
 	wg.Wait()
 
@@ -2300,7 +2319,7 @@ func (s *Server) expireBanAppeals(db serverDB, manual bool, id ...int) {
 		}
 	}
 	if updateQueue {
-		s.writeModQueue(db)
+		s.writeStaffQueues(db)
 	}
 }
 
@@ -2399,6 +2418,8 @@ func (s *Server) handleBanAppeal(db serverDB, data *templateData, b *Ban, w http
 		Reason:    message,
 	}
 	db.AddBanAppeal(a)
+
+	s.writeStaffQueues(db)
 
 	data.Template = "imgboard_info"
 	data.Info = data.G("Appeal submitted.")

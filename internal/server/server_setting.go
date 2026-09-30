@@ -124,6 +124,12 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		s.opt.ModQueue = ""
 		db.SaveString("modqueue", s.opt.ModQueue)
 
+		if s.opt.AdminQueue != "" {
+			os.Remove(filepath.Join(s.config.Root, s.opt.AdminQueue+".html"))
+		}
+		s.opt.AdminQueue = ""
+		db.SaveString("adminqueue", s.opt.AdminQueue)
+
 		if s.opt.DateTimeFormat != defaultServerDateTimeFormat {
 			s.opt.DateTimeFormat = defaultServerDateTimeFormat
 			db.SaveString("datetimeformat", s.opt.DateTimeFormat)
@@ -169,7 +175,7 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 
 		db.ClearBoardCache()
 		s.removeInvalidBoardOptions(db)
-		s.writeModQueue(db)
+		s.writeStaffQueues(db)
 
 		changes := printChanges(oldOpt, s.opt)
 		if changes != "" {
@@ -322,13 +328,26 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 
 		modQueue := strings.TrimSuffix(FormString(r, "modqueue"), ".html")
 		if modQueue != "" && !ValidRelativePath(modQueue) {
-			data.ManageError("Invalid moderation queue status page file path.")
+			data.ManageError("Invalid moderator queue status page file path.")
 			return
 		} else if s.opt.ModQueue != modQueue && s.opt.ModQueue != "" {
 			os.Remove(filepath.Join(s.config.Root, s.opt.ModQueue+".html"))
 		}
 		db.SaveString("modqueue", modQueue)
 		s.opt.ModQueue = modQueue
+
+		adminQueue := strings.TrimSuffix(FormString(r, "adminqueue"), ".html")
+		if adminQueue != "" && !ValidRelativePath(adminQueue) {
+			data.ManageError("Invalid administrator queue status page file path.")
+			return
+		} else if adminQueue != "" && adminQueue == modQueue {
+			data.ManageError("Admin queue and mod queue must be configured separately.")
+			return
+		} else if s.opt.AdminQueue != adminQueue && s.opt.AdminQueue != "" {
+			os.Remove(filepath.Join(s.config.Root, s.opt.AdminQueue+".html"))
+		}
+		db.SaveString("adminqueue", adminQueue)
+		s.opt.AdminQueue = adminQueue
 
 		dateTimeFormat := FormString(r, "datetimeformat")
 		if dateTimeFormat == "" {
@@ -423,7 +442,7 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 
 		db.ClearBoardCache()
 		s.removeInvalidBoardOptions(db)
-		s.writeModQueue(db)
+		s.writeStaffQueues(db)
 
 		changes := printChanges(oldOpt, s.opt)
 		if changes != "" {

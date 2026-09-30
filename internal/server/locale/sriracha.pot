@@ -163,6 +163,9 @@ msgstr ""
 msgid "Admin"
 msgstr ""
 
+msgid "Admin Queue"
+msgstr ""
+
 msgid "Administrator"
 msgstr ""
 
@@ -672,7 +675,10 @@ msgstr ""
 msgid "File name."
 msgstr ""
 
-msgid "File path (excluding .html suffix) of the moderation queue status page. Leave blank to disable."
+msgid "File path (excluding .html suffix) of the administrator queue status page. Leave blank to disable."
+msgstr ""
+
+msgid "File path (excluding .html suffix) of the moderator queue status page. Leave blank to disable."
 msgstr ""
 
 msgid "File uploads are not allowed."

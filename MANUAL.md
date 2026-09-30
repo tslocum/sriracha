@@ -1659,21 +1659,23 @@ Enter the present date and time or a past date and time to show a news entry to 
 
 When the Site Index is enabled, the latest news entry will be displayed on the homepage.
 
-#### Mod Queue
+#### Staff queues
 
-The 'Mod Queue' option specifies the name of a file which is written to whenever a moderation
-request is added or dismissed. If set to 'mq', the mod queue will be available at '/mq.html'.
+The 'Mod Queue' and 'Admin Queue' options specify the names of files which are written
+to whenever a moderation request is added or dismissed.
 
-The mod queue file contains a number which indicates how many moderation requests are currently pending.
-For example, if there are two new posts, the mod queue file will contain '2'.
+If set to 'mq', the queue will be available at '/mq.html'.
 
-The purpose of the mod queue file is to make it easy for staff to check for pending moderation
+Each staff queue file contains a number which indicates how many moderation requests are currently pending.
+For example, if there are two new posts, the queue file will contain '2'.
+
+The purpose of the queue files are to make it easy for staff to check for pending moderation
 requests without needing to log in or provide cookies to automatic monitoring software.
 Any tool which monitors a page for changes can then be used to monitor moderation requests.
-Because no post details are included, the file does not need to be password protected.
+Because no post details are included, the files do not need to be password protected.
 
 [Tofu](https://codeberg.org/tslocum/tofu), the official thread watcher application,
-supports monitoring mod queue pages. This makes it easy to moderate multiple instances.
+supports monitoring staff queue pages. This makes it easy to moderate multiple instances.
 
 ### Administrator guide
 

@@ -56,7 +56,7 @@ func (s *Server) serveReport(db serverDB, w http.ResponseWriter, r *http.Request
 			IP:        ipHash,
 		}
 		db.AddReport(report)
-		s.writeModQueue(db)
+		s.writeStaffQueues(db)
 	}
 
 	data.Template = "board_info"

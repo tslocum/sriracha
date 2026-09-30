@@ -1331,7 +1331,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		data.Template = "board_info"
 		data.Info = Get(b, data.Account, "Your post will be shown once it has been approved.")
 		data.execute(w)
-		s.writeModQueue(db)
+		s.writeStaffQueues(db)
 		go s.refreshDiskSpace()
 		return
 	} else if addReport {
@@ -1342,7 +1342,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 			IP:        s.hashIP(r),
 		}
 		db.AddReport(report)
-		s.writeModQueue(db)
+		s.writeStaffQueues(db)
 	}
 
 	if post.Parent == 0 {

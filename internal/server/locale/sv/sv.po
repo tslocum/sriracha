@@ -660,7 +660,7 @@ msgid "File name."
 msgstr "Filnamn."
 
 msgid ""
-"File path (excluding .html suffix) of the moderation queue status page. "
+"File path (excluding .html suffix) of the moderator queue status page. "
 "Leave blank to disable."
 msgstr ""
 "Filsökväg utan filändelsen .html för statusidan till modereringskön. Lämna "

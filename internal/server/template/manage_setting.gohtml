@@ -103,7 +103,11 @@
 
             <div class="postblock"><label for="modqueue">{{T "Mod Queue"}}</label></div>
             <div><input type="text" name="modqueue" value="{{.Opt.ModQueue}}"></input></div>
-            <div>{{T "File path (excluding .html suffix) of the moderation queue status page. Leave blank to disable."}}</div>
+            <div>{{T "File path (excluding .html suffix) of the moderator queue status page. Leave blank to disable."}}</div>
+
+            <div class="postblock"><label for="adminqueue">{{T "Admin Queue"}}</label></div>
+            <div><input type="text" name="adminqueue" value="{{.Opt.AdminQueue}}"></input></div>
+            <div>{{T "File path (excluding .html suffix) of the administrator queue status page. Leave blank to disable."}}</div>
 
             <div class="postblock"><label for="search">{{T "Search"}}</label></div>
             <div><input type="text" name="search" value="{{.Opt.Search}}"></input></div>
