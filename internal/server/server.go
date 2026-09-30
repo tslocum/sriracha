@@ -2126,7 +2126,7 @@ func (s *Server) handleBenchmark(n int) {
 		}
 	}
 
-	fmt.Printf("Rebuilt all static files %d times: %s avg, %s min, %s med, %s max\n", n, averageDuration(durations).Round(time.Millisecond), shortest.Round(time.Millisecond), medianDuration(durations).Round(time.Millisecond), longest.Round(time.Millisecond))
+	fmt.Printf("Rebuilt %d static files %d times: %s avg, %s min, %s med, %s max\n", len(s.pageTimings), n, averageDuration(durations).Round(time.Millisecond), shortest.Round(time.Millisecond), medianDuration(durations).Round(time.Millisecond), longest.Round(time.Millisecond))
 	s.Stop()
 }
 
