@@ -3,6 +3,8 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 	"time"
@@ -148,8 +150,27 @@ func (s *Server) serveSubscribe(db serverDB, w http.ResponseWriter, r *http.Requ
 			return
 		}
 
-		const confirmErrorMessage = "You already requested a confirmation link. You may request another confirmation link when 24 hours have passed."
+		// Verify CAPTCHA.
+		var solved bool
 		ipHash := s.hashIP(r)
+		challenge := db.GetCAPTCHA(ipHash)
+		if challenge != nil {
+			solution := FormString(r, "captcha")
+			if strings.ToLower(solution) == challenge.Text {
+				solved = true
+				s.captchaCacheLock.Lock()
+				delete(s.captchaCache, ipHash)
+				s.captchaCacheLock.Unlock()
+				db.DeleteCAPTCHA(ipHash)
+				os.Remove(filepath.Join(s.config.Root, "captcha", challenge.Image+".png"))
+			}
+		}
+		if !solved {
+			data.BoardError(w, data.Get("Invalid %s.", "CAPTCHA"))
+			return
+		}
+
+		const confirmErrorMessage = "You already requested a confirmation link. You may request another confirmation link when 24 hours have passed."
 		ipSub := db.SubscriptionByIP(ipHash)
 		if ipSub != nil {
 			data.BoardError(w, data.G(confirmErrorMessage))

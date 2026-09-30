@@ -27,6 +27,13 @@
                         <td><input type="text" name="email"></td>
                     </tr>
                     <tr>
+                        <td class="postblock">CAPTCHA</td>
+                        <td>
+                            <input type="text" name="captcha" autocomplete="off" style="vertical-align: middle;box-sizing: border-box;width: 70px;height: 40px;">
+			                <a href="/sriracha/captcha?new" target="_blank" onclick="javascript:document.getElementById('captchaimage').src = '/sriracha/captcha?new=' + new Date().getTime();return false;"><img loading="lazy" src="/sriracha/captcha" alt="CAPTCHA Challenge" id="captchaimage" width="225" height="40" style="border: 0;vertical-align: middle;"></a> <span style="vertical-align: middle;"><small>{{T "Click to refresh."}}</small></span>
+                        </td>
+                    </tr>
+                    <tr>
                         <td>&nbsp;</td>
                         <td align="right"><input type="submit" value="{{T "Subscribe"}}" class="managebutton" style="width: auto;min-width: 50%;"></td>
                     </tr>

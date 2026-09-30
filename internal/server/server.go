@@ -2986,8 +2986,8 @@ func (s *Server) handleRebuild() {
 			traceLog(msg, traceD)
 		}
 
-		for _, info := range pending {
-			info.wg.Done()
+		for i := range pending {
+			pending[i].wg.Done()
 		}
 
 		go s.refreshDiskSpace()
