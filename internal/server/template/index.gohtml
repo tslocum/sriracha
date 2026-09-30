@@ -3,19 +3,6 @@
 hr {
     max-width: 930px;
 }
-td {
-    vertical-align: top;
-}
-.boardtd {
-    text-align: right;
-    padding-right: 4px;
-}
-.msgtd {
-    padding-left: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
 </style>
 <div class="news">
     {{if ne .News nil}}
@@ -36,66 +23,58 @@ td {
     {{end}}
     <hr>
     <div class="reply newsentry navindex">
-        <table style="border: 0;table-layout: fixed;width: 100%;">
+        <div class="managegrid" style="grid-template-columns: auto 1fr 1fr; column-gap: 10px;">
             {{$needSpacer := false}}
             {{range $i, $category := .Opt.Categories}}
                 {{if eq (len $category.Boards) 0}}
                     {{continue}}
-                {{else if $needSpacer}}
-                    <tr class="category">
-                        <td colspan="3">&nbsp;</td>
-                    </tr>
                 {{end}}
                 {{if ne $category.Name ""}}
                     {{$needSpacer = true}}
-                    <tr class="category">
-                        <td class="boardtd">
-                            <b>{{$category.Name}}</b>
-                        </td>
-                        <td>
-                            {{if ne $category.Description ""}}{{$category.Description}}{{else}}&nbsp;{{end}}
-                        </td>
-                    </tr>
+                    <div class="navlabel">
+                        <b>{{$category.Name}}</b>
+                    </div>
+                    <div class="navitem">
+                        {{if ne $category.Description ""}}{{$category.Description}}{{else}}&nbsp;{{end}}
+                    </div>
                 {{end}}
                 {{range $j, $board := $category.Boards}}
                     {{$needSpacer = true}}
-                    <tr>
-                        <td class="boardtd">
-                            <a href="{{.Path}}"><b>{{.Name}}</b></a>
-                            {{if ne .Description ""}}<br>{{.Description}}{{end}}
-                        </td>
-                        <td colspan="2" class="msgtd">
-                            {{$post := index $category.Recent $j}}
-                            {{if eq $post nil}}
-                                …<br>…
-                            {{else}}
-                                <label style="cursor: pointer;">
-                                    <a href="{{$post.Board.Path}}res/{{$post.Thread}}.html#{{$post.ID}}" style="color: inherit;text-decoration: none;">
-                                        {{if ne $post.Subject ""}}<span class="filetitle">{{$post.Subject}}</span>{{end}}
-                                        {{$post.PlainNameBlock $post.Board.DefaultName "" false false}} No.{{$post.ID}}
-                                    </a>
-                                </label>
-                                <br>
-                                {{$msg := $post.MessageTruncated 1 $.Account}}
-                                {{if eq $msg ""}}
-                                    {{if ne $post.File ""}}
-                                        {{if $post.IsEmbed}}
-                                            {{T "Embed"}}
-                                        {{else}}
-                                            {{T "File"}}
-                                        {{end}}
+                    <div class="navlabel">
+                        <a href="{{.Path}}"><b>{{.Name}}</b></a>
+                        {{if ne .Description ""}}<br>{{.Description}}{{end}}
+                    </div>
+                    <div class="navitem">
+                        {{$post := index $category.Recent $j}}
+                        {{if eq $post nil}}
+                            …<br>…
+                        {{else}}
+                            <label style="cursor: pointer;">
+                                <a href="{{$post.Board.Path}}res/{{$post.Thread}}.html#{{$post.ID}}" style="color: inherit;text-decoration: none;">
+                                    {{if ne $post.Subject ""}}<span class="filetitle">{{$post.Subject}}</span>{{end}}
+                                    {{$post.PlainNameBlock $post.Board.DefaultName "" false false}} No.{{$post.ID}}
+                                </a>
+                            </label>
+                            <br>
+                            {{$msg := $post.MessageTruncated 1 $.Account}}
+                            {{if eq $msg ""}}
+                                {{if ne $post.File ""}}
+                                    {{if $post.IsEmbed}}
+                                        {{T "Embed"}}
                                     {{else}}
-                                        …
+                                        {{T "File"}}
                                     {{end}}
                                 {{else}}
-                                    {{$msg}}
+                                    …
                                 {{end}}
+                            {{else}}
+                                {{$msg}}
                             {{end}}
-                        </td>
-                    </tr>
+                        {{end}}
+                    </div>
                 {{end}}
             {{end}}
-        </table>
+        </div>
     </div>
 </div>
 <hr>

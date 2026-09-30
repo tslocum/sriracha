@@ -1667,9 +1667,10 @@ to whenever a moderation request is added or dismissed.
 If set to 'mq', the queue will be available at '/mq.html'.
 
 Each staff queue file contains a number which indicates how many moderation requests are currently pending.
+
 For example, if there are two new posts, the queue file will contain '2'.
 
-The purpose of the queue files are to make it easy for staff to check for pending moderation
+The purpose of the queue files is to make it easy for staff to check for pending moderation
 requests without needing to log in or provide cookies to automatic monitoring software.
 Any tool which monitors a page for changes can then be used to monitor moderation requests.
 Because no post details are included, the files do not need to be password protected.

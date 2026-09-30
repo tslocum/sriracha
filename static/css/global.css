@@ -293,6 +293,21 @@ legend {
 	grid-column: 2/-1;
 }
 
+.navlabel {
+	text-align: right;
+}
+
+.navitem {
+	grid-column: span 2;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.managegrid .navlabel:not(:first-child), .managegrid .navitem:not(:nth-child(2)) {
+	margin-top: 1em;
+}
+
 .manageform input:not([type=checkbox]), .manageform select, .manageform textarea, .managegrid input:not([type=checkbox]), .managegrid select, .managegrid textarea {
 	width: 100%;
 	box-sizing: border-box;
@@ -520,6 +535,10 @@ details {
 
 	.managegrid {
 		grid-template-columns: 1fr;
+	}
+
+	.navlabel {
+		text-align: left;
 	}
 
 	.managegrid .postblock:not(:first-child) {
