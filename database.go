@@ -53,6 +53,7 @@ type DB interface {
 	LiftExpiredBans() int
 
 	// Ban appeal.
+	AddBanAppeal(a *BanAppeal)
 	PendingBanAppeals() []*BanAppeal
 	BanAppeals(b *Ban) []*BanAppeal
 

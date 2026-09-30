@@ -203,6 +203,15 @@ msgstr ""
 msgid "Appeal"
 msgstr ""
 
+msgid "Appeal denied."
+msgstr ""
+
+msgid "Appeal rejected."
+msgstr ""
+
+msgid "Appeal submitted."
+msgstr ""
+
 msgid "Appearance"
 msgstr ""
 
@@ -1837,6 +1846,9 @@ msgid "You are banned."
 msgstr ""
 
 msgid "You may not change your own role."
+msgstr ""
+
+msgid "You may submit another appeal."
 msgstr ""
 
 msgid "Your email address is unconfirmed."

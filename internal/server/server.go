@@ -2281,15 +2281,32 @@ func (s *Server) addBanAppealForm(db serverDB, data *templateData, b *Ban) {
 		return
 	}
 
-	// Check for pending or denied appeal.
+	data.Message = ""
+
+	// Handle existing appeal.
 	for _, appeal := range db.BanAppeals(b) {
-		if appeal.Outcome == AppealPending || appeal.Outcome == AppealDenied {
+		switch appeal.Outcome {
+		case AppealPending:
+			data.Message = `<div style="text-align: center;">` + data.GetHTML("Appeal submitted.") + `</div>`
+			return
+		case AppealRejected:
+			data.Message = `<div style="text-align: center;">` + data.GetHTML("Appeal rejected.")
+			if appeal.OutcomeReason != "" {
+				data.Message += " " + data.GetHTML("Reason: %s", template.HTMLEscapeString(appeal.OutcomeReason))
+			}
+			data.Message += `<br>` + data.GetHTML("You may submit another appeal.") + `</div><br>`
+		case AppealDenied:
+			data.Message = `<div style="text-align: center;">` + data.GetHTML("Appeal denied.")
+			if appeal.OutcomeReason != "" {
+				data.Message += " " + data.GetHTML("Reason: %s", template.HTMLEscapeString(appeal.OutcomeReason))
+			}
+			data.Message += `</div>`
 			return
 		}
 	}
 
 	// Add appeal form to page.
-	data.Message = `<div style="text-align: center;">
+	data.Message += `<div style="text-align: center;">
 	<fieldset style="text-align: left;">
 	<legend>` + data.GetHTML("Appeal") + `</legend>
 	<form method="post" action="/sriracha">
@@ -2304,6 +2321,58 @@ func (s *Server) addBanAppealForm(db serverDB, data *templateData, b *Ban) {
 	</tbody></table>
 	</fieldset>
 	</div>`
+}
+
+// handleBanAppeal handles a ban appeal submission.
+func (s *Server) handleBanAppeal(db serverDB, data *templateData, b *Ban, w http.ResponseWriter, r *http.Request) bool {
+	if FormString(r, "action") != "appeal" {
+		return false
+	}
+
+	// Check for pending or denied appeal.
+	for _, appeal := range db.BanAppeals(b) {
+		if appeal.Outcome == AppealPending || appeal.Outcome == AppealDenied {
+			return false
+		}
+	}
+
+	// Validate fields.
+	message := FormString(r, "message")
+	if message == "" {
+		data.BoardError(w, data.Get("%s is required.", data.G("Message")))
+		return true
+	}
+
+	// Verify CAPTCHA.
+	var solved bool
+	ipHash := s.hashIP(r)
+	challenge := db.GetCAPTCHA(ipHash)
+	if challenge != nil {
+		solution := FormString(r, "captcha")
+		if strings.ToLower(solution) == challenge.Text {
+			solved = true
+			s.captchaCacheLock.Lock()
+			delete(s.captchaCache, ipHash)
+			s.captchaCacheLock.Unlock()
+			db.DeleteCAPTCHA(ipHash)
+			os.Remove(filepath.Join(s.config.Root, "captcha", challenge.Image+".png"))
+		}
+	}
+	if !solved {
+		data.BoardError(w, data.Get("Invalid %s.", "CAPTCHA"))
+		return true
+	}
+
+	a := &BanAppeal{
+		Ban:       b,
+		Timestamp: time.Now().Unix(),
+		Reason:    message,
+	}
+	db.AddBanAppeal(a)
+
+	data.Template = "imgboard_info"
+	data.Info = data.G("Appeal submitted.")
+	return true
 }
 
 // serveManage serves management panel web requests.
@@ -2583,7 +2652,9 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		if pattern.MatchString(ip) {
 			data := s.buildData(db, w, r)
 			data.ManageError(data.G("You are banned.") + " " + ban.Info() + fmt.Sprintf(" (%s: %s_%d)", Get(nil, data.Account, "Ban ID"), ban.AppealID(), ban.ID))
-			s.addBanAppealForm(data, ban)
+			if !s.handleBanAppeal(db, data, ban, w, r) {
+				s.addBanAppealForm(db, data, ban)
+			}
 			data.execute(w)
 			s.lock.Unlock()
 			return
@@ -2595,7 +2666,9 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	if ban != nil {
 		data := s.buildData(db, w, r)
 		data.ManageError(data.G("You are banned.") + " " + ban.Info() + fmt.Sprintf(" (%s: %s_%d)", data.G("Ban ID"), ban.AppealID(), ban.ID))
-		s.addBanAppealForm(data, ban)
+		if !s.handleBanAppeal(db, data, ban, w, r) {
+			s.addBanAppealForm(db, data, ban)
+		}
 		data.execute(w)
 		s.lock.Unlock()
 		return

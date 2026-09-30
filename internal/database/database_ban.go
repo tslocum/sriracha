@@ -142,6 +142,20 @@ func scanBan(b *Ban, row pgx.Row) error {
 	)
 }
 
+func (db *DB) AddBanAppeal(a *BanAppeal) {
+	_, err := db.conn.Exec(context.Background(), "INSERT INTO banappeal VALUES (DEFAULT, $1, $2, $3, $4, $5, $6)",
+		a.Ban.ID,
+		a.Timestamp,
+		a.Reason,
+		a.Outcome,
+		a.OutcomeTimestamp,
+		a.OutcomeReason,
+	)
+	if err != nil {
+		dbErr(fmt.Errorf("failed to add ban appeal: %w", err))
+	}
+}
+
 func (db *DB) PendingBanAppeals() []*BanAppeal {
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM banappeal WHERE outcome = 0 ORDER BY id ASC")
 	if err != nil {

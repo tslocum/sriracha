@@ -131,6 +131,7 @@ func (db *mockDB) LiftBan(id int, reason string)       {}
 func (db *mockDB) LiftExpiredBans() int                { return 0 }
 
 // Ban appeal.
+func (db *mockDB) AddBanAppeal(a *BanAppeal)       {}
 func (db *mockDB) PendingBanAppeals() []*BanAppeal { return nil }
 func (db *mockDB) BanAppeals(b *Ban) []*BanAppeal  { return nil }
 
