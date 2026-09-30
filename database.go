@@ -54,8 +54,10 @@ type DB interface {
 
 	// Ban appeal.
 	AddBanAppeal(a *BanAppeal)
+	BanAppealByID(id int) *BanAppeal
 	PendingBanAppeals() []*BanAppeal
 	BanAppeals(b *Ban) []*BanAppeal
+	UpdateBanAppeal(a *BanAppeal)
 
 	// Banner.
 	AddBanner(b *Banner)

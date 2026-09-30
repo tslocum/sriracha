@@ -7,6 +7,15 @@ function liftBan(id) {
     return true;
 }
 
+function appealBan(id) {
+    var reason = prompt('Reason:');
+    if (reason === null) {
+        return false;
+    }
+    document.getElementById('reason' + id).value = reason;
+    return true;
+}
+
 function setAllBoards(enable) {
     var boards = document.getElementsByName('boards');
     for (var i = 0; i < boards.length; i++) {

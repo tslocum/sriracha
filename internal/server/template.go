@@ -65,6 +65,7 @@ type templateData struct {
 	Message       template.HTML
 	Message2      template.HTML
 	Message3      template.HTML
+	Message4      template.HTML
 	Board         *Board
 	Boards        []*Board
 	Categories    []*Category

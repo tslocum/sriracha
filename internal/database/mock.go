@@ -132,8 +132,10 @@ func (db *mockDB) LiftExpiredBans() int                { return 0 }
 
 // Ban appeal.
 func (db *mockDB) AddBanAppeal(a *BanAppeal)       {}
+func (db *mockDB) BanAppealByID(id int) *BanAppeal { return nil }
 func (db *mockDB) PendingBanAppeals() []*BanAppeal { return nil }
 func (db *mockDB) BanAppeals(b *Ban) []*BanAppeal  { return nil }
+func (db *mockDB) UpdateBanAppeal(a *BanAppeal)    {}
 
 // Banner.
 func (db *mockDB) AddBanner(b *Banner)              {}

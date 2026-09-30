@@ -688,6 +688,7 @@ func (s *Server) parseConfig(configFile string) error {
 		"ban.shorten":     "admin",
 		"ban.lengthen":    "mod",
 		"ban.lift":        "admin",
+		"ban.appeal":      "admin",
 		"banfile.add":     "mod",
 		"banfile.lift":    "admin",
 		"banner.add":      "admin",
@@ -2325,7 +2326,7 @@ func (s *Server) addBanAppealForm(db serverDB, data *templateData, b *Ban) {
 
 // handleBanAppeal handles a ban appeal submission.
 func (s *Server) handleBanAppeal(db serverDB, data *templateData, b *Ban, w http.ResponseWriter, r *http.Request) bool {
-	if FormString(r, "action") != "appeal" {
+	if !s.opt.Appeals || b == nil || FormString(r, "action") != "appeal" {
 		return false
 	}
 
@@ -2647,6 +2648,13 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// Allow banned visitors to access CAPTCHA.
+	if action == "captcha" {
+		s.serveCAPTCHA(db, w, r)
+		s.lock.Unlock()
+		return
+	}
+
 	// Check IP range ban.
 	for ban, pattern := range s.rangeBans {
 		if pattern.MatchString(ip) {
@@ -2704,8 +2712,6 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 			s.serveReport(db, w, r)
 		case "delete":
 			s.serveDelete(db, w, r)
-		case "captcha":
-			s.serveCAPTCHA(db, w, r)
 		case "subscribe":
 			s.serveSubscribe(db, w, r)
 		case "search":

@@ -23,7 +23,13 @@
         <div>{{.Message3}}</div>
     </fieldset><br>
 {{end}}
-{{if and (eq .Message "") (eq .Message2 "") (eq .Message3 "")}}
+{{if ne .Message4 ""}}
+    <fieldset>
+        <legend>{{T "Ban Appeals"}}</legend>
+        <div>{{.Message4}}</div>
+    </fieldset><br>
+{{end}}
+{{if and (eq .Message "") (eq .Message2 "") (eq .Message3 "") (eq .Message4 "")}}
     &nbsp;✔️ {{T "No pending moderation requests."}}<br>
     <meta http-equiv="refresh" content="300; url=/sriracha/">
 {{else}}

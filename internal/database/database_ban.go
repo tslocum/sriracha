@@ -156,6 +156,18 @@ func (db *DB) AddBanAppeal(a *BanAppeal) {
 	}
 }
 
+func (db *DB) BanAppealByID(id int) *BanAppeal {
+	a := &BanAppeal{}
+	banID, err := scanBanAppeal(a, db.conn.QueryRow(context.Background(), "SELECT * FROM banappeal WHERE id = $1", id))
+	if err == pgx.ErrNoRows {
+		return nil
+	} else if err != nil {
+		dbErr(fmt.Errorf("failed to select ban: %w", err))
+	}
+	a.Ban = db.BanByID(banID)
+	return a
+}
+
 func (db *DB) PendingBanAppeals() []*BanAppeal {
 	rows, err := db.conn.Query(context.Background(), "SELECT * FROM banappeal WHERE outcome = 0 ORDER BY id ASC")
 	if err != nil {
@@ -206,6 +218,21 @@ func (db *DB) BanAppeals(b *Ban) []*BanAppeal {
 		appeals[i].Ban = b
 	}
 	return appeals
+}
+
+func (db *DB) UpdateBanAppeal(a *BanAppeal) {
+	if a.ID <= 0 {
+		dbErr(fmt.Errorf("invalid ban appeal ID %d", a.ID))
+	}
+	_, err := db.conn.Exec(context.Background(), "UPDATE banappeal SET outcome = $1, outcometimestamp = $2, outcomereason = $3 WHERE id = $4",
+		a.Outcome,
+		a.OutcomeTimestamp,
+		a.OutcomeReason,
+		a.ID,
+	)
+	if err != nil {
+		dbErr(fmt.Errorf("failed to update ban appeal: %w", err))
+	}
 }
 
 func scanBanAppeal(a *BanAppeal, row pgx.Row) (int, error) {

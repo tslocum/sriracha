@@ -54,6 +54,49 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		} else if FormString(r, "unarchive") != "" {
 			action = "unarchive"
 		} else {
+			if s.opt.Appeals && s.may(data, "ban.appeal") {
+				appealID := FormInt(r, "appeal")
+				if appealID > 0 {
+					appeal := db.BanAppealByID(appealID)
+					if appeal == nil {
+						data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("Appeal"))))
+						return
+					} else if appeal.Outcome != AppealPending {
+						data.ManageError("That appeal has already been processed.")
+						return
+					}
+
+					outcome := BanAppealOutcome(FormInt(r, "outcome"))
+					var logMessage string
+					switch outcome {
+					case AppealApproved:
+						appeal.Outcome = AppealApproved
+						logMessage = fmt.Sprintf("Approved appeal for >>/ban/%d", appeal.Ban.ID)
+					case AppealRejected:
+						appeal.Outcome = AppealRejected
+						logMessage = fmt.Sprintf("Rejected appeal for >>/ban/%d", appeal.Ban.ID)
+					case AppealDenied:
+						appeal.Outcome = AppealDenied
+						logMessage = fmt.Sprintf("Denied appeal for >>/ban/%d", appeal.Ban.ID)
+					default:
+						data.ManageError("Unknown appeal outcome.")
+						return
+					}
+
+					appeal.OutcomeReason = FormString(r, "reason")
+
+					db.UpdateBanAppeal(appeal)
+
+					var changes string
+					if appeal.OutcomeReason != "" {
+						changes = "Reason: " + appeal.OutcomeReason
+					}
+					s.log(db, data.Account, nil, logMessage, changes)
+
+					data.Redirect(w, r, "/sriracha/")
+					return
+				}
+			}
 			data.ManageError("Unknown moderation action.")
 			return
 		}
@@ -466,6 +509,28 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 	data.Message3 = template.HTML(buf.String())
 
 	total := len(reports) + len(pending) + len(pruned)
+	if s.opt.Appeals && s.may(data, "ban.appeal") {
+		buf.Reset()
+		appeals := db.PendingBanAppeals()
+		for i, appeal := range appeals {
+			if i > 0 {
+				buf.WriteString("<hr>\n")
+			}
+
+			fmt.Fprintf(buf, `<div style="margin-bottom: 5px;">
+				<form method="post" action="/sriracha/" onsubmit="javascript:return appealBan('approve%d')" style="display: inline-block;"><input type="hidden" name="appeal" value="%d"><input type="hidden" name="outcome" value="1"><input type="hidden" id="reasonapprove%d" name="reason"><input type="submit" value="%s"></form>
+				<form method="post" action="/sriracha/" onsubmit="javascript:return appealBan('reject%d')" style="display: inline-block;"><input type="hidden" name="appeal" value="%d"><input type="hidden" name="outcome" value="2"><input type="hidden" id="reasonreject%d" name="reason"><input type="submit" value="%s"></form>
+				<form method="post" action="/sriracha/" onsubmit="javascript:return appealBan('deny%d')" style="display: inline-block;"><input type="hidden" name="appeal" value="%d"><input type="hidden" name="outcome" value="3"><input type="hidden" id="reasondeny%d" name="reason"><input type="submit" value="%s"></form>
+			</div>
+			<div>
+				<a href="/sriracha/ban/%d">#%d</a> %s<br>
+				%s: %s
+			</div>`, appeal.ID, appeal.ID, appeal.ID, data.G("Approve"), appeal.ID, appeal.ID, appeal.ID, data.G("Reject"), appeal.ID, appeal.ID, appeal.ID, data.G("Deny"), appeal.Ban.ID, appeal.Ban.ID, template.HTMLEscapeString(appeal.Ban.Info()), data.G("Message"), template.HTMLEscapeString(appeal.Reason))
+		}
+		data.Message4 = template.HTML(buf.String())
+		total += len(appeals)
+	}
+
 	if total > 0 {
 		data.Extra3 = data.GetN("%d pending moderation request", "%d pending moderation requests", total)
 	}
