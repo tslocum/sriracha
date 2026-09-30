@@ -43,6 +43,7 @@ type manageData struct {
 	Keyword    *Keyword
 	Keywords   []*Keyword
 	LiftedBans []*Ban
+	BanAppeals []*BanAppeal
 	Log        *Log
 	Logs       []*Log
 	News       *News

@@ -25,6 +25,11 @@ msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d previous appeal"
+msgid_plural "%d previous appeals"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d previous ban"
 msgid_plural "%d previous bans"
 msgstr[0] ""
@@ -228,6 +233,9 @@ msgid "Approve"
 msgstr ""
 
 msgid "Approve all"
+msgstr ""
+
+msgid "Approved"
 msgstr ""
 
 msgid "Archive"
@@ -494,6 +502,9 @@ msgid "Deleted by author"
 msgstr ""
 
 msgid "Deleted by moderator"
+msgstr ""
+
+msgid "Denied"
 msgstr ""
 
 msgid "Description"
@@ -1195,6 +1206,9 @@ msgstr ""
 msgid "Optional."
 msgstr ""
 
+msgid "Outcome"
+msgstr ""
+
 msgid "Overboard"
 msgstr ""
 
@@ -1223,6 +1237,9 @@ msgid "Paste a YouTube URL."
 msgstr ""
 
 msgid "Path"
+msgstr ""
+
+msgid "Pending"
 msgstr ""
 
 msgid "Performance"
@@ -1383,6 +1400,9 @@ msgid "Refreshing page every %d seconds. Click to pause."
 msgstr ""
 
 msgid "Regular expression to search for when a new post is created."
+msgstr ""
+
+msgid "Rejected"
 msgstr ""
 
 msgid "Relative file path where the page is located, excluding the .html suffix."

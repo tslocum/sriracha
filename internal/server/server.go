@@ -3812,6 +3812,8 @@ func FormatValue(v any) string {
 		return FormatBoardRequire(t)
 	} else if t, ok := v.(ThresholdEvent); ok {
 		return FormatThresholdEvent(t)
+	} else if t, ok := v.(BanAppealOutcome); ok {
+		return FormatBanAppealOutcome(t)
 	}
 	return fmt.Sprintf("%+v", v)
 }

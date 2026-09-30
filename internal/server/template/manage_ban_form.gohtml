@@ -74,6 +74,25 @@
         {{end}}
     </table>
 {{end}}
+{{if gt (len .Manage.BanAppeals) 0}}
+    <br><table class="managetable">
+        <tr><th colspan="5" style="border: 0px none;">{{TN "%d previous appeal" "%d previous appeals" (len .Manage.BanAppeals)}}</th></tr>
+        <tr>
+            <th>{{T "Submitted"}}</th>
+            <th>{{T "Message"}}</th>
+            <th>{{T "Outcome"}}</th>
+            <th>{{T "Reason"}}</th>
+        </tr>
+        {{range $i, $appeal := .Manage.BanAppeals}}
+            <tr>
+                <td>{{FormatYYMMDD $appeal.Timestamp}}</td>
+                <td>{{$appeal.Reason}}</td>
+                <td>{{T $appeal.OutcomeLabel}}</td>
+                <td>{{$appeal.OutcomeReason}}</td>
+            </tr>
+        {{end}}
+    </table>
+{{end}}
 {{if and (May "banfile.lift" $.Account $.Opt.Access) (and (eq .Manage.Ban nil) (eq .Extra ""))}}{{/* Admin */}}
     <br><form method="post" enctype="multipart/form-data">
         <fieldset>

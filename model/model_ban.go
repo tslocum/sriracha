@@ -96,3 +96,22 @@ type BanAppeal struct {
 	OutcomeTimestamp int64
 	OutcomeReason    string
 }
+
+func (a *BanAppeal) OutcomeLabel() string {
+	return FormatBanAppealOutcome(a.Outcome)
+}
+
+func FormatBanAppealOutcome(o BanAppealOutcome) string {
+	switch o {
+	case AppealPending:
+		return "Pending"
+	case AppealApproved:
+		return "Approved"
+	case AppealRejected:
+		return "Rejected"
+	case AppealDenied:
+		return "Denied"
+	default:
+		return "Unknown"
+	}
+}

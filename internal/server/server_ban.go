@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -105,6 +106,15 @@ func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter
 			return
 		}
 		data.Manage.LiftedBans = db.LiftedBansByIP(data.Manage.Ban.IP)
+		for _, ban := range data.Manage.LiftedBans {
+			for _, appeal := range db.BanAppeals(ban) {
+				data.Manage.BanAppeals = append(data.Manage.BanAppeals, appeal)
+			}
+		}
+		for _, appeal := range db.BanAppeals(data.Manage.Ban) {
+			data.Manage.BanAppeals = append(data.Manage.BanAppeals, appeal)
+		}
+		slices.Reverse(data.Manage.BanAppeals)
 		return
 	}
 
