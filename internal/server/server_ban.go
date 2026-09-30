@@ -46,6 +46,7 @@ func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter
 		}
 		liftReason := FormString(r, "reason")
 		db.LiftBan(b.ID, liftReason)
+		s.expireBanAppeals(db, true, b.ID)
 
 		if strings.HasPrefix(b.IP, "r ") {
 			s.reloadBans(db)

@@ -121,13 +121,24 @@ func (db *DB) LiftBan(id int, reason string) {
 	}
 }
 
-func (db *DB) LiftExpiredBans() int {
-	var processed int
-	err := db.conn.QueryRow(context.Background(), "WITH processed AS (UPDATE ban SET liftedtimestamp = $1, liftedreason = $2 WHERE liftedtimestamp = 0 AND expire != 0 AND expire <= $1 RETURNING *) SELECT COUNT(*) FROM processed", time.Now().Unix(), Get(nil, nil, "Expired")+".").Scan(&processed)
+func (db *DB) LiftExpiredBans() []int {
+	rows, err := db.conn.Query(context.Background(), "WITH processed AS (UPDATE ban SET liftedtimestamp = $1, liftedreason = $2 WHERE liftedtimestamp = 0 AND expire != 0 AND expire <= $1 RETURNING *) SELECT COUNT(*) FROM processed", time.Now().Unix(), Get(nil, nil, "Expired")+".")
 	if err != nil {
-		dbErr(err)
+		dbErr(fmt.Errorf("failed to select expired bans: %w", err))
 	}
-	return processed
+	var ids []int
+	for rows.Next() {
+		var id int
+		err := rows.Scan(&id)
+		if err != nil {
+			dbErr(fmt.Errorf("failed to scan expired ban ID: %w", rows.Err()))
+		}
+		ids = append(ids, id)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select expired bans: %w", rows.Err()))
+	}
+	return ids
 }
 
 func scanBan(b *Ban, row pgx.Row) error {

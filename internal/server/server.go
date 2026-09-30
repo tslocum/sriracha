@@ -2276,6 +2276,34 @@ func (s *Server) handleBanAction(db serverDB, account *Account, action string, i
 	return "delete"
 }
 
+func (s *Server) expireBanAppeals(db serverDB, manual bool, id ...int) {
+	var updateQueue bool
+	now := time.Now().Unix()
+	for _, banID := range id {
+		ban := db.BanByID(banID)
+		if ban == nil {
+			continue
+		}
+		for _, appeal := range db.BanAppeals(ban) {
+			switch appeal.Outcome {
+			case AppealPending, AppealRejected:
+				appeal.Outcome = AppealDenied
+				appeal.OutcomeTimestamp = now
+				if manual {
+					appeal.OutcomeReason = Get(nil, nil, "Lifted") + "."
+				} else {
+					appeal.OutcomeReason = Get(nil, nil, "Expired") + "."
+				}
+				db.UpdateBanAppeal(appeal)
+				updateQueue = true
+			}
+		}
+	}
+	if updateQueue {
+		s.writeModQueue(db)
+	}
+}
+
 // addBanAppealForm adds the ban appeal form to the page (when enabled).
 func (s *Server) addBanAppealForm(db serverDB, data *templateData, b *Ban) {
 	if !s.opt.Appeals || b == nil {
@@ -2631,7 +2659,9 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 
 	db.DeleteExpiredSubscriptions()
 
-	if db.LiftExpiredBans() > 0 {
+	expiredBanIDs := db.LiftExpiredBans()
+	if len(expiredBanIDs) > 0 {
+		s.expireBanAppeals(db, false, expiredBanIDs...)
 		s.reloadBans(db)
 	}
 

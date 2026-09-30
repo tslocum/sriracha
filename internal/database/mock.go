@@ -128,7 +128,7 @@ func (db *mockDB) AllActiveBans(rangeOnly bool) []*Ban { return nil }
 func (db *mockDB) LiftedBansByIP(ip string) []*Ban     { return nil }
 func (db *mockDB) UpdateBan(b *Ban)                    {}
 func (db *mockDB) LiftBan(id int, reason string)       {}
-func (db *mockDB) LiftExpiredBans() int                { return 0 }
+func (db *mockDB) LiftExpiredBans() []int              { return nil }
 
 // Ban appeal.
 func (db *mockDB) AddBanAppeal(a *BanAppeal)       {}

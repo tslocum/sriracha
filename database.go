@@ -50,7 +50,7 @@ type DB interface {
 	LiftedBansByIP(ip string) []*Ban
 	UpdateBan(b *Ban)
 	LiftBan(id int, reason string)
-	LiftExpiredBans() int
+	LiftExpiredBans() []int
 
 	// Ban appeal.
 	AddBanAppeal(a *BanAppeal)

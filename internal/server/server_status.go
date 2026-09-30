@@ -83,6 +83,8 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 						return
 					}
 
+					appeal.OutcomeTimestamp = time.Now().Unix()
+
 					appeal.OutcomeReason = FormString(r, "reason")
 
 					db.UpdateBanAppeal(appeal)
