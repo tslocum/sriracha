@@ -2316,7 +2316,8 @@ func (s *Server) addBanAppealForm(db serverDB, data *templateData, b *Ban) {
 	for _, appeal := range db.BanAppeals(b) {
 		switch appeal.Outcome {
 		case AppealPending:
-			data.Message = `<div style="text-align: center;">` + data.GetHTML("Appeal submitted.") + `</div>`
+			data.Message = `<div style="text-align: center;">` + data.GetHTML("Appeal submitted.") + `<br>
+			` + data.GetHTML("Message") + `: ` + template.HTML(strings.ReplaceAll(template.HTMLEscapeString(appeal.Reason), "\n", "<br>")) + `</div>`
 			return
 		case AppealRejected:
 			data.Message = `<div style="text-align: center;">` + data.GetHTML("Appeal rejected.")

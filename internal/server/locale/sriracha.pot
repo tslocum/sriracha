@@ -1569,6 +1569,9 @@ msgstr ""
 msgid "Submit post."
 msgstr ""
 
+msgid "Submitted"
+msgstr ""
+
 msgid "Subscribe"
 msgstr ""
 

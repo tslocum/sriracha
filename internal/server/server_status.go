@@ -526,8 +526,9 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 			</div>
 			<div>
 				<a href="/sriracha/ban/%d">#%d</a> %s<br>
+				%s: %s<br>
 				%s: %s
-			</div>`, appeal.ID, appeal.ID, appeal.ID, data.G("Approve"), appeal.ID, appeal.ID, appeal.ID, data.G("Reject"), appeal.ID, appeal.ID, appeal.ID, data.G("Deny"), appeal.Ban.ID, appeal.Ban.ID, template.HTMLEscapeString(appeal.Ban.Info()), data.G("Message"), template.HTMLEscapeString(appeal.Reason))
+			</div>`, appeal.ID, appeal.ID, appeal.ID, data.G("Approve"), appeal.ID, appeal.ID, appeal.ID, data.G("Reject"), appeal.ID, appeal.ID, appeal.ID, data.G("Deny"), appeal.Ban.ID, appeal.Ban.ID, template.HTMLEscapeString(appeal.Ban.Info()), data.G("Submitted"), FormatTimestamp(appeal.Timestamp), data.G("Message"), strings.ReplaceAll(template.HTMLEscapeString(appeal.Reason), "\n", "<br>"))
 		}
 		data.Message4 = template.HTML(buf.String())
 		total += len(appeals)

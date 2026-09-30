@@ -122,7 +122,7 @@ func (db *DB) LiftBan(id int, reason string) {
 }
 
 func (db *DB) LiftExpiredBans() []int {
-	rows, err := db.conn.Query(context.Background(), "WITH processed AS (UPDATE ban SET liftedtimestamp = $1, liftedreason = $2 WHERE liftedtimestamp = 0 AND expire != 0 AND expire <= $1 RETURNING *) SELECT COUNT(*) FROM processed", time.Now().Unix(), Get(nil, nil, "Expired")+".")
+	rows, err := db.conn.Query(context.Background(), "WITH processed AS (UPDATE ban SET liftedtimestamp = $1, liftedreason = $2 WHERE liftedtimestamp = 0 AND expire != 0 AND expire <= $1 RETURNING *) SELECT id FROM processed", time.Now().Unix(), Get(nil, nil, "Expired")+".")
 	if err != nil {
 		dbErr(fmt.Errorf("failed to select expired bans: %w", err))
 	}
