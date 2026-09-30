@@ -77,3 +77,22 @@ func (b *Ban) Duration() string {
 	}
 	return FormatDuration(time.Duration(b.LiftedTimestamp-b.Timestamp) * time.Second)
 }
+
+type BanAppealOutcome int
+
+const (
+	AppealPending  BanAppealOutcome = 0
+	AppealApproved BanAppealOutcome = 1
+	AppealRejected BanAppealOutcome = 2
+	AppealDenied   BanAppealOutcome = 3
+)
+
+type BanAppeal struct {
+	ID               int
+	Ban              *Ban
+	Timestamp        int64
+	Reason           string
+	Outcome          BanAppealOutcome
+	OutcomeTimestamp int64
+	OutcomeReason    string
+}

@@ -52,6 +52,10 @@ type DB interface {
 	LiftBan(id int, reason string)
 	LiftExpiredBans() int
 
+	// Ban appeal.
+	PendingBanAppeals() []*BanAppeal
+	BanAppeals(b *Ban) []*BanAppeal
+
 	// Banner.
 	AddBanner(b *Banner)
 	BannerByID(id int) *Banner

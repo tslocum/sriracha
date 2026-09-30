@@ -200,6 +200,9 @@ msgstr ""
 msgid "Anywhere"
 msgstr ""
 
+msgid "Appeal"
+msgstr ""
+
 msgid "Appearance"
 msgstr ""
 

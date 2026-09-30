@@ -2275,6 +2275,37 @@ func (s *Server) handleBanAction(db serverDB, account *Account, action string, i
 	return "delete"
 }
 
+// addBanAppealForm adds the ban appeal form to the page (when enabled).
+func (s *Server) addBanAppealForm(db serverDB, data *templateData, b *Ban) {
+	if !s.opt.Appeals || b == nil {
+		return
+	}
+
+	// Check for pending or denied appeal.
+	for _, appeal := range db.BanAppeals(b) {
+		if appeal.Outcome == AppealPending || appeal.Outcome == AppealDenied {
+			return
+		}
+	}
+
+	// Add appeal form to page.
+	data.Message = `<div style="text-align: center;">
+	<fieldset style="text-align: left;">
+	<legend>` + data.GetHTML("Appeal") + `</legend>
+	<form method="post" action="/sriracha">
+	<input type="hidden" name="action" value="appeal">
+	<table><tbody>
+		<tr><td class="postblock">` + data.GetHTML("Message") + `</td><td><textarea id="message" name="message" cols="48" rows="4" maxlength="8000" autocomplete="off" style="box-sizing: border-box;width: 100%;"></textarea></td></tr>
+		<tr><td class="postblock">CAPTCHA</td><td>
+			<input type="text" name="captcha" autocomplete="off" style="vertical-align: middle;box-sizing: border-box;width: 70px;height: 40px;">
+			<a href="/sriracha/captcha?new" target="_blank" onclick="javascript:document.getElementById('captchaimage').src = '/sriracha/captcha?new=' + new Date().getTime();return false;"><img loading="lazy" src="/sriracha/captcha" alt="CAPTCHA Challenge" id="captchaimage" width="225" height="40" style="border: 0;vertical-align: middle;"></a> <span style="vertical-align: middle;"><small>` + data.GetHTML("Click to refresh.") + `</small></span>
+		</td></tr>
+		<tr><td class="postblock">` + data.GetHTML("Submit") + `</td><td><input type="submit" value="` + data.GetHTML("Submit") + `"></td></tr>
+	</tbody></table>
+	</fieldset>
+	</div>`
+}
+
 // serveManage serves management panel web requests.
 func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request) {
 	data := s.buildData(db, w, r)
@@ -2552,6 +2583,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		if pattern.MatchString(ip) {
 			data := s.buildData(db, w, r)
 			data.ManageError(data.G("You are banned.") + " " + ban.Info() + fmt.Sprintf(" (%s: %s_%d)", Get(nil, data.Account, "Ban ID"), ban.AppealID(), ban.ID))
+			s.addBanAppealForm(data, ban)
 			data.execute(w)
 			s.lock.Unlock()
 			return
@@ -2563,6 +2595,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	if ban != nil {
 		data := s.buildData(db, w, r)
 		data.ManageError(data.G("You are banned.") + " " + ban.Info() + fmt.Sprintf(" (%s: %s_%d)", data.G("Ban ID"), ban.AppealID(), ban.ID))
+		s.addBanAppealForm(data, ban)
 		data.execute(w)
 		s.lock.Unlock()
 		return

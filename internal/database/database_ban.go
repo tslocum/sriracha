@@ -142,6 +142,72 @@ func scanBan(b *Ban, row pgx.Row) error {
 	)
 }
 
+func (db *DB) PendingBanAppeals() []*BanAppeal {
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM banappeal WHERE outcome = 0 ORDER BY id ASC")
+	if err != nil {
+		dbErr(fmt.Errorf("failed to select pending ban appeals: %w", err))
+	}
+	var appeals []*BanAppeal
+	var banIDs []int
+	for rows.Next() {
+		a := &BanAppeal{}
+		banID, err := scanBanAppeal(a, rows)
+		if err == pgx.ErrNoRows {
+			return nil
+		} else if err != nil {
+			dbErr(fmt.Errorf("failed to select ban appeal: %w", err))
+		}
+		appeals = append(appeals, a)
+		banIDs = append(banIDs, banID)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select pending ban appeals: %w", rows.Err()))
+	}
+	for i := range appeals {
+		appeals[i].Ban = db.BanByID(banIDs[i])
+	}
+	return appeals
+}
+
+func (db *DB) BanAppeals(b *Ban) []*BanAppeal {
+	rows, err := db.conn.Query(context.Background(), "SELECT * FROM banappeal WHERE ban = $1 ORDER BY id ASC", b.ID)
+	if err != nil {
+		dbErr(fmt.Errorf("failed to select ban appeals: %w", err))
+	}
+	var appeals []*BanAppeal
+	for rows.Next() {
+		a := &BanAppeal{}
+		_, err := scanBanAppeal(a, rows)
+		if err == pgx.ErrNoRows {
+			return nil
+		} else if err != nil {
+			dbErr(fmt.Errorf("failed to select ban appeal: %w", err))
+		}
+		appeals = append(appeals, a)
+	}
+	if rows.Err() != nil {
+		dbErr(fmt.Errorf("failed to select ban appeals: %w", rows.Err()))
+	}
+	for i := range appeals {
+		appeals[i].Ban = b
+	}
+	return appeals
+}
+
+func scanBanAppeal(a *BanAppeal, row pgx.Row) (int, error) {
+	var banID int
+	err := row.Scan(
+		&a.ID,
+		&banID,
+		&a.Timestamp,
+		&a.Reason,
+		&a.Outcome,
+		&a.OutcomeTimestamp,
+		&a.OutcomeReason,
+	)
+	return banID, err
+}
+
 func (db *DB) AddFileBan(fileHash string) {
 	_, err := db.conn.Exec(context.Background(), "INSERT INTO banfile VALUES ($1) ON CONFLICT DO NOTHING", fileHash)
 	if err != nil {
