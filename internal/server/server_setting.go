@@ -11,6 +11,7 @@ import (
 	"runtime"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -175,7 +176,6 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 
 		db.ClearBoardCache()
 		s.removeInvalidBoardOptions(db)
-		s.writeStaffQueues(db)
 
 		changes := printChanges(oldOpt, s.opt)
 		if changes != "" {
@@ -442,7 +442,10 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 
 		db.ClearBoardCache()
 		s.removeInvalidBoardOptions(db)
-		s.writeStaffQueues(db)
+		db.SoftCommit()
+		wg := &sync.WaitGroup{}
+		s.writeStaffQueues(wg)
+		wg.Wait()
 
 		changes := printChanges(oldOpt, s.opt)
 		if changes != "" {

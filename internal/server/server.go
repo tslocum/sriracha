@@ -2001,7 +2001,7 @@ func (s *Server) rebuildThread(db serverDB, wg *sync.WaitGroup, delta *atomic.In
 		s.writeSiteIndex(wg, delta)
 	}
 	s.writeStatistics(wg, delta)
-	s.writeStaffQueues(db)
+	s.writeStaffQueues(wg)
 }
 
 func (s *Server) rebuildThreads(db serverDB, wg *sync.WaitGroup, delta *atomic.Int32, posts []*Post) {
@@ -2040,52 +2040,20 @@ func (s *Server) rebuildThreads(db serverDB, wg *sync.WaitGroup, delta *atomic.I
 	s.writeOverboards(db, wg, delta, activeBoards)
 	s.writeSiteIndex(wg, delta)
 	s.writeStatistics(wg, delta)
-	s.writeStaffQueues(db)
+	s.writeStaffQueues(wg)
 }
 
-func (s *Server) writeStaffQueues(db serverDB) {
+func (s *Server) writeStaffQueues(wg *sync.WaitGroup) {
 	if s.opt.ModQueue == "" && s.opt.AdminQueue == "" {
 		return
 	}
 
-	modQueueSize := len(db.PendingPosts()) + len(db.AllReports()) + len(db.PrunedThreads())
-	adminQueueSize := modQueueSize
-	if s.opt.Appeals {
-		appeals := len(db.PendingBanAppeals())
-		if s.config.Access["ban.appeal"] == "mod" {
-			modQueueSize += appeals
-		}
-		adminQueueSize += appeals
+	wg.Add(1)
+	info := &buildInfo{
+		build: buildStaffQueues,
+		wg:    wg,
 	}
-
-	writeQueue := func(name string, size int) {
-		writePath := filepath.Join(s.config.Root, name+"_.html")
-		filePath := filepath.Join(s.config.Root, name+".html")
-
-		file, err := os.OpenFile(writePath, NewFileFlags, NewFilePermission)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		_, err = file.WriteString(strconv.Itoa(size))
-		file.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		err = os.Rename(writePath, filePath)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-	if s.opt.ModQueue != "" && modQueueSize != s.modQueueSize {
-		writeQueue(s.opt.ModQueue, modQueueSize)
-		s.modQueueSize = modQueueSize
-	}
-	if s.opt.AdminQueue != "" && adminQueueSize != s.adminQueueSize {
-		writeQueue(s.opt.AdminQueue, adminQueueSize)
-		s.adminQueueSize = adminQueueSize
-	}
+	s.buildQueue <- info
 }
 
 // rebuildAll rebuilds all board, overboard, news and custom pages.
@@ -2114,7 +2082,7 @@ func (s *Server) rebuildAll(db serverDB) {
 	}
 	s.writeSiteIndex(wg, delta)
 	s.writeStatistics(wg, delta)
-	s.writeStaffQueues(db)
+	s.writeStaffQueues(wg)
 	s.writeVisitorGuide(db)
 	wg.Wait()
 
@@ -2319,7 +2287,10 @@ func (s *Server) expireBanAppeals(db serverDB, manual bool, id ...int) {
 		}
 	}
 	if updateQueue {
-		s.writeStaffQueues(db)
+		db.SoftCommit()
+		wg := &sync.WaitGroup{}
+		s.writeStaffQueues(wg)
+		wg.Wait()
 	}
 }
 
@@ -2419,7 +2390,10 @@ func (s *Server) handleBanAppeal(db serverDB, data *templateData, b *Ban, w http
 	}
 	db.AddBanAppeal(a)
 
-	s.writeStaffQueues(db)
+	db.SoftCommit()
+	wg := &sync.WaitGroup{}
+	s.writeStaffQueues(wg)
+	wg.Wait()
 
 	data.Template = "imgboard_info"
 	data.Info = data.G("Appeal submitted.")

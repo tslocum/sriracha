@@ -105,7 +105,10 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 						s.log(db, data.Account, nil, fmt.Sprintf("Lifted >>/ban/%d", appeal.Ban.ID), liftMessage)
 					}
 
-					s.writeStaffQueues(db)
+					db.SoftCommit()
+					wg := &sync.WaitGroup{}
+					s.writeStaffQueues(wg)
+					wg.Wait()
 
 					data.Redirect(w, r, "/sriracha/")
 					return

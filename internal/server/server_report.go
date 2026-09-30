@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
@@ -56,7 +57,10 @@ func (s *Server) serveReport(db serverDB, w http.ResponseWriter, r *http.Request
 			IP:        ipHash,
 		}
 		db.AddReport(report)
-		s.writeStaffQueues(db)
+		db.SoftCommit()
+		wg := &sync.WaitGroup{}
+		s.writeStaffQueues(wg)
+		wg.Wait()
 	}
 
 	data.Template = "board_info"

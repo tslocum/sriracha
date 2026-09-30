@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"slices"
+	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -32,6 +33,7 @@ const (
 	buildPage
 	buildSiteIndex
 	buildStatistics
+	buildStaffQueues
 	queueBoardIndexes
 )
 
@@ -227,6 +229,49 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 	s.pageTimingLock.Lock()
 	s.pageTimings[traceLabel] = ms
 	s.pageTimingLock.Unlock()
+}
+
+func (s *Server) _buildStaffQueues(info *buildInfo) {
+	db := info.db
+
+	modQueueSize := len(db.PendingPosts()) + len(db.AllReports()) + len(db.PrunedThreads())
+	adminQueueSize := modQueueSize
+	if s.opt.Appeals {
+		appeals := len(db.PendingBanAppeals())
+		if s.config.Access["ban.appeal"] == "mod" {
+			modQueueSize += appeals
+		}
+		adminQueueSize += appeals
+	}
+
+	writeQueue := func(name string, size int) {
+		writePath := filepath.Join(s.config.Root, name+"_.html")
+		filePath := filepath.Join(s.config.Root, name+".html")
+
+		file, err := os.OpenFile(writePath, NewFileFlags, NewFilePermission)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		_, err = file.WriteString(strconv.Itoa(size))
+		file.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = os.Rename(writePath, filePath)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	if s.opt.ModQueue != "" && modQueueSize != s.modQueueSize {
+		writeQueue(s.opt.ModQueue, modQueueSize)
+		s.modQueueSize = modQueueSize
+	}
+	if s.opt.AdminQueue != "" && adminQueueSize != s.adminQueueSize {
+		writeQueue(s.opt.AdminQueue, adminQueueSize)
+		s.adminQueueSize = adminQueueSize
+	}
 }
 
 func (s *Server) _queueBoardIndexes(info *buildInfo) {
@@ -783,6 +828,8 @@ func (s *Server) _build(reload chan struct{}) {
 			s._buildSiteIndex(info)
 		case buildStatistics:
 			s._buildStatistics(info)
+		case buildStaffQueues:
+			s._buildStaffQueues(info)
 		case queueBoardIndexes:
 			s._queueBoardIndexes(info)
 		}

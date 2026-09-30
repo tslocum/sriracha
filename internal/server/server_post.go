@@ -1331,7 +1331,10 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		data.Template = "board_info"
 		data.Info = Get(b, data.Account, "Your post will be shown once it has been approved.")
 		data.execute(w)
-		s.writeStaffQueues(db)
+		db.SoftCommit()
+		wg := &sync.WaitGroup{}
+		s.writeStaffQueues(wg)
+		wg.Wait()
 		go s.refreshDiskSpace()
 		return
 	} else if addReport {
@@ -1342,7 +1345,10 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 			IP:        s.hashIP(r),
 		}
 		db.AddReport(report)
-		s.writeStaffQueues(db)
+		db.SoftCommit()
+		wg := &sync.WaitGroup{}
+		s.writeStaffQueues(wg)
+		wg.Wait()
 	}
 
 	if post.Parent == 0 {
