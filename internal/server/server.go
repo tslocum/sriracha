@@ -2402,6 +2402,7 @@ func (s *Server) handleBanAppeal(db serverDB, data *templateData, b *Ban, w http
 
 	data.Template = "imgboard_info"
 	data.Info = data.G("Appeal submitted.")
+	data.execute(w)
 	return true
 }
 
@@ -2691,9 +2692,11 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		if pattern.MatchString(ip) {
 			data := s.buildData(db, w, r)
 			data.ManageError(data.G("You are banned.") + " " + ban.Info() + fmt.Sprintf(" (%s: %s_%d)", Get(nil, data.Account, "Ban ID"), ban.AppealID(), ban.ID))
-			if !s.handleBanAppeal(db, data, ban, w, r) {
-				s.addBanAppealForm(db, data, ban)
+			if s.handleBanAppeal(db, data, ban, w, r) {
+				s.lock.Unlock()
+				return
 			}
+			s.addBanAppealForm(db, data, ban)
 			data.execute(w)
 			s.lock.Unlock()
 			return
@@ -2705,9 +2708,11 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	if ban != nil {
 		data := s.buildData(db, w, r)
 		data.ManageError(data.G("You are banned.") + " " + ban.Info() + fmt.Sprintf(" (%s: %s_%d)", data.G("Ban ID"), ban.AppealID(), ban.ID))
-		if !s.handleBanAppeal(db, data, ban, w, r) {
-			s.addBanAppealForm(db, data, ban)
+		if s.handleBanAppeal(db, data, ban, w, r) {
+			s.lock.Unlock()
+			return
 		}
+		s.addBanAppealForm(db, data, ban)
 		data.execute(w)
 		s.lock.Unlock()
 		return

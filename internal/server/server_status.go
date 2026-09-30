@@ -95,6 +95,16 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 					}
 					s.log(db, data.Account, nil, logMessage, changes)
 
+					if appeal.Outcome == AppealApproved {
+						liftMessage := data.G("Appeal approved.")
+						if appeal.OutcomeReason != "" {
+							liftMessage += " Reason: " + appeal.OutcomeReason
+						}
+						db.LiftBan(appeal.Ban.ID, liftMessage)
+
+						s.log(db, data.Account, nil, fmt.Sprintf("Lifted >>/ban/%d", appeal.Ban.ID), liftMessage)
+					}
+
 					data.Redirect(w, r, "/sriracha/")
 					return
 				}

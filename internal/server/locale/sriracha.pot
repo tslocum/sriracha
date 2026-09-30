@@ -203,6 +203,9 @@ msgstr ""
 msgid "Appeal"
 msgstr ""
 
+msgid "Appeal approved."
+msgstr ""
+
 msgid "Appeal denied."
 msgstr ""
 
