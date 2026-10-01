@@ -27,6 +27,10 @@ msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] "%d postingan diabaikan. Klik Balas untuk melihat."
 
+msgid "%d previous appeal"
+msgid_plural "%d previous appeals"
+msgstr[0] ""
+
 msgid "%d previous ban"
 msgid_plural "%d previous bans"
 msgstr[0] ""
@@ -38,11 +42,17 @@ msgstr[0] "%d laporan"
 msgid "%s Devices"
 msgstr ""
 
+msgid "%s already exists."
+msgstr ""
+
 msgid "%s connections."
 msgstr ""
 
 msgid "%s imageboard and forum server"
 msgstr "%s Server forum dan imageboard"
+
+msgid "%s is required."
+msgstr ""
 
 msgid "%s memory usage."
 msgstr ""
@@ -84,6 +94,9 @@ msgid "A file is required."
 msgstr ""
 
 msgid "Access Key"
+msgstr ""
+
+msgid "Access denied."
 msgstr ""
 
 msgid "Accounts"
@@ -149,6 +162,9 @@ msgstr ""
 msgid "Admin"
 msgstr ""
 
+msgid "Admin Queue"
+msgstr ""
+
 msgid "Administrator"
 msgstr ""
 
@@ -164,6 +180,9 @@ msgstr ""
 msgid ""
 "All boards are locked because Sriracha is running in import mode. Please try "
 "again later."
+msgstr ""
+
+msgid "All fields are required."
 msgstr ""
 
 msgid "All new posts"
@@ -192,6 +211,21 @@ msgstr ""
 msgid "Anywhere"
 msgstr ""
 
+msgid "Appeal"
+msgstr ""
+
+msgid "Appeal approved."
+msgstr ""
+
+msgid "Appeal denied."
+msgstr ""
+
+msgid "Appeal rejected."
+msgstr ""
+
+msgid "Appeal submitted."
+msgstr ""
+
 msgid "Appearance"
 msgstr ""
 
@@ -205,6 +239,9 @@ msgid "Approve"
 msgstr ""
 
 msgid "Approve all"
+msgstr ""
+
+msgid "Approved"
 msgstr ""
 
 msgid "Archive"
@@ -235,10 +272,16 @@ msgstr ""
 msgid "Author"
 msgstr ""
 
+msgid "Auto Export"
+msgstr ""
+
 msgid "Auto Refresh"
 msgstr ""
 
 msgid "Automatic"
+msgstr ""
+
+msgid "Automatic export directory. Leave blank to disable."
 msgstr ""
 
 msgid "Available embed services. Visit board settings to enable usage."
@@ -256,6 +299,9 @@ msgstr ""
 msgid "Ban %d post"
 msgid_plural "Ban %d posts"
 msgstr[0] ""
+
+msgid "Ban Appeals"
+msgstr ""
 
 msgid "Ban ID"
 msgstr ""
@@ -464,6 +510,9 @@ msgstr ""
 msgid "Deleted by moderator"
 msgstr ""
 
+msgid "Denied"
+msgstr ""
+
 msgid "Description"
 msgstr ""
 
@@ -615,6 +664,9 @@ msgstr ""
 msgid "Failed to embed media."
 msgstr ""
 
+msgid "Failed to parse date and time. Format: %s"
+msgstr ""
+
 msgid "Failed to refresh page. Retrying..."
 msgstr ""
 
@@ -631,8 +683,13 @@ msgid "File name."
 msgstr ""
 
 msgid ""
-"File path (excluding .html suffix) of the moderator queue status page. "
+"File path (excluding .html suffix) of the administrator queue status page. "
 "Leave blank to disable."
+msgstr ""
+
+msgid ""
+"File path (excluding .html suffix) of the moderator queue status page. Leave "
+"blank to disable."
 msgstr ""
 
 msgid "File uploads are not allowed."
@@ -753,6 +810,9 @@ msgstr ""
 msgid "Incorrect CAPTCHA text. Please try again."
 msgstr ""
 
+msgid "Incorrect passcode."
+msgstr ""
+
 msgid "Incorrect password."
 msgstr ""
 
@@ -766,6 +826,12 @@ msgid "Info"
 msgstr ""
 
 msgid "Instance Limit"
+msgstr ""
+
+msgid "Interval"
+msgstr ""
+
+msgid "Invalid %s."
 msgstr ""
 
 msgid "Invalid access key."
@@ -813,6 +879,9 @@ msgid "Lift File Ban"
 msgstr ""
 
 msgid "Lifted"
+msgstr ""
+
+msgid "Limit"
 msgstr ""
 
 msgid "Link"
@@ -1124,6 +1193,14 @@ msgstr ""
 msgid "Notify"
 msgstr ""
 
+msgid "Number of days between each export."
+msgstr ""
+
+msgid ""
+"Number of exports to keep. When this limit is reached, the oldest export is "
+"deleted."
+msgstr ""
+
 msgid ""
 "Number of files visitors may upload at once. A new post is created for each "
 "uploaded file."
@@ -1171,6 +1248,9 @@ msgstr ""
 msgid "Optional."
 msgstr ""
 
+msgid "Outcome"
+msgstr ""
+
 msgid "Overboard"
 msgstr ""
 
@@ -1193,10 +1273,16 @@ msgid ""
 "Password protection enabled. You must enter an allowed password to post."
 msgstr ""
 
+msgid "Passwords do not match."
+msgstr ""
+
 msgid "Paste a YouTube URL."
 msgstr ""
 
 msgid "Path"
+msgstr ""
+
+msgid "Pending"
 msgstr ""
 
 msgid "Performance"
@@ -1361,6 +1447,9 @@ msgstr ""
 msgid "Regular expression to search for when a new post is created."
 msgstr ""
 
+msgid "Rejected"
+msgstr ""
+
 msgid ""
 "Relative file path where the page is located, excluding the .html suffix."
 msgstr ""
@@ -1375,6 +1464,9 @@ msgid "Rename"
 msgstr ""
 
 msgid "Rename Device"
+msgstr ""
+
+msgid "Renamed device."
 msgstr ""
 
 msgid "Render format of timestamps. Include %s tags where applicable."
@@ -1494,6 +1586,10 @@ msgstr ""
 msgid "Site News"
 msgstr ""
 
+msgid ""
+"Sorry, only %d devices may be added. Remove a device before adding another."
+msgstr ""
+
 msgid "Sorry, only the following email address domains are allowed: %s"
 msgstr ""
 
@@ -1545,6 +1641,9 @@ msgid "Submit"
 msgstr ""
 
 msgid "Submit post."
+msgstr ""
+
+msgid "Submitted"
 msgstr ""
 
 msgid "Subscribe"
@@ -1768,6 +1867,9 @@ msgstr ""
 msgid "When this amount is exceeded the selected action is taken."
 msgstr ""
 
+msgid "Whether banned visitors may submit appeals."
+msgstr ""
+
 msgid ""
 "Whether identifiers are displayed for each post. Identifiers are generated "
 "based on IP address hashes."
@@ -1841,6 +1943,12 @@ msgid ""
 msgstr ""
 
 msgid "You are banned."
+msgstr ""
+
+msgid "You may not change your own role."
+msgstr ""
+
+msgid "You may submit another appeal."
 msgstr ""
 
 msgid "Your email address is unconfirmed."

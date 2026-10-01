@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-09-25 00:56+0000\n"
+"PO-Revision-Date: 2026-09-30 20:20+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -31,6 +31,11 @@ msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] "%d bericht overgeslagen. Klik op beantwoorden om te bekijken."
 msgstr[1] "%d berichten overgeslagen. Klik op beantwoorden om te bekijken."
 
+msgid "%d previous appeal"
+msgid_plural "%d previous appeals"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d previous ban"
 msgid_plural "%d previous bans"
 msgstr[0] "%d eerdere verbanning"
@@ -44,11 +49,17 @@ msgstr[1] "%d meldingen"
 msgid "%s Devices"
 msgstr "%s apparaten"
 
+msgid "%s already exists."
+msgstr "%s bestaat al."
+
 msgid "%s connections."
 msgstr "%s verbindingen."
 
 msgid "%s imageboard and forum server"
 msgstr "%s: afbeeldingsforum en forumserver"
+
+msgid "%s is required."
+msgstr "%s is vereist."
 
 msgid "%s memory usage."
 msgstr "%s geheugengebruik."
@@ -91,6 +102,9 @@ msgstr "Er is een bestand vereist."
 
 msgid "Access Key"
 msgstr "Toegangssleutel"
+
+msgid "Access denied."
+msgstr "Toegang geweigerd."
 
 msgid "Accounts"
 msgstr "Accounts"
@@ -156,6 +170,9 @@ msgstr "‘%s’ is toegevoegd."
 msgid "Admin"
 msgstr "Beheerder"
 
+msgid "Admin Queue"
+msgstr ""
+
 msgid "Administrator"
 msgstr "Beheerder"
 
@@ -175,6 +192,9 @@ msgid ""
 msgstr ""
 "Alle fora zijn vergrendeld, omdat de importmodus actief is. Probeer het "
 "later opnieuw."
+
+msgid "All fields are required."
+msgstr "Alle velden zijn vereist."
 
 msgid "All new posts"
 msgstr "Alle nieuwe berichten"
@@ -204,6 +224,21 @@ msgstr "Er is een bijlage vereist."
 msgid "Anywhere"
 msgstr "Overal"
 
+msgid "Appeal"
+msgstr "Bezwaar maken"
+
+msgid "Appeal approved."
+msgstr ""
+
+msgid "Appeal denied."
+msgstr "Bezwaar geweigerd."
+
+msgid "Appeal rejected."
+msgstr "Bezwaar afgewezen."
+
+msgid "Appeal submitted."
+msgstr "Bezwaar ingediend."
+
 msgid "Appearance"
 msgstr "Vormgeving"
 
@@ -218,6 +253,9 @@ msgstr "Goedkeuren"
 
 msgid "Approve all"
 msgstr "Alles goedkeuren"
+
+msgid "Approved"
+msgstr ""
 
 msgid "Archive"
 msgstr "Archiveren"
@@ -249,11 +287,17 @@ msgstr "Bijlagen"
 msgid "Author"
 msgstr "Auteur"
 
+msgid "Auto Export"
+msgstr "Automatisch exporteren"
+
 msgid "Auto Refresh"
 msgstr "Automatisch herladen"
 
 msgid "Automatic"
 msgstr "Automatisch"
+
+msgid "Automatic export directory. Leave blank to disable."
+msgstr "De automatische exportmap. Laat leeg om uit te schakelen."
 
 msgid "Available embed services. Visit board settings to enable usage."
 msgstr ""
@@ -273,6 +317,9 @@ msgid "Ban %d post"
 msgid_plural "Ban %d posts"
 msgstr[0] "%d bericht verbannen"
 msgstr[1] "%d berichten verbannen"
+
+msgid "Ban Appeals"
+msgstr "Bezwaren op verbanningen"
 
 msgid "Ban ID"
 msgstr "ID verbannen"
@@ -496,6 +543,9 @@ msgstr "Verwijderd door auteur"
 msgid "Deleted by moderator"
 msgstr "Verwijderd door moderator"
 
+msgid "Denied"
+msgstr ""
+
 msgid "Description"
 msgstr "Beschrijving"
 
@@ -651,6 +701,9 @@ msgstr "De miniatuur kan niet worden samengesteld: %s"
 msgid "Failed to embed media."
 msgstr "De media kan niet worden ingevoegd."
 
+msgid "Failed to parse date and time. Format: %s"
+msgstr "De datum en tijd kunnen niet worden verwerkt. Opmaak: %s"
+
 msgid "Failed to refresh page. Retrying..."
 msgstr "Het herladen is mislukt — bezig met opnieuw proberen…"
 
@@ -668,8 +721,13 @@ msgid "File name."
 msgstr "Bestandsnaam."
 
 msgid ""
-"File path (excluding .html suffix) of the moderator queue status page. "
+"File path (excluding .html suffix) of the administrator queue status page. "
 "Leave blank to disable."
+msgstr ""
+
+msgid ""
+"File path (excluding .html suffix) of the moderator queue status page. Leave "
+"blank to disable."
 msgstr ""
 "De bestandslocatie, zonder .html op het einde, van de "
 "moderatiewachtrijpagina. Laat leeg om uit te schakelen."
@@ -802,6 +860,9 @@ msgstr "Onderwerpoverzicht"
 msgid "Incorrect CAPTCHA text. Please try again."
 msgstr "Ongeldige CAPTCHA-tekst - probeer het opnieuw."
 
+msgid "Incorrect passcode."
+msgstr "Onjuiste toegangscode."
+
 msgid "Incorrect password."
 msgstr "Het wachtwoord is onjuist."
 
@@ -816,6 +877,12 @@ msgstr "Informatie"
 
 msgid "Instance Limit"
 msgstr "Instantielimiet"
+
+msgid "Interval"
+msgstr "Tussenpoos"
+
+msgid "Invalid %s."
+msgstr "Ongeldige ‘%s’."
 
 msgid "Invalid access key."
 msgstr "Ongeldige toegangssleutel."
@@ -866,6 +933,9 @@ msgstr "Bestandsverbanning opheffen"
 
 msgid "Lifted"
 msgstr "Opgeheven"
+
+msgid "Limit"
+msgstr "Limiet"
 
 msgid "Link"
 msgstr "Link"
@@ -1196,6 +1266,16 @@ msgstr "Meldingen zijn ingeschakeld — klik om uit te schakelen."
 msgid "Notify"
 msgstr "Melden"
 
+msgid "Number of days between each export."
+msgstr "Het aantal dagen tussen iedere export."
+
+msgid ""
+"Number of exports to keep. When this limit is reached, the oldest export is "
+"deleted."
+msgstr ""
+"Het aantal te bewaren exports. Als het limiet is bereikt, wordt de oudste "
+"export verwijderd."
+
 msgid ""
 "Number of files visitors may upload at once. A new post is created for each "
 "uploaded file."
@@ -1257,6 +1337,9 @@ msgstr "Er worden alleen miniaturen getoond."
 msgid "Optional."
 msgstr "Optioneel."
 
+msgid "Outcome"
+msgstr ""
+
 msgid "Overboard"
 msgstr "Overboard"
 
@@ -1281,11 +1364,17 @@ msgstr ""
 "Wachtwoordbeveiliging is ingeschakeld. Voer het juiste wachtwoord in om iets "
 "te plaatsen."
 
+msgid "Passwords do not match."
+msgstr "De wachtwoorden komen niet overeen."
+
 msgid "Paste a YouTube URL."
 msgstr "Plak een YouTube-url."
 
 msgid "Path"
 msgstr "Locatie"
+
+msgid "Pending"
+msgstr ""
 
 msgid "Performance"
 msgstr "Prestaties"
@@ -1458,6 +1547,9 @@ msgid "Regular expression to search for when a new post is created."
 msgstr ""
 "De te zoeken reguliere uitdrukking na het opstellen van een nieuw bericht."
 
+msgid "Rejected"
+msgstr ""
+
 msgid ""
 "Relative file path where the page is located, excluding the .html suffix."
 msgstr ""
@@ -1474,6 +1566,9 @@ msgstr "Naam wĳzigen"
 
 msgid "Rename Device"
 msgstr "Apparaatnaam wĳzigen"
+
+msgid "Renamed device."
+msgstr "De apparaatnaam is gewijzigd."
 
 msgid "Render format of timestamps. Include %s tags where applicable."
 msgstr "De weergave van tijdstempels. Voeg %s-tags toe waar nodig."
@@ -1596,6 +1691,11 @@ msgstr "Sitenaam"
 msgid "Site News"
 msgstr "Sitenieuws"
 
+msgid ""
+"Sorry, only %d devices may be added. Remove a device before adding another."
+msgstr ""
+"Het maximumaantal toe te voegen apparaten is %d. Verwijder een apparaat."
+
 msgid "Sorry, only the following email address domains are allowed: %s"
 msgstr "Alleen de volgende e-mailadresdomeinnamen zijn toegestaan: %s"
 
@@ -1650,6 +1750,9 @@ msgstr "Versturen"
 
 msgid "Submit post."
 msgstr "Plaats het bericht."
+
+msgid "Submitted"
+msgstr ""
 
 msgid "Subscribe"
 msgstr "Abonneren"
@@ -1887,6 +1990,9 @@ msgstr "Als %s nieuwe antwoorden ontvangt."
 msgid "When this amount is exceeded the selected action is taken."
 msgstr "Er wordt actie ondernomen zodra deze drempelwaarde is overschreden."
 
+msgid "Whether banned visitors may submit appeals."
+msgstr "Of verbannen bezoekers bezwaren in mogen dienen."
+
 msgid ""
 "Whether identifiers are displayed for each post. Identifiers are generated "
 "based on IP address hashes."
@@ -1979,6 +2085,12 @@ msgstr ""
 
 msgid "You are banned."
 msgstr "Je bent verbannen."
+
+msgid "You may not change your own role."
+msgstr "Je kunt je eigen rol niet aanpassen."
+
+msgid "You may submit another appeal."
+msgstr "Je mag nog een bezwaar indienen."
 
 msgid "Your email address is unconfirmed."
 msgstr "Je e-mailadres is niet bevestigd."

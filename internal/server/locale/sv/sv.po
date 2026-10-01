@@ -31,6 +31,11 @@ msgid_plural "%d posts omitted. Click Reply to view."
 msgstr[0] "%d inlägg har utelämnats. Klicka på Svara för att visa det."
 msgstr[1] "%d inlägg har utelämnats. Klicka på Svara för att visa dem."
 
+msgid "%d previous appeal"
+msgid_plural "%d previous appeals"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d previous ban"
 msgid_plural "%d previous bans"
 msgstr[0] "%d tidigare avstängning"
@@ -44,11 +49,17 @@ msgstr[1] "%d rapporter"
 msgid "%s Devices"
 msgstr "%s-enheter"
 
+msgid "%s already exists."
+msgstr ""
+
 msgid "%s connections."
 msgstr "%s anslutningar."
 
 msgid "%s imageboard and forum server"
 msgstr "Bildforums- och forumservern %s"
+
+msgid "%s is required."
+msgstr ""
 
 msgid "%s memory usage."
 msgstr "%s minnesanvändning."
@@ -91,6 +102,9 @@ msgstr "En fil krävs."
 
 msgid "Access Key"
 msgstr "Åtkomstnyckel"
+
+msgid "Access denied."
+msgstr ""
 
 msgid "Accounts"
 msgstr "Konton"
@@ -155,6 +169,9 @@ msgstr "Lade till %s-enhet."
 msgid "Admin"
 msgstr "Administratör"
 
+msgid "Admin Queue"
+msgstr ""
+
 msgid "Administrator"
 msgstr "Administratör"
 
@@ -172,6 +189,9 @@ msgid ""
 "again later."
 msgstr ""
 "Alla tavlor är låsta eftersom Sriracha körs i importläge. Försök igen senare."
+
+msgid "All fields are required."
+msgstr ""
 
 msgid "All new posts"
 msgstr "Alla nya inlägg"
@@ -201,6 +221,21 @@ msgstr "En bilaga krävs."
 msgid "Anywhere"
 msgstr "Överallt"
 
+msgid "Appeal"
+msgstr ""
+
+msgid "Appeal approved."
+msgstr ""
+
+msgid "Appeal denied."
+msgstr ""
+
+msgid "Appeal rejected."
+msgstr ""
+
+msgid "Appeal submitted."
+msgstr ""
+
 msgid "Appearance"
 msgstr "Utseende"
 
@@ -215,6 +250,9 @@ msgstr "Godkänn"
 
 msgid "Approve all"
 msgstr "Godkänn alla"
+
+msgid "Approved"
+msgstr ""
 
 msgid "Archive"
 msgstr "Arkivera"
@@ -245,11 +283,17 @@ msgstr "Bilagor"
 msgid "Author"
 msgstr "Upphovsperson"
 
+msgid "Auto Export"
+msgstr ""
+
 msgid "Auto Refresh"
 msgstr "Uppdatera automatiskt"
 
 msgid "Automatic"
 msgstr "Automatisk"
+
+msgid "Automatic export directory. Leave blank to disable."
+msgstr ""
 
 msgid "Available embed services. Visit board settings to enable usage."
 msgstr ""
@@ -269,6 +313,9 @@ msgid "Ban %d post"
 msgid_plural "Ban %d posts"
 msgstr[0] "Stäng av %d inlägg"
 msgstr[1] "Stäng av %d inlägg"
+
+msgid "Ban Appeals"
+msgstr ""
 
 msgid "Ban ID"
 msgstr "Avstängnings-ID"
@@ -489,6 +536,9 @@ msgstr "Borttagen av skribenten"
 msgid "Deleted by moderator"
 msgstr "Borttagen av moderator"
 
+msgid "Denied"
+msgstr ""
+
 msgid "Description"
 msgstr "Beskrivning"
 
@@ -644,6 +694,9 @@ msgstr "Kunde inte skapa miniatyrbild: %s"
 msgid "Failed to embed media."
 msgstr "Kunde inte bädda in media."
 
+msgid "Failed to parse date and time. Format: %s"
+msgstr ""
+
 msgid "Failed to refresh page. Retrying..."
 msgstr "Kunde inte uppdatera sidan. Försöker igen …"
 
@@ -660,8 +713,13 @@ msgid "File name."
 msgstr "Filnamn."
 
 msgid ""
-"File path (excluding .html suffix) of the moderator queue status page. "
+"File path (excluding .html suffix) of the administrator queue status page. "
 "Leave blank to disable."
+msgstr ""
+
+msgid ""
+"File path (excluding .html suffix) of the moderator queue status page. Leave "
+"blank to disable."
 msgstr ""
 "Filsökväg utan filändelsen .html för statusidan till modereringskön. Lämna "
 "tomt för att inaktivera."
@@ -791,6 +849,9 @@ msgstr "Visa trådar på indexsidan"
 msgid "Incorrect CAPTCHA text. Please try again."
 msgstr "Fel CAPTCHA-text. Försök igen."
 
+msgid "Incorrect passcode."
+msgstr ""
+
 msgid "Incorrect password."
 msgstr "Fel lösenord."
 
@@ -805,6 +866,12 @@ msgstr "Information"
 
 msgid "Instance Limit"
 msgstr "Instansgräns"
+
+msgid "Interval"
+msgstr ""
+
+msgid "Invalid %s."
+msgstr ""
 
 msgid "Invalid access key."
 msgstr "Ogiltig åtkomstnyckel."
@@ -856,6 +923,9 @@ msgstr "Häv filavstängning"
 
 msgid "Lifted"
 msgstr "Hävd"
+
+msgid "Limit"
+msgstr ""
 
 msgid "Link"
 msgstr "Länk"
@@ -1182,6 +1252,14 @@ msgstr "Aviseringar är aktiverade. Klicka för att inaktivera."
 msgid "Notify"
 msgstr "Avisera"
 
+msgid "Number of days between each export."
+msgstr ""
+
+msgid ""
+"Number of exports to keep. When this limit is reached, the oldest export is "
+"deleted."
+msgstr ""
+
 msgid ""
 "Number of files visitors may upload at once. A new post is created for each "
 "uploaded file."
@@ -1242,6 +1320,9 @@ msgstr "Endast miniatyrbilder visas."
 msgid "Optional."
 msgstr "Valfritt."
 
+msgid "Outcome"
+msgstr ""
+
 msgid "Overboard"
 msgstr "Övertavla"
 
@@ -1266,11 +1347,17 @@ msgstr ""
 "Lösenordsskydd är aktiverat. Du måste ange ett tillåtet lösenord för att "
 "publicera."
 
+msgid "Passwords do not match."
+msgstr ""
+
 msgid "Paste a YouTube URL."
 msgstr "Klistra in en YouTube-webbadress."
 
 msgid "Path"
 msgstr "Sökväg"
+
+msgid "Pending"
+msgstr ""
 
 msgid "Performance"
 msgstr "Prestanda"
@@ -1446,6 +1533,9 @@ msgstr "Uppdaterar sidan var %d:e sekund. Klicka för att pausa."
 msgid "Regular expression to search for when a new post is created."
 msgstr "Reguljärt uttryck att söka efter när ett nytt inlägg skapas."
 
+msgid "Rejected"
+msgstr ""
+
 msgid ""
 "Relative file path where the page is located, excluding the .html suffix."
 msgstr "Relativ filsökväg där sidan finns, utan filändelsen .html."
@@ -1461,6 +1551,9 @@ msgstr "Byt namn"
 
 msgid "Rename Device"
 msgstr "Byt namn på enhet"
+
+msgid "Renamed device."
+msgstr ""
 
 msgid "Render format of timestamps. Include %s tags where applicable."
 msgstr ""
@@ -1521,7 +1614,8 @@ msgid "Rules"
 msgstr "Regler"
 
 msgid "Running in safe mode because a custom template failed validation: %s"
-msgstr "Kör i säkert läge eftersom en anpassad mall misslyckade validering:: %s"
+msgstr ""
+"Kör i säkert läge eftersom en anpassad mall misslyckade validering:: %s"
 
 msgid "Scale"
 msgstr "Skala"
@@ -1582,6 +1676,10 @@ msgstr "Webbplatsnamn"
 msgid "Site News"
 msgstr "Webbplatsnyheter"
 
+msgid ""
+"Sorry, only %d devices may be added. Remove a device before adding another."
+msgstr ""
+
 msgid "Sorry, only the following email address domains are allowed: %s"
 msgstr "Tyvärr är endast följande e-postdomäner tillåtna: %s"
 
@@ -1636,6 +1734,9 @@ msgstr "Skicka"
 
 msgid "Submit post."
 msgstr "Skicka inlägg."
+
+msgid "Submitted"
+msgstr ""
 
 msgid "Subscribe"
 msgstr "Prenumerera"
@@ -1872,6 +1973,9 @@ msgstr "När %s får nya svar."
 msgid "When this amount is exceeded the selected action is taken."
 msgstr "När detta antal överskrids vidtas den valda åtgärden."
 
+msgid "Whether banned visitors may submit appeals."
+msgstr ""
+
 msgid ""
 "Whether identifiers are displayed for each post. Identifiers are generated "
 "based on IP address hashes."
@@ -1957,6 +2061,12 @@ msgstr ""
 
 msgid "You are banned."
 msgstr "Du är avstängd."
+
+msgid "You may not change your own role."
+msgstr ""
+
+msgid "You may submit another appeal."
+msgstr ""
 
 msgid "Your email address is unconfirmed."
 msgstr "Din e-postadress är inte bekräftad."
