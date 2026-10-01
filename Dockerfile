@@ -4,9 +4,6 @@ FROM alpine:3.24.2 AS build
 # Install build dependencies.
 RUN apk add --no-cache tzdata go
 
-# Support specifying Sriracha version.
-ARG version
-
 # Fetch dependencies.
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=bind,source=go.mod,target=go.mod \
@@ -15,6 +12,9 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 
 # Copy sriracha source.
 COPY . /usr/src/sriracha
+
+# Support specifying Sriracha version.
+ARG version
 
 # Build sriracha and custom plugins.
 RUN --mount=type=cache,target=/go/pkg/mod \
