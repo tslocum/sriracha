@@ -569,6 +569,8 @@ func (s *Server) parseConfig(configFile string) error {
 		return fmt.Errorf("saltpass (lowercase!) must be set in %s to the two-way secure data hashing salt (a long string of random data which, once set, never changes)", configFile)
 	case config.SaltTrip == "":
 		return fmt.Errorf("salttrip (lowercase!) must be set in %s to the secure tripcode generation salt (a long string of random data which, once set, never changes)", configFile)
+	case config.Identifiers && config.SaltIdent == "":
+		return fmt.Errorf("saltident (lowercase!) must be set in %s to the identifier generation salt (a long string of random data which, once set, never changes)", configFile)
 	}
 
 	if config.DBURL == "" {
@@ -3615,9 +3617,6 @@ func (s *Server) Run() error {
 			extra = " and https://" + s.config.HTTPS
 		}
 		fmt.Printf("Serving http://%s%s\n", s.config.HTTP, extra)
-	}
-	if s.config.Identifiers && s.config.SaltIdent == "" {
-		fmt.Println("Warning: Configuring an identifier generation salt will be required starting with Sriracha v2.2.0! Set saltident to a long string of random data which, once set, never changes.")
 	}
 	s.lock.Unlock()
 
