@@ -737,6 +737,10 @@ dbname: "sriracha"
 #mentions:      60   # Duration (in minutes) mention notifications are batched together.
 #notifications: 1440 # Duration (in minutes) all other notifications are batched together.
 
+# Do not allow the execution of any JavaScript. You should only enable this
+# option if you are running Sriracha somewhere other than the public Internet.
+#nojs: false
+
 # Do not record post author IP addresses. When this option is enabled, it is
 # not possible for staff members to ban visitors. You should only enable this
 # option if you are running Sriracha somewhere other than the public Internet.
@@ -891,6 +895,10 @@ zoopz.org, www.zoopz.org {
     path_regexp ^.*/(src|thumb)/.*$
   }
   header @staticFiles Cache-Control "public, max-age=1209600, immutable"
+
+  # Disallow the execution of JavaScript. You should only uncomment the
+  # following line if you have enabled the 'nojs' configuration option.
+  #header Content-Security-Policy "script-src 'none'; object-src 'none';"
 
   # Forward /sriracha requests to Sriracha.
   reverse_proxy /sriracha* h2c://localhost:8080

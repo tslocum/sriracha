@@ -63,6 +63,8 @@ type Config struct {
 	SessionLimit int   // Account login session limit.
 	SessionTime  int64 // Account login session expiration time, in seconds.
 
+	NoJS bool // Do not allow the execution of JavaScript.
+
 	NoIP bool // Do not record post author IP addresses.
 
 	Whitelists []string // IP whitelist file paths.

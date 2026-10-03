@@ -2816,6 +2816,23 @@ func (s *Server) listen(httpErrors chan error) {
 	mux.Handle("/static/", withCacheHeader(http.StripPrefix("/static/", http.FileServer(http.Dir("static")))))
 	mux.Handle("/", withCacheHeader(http.FileServer(http.Dir(s.config.Root))))
 
+	var withCSPHeader func(fs http.Handler) http.HandlerFunc
+	if s.config.NoJS {
+		withCSPHeader = func(fs http.Handler) http.HandlerFunc {
+			return func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Security-Policy", "script-src 'none'; object-src 'none';")
+				fs.ServeHTTP(w, r)
+			}
+		}
+
+	} else {
+		withCSPHeader = func(fs http.Handler) http.HandlerFunc {
+			return func(w http.ResponseWriter, r *http.Request) {
+				fs.ServeHTTP(w, r)
+			}
+		}
+	}
+
 	if s.config.HTTPS != "" {
 		cert, err := tls.LoadX509KeyPair(s.config.HTTPSCert, s.config.HTTPSKey)
 		if err != nil {
@@ -2838,7 +2855,7 @@ func (s *Server) listen(httpErrors chan error) {
 
 		s.httpsServer = &http.Server{
 			Addr:              s.config.HTTPS,
-			Handler:           mux,
+			Handler:           withCSPHeader(mux),
 			TLSConfig:         tlsConfig,
 			ReadHeaderTimeout: 1 * time.Minute,
 			IdleTimeout:       1 * time.Minute,
@@ -2861,7 +2878,7 @@ func (s *Server) listen(httpErrors chan error) {
 
 	s.httpServer = &http.Server{
 		Addr:              s.config.HTTP,
-		Handler:           mux,
+		Handler:           withCSPHeader(mux),
 		ReadHeaderTimeout: 1 * time.Minute,
 		IdleTimeout:       1 * time.Minute,
 		Protocols:         p,

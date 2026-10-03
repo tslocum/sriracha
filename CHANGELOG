@@ -1,3 +1,6 @@
+2.2.0:
+- Support disallowing the execution of JavaScript
+
 2.1.9:
 - Support ban appeals
 - Add administrator queue option
