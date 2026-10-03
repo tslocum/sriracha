@@ -13,7 +13,7 @@ require (
 	github.com/alecthomas/chroma/v2 v2.27.0
 	github.com/alexedwards/argon2id v1.0.0
 	github.com/aquilax/tripcode v1.0.1
-	github.com/dlclark/regexp2/v2 v2.8.0
+	github.com/dlclark/regexp2/v2 v2.8.2
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/gabriel-vasile/mimetype v1.4.15
 	github.com/go-sql-driver/mysql v1.10.1
