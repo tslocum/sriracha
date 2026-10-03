@@ -898,7 +898,7 @@ zoopz.org, www.zoopz.org {
 
   # Disallow the execution of JavaScript. You should only uncomment the
   # following line if you have enabled the 'nojs' configuration option.
-  #header Content-Security-Policy "script-src 'none'; object-src 'none';"
+  #header * Content-Security-Policy "script-src 'none'; object-src 'none';"
 
   # Forward /sriracha requests to Sriracha.
   reverse_proxy /sriracha* h2c://localhost:8080
@@ -907,6 +907,25 @@ zoopz.org, www.zoopz.org {
   root * /home/sriracha/public_html
   file_server
 }
+```
+
+### Alternative networks (Tor, Freenet, etc.)
+
+You should set the following options if you are running Sriracha somewhere
+other than the public Internet:
+
+- `nojs=true` Disallow the execution of JavaScript.
+- `noip=true` Do not record post author IP addresses.
+- `identifiers=false` Disable identifiers, which are generated based on author IP addresses.
+
+You should also run a [hardened](https://en.wikipedia.org/wiki/Hardening_(computing)) Sriracha executable.
+
+Official Sriracha executables for Linux/amd64 are hardened. This includes official Docker images.
+
+To build a hardened executable on other platforms, run the following command:
+
+```
+go build -buildmode=pie -ldflags="-s -w -extld=gcc -extldflags='-Wl,-z,relro,-z,now,-z,noexecstack'" ./cmd/sriracha/
 ```
 
 ## Plugins
