@@ -925,7 +925,7 @@ Official Sriracha executables for Linux/amd64 are hardened. This includes offici
 To build a hardened executable on other platforms, run the following command:
 
 ```
-go build -buildmode=pie -ldflags="-s -w -extld=gcc -extldflags='-Wl,-z,relro,-z,now,-z,noexecstack'" ./cmd/sriracha/
+go build -buildmode=pie -trimpath -ldflags="-s -w -extld=gcc -extldflags='-Wl,-z,relro,-z,now,-z,noexecstack'" ./cmd/sriracha/
 ```
 
 ## Plugins
