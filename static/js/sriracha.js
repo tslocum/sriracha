@@ -11,6 +11,7 @@ var viewThreadID = 0;
 var viewThreadModified = null;
 var newPostCount = 0;
 var newPostID = 0;
+var highestPostID = 0;
 var pendingPage = null;
 var postCache = {};
 
@@ -247,12 +248,14 @@ function fetchPosts(url, append) {
         var posts = doc.getElementsByClassName("post");
         var newPosts = [];
         for (const post of posts) {
-            if (post.id != "" && !document.getElementById(post.id)) {
-                if (verbose) {
-                    console.log('found new post', post);
-                }
-                newPosts.push(post);
+            var postID = +post.id; // Parse int.
+            if (postID == 0 || document.getElementById(post.id) || (viewThreadID == 0 && postID <= highestPostID)) {
+                continue;
             }
+            if (verbose) {
+                console.log('found new post', post);
+            }
+            newPosts.push(post);
         }
         if (viewThreadID == 0) {
             newPostCount = newPosts.length;
@@ -301,8 +304,17 @@ function fetchPosts(url, append) {
         }
         if (append && !haveFocus) {
             if (newPostID == 0) {
-                newPostID = newPosts[0].id;
-                if (enableNotifications && Notification.permission === "granted") {
+                if (viewThreadID == 0) {
+                    for (const post of newPosts) {
+                        var postID = +post.id; // Parse int.
+                        if (newPostID == 0 || postID < newPostID) {
+                            newPostID = postID;
+                        }
+                    }
+                } else {
+                    newPostID = +newPosts[0].id; // Parse int.
+                }
+                if (newPostID != 0 && enableNotifications && Notification.permission === "granted") {
                     if (currentNotification) {
                         currentNotification.close();
                     }
@@ -643,7 +655,7 @@ function setPostAttributes(element) {
         if (href) {
             m = href.match(/^.*\/([0-9]+)\.html#([0-9]+)$/i);
             if (m) {
-                postID = m[2];
+                postID = +m[2]; // Parse int.
                 if (m[1] == viewThreadID) {
                     el.setAttribute("href", "#" + postID);
                 }
@@ -651,12 +663,14 @@ function setPostAttributes(element) {
             if (postID == 0) {
                 m = href.match(/^\#([0-9]+)$/i);
                 if (m) {
-                    postID = m[1];
+                    postID = +m[1]; // Parse int.
                 }
             }
         }
         if (postID == 0) {
             return;
+        } else if (postID > highestPostID) {
+            highestPostID = postID;
         }
 
         if (el.innerHTML == 'No.') {

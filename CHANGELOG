@@ -1,3 +1,6 @@
+2.2.1:
+- Fix new post count when refreshing board index pages
+
 2.2.0:
 - Harden executable on Linux/amd64
 - Support disallowing the execution of JavaScript
