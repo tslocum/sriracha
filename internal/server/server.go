@@ -225,6 +225,7 @@ type ServerOptions struct {
 	FullDisks        [][]string
 	NearDisks        [][]string
 	FuncMaps         map[string]template.FuncMap
+	NoJS             bool
 	trace            bool
 	benchmark        bool
 	smokeTest        bool
@@ -3251,6 +3252,7 @@ func (s *Server) Run() error {
 	}
 	s.opt.benchmark = benchmark > 0
 	s.opt.smokeTest = smokeTest
+	s.opt.NoJS = s.config.NoJS
 
 	// Recover account.
 	if recoverAccount != "" {

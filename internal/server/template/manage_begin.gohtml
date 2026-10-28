@@ -15,7 +15,14 @@
 			<link rel="{{if ne (index $style 0) $defaultStyle}}alternate {{end}}stylesheet" type="text/css" href="/static/css/{{index $style 0}}.css" title="{{index $style 1}}"{{if eq (index $style 0) $defaultStyle}} id="mainStylesheet"{{end}}>
 		{{end}}
 		{{.FlexStyle}}
-		<script src="/static/js/manage.js"></script>
+		{{if not .Opt.NoJS}}
+			<script src="/static/js/manage.js"></script>
+		{{else}}
+			<meta http-equiv="Content-Security-Policy" content="script-src 'none'; object-src 'none';">
+			<script type="text/javascript">
+			alert('Warning: NoJS mode is enabled, which disallows the execution of JavaScript. However, JavaScript is still being executed. Your browser is disobeying the content security policy of this page and should not be trusted.');
+			</script>
+		{{end}}
 	</head>
     <body>
 		{{if ne .Account nil}}

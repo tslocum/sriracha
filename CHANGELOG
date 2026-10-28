@@ -1,6 +1,7 @@
 2.2.1:
 - Support auto-refreshing forum index pages
 - Fix new post count when refreshing board index pages
+- Display warning message when Content-Security-Policy is disobeyed
 
 2.2.0:
 - Harden executable on Linux/amd64
