@@ -23,10 +23,6 @@ builds:
       - riscv64
       - s390x
     ignore:
-      - goos: freebsd
-        goarch: 386
-      - goos: freebsd
-        goarch: arm
       - goos: openbsd
         goarch: 386
       - goos: openbsd
