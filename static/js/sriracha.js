@@ -21,7 +21,7 @@ var threadStatusPaused = 2;
 var threadStatusDeleted = 3;
 
 // verbose is a flag which enables verbose logging.
-const verbose = false;
+const verbose = true;
 
 const touchScreen = window.matchMedia("(pointer: coarse)").matches;
 
@@ -196,6 +196,27 @@ function toggleNotifications() {
     return false;
 }
 
+function showNotification(title) {
+    if (!enableNotifications || Notification.permission !== "granted") {
+        return;
+    }
+    if (currentNotification) {
+        currentNotification.close();
+    }
+    const options = {
+        body: window.location.pathname,
+        renotify: true,
+        requireInteraction: false,
+    };
+    currentNotification = new Notification(title, options);
+    if (!setUnloadHandler) {
+        window.addEventListener('unload', function(e) {
+            currentNotification.close();
+        });
+        setUnloadHandler = true;
+    }
+}
+
 function fetchPosts(url, append) {
     if (verbose) {
         console.log('fetching ' + url + '...');
@@ -204,14 +225,15 @@ function fetchPosts(url, append) {
     return fetch(url, {cache: 'no-cache'}).then(function(response) {
         if (response.status == 404) {
             deleted = true;
-            return;
+            return "";
         } else if (!response.ok) {
-            return;
+            return "";
         } else if (append && viewThreadModified && response.headers) {
             var lastModified = new Date(response.headers.get("Last-Modified"));
             if (lastModified.getTime() == viewThreadModified.getTime()) {
-                return;
+                return "";
             }
+            console.log(viewThreadModified, lastModified);
             viewThreadModified = lastModified;
         }
         return response.text();
@@ -227,10 +249,31 @@ function fetchPosts(url, append) {
 
         var container;
         var posts = [];
-        var forum = document.getElementsByClassName('forumpost').length > 0;
+        var forum = document.getElementsByClassName('forumpost').length > 0 || document.getElementsByClassName('forumindex').length > 0;
         if (forum) {
             if (verbose) {
                 console.log('detected forum board');
+            }
+            if (viewThreadID == 0) {
+                var doc = (new DOMParser).parseFromString(body, 'text/html');
+                var docIndex = doc.getElementById('forumindex');
+                var documentIndex = document.getElementById('forumindex');
+                if (docIndex && documentIndex && docIndex.innerHTML != documentIndex.innerHTML) {
+                    var title = "1 New Post"
+                    pendingPage = doc;
+                    var replacethreads = document.getElementById("replacethreads");
+                    if (replacethreads) {
+                        replacethreads.style.display = "inline-block";
+                        replacethreads.innerText = title;
+                    }
+                    newPostCount = 1;
+                    showNotification(title);
+                    if (!blinkTitle) {
+                        blinkTitle = true;
+                        updateTitle();
+                    }
+                    return;
+                }
             }
         }
         threadElements = document.getElementsByClassName('thread');
@@ -314,22 +357,8 @@ function fetchPosts(url, append) {
                 } else {
                     newPostID = +newPosts[0].id; // Parse int.
                 }
-                if (newPostID != 0 && enableNotifications && Notification.permission === "granted") {
-                    if (currentNotification) {
-                        currentNotification.close();
-                    }
-                    const options = {
-                        body: window.location.pathname,
-                        renotify: true,
-                        requireInteraction: false,
-                    };
-                    currentNotification = new Notification(title, options);
-                    if (!setUnloadHandler) {
-                        window.addEventListener('unload', function(e) {
-                            currentNotification.close();
-                        });
-                        setUnloadHandler = true;
-                    }
+                if (newPostID != 0) {
+                    showNotification(title);
                 }
             }
             newPostCount += newPosts.length;
@@ -1008,7 +1037,7 @@ function onDOMContentLoaded(e) {
     }
 
     // Display thread status icons.
-    if (typeof(autoRefreshDelay) !== 'undefined' && autoRefreshDelay > 0 && document.getElementsByClassName('thread').length > 0) {
+    if (typeof(autoRefreshDelay) !== 'undefined' && autoRefreshDelay > 0 && (document.getElementsByClassName('thread').length > 0 || document.getElementsByClassName('forumindex').length > 0)) {
         if ("Notification" in window) {
             var permission = Notification.permission;
             if (permission !== "denied") {

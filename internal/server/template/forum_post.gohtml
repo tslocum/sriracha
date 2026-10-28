@@ -1,4 +1,4 @@
-<table {{if eq .ReplyMode 0}} class="managetable forumindex"{{end}}>
+<table {{if eq .ReplyMode 0}}id="forumindex" class="managetable forumindex"{{end}}>
 	<tbody{{if ne .ReplyMode 0}} class="thread"{{end}}>
 		{{if eq .ReplyMode 0}}
 			{{range $i, $thread := .Threads}}

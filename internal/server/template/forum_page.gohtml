@@ -20,7 +20,12 @@
 				{{T "Go back, uncheck '%s' and resubmit to post." (T "Preview")}}
 			{{else if not .ArchiveMode}}
 				<details id="postdetails">
-					<summary>{{if eq .ReplyMode 0}}{{T "Post thread"}}{{else}}{{T "Post reply"}}{{end}}</summary>
+					<summary>
+						{{if eq .ReplyMode 0}}{{T "Post thread"}}{{else}}{{T "Post reply"}}{{end}}
+						{{if ne .Opt.Refresh 0}}
+							{{template "imgboard_page_status.gohtml" $}}
+						{{end}}
+					</summary>
 					<div>
 						{{template "imgboard_postarea.gohtml" .}}
 					</div>
