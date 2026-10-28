@@ -1,5 +1,5 @@
 # https://hub.docker.com/_/alpine/tags
-FROM alpine:3.24.2 AS build
+FROM alpine:3.24.3 AS build
 
 # Install build dependencies.
 RUN apk add --no-cache tzdata go
@@ -30,7 +30,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     cd /usr/src/sriracha && \
     find . -type f -name '*.go' -delete
 
-FROM alpine:3.24.2
+FROM alpine:3.24.3
 
 # Set working directory.
 WORKDIR /usr/share/sriracha
