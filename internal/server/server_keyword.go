@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"html/template"
 	"net/http"
 	"slices"
 	"strconv"
@@ -135,7 +134,7 @@ func (s *Server) serveKeyword(data *templateData, db serverDB, w http.ResponseWr
 		if match {
 			matchLabel = "MATCH FOUND"
 		}
-		data.Message = template.HTML(fmt.Sprintf(`Result: <b>%s</b>`, matchLabel))
+		data.Message = data.GetHTML("Result: %s", `<b>`+data.G(matchLabel)+`</b>`)
 		return
 	}
 

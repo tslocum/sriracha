@@ -601,7 +601,7 @@ important to understand how the database and static files are already cached.
 Sriracha is optimized to rely on the built-in caching functionality of PostgreSQL,
 as well as the built-in caching functionality of the underlying operating system.
 
-Database rows which are accessed often, and well as files which are accessed often,
+Database rows which are accessed often, as well as files which are accessed often,
 will be cached in-memory by PostgreSQL and the operating system.
 
 When more than one post is added within a ten second time frame, Sriracha will conserve

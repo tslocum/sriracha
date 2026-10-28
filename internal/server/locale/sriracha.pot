@@ -43,6 +43,9 @@ msgstr[1] ""
 msgid "%s Devices"
 msgstr ""
 
+msgid "%s Manual"
+msgstr ""
+
 msgid "%s already exists."
 msgstr ""
 
@@ -167,6 +170,9 @@ msgid "Admin Queue"
 msgstr ""
 
 msgid "Administrator"
+msgstr ""
+
+msgid "Administrator Guide"
 msgstr ""
 
 msgid "Administrators have full access except for managing accounts."
@@ -908,6 +914,9 @@ msgstr[1] ""
 msgid "Logs"
 msgstr ""
 
+msgid "MATCH FOUND"
+msgstr ""
+
 msgid "Manage"
 msgstr ""
 
@@ -1072,6 +1081,9 @@ msgstr[1] ""
 msgid "Moderator"
 msgstr ""
 
+msgid "Moderator Guide"
+msgstr ""
+
 msgid "Moderators may only perform certain actions. See moderator guide for more info."
 msgstr ""
 
@@ -1118,6 +1130,9 @@ msgid "News"
 msgstr ""
 
 msgid "Next"
+msgstr ""
+
+msgid "NO MATCH"
 msgstr ""
 
 msgid "No active subscriptions."
@@ -1474,6 +1489,9 @@ msgstr ""
 msgid "Restrict New Posts"
 msgstr ""
 
+msgid "Result: %s"
+msgstr ""
+
 msgid "Return"
 msgstr ""
 
@@ -1614,6 +1632,9 @@ msgid "Subscription confirmed."
 msgstr ""
 
 msgid "Super-administrator"
+msgstr ""
+
+msgid "Super-administrator Guide"
 msgstr ""
 
 msgid "Super-administrators have full access."
