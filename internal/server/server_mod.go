@@ -211,12 +211,15 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			if destinationThread == 0 {
 				destinationThread = p.Thread()
 			}
+			newRefLabel := strconv.Itoa(p.ID)
 			if destinationThread != p.Thread() {
 				db.UpdatePostParent(p.ID, destinationThread)
 				p.Parent = destinationThread
+			} else {
+				newRefLabel += "(OP)"
 			}
 			newPath := destination.Path() + fmt.Sprintf("res/%d.html#%d", destinationThread, p.ID)
-			_, err := db.Exec(`UPDATE post SET message = replace(replace(message, '<a href="` + oldPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>', '<a href="` + newPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>'), '<a href="` + oldPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>', '<a href="` + newPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>') WHERE message LIKE '%&gt;&gt;` + strconv.Itoa(p.ID) + `%'`)
+			_, err := db.Exec(`UPDATE post SET message = replace(replace(message, '<a href="` + oldPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>', '<a href="` + newPath + `" class="refop">&gt;&gt;` + newRefLabel + `</a>'), '<a href="` + oldPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>', '<a href="` + newPath + `" class="refreply">&gt;&gt;` + newRefLabel + `</a>') WHERE message LIKE '%&gt;&gt;` + strconv.Itoa(p.ID) + `%'`)
 			if err != nil {
 				log.Fatalf("failed to move post: failed to update reflinks: %s", err)
 			}
@@ -320,7 +323,6 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			wg.Wait()
 			data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", destination.Board.ID, destination.ID))
 			// TODO backlinks, update reflinks in backlinking posts (including posts in and out of destination thread)
-			// TODO handle moving from thread post to reply post (remove (OP))
 			// TODO bump thread when moving posts newer than bumped timestamp
 		} else if FormInt(r, "board") > 0 {
 			if post.Parent != 0 {
