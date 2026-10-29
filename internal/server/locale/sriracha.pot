@@ -1090,6 +1090,12 @@ msgstr ""
 msgid "Move"
 msgstr ""
 
+msgid "Move to Board"
+msgstr ""
+
+msgid "Move to Thread"
+msgstr ""
+
 msgid "Moved thread from %[1]s to %[2]s."
 msgstr ""
 

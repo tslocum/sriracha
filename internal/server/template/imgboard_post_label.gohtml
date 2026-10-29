@@ -33,10 +33,10 @@
                 {{if $.Opt.Identifiers}}
                     <a href="/sriracha/mod/view/{{$post.ID}}" title="{{T "View posts by author"}}">V</a>
                 {{end}}
+                {{if May "post.move" $.Account $.Opt.Access}}
+                    <a href="/sriracha/mod/move/{{$post.ID}}" title="{{T "Move"}}">M</a>
+                {{end}}
                 {{if eq $post.Parent 0}}
-                    {{if May "post.move" $.Account $.Opt.Access}}
-                        <a href="/sriracha/mod/move/{{$post.ID}}" title="{{T "Move"}}">M</a>
-                    {{end}}
                     {{if and (May "post.sticky" $.Account $.Opt.Access) (not $.ArchiveMode)}}
                         <a href="/sriracha/mod/{{if $post.Stickied}}un{{end}}sticky/{{$post.ID}}" title="{{if not $post.Stickied}}{{T "Sticky"}}{{else}}{{T "Unsticky"}}{{end}}" onclick="javascript:return confirm('{{if not $post.Stickied}}Sticky{{else}}Unsticky{{end}} thread?');">S</a>
                     {{end}}

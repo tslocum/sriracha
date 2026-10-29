@@ -133,17 +133,185 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		if s.forbidden(w, data, "post.move") {
 			return
 		}
-		post := selected[0]
-		if post.Parent != 0 {
-			data.ManageError("Only threads may be moved")
-			return
-		}
 		data.Template = "board_page"
 		data.ModMode = true
 		data.ReplyMode = 1
+		checkAttachment := func(p *Post, destination *Board) error {
+			if p.File != "" && !p.IsEmbed() {
+				_, err := os.Stat(filepath.Join(s.config.Root, destination.Path(), "src", p.File))
+				if err != nil && !os.IsNotExist(err) {
+					return fmt.Errorf("Failed to move post: File /src/%s already exists at destination", p.File)
+				}
+			}
+			if p.Thumb != "" {
+				_, err := os.Stat(filepath.Join(s.config.Root, destination.Path(), "thumb", p.File))
+				if err != nil && !os.IsNotExist(err) {
+					return fmt.Errorf("Failed to move post: File /thumb/%s already exists at destination", p.File)
+				}
+			}
+			return nil
+		}
+		copyFile := func(p *Post, destination *Board, dirName string, fileName string) error {
+			srcPath := filepath.Join(s.config.Root, p.Board.Path(), dirName, fileName)
+			dstPath := filepath.Join(s.config.Root, destination.Path(), dirName, fileName)
+
+			srcFile, err := os.Open(srcPath)
+			if err != nil {
+				return fmt.Errorf("Failed to move post: Failed to open source file /%s/%s: %s", dirName, fileName, err)
+			}
+			dstFile, err := os.OpenFile(dstPath, NewFileFlags, NewFilePermission)
+			if err != nil {
+				srcFile.Close()
+				return fmt.Errorf("Failed to move post: Failed to open destination file /%s/%s: %s", dirName, fileName, err)
+			}
+			_, err = io.Copy(dstFile, srcFile)
+			srcFile.Close()
+			dstFile.Close()
+			if err != nil {
+				return fmt.Errorf("Failed to move post: Failed to copy file /%s/%s: %s", dirName, fileName, err)
+			}
+			return nil
+		}
+		copyAttachment := func(p *Post, destination *Board) error {
+			if p.File != "" && !p.IsEmbed() {
+				err := copyFile(p, destination, "src", p.File)
+				if err != nil {
+					return err
+				}
+			}
+			if p.Thumb != "" {
+				err := copyFile(p, destination, "thumb", p.Thumb)
+				if err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+		removeSourceAttachment := func(p *Post) {
+			if p.File != "" && !p.IsEmbed() {
+				os.Remove(filepath.Join(s.config.Root, p.Board.Path(), "src", p.File))
+			}
+			if p.Thumb != "" {
+				os.Remove(filepath.Join(s.config.Root, p.Board.Path(), "thumb", p.Thumb))
+			}
+		}
+		removeThreadPage := func(p *Post) {
+			os.Remove(filepath.Join(s.config.Root, p.Board.Path(), "res", fmt.Sprintf("%d.html", p.ID)))
+			s.pageTimingLock.Lock()
+			delete(s.pageTimings, p.Board.Path()+fmt.Sprintf("res/%d.html", p.ID))
+			s.pageTimingLock.Unlock()
+		}
+		updatePost := func(p *Post, destination *Board, destinationThread int) {
+			source := p.Board
+			oldPath := source.Path() + fmt.Sprintf("res/%d.html#%d", p.Thread(), p.ID)
+			if source.ID != destination.ID {
+				db.UpdatePostBoard(p.ID, destination)
+				p.Board = destination
+			}
+			if destinationThread == 0 {
+				destinationThread = p.Thread()
+			}
+			if destinationThread != p.Thread() {
+				db.UpdatePostParent(p.ID, destinationThread)
+				p.Parent = destinationThread
+			}
+			newPath := destination.Path() + fmt.Sprintf("res/%d.html#%d", destinationThread, p.ID)
+			_, err := db.Exec(`UPDATE post SET message = replace(replace(message, '<a href="` + oldPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>', '<a href="` + newPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>'), '<a href="` + oldPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>', '<a href="` + newPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>') WHERE message LIKE '%&gt;&gt;` + strconv.Itoa(p.ID) + `%'`)
+			if err != nil {
+				log.Fatalf("failed to move post: failed to update reflinks: %s", err)
+			}
+			_, err = db.Exec(`UPDATE post SET message = replace(replace(message, '<a href="` + oldPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>', '<a href="` + newPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>'), '<a href="` + oldPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>', '<a href="` + newPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>') WHERE message LIKE '%&gt;&gt;` + strconv.Itoa(p.ID) + `%'`)
+			if err != nil {
+				log.Fatalf("failed to move post: failed to update reflinks: %s", err)
+			}
+		}
+		post := selected[0]
 		data.Board = post.Board
-		data.Threads = append(data.Threads, []*Post{post})
-		if r.FormValue("confirmation") == "1" {
+		if FormInt(r, "thread") > 0 {
+			threadID := FormInt(r, "thread")
+			for _, p := range selected {
+				if p.Thread() == threadID {
+					data.ManageError("Failed to move post: That post is already located in selected thread")
+					return
+				}
+			}
+			destination := db.PostByID(threadID)
+			if destination == nil || destination.Parent != 0 {
+				data.ManageError("Failed to move post: Invalid destination thread")
+				return
+			}
+			var threadIDs []int
+			for _, p := range selected {
+				if !slices.Contains(threadIDs, p.Thread()) {
+					threadIDs = append(threadIDs, p.Thread())
+				}
+			}
+			// Verify all posts are newer than the destination thread post.
+			for _, p := range selected {
+				if p.ID < threadID {
+					data.ManageError("Failed to move post: Destination thread is newer than selected post")
+					return
+				}
+			}
+			// Verify attachments do not already exist at destination board.
+			for _, p := range selected {
+				if p.Board.ID != destination.Board.ID {
+					err := checkAttachment(p, destination.Board)
+					if err != nil {
+						data.ManageError(err.Error())
+						return
+					}
+				}
+			}
+			// Copy attachments.
+			for _, p := range selected {
+				if p.Board.ID != destination.Board.ID {
+					err := copyAttachment(p, destination.Board)
+					if err != nil {
+						data.ManageError(err.Error())
+						return
+					}
+				}
+			}
+			// Remove source attachments.
+			for _, p := range selected {
+				if p.Board.ID != destination.Board.ID {
+					removeSourceAttachment(p)
+				}
+			}
+			// Delete thread page.
+			for _, p := range selected {
+				if p.Parent == 0 {
+					removeThreadPage(p)
+				}
+			}
+			// Update posts.
+			for _, p := range selected {
+				updatePost(p, destination.Board, threadID)
+			}
+			for _, p := range selected {
+				s.log(db, data.Account, post.Board, fmt.Sprintf("Moved >>/post/%d to >>/post/%d", p.ID, threadID), "")
+			}
+			// Rebuild static files.
+			db.SoftCommit()
+			var threads []*Post
+			for _, id := range threadIDs {
+				threads = append(threads, db.PostByID(id))
+			}
+			wg := &sync.WaitGroup{}
+			delta := &atomic.Int32{}
+			s.rebuildThreads(db, wg, delta, threads)
+			wg.Wait()
+			data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", destination.Board.ID, destination.ID))
+			// TODO backlinks, update reflinks in backlinking posts (including posts in and out of destination thread)
+			// TODO handle moving from thread post to reply post (remove (OP))
+			// TODO bump thread when moving posts newer than bumped timestamp
+		} else if FormInt(r, "board") > 0 {
+			if post.Parent != 0 {
+				data.ManageError("Only threads may be moved to another board")
+				return
+			}
+			data.Threads = append(data.Threads, []*Post{post})
 			boardID := FormInt(r, "board")
 			destination := db.BoardByID(boardID)
 			if destination == nil {
@@ -156,94 +324,32 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			posts := db.AllPostsInThread(FilterAny, post.ID)
 			// Verify attachments do not already exist at destination board.
 			for _, p := range posts {
-				if p.File != "" && !p.IsEmbed() {
-					_, err := os.Stat(filepath.Join(s.config.Root, destination.Path(), "src", p.File))
-					if err != nil && !os.IsNotExist(err) {
-						data.ManageError(fmt.Sprintf("Failed to move thread: File /src/%s already exists at destination", p.File))
-						return
-					}
-				}
-				if p.Thumb != "" {
-					_, err := os.Stat(filepath.Join(s.config.Root, destination.Path(), "thumb", p.File))
-					if err != nil && !os.IsNotExist(err) {
-						data.ManageError(fmt.Sprintf("Failed to move thread: File /thumb/%s already exists at destination", p.File))
-						return
-					}
+				err := checkAttachment(p, destination)
+				if err != nil {
+					data.ManageError(err.Error())
+					return
 				}
 			}
 			// Copy attachments.
-			copyFile := func(dirName string, fileName string) error {
-				srcPath := filepath.Join(s.config.Root, post.Board.Path(), dirName, fileName)
-				dstPath := filepath.Join(s.config.Root, destination.Path(), dirName, fileName)
-
-				srcFile, err := os.Open(srcPath)
-				if err != nil {
-					return fmt.Errorf("Failed to move thread: Failed to open source file /%s/%s: %s", dirName, fileName, err)
-				}
-				dstFile, err := os.OpenFile(dstPath, NewFileFlags, NewFilePermission)
-				if err != nil {
-					srcFile.Close()
-					return fmt.Errorf("Failed to move thread: Failed to open destination file /%s/%s: %s", dirName, fileName, err)
-				}
-				_, err = io.Copy(dstFile, srcFile)
-				srcFile.Close()
-				dstFile.Close()
-				if err != nil {
-					return fmt.Errorf("Failed to move thread: Failed to copy file /%s/%s: %s", dirName, fileName, err)
-				}
-				return nil
-			}
 			for _, p := range posts {
-				if p.File != "" && !p.IsEmbed() {
-					err := copyFile("src", p.File)
-					if err != nil {
-						data.ManageError(err.Error())
-						return
-					}
-				}
-				if p.Thumb != "" {
-					err := copyFile("thumb", p.Thumb)
-					if err != nil {
-						data.ManageError(err.Error())
-						return
-					}
+				err := copyAttachment(p, destination)
+				if err != nil {
+					data.ManageError(err.Error())
+					return
 				}
 			}
 			// Remove source attachments.
 			for _, p := range posts {
-				if p.File != "" && !p.IsEmbed() {
-					os.Remove(filepath.Join(s.config.Root, post.Board.Path(), "src", p.File))
-				}
-				if p.Thumb != "" {
-					os.Remove(filepath.Join(s.config.Root, post.Board.Path(), "thumb", p.Thumb))
-				}
+				removeSourceAttachment(p)
 			}
 			// Delete thread page.
-			os.Remove(filepath.Join(s.config.Root, post.Board.Path(), "res", fmt.Sprintf("%d.html", post.ID)))
-			s.pageTimingLock.Lock()
-			delete(s.pageTimings, post.Board.Path()+fmt.Sprintf("res/%d.html", post.ID))
-			s.pageTimingLock.Unlock()
-			// Update post board.
+			removeThreadPage(post)
+			// Update posts.
 			source := post.Board
 			for _, p := range posts {
-				db.UpdatePostBoard(p.ID, destination)
-				p.Board = destination
-				refPath := fmt.Sprintf("res/%d.html#%d", p.Thread(), p.ID)
-				oldPath := source.Path() + refPath
-				newPath := destination.Path() + refPath
-				_, err := db.Exec(`UPDATE post SET message = replace(replace(message, '<a href="` + oldPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>', '<a href="` + newPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>'), '<a href="` + oldPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>', '<a href="` + newPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>') WHERE message LIKE '%&gt;&gt;` + strconv.Itoa(p.ID) + `%'`)
-				if err != nil {
-					log.Fatalf("failed to move thread: failed to update reflinks: %s", err)
-				}
-				_, err = db.Exec(`UPDATE post SET message = replace(replace(message, '<a href="` + oldPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>', '<a href="` + newPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>'), '<a href="` + oldPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>', '<a href="` + newPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>') WHERE message LIKE '%&gt;&gt;` + strconv.Itoa(p.ID) + `%'`)
-				if err != nil {
-					log.Fatalf("failed to move thread: failed to update reflinks: %s", err)
-				}
+				updatePost(p, destination, 0)
 			}
 			post = db.PostByID(post.ID)
-			data.Board = destination
-			data.Threads = [][]*Post{{post}}
-			data.Message = template.HTML(fmt.Sprintf("Moved No.%d to %s.", post.ID, destination.Path()))
 			s.log(db, data.Account, post.Board, fmt.Sprintf("Moved >>/post/%d to >>/board/%d", post.ID, data.Board.ID), "")
 			// Add notice.
 			if FormInt(r, "notice") == 1 {
@@ -271,19 +377,31 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			wg.Wait()
 			data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", destination.ID, post.Thread()))
 		} else {
+			data.Threads = append(data.Threads, selected)
 			moveLabel := Get(data.Board, data.Account, "Move")
-			boardLabel := Get(data.Board, data.Account, "Board")
-			data.Message = `<br><fieldset><legend>` + template.HTML(html.EscapeString(moveLabel)) + ` No.` + template.HTML(strconv.Itoa(post.ID)) + `</legend><form method="post"><table class="manageform"><input type="hidden" name="confirmation" value="1"><tr><td class="postblock">` + template.HTML(html.EscapeString(boardLabel)) + `</td><td><select name="board">`
-			for _, b := range db.AllBoards() {
-				var extra string
-				if data.Board.ID == b.ID {
-					extra = " selected"
-				}
-				data.Message += template.HTML(fmt.Sprintf(`<option value="%d"%s>%s %s</option>`, b.ID, extra, b.Path(), html.EscapeString(b.Name)))
+			threadLabel := Get(data.Board, data.Account, "Thread")
+			data.Message = `<div style="display: flex;flex-wrap: wrap;row-gap: 15px;column-gap: 15px;"><fieldset><legend>` + data.GetHTML("Move to Thread") + `</legend><form method="post"><table class="manageform"><tr><td class="postblock">` + template.HTML(html.EscapeString(threadLabel)) + `</td><td><input type="text" name="thread" size="8"></td></tr>`
+			if len(selected) == 1 && post.Parent == 0 {
+				data.Message += `<tr><td colspan="2">&nbsp;</td>`
 			}
-			noticeLabel := Get(data.Board, data.Account, "Notice")
-			addNoticeLabel := Get(data.Board, data.Account, "Add notice")
-			data.Message += `</select></td></tr><tr><td class="postblock"><label for="notice">` + template.HTML(html.EscapeString(noticeLabel)) + `</label></td><td><label><input type="checkbox" id="notice" name="notice" value="1"> ` + template.HTML(html.EscapeString(addNoticeLabel)) + `</label></td></tr><tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="` + template.HTML(html.EscapeString(moveLabel)) + `"></td></tr></table></form></fieldset><br><br>`
+			data.Message += `<tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="` + template.HTML(html.EscapeString(moveLabel)) + `"></td></tr></table></form></fieldset><br><br>`
+
+			if len(selected) == 1 && post.Parent == 0 {
+				boardLabel := Get(data.Board, data.Account, "Board")
+				data.Message += `<fieldset><legend>` + data.GetHTML("Move to Board") + `</legend><form method="post"><table class="manageform"><tr><td class="postblock">` + template.HTML(html.EscapeString(boardLabel)) + `</td><td><select name="board">`
+				for _, b := range db.AllBoards() {
+					var extra string
+					if data.Board.ID == b.ID {
+						extra = " selected"
+					}
+					data.Message += template.HTML(fmt.Sprintf(`<option value="%d"%s>%s %s</option>`, b.ID, extra, b.Path(), html.EscapeString(b.Name)))
+				}
+				noticeLabel := Get(data.Board, data.Account, "Notice")
+				addNoticeLabel := Get(data.Board, data.Account, "Add notice")
+				data.Message += `</select></td></tr><tr><td class="postblock"><label for="notice">` + template.HTML(html.EscapeString(noticeLabel)) + `</label></td><td><label><input type="checkbox" id="notice" name="notice" value="1"> ` + template.HTML(html.EscapeString(addNoticeLabel)) + `</label></td></tr><tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="` + template.HTML(html.EscapeString(moveLabel)) + `"></td></tr></table></form></fieldset><br><br>`
+			}
+
+			data.Message += `</div>`
 		}
 		return
 	} else if action == "sp" || action == "usp" {

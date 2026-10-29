@@ -272,6 +272,7 @@ func (db *mockDB) ModeratePost(postID int, moderated PostModerated) {}
 func (db *mockDB) StickyPost(postID int, sticky bool)               {}
 func (db *mockDB) SpoilerPost(postID int, spoiler bool)             {}
 func (db *mockDB) LockPost(postID int, lock bool)                   {}
+func (db *mockDB) UpdatePostParent(postID int, parent int)          {}
 func (db *mockDB) UpdatePostBoard(postID int, board *Board)         {}
 func (db *mockDB) UpdatePostNameblock(postID int, nameblock string) {}
 func (db *mockDB) UpdatePostMessage(postID int, message string)     {}

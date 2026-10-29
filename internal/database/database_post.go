@@ -675,6 +675,13 @@ func (db *DB) LockPost(postID int, lock bool) {
 	}
 }
 
+func (db *DB) UpdatePostParent(postID int, parent int) {
+	_, err := db.conn.Exec(context.Background(), "UPDATE post SET parent = $1 WHERE id = $2", parent, postID)
+	if err != nil {
+		dbErr(fmt.Errorf("failed to update post parent: %w", err))
+	}
+}
+
 func (db *DB) UpdatePostBoard(postID int, board *Board) {
 	_, err := db.conn.Exec(context.Background(), "UPDATE post SET board = $1 WHERE id = $2", board.ID, postID)
 	if err != nil {

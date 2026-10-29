@@ -1,4 +1,5 @@
 2.2.1:
+- Support moving posts between threads
 - Support auto-refreshing forum index pages
 - Fix new post count when refreshing board index pages
 - Display warning message when Content-Security-Policy is disobeyed

@@ -153,6 +153,7 @@ type DB interface {
 	StickyPost(postID int, sticky bool)
 	SpoilerPost(postID int, spoiler bool)
 	LockPost(postID int, lock bool)
+	UpdatePostParent(postID int, parent int)
 	UpdatePostBoard(postID int, board *Board)
 	UpdatePostNameblock(postID int, nameblock string)
 	UpdatePostMessage(postID int, message string)
