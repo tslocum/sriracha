@@ -233,17 +233,24 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		if FormInt(r, "thread") > 0 {
 			var posts []*Post
 			var postIDs []int
+			var bumped int64
 			for _, p := range selected {
 				if p.Parent == 0 {
 					for _, pp := range db.AllPostsInThread(FilterAny, p.ID) {
 						if !slices.Contains(postIDs, pp.ID) {
 							posts = append(posts, pp)
 							postIDs = append(postIDs, pp.ID)
+							if strings.ToLower(pp.Email) != "sage" && pp.Timestamp > bumped {
+								bumped = pp.Timestamp
+							}
 						}
 					}
 				} else if !slices.Contains(postIDs, p.ID) {
 					posts = append(posts, p)
 					postIDs = append(postIDs, p.ID)
+					if strings.ToLower(p.Email) != "sage" && p.Timestamp > bumped {
+						bumped = p.Timestamp
+					}
 				}
 			}
 			selected = posts
@@ -308,6 +315,9 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			for _, p := range selected {
 				updatePost(p, destination.Board, threadID)
 			}
+			if destination.Bumped < bumped && (destination.Board.MaxReplies == 0 || db.ReplyCount(threadID) <= destination.Board.MaxReplies) {
+				db.BumpThread(threadID, bumped)
+			}
 			for _, p := range selected {
 				s.log(db, data.Account, post.Board, fmt.Sprintf("Moved >>/post/%d to >>/post/%d", p.ID, threadID), "")
 			}
@@ -323,7 +333,6 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			wg.Wait()
 			data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", destination.Board.ID, destination.ID))
 			// TODO backlinks, update reflinks in backlinking posts (including posts in and out of destination thread)
-			// TODO bump thread when moving posts newer than bumped timestamp
 		} else if FormInt(r, "board") > 0 {
 			if post.Parent != 0 {
 				data.ManageError("Only threads may be moved to another board")
