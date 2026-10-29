@@ -318,9 +318,14 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			if destination.Bumped < bumped && (destination.Board.MaxReplies == 0 || db.ReplyCount(threadID) <= destination.Board.MaxReplies) {
 				db.BumpThread(threadID, bumped)
 			}
-			for _, p := range selected {
-				s.log(db, data.Account, post.Board, fmt.Sprintf("Moved >>/post/%d to >>/post/%d", p.ID, threadID), "")
+			var logMessage []byte
+			for i, p := range selected {
+				if i != 0 {
+					logMessage = append(logMessage, []byte(", ")...)
+				}
+				logMessage = append(logMessage, []byte(fmt.Sprintf(">>/post/%d", p.ID))...)
 			}
+			s.log(db, data.Account, post.Board, fmt.Sprintf("Moved %s to >>/post/%d", logMessage, threadID), "")
 			// Rebuild static files.
 			db.SoftCommit()
 			var threads []*Post
