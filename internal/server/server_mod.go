@@ -228,6 +228,22 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		post := selected[0]
 		data.Board = post.Board
 		if FormInt(r, "thread") > 0 {
+			var posts []*Post
+			var postIDs []int
+			for _, p := range selected {
+				if p.Parent == 0 {
+					for _, pp := range db.AllPostsInThread(FilterAny, p.ID) {
+						if !slices.Contains(postIDs, pp.ID) {
+							posts = append(posts, pp)
+							postIDs = append(postIDs, pp.ID)
+						}
+					}
+				} else if !slices.Contains(postIDs, p.ID) {
+					posts = append(posts, p)
+					postIDs = append(postIDs, p.ID)
+				}
+			}
+			selected = posts
 			threadID := FormInt(r, "thread")
 			for _, p := range selected {
 				if p.Thread() == threadID {
