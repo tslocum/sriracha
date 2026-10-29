@@ -49,6 +49,9 @@ msgstr[1] "%d rapporter"
 msgid "%s Devices"
 msgstr "%s-enheter"
 
+msgid "%s Manual"
+msgstr ""
+
 msgid "%s already exists."
 msgstr ""
 
@@ -174,6 +177,9 @@ msgstr ""
 
 msgid "Administrator"
 msgstr "Administratör"
+
+msgid "Administrator Guide"
+msgstr ""
 
 msgid "Administrators have full access except for managing accounts."
 msgstr "Administratörer har full åtkomst utom till kontohantering."
@@ -971,6 +977,9 @@ msgstr[1] "Logga ut %d sessioner"
 msgid "Logs"
 msgstr "Loggar"
 
+msgid "MATCH FOUND"
+msgstr ""
+
 msgid "Manage"
 msgstr "Hantera"
 
@@ -1151,6 +1160,9 @@ msgstr[1] "Moderera %d inlägg"
 msgid "Moderator"
 msgstr "Moderator"
 
+msgid "Moderator Guide"
+msgstr ""
+
 msgid ""
 "Moderators may only perform certain actions. See moderator guide for more "
 "info."
@@ -1160,6 +1172,12 @@ msgstr ""
 
 msgid "Move"
 msgstr "Flytta"
+
+msgid "Move to Board"
+msgstr ""
+
+msgid "Move to Thread"
+msgstr ""
 
 msgid "Moved thread from %[1]s to %[2]s."
 msgstr "Flyttade tråd från %[1]s till %[2]s."
@@ -1206,6 +1224,9 @@ msgstr "Nyheter"
 
 msgid "Next"
 msgstr "Nästa"
+
+msgid "NO MATCH"
+msgstr ""
 
 msgid "No active subscriptions."
 msgstr "Inga aktiva prenumerationer."
@@ -1601,6 +1622,9 @@ msgstr "Återställa tavlans konfiguration?"
 msgid "Restrict New Posts"
 msgstr "Begränsa nya inlägg"
 
+msgid "Result: %s"
+msgstr ""
+
 msgid "Return"
 msgstr "Återgå"
 
@@ -1752,6 +1776,9 @@ msgstr "Prenumerationen har bekräftats."
 
 msgid "Super-administrator"
 msgstr "Huvudadministratör"
+
+msgid "Super-administrator Guide"
+msgstr ""
 
 msgid "Super-administrators have full access."
 msgstr "Huvudadministratörer har full åtkomst."

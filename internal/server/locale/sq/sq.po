@@ -49,6 +49,9 @@ msgstr[1] ""
 msgid "%s Devices"
 msgstr ""
 
+msgid "%s Manual"
+msgstr ""
+
 msgid "%s already exists."
 msgstr ""
 
@@ -174,6 +177,9 @@ msgstr ""
 
 msgid "Administrator"
 msgstr "Administrator"
+
+msgid "Administrator Guide"
+msgstr ""
 
 msgid "Administrators have full access except for managing accounts."
 msgstr "Administratoret kane akses te plote pervec menaxhimit te llogarive."
@@ -958,6 +964,9 @@ msgstr[1] ""
 msgid "Logs"
 msgstr "Logs"
 
+msgid "MATCH FOUND"
+msgstr ""
+
 msgid "Manage"
 msgstr "Menaxho"
 
@@ -1135,6 +1144,9 @@ msgstr[1] ""
 msgid "Moderator"
 msgstr "Moderator"
 
+msgid "Moderator Guide"
+msgstr ""
+
 msgid ""
 "Moderators may only perform certain actions. See moderator guide for more "
 "info."
@@ -1144,6 +1156,12 @@ msgstr ""
 
 msgid "Move"
 msgstr "Zhvendos"
+
+msgid "Move to Board"
+msgstr ""
+
+msgid "Move to Thread"
+msgstr ""
 
 msgid "Moved thread from %[1]s to %[2]s."
 msgstr "Tema eshte zhvendosur nga %[1]s ne %[2]s."
@@ -1190,6 +1208,9 @@ msgstr "Lajmet"
 
 msgid "Next"
 msgstr "Tjeter"
+
+msgid "NO MATCH"
+msgstr ""
 
 msgid "No active subscriptions."
 msgstr ""
@@ -1573,6 +1594,9 @@ msgstr ""
 msgid "Restrict New Posts"
 msgstr "Kufizo Postimet e Reja"
 
+msgid "Result: %s"
+msgstr ""
+
 msgid "Return"
 msgstr "Kthehu"
 
@@ -1721,6 +1745,9 @@ msgstr ""
 
 msgid "Super-administrator"
 msgstr "Super-administratori"
+
+msgid "Super-administrator Guide"
+msgstr ""
 
 msgid "Super-administrators have full access."
 msgstr "Super-administratoret kane akses te plote."

@@ -1,155 +1,161 @@
 msgid ""
 msgstr ""
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2026-10-29 04:08+0000\n"
+"Last-Translator: gallegonovato <gallegonovato@noreply.codeberg.org>\n"
+"Language-Team: Spanish <https://translate.codeberg.org/projects/sriracha/"
+"sriracha/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2026.10.1\n"
 
 msgid "%d existing ban"
 msgid_plural "%d existing bans"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d bloqueo existente"
+msgstr[1] "%d bloqueos existentes"
 
 msgid "%d new post"
 msgid_plural "%d new posts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d publicación nueva"
+msgstr[1] "%d publicaciones nuevas"
 
 msgid "%d pending moderation request"
 msgid_plural "%d pending moderation requests"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d solicitud de moderación pendiente"
+msgstr[1] "%d solicitudes de moderación pendientes"
 
 msgid "%d post omitted. Click Reply to view."
 msgid_plural "%d posts omitted. Click Reply to view."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d publicación omitida. Haz clic en «Responder» para verla."
+msgstr[1] "%d publicaciones omitidas. Haz clic en «Responder» para verlas."
 
 msgid "%d previous appeal"
 msgid_plural "%d previous appeals"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d apelación anterior"
+msgstr[1] "%d apelaciones anteriores"
 
 msgid "%d previous ban"
 msgid_plural "%d previous bans"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d bloqueo anterior"
+msgstr[1] "%d bloqueos anteriores"
 
 msgid "%d report"
 msgid_plural "%d reports"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d reporte"
+msgstr[1] "%d reportes"
 
 msgid "%s Devices"
-msgstr ""
+msgstr "%s dispositivos"
+
+msgid "%s Manual"
+msgstr "Manual %s"
 
 msgid "%s already exists."
-msgstr ""
+msgstr "%s ya existe."
 
 msgid "%s connections."
-msgstr ""
+msgstr "%s conexiones."
 
 msgid "%s imageboard and forum server"
-msgstr ""
+msgstr "Servidor de foro y tablón de imágenes %s"
 
 msgid "%s is required."
-msgstr ""
+msgstr "%s es obligatorio."
 
 msgid "%s memory usage."
-msgstr ""
+msgstr "Uso de memoria: %s ."
 
 msgid "%s passcode"
-msgstr ""
+msgstr "Contraseña '%s'"
 
 msgid "%s uptime."
-msgstr ""
+msgstr "%s de disponibilidad."
 
 msgid "%s version."
-msgstr ""
+msgstr "%s versión."
 
 msgid "(Mentioned) %s"
-msgstr ""
+msgstr "(Mencionado) %s"
 
 msgid "1 Day"
-msgstr ""
+msgstr "1 día"
 
 msgid "1 Hour"
-msgstr ""
+msgstr "1 Hora"
 
 msgid "1 Month"
-msgstr ""
+msgstr "1 Mes"
 
 msgid "1 Week"
-msgstr ""
+msgstr "1 Semana"
 
 msgid "2 Days"
-msgstr ""
+msgstr "2 días"
 
 msgid "2 Weeks"
-msgstr ""
+msgstr "2 semanas"
 
 msgid "A file %s or larger is required."
-msgstr ""
+msgstr "El archivo debe ser de %s o superior"
 
 msgid "A file is required."
-msgstr ""
+msgstr "Debes adjuntar un archivo."
 
 msgid "Access Key"
-msgstr ""
+msgstr "Clave de acceso"
 
 msgid "Access denied."
-msgstr ""
+msgstr "Acceso denegado."
 
 msgid "Accounts"
-msgstr ""
+msgstr "Cuentas"
 
 msgid "Action"
-msgstr ""
+msgstr "Acción"
 
 msgid "Action taken when the keyword is detected."
-msgstr ""
+msgstr "Qué hacer si se detecta la palabra clave."
 
 msgid "Action taken when the threshold amount is exceeded."
-msgstr ""
+msgstr "Acción si se supera el límite."
 
 msgid "Active"
-msgstr ""
+msgstr "Activo"
 
 msgid "Add"
-msgstr ""
+msgstr "Añadir"
 
 msgid "Add %s Device"
-msgstr ""
+msgstr "Añadir dispositivo %s"
 
 msgid "Add Account"
-msgstr ""
+msgstr "Añadir cuenta"
 
 msgid "Add Ban"
-msgstr ""
+msgstr "Bloquear"
 
 msgid "Add Banner"
-msgstr ""
+msgstr "Añadir anuncio"
 
 msgid "Add Board"
-msgstr ""
+msgstr "Añadir tablero"
 
 msgid "Add Category"
-msgstr ""
+msgstr "Añadir categoría"
 
 msgid "Add Keyword"
-msgstr ""
+msgstr "Añadir palabra clave"
 
 msgid "Add News"
-msgstr ""
+msgstr "Añadir noticias"
 
 msgid "Add Page"
-msgstr ""
+msgstr "Añadir página"
 
 msgid "Add Threshold"
-msgstr ""
+msgstr "Definir límite"
 
 msgid "Add board to %s"
 msgstr ""
@@ -158,59 +164,67 @@ msgid "Add notice"
 msgstr ""
 
 msgid "Added"
-msgstr ""
+msgstr "Añadido"
 
 msgid "Added %s device."
-msgstr ""
+msgstr "Dispositivo %s añadido."
 
 msgid "Admin"
-msgstr ""
+msgstr "Administrador"
 
 msgid "Admin Queue"
-msgstr ""
+msgstr "Cola del administrador"
 
 msgid "Administrator"
-msgstr ""
+msgstr "Administrador"
+
+msgid "Administrator Guide"
+msgstr "Manual del administrador"
 
 msgid "Administrators have full access except for managing accounts."
 msgstr ""
+"Los administradores tienen acceso total, excepto para gestionar cuentas."
 
 msgid "All"
-msgstr ""
+msgstr "Todo"
 
 msgid "All board options will be duplicated except those below."
-msgstr ""
+msgstr "Se duplicarán todas las opciones del tablero, excepto las siguientes."
 
 msgid ""
 "All boards are locked because Sriracha is running in import mode. Please try "
 "again later."
 msgstr ""
+"Los tableros están bloqueados porque Sriracha está importando datos. Por "
+"favor, prueba otra vez más tarde."
 
 msgid "All fields are required."
-msgstr ""
+msgstr "Todos los campos son obligatorios."
 
 msgid "All new posts"
-msgstr ""
+msgstr "Nuevas publicaciones"
 
 msgid "All posts"
-msgstr ""
+msgstr "Todas las publicaciones"
 
 msgid "Allow all"
-msgstr ""
+msgstr "Permitir todo"
 
 msgid "Allow moderators to post site news."
-msgstr ""
+msgstr "Permitir a los moderadores publicar noticias."
 
 msgid ""
 "Alphanumeric management panel access key. When set, staff members must visit "
 "%s to log in."
 msgstr ""
+"Clave de acceso alfanumérica para el panel de administración. Al definirla, "
+"el personal tendrá que ir a %s para acceder."
 
 msgid "Amount"
-msgstr ""
+msgstr "Cantidad"
 
 msgid "An attachment is required."
-msgstr ""
+msgstr "Debes incluir un archivo adjunto."
 
 msgid "Anywhere"
 msgstr ""
@@ -937,6 +951,9 @@ msgstr[1] ""
 msgid "Logs"
 msgstr ""
 
+msgid "MATCH FOUND"
+msgstr ""
+
 msgid "Manage"
 msgstr ""
 
@@ -1109,12 +1126,21 @@ msgstr[1] ""
 msgid "Moderator"
 msgstr ""
 
+msgid "Moderator Guide"
+msgstr ""
+
 msgid ""
 "Moderators may only perform certain actions. See moderator guide for more "
 "info."
 msgstr ""
 
 msgid "Move"
+msgstr ""
+
+msgid "Move to Board"
+msgstr ""
+
+msgid "Move to Thread"
 msgstr ""
 
 msgid "Moved thread from %[1]s to %[2]s."
@@ -1159,6 +1185,9 @@ msgid "News"
 msgstr ""
 
 msgid "Next"
+msgstr ""
+
+msgid "NO MATCH"
 msgstr ""
 
 msgid "No active subscriptions."
@@ -1528,6 +1557,9 @@ msgstr ""
 msgid "Restrict New Posts"
 msgstr ""
 
+msgid "Result: %s"
+msgstr ""
+
 msgid "Return"
 msgstr ""
 
@@ -1673,6 +1705,9 @@ msgid "Subscription confirmed."
 msgstr ""
 
 msgid "Super-administrator"
+msgstr ""
+
+msgid "Super-administrator Guide"
 msgstr ""
 
 msgid "Super-administrators have full access."

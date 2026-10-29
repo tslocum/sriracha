@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-09-30 20:20+0000\n"
+"PO-Revision-Date: 2026-10-02 08:27+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -33,8 +33,8 @@ msgstr[1] "%d berichten overgeslagen. Klik op beantwoorden om te bekijken."
 
 msgid "%d previous appeal"
 msgid_plural "%d previous appeals"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d vorige bezwaarschrift"
+msgstr[1] "%d vorige bezwaarschriften"
 
 msgid "%d previous ban"
 msgid_plural "%d previous bans"
@@ -48,6 +48,9 @@ msgstr[1] "%d meldingen"
 
 msgid "%s Devices"
 msgstr "%s apparaten"
+
+msgid "%s Manual"
+msgstr ""
 
 msgid "%s already exists."
 msgstr "%s bestaat al."
@@ -171,10 +174,13 @@ msgid "Admin"
 msgstr "Beheerder"
 
 msgid "Admin Queue"
-msgstr ""
+msgstr "Beheerderswachtrij"
 
 msgid "Administrator"
 msgstr "Beheerder"
+
+msgid "Administrator Guide"
+msgstr ""
 
 msgid "Administrators have full access except for managing accounts."
 msgstr ""
@@ -228,7 +234,7 @@ msgid "Appeal"
 msgstr "Bezwaar maken"
 
 msgid "Appeal approved."
-msgstr ""
+msgstr "Bezwaar in behandeling genomen."
 
 msgid "Appeal denied."
 msgstr "Bezwaar geweigerd."
@@ -255,7 +261,7 @@ msgid "Approve all"
 msgstr "Alles goedkeuren"
 
 msgid "Approved"
-msgstr ""
+msgstr "In behandeling genomen"
 
 msgid "Archive"
 msgstr "Archiveren"
@@ -544,7 +550,7 @@ msgid "Deleted by moderator"
 msgstr "Verwijderd door moderator"
 
 msgid "Denied"
-msgstr ""
+msgstr "Geweigerd"
 
 msgid "Description"
 msgstr "Beschrijving"
@@ -724,6 +730,8 @@ msgid ""
 "File path (excluding .html suffix) of the administrator queue status page. "
 "Leave blank to disable."
 msgstr ""
+"De bestandslocatie (zonder het achtervoegsel .html) van de statuspagina van "
+"de beheerderswachtrij. Laat leeg om uit te schakelen."
 
 msgid ""
 "File path (excluding .html suffix) of the moderator queue status page. Leave "
@@ -981,6 +989,9 @@ msgstr[1] "Uitloggen van %d sessies"
 msgid "Logs"
 msgstr "Logboeken"
 
+msgid "MATCH FOUND"
+msgstr ""
+
 msgid "Manage"
 msgstr "Beheren"
 
@@ -1165,6 +1176,9 @@ msgstr[1] "%d berichten modereren"
 msgid "Moderator"
 msgstr "Moderator"
 
+msgid "Moderator Guide"
+msgstr ""
+
 msgid ""
 "Moderators may only perform certain actions. See moderator guide for more "
 "info."
@@ -1174,6 +1188,12 @@ msgstr ""
 
 msgid "Move"
 msgstr "Verplaatsen"
+
+msgid "Move to Board"
+msgstr ""
+
+msgid "Move to Thread"
+msgstr ""
 
 msgid "Moved thread from %[1]s to %[2]s."
 msgstr "Het onderwerp is verplaatst van %[1]s naar %[2]s."
@@ -1220,6 +1240,9 @@ msgstr "Nieuws"
 
 msgid "Next"
 msgstr "Volgende"
+
+msgid "NO MATCH"
+msgstr ""
 
 msgid "No active subscriptions."
 msgstr "Er zijn geen abonnementen."
@@ -1338,7 +1361,7 @@ msgid "Optional."
 msgstr "Optioneel."
 
 msgid "Outcome"
-msgstr ""
+msgstr "Beslissing"
 
 msgid "Overboard"
 msgstr "Overboard"
@@ -1374,7 +1397,7 @@ msgid "Path"
 msgstr "Locatie"
 
 msgid "Pending"
-msgstr ""
+msgstr "In behandeling"
 
 msgid "Performance"
 msgstr "Prestaties"
@@ -1548,7 +1571,7 @@ msgstr ""
 "De te zoeken reguliere uitdrukking na het opstellen van een nieuw bericht."
 
 msgid "Rejected"
-msgstr ""
+msgstr "Afgewezen"
 
 msgid ""
 "Relative file path where the page is located, excluding the .html suffix."
@@ -1614,6 +1637,9 @@ msgstr "Foruminstellingen terugzetten?"
 
 msgid "Restrict New Posts"
 msgstr "Nieuwe berichten beperken"
+
+msgid "Result: %s"
+msgstr ""
 
 msgid "Return"
 msgstr "Terug"
@@ -1752,7 +1778,7 @@ msgid "Submit post."
 msgstr "Plaats het bericht."
 
 msgid "Submitted"
-msgstr ""
+msgstr "Ingediend"
 
 msgid "Subscribe"
 msgstr "Abonneren"
@@ -1768,6 +1794,9 @@ msgstr "Abonnement bevestigd."
 
 msgid "Super-administrator"
 msgstr "Superbeheerder"
+
+msgid "Super-administrator Guide"
+msgstr ""
 
 msgid "Super-administrators have full access."
 msgstr "Superbeheerders kunnen álles."

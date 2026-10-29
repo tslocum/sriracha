@@ -634,6 +634,7 @@ The following locales have partial or full translations:
 | `nl`      | Dutch                |
 | `fi`      | Finnish              |
 | `ru`      | Russian              |
+| `es`      | Spanish              |
 | `sv`      | Swedish              |
 
 Sriracha relies on the assistance of volunteer translators. If you are multilingual,
