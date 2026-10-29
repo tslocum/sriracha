@@ -249,6 +249,7 @@ func (db *mockDB) PrunedThreads() []int                                         
 func (db *mockDB) PostByID(postID int) *Post                                          { return nil }
 func (db *mockDB) PostsByID(postIDs []int) []*Post                                    { return nil }
 func (db *mockDB) PostsByIP(hash string) []*Post                                      { return nil }
+func (db *mockDB) PostsByBacklink(targetID int) []*Post                               { return nil }
 func (db *mockDB) PostsByFileHash(hash string, filterBoard *Board) []*Post            { return nil }
 func (db *mockDB) PostByField(b *Board, field string, value any) *Post                { return nil }
 func (db *mockDB) LastPostByIP(board *Board, ip string) *Post                         { return nil }

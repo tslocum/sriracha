@@ -139,6 +139,7 @@ type DB interface {
 	PostsByID(postIDs []int) []*Post
 	PostsByIP(hash string) []*Post
 	PostsByFileHash(hash string, filterBoard *Board) []*Post
+	PostsByBacklink(targetID int) []*Post
 	PostByField(b *Board, field string, value any) *Post
 	LastPostByIP(board *Board, ip string) *Post
 	LastPostByBoard(board *Board) *Post

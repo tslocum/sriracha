@@ -315,6 +315,37 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			for _, p := range selected {
 				updatePost(p, destination.Board, threadID)
 			}
+			// Add new backlinks and remove backlinks from destination thread to source thread.
+			removeBacklink := func(post *Post, targetID int) {
+				i := slices.Index(post.Backlinks, targetID)
+				if i == -1 {
+					return
+				}
+				post.Backlinks = append(post.Backlinks[:i], post.Backlinks[i+1:]...)
+				_, err := db.Exec("UPDATE post SET backlinks = $1 WHERE id = $2", post.Backlinks, post.ID)
+				if err != nil {
+					log.Fatalf("failed to update post backlinks: %s", err)
+				}
+			}
+			for _, p := range selected {
+				for _, mention := range p.Mentions() {
+					m := db.PostByID(mention)
+					if slices.Contains(postIDs, mention) || m.Thread() == threadID {
+						db.AddPostBacklink(m, p.ID)
+					} else {
+						removeBacklink(p, mention)
+					}
+				}
+			}
+			// Remove backlinks from source thread to destination thread.
+			for _, p := range selected {
+				for _, pp := range db.PostsByBacklink(p.ID) {
+					if pp.Thread() != threadID {
+						removeBacklink(pp, p.ID)
+					}
+				}
+			}
+			// Bump thread.
 			if destination.Bumped < bumped && (destination.Board.MaxReplies == 0 || db.ReplyCount(threadID) <= destination.Board.MaxReplies) {
 				db.BumpThread(threadID, bumped)
 			}
@@ -332,12 +363,12 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			for _, id := range threadIDs {
 				threads = append(threads, db.PostByID(id))
 			}
+			threads = append(threads, db.PostByID(threadID))
 			wg := &sync.WaitGroup{}
 			delta := &atomic.Int32{}
 			s.rebuildThreads(db, wg, delta, threads)
 			wg.Wait()
 			data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", destination.Board.ID, destination.ID))
-			// TODO backlinks, update reflinks in backlinking posts (including posts in and out of destination thread)
 		} else if FormInt(r, "board") > 0 {
 			if post.Parent != 0 {
 				data.ManageError("Only threads may be moved to another board")

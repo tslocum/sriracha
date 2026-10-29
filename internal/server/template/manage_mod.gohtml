@@ -26,7 +26,13 @@
     </form>
     <form method="post" action="/sriracha/mod/deleteban/{{.Extra3}}">
         <input type="submit" value="{{T "Delete & ban"}}"></input>
-    </form><br>
+    </form>
+    {{if May "post.move" $.Account $.Opt.Access}}
+        <form method="post" action="/sriracha/mod/move/{{.Extra3}}">
+            <input type="submit" value="{{T "Move"}}"></input>
+        </form>
+    {{end}}
+    <br>
 {{else if or (eq .Extra "d") }}
     <form method="post" action="/sriracha/mod/delete/{{.Extra3}}">
         <input type="hidden" name="confirmation" value="1">
