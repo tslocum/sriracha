@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-10-02 08:27+0000\n"
+"PO-Revision-Date: 2026-10-29 19:29+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.9.1\n"
+"X-Generator: Weblate 2026.10.1\n"
 
 msgid "%d existing ban"
 msgid_plural "%d existing bans"
@@ -50,7 +50,7 @@ msgid "%s Devices"
 msgstr "%s apparaten"
 
 msgid "%s Manual"
-msgstr ""
+msgstr "%s handmatig"
 
 msgid "%s already exists."
 msgstr "%s bestaat al."
@@ -180,7 +180,7 @@ msgid "Administrator"
 msgstr "Beheerder"
 
 msgid "Administrator Guide"
-msgstr ""
+msgstr "Beheerdershandleiding"
 
 msgid "Administrators have full access except for managing accounts."
 msgstr ""
@@ -990,7 +990,7 @@ msgid "Logs"
 msgstr "Logboeken"
 
 msgid "MATCH FOUND"
-msgstr ""
+msgstr "OVEREENKOMST GEVONDEN"
 
 msgid "Manage"
 msgstr "Beheren"
@@ -1177,7 +1177,7 @@ msgid "Moderator"
 msgstr "Moderator"
 
 msgid "Moderator Guide"
-msgstr ""
+msgstr "Moderatorhandleiding"
 
 msgid ""
 "Moderators may only perform certain actions. See moderator guide for more "
@@ -1190,10 +1190,10 @@ msgid "Move"
 msgstr "Verplaatsen"
 
 msgid "Move to Board"
-msgstr ""
+msgstr "Verplaatsen naar subforum"
 
 msgid "Move to Thread"
-msgstr ""
+msgstr "Verplaatsen naar onderwerp"
 
 msgid "Moved thread from %[1]s to %[2]s."
 msgstr "Het onderwerp is verplaatst van %[1]s naar %[2]s."
@@ -1242,7 +1242,7 @@ msgid "Next"
 msgstr "Volgende"
 
 msgid "NO MATCH"
-msgstr ""
+msgstr "GEEN OVEREENKOMST"
 
 msgid "No active subscriptions."
 msgstr "Er zijn geen abonnementen."
@@ -1639,7 +1639,7 @@ msgid "Restrict New Posts"
 msgstr "Nieuwe berichten beperken"
 
 msgid "Result: %s"
-msgstr ""
+msgstr "Resultaat: %s"
 
 msgid "Return"
 msgstr "Terug"
@@ -1796,7 +1796,7 @@ msgid "Super-administrator"
 msgstr "Superbeheerder"
 
 msgid "Super-administrator Guide"
-msgstr ""
+msgstr "Superbeheerdershandleiding"
 
 msgid "Super-administrators have full access."
 msgstr "Superbeheerders kunnen álles."
