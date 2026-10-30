@@ -201,7 +201,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			delete(s.pageTimings, p.Board.Path()+fmt.Sprintf("res/%d.html", p.ID))
 			s.pageTimingLock.Unlock()
 		}
-		updateReflink := func(p *Post, destination *Board, destinationThread int) {
+		updateReflink := func(p *Post, destination *Board, destinationThread int) []int {
 			source := p.Board
 			oldPath := source.Path() + fmt.Sprintf("res/%d.html#%d", p.Thread(), p.ID)
 			newPath := destination.Path() + fmt.Sprintf("res/%d.html#%d", destinationThread, p.ID)
@@ -209,16 +209,28 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			if destinationThread == p.ID {
 				newRefLabel += "(OP)"
 			}
-			_, err := db.Exec(`UPDATE post SET message = replace(replace(message, '<a href="` + oldPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>', '<a href="` + newPath + `" class="refop">&gt;&gt;` + newRefLabel + `</a>'), '<a href="` + oldPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>', '<a href="` + newPath + `" class="refreply">&gt;&gt;` + newRefLabel + `</a>') WHERE message LIKE '%&gt;&gt;` + strconv.Itoa(p.ID) + `%'`)
+			var threadIDs []int
+			var ids []int
+			err := db.QueryRow(`WITH u AS (UPDATE post SET message = replace(replace(message, '<a href="` + oldPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>', '<a href="` + newPath + `" class="refop">&gt;&gt;` + newRefLabel + `</a>'), '<a href="` + oldPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>', '<a href="` + newPath + `" class="refreply">&gt;&gt;` + newRefLabel + `</a>') WHERE message LIKE '%&gt;&gt;` + strconv.Itoa(p.ID) + `%' RETURNING COALESCE(parent, id) AS threadid) SELECT array_agg(DISTINCT threadid) FROM u`).Scan(&ids)
 			if err != nil {
 				log.Fatalf("failed to move post: failed to update reflinks: %s", err)
 			}
-			_, err = db.Exec(`UPDATE post SET message = replace(replace(message, '<a href="` + oldPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>', '<a href="` + newPath + `" class="refop">&gt;&gt;` + newRefLabel + `</a>'), '<a href="` + oldPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>', '<a href="` + newPath + `" class="refreply">&gt;&gt;` + newRefLabel + `</a>') WHERE message LIKE '%&gt;&gt;` + strconv.Itoa(p.ID) + `%'`)
+			for _, id := range ids {
+				if !slices.Contains(threadIDs, id) {
+					threadIDs = append(threadIDs, id)
+				}
+			}
+			ids = ids[:0]
+			err = db.QueryRow(`WITH u AS (UPDATE post SET message = replace(replace(message, '<a href="` + oldPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>', '<a href="` + newPath + `" class="refop">&gt;&gt;` + newRefLabel + `</a>'), '<a href="` + oldPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>', '<a href="` + newPath + `" class="refreply">&gt;&gt;` + newRefLabel + `</a>') WHERE message LIKE '%&gt;&gt;` + strconv.Itoa(p.ID) + `%' RETURNING COALESCE(parent, id) AS threadid) SELECT array_agg(DISTINCT threadid) FROM u`).Scan(&ids)
 			if err != nil {
 				log.Fatalf("failed to move post: failed to update reflinks: %s", err)
+			}
+			for _, id := range ids {
+				if !slices.Contains(threadIDs, id) {
+					threadIDs = append(threadIDs, id)
+				}
 			}
 			if p.Thread() != destinationThread {
-				log.Println(p.ID, p.Thread(), destinationThread)
 				_, err := db.Exec(`UPDATE post SET message = replace(replace(message, ' class="refop">&gt;&gt;`+strconv.Itoa(destinationThread)+`</a>', ' class="refop">&gt;&gt;`+strconv.Itoa(destinationThread)+`(OP)</a>'), ' class="refreply">&gt;&gt;`+strconv.Itoa(destinationThread)+`</a>', ' class="refreply">&gt;&gt;`+strconv.Itoa(destinationThread)+`(OP)</a>') WHERE id = $1`, p.ID)
 				if err != nil {
 					log.Fatalf("failed to move post: failed to update reflinks: %s", err)
@@ -228,12 +240,13 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 					log.Fatalf("failed to move post: failed to update reflinks: %s", err)
 				}
 			}
+			return threadIDs
 		}
-		updatePost := func(p *Post, destination *Board, destinationThread int) {
+		updatePost := func(p *Post, destination *Board, destinationThread int) []int {
 			if destinationThread == 0 {
 				destinationThread = p.Thread()
 			}
-			updateReflink(p, destination, destinationThread)
+			threadIDs := updateReflink(p, destination, destinationThread)
 			source := p.Board
 			if source.ID != destination.ID {
 				db.UpdatePostBoard(p.ID, destination)
@@ -243,6 +256,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				db.UpdatePostParent(p.ID, destinationThread)
 				p.Parent = destinationThread
 			}
+			return threadIDs
 		}
 		post := selected[0]
 		data.Board = post.Board
@@ -282,7 +296,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				data.ManageError("Failed to move post: Invalid destination thread")
 				return
 			}
-			var threadIDs []int
+			threadIDs := []int{threadID}
 			for _, p := range selected {
 				if !slices.Contains(threadIDs, p.Thread()) {
 					threadIDs = append(threadIDs, p.Thread())
@@ -329,7 +343,11 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			}
 			// Update posts.
 			for _, p := range selected {
-				updatePost(p, destination.Board, threadID)
+				for _, id := range updatePost(p, destination.Board, threadID) {
+					if !slices.Contains(threadIDs, id) {
+						threadIDs = append(threadIDs, id)
+					}
+				}
 			}
 			// Add new backlinks and remove backlinks from destination thread to source thread.
 			removeBacklink := func(post *Post, targetID int) {
@@ -379,7 +397,6 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			for _, id := range threadIDs {
 				threads = append(threads, db.PostByID(id))
 			}
-			threads = append(threads, db.PostByID(threadID))
 			wg := &sync.WaitGroup{}
 			delta := &atomic.Int32{}
 			s.rebuildThreads(db, wg, delta, threads)
@@ -425,8 +442,13 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			removeThreadPage(post)
 			// Update posts.
 			source := post.Board
+			threadIDs := []int{post.ID}
 			for _, p := range posts {
-				updatePost(p, destination, 0)
+				for _, id := range updatePost(p, destination, 0) {
+					if !slices.Contains(threadIDs, id) {
+						threadIDs = append(threadIDs, id)
+					}
+				}
 			}
 			post = db.PostByID(post.ID)
 			s.log(db, data.Account, post.Board, fmt.Sprintf("Moved >>/post/%d to >>/board/%d", post.ID, data.Board.ID), "")
@@ -449,10 +471,14 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 				go s.refreshDiskSpace()
 			}
 			// Rebuild static files.
+			db.SoftCommit()
+			var threads []*Post
+			for _, id := range threadIDs {
+				threads = append(threads, db.PostByID(id))
+			}
 			wg := &sync.WaitGroup{}
 			delta := &atomic.Int32{}
-			db.SoftCommit()
-			s.rebuildThread(db, wg, delta, post)
+			s.rebuildThreads(db, wg, delta, threads)
 			wg.Wait()
 			data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", destination.ID, post.Thread()))
 		} else {
