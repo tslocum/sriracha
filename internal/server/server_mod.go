@@ -201,31 +201,47 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 			delete(s.pageTimings, p.Board.Path()+fmt.Sprintf("res/%d.html", p.ID))
 			s.pageTimingLock.Unlock()
 		}
-		updatePost := func(p *Post, destination *Board, destinationThread int) {
+		updateReflink := func(p *Post, destination *Board, destinationThread int) {
 			source := p.Board
 			oldPath := source.Path() + fmt.Sprintf("res/%d.html#%d", p.Thread(), p.ID)
-			if source.ID != destination.ID {
-				db.UpdatePostBoard(p.ID, destination)
-				p.Board = destination
-			}
-			if destinationThread == 0 {
-				destinationThread = p.Thread()
-			}
+			newPath := destination.Path() + fmt.Sprintf("res/%d.html#%d", destinationThread, p.ID)
 			newRefLabel := strconv.Itoa(p.ID)
-			if destinationThread != p.Thread() {
-				db.UpdatePostParent(p.ID, destinationThread)
-				p.Parent = destinationThread
-			} else {
+			if destinationThread == p.ID {
 				newRefLabel += "(OP)"
 			}
-			newPath := destination.Path() + fmt.Sprintf("res/%d.html#%d", destinationThread, p.ID)
 			_, err := db.Exec(`UPDATE post SET message = replace(replace(message, '<a href="` + oldPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>', '<a href="` + newPath + `" class="refop">&gt;&gt;` + newRefLabel + `</a>'), '<a href="` + oldPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `(OP)</a>', '<a href="` + newPath + `" class="refreply">&gt;&gt;` + newRefLabel + `</a>') WHERE message LIKE '%&gt;&gt;` + strconv.Itoa(p.ID) + `%'`)
 			if err != nil {
 				log.Fatalf("failed to move post: failed to update reflinks: %s", err)
 			}
-			_, err = db.Exec(`UPDATE post SET message = replace(replace(message, '<a href="` + oldPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>', '<a href="` + newPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>'), '<a href="` + oldPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>', '<a href="` + newPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>') WHERE message LIKE '%&gt;&gt;` + strconv.Itoa(p.ID) + `%'`)
+			_, err = db.Exec(`UPDATE post SET message = replace(replace(message, '<a href="` + oldPath + `" class="refop">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>', '<a href="` + newPath + `" class="refop">&gt;&gt;` + newRefLabel + `</a>'), '<a href="` + oldPath + `" class="refreply">&gt;&gt;` + strconv.Itoa(p.ID) + `</a>', '<a href="` + newPath + `" class="refreply">&gt;&gt;` + newRefLabel + `</a>') WHERE message LIKE '%&gt;&gt;` + strconv.Itoa(p.ID) + `%'`)
 			if err != nil {
 				log.Fatalf("failed to move post: failed to update reflinks: %s", err)
+			}
+			if p.Thread() != destinationThread {
+				log.Println(p.ID, p.Thread(), destinationThread)
+				_, err := db.Exec(`UPDATE post SET message = replace(replace(message, ' class="refop">&gt;&gt;`+strconv.Itoa(destinationThread)+`</a>', ' class="refop">&gt;&gt;`+strconv.Itoa(destinationThread)+`(OP)</a>'), ' class="refreply">&gt;&gt;`+strconv.Itoa(destinationThread)+`</a>', ' class="refreply">&gt;&gt;`+strconv.Itoa(destinationThread)+`(OP)</a>') WHERE id = $1`, p.ID)
+				if err != nil {
+					log.Fatalf("failed to move post: failed to update reflinks: %s", err)
+				}
+				_, err = db.Exec(`UPDATE post SET message = replace(replace(message, ' class="refop">&gt;&gt;`+strconv.Itoa(p.Thread())+`(OP)</a>', ' class="refop">&gt;&gt;`+strconv.Itoa(p.Thread())+`</a>'), ' class="refreply">&gt;&gt;`+strconv.Itoa(p.Thread())+`(OP)</a>', ' class="refreply">&gt;&gt;`+strconv.Itoa(p.Thread())+`</a>') WHERE id = $1`, p.ID)
+				if err != nil {
+					log.Fatalf("failed to move post: failed to update reflinks: %s", err)
+				}
+			}
+		}
+		updatePost := func(p *Post, destination *Board, destinationThread int) {
+			if destinationThread == 0 {
+				destinationThread = p.Thread()
+			}
+			updateReflink(p, destination, destinationThread)
+			source := p.Board
+			if source.ID != destination.ID {
+				db.UpdatePostBoard(p.ID, destination)
+				p.Board = destination
+			}
+			if destinationThread != p.Thread() {
+				db.UpdatePostParent(p.ID, destinationThread)
+				p.Parent = destinationThread
 			}
 		}
 		post := selected[0]
