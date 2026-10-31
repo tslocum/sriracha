@@ -3,13 +3,13 @@
 {{if eq (len .Manage.Logs) 0}}
     No entries.
 {{else}}
-    <table class="managetable">
+    <table class="managetable" style="width: 100%;">
         <tr>
             <th>{{T "Date"}}</th>
             <th>{{T "User"}}</th>
             <th>{{T "Board"}}</th>
             <th>{{T "Action"}}</th>
-            <th width="60%">{{T "Info"}}</th>
+            <th width="50%">{{T "Info"}}</th>
         </tr>
         {{range $i, $log := .Manage.Logs}}
             <tr>
