@@ -21,7 +21,7 @@ var threadStatusPaused = 2;
 var threadStatusDeleted = 3;
 
 // verbose is a flag which enables verbose logging.
-const verbose = true;
+const verbose = false;
 
 const touchScreen = window.matchMedia("(pointer: coarse)").matches;
 
