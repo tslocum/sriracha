@@ -1302,7 +1302,7 @@ msgstr ""
 "några."
 
 msgid ""
-"Number of replies to show per overboard index page. Set to 0 to show all."
+"Number of replies to show per overboard index thread. Set to 0 to show none."
 msgstr ""
 "Antal svar som visas per indexsida för övertavlan. Ange 0 för att visa alla."
 
@@ -2042,7 +2042,7 @@ msgstr "Om banderollen visas på nyhetssidor."
 msgid "Whether the banner is displayed in overboard pages."
 msgstr "Om banderollen visas på övertavlans sidor."
 
-msgid "Whether the threshold is for individual boards or everywhere."
+msgid "Whether the threshold is for individual boards or anywhere."
 msgstr "Om tröskelvärdet gäller enskilda tavlor eller överallt."
 
 msgid "Whether the threshold is for individual visitors or everyone."

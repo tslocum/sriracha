@@ -1320,7 +1320,7 @@ msgstr ""
 "om niets te tonen."
 
 msgid ""
-"Number of replies to show per overboard index page. Set to 0 to show all."
+"Number of replies to show per overboard index thread. Set to 0 to show none."
 msgstr ""
 "Het aantal te tonen antwoorden op de overzichtspagina. Stel in op 0 om alles "
 "te tonen."
@@ -2064,7 +2064,7 @@ msgstr "Of de banier moet worden getoond op nieuwspagina's."
 msgid "Whether the banner is displayed in overboard pages."
 msgstr "Of de banier moet worden getoond op overzichtspagina's."
 
-msgid "Whether the threshold is for individual boards or everywhere."
+msgid "Whether the threshold is for individual boards or anywhere."
 msgstr "Of de drempelwaarde van toepassing is op specifieke subfora of overal."
 
 msgid "Whether the threshold is for individual visitors or everyone."

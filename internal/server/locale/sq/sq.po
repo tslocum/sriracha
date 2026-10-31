@@ -1286,7 +1286,7 @@ msgstr ""
 "per te mos shfaqur asnje."
 
 msgid ""
-"Number of replies to show per overboard index page. Set to 0 to show all."
+"Number of replies to show per overboard index thread. Set to 0 to show none."
 msgstr ""
 "Numri i replikave per te shfaqur ne cdo faqe te indeksit overboard. Vendos 0 "
 "per t'i shfaqur te gjitha."
@@ -2003,7 +2003,7 @@ msgstr ""
 msgid "Whether the banner is displayed in overboard pages."
 msgstr ""
 
-msgid "Whether the threshold is for individual boards or everywhere."
+msgid "Whether the threshold is for individual boards or anywhere."
 msgstr ""
 
 msgid "Whether the threshold is for individual visitors or everyone."
