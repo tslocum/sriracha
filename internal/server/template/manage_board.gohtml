@@ -353,12 +353,11 @@
                 {{if ne (len .Opt.Embeds) 0}}
                     <div class="postblock"><label for="embeds">{{T "Embed Services"}}{{Globe "board.embeds"}}</label></div>
                     <div>
-                        {{range $i, $info := .Opt.Embeds}}
+                        {{range $i, $e := .Opt.Embeds}}
                             {{if ne $i 0}}
                                 <br>
                             {{end}}
-                            {{$name := index $info 0}}
-                            <label><input type="checkbox" name="embeds" value="{{$name}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasEmbed $name)}} checked{{end}}> {{$name}}</label>
+                            <label><input type="checkbox" name="embeds" value="{{$e.Name}}"{{if and (ne $.Manage.Board nil) ($.Manage.Board.HasEmbed $e.Name)}} checked{{end}}> {{$e.Name}}</label>
                         {{end}}
                     </div>
                     <div>{{T "Visitors may embed media from selected services instead of uploading a file."}}</div>

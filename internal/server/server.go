@@ -98,10 +98,22 @@ const (
 const minServerRefresh = 10 // New posts are batched together every 10 seconds.
 
 // defaultServerEmbeds is a list of default oEmbed services.
-var defaultServerEmbeds = [][2]string{
-	{"YouTube", "https://youtube.com/oembed?format=json&url=SRIRACHA_EMBED"},
-	{"Vimeo", "https://vimeo.com/api/oembed.json?url=SRIRACHA_EMBED"},
-	{"SoundCloud", "https://soundcloud.com/oembed?format=json&url=SRIRACHA_EMBED"},
+var defaultServerEmbeds = []*EmbedService{
+	{
+		Name:    "YouTube",
+		URL:     "https://youtube.com/oembed?format=json&url=SRIRACHA_EMBED",
+		Domains: []string{"youtube.com", "youtu.be"},
+	},
+	{
+		Name:    "Vimeo",
+		URL:     "https://vimeo.com/api/oembed.json?url=SRIRACHA_EMBED",
+		Domains: []string{"vimeo.com"},
+	},
+	{
+		Name:    "SoundCloud",
+		URL:     "https://soundcloud.com/oembed?format=json&url=SRIRACHA_EMBED",
+		Domains: []string{"soundcloud.com", "soundcloud.app.goog.gl"},
+	},
 }
 
 // Banner options.
@@ -149,6 +161,12 @@ const (
 
 const HashSize = 48 // Bytes.
 
+type EmbedService struct {
+	Name    string
+	URL     string
+	Domains []string
+}
+
 type BoardStats struct {
 	Dir     string
 	Name    string
@@ -186,7 +204,7 @@ type ServerOptions struct {
 	Spoiler          bool
 	Refresh          int
 	Uploads          []*UploadType
-	Embeds           [][2]string
+	Embeds           []*EmbedService
 	StripMetadata    bool
 	StripOriginal    bool
 	ImageMagick      bool
@@ -257,6 +275,43 @@ func (opt *ServerOptions) RefreshLabelValue() int {
 		return opt.Refresh / 60
 	}
 	return opt.Refresh
+}
+
+func (opt *ServerOptions) ParseEmbed(v string) *EmbedService {
+	value := strings.TrimSpace(v)
+	if value == "" {
+		return nil
+	}
+	lines := strings.Split(value, "\n")
+	split := strings.SplitN(lines[0], " ", 2)
+	if len(split) != 2 || (!strings.HasPrefix(split[1], "http://") && !strings.HasPrefix(split[1], "https://")) || !strings.Contains(split[1], "SRIRACHA_EMBED") {
+		return nil
+	}
+	e := &EmbedService{
+		Name: split[0],
+		URL:  split[1],
+	}
+	if len(lines) > 1 {
+		for _, domain := range lines[1:] {
+			domain := strings.TrimSpace(domain)
+			if domain != "" {
+				e.Domains = append(e.Domains, strings.ToLower(domain))
+			}
+		}
+	}
+	return e
+}
+
+func (opt *ServerOptions) EmbedString() []string {
+	var embeds []string
+	for _, e := range opt.Embeds {
+		line := fmt.Sprintf("%s %s", e.Name, e.URL)
+		for _, domain := range e.Domains {
+			line += "\n" + domain
+		}
+		embeds = append(embeds, line)
+	}
+	return embeds
 }
 
 type cachedKeyword struct {
@@ -1082,15 +1137,15 @@ func (s *Server) loadServerConfig() error {
 
 	s.opt.Embeds = nil
 	if !db.HaveConfig("embeds") {
-		s.opt.Embeds = append(s.opt.Embeds, defaultServerEmbeds...)
+		s.opt.Embeds = defaultServerEmbeds
 	} else {
 		embeds := db.GetMultiString("embeds")
 		for _, v := range embeds {
-			split := strings.SplitN(v, " ", 2)
-			if len(split) != 2 {
+			e := s.opt.ParseEmbed(v)
+			if e == nil {
 				continue
 			}
-			s.opt.Embeds = append(s.opt.Embeds, [2]string{split[0], split[1]})
+			s.opt.Embeds = append(s.opt.Embeds, e)
 		}
 	}
 
@@ -2179,8 +2234,8 @@ func (s *Server) removeInvalidBoardOptions(db serverDB) {
 		var modified bool
 		for _, boardEmbed := range b.Embeds {
 			var found bool
-			for _, serverEmbed := range s.opt.Embeds {
-				if serverEmbed[0] == boardEmbed {
+			for _, e := range s.opt.Embeds {
+				if e.Name == boardEmbed {
 					found = true
 					break
 				}

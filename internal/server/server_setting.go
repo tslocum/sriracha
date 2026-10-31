@@ -151,14 +151,8 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		s.opt.OverboardReplies = DefaultBoardReplies
 		db.SaveInt("overboardreplies", s.opt.OverboardReplies)
 
-		s.opt.Embeds = nil
-		var embeds []string
-		for _, info := range defaultServerEmbeds {
-			embedName, embedURL := info[0], info[1]
-			s.opt.Embeds = append(s.opt.Embeds, info)
-			embeds = append(embeds, embedName+" "+embedURL)
-		}
-		db.SaveMultiString("embeds", embeds)
+		s.opt.Embeds = defaultServerEmbeds
+		db.SaveMultiString("embeds", s.opt.EmbedString())
 
 		s.opt.ExportDir = ""
 		db.SaveString("exportdir", s.opt.ExportDir)
@@ -402,22 +396,16 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 			}
 		}
 		sort.Strings(embedNames)
-		var embeds []string
 		for _, name := range embedNames {
 			for _, vv := range r.Form[name] {
-				value := strings.TrimSpace(vv)
-				if value == "" {
+				e := s.opt.ParseEmbed(vv)
+				if e == nil {
 					continue
 				}
-				split := strings.SplitN(value, " ", 2)
-				if len(split) != 2 || (!strings.HasPrefix(split[1], "http://") && !strings.HasPrefix(split[1], "https://")) || !strings.Contains(split[1], "SRIRACHA_EMBED") {
-					continue
-				}
-				s.opt.Embeds = append(s.opt.Embeds, [2]string{split[0], split[1]})
-				embeds = append(embeds, vv)
+				s.opt.Embeds = append(s.opt.Embeds, e)
 			}
 		}
-		db.SaveMultiString("embeds", embeds)
+		db.SaveMultiString("embeds", s.opt.EmbedString())
 
 		exportDir := FormString(r, "exportdir")
 		db.SaveString("exportdir", exportDir)

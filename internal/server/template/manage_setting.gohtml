@@ -185,13 +185,14 @@
 
             <div class="postblock"><label for="captcha">{{T "Embed Services"}}</label></div>
             <div>
-                {{range $i, $info := .Opt.Embeds}}
-                    <textarea name="embeds{{$i | ZeroPadTo3}}" rows="4" cols="80" placeholder="Unused">{{index $info 0}} {{index $info 1}}</textarea><br>
+                {{range $i, $e := .Opt.Embeds}}
+                    <textarea name="embeds{{$i | ZeroPadTo3}}" rows="4" cols="80" placeholder="Unused">{{$e.Name}} {{$e.URL}}{{range $i, $domain := $e.Domains}}
+{{$domain}}{{end}}</textarea><br>
                 {{end}}
                 <textarea name="embeds{{len .Opt.Embeds | ZeroPadTo3}}" rows="4" cols="80" placeholder="{{T "Unused"}}"></textarea>
             </div>
-            <div>{{T "Available embed services. Visit board settings to enable usage."}}<br><br>
-            Format: <div style="display: inline-block;border: 1px solid;padding: 2px;">Name https://service.com/path/to/oembed?url=SRIRACHA_EMBED</div></div>
+            <div>{{T "Available embed services. Visit board settings to enable usage."}} Format:<br>
+            <div style="display: inline-block;border: 1px solid;padding: 2px;">Name https://service.com/path/to/oembed?url=SRIRACHA_EMBED<br>domain1.com<br>domain2.com</div></div>
 
             <div class="gridheader"><br>{{T "Auto Export"}}</div><div class="gridinfo">&nbsp;</div>
 

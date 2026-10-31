@@ -20,6 +20,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -575,19 +576,34 @@ func (s *Server) checkDuplicateFileHash(db serverDB, post *Post) *Post {
 
 func (s *Server) embedMedia(db serverDB, post *Post, embed string, dryRun bool) error {
 	b := post.Board
-	for _, embedName := range b.Embeds {
-		var embedURL string
-		for _, info := range s.opt.Embeds {
-			if info[0] == embedName {
-				embedURL = info[1]
-				break
-			}
-		}
-		if embedURL == "" {
+	for _, e := range s.opt.Embeds {
+		if !slices.Contains(b.Embeds, e.Name) {
 			continue
 		}
 
-		requestURL := strings.ReplaceAll(embedURL, "SRIRACHA_EMBED", embed)
+		embedURL := embed
+		if !strings.HasPrefix(embedURL, "http://") && !strings.HasPrefix(embedURL, "https://") {
+			embedURL = "https://" + embedURL
+		}
+		if len(e.Domains) > 0 {
+			u, err := url.Parse(embedURL)
+			if err != nil {
+				continue
+			}
+			domain := strings.ToLower(u.Host)
+			var found bool
+			for _, d := range e.Domains {
+				if d == domain || strings.HasSuffix(domain, "."+d) {
+					found = true
+					break
+				}
+			}
+			if !found {
+				continue
+			}
+		}
+
+		requestURL := strings.ReplaceAll(e.URL, "SRIRACHA_EMBED", embedURL)
 		req, err := http.NewRequest(http.MethodGet, requestURL, nil)
 		if err != nil {
 			continue
@@ -608,7 +624,7 @@ func (s *Server) embedMedia(db serverDB, post *Post, embed string, dryRun bool) 
 		// YouTube returns a low quality 4:3 thumbnail by default.
 		// Replace with high quality 16:9 thumbnail when available.
 		var backupThumb string
-		u, err := url.Parse(embed)
+		u, err := url.Parse(embedURL)
 		if err == nil {
 			var ytVideoID string
 			switch strings.ToLower(u.Host) {
@@ -655,8 +671,8 @@ func (s *Server) embedMedia(db serverDB, post *Post, embed string, dryRun bool) 
 		}
 
 		post.File = info.HTML
-		post.FileHash = "e " + embedName + " " + info.Title
-		post.FileOriginal = embed
+		post.FileHash = "e " + e.Name + " " + info.Title
+		post.FileOriginal = embedURL
 		if dryRun {
 			break
 		}

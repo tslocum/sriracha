@@ -384,8 +384,8 @@ func (s *Server) loadBoardForm(db serverDB, r *http.Request, b *Board) {
 	embeds := r.Form["embeds"]
 	for _, embed := range embeds {
 		var found bool
-		for _, info := range s.opt.Embeds {
-			if info[0] == embed {
+		for _, e := range s.opt.Embeds {
+			if e.Name == embed {
 				found = true
 				break
 			}
