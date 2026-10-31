@@ -95,7 +95,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		}
 		data.Template = "board_page"
 		data.ModMode = true
-		data.ReplyMode = 1
+		data.ReplyMode = selected[0].Thread()
 		data.Board = selected[0].Board
 		posts := db.PostsByIP(selected[0].IP)
 		if r.FormValue("confirmation") == "1" {
@@ -135,7 +135,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		}
 		data.Template = "board_page"
 		data.ModMode = true
-		data.ReplyMode = 1
+		data.ReplyMode = selected[0].Thread()
 		checkAttachment := func(p *Post, destination *Board) error {
 			if p.File != "" && !p.IsEmbed() {
 				_, err := os.Stat(filepath.Join(s.config.Root, destination.Path(), "src", p.File))
@@ -720,7 +720,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 	}
 
 	data.ModMode = true
-	data.ReplyMode = 1
+	data.ReplyMode = selected[0].Thread()
 	data.Extra = action
 	existing := make(map[int][]*Post)
 	var lastAddress string
