@@ -1034,6 +1034,11 @@ function onDOMContentLoaded(e) {
     var result = window.location.pathname.match(/.*\/res\/([0-9]+)\.html$/);
     if (result && result.length == 2) {
         viewThreadID = result[1];
+    } else {
+        result = window.location.pathname.match(/^\/sriracha\/board\/mod\/[0-9]+\/([0-9]+)$/);
+        if (result && result.length == 2) {
+            viewThreadID = result[1];
+        }
     }
 
     // Display thread status icons.
