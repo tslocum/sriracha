@@ -222,6 +222,7 @@ const (
 	DefaultBoardWordBreak   = 200
 	DefaultBoardDefaultName = "Anonymous"
 	DefaultBoardTruncate    = 15
+	DefaultBoardApproval    = 2
 	DefaultBoardMaxSize     = 2000000
 	DefaultBoardThumbWidth  = 250
 	DefaultBoardThumbHeight = 250
@@ -242,6 +243,7 @@ func NewBoard() *Board {
 		DefaultName:   DefaultBoardDefaultName,
 		WordBreak:     DefaultBoardWordBreak,
 		Truncate:      DefaultBoardTruncate,
+		Approval:      DefaultBoardApproval,
 		MaxSizeThread: DefaultBoardMaxSize,
 		MaxSizeReply:  DefaultBoardMaxSize,
 		ThumbWidth:    DefaultBoardThumbWidth,

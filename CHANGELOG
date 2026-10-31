@@ -1,3 +1,6 @@
+2.2.2:
+- Require approval for all posts by default
+
 2.2.1:
 - Support moving posts between threads
 - Support auto-refreshing forum index pages

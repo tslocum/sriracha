@@ -127,7 +127,7 @@ func (s *Server) loadGlobalBoardSettings(db serverDB, b *Board) {
 		if first != nil {
 			b.Approval = first.Approval
 		} else {
-			b.Approval = ApprovalNone
+			b.Approval = DefaultBoardApproval
 		}
 	}
 	if slices.Contains(s.opt.Global, "board.reports") {
