@@ -292,7 +292,7 @@ function fetchPosts(url, append) {
         var newPosts = [];
         for (const post of posts) {
             var postID = +post.id; // Parse int.
-            if (postID == 0 || document.getElementById(post.id) || (viewThreadID == 0 && postID <= highestPostID)) {
+            if (postID == 0 || document.getElementById(post.id) || (append && viewThreadID == 0 && postID <= highestPostID)) {
                 continue;
             }
             if (verbose) {

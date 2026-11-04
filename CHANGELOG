@@ -2,6 +2,7 @@
 - Add janitor and screener roles
 - Allow specifying embed service domains
 - Require approval for all posts by default
+- Fix fetching post previews
 
 2.2.1:
 - Support moving posts between threads
