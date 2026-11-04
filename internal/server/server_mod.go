@@ -537,6 +537,9 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		data.Redirect(w, r, fmt.Sprintf("/sriracha/board/mod/%d/%d", post.Board.ID, post.Thread()))
 		return
 	} else if action == "da" {
+		if s.forbidden(w, data, "post.delete") {
+			return
+		}
 		post := selected[0]
 		if post.File == "" {
 			data.ManageError("That post does not have an attachment.")
