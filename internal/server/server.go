@@ -379,8 +379,7 @@ type Server struct {
 
 	lastSearch map[string]int64
 
-	modQueueSize   int
-	adminQueueSize int
+	queueSize map[AccountRole]int
 
 	buildQueue chan *buildInfo
 
@@ -431,8 +430,7 @@ func NewServer() *Server {
 		indexCache:            make(map[int][][]int),
 		indexCacheLock:        &sync.Mutex{},
 		lastSearch:            make(map[string]int64),
-		modQueueSize:          -1,
-		adminQueueSize:        -1,
+		queueSize:             make(map[AccountRole]int),
 		buildQueue:            make(chan *buildInfo),
 		rebuildQueue:          make(chan *rebuildInfo),
 		httpClient:            httpClient,
@@ -484,7 +482,7 @@ func (s *Server) parseBuildInfo() {
 	}
 }
 
-func (s *Server) may(data *templateData, action string) bool {
+func (s *Server) requiredAccess(action string) AccountRole {
 	var required AccountRole
 	switch s.config.Access[action] {
 	case "screener":
@@ -498,26 +496,22 @@ func (s *Server) may(data *templateData, action string) bool {
 	case "super-admin":
 		required = RoleSuperAdmin
 	}
-	return required != 0 && data.Account != nil && data.Account.Role != 0 && data.Account.Role <= required
+	return required
+}
+
+func (s *Server) roleMay(role AccountRole, action string) bool {
+	required := s.requiredAccess(action)
+	return role != 0 && required != 0 && role <= required
+}
+
+func (s *Server) may(data *templateData, action string) bool {
+	return data.Account != nil && s.roleMay(data.Account.Role, action)
 }
 
 // forbidden returns whether a user is forbidden from performing an accion.
 // When forbidden, an error page is written to the web request automatically.
 func (s *Server) forbidden(w http.ResponseWriter, data *templateData, action string) bool {
-	var required AccountRole
-	switch s.config.Access[action] {
-	case "screener":
-		required = RoleScreener
-	case "janitor":
-		required = RoleJanitor
-	case "mod":
-		required = RoleMod
-	case "admin":
-		required = RoleAdmin
-	case "super-admin":
-		required = RoleSuperAdmin
-	}
-	return data.forbidden(w, required)
+	return data.forbidden(w, s.requiredAccess(action))
 }
 
 // parseLists parses an IP whitelist or blacklist file.
@@ -779,6 +773,7 @@ func (s *Server) parseConfig(configFile string) error {
 		"post.sticky":     "mod",
 		"post.spoiler":    "mod",
 		"post.move":       "mod",
+		"post.archive":    "mod",
 		"post.delete":     "mod",
 	}
 	validateAccess := func(name string, v string) error {

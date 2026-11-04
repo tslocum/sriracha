@@ -49,9 +49,9 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		var action string
 		if FormString(r, "approve") != "" {
 			action = "approve"
-		} else if FormString(r, "archive") != "" {
+		} else if FormString(r, "archive") != "" && s.may(data, "post.archive") {
 			action = "archive"
-		} else if FormString(r, "unarchive") != "" {
+		} else if FormString(r, "unarchive") != "" && s.may(data, "post.archive") {
 			action = "unarchive"
 		} else {
 			if s.opt.Appeals && s.may(data, "ban.appeal") {
@@ -494,38 +494,41 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 	}
 	data.Message2 = template.HTML(buf.String())
 
-	buf.Reset()
-	pruned := db.PrunedThreads()
-	for i, threadID := range pruned {
-		if i > 0 {
-			buf.WriteString("<hr>\n")
-		}
-
-		fmt.Fprintf(buf, `<div style="margin-bottom: 5px;"><form method="post" action="/sriracha/" style="display: inline-block;"><input type="hidden" name="archive" value="%d"><input type="submit" value="%s"></form> <form method="post" action="/sriracha/mod/delete/%d" onsubmit="return confirm('Delete No.%d?');"><input type="hidden" name="delete" value="%d"><input type="hidden" name="confirmation" value="1"><input type="submit" value="%s"></form></div>`, threadID, Get(nil, data.Account, "Archive"), threadID, threadID, threadID, Get(nil, data.Account, "Delete"))
-
-		posts := db.AllPostsInThread(FilterAny, threadID)
-
-		d := s.buildData(db, w, r)
-		d.Template = "imgboard_post"
-		d.Board = posts[0].Board
-		d.Post = posts[0]
-		d.Threads = [][]*Post{posts}
-		d.ReplyMode = posts[0].ID
-		d.execute(buf)
-	}
-	if len(pruned) > 1 {
-		var ids []byte
-		for i := range pruned {
-			if i != 0 {
-				ids = append(ids, ',')
+	total := len(reports) + len(pending)
+	if s.may(data, "post.archive") && s.may(data, "post.delete") {
+		buf.Reset()
+		pruned := db.PrunedThreads()
+		for i, threadID := range pruned {
+			if i > 0 {
+				buf.WriteString("<hr>\n")
 			}
-			ids = append(ids, []byte(strconv.Itoa(pruned[i]))...)
-		}
-		buf.WriteString(fmt.Sprintf(`<hr><form method="post" action="/sriracha/" style="display: inline-block;"><input type="hidden" name="archive" value="%s"><input type="submit" value="%s"></form>`, ids, Get(nil, data.Account, "Archive all")))
-	}
-	data.Message3 = template.HTML(buf.String())
 
-	total := len(reports) + len(pending) + len(pruned)
+			fmt.Fprintf(buf, `<div style="margin-bottom: 5px;"><form method="post" action="/sriracha/" style="display: inline-block;"><input type="hidden" name="archive" value="%d"><input type="submit" value="%s"></form> <form method="post" action="/sriracha/mod/delete/%d" onsubmit="return confirm('Delete No.%d?');"><input type="hidden" name="delete" value="%d"><input type="hidden" name="confirmation" value="1"><input type="submit" value="%s"></form></div>`, threadID, Get(nil, data.Account, "Archive"), threadID, threadID, threadID, Get(nil, data.Account, "Delete"))
+
+			posts := db.AllPostsInThread(FilterAny, threadID)
+
+			d := s.buildData(db, w, r)
+			d.Template = "imgboard_post"
+			d.Board = posts[0].Board
+			d.Post = posts[0]
+			d.Threads = [][]*Post{posts}
+			d.ReplyMode = posts[0].ID
+			d.execute(buf)
+		}
+		if len(pruned) > 1 {
+			var ids []byte
+			for i := range pruned {
+				if i != 0 {
+					ids = append(ids, ',')
+				}
+				ids = append(ids, []byte(strconv.Itoa(pruned[i]))...)
+			}
+			buf.WriteString(fmt.Sprintf(`<hr><form method="post" action="/sriracha/" style="display: inline-block;"><input type="hidden" name="archive" value="%s"><input type="submit" value="%s"></form>`, ids, Get(nil, data.Account, "Archive all")))
+		}
+		data.Message3 = template.HTML(buf.String())
+		total += len(pruned)
+	}
+
 	if s.opt.Appeals && s.may(data, "ban.appeal") {
 		buf.Reset()
 		appeals := db.PendingBanAppeals()

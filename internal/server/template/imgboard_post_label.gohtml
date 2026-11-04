@@ -21,7 +21,7 @@
         {{end}}
         {{if $.ModMode}}
             <span class="modui">
-                {{if eq $post.Parent 0}}
+                {{if and (eq $post.Parent 0) (May "post.archive" $.Account $.Opt.Access)}}
                     <a href="/sriracha/?{{if $post.Archived}}un{{end}}archive={{$post.ID}}" title="{{if not $post.Archived}}{{T "Archive"}}{{else}}{{T "Unarchive"}}{{end}}" onclick="javascript:return confirm('{{if not $post.Archived}}Archive{{else}}Unarchive{{end}} thread?');">#</a>
                 {{end}}
                 {{if and $.Opt.Spoiler (ne $post.Thumb "") (May "post.spoiler" $.Account $.Opt.Access)}}

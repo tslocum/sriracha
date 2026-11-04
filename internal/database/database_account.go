@@ -74,7 +74,7 @@ func (db *DB) addAccountSession(accountID int) string {
 	return sessionKey
 }
 func (db *DB) AccountSessionKeys(accountID int) []string {
-	rows, err := db.conn.Query(context.Background(), "SELECT key FROM account_session")
+	rows, err := db.conn.Query(context.Background(), "SELECT key FROM account_session WHERE account = $1", accountID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to select account sessions: %w", err))
 	}

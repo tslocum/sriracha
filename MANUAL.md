@@ -829,6 +829,7 @@ dbname: "sriracha"
 #  post.sticky:     "mod"
 #  post.spoiler:    "mod"
 #  post.move:       "mod"
+#  post.archive:    "mod"
 #  post.delete:     "mod"
 
 # Audit database connection URL. When configured, log entries are duplicated

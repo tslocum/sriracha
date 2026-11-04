@@ -234,14 +234,25 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 func (s *Server) _buildStaffQueues(info *buildInfo) {
 	db := info.db
 
-	modQueueSize := len(db.PendingPosts()) + len(db.AllReports()) + len(db.PrunedThreads())
-	adminQueueSize := modQueueSize
-	if s.opt.Appeals {
-		appeals := len(db.PendingBanAppeals())
-		if s.config.Access["ban.appeal"] == "mod" {
-			modQueueSize += appeals
+	queueSize := make(map[AccountRole]int)
+	add := func(required AccountRole, v int) {
+		if v == 0 {
+			return
 		}
-		adminQueueSize += appeals
+		for role := required; role >= RoleSuperAdmin; role-- {
+			queueSize[role] += v
+		}
+	}
+
+	add(RoleScreener, len(db.PendingPosts()))
+
+	add(RoleMod, len(db.AllReports()))
+
+	rolePrune := min(s.requiredAccess("post.archive"), s.requiredAccess("post.delete"))
+	add(rolePrune, len(db.PrunedThreads()))
+
+	if s.opt.Appeals {
+		add(s.requiredAccess("ban.appeal"), len(db.PendingBanAppeals()))
 	}
 
 	writeQueue := func(name string, size int) {
@@ -264,13 +275,13 @@ func (s *Server) _buildStaffQueues(info *buildInfo) {
 			log.Fatal(err)
 		}
 	}
-	if s.opt.ModQueue != "" && modQueueSize != s.modQueueSize {
-		writeQueue(s.opt.ModQueue, modQueueSize)
-		s.modQueueSize = modQueueSize
+	if s.opt.ModQueue != "" && queueSize[RoleMod] != s.queueSize[RoleMod] {
+		writeQueue(s.opt.ModQueue, queueSize[RoleMod])
+		s.queueSize[RoleMod] = queueSize[RoleMod]
 	}
-	if s.opt.AdminQueue != "" && adminQueueSize != s.adminQueueSize {
-		writeQueue(s.opt.AdminQueue, adminQueueSize)
-		s.adminQueueSize = adminQueueSize
+	if s.opt.AdminQueue != "" && queueSize[RoleAdmin] != s.queueSize[RoleMod] {
+		writeQueue(s.opt.AdminQueue, s.queueSize[RoleMod])
+		s.queueSize[RoleAdmin] = s.queueSize[RoleMod]
 	}
 }
 
