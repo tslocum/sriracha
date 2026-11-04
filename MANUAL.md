@@ -801,7 +801,7 @@ dbname: "sriracha"
 
 # Access required to perform an action. Default values for all actions are listed below.
 #
-# Format: mod / admin / super-admin / disable (disallow all roles)
+# Format: screener / janitor / mod / admin / super-admin / disable (disallow all roles)
 #access:
 #  ban.add:         "mod"
 #  ban.shorten:     "admin"

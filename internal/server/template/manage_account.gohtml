@@ -11,7 +11,7 @@
         {{range $i, $account := .Manage.Accounts}}
             <tr>
                 <td>{{$account.Username}}</td>
-                <td>{{if eq $account.Role 1}}{{T "Super-administrator"}}{{else if eq $account.Role 2}}{{T "Administrator"}}{{else if eq $account.Role 3}}{{T "Moderator"}}{{else}}{{T "Disabled"}}{{end}}</td>
+                <td>{{if eq $account.Role 1}}{{T "Super-administrator"}}{{else if eq $account.Role 2}}{{T "Administrator"}}{{else if eq $account.Role 3}}{{T "Moderator"}}{{else if eq $account.Role 4}}{{T "Janitor"}}{{else if eq $account.Role 5}}{{T "Screener"}}{{else}}{{T "Disabled"}}{{end}}</td>
                 <td>{{$account.LastActiveDate}}</td>
                 <td><form method="get" action="/sriracha/account/{{$account.ID}}"><input type="submit" value="{{T "Update"}}"></form></td>
             </tr>
@@ -43,6 +43,8 @@
             <option value="1"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 1)}} selected{{end}}>{{T "Super-administrator"}}</option>
             <option value="2"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 2)}} selected{{end}}>{{T "Administrator"}}</option>
             <option value="3"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 3)}} selected{{end}}>{{T "Moderator"}}</option>
+            <option value="4"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 4)}} selected{{end}}>{{T "Janitor"}}</option>
+            <option value="5"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 5)}} selected{{end}}>{{T "Screener"}}</option>
             <option value="99"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 99)}} selected{{end}}>{{T "Disabled"}}</option>
         </select></div>
         <div>

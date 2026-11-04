@@ -11,7 +11,7 @@ import (
 
 func (s *Server) loadAccountForm(db serverDB, r *http.Request, a *Account) {
 	a.Username = FormString(r, "username")
-	a.Role = FormRange(r, "role", RoleSuperAdmin, RoleDisabled)
+	a.Role = FormRange(r, "role", MinRole, MaxRole)
 }
 
 func (s *Server) serveAccount(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {

@@ -840,6 +840,9 @@ msgstr ""
 msgid "Invalid or deleted post."
 msgstr ""
 
+msgid "Janitor"
+msgstr ""
+
 msgid "Jump to a form field when adding a new post by pressing Alt, Shift and:"
 msgstr ""
 
@@ -1517,6 +1520,9 @@ msgid "Scale"
 msgstr ""
 
 msgid "Scan the following QR code using an authenticator application:"
+msgstr ""
+
+msgid "Screener"
 msgstr ""
 
 msgid "Scroll down to the bottom of the page."

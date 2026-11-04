@@ -15,7 +15,7 @@ const searchPageSize = 10
 
 func (s *Server) serveSearch(db serverDB, w http.ResponseWriter, r *http.Request) {
 	data := s.buildData(db, w, r)
-	if s.opt.Search == 0 && data.forbidden(w, RoleMod) {
+	if s.opt.Search == 0 && data.forbidden(w, RoleScreener) {
 		data.execute(w)
 		return
 	}

@@ -15,7 +15,12 @@ const (
 	RoleSuperAdmin AccountRole = 1
 	RoleAdmin      AccountRole = 2
 	RoleMod        AccountRole = 3
+	RoleJanitor    AccountRole = 4
+	RoleScreener   AccountRole = 5
 	RoleDisabled   AccountRole = 99
+
+	MinRole = RoleSuperAdmin
+	MaxRole = RoleDisabled
 )
 
 func FormatRole(role AccountRole) string {
@@ -26,6 +31,10 @@ func FormatRole(role AccountRole) string {
 		return "Administrator"
 	case RoleMod:
 		return "Moderator"
+	case RoleJanitor:
+		return "Janitor"
+	case RoleScreener:
+		return "Screener"
 	case RoleDisabled:
 		return "Disabled"
 	default:

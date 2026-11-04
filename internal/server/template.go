@@ -305,6 +305,10 @@ var templateFuncMap = template.FuncMap{
 	"May": func(action string, account *Account, access map[string]string) bool {
 		var required AccountRole
 		switch access[action] {
+		case "screener":
+			required = RoleScreener
+		case "janitor":
+			required = RoleJanitor
 		case "mod":
 			required = RoleMod
 		case "admin":

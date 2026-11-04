@@ -487,6 +487,10 @@ func (s *Server) parseBuildInfo() {
 func (s *Server) may(data *templateData, action string) bool {
 	var required AccountRole
 	switch s.config.Access[action] {
+	case "screener":
+		required = RoleScreener
+	case "janitor":
+		required = RoleJanitor
 	case "mod":
 		required = RoleMod
 	case "admin":
@@ -502,6 +506,10 @@ func (s *Server) may(data *templateData, action string) bool {
 func (s *Server) forbidden(w http.ResponseWriter, data *templateData, action string) bool {
 	var required AccountRole
 	switch s.config.Access[action] {
+	case "screener":
+		required = RoleScreener
+	case "janitor":
+		required = RoleJanitor
 	case "mod":
 		required = RoleMod
 	case "admin":

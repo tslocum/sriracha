@@ -743,7 +743,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		if FormString(r, "capcode") != "" {
 			rawHTML = FormBool(r, "raw")
 			capcodeInt := FormInt(r, "capcode")
-			if capcodeInt < 0 || capcodeInt > 2 || (data.Account.Role == RoleMod && capcodeInt == 2) {
+			if (capcodeInt == 1 && data.Account.Role != RoleSuperAdmin && data.Account.Role != RoleAdmin && data.Account.Role != RoleMod) || (capcodeInt == 2 && data.Account.Role != RoleSuperAdmin && data.Account.Role != RoleAdmin) {
 				capcodeInt = 0
 			}
 			switch capcodeInt {
