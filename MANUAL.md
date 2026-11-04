@@ -293,6 +293,25 @@ address domains, set `maildomains` to a reguar expression:
 maildomains: '^(example\.com|example2\.com|example3\.com)$'
 ```
 
+### Staff queues
+
+The 'Mod Queue' and 'Admin Queue' options specify the names of files which are written
+to whenever a moderation request is added or dismissed.
+
+If set to 'mq', the queue will be available at '/mq.html'.
+
+Each staff queue file contains a number which indicates how many moderation requests are currently pending.
+
+For example, if there are two new posts, the queue file will contain '2'.
+
+The purpose of the queue files is to make it easy for staff to check for pending moderation
+requests without needing to log in or provide cookies to automatic monitoring software.
+Any tool which monitors a page for changes can then be used to monitor moderation requests.
+Because no post details are included, the files do not need to be password protected.
+
+[Tofu](https://codeberg.org/tslocum/tofu), the official thread watcher application,
+supports monitoring staff queue pages. This makes it easy to moderate multiple instances.
+
 ### Custom templates
 
 Sriracha supports overriding official templates with custom templates.
@@ -1595,31 +1614,40 @@ The following sentinel values are used:
 
 [Go to top](#sections)
 
-This section contains moderator and administrator guides.
+Sriracha supports customizing the privileges of each role. Because of this,
+your actual privileges may differ from the default privileges listed below.
 
-### Moderator guide
+### Screener guide
 
-As a moderator, you may:
+As a screener, you may:
 
-- Add bans
-- Extend bans
-- Approve posts
-- Delete posts
-- Sticky threads
-- Lock threads
-- Add news
-- Update news
+- Approve new posts
+- Dismiss new posts
+
+Dismissed posts are hidden from the screener moderation queue. A janitor,
+moderator or administrator will decide what to do next.
 
 #### Approving posts
 
 If posts require approval before being displayed, or if post reports are enabled,
 you will need to periodically review the status page in the management panel.
 The status page is the default page shown when you log in. When posts require
-moderator approval, they will appear on this status page.
+staff approval, they will appear on this status page.
 
 When there are no pending moderation requests, the status page will automatically
 refresh after five minutes have passed. When permission to send notifications has
 been granted, a notification will be displayed when a moderation request is added.
+
+### Janitor guide
+
+As a janitor, in addition to screener privileges you may:
+
+- Add temporary bans (up to 3 months by default)
+- Move posts
+- Delete posts
+
+Dismissed posts are hidden from the screener and janitor moderation queues.
+A moderator or administrator will decide what to do next.
 
 #### Banning IP addresses
 
@@ -1659,6 +1687,18 @@ entering a password. When browsing in mod mode, click the 'Moderate' button.
 
 Any existing bans for shorter durations will be replaced.
 
+### Moderator guide
+
+As a moderator, in addition to janitor privileges you may:
+
+- Add bans of any length
+- Extend bans
+- Sticky threads
+- Lock threads
+- Archive posts
+- Add news
+- Update news
+
 #### Archive
 
 When the configured maximum thread limit is exceeded, the oldest threads are pruned.
@@ -1682,25 +1722,6 @@ Enter a date and time in the future to hide the news entry from visitors until t
 Enter the present date and time or a past date and time to show a news entry to visitors.
 
 When the Site Index is enabled, the latest news entry will be displayed on the homepage.
-
-#### Staff queues
-
-The 'Mod Queue' and 'Admin Queue' options specify the names of files which are written
-to whenever a moderation request is added or dismissed.
-
-If set to 'mq', the queue will be available at '/mq.html'.
-
-Each staff queue file contains a number which indicates how many moderation requests are currently pending.
-
-For example, if there are two new posts, the queue file will contain '2'.
-
-The purpose of the queue files is to make it easy for staff to check for pending moderation
-requests without needing to log in or provide cookies to automatic monitoring software.
-Any tool which monitors a page for changes can then be used to monitor moderation requests.
-Because no post details are included, the files do not need to be password protected.
-
-[Tofu](https://codeberg.org/tslocum/tofu), the official thread watcher application,
-supports monitoring staff queue pages. This makes it easy to moderate multiple instances.
 
 ### Administrator guide
 
