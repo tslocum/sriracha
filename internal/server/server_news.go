@@ -52,7 +52,7 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 		if news == nil {
 			data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("News"))))
 			return
-		} else if !news.MayDelete(data.Account) {
+		} else if !news.MayUpdate(data.Account) && !s.may(data, "news.delete") {
 			data.ManageError(data.G("Access denied."))
 			return
 		}
@@ -85,7 +85,7 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 		}
 
 		if data.Manage.News != nil && r.Method == http.MethodPost {
-			if !data.Manage.News.MayUpdate(data.Account) {
+			if !data.Manage.News.MayUpdate(data.Account) && !s.may(data, "news.update") {
 				data.ManageError(data.G("Access denied."))
 				return
 			}
@@ -129,6 +129,9 @@ func (s *Server) serveNews(data *templateData, db serverDB, w http.ResponseWrite
 	}
 
 	if r.Method == http.MethodPost {
+		if s.forbidden(w, data, "news.add") {
+			return
+		}
 		n := &News{}
 		n.Account = data.Account
 		err = s.loadNewsForm(db, r, n, data.Account)

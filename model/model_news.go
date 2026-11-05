@@ -35,14 +35,7 @@ func (n *News) MayUpdate(a *Account) bool {
 	if a == nil {
 		return false
 	}
-	return n.Share || (n.Account != nil && n.Account.ID == a.ID) || (n.Account == nil && (a.Role == RoleSuperAdmin || a.Role == RoleAdmin))
-}
-
-func (n *News) MayDelete(a *Account) bool {
-	if a == nil {
-		return false
-	}
-	return a.Role == RoleSuperAdmin || a.Role == RoleAdmin || n.MayUpdate(a)
+	return n.Share || (n.Account != nil && n.Account.ID == a.ID)
 }
 
 func (n *News) DateLabel() template.HTML {

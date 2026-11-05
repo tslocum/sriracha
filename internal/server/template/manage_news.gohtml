@@ -14,12 +14,12 @@
                 <td>{{if ne $news.Account nil}}{{$news.Account.Username}}{{else}}{{T "None"}}{{end}}</td>
                 <td>{{$news.DateLabel}}</td>
                 <td>
-                    {{if .MayUpdate $.Account}}
+                    {{if or (.MayUpdate $.Account) (May "news.update" $.Account $.Opt.Access)}}
                         <form method="get" action="/sriracha/news/{{$news.ID}}"><input type="submit" value="{{T "Update"}}"></form>
                     {{else}}
                         <form method="get" action="/sriracha/news/{{$news.ID}}"><input type="submit" value="{{T "Details"}}"></form>
                     {{end}}
-                    {{if .MayDelete $.Account}}
+                    {{if or (.MayUpdate $.Account) (May "news.delete" $.Account $.Opt.Access)}}
                         <form method="get" action="/sriracha/news/delete/{{$news.ID}}" onsubmit="return confirm('Delete {{if ne .Subject ""}}{{.Subject}}{{else}}news item #{{.ID}}{{end}}?');"><input type="submit" value="{{T "Delete"}}"></form>
                     {{end}}
                 </td>
@@ -68,7 +68,7 @@
 {{end}}
 <form method="post">
     <fieldset>
-    {{if ne .Manage.News nil}}<legend>{{if .Manage.News.MayUpdate $.Account}}{{T "Update"}} {{end}}{{if ne .Manage.News.Subject ""}}{{.Manage.News.Subject}}{{else}}#{{.Manage.News.ID}}{{end}}</legend>{{end}}
+    {{if ne .Manage.News nil}}<legend>{{if or (.Manage.News.MayUpdate $.Account) (May "news.update" .Account .Opt.Access)}}{{T "Update"}} {{end}}{{if ne .Manage.News.Subject ""}}{{.Manage.News.Subject}}{{else}}#{{.Manage.News.ID}}{{end}}</legend>{{end}}
     <div class="managegrid">
         <div class="postblock"><label for="timestamp">{{T "Date"}}</label></div>
         <div><input type="text" name="timestamp" value="{{if ne .Manage.News nil}}{{FormatDateInput .Manage.News.Timestamp}}{{end}}"></div>
@@ -96,7 +96,7 @@
             <div>{{T "Shared news items may be updated by other staff members."}}</div>
         {{end}}
 
-        {{if or (eq .Manage.News nil) (.Manage.News.MayUpdate .Account)}}
+        {{if or (and (eq .Manage.News nil) (May "news.add" .Account .Opt.Access)) (and (ne .Manage.News nil) (or (.Manage.News.MayUpdate .Account) (May "news.update" .Account .Opt.Access)))}}
             <div>&nbsp;</div>
             <div align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{if eq .Manage.News nil}}{{T "Add"}}{{else}}{{T "Update"}}{{end}}"></div>
             <div>&nbsp;</div>
