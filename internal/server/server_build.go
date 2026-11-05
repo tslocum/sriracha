@@ -277,6 +277,14 @@ func (s *Server) _buildStaffQueues(info *buildInfo) {
 			log.Fatal(err)
 		}
 	}
+	if s.opt.ScreenerQueue != "" && queueSize[RoleScreener] != s.queueSize[RoleScreener] {
+		writeQueue(s.opt.ScreenerQueue, queueSize[RoleScreener])
+		s.queueSize[RoleScreener] = queueSize[RoleScreener]
+	}
+	if s.opt.JanitorQueue != "" && queueSize[RoleJanitor] != s.queueSize[RoleJanitor] {
+		writeQueue(s.opt.JanitorQueue, queueSize[RoleJanitor])
+		s.queueSize[RoleJanitor] = queueSize[RoleJanitor]
+	}
 	if s.opt.ModQueue != "" && queueSize[RoleMod] != s.queueSize[RoleMod] {
 		writeQueue(s.opt.ModQueue, queueSize[RoleMod])
 		s.queueSize[RoleMod] = queueSize[RoleMod]

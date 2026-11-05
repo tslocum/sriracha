@@ -228,6 +228,8 @@ type ServerOptions struct {
 	Rules            map[int][]template.HTML
 	Categories       []*categoryInfo
 	AccessKey        string
+	ScreenerQueue    string
+	JanitorQueue     string
 	ModQueue         string
 	AdminQueue       string
 	Notifications    bool
@@ -1122,8 +1124,9 @@ func (s *Server) loadServerConfig() error {
 
 	s.opt.AccessKey = db.GetString("accesskey")
 
+	s.opt.ScreenerQueue = db.GetString("screenerqueue")
+	s.opt.JanitorQueue = db.GetString("janitorqueue")
 	s.opt.ModQueue = db.GetString("modqueue")
-
 	s.opt.AdminQueue = db.GetString("adminqueue")
 
 	s.opt.DateTimeFormat = db.GetString("datetimeformat")
@@ -2122,7 +2125,7 @@ func (s *Server) rebuildThreads(db serverDB, wg *sync.WaitGroup, delta *atomic.I
 }
 
 func (s *Server) writeStaffQueues(wg *sync.WaitGroup) {
-	if s.opt.ModQueue == "" && s.opt.AdminQueue == "" {
+	if s.opt.ScreenerQueue == "" && s.opt.JanitorQueue == "" && s.opt.ModQueue == "" && s.opt.AdminQueue == "" {
 		return
 	}
 

@@ -119,6 +119,18 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		s.opt.AccessKey = ""
 		db.SaveString("accesskey", s.opt.AccessKey)
 
+		if s.opt.ScreenerQueue != "" {
+			os.Remove(filepath.Join(s.config.Root, s.opt.ScreenerQueue+".html"))
+		}
+		s.opt.ScreenerQueue = ""
+		db.SaveString("screenerqueue", s.opt.ScreenerQueue)
+
+		if s.opt.JanitorQueue != "" {
+			os.Remove(filepath.Join(s.config.Root, s.opt.JanitorQueue+".html"))
+		}
+		s.opt.JanitorQueue = ""
+		db.SaveString("janitorqueue", s.opt.JanitorQueue)
+
 		if s.opt.ModQueue != "" {
 			os.Remove(filepath.Join(s.config.Root, s.opt.ModQueue+".html"))
 		}
@@ -320,6 +332,26 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		db.SaveString("accesskey", accessKey)
 		s.opt.AccessKey = accessKey
 
+		screenerQueue := strings.TrimSuffix(FormString(r, "screenerqueue"), ".html")
+		if screenerQueue != "" && !ValidRelativePath(screenerQueue) {
+			data.ManageError("Invalid screener queue status page file path.")
+			return
+		} else if s.opt.ScreenerQueue != screenerQueue && s.opt.ScreenerQueue != "" {
+			os.Remove(filepath.Join(s.config.Root, s.opt.ScreenerQueue+".html"))
+		}
+		db.SaveString("screenerqueue", screenerQueue)
+		s.opt.ScreenerQueue = screenerQueue
+
+		janitorQueue := strings.TrimSuffix(FormString(r, "janitorqueue"), ".html")
+		if janitorQueue != "" && !ValidRelativePath(janitorQueue) {
+			data.ManageError("Invalid janitor queue status page file path.")
+			return
+		} else if s.opt.JanitorQueue != janitorQueue && s.opt.JanitorQueue != "" {
+			os.Remove(filepath.Join(s.config.Root, s.opt.JanitorQueue+".html"))
+		}
+		db.SaveString("janitorqueue", janitorQueue)
+		s.opt.JanitorQueue = janitorQueue
+
 		modQueue := strings.TrimSuffix(FormString(r, "modqueue"), ".html")
 		if modQueue != "" && !ValidRelativePath(modQueue) {
 			data.ManageError("Invalid moderator queue status page file path.")
@@ -333,9 +365,6 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		adminQueue := strings.TrimSuffix(FormString(r, "adminqueue"), ".html")
 		if adminQueue != "" && !ValidRelativePath(adminQueue) {
 			data.ManageError("Invalid administrator queue status page file path.")
-			return
-		} else if adminQueue != "" && adminQueue == modQueue {
-			data.ManageError("Admin queue and mod queue must be configured separately.")
 			return
 		} else if s.opt.AdminQueue != adminQueue && s.opt.AdminQueue != "" {
 			os.Remove(filepath.Join(s.config.Root, s.opt.AdminQueue+".html"))

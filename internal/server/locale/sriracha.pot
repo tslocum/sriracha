@@ -681,10 +681,7 @@ msgstr ""
 msgid "File name."
 msgstr ""
 
-msgid "File path (excluding .html suffix) of the administrator queue status page. Leave blank to disable."
-msgstr ""
-
-msgid "File path (excluding .html suffix) of the moderator queue status page. Leave blank to disable."
+msgid "File path (excluding .html suffix) of the %s queue status page. Leave blank to disable."
 msgstr ""
 
 msgid "File uploads are not allowed."
@@ -844,6 +841,9 @@ msgid "Janitor"
 msgstr ""
 
 msgid "Janitor Guide"
+msgstr ""
+
+msgid "Janitor Queue"
 msgstr ""
 
 msgid "Jump to a form field when adding a new post by pressing Alt, Shift and:"
@@ -1526,6 +1526,9 @@ msgid "Screener"
 msgstr ""
 
 msgid "Screener Guide"
+msgstr ""
+
+msgid "Screener Queue"
 msgstr ""
 
 msgid "Scroll down to the bottom of the page."

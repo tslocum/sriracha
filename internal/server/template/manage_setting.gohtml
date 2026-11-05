@@ -101,13 +101,21 @@
             <div><input type="text" name="accesskey" value="{{.Opt.AccessKey}}"></input></div>
             <div>{{T "Alphanumeric management panel access key. When set, staff members must visit %s to log in." "/sriracha?k=ACCESSKEY"}}</div>
 
+            <div class="postblock"><label for="screenerqueue">{{T "Screener Queue"}}</label></div>
+            <div><input type="text" name="screenerqueue" value="{{.Opt.ScreenerQueue}}"></input></div>
+            <div>{{T "File path (excluding .html suffix) of the %s queue status page. Leave blank to disable." (T "Screener" | ToLower)}}</div>
+
+            <div class="postblock"><label for="janitorqueue">{{T "Janitor Queue"}}</label></div>
+            <div><input type="text" name="janitorqueue" value="{{.Opt.JanitorQueue}}"></input></div>
+            <div>{{T "File path (excluding .html suffix) of the %s queue status page. Leave blank to disable." (T "Janitor" | ToLower)}}</div>
+
             <div class="postblock"><label for="modqueue">{{T "Mod Queue"}}</label></div>
             <div><input type="text" name="modqueue" value="{{.Opt.ModQueue}}"></input></div>
-            <div>{{T "File path (excluding .html suffix) of the moderator queue status page. Leave blank to disable."}}</div>
+            <div>{{T "File path (excluding .html suffix) of the %s queue status page. Leave blank to disable." (T "Moderator" | ToLower)}}</div>
 
             <div class="postblock"><label for="adminqueue">{{T "Admin Queue"}}</label></div>
             <div><input type="text" name="adminqueue" value="{{.Opt.AdminQueue}}"></input></div>
-            <div>{{T "File path (excluding .html suffix) of the administrator queue status page. Leave blank to disable."}}</div>
+            <div>{{T "File path (excluding .html suffix) of the %s queue status page. Leave blank to disable." (T "Administrator" | ToLower)}}</div>
 
             <div class="postblock"><label for="search">{{T "Search"}}</label></div>
             <div><input type="text" name="search" value="{{.Opt.Search}}"></input></div>

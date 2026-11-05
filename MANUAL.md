@@ -295,14 +295,16 @@ maildomains: '^(example\.com|example2\.com|example3\.com)$'
 
 ### Staff queues
 
-The 'Mod Queue' and 'Admin Queue' options specify the names of files which are written
-to whenever a moderation request is added or dismissed.
+The 'Screener Queue', 'Janitor Queue', 'Mod Queue' and 'Admin Queue' options specify the
+path of each staff queue status page.
 
-If set to 'mq', the queue will be available at '/mq.html'.
+Each status page contains a number which indicates how many moderation requests are currently pending.
 
-Each staff queue file contains a number which indicates how many moderation requests are currently pending.
+For example, if there are two new posts, the satus page will contain '2'.
 
-For example, if there are two new posts, the queue file will contain '2'.
+The status pages are updated whenever a moderation request is added or dismissed.
+
+If set to 'mq', the status page will be available at '/mq.html'.
 
 The purpose of the queue files is to make it easy for staff to check for pending moderation
 requests without needing to log in or provide cookies to automatic monitoring software.
