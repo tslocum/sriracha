@@ -181,9 +181,6 @@ msgstr ""
 msgid "Administrator Guide"
 msgstr ""
 
-msgid "Administrators have full access except for managing accounts."
-msgstr ""
-
 msgid "All"
 msgstr ""
 
@@ -588,6 +585,9 @@ msgstr ""
 msgid "Disallow visitor threads"
 msgstr ""
 
+msgid "Dismiss"
+msgstr ""
+
 msgid "Displayed in site index."
 msgstr ""
 
@@ -703,13 +703,8 @@ msgid "File name."
 msgstr ""
 
 msgid ""
-"File path (excluding .html suffix) of the administrator queue status page. "
-"Leave blank to disable."
-msgstr ""
-
-msgid ""
-"File path (excluding .html suffix) of the moderator queue status page. Leave "
-"blank to disable."
+"File path (excluding .html suffix) of the %s queue status page. Leave blank "
+"to disable."
 msgstr ""
 
 msgid "File uploads are not allowed."
@@ -868,6 +863,15 @@ msgid "Invalid email."
 msgstr ""
 
 msgid "Invalid or deleted post."
+msgstr ""
+
+msgid "Janitor"
+msgstr ""
+
+msgid "Janitor Guide"
+msgstr ""
+
+msgid "Janitor Queue"
 msgstr ""
 
 msgid "Jump to a form field when adding a new post by pressing Alt, Shift and:"
@@ -1123,11 +1127,6 @@ msgid "Moderator"
 msgstr ""
 
 msgid "Moderator Guide"
-msgstr ""
-
-msgid ""
-"Moderators may only perform certain actions. See moderator guide for more "
-"info."
 msgstr ""
 
 msgid "Move"
@@ -1577,6 +1576,15 @@ msgstr ""
 msgid "Scan the following QR code using an authenticator application:"
 msgstr ""
 
+msgid "Screener"
+msgstr ""
+
+msgid "Screener Guide"
+msgstr ""
+
+msgid "Screener Queue"
+msgstr ""
+
 msgid "Scroll down to the bottom of the page."
 msgstr ""
 
@@ -1706,9 +1714,6 @@ msgstr ""
 msgid "Super-administrator Guide"
 msgstr ""
 
-msgid "Super-administrators have full access."
-msgstr ""
-
 msgid "Supported BBCode tags are %s."
 msgstr ""
 
@@ -1728,6 +1733,9 @@ msgid "That embed has already been posted."
 msgstr ""
 
 msgid "That file has already been posted."
+msgstr ""
+
+msgid "The privileges of each role are listed in the %s."
 msgstr ""
 
 msgid "This ban is permanent."
@@ -2013,6 +2021,3 @@ msgstr ""
 
 msgid "in an individual board"
 msgstr ""
-
-#~ msgid "Please wait %s before creating a new post."
-#~ msgstr "Odota %s ennen uuden viestin luomista."

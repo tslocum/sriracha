@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-10-29 04:08+0000\n"
+"PO-Revision-Date: 2026-11-01 19:26+0000\n"
 "Last-Translator: gallegonovato <gallegonovato@noreply.codeberg.org>\n"
 "Language-Team: Spanish <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/es/>\n"
@@ -158,10 +158,10 @@ msgid "Add Threshold"
 msgstr "Definir límite"
 
 msgid "Add board to %s"
-msgstr ""
+msgstr "Agregar tablero a %s"
 
 msgid "Add notice"
-msgstr ""
+msgstr "Agregar anuncio"
 
 msgid "Added"
 msgstr "Añadido"
@@ -180,10 +180,6 @@ msgstr "Administrador"
 
 msgid "Administrator Guide"
 msgstr "Manual del administrador"
-
-msgid "Administrators have full access except for managing accounts."
-msgstr ""
-"Los administradores tienen acceso total, excepto para gestionar cuentas."
 
 msgid "All"
 msgstr "Todo"
@@ -227,59 +223,59 @@ msgid "An attachment is required."
 msgstr "Debes incluir un archivo adjunto."
 
 msgid "Anywhere"
-msgstr ""
+msgstr "Donde sea"
 
 msgid "Appeal"
-msgstr ""
+msgstr "Recurrir"
 
 msgid "Appeal approved."
-msgstr ""
+msgstr "Recurso estimado."
 
 msgid "Appeal denied."
-msgstr ""
+msgstr "Recurso rechazado."
 
 msgid "Appeal rejected."
-msgstr ""
+msgstr "Recurso rechazado."
 
 msgid "Appeal submitted."
-msgstr ""
+msgstr "Recurso presentado."
 
 msgid "Appearance"
-msgstr ""
+msgstr "Aspecto"
 
 msgid "Appears in %s and search results for the site index."
-msgstr ""
+msgstr "Visible en %s y en búsquedas del índice del sitio."
 
 msgid "Appears in page title and header."
-msgstr ""
+msgstr "Visible en título de página y encabezado."
 
 msgid "Approve"
-msgstr ""
+msgstr "Aprobar"
 
 msgid "Approve all"
-msgstr ""
+msgstr "Aprobar todo"
 
 msgid "Approved"
-msgstr ""
+msgstr "Aprobada"
 
 msgid "Archive"
-msgstr ""
+msgstr "Archivar"
 
 msgid "Archive all"
-msgstr ""
+msgstr "Archivar todo"
 
 msgid "Archive mode"
-msgstr ""
+msgstr "Modo de archivado"
 
 msgid ""
 "Archive threads (instead of deleting them) when the thread limit is exceeded."
-msgstr ""
+msgstr "Archivar los hilos en vez de borrarlos al superar el límite."
 
 msgid "Archived"
-msgstr ""
+msgstr "Archivado"
 
 msgid "Artwork title:"
-msgstr ""
+msgstr "Título de la obra"
 
 msgid "Attachment"
 msgstr ""
@@ -593,6 +589,9 @@ msgstr ""
 msgid "Disallow visitor threads"
 msgstr ""
 
+msgid "Dismiss"
+msgstr ""
+
 msgid "Displayed in site index."
 msgstr ""
 
@@ -708,13 +707,8 @@ msgid "File name."
 msgstr ""
 
 msgid ""
-"File path (excluding .html suffix) of the administrator queue status page. "
-"Leave blank to disable."
-msgstr ""
-
-msgid ""
-"File path (excluding .html suffix) of the moderator queue status page. Leave "
-"blank to disable."
+"File path (excluding .html suffix) of the %s queue status page. Leave blank "
+"to disable."
 msgstr ""
 
 msgid "File uploads are not allowed."
@@ -872,6 +866,15 @@ msgid "Invalid email."
 msgstr ""
 
 msgid "Invalid or deleted post."
+msgstr ""
+
+msgid "Janitor"
+msgstr ""
+
+msgid "Janitor Guide"
+msgstr ""
+
+msgid "Janitor Queue"
 msgstr ""
 
 msgid "Jump to a form field when adding a new post by pressing Alt, Shift and:"
@@ -1127,11 +1130,6 @@ msgid "Moderator"
 msgstr ""
 
 msgid "Moderator Guide"
-msgstr ""
-
-msgid ""
-"Moderators may only perform certain actions. See moderator guide for more "
-"info."
 msgstr ""
 
 msgid "Move"
@@ -1581,6 +1579,15 @@ msgstr ""
 msgid "Scan the following QR code using an authenticator application:"
 msgstr ""
 
+msgid "Screener"
+msgstr ""
+
+msgid "Screener Guide"
+msgstr ""
+
+msgid "Screener Queue"
+msgstr ""
+
 msgid "Scroll down to the bottom of the page."
 msgstr ""
 
@@ -1710,9 +1717,6 @@ msgstr ""
 msgid "Super-administrator Guide"
 msgstr ""
 
-msgid "Super-administrators have full access."
-msgstr ""
-
 msgid "Supported BBCode tags are %s."
 msgstr ""
 
@@ -1732,6 +1736,9 @@ msgid "That embed has already been posted."
 msgstr ""
 
 msgid "That file has already been posted."
+msgstr ""
+
+msgid "The privileges of each role are listed in the %s."
 msgstr ""
 
 msgid "This ban is permanent."

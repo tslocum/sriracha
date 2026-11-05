@@ -181,9 +181,6 @@ msgstr "Administratör"
 msgid "Administrator Guide"
 msgstr ""
 
-msgid "Administrators have full access except for managing accounts."
-msgstr "Administratörer har full åtkomst utom till kontohantering."
-
 msgid "All"
 msgstr "Alla"
 
@@ -604,6 +601,9 @@ msgstr "Tillåt inte inlägg från besökare"
 msgid "Disallow visitor threads"
 msgstr "Tillåt inte trådar från besökare"
 
+msgid "Dismiss"
+msgstr ""
+
 msgid "Displayed in site index."
 msgstr "Visas i webbplatsindexet."
 
@@ -719,16 +719,9 @@ msgid "File name."
 msgstr "Filnamn."
 
 msgid ""
-"File path (excluding .html suffix) of the administrator queue status page. "
-"Leave blank to disable."
+"File path (excluding .html suffix) of the %s queue status page. Leave blank "
+"to disable."
 msgstr ""
-
-msgid ""
-"File path (excluding .html suffix) of the moderator queue status page. Leave "
-"blank to disable."
-msgstr ""
-"Filsökväg utan filändelsen .html för statusidan till modereringskön. Lämna "
-"tomt för att inaktivera."
 
 msgid "File uploads are not allowed."
 msgstr "Filuppladdningar är inte tillåtna."
@@ -893,6 +886,15 @@ msgstr "Ogiltig e-postadress."
 
 msgid "Invalid or deleted post."
 msgstr "Ogiltigt eller borttaget inlägg."
+
+msgid "Janitor"
+msgstr ""
+
+msgid "Janitor Guide"
+msgstr ""
+
+msgid "Janitor Queue"
+msgstr ""
 
 msgid "Jump to a form field when adding a new post by pressing Alt, Shift and:"
 msgstr ""
@@ -1162,13 +1164,6 @@ msgstr "Moderator"
 
 msgid "Moderator Guide"
 msgstr ""
-
-msgid ""
-"Moderators may only perform certain actions. See moderator guide for more "
-"info."
-msgstr ""
-"Moderatorer får bara utföra vissa åtgärder. Se moderatorguiden för mer "
-"information."
 
 msgid "Move"
 msgstr "Flytta"
@@ -1647,6 +1642,15 @@ msgstr "Skala"
 msgid "Scan the following QR code using an authenticator application:"
 msgstr "Skanna följande QR-kod med en autentiseringsapp:"
 
+msgid "Screener"
+msgstr ""
+
+msgid "Screener Guide"
+msgstr ""
+
+msgid "Screener Queue"
+msgstr ""
+
 msgid "Scroll down to the bottom of the page."
 msgstr "Bläddra ned till sidans nederkant."
 
@@ -1780,9 +1784,6 @@ msgstr "Huvudadministratör"
 msgid "Super-administrator Guide"
 msgstr ""
 
-msgid "Super-administrators have full access."
-msgstr "Huvudadministratörer har full åtkomst."
-
 msgid "Supported BBCode tags are %s."
 msgstr "BBCode-taggar som stöds är %s."
 
@@ -1803,6 +1804,9 @@ msgstr "Den inbäddningen har redan publicerats."
 
 msgid "That file has already been posted."
 msgstr "Den filen har redan publicerats."
+
+msgid "The privileges of each role are listed in the %s."
+msgstr ""
 
 msgid "This ban is permanent."
 msgstr "Den här avstängningen är permanent."

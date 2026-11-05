@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-10-29 19:29+0000\n"
+"PO-Revision-Date: 2026-11-05 20:33+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -181,10 +181,6 @@ msgstr "Beheerder"
 
 msgid "Administrator Guide"
 msgstr "Beheerdershandleiding"
-
-msgid "Administrators have full access except for managing accounts."
-msgstr ""
-"Beheerders hebben volledige toegang, maar kunnen geen accounts beheren."
 
 msgid "All"
 msgstr "Alles"
@@ -611,6 +607,9 @@ msgstr "Geen berichten toestaan van bezoekers"
 msgid "Disallow visitor threads"
 msgstr "Geen onderwerpen toestaan van bezoekers"
 
+msgid "Dismiss"
+msgstr ""
+
 msgid "Displayed in site index."
 msgstr "Wordt getoond op de overzichtspagina."
 
@@ -727,18 +726,9 @@ msgid "File name."
 msgstr "Bestandsnaam."
 
 msgid ""
-"File path (excluding .html suffix) of the administrator queue status page. "
-"Leave blank to disable."
+"File path (excluding .html suffix) of the %s queue status page. Leave blank "
+"to disable."
 msgstr ""
-"De bestandslocatie (zonder het achtervoegsel .html) van de statuspagina van "
-"de beheerderswachtrij. Laat leeg om uit te schakelen."
-
-msgid ""
-"File path (excluding .html suffix) of the moderator queue status page. Leave "
-"blank to disable."
-msgstr ""
-"De bestandslocatie, zonder .html op het einde, van de "
-"moderatiewachtrijpagina. Laat leeg om uit te schakelen."
 
 msgid "File uploads are not allowed."
 msgstr "Het uploaden van bestanden is niet toegestaan."
@@ -906,6 +896,15 @@ msgstr "Ongeldig e-mailadres."
 
 msgid "Invalid or deleted post."
 msgstr "Ongeldig of verwijderd bericht."
+
+msgid "Janitor"
+msgstr "Conciërge"
+
+msgid "Janitor Guide"
+msgstr "Conciërgegids"
+
+msgid "Janitor Queue"
+msgstr ""
 
 msgid "Jump to a form field when adding a new post by pressing Alt, Shift and:"
 msgstr ""
@@ -1178,13 +1177,6 @@ msgstr "Moderator"
 
 msgid "Moderator Guide"
 msgstr "Moderatorhandleiding"
-
-msgid ""
-"Moderators may only perform certain actions. See moderator guide for more "
-"info."
-msgstr ""
-"Moderators kunnen slechts bepaalde acties uitvoeren. Bekijk voor meer "
-"informatie de moderatorhandleiding."
 
 msgid "Move"
 msgstr "Verplaatsen"
@@ -1664,6 +1656,15 @@ msgstr "Schaal"
 msgid "Scan the following QR code using an authenticator application:"
 msgstr "Scan de QR-code met een app voor verificatie in twee stappen:"
 
+msgid "Screener"
+msgstr "Controleur"
+
+msgid "Screener Guide"
+msgstr "Controleursgids"
+
+msgid "Screener Queue"
+msgstr ""
+
 msgid "Scroll down to the bottom of the page."
 msgstr "Ga naar de onderkant van de pagina."
 
@@ -1798,9 +1799,6 @@ msgstr "Superbeheerder"
 msgid "Super-administrator Guide"
 msgstr "Superbeheerdershandleiding"
 
-msgid "Super-administrators have full access."
-msgstr "Superbeheerders kunnen álles."
-
 msgid "Supported BBCode tags are %s."
 msgstr "Ondersteunde BBCode-tags zijn %s."
 
@@ -1821,6 +1819,9 @@ msgstr "Deze bijlage is al geplaatst."
 
 msgid "That file has already been posted."
 msgstr "Dit bestand is al geplaatst."
+
+msgid "The privileges of each role are listed in the %s."
+msgstr "De privileges van iedere rol zijn terug te vinden in %s."
 
 msgid "This ban is permanent."
 msgstr "Deze verbanning is permanent."
@@ -2138,35 +2139,3 @@ msgstr "en"
 
 msgid "in an individual board"
 msgstr "een individueel subforum"
-
-#~ msgid "Refreshing page every %d second. Click to pause."
-#~ msgid_plural "Refreshing page every %d seconds. Click to pause."
-#~ msgstr[0] ""
-#~ "Het bericht wordt elke %d seconde herladen. Klik om te onderbreken."
-#~ msgstr[1] ""
-#~ "Het bericht wordt elke %d seconden herladen. Klik om te onderbreken."
-
-#~ msgid ""
-#~ "Maximum file size (in bytes) when creating a thread. Set to 0 to disable "
-#~ "file uploads."
-#~ msgstr ""
-#~ "De maximum bestandsgrootte (in bytes) bij het toevoegen van een "
-#~ "onderwerp. Stel in op 0 om bestandsuploads uit te schakelen."
-
-#~ msgid ""
-#~ "Maximum file size (in bytes) when replying. Set to 0 to disable file "
-#~ "uploads."
-#~ msgstr ""
-#~ "De maximum bestandsgrootte (in bytes) bij het antwoorden. Stel in op 0 om "
-#~ "bestandsuploads uit te schakelen."
-
-#~ msgid "Minimum file size (in bytes) when creating a thread."
-#~ msgstr ""
-#~ "De minimale bestandsgrootte (in bytes) bij het starten van een nieuw "
-#~ "onderwerp."
-
-#~ msgid "Minimum file size (in bytes) when replying."
-#~ msgstr "De minimale bestandsgrootte (in bytes) bij het beantwoorden."
-
-#~ msgid "Please wait %s before creating a new post."
-#~ msgstr "Wacht %s alvorens een nieuw bericht op te stellen."

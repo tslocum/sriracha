@@ -181,9 +181,6 @@ msgstr "Administrator"
 msgid "Administrator Guide"
 msgstr ""
 
-msgid "Administrators have full access except for managing accounts."
-msgstr "Administratoret kane akses te plote pervec menaxhimit te llogarive."
-
 msgid "All"
 msgstr ""
 
@@ -598,6 +595,9 @@ msgstr "Mos lejo postimet e vizitoreve"
 msgid "Disallow visitor threads"
 msgstr "Mos lejo temat e vizitoreve"
 
+msgid "Dismiss"
+msgstr ""
+
 msgid "Displayed in site index."
 msgstr ""
 
@@ -713,13 +713,8 @@ msgid "File name."
 msgstr ""
 
 msgid ""
-"File path (excluding .html suffix) of the administrator queue status page. "
-"Leave blank to disable."
-msgstr ""
-
-msgid ""
-"File path (excluding .html suffix) of the moderator queue status page. Leave "
-"blank to disable."
+"File path (excluding .html suffix) of the %s queue status page. Leave blank "
+"to disable."
 msgstr ""
 
 msgid "File uploads are not allowed."
@@ -883,6 +878,15 @@ msgid "Invalid email."
 msgstr ""
 
 msgid "Invalid or deleted post."
+msgstr ""
+
+msgid "Janitor"
+msgstr ""
+
+msgid "Janitor Guide"
+msgstr ""
+
+msgid "Janitor Queue"
 msgstr ""
 
 msgid "Jump to a form field when adding a new post by pressing Alt, Shift and:"
@@ -1146,13 +1150,6 @@ msgstr "Moderator"
 
 msgid "Moderator Guide"
 msgstr ""
-
-msgid ""
-"Moderators may only perform certain actions. See moderator guide for more "
-"info."
-msgstr ""
-"Moderatoret mund te bejne vetem veprime te caktuara. Shihni udhezuesin e "
-"moderatorit per me shume informacion."
 
 msgid "Move"
 msgstr "Zhvendos"
@@ -1618,6 +1615,15 @@ msgstr ""
 msgid "Scan the following QR code using an authenticator application:"
 msgstr ""
 
+msgid "Screener"
+msgstr ""
+
+msgid "Screener Guide"
+msgstr ""
+
+msgid "Screener Queue"
+msgstr ""
+
 msgid "Scroll down to the bottom of the page."
 msgstr ""
 
@@ -1749,9 +1755,6 @@ msgstr "Super-administratori"
 msgid "Super-administrator Guide"
 msgstr ""
 
-msgid "Super-administrators have full access."
-msgstr "Super-administratoret kane akses te plote."
-
 msgid "Supported BBCode tags are %s."
 msgstr ""
 
@@ -1771,6 +1774,9 @@ msgid "That embed has already been posted."
 msgstr ""
 
 msgid "That file has already been posted."
+msgstr ""
+
+msgid "The privileges of each role are listed in the %s."
 msgstr ""
 
 msgid "This ban is permanent."
@@ -2069,26 +2075,3 @@ msgstr ""
 
 msgid "in an individual board"
 msgstr ""
-
-#~ msgid ""
-#~ "Maximum file size (in bytes) when creating a thread. Set to 0 to disable "
-#~ "file uploads."
-#~ msgstr ""
-#~ "Madhesia maksimale e skedarit (ne bytes) kur krijon nje teme. Vendos 0 "
-#~ "per ta caktivizuar ngarkimin e skedareve."
-
-#~ msgid ""
-#~ "Maximum file size (in bytes) when replying. Set to 0 to disable file "
-#~ "uploads."
-#~ msgstr ""
-#~ "Madhesia maksimale e skedarit (ne bytes) kur ben replike. Vendos 0 per ta "
-#~ "caktivizuar ngarkimet e skedareve."
-
-#~ msgid "Minimum file size (in bytes) when creating a thread."
-#~ msgstr "Madhesia minimale e skedarit (ne bytes) kur krijon nje teme."
-
-#~ msgid "Minimum file size (in bytes) when replying."
-#~ msgstr "Madhesia minimale e skedarit (ne bytes) kur krijon replike."
-
-#~ msgid "Please wait %s before creating a new post."
-#~ msgstr "Ju lutem prisni %s para se te krijoni nje postim te ri."
