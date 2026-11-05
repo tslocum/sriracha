@@ -458,31 +458,35 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		return
 	}
 
-	reports := db.AllReports()
-	for i, report := range reports {
-		if i > 0 {
-			buf.WriteString("<hr>\n")
-		}
-
-		d := s.buildData(db, w, r)
-		d.Template = "manage_status_item"
-		d.Board = report.Post.Board
-		d.Post = report.Post
-		d.Threads = [][]*Post{{report.Post}}
-		d.Manage.Report = report
-		d.execute(buf)
-	}
-	if len(reports) > 1 {
-		var ids []byte
-		for i := range reports {
-			if i != 0 {
-				ids = append(ids, ',')
+	var total int
+	if data.Account.Role <= RoleMod {
+		reports := db.AllReports()
+		for i, report := range reports {
+			if i > 0 {
+				buf.WriteString("<hr>\n")
 			}
-			ids = append(ids, []byte(strconv.Itoa(reports[i].Post.ID))...)
+
+			d := s.buildData(db, w, r)
+			d.Template = "manage_status_item"
+			d.Board = report.Post.Board
+			d.Post = report.Post
+			d.Threads = [][]*Post{{report.Post}}
+			d.Manage.Report = report
+			d.execute(buf)
 		}
-		buf.WriteString(fmt.Sprintf(`<hr><form method="post" action="/sriracha/" style="display: inline-block;"><input type="hidden" name="approve" value="%s"><input type="submit" value="%s"></form>`, ids, Get(nil, data.Account, "Approve all")))
+		if len(reports) > 1 {
+			var ids []byte
+			for i := range reports {
+				if i != 0 {
+					ids = append(ids, ',')
+				}
+				ids = append(ids, []byte(strconv.Itoa(reports[i].Post.ID))...)
+			}
+			buf.WriteString(fmt.Sprintf(`<hr><form method="post" action="/sriracha/" style="display: inline-block;"><input type="hidden" name="approve" value="%s"><input type="submit" value="%s"></form>`, ids, Get(nil, data.Account, "Approve all")))
+		}
+		data.Message = template.HTML(buf.String())
+		total += len(reports)
 	}
-	data.Message = template.HTML(buf.String())
 
 	buf.Reset()
 	pending := db.PendingPosts(data.Account.Role)
@@ -509,8 +513,8 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		buf.WriteString(fmt.Sprintf(`<hr><form method="post" action="/sriracha/" style="display: inline-block;"><input type="hidden" name="approve" value="%s"><input type="submit" value="%s"></form>`, ids, Get(nil, data.Account, "Approve all")))
 	}
 	data.Message2 = template.HTML(buf.String())
+	total += len(pending)
 
-	total := len(reports) + len(pending)
 	if s.may(data, "post.archive") && s.may(data, "post.delete") {
 		buf.Reset()
 		pruned := db.PrunedThreads()

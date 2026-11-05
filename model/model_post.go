@@ -33,7 +33,7 @@ var videoMIME = compat.MustCompile(`^video/.*`)
 var imageMIME = compat.MustCompile(`^image/.*`)
 
 // notExpandable is a regular expression of MIME types which lack wide support for inline playback.
-var notExpandable = compat.MustCompile(`^((audio/midi)|(video/(mpeg|ogg|x-matroska|x-msvideo)))$`)
+var notExpandable = compat.MustCompile(`^((audio/midi)|(video/(mpeg|ogg|matroska|x-msvideo)))$`)
 
 type PostModerated int
 
