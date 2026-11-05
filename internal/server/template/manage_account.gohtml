@@ -40,12 +40,12 @@
 
         <div class="postblock"><label for="role">{{T "Role"}}</label></div>
         <div><select name="role" style="width: 100%;">
-            <option value="1"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 1)}} selected{{end}}>{{T "Super-administrator"}}</option>
-            <option value="2"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 2)}} selected{{end}}>{{T "Administrator"}}</option>
-            <option value="3"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 3)}} selected{{end}}>{{T "Moderator"}}</option>
-            <option value="4"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 4)}} selected{{end}}>{{T "Janitor"}}</option>
-            <option value="5"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 5)}} selected{{end}}>{{T "Screener"}}</option>
             <option value="99"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 99)}} selected{{end}}>{{T "Disabled"}}</option>
+            <option value="5"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 5)}} selected{{end}}>{{T "Screener"}}</option>
+            <option value="4"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 4)}} selected{{end}}>{{T "Janitor"}}</option>
+            <option value="3"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 3)}} selected{{end}}>{{T "Moderator"}}</option>
+            <option value="2"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 2)}} selected{{end}}>{{T "Administrator"}}</option>
+            <option value="1"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 1)}} selected{{end}}>{{T "Super-administrator"}}</option>
         </select></div>
         <div>
             {{T "Super-administrators have full access."}}<br>
