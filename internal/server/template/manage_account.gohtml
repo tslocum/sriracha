@@ -48,9 +48,7 @@
             <option value="1"{{if and (ne .Manage.Account nil) (eq .Manage.Account.Role 1)}} selected{{end}}>{{T "Super-administrator"}}</option>
         </select></div>
         <div>
-            {{T "Super-administrators have full access."}}<br>
-            {{T "Administrators have full access except for managing accounts."}}<br>
-            {{T "Moderators may only perform certain actions. See moderator guide for more info."}}
+            {{T "The privileges of each role are listed in the %s." (Cat "<a href=\"https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#guides\" target=\"_blank\">" (T "%s Manual" "Sriracha") "</a>") | HTML}}
         </div>
 
         <div>&nbsp;</div>

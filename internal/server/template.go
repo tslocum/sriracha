@@ -263,7 +263,7 @@ var templateFuncMap = template.FuncMap{
 			return banners[rand.Intn(l)]
 		}
 	},
-	"Cat":      func(a string, b string) string { return a + b },
+	"Cat":      func(v ...string) string { return strings.Join(v, "") },
 	"Contains": strings.Contains,
 	"Div": func(i int64, j int64) float64 {
 		return float64(i) / float64(j)
