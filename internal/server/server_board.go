@@ -603,6 +603,9 @@ func (s *Server) serveBoard(data *templateData, db serverDB, w http.ResponseWrit
 
 	modBoard := PathString(r, "/sriracha/board/mod/")
 	if modBoard != "" {
+		if s.forbidden(w, data, "post.move", "post.archive", "post.delete") {
+			return false
+		}
 		var postID int
 		var page int
 		split := strings.Split(modBoard, "/")

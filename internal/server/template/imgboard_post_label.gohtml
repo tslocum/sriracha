@@ -30,7 +30,7 @@
                 {{if and (ne $post.File "") (ne $post.Message "") (May "post.delete" $.Account $.Opt.Access)}}
                     <a href="/sriracha/mod/deleteattachment/{{$post.ID}}" title="{{T "Delete Attachment"}}" onclick="javascript:return confirm('{{T "Delete Attachment"}}?');">Ø</a>
                 {{end}}
-                {{if $.Opt.Identifiers}}
+                {{if and $.Opt.Identifiers (or (May "post.move" $.Account $.Opt.Access) (May "post.archive" $.Account $.Opt.Access) (May "post.delete" $.Account $.Opt.Access))}}
                     <a href="/sriracha/mod/view/{{$post.ID}}" title="{{T "View posts by author"}}">V</a>
                 {{end}}
                 {{if May "post.move" $.Account $.Opt.Access}}
@@ -47,10 +47,10 @@
                 {{if May "post.delete" $.Account $.Opt.Access}}
                     <a href="/sriracha/mod/delete/{{$post.ID}}" title="{{T "Delete"}}">D</a>
                 {{end}}
-                {{if May "ban.add" $.Account $.Opt.Access}}
+                {{if or (May "ban.add" $.Account $.Opt.Access) (May "ban.temp" $.Account $.Opt.Access)}}
                     <a href="/sriracha/mod/ban/{{$post.ID}}" title="{{T "Ban"}}">B</a>
                 {{end}}
-                {{if and (May "post.delete" $.Account $.Opt.Access) (May "ban.add" $.Account $.Opt.Access)}}
+                {{if and (May "post.delete" $.Account $.Opt.Access) (or (May "ban.add" $.Account $.Opt.Access) (May "ban.temp" $.Account $.Opt.Access))}}
                     <a href="/sriracha/mod/deleteban/{{$post.ID}}" title="{{T "Delete & ban"}}">D&amp;B</a>
                 {{end}}
                 {{$ban := BanByIP $post.IP}}

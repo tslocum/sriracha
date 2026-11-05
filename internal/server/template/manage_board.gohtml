@@ -16,7 +16,9 @@
                 <td>{{$board.Description}}</td>
                 <td>{{if eq $board.Type 0}}{{T "Imageboard"}}{{else}}{{T "Forum"}}{{end}}</td>
                 <td>
-                    <form method="get" action="/sriracha/board/mod/{{$board.ID}}"><input type="submit" value="{{T "Moderate"}}"></form>
+                    {{if or (May "post.move" $.Account $.Opt.Access) (May "post.archive" $.Account $.Opt.Access) (May "post.delete" $.Account $.Opt.Access)}}
+                        <form method="get" action="/sriracha/board/mod/{{$board.ID}}"><input type="submit" value="{{T "Moderate"}}"></form>
+                    {{end}}
                     <form method="get" action="/sriracha/board/{{$board.ID}}"><input type="submit" value="{{if May "board.update" $.Account $.Opt.Access}}{{T "Update"}}{{else}}{{T "Details"}}{{end}}"></form>
                     {{if May "board.update" $.Account $.Opt.Access}}
                         <form method="get" action="/sriracha/board/rebuild/{{$board.ID}}"><input type="submit" value="{{T "Rebuild"}}"></form>

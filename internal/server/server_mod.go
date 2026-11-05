@@ -89,7 +89,9 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 		return 0
 	})
 	if action == "v" {
-		if !s.opt.Identifiers {
+		if s.forbidden(w, data, "post.move", "post.archive", "post.delete") {
+			return
+		} else if !s.opt.Identifiers {
 			data.ManageError("Identifiers are not enabled")
 			return
 		}
