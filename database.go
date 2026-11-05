@@ -133,7 +133,7 @@ type DB interface {
 	PruneThreads(board *Board) []*Post
 	AllPostsInThread(filter PostFilter, postID int) []*Post
 	AllReplies(filter PostFilter, threadID int, limit int) []*Post
-	PendingPosts() []*Post
+	PendingPosts(role AccountRole) []*Post
 	PrunedThreads() []int
 	PostByID(postID int) *Post
 	PostsByID(postIDs []int) []*Post

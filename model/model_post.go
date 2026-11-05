@@ -38,11 +38,13 @@ var notExpandable = compat.MustCompile(`^((audio/midi)|(video/(mpeg|ogg|x-matros
 type PostModerated int
 
 const (
-	ModeratedPruned   PostModerated = -1 // Hidden everywhere pending archival or deletion.
-	ModeratedHidden   PostModerated = 0  // Hidden everywhere pending approval.
-	ModeratedVisible  PostModerated = 1  // Visible in board index without staff approval.
-	ModeratedApproved PostModerated = 2  // Visible in board index with staff approval.
-	ModeratedArchived PostModerated = 3  // Visible in thread archive.
+	ModeratedPendingModerator PostModerated = -3 // Hidden pending approval by moderator.
+	ModeratedPendingJanitor   PostModerated = -2 // Hidden pending approval by janitor or moderator.
+	ModeratedPruned           PostModerated = -1 // Hidden pending archival or deletion.
+	ModeratedPending          PostModerated = 0  // Hidden pending approval by screener, janitor or moderator.
+	ModeratedVisible          PostModerated = 1  // Visible in board index without staff approval.
+	ModeratedApproved         PostModerated = 2  // Visible in board index with staff approval.
+	ModeratedArchived         PostModerated = 3  // Visible in thread archive.
 )
 
 type PostFilter int
@@ -490,6 +492,10 @@ func (p *Post) URL(siteHome string) string {
 	}
 
 	return fmt.Sprintf(`%s%sres/%d.html#%d`, host, path, p.Thread(), p.ID)
+}
+
+func (p *Post) Visible() bool {
+	return p.Moderated > 0
 }
 
 func (p *Post) Archived() bool {

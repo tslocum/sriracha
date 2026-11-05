@@ -564,6 +564,9 @@ msgstr ""
 msgid "Disallow visitor threads"
 msgstr ""
 
+msgid "Dismiss"
+msgstr ""
+
 msgid "Displayed in site index."
 msgstr ""
 

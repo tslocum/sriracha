@@ -135,7 +135,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 				if post.Archived() {
 					continue
 				}
-				rebuild := post.Moderated == ModeratedHidden
+				rebuild := !post.Visible()
 
 				db.ModeratePost(post.ID, ModeratedApproved)
 				db.DeleteReports(post)
@@ -469,7 +469,7 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 	data.Message = template.HTML(buf.String())
 
 	buf.Reset()
-	pending := db.PendingPosts()
+	pending := db.PendingPosts(data.Account.Role)
 	for i, post := range pending {
 		if i > 0 {
 			buf.WriteString("<hr>\n")

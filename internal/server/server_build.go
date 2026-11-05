@@ -244,7 +244,9 @@ func (s *Server) _buildStaffQueues(info *buildInfo) {
 		}
 	}
 
-	add(RoleScreener, len(db.PendingPosts()))
+	queueSize[RoleScreener] += len(db.PendingPosts(RoleScreener))
+	queueSize[RoleJanitor] += len(db.PendingPosts(RoleJanitor))
+	add(RoleMod, len(db.PendingPosts(RoleMod)))
 
 	add(RoleMod, len(db.AllReports()))
 

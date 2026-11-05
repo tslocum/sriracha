@@ -253,8 +253,15 @@ func (db *DB) AllReplies(filter PostFilter, threadID int, limit int) []*Post {
 	return posts
 }
 
-func (db *DB) PendingPosts() []*Post {
-	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE moderated = $1 ORDER BY id ASC", ModeratedHidden)
+func (db *DB) PendingPosts(role AccountRole) []*Post {
+	var extra string
+	if role <= RoleJanitor {
+		extra += fmt.Sprintf(" OR moderated = %d", ModeratedPendingJanitor)
+	}
+	if role <= RoleMod {
+		extra += fmt.Sprintf(" OR moderated = %d", ModeratedPendingModerator)
+	}
+	rows, err := db.conn.Query(context.Background(), "SELECT "+postColumns+", 0 AS replies FROM post WHERE moderated = $1"+extra+" ORDER BY id ASC", ModeratedPending)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil

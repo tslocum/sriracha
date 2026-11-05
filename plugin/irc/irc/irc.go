@@ -418,7 +418,7 @@ func (i *IRC) Create(db sriracha.DB, post *Post) error {
 	if client == nil {
 		return nil
 	}
-	if post.Moderated == ModeratedHidden {
+	if !post.Visible() {
 		for _, ch := range i.approve {
 			if ch == "" {
 				continue

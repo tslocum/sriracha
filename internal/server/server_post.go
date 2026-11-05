@@ -962,7 +962,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		s.deletePostFiles(post)
 
 		var postLink template.HTML
-		if duplicate.Moderated != ModeratedHidden {
+		if duplicate.Visible() {
 			postLink = "<br>" + duplicate.RefLink()
 		}
 
@@ -1252,7 +1252,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 			cancel()
 
 			var postLink template.HTML
-			if duplicate.Moderated != ModeratedHidden {
+			if duplicate.Visible() {
 				postLink = "<br>" + duplicate.RefLink()
 			}
 
@@ -1343,7 +1343,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 	}
 	db.SetPlugin("")
 
-	if post.Moderated == ModeratedHidden {
+	if !post.Visible() {
 		data.Template = "board_info"
 		data.Info = Get(b, data.Account, "Your post will be shown once it has been approved.")
 		data.execute(w)
@@ -1401,7 +1401,7 @@ func (s *Server) servePost(db serverDB, w http.ResponseWriter, r *http.Request) 
 		}
 	}
 
-	if post.Moderated != ModeratedHidden {
+	if post.Visible() {
 		db.AddPostBacklinks(post)
 	}
 

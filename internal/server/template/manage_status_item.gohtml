@@ -3,18 +3,26 @@
         <input type="hidden" name="approve" value="{{.Post.ID}}">
         <input type="submit" value="{{T "Approve"}}">
     </form>
-    <form method="post" action="/sriracha/mod/delete/{{.Post.ID}}" style="display: inline-block;" onsubmit="return confirm('Delete No.{{.Post.ID}}?');">
-        <input type="hidden" name="confirmation" value="1">
-        <input type="submit" value="{{T "Delete"}}">
-    </form>
-    <form method="get" action="/sriracha/mod/ban/{{.Post.ID}}" style="display: inline-block;">
-        <input type="submit" value="{{T "Ban"}}">
-    </form>
-    <form method="get" action="/sriracha/mod/deleteban/{{.Post.ID}}" style="display: inline-block;">
-        <input type="submit" value="{{T "Delete & ban"}}"> &nbsp;
-    </form>
+    {{if and (or (May "ban.add" .Account .Opt.Access) (May "ban.temp" .Account .Opt.Access)) (May "post.delete" .Account .Opt.Access)}}
+        <form method="post" action="/sriracha/mod/delete/{{.Post.ID}}" style="display: inline-block;" onsubmit="return confirm('Delete No.{{.Post.ID}}?');">
+            <input type="hidden" name="confirmation" value="1">
+            <input type="submit" value="{{T "Delete"}}">
+        </form>
+        <form method="get" action="/sriracha/mod/ban/{{.Post.ID}}" style="display: inline-block;">
+            <input type="submit" value="{{T "Ban"}}">
+        </form>
+        <form method="get" action="/sriracha/mod/deleteban/{{.Post.ID}}" style="display: inline-block;">
+            <input type="submit" value="{{T "Delete & ban"}}">
+        </form>
+    {{end}}
+    {{if or (eq .Account.Role 4) (eq .Account.Role 5)}}
+        <form method="get" action="/sriracha/" style="display: inline-block;">
+            <input type="hidden" name="dismiss" value="{{.Post.ID}}">
+            <input type="submit" value="{{T "Dismiss"}}">
+        </form>
+    {{end}}
     {{if ne .Manage.Report nil}}
-        {{TN "%d report" "%d reports" .Manage.Report.Count}}
+        &nbsp; {{TN "%d report" "%d reports" .Manage.Report.Count}}
     {{end}}
 </div>
 {{template "imgboard_post.gohtml" $}}
