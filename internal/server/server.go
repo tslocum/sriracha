@@ -772,9 +772,9 @@ func (s *Server) parseConfig(configFile string) error {
 		"post.lock":       "mod",
 		"post.sticky":     "mod",
 		"post.spoiler":    "mod",
-		"post.move":       "mod",
-		"post.archive":    "mod",
-		"post.delete":     "mod",
+		"post.move":       "janitor",
+		"post.archive":    "janitor",
+		"post.delete":     "janitor",
 	}
 	validateAccess := func(name string, v string) error {
 		if _, ok := defaultAccess[name]; !ok && name != "default" {

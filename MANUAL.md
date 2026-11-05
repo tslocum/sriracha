@@ -847,9 +847,9 @@ dbname: "sriracha"
 #  post.lock:       "mod"
 #  post.sticky:     "mod"
 #  post.spoiler:    "mod"
-#  post.move:       "mod"
-#  post.archive:    "mod"
-#  post.delete:     "mod"
+#  post.move:       "janitor"
+#  post.archive:    "janitor"
+#  post.delete:     "janitor"
 
 # Audit database connection URL. When configured, log entries are duplicated
 # to a secondary database. The audit database role must be forbidden from
@@ -1644,24 +1644,16 @@ As a janitor, in addition to screener privileges you may:
 
 - Add temporary bans (up to 3 months by default)
 - Move posts
+- Archive posts
 - Delete posts
 
 Dismissed posts are hidden from the screener and janitor moderation queues.
 A moderator or administrator will decide what to do next.
 
-#### Banning IP addresses
-
-Single IP addresses and IP address ranges may be banned. To ban an IP address
-range, use a wildcard (*) at the end of the range prefix:
-
-`192.168.1.*`
-
 #### Browsing in mod mode
 
 Mod mode is a tool staff members may use to moderate one or more posts.
 When browsing in mod mode, the following moderation links are displayed:
-
-**# ? Ø V M S L D B D&B**
 
 - **#** Archive or unarchive thread
 - **?** Spoiler or unspoiler thumbnail (when a thumbnail is present and spoilers are enabled)
@@ -1687,17 +1679,12 @@ entering a password. When browsing in mod mode, click the 'Moderate' button.
 
 Any existing bans for shorter durations will be replaced.
 
-### Moderator guide
+#### Banning IP addresses
 
-As a moderator, in addition to janitor privileges you may:
+Single IP addresses and IP address ranges may be banned. To ban an IP address
+range, use a wildcard (*) at the end of the range prefix:
 
-- Add bans of any length
-- Extend bans
-- Sticky threads
-- Lock threads
-- Archive posts
-- Add news
-- Update news
+`192.168.1.*`
 
 #### Archive
 
@@ -1710,9 +1697,20 @@ The Archive setting of each board determines how pruned threads are handled:
 choose which threads are deleted or archived. This is the default.
 - **Automatic** - Pruned threads are archived automatically.
 
+### Moderator guide
+
+As a moderator, in addition to janitor privileges you may:
+
+- Add bans of any length
+- Extend bans
+- Sticky threads
+- Lock threads
+- Add news
+- Update news
+
 #### News
 
-When enabled, all staff have access to post news entries. Staff may also update
+When enabled, staff have access to post news entries. Staff may also update
 existing news entries which have been shared by other staff members.
 
 Leave a news entry's Date field blank to draft a news entry only visible to staff.
