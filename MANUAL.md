@@ -822,34 +822,35 @@ dbname: "sriracha"
 #
 # Format: screener / janitor / mod / admin / super-admin / disable (disallow all roles)
 #access:
-#  ban.add:         "mod"
-#  ban.shorten:     "admin"
-#  ban.lengthen:    "mod"
-#  ban.lift:        "admin"
-#  ban.appeal:      "admin"
-#  banfile.add:     "mod"
-#  banfile.lift:    "admin"
-#  banner.add:      "admin"
-#  banner.update:   "admin"
-#  banner.delete:   "super-admin"
-#  board.add:       "admin"
-#  board.update:    "admin"
-#  board.delete:    "super-admin"
-#  category.add:    "admin"
-#  category.update: "admin"
-#  category.delete: "super-admin"
-#  keyword.add:     "admin"
-#  keyword.update:  "admin"
-#  keyword.delete:  "admin"
-#  page.add:        "admin"
-#  page.update:     "admin"
-#  page.delete:     "admin"
-#  post.lock:       "mod"
-#  post.sticky:     "mod"
-#  post.spoiler:    "mod"
-#  post.move:       "janitor"
-#  post.archive:    "janitor"
-#  post.delete:     "janitor"
+#  ban.add:         "mod"         # Add bans of any length.
+#  ban.temp:        "janitor"     # Add temporary bans.
+#  ban.shorten:     "admin"       # Shorten bans.
+#  ban.lengthen:    "mod"         # Lengthen bans.
+#  ban.lift:        "admin"       # Lift bans.
+#  ban.appeal:      "admin"       # Process ban appeals.
+#  banfile.add:     "mod"         # Ban files.
+#  banfile.lift:    "admin"       # Lift file bans.
+#  banner.add:      "admin"       # Add banners.
+#  banner.update:   "admin"       # Update banners.
+#  banner.delete:   "super-admin" # Delete banners.
+#  board.add:       "admin"       # Add boards.
+#  board.update:    "admin"       # Update boards.
+#  board.delete:    "super-admin" # Delete boards.
+#  category.add:    "admin"       # Add board categories.
+#  category.update: "admin"       # Update board categories.
+#  category.delete: "super-admin" # Delete board categories.
+#  keyword.add:     "admin"       # Add keywords.
+#  keyword.update:  "admin"       # Update keywords.
+#  keyword.delete:  "admin"       # Delete keywords.
+#  page.add:        "admin"       # Add pages.
+#  page.update:     "admin"       # Update pages.
+#  page.delete:     "admin"       # Delete pages.
+#  post.lock:       "mod"         # Lock threads.
+#  post.sticky:     "mod"         # Sticky threads.
+#  post.spoiler:    "mod"         # Spoiler and unspoiler thumbnails.
+#  post.move:       "janitor"     # Move posts.
+#  post.archive:    "janitor"     # Archive threads.
+#  post.delete:     "janitor"     # Delete posts.
 
 # Audit database connection URL. When configured, log entries are duplicated
 # to a secondary database. The audit database role must be forbidden from

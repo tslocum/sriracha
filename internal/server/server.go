@@ -748,6 +748,7 @@ func (s *Server) parseConfig(configFile string) error {
 
 	defaultAccess := map[string]string{
 		"ban.add":         "mod",
+		"ban.temp":        "janitor",
 		"ban.shorten":     "admin",
 		"ban.lengthen":    "mod",
 		"ban.lift":        "admin",
