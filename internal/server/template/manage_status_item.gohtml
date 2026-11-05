@@ -16,7 +16,7 @@
         </form>
     {{end}}
     {{if or (eq .Account.Role 4) (eq .Account.Role 5)}}
-        <form method="get" action="/sriracha/" style="display: inline-block;">
+        <form method="post" action="/sriracha/" style="display: inline-block;">
             <input type="hidden" name="dismiss" value="{{.Post.ID}}">
             <input type="submit" value="{{T "Dismiss"}}">
         </form>

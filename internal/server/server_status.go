@@ -49,6 +49,8 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		var action string
 		if FormString(r, "approve") != "" {
 			action = "approve"
+		} else if FormString(r, "dismiss") != "" {
+			action = "dismiss"
 		} else if FormString(r, "archive") != "" && s.may(data, "post.archive") {
 			action = "archive"
 		} else if FormString(r, "unarchive") != "" && s.may(data, "post.archive") {
@@ -145,6 +147,20 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 				}
 				db.AddPostBacklinks(post)
 				db.BumpThread(post.Thread(), time.Now().Unix())
+			} else if action == "dismiss" {
+				var m PostModerated
+				if data.Account.Role == RoleScreener && post.Moderated == ModeratedPending {
+					m = ModeratedPendingJanitor
+				} else if data.Account.Role == RoleJanitor && (post.Moderated == ModeratedPending || post.Moderated == ModeratedPendingJanitor) {
+					m = ModeratedPendingModerator
+				} else {
+					data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("Post"))))
+					return
+				}
+				db.ModeratePost(post.ID, m)
+				wg := &sync.WaitGroup{}
+				s.writeStaffQueues(wg)
+				wg.Wait()
 			} else {
 				if action == "archive" {
 					if post.Moderated == ModeratedArchived {
