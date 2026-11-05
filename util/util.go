@@ -238,23 +238,34 @@ func FormatDuration(d time.Duration) string {
 	hours := int(d.Hours())
 	years := hours / (24 * 365)
 	if years > 0 {
-		out += fmt.Sprintf("%dy ", years)
+		out += fmt.Sprintf("%dy", years)
 		hours %= 24 * 365
 	}
 	days := hours / 24
 	if days > 0 {
-		out += fmt.Sprintf("%dd ", days)
+		if out != "" {
+			out += " "
+		}
+		out += fmt.Sprintf("%dd", days)
 	}
 	d %= 24 * time.Hour
 	switch {
 	case d >= time.Hour:
+		if out != "" {
+			out += " "
+		}
 		return out + fmt.Sprintf("%.0fh", d.Hours())
 	case d >= time.Minute:
+		if out != "" {
+			out += " "
+		}
 		return out + fmt.Sprintf("%.0fm", d.Minutes())
 	default:
 		seconds := int(d.Seconds())
 		if seconds == 0 {
 			return out
+		} else if out != "" {
+			out += " "
 		}
 		return out + fmt.Sprintf("%ds", seconds)
 	}

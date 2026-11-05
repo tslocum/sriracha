@@ -32,6 +32,9 @@ func (s *Server) loadBanForm(db serverDB, r *http.Request, b *Ban) error {
 }
 
 func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
+	if s.forbidden(w, data, "ban.add", "ban.temp") {
+		return
+	}
 	data.Template = "manage_ban"
 	data.Boards = db.AllBoards()
 
@@ -168,8 +171,6 @@ func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter
 			}
 			data.Redirect(w, r, fmt.Sprintf("/sriracha/ban/%d", ban.ID))
 			return
-		} else if s.forbidden(w, data, "ban.add") {
-			return
 		}
 
 		b := &Ban{}
@@ -201,6 +202,11 @@ func (s *Server) serveBan(data *templateData, db serverDB, w http.ResponseWriter
 		match := db.BanByIP(b.IP)
 		if match != nil {
 			data.ManageError("A ban for that IP address or range already exists.")
+			return
+		}
+
+		if !s.may(data, "ban.add") && (b.Expire == 0 || b.Expire > int64(s.config.TempBanLimit)) {
+			data.ManageError(fmt.Sprintf("You may only ban visitors up to %s.", FormatDuration(time.Duration(s.config.TempBanLimit)*time.Second)))
 			return
 		}
 

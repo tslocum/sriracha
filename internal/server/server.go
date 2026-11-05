@@ -93,6 +93,7 @@ const (
 	defaultServerMaxConns      = 16
 	defaultServerWarnFree      = 2000000000 // 2 GB.
 	defaultServerMinFree       = 500000000  // 500 MB.
+	defaultServerTempBanLimit  = 7776000    // 90 days.
 )
 
 const minServerRefresh = 10 // New posts are batched together every 10 seconds.
@@ -239,6 +240,7 @@ type ServerOptions struct {
 	ExportDir        string
 	ExportInterval   int
 	ExportLimit      int
+	TempBanLimit     int
 	Global           []string
 	FullDisks        [][]string
 	NearDisks        [][]string
@@ -482,19 +484,26 @@ func (s *Server) parseBuildInfo() {
 	}
 }
 
-func (s *Server) requiredAccess(action string) AccountRole {
+// requiredAccess returns the minimum access required to perform at least one of the specified actions.
+func (s *Server) requiredAccess(action ...string) AccountRole {
 	var required AccountRole
-	switch s.config.Access[action] {
-	case "screener":
-		required = RoleScreener
-	case "janitor":
-		required = RoleJanitor
-	case "mod":
-		required = RoleMod
-	case "admin":
-		required = RoleAdmin
-	case "super-admin":
-		required = RoleSuperAdmin
+	for _, a := range action {
+		var r AccountRole
+		switch s.config.Access[a] {
+		case "screener":
+			r = RoleScreener
+		case "janitor":
+			r = RoleJanitor
+		case "mod":
+			r = RoleMod
+		case "admin":
+			r = RoleAdmin
+		case "super-admin":
+			r = RoleSuperAdmin
+		}
+		if r > required {
+			required = r
+		}
 	}
 	return required
 }
@@ -510,8 +519,8 @@ func (s *Server) may(data *templateData, action string) bool {
 
 // forbidden returns whether a user is forbidden from performing an accion.
 // When forbidden, an error page is written to the web request automatically.
-func (s *Server) forbidden(w http.ResponseWriter, data *templateData, action string) bool {
-	return data.forbidden(w, s.requiredAccess(action))
+func (s *Server) forbidden(w http.ResponseWriter, data *templateData, action ...string) bool {
+	return data.forbidden(w, s.requiredAccess(action...))
 }
 
 // parseLists parses an IP whitelist or blacklist file.
@@ -828,6 +837,10 @@ func (s *Server) parseConfig(configFile string) error {
 	}
 	if config.MinFree <= 0 {
 		config.MinFree = defaultServerMinFree
+	}
+
+	if config.TempBanLimit <= 0 {
+		config.TempBanLimit = defaultServerTempBanLimit
 	}
 
 	s.config = config
@@ -3250,6 +3263,7 @@ func (s *Server) Run() error {
 	s.opt.Identifiers = s.config.Identifiers
 	s.opt.Locale = s.config.Locale
 	s.opt.RootDir = s.config.Root
+	s.opt.TempBanLimit = s.config.TempBanLimit
 	if s.config.SaltIdent != "" {
 		model.CRCSalt = []byte(s.config.SaltIdent)
 	}

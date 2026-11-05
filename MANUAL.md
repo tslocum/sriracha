@@ -818,6 +818,9 @@ dbname: "sriracha"
 # Account login session limit. When ths limit is exceeded, the oldest session is removed.
 #sessionlimit: 5
 
+# Temporary ban limit (in seconds). This only applies to staff with the ban.temp privilege.
+#tempbanlimit: 7776000 # 90 days.
+
 # Access required to perform an action. Default values for all actions are listed below.
 #
 # Format: screener / janitor / mod / admin / super-admin / disable (disallow all roles)

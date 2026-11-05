@@ -77,6 +77,8 @@ type Config struct {
 
 	MaxConns int // Maximum concurrent connections.
 
+	TempBanLimit int // Temporary ban limit, in seconds.
+
 	Access map[string]string // Specifies which roles may perform each management or moderation action.
 
 	WarnFree int64 // Free disk space warning threshold.

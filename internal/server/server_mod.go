@@ -620,7 +620,7 @@ func (s *Server) serveMod(data *templateData, db serverDB, w http.ResponseWriter
 	data.Board = selected[0].Board
 	data.Threads = [][]*Post{selected}
 	if r.FormValue("confirmation") == "1" {
-		if s.forbidden(w, data, "ban.add") || s.forbidden(w, data, "ban.lengthen") || s.forbidden(w, data, "post.delete") {
+		if s.forbidden(w, data, "ban.add", "ban.temp") || s.forbidden(w, data, "ban.lengthen") || s.forbidden(w, data, "post.delete") {
 			return
 		}
 		banFile := FormBool(r, "banfile")

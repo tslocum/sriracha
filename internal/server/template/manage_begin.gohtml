@@ -29,7 +29,9 @@
 			{{if eq .Account.Role 1}}{{/* Super-admin */}}
 				[<a href="/sriracha/account/" style="text-decoration: underline;">{{T "Accounts"}}</a>]
 			{{end}}
-			[<a href="/sriracha/ban/" style="text-decoration: underline;">{{T "Bans"}}</a>]
+			{{if or (May "ban.add" .Account .Opt.Access) (May "ban.temp" .Account .Opt.Access)}}
+				[<a href="/sriracha/ban/" style="text-decoration: underline;">{{T "Bans"}}</a>]
+			{{end}}
 			[<a href="/sriracha/board/" style="text-decoration: underline;">{{T "Boards"}}</a>]
 			[<a href="/sriracha/keyword/" style="text-decoration: underline;">{{T "Keywords"}}</a>]
 			[<a href="/sriracha/log/" style="text-decoration: underline;">{{T "Logs"}}</a>]
