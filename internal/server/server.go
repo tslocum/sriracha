@@ -1856,7 +1856,7 @@ func (s *Server) deletePostAttachment(db serverDB, p *Post, update bool, staff b
 		os.Remove(srcPath)
 	}
 
-	if p.Thumb == "" {
+	if p.Thumb != "" {
 		thumbPath := filepath.Join(s.config.Root, p.Board.Dir, "thumb", p.Thumb)
 		os.Remove(thumbPath)
 	}
