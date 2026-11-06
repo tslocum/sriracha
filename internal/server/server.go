@@ -27,6 +27,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"os/user"
 	"path"
 	"path/filepath"
 	"runtime"
@@ -3192,6 +3193,10 @@ func (s *Server) handleAutoExport() {
 
 // Run initializes the server and starts listening for connections.
 func (s *Server) Run() error {
+	user, err := user.Current()
+	if err == nil && user != nil && (user.Uid == "0" || user.Username == "root") {
+		return fmt.Errorf("Error: Sriracha is running as the root user! Sriracha does not require root privileges. Restart Sriracha as a different user.")
+	}
 	s.parseBuildInfo()
 
 	// Parse flags and arguments.
@@ -3261,7 +3266,7 @@ func (s *Server) Run() error {
 	}
 
 	// Parse server YAML configuration file.
-	err := s.parseConfig(configFile)
+	err = s.parseConfig(configFile)
 	if err != nil {
 		return fmt.Errorf("failed to parse configuration %s: %s", configFile, err)
 	}
