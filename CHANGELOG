@@ -1,3 +1,6 @@
+2.2.3:
+- Fix deleting attachment thumbnails
+
 2.2.2:
 - Add janitor and screener roles
 - Allow specifying embed service domains

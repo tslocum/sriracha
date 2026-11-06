@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-11-05 20:33+0000\n"
+"PO-Revision-Date: 2026-11-06 19:43+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -608,7 +608,7 @@ msgid "Disallow visitor threads"
 msgstr "Geen onderwerpen toestaan van bezoekers"
 
 msgid "Dismiss"
-msgstr ""
+msgstr "Negeren"
 
 msgid "Displayed in site index."
 msgstr "Wordt getoond op de overzichtspagina."
@@ -729,6 +729,8 @@ msgid ""
 "File path (excluding .html suffix) of the %s queue status page. Leave blank "
 "to disable."
 msgstr ""
+"De bestandslocatie, zonder het .html-achtervoegsel, van de %s-"
+"wachtrijstatuspagina. Laat leeg om uit te schakelen."
 
 msgid "File uploads are not allowed."
 msgstr "Het uploaden van bestanden is niet toegestaan."
@@ -904,7 +906,7 @@ msgid "Janitor Guide"
 msgstr "Conciërgegids"
 
 msgid "Janitor Queue"
-msgstr ""
+msgstr "Conciërgewachtrij"
 
 msgid "Jump to a form field when adding a new post by pressing Alt, Shift and:"
 msgstr ""
@@ -1663,7 +1665,7 @@ msgid "Screener Guide"
 msgstr "Controleursgids"
 
 msgid "Screener Queue"
-msgstr ""
+msgstr "Controleurswachtrij"
 
 msgid "Scroll down to the bottom of the page."
 msgstr "Ga naar de onderkant van de pagina."
