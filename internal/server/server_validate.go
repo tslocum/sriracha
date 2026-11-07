@@ -3,8 +3,11 @@ package server
 import (
 	"bytes"
 	"fmt"
+	"image"
+	"image/png"
 	"io"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -39,6 +42,13 @@ func (s *Server) smokeTest(emptyDir bool) {
   ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠮⢥⡵⠂⠀⠀⠀⠀⠀
   ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠷⠖⠉`)
 		log.Fatal(err)
+	}
+
+	imgSource := image.NewNRGBA(image.Rect(0, 0, 2, 2))
+	testImg := &bytes.Buffer{}
+	err := png.Encode(testImg, imgSource)
+	if err != nil {
+		fatal(fmt.Errorf("failed to create test image: %s", err))
 	}
 
 	db := s.begin()
@@ -88,7 +98,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 		if err != nil {
 			return nil, wrapErr(err)
 		} else if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-			return nil, wrapErr(fmt.Errorf("expected OK status gode, got %d", resp.StatusCode))
+			return nil, wrapErr(fmt.Errorf("expected OK status code, got %d", resp.StatusCode))
 		}
 		buf, err := io.ReadAll(resp.Body)
 		if err != nil {
@@ -101,16 +111,37 @@ func (s *Server) smokeTest(emptyDir bool) {
 		return buf, nil
 	}
 
-	postRequest := func(p string, data url.Values) error {
+	postRequest := func(p string, data url.Values, file bool) error {
 		fmt.Printf("POST /%s %+v\n", p, data)
 		wrapErr := func(err error) error {
 			return fmt.Errorf("failed to POST %s %+v: %s", u+p, data, err)
 		}
-		resp, err := client.PostForm(u+p, data)
+		mb := &bytes.Buffer{}
+		m := multipart.NewWriter(mb)
+		for name, value := range data {
+			for _, v := range value {
+				m.WriteField(name, v)
+			}
+		}
+		if file {
+			f, err := m.CreateFormFile("file", "image.png")
+			if err != nil {
+				return wrapErr(fmt.Errorf("failed to create form file: %s", err))
+			}
+			_, err = f.Write(testImg.Bytes())
+			if err != nil {
+				return wrapErr(fmt.Errorf("failed to write form file: %s", err))
+			}
+		}
+		err := m.Close()
+		if err != nil {
+			return wrapErr(fmt.Errorf("failed to close MultiPartWriter: %s", err))
+		}
+		resp, err := client.Post(u+p, m.FormDataContentType(), mb)
 		if err != nil {
 			return wrapErr(err)
 		} else if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-			return wrapErr(fmt.Errorf("expected OK status gode, got %d", resp.StatusCode))
+			return wrapErr(fmt.Errorf("expected OK status code, got %d", resp.StatusCode))
 		}
 		buf, err := io.ReadAll(resp.Body)
 		if err != nil {
@@ -128,7 +159,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 		fatal(err)
 	}
 
-	err = postRequest("sriracha", nil)
+	err = postRequest("sriracha", nil, false)
 	if err != nil {
 		fatal(err)
 	}
@@ -149,7 +180,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 		"login":    {"1"},
 		"username": {"admin"},
 		"password": {"wrong"},
-	})
+	}, false)
 	if err == nil {
 		fatal(fmt.Errorf("logged in with wrong username and password"))
 	}
@@ -167,7 +198,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 		"login":    {"1"},
 		"username": {"admin"},
 		"password": {"admin"},
-	})
+	}, false)
 	if err != nil {
 		fatal(err)
 	}
@@ -194,7 +225,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 			"username": {username},
 			"password": {password},
 			"role":     {strconv.Itoa(int(RoleMod))},
-		})
+		}, false)
 		if err != nil {
 			fatal(err)
 		}
@@ -220,7 +251,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 			"username": {username},
 			"password": {password},
 			"role":     {strconv.Itoa(int(RoleDisabled))},
-		})
+		}, false)
 		if err != nil {
 			fatal(err)
 		}
@@ -247,7 +278,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 		err = postRequest("sriracha/ban", map[string][]string{
 			"ip":     {ip},
 			"reason": {reason},
-		})
+		}, false)
 		if err != nil {
 			fatal(err)
 		}
@@ -270,7 +301,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 		reason := fmt.Sprintf("newreason%d", i)
 		err = postRequest(fmt.Sprintf("sriracha/ban/%d", i+1), map[string][]string{
 			"reason": {reason},
-		})
+		}, false)
 		if err != nil {
 			fatal(err)
 		}
@@ -291,7 +322,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 
 		err = postRequest(fmt.Sprintf("sriracha/ban/lift/%d", i+1), map[string][]string{
 			"reason": {"reason"},
-		})
+		}, false)
 		if err != nil {
 			fatal(err)
 		}
@@ -315,7 +346,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 			"description": {description},
 			"style":       {s.config.Styles[0]},
 			"approval":    {strconv.Itoa(int(ApprovalAll))},
-		})
+		}, false)
 		if err != nil {
 			fatal(err)
 		}
@@ -347,18 +378,23 @@ func (s *Server) smokeTest(emptyDir bool) {
 		name := fmt.Sprintf("newname%d", i)
 		description := fmt.Sprintf("newdescription%d", i)
 		err = postRequest(fmt.Sprintf("sriracha/board/%d", i+1), map[string][]string{
-			"dir":         {dir},
-			"name":        {name},
-			"description": {description},
-			"style":       {s.config.Styles[0] + "/flex"},
-			"approval":    {strconv.Itoa(int(ApprovalNone))},
-			"threads":     {strconv.Itoa(DefaultBoardThreads)},
-			"replies":     {strconv.Itoa(DefaultBoardReplies)},
-			"maxname":     {strconv.Itoa(DefaultBoardMaxName)},
-			"maxemail":    {strconv.Itoa(DefaultBoardMaxEmail)},
-			"maxsubject":  {strconv.Itoa(DefaultBoardMaxSubject)},
-			"maxmessage":  {strconv.Itoa(DefaultBoardMaxMessage)},
-		})
+			"dir":           {dir},
+			"name":          {name},
+			"description":   {description},
+			"style":         {s.config.Styles[0] + "/flex"},
+			"approval":      {strconv.Itoa(int(ApprovalNone))},
+			"threads":       {strconv.Itoa(DefaultBoardThreads)},
+			"replies":       {strconv.Itoa(DefaultBoardReplies)},
+			"maxname":       {strconv.Itoa(DefaultBoardMaxName)},
+			"maxemail":      {strconv.Itoa(DefaultBoardMaxEmail)},
+			"maxsubject":    {strconv.Itoa(DefaultBoardMaxSubject)},
+			"maxmessage":    {strconv.Itoa(DefaultBoardMaxMessage)},
+			"files":         {strconv.Itoa(DefaultBoardFiles)},
+			"instances":     {"100"},
+			"maxsizethread": {strconv.Itoa(DefaultBoardMaxSize)},
+			"maxsizereply":  {strconv.Itoa(DefaultBoardMaxSize)},
+			"uploads":       {"image/png"},
+		}, false)
 		if err != nil {
 			fatal(err)
 		}
@@ -395,7 +431,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 			"text":   {text},
 			"action": {action},
 			"boards": boards,
-		})
+		}, false)
 		if err != nil {
 			fatal(err)
 		}
@@ -422,7 +458,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 			"text":   {text},
 			"action": {action},
 			"boards": boards,
-		})
+		}, false)
 		if err != nil {
 			fatal(err)
 		}
@@ -441,7 +477,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 			fatal(fmt.Errorf("failed to update keyword: text was not found in update page"))
 		}
 
-		err = postRequest(fmt.Sprintf("sriracha/keyword/delete/%d", i+1), nil)
+		err = postRequest(fmt.Sprintf("sriracha/keyword/delete/%d", i+1), nil, false)
 		if err != nil {
 			fatal(err)
 		}
@@ -472,7 +508,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 			"subject":   {subject},
 			"message":   {message},
 			"share":     {share},
-		})
+		}, false)
 		if err != nil {
 			fatal(err)
 		}
@@ -503,7 +539,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 			"subject":   {subject},
 			"message":   {message},
 			"share":     {share},
-		})
+		}, false)
 		if err != nil {
 			fatal(err)
 		}
@@ -522,7 +558,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 			fatal(fmt.Errorf("failed to update news: subject was not found in update page"))
 		}
 
-		err = postRequest(fmt.Sprintf("sriracha/news/delete/%d", i+1), nil)
+		err = postRequest(fmt.Sprintf("sriracha/news/delete/%d", i+1), nil, false)
 		if err != nil {
 			fatal(err)
 		}
@@ -547,7 +583,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 		err = postRequest("sriracha/page", map[string][]string{
 			"path":    {pagePath},
 			"message": {message},
-		})
+		}, false)
 		if err != nil {
 			fatal(err)
 		}
@@ -572,7 +608,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 		err = postRequest(fmt.Sprintf("sriracha/page/%d", i+1), map[string][]string{
 			"path":    {pagePath},
 			"message": {message},
-		})
+		}, false)
 		if err != nil {
 			fatal(err)
 		}
@@ -591,7 +627,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 			fatal(fmt.Errorf("failed to add page: path was not found in pages page"))
 		}
 
-		err = postRequest(fmt.Sprintf("sriracha/page/delete/%d", i+1), nil)
+		err = postRequest(fmt.Sprintf("sriracha/page/delete/%d", i+1), nil, false)
 		if err != nil {
 			fatal(err)
 		}
@@ -628,7 +664,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 				"subject":  {postSubject},
 				"message":  {postMessage},
 				"password": {"password"},
-			})
+			}, true)
 			if err != nil {
 				fatal(err)
 			}
@@ -669,7 +705,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 				"name":    {postName},
 				"subject": {postSubject},
 				"message": {postMessage},
-			})
+			}, false)
 			if err != nil {
 				fatal(err)
 			}
@@ -719,7 +755,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 		"delete[]":     {"1"},
 		"confirmation": {"1"},
 		"password":     {"wrong"},
-	})
+	}, false)
 	if err == nil {
 		fatal(fmt.Errorf("expected failure when deleting post with wrong password"))
 	}
@@ -731,7 +767,7 @@ func (s *Server) smokeTest(emptyDir bool) {
 		"confirmation": {"1"},
 		"password":     {"password"},
 	}
-	err = postRequest("sriracha", deleteData)
+	err = postRequest("sriracha", deleteData, false)
 	if err != nil {
 		fatal(err)
 	}
