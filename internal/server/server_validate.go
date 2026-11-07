@@ -11,11 +11,14 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
 
 	. "codeberg.org/tslocum/sriracha/model"
+	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/net/publicsuffix"
 )
 
@@ -748,6 +751,54 @@ func (s *Server) smokeTest(emptyDir bool) {
 		fatal(fmt.Errorf("failed to log out: session cookie was not cleared"))
 	}
 
+	// Verify image upload and thumbnail creation.
+	findAttachment := func(body []byte) (string, string, error) {
+		doc, err := goquery.NewDocumentFromReader(bytes.NewReader(body))
+		if err != nil {
+			return "", "", err
+		}
+		post := doc.Find("#post1")
+		if post == nil || post.Length() != 1 {
+			return "", "", fmt.Errorf("expected to find one div with id post1")
+		}
+		p := post.First()
+		thumb := p.Find("#thumbfile1")
+		if thumb == nil || thumb.Length() != 1 {
+			return "", "", fmt.Errorf("expected to find one div with class thumb")
+		}
+		t := thumb.First()
+		anchor := thumb.Find("a")
+		if anchor == nil || anchor.Length() != 1 {
+			return "", "", fmt.Errorf("expected to find one anchor within thumb div")
+		}
+		img := t.Find("img")
+		if img == nil || img.Length() != 1 {
+			return "", "", fmt.Errorf("expected to find one img element within thumb div")
+		}
+		return anchor.AttrOr("href", ""), img.AttrOr("src", ""), nil
+	}
+	body, err := getRequest(boardDir + "/res/1.html")
+	if err != nil {
+		fatal(err)
+	}
+	filePath, thumbPath, err := findAttachment(body)
+	if err != nil {
+		fatal(err)
+	} else if filePath == "" {
+		fatal(fmt.Errorf("attachment image link not found in res page"))
+	} else if thumbPath == "" {
+		fatal(fmt.Errorf("attachment thumbnail image not found in res page"))
+	}
+	_, err = os.Stat(filepath.Join(s.config.Root, filePath))
+	if os.IsNotExist(err) {
+		log.Println(filePath, filepath.Join(s.config.Root, filePath))
+		fatal(fmt.Errorf("attachment image not found in root dir"))
+	}
+	_, err = os.Stat(filepath.Join(s.config.Root, thumbPath))
+	if os.IsNotExist(err) {
+		fatal(fmt.Errorf("attachment thumbnail image not found in root dir"))
+	}
+
 	// Verify post deletion.
 	err = postRequest("sriracha", map[string][]string{
 		"action":       {"delete"},
@@ -759,7 +810,6 @@ func (s *Server) smokeTest(emptyDir bool) {
 	if err == nil {
 		fatal(fmt.Errorf("expected failure when deleting post with wrong password"))
 	}
-
 	deleteData := map[string][]string{
 		"action":       {"delete"},
 		"board":        {boardDir},
@@ -770,6 +820,19 @@ func (s *Server) smokeTest(emptyDir bool) {
 	err = postRequest("sriracha", deleteData, false)
 	if err != nil {
 		fatal(err)
+	}
+	_, err = getRequest(boardDir + "/res/1.html")
+	if err == nil {
+		fatal(fmt.Errorf("res page still accessible after deleting"))
+	}
+	_, err = os.Stat(filepath.Join(s.config.Root, filePath))
+	if !os.IsNotExist(err) {
+		log.Println(filePath, filepath.Join(s.config.Root, filePath))
+		fatal(fmt.Errorf("attachment image still in root dir after deleting"))
+	}
+	_, err = os.Stat(filepath.Join(s.config.Root, thumbPath))
+	if !os.IsNotExist(err) {
+		fatal(fmt.Errorf("attachment thumbnail image still in root dir after deleting"))
 	}
 
 	_, err = getRequest("sriracha/post/1")
