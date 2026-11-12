@@ -1846,6 +1846,20 @@ func (s *Server) refreshRecentPosts(db serverDB) {
 	}
 }
 
+func (s *Server) updateDeletedReflinks(db serverDB, p *Post) bool {
+	previous := p.Message
+	p.Message = ReplaceAllStringFunc(RefLinkAnchorPattern, p.Message, func(match regexp2.Match) string {
+		groups := match.Groups()
+		postID := ParseInt(groups[2].String())
+		post := db.PostByID(postID)
+		if post != nil {
+			return match.String()
+		}
+		return fmt.Sprintf(`<span class="refdeleted">&gt;&gt;%d%s</span>`, postID, groups[5].String())
+	})
+	return p.Message != previous
+}
+
 func (s *Server) deletePostAttachment(db serverDB, p *Post, update bool, staff bool) {
 	if p.Board == nil || p.File == "" {
 		return
@@ -1888,7 +1902,39 @@ func (s *Server) deletePost(db serverDB, p *Post) {
 		s.deletePostFiles(post)
 	}
 
+	postThread := p.Thread()
 	db.DeletePost(p.ID)
+
+	var ids []int
+	err := db.QueryRow(`SELECT array_agg(id) FROM post WHERE message ~ '>&gt;&gt;` + strconv.Itoa(p.ID) + `(\(OP\))?</a>'`).Scan(&ids)
+	if err != nil {
+		log.Fatalf("failed to delete post: failed to select reflinks: %s", err)
+	}
+	var threadIDs []int
+	for _, id := range ids {
+		post := db.PostByID(id)
+		if s.updateDeletedReflinks(db, post) {
+			db.UpdatePostMessage(post.ID, post.Message)
+			threadID := post.Thread()
+			if threadID != postThread && !slices.Contains(threadIDs, threadID) {
+				threadIDs = append(threadIDs, threadID)
+			}
+		}
+	}
+	if len(threadIDs) == 0 {
+		return
+	}
+	var threads []*Post
+	for _, threadID := range threadIDs {
+		thread := db.PostByID(threadID)
+		if thread == nil {
+			continue
+		}
+		threads = append(threads, thread)
+	}
+	wg := &sync.WaitGroup{}
+	s.rebuildThreads(db, wg, &atomic.Int32{}, threads)
+	wg.Wait()
 }
 
 // httpResponse executes a HTTP request and returns the response.

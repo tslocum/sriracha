@@ -36,8 +36,9 @@ var (
 
 	QuotePattern = compat.MustCompile(`^&gt;(.*)$`)
 
-	RefLinkPattern   = compat.MustCompile(`&gt;&gt;([0-9]+)`)
-	BoardLinkPattern = compat.MustCompile(`&gt;&gt;&gt;\/([0-9A-Za-z_-]+)?\/?`)
+	RefLinkPattern       = compat.MustCompile(`&gt;&gt;([0-9]+)`)
+	RefLinkAnchorPattern = compat.MustCompile(`<a href="[^"]*res\/([0-9]+).html#([0-9]+)" class="([A-Aa-z]+)">&gt;&gt;([0-9]+)(\(OP\))?</a>`)
+	BoardLinkPattern     = compat.MustCompile(`&gt;&gt;&gt;\/([0-9A-Za-z_-]+)?\/?`)
 
 	URLPattern     = compat.MustCompile(`(?i)(?<!href=")(((f|ht)tp(s)?:\/\/)[-a-zA-Zа-яА-Я()0-9@%\!_+.,~#?&;:|\'\/=]+)`)
 	FixURLPattern1 = compat.MustCompile(`(?i)\(\<a href\=\"(.*)\)"\ target\=\"_blank\">(.*)\)\<\/a>`)

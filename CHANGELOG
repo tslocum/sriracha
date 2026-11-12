@@ -1,3 +1,6 @@
+2.2.4:
+- Replace links to deleted posts with strikethrough text
+
 2.2.3:
 - Fix deleting attachment thumbnails
 

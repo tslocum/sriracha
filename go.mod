@@ -13,23 +13,23 @@ require (
 	github.com/alecthomas/chroma/v2 v2.27.0
 	github.com/alexedwards/argon2id v1.0.0
 	github.com/aquilax/tripcode v1.0.1
-	github.com/dlclark/regexp2/v2 v2.12.0
+	github.com/dlclark/regexp2/v2 v2.13.0
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/gabriel-vasile/mimetype v1.4.16
 	github.com/go-sql-driver/mysql v1.10.1
-	github.com/jackc/pgx/v5 v5.12.0
+	github.com/jackc/pgx/v5 v5.13.0
 	github.com/lrstanley/girc v1.1.3
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/pquerna/otp v1.5.0
 	github.com/r3labs/diff/v3 v3.0.2
 	github.com/steambap/captcha v1.4.1
-	golang.org/x/exp v0.0.0-20261106192419-47ce03d25ef0
+	golang.org/x/exp v0.0.0-20261109185158-a52e3aef5920
 	golang.org/x/net v0.62.0
-	golang.org/x/sys v0.49.0
-	golang.org/x/term v0.47.0
-	golang.org/x/text v0.43.0
+	golang.org/x/sys v0.50.0
+	golang.org/x/term v0.48.0
+	golang.org/x/text v0.44.0
 	gopkg.in/yaml.v3 v3.0.1
-	modernc.org/sqlite v1.61.1
+	modernc.org/sqlite v1.62.0
 )
 
 require (
@@ -52,10 +52,10 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	gitlab.com/nyarla/go-crypt v0.0.0-20160106005555-d9a5dc2b789b // indirect
-	golang.org/x/crypto v0.58.0 // indirect
-	golang.org/x/image v0.47.0 // indirect
-	golang.org/x/sync v0.24.0 // indirect
-	modernc.org/libc v1.80.1 // indirect
+	golang.org/x/crypto v0.59.0 // indirect
+	golang.org/x/image v0.48.0 // indirect
+	golang.org/x/sync v0.25.0 // indirect
+	modernc.org/libc v1.81.0 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.12.1 // indirect
 )

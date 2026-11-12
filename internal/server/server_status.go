@@ -19,7 +19,6 @@ import (
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 	"github.com/dlclark/regexp2/v2"
-	"github.com/dlclark/regexp2/v2/compat"
 )
 
 func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWriter, r *http.Request) {
@@ -300,18 +299,18 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		for _, b := range db.AllBoards() {
 			for _, thread := range db.AllThreads(FilterAny, b) {
 				for _, p := range db.AllPostsInThread(FilterAny, thread[0]) {
-					resPattern := compat.MustCompile(`<a href="[^"]*res\/([0-9]+).html#([0-9]+)" class="([A-Aa-z]+)">&gt;&gt;([0-9]+)(\(OP\))?</a>`)
 					oldMessage := p.Message
-					p.Message = ReplaceAllStringFunc(resPattern, p.Message, func(match regexp2.Match) string {
+					p.Message = ReplaceAllStringFunc(RefLinkAnchorPattern, p.Message, func(match regexp2.Match) string {
 						groups := match.Groups()
 						threadID := ParseInt(groups[1].String())
 						postID := ParseInt(groups[2].String())
 						var extra string
-						if postID == threadID {
+						if postID == threadID && threadID == thread[0] {
 							extra = "(OP)"
 						}
 						return fmt.Sprintf(`<a href="%sres/%d.html#%d" class="%s">&gt;&gt;%d%s</a>`, b.Path(), threadID, postID, groups[3].String(), postID, extra)
 					})
+					s.updateDeletedReflinks(db, p)
 					if p.Message != oldMessage {
 						db.UpdatePostMessage(p.ID, p.Message)
 					}

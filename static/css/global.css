@@ -149,6 +149,10 @@ img, audio, video {
 	color: #800000;
 }
 
+.refdeleted {
+	text-decoration: line-through;
+}
+
 .message .touchreflink {
 	display: block;
 	border: 0px none !important;
