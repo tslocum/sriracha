@@ -55,7 +55,7 @@ Most features do not require JavaScript and will degrade gracefully when necessa
   - Hide new posts until [approved](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#approving-posts)
   - Delete and/or ban [multiple posts](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#bulk-moderation)
   - Create custom HTML [pages](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#custom-pages)
-  - Automatically moderate new posts using regular expressions and [thresholds](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#thresholds)
+  - Automatically moderate new posts using [regular expressions](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#keywords) and [thresholds](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#thresholds)
   - Specify which settings are configured individually or [globally](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#global-settings)
   - Secure your account with [two-factor authentication](https://codeberg.org/tslocum/sriracha/src/branch/main/MANUAL.md#two-factor-authentication)
 

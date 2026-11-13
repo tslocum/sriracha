@@ -1903,3 +1903,7 @@ Super-administrators may verify remote IP address resolution by visiting `/srira
 While Sriracha always attempts to clean up any files related to posts, it is
 possible for files which are not attached to any posts to accumulate in board
 directories. Super-administrators may scan for any unexpected files by visiting `/sriracha/?scanFiles`.
+
+#### Record connection count
+
+Super-administrators may view the highest connection count record by visiting `/sriracha/?recordConns`.

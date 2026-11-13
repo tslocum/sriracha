@@ -457,6 +457,19 @@ func (s *Server) serveStatus(data *templateData, db serverDB, w http.ResponseWri
 		return
 	}
 
+	// Allow super-administrators to view record connection count.
+	if r.URL.Query().Has("recordConns") {
+		if data.forbidden(w, RoleSuperAdmin) {
+			return
+		}
+		data.Template = "manage_info"
+		data.Message = `<h2 class="managetitle">Record Connection Count</h2>`
+		record := db.GetInt("recordconns")
+		timestamp := db.GetInt64("recordconnstimestamp")
+		data.Message += template.HTML(fmt.Sprintf("Connection count record: <b>%d</b><br>Date/time record was set: <b>%s</b>", record, FormatTimestamp(timestamp)))
+		return
+	}
+
 	var total int
 	if data.Account.Role <= RoleMod {
 		reports := db.AllReports()
