@@ -356,6 +356,9 @@ msgstr ""
 msgid "Categories"
 msgstr ""
 
+msgid "Change Email"
+msgstr ""
+
 msgid "Change Locale"
 msgstr ""
 
@@ -363,6 +366,9 @@ msgid "Change Password"
 msgstr ""
 
 msgid "Change Style"
+msgstr ""
+
+msgid "Change Subscriptions"
 msgstr ""
 
 msgid "Choose where to import posts"
@@ -1180,6 +1186,9 @@ msgstr ""
 msgid "Notice"
 msgstr ""
 
+msgid "Notifications"
+msgstr ""
+
 msgid "Notifications are disabled. Click to enable."
 msgstr ""
 
@@ -1647,6 +1656,9 @@ msgid "Subscribe to request a confirmation link."
 msgstr ""
 
 msgid "Subscription confirmed."
+msgstr ""
+
+msgid "Subscriptions"
 msgstr ""
 
 msgid "Super-administrator"

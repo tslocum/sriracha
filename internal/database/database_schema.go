@@ -10,6 +10,8 @@ var dbSchema = []string{ // Version 1.
 	session varchar(64) NOT NULL -- v22: Removed.
 	-- v2: style varchar(64) NOT NULL DEFAULT ''
 	-- v6: locale varchar(64) NOT NULL DEFAULT ''
+	-- v24: email varchar(64) NOT NULL DEFAULT ''
+	-- v24: notifications integer[] NOT NULL DEFAULT array[]::integer[]
 );
 CREATE UNIQUE INDEX ON account (username);
 CREATE UNIQUE INDEX ON account (session);
@@ -436,4 +438,8 @@ CREATE UNIQUE INDEX ON report (board, post, ip);
 		outcomereason text NOT NULL
 	);
 	UPDATE config SET value = '23' WHERE name = 'version';`,
+	// Version 24.
+	`ALTER TABLE account ADD COLUMN email varchar(64) NOT NULL DEFAULT '';
+	ALTER TABLE account ADD COLUMN notifications integer[] NOT NULL DEFAULT array[]::integer[];
+	UPDATE config SET value = '24' WHERE name = 'version';`,
 }

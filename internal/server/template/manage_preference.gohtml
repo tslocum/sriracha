@@ -63,7 +63,37 @@
                 {{end}}
             </form>
         </table>
-	</fieldset>
+    </fieldset>
+    {{if .Opt.Notifications}}
+        <fieldset>
+            <legend>{{T "Notifications"}}</legend>
+            <table class="manageform">
+                <form method="post">
+                    <input type="hidden" name="action" value="email">
+                    <tr><th colspan="2">{{T "Change Email"}}</th></tr>
+                    <tr>
+                        <td class="postblock">{{T "Email"}}</td>
+                        <td><input type="text" name="email" value="{{.Account.Email}}"></td>
+                    </tr>
+                    <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Change Email"}}"></td></tr>
+                </form>
+                <form method="post">
+                    <input type="hidden" name="action" value="subscriptions">
+                    <tr><th colspan="2"><br>{{T "Change Subscriptions"}}</th></tr>
+                    <tr>
+                        <td class="postblock">{{T "Subscriptions"}}</td>
+                        <td>
+                            <label><input type="checkbox" name="notifications" value="1"{{if .Account.HasNotification 1}} checked{{end}}>{{T "New Posts"}}</label><br>
+                            <label><input type="checkbox" name="notifications" value="2"{{if .Account.HasNotification 2}} checked{{end}}>{{T "Reports"}}</label><br>
+                            <label><input type="checkbox" name="notifications" value="3"{{if .Account.HasNotification 3}} checked{{end}}>{{T "Pruned Threads"}}</label><br>
+                            <label><input type="checkbox" name="notifications" value="4"{{if .Account.HasNotification 4}} checked{{end}}>{{T "Ban Appeals"}}</label>
+                        </td>
+                    </tr>
+                    <tr><td>&nbsp;</td><td align="right"><input type="submit" class="managebutton" style="width: auto;min-width: 50%;" value="{{T "Change Subscriptions"}}"></td></tr>
+                </form>
+            </table>
+        </fieldset>
+    {{end}}
     <fieldset style="align-self: flex-start;">
         <legend>{{T "Documentation"}}</legend>
         <div>

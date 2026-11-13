@@ -3941,6 +3941,8 @@ func pluginByName(name string) (any, *pluginInfo) {
 func FormatValue(v any) string {
 	if role, ok := v.(AccountRole); ok {
 		return FormatRole(role)
+	} else if notification, ok := v.(AccountNotification); ok {
+		return FormatNotification(notification)
 	} else if t, ok := v.(BoardType); ok {
 		return FormatBoardType(t)
 	} else if t, ok := v.(BoardHide); ok {

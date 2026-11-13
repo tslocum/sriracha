@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -42,14 +43,44 @@ func FormatRole(role AccountRole) string {
 	}
 }
 
+type AccountNotification int
+
+// Account notification types.
+const (
+	NotificationPost   AccountNotification = 1
+	NotificationReport AccountNotification = 2
+	NotificationPrune  AccountNotification = 3
+	NotificationAppeal AccountNotification = 4
+
+	MinNotification = NotificationPost
+	MaxNotification = NotificationAppeal
+)
+
+func FormatNotification(notification AccountNotification) string {
+	switch notification {
+	case NotificationPost:
+		return "New Posts"
+	case NotificationReport:
+		return "Reports"
+	case NotificationPrune:
+		return "Pruned Threads"
+	case NotificationAppeal:
+		return "Ban Appeals"
+	default:
+		return "Unknown"
+	}
+}
+
 type Account struct {
-	ID         int
-	Username   string
-	Password   string
-	Role       AccountRole
-	LastActive int64
-	Style      string
-	Locale     string
+	ID            int
+	Username      string
+	Password      string
+	Role          AccountRole
+	LastActive    int64
+	Style         string
+	Locale        string
+	Email         string
+	Notifications []AccountNotification
 }
 
 func (a *Account) Validate() error {
@@ -67,6 +98,10 @@ func (a *Account) LastActiveDate() string {
 		return "Never"
 	}
 	return time.Unix(a.LastActive, 0).Format("2006-01-02 15:04:05 MST")
+}
+
+func (a *Account) HasNotification(notification AccountNotification) bool {
+	return slices.Contains(a.Notifications, notification)
 }
 
 func (a *Account) Anonymize() {

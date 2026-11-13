@@ -13,12 +13,14 @@ import (
 )
 
 func (db *DB) AddAccount(a *Account, password string) {
-	err := db.conn.QueryRow(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4, $5) RETURNING id",
+	err := db.conn.QueryRow(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4, $5, $6, $7) RETURNING id",
 		a.Username,
 		encryptPassword(db.config.SaltPass, password),
 		a.Role,
 		a.Style,
 		a.Locale,
+		a.Email,
+		a.Notifications,
 	).Scan(&a.ID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to insert account: %w", err))
@@ -277,6 +279,8 @@ func scanAccount(a *Account, row pgx.Row) error {
 		&a.LastActive,
 		&a.Style,
 		&a.Locale,
+		&a.Email,
+		&a.Notifications,
 	)
 }
 
