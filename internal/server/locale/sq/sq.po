@@ -1191,7 +1191,7 @@ msgstr "I ri"
 msgid "New (confirm)"
 msgstr "I ri (konfirmo)"
 
-msgid "New Posts"
+msgid "Pending Posts"
 msgstr ""
 
 msgid "New drawing..."

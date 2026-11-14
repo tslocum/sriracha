@@ -1166,7 +1166,7 @@ msgstr ""
 msgid "New (confirm)"
 msgstr ""
 
-msgid "New Posts"
+msgid "Pending Posts"
 msgstr ""
 
 msgid "New drawing..."

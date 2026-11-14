@@ -1220,7 +1220,7 @@ msgstr "Nieuw"
 msgid "New (confirm)"
 msgstr "Nieuw (bevestigen)"
 
-msgid "New Posts"
+msgid "Pending Posts"
 msgstr "Nieuwe berichten"
 
 msgid "New drawing..."

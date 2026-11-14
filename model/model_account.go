@@ -59,7 +59,7 @@ const (
 func FormatNotification(notification AccountNotification) string {
 	switch notification {
 	case NotificationPost:
-		return "New Posts"
+		return "Pending Posts"
 	case NotificationReport:
 		return "Reports"
 	case NotificationPrune:

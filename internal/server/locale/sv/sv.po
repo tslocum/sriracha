@@ -1205,7 +1205,7 @@ msgstr "Ny"
 msgid "New (confirm)"
 msgstr "Ny (bekräfta)"
 
-msgid "New Posts"
+msgid "Pending Posts"
 msgstr "Nya inlägg"
 
 msgid "New drawing..."
