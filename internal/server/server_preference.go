@@ -74,12 +74,15 @@ func (s *Server) servePreference(data *templateData, db serverDB, w http.Respons
 			return
 		case "email":
 			oldEmail := data.Account.Email
-			email := FormString(r, "email")
-			if email != "" {
-				email = ParseEmail(email)
-				if email == "" {
-					data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("Email"))))
-					return
+			var email string
+			if s.opt.Notifications {
+				email = FormString(r, "email")
+				if email != "" {
+					email = ParseEmail(email)
+					if email == "" {
+						data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("Email"))))
+						return
+					}
 				}
 			}
 
@@ -92,10 +95,12 @@ func (s *Server) servePreference(data *templateData, db serverDB, w http.Respons
 		case "notifications":
 			oldNotifications := data.Account.Notifications
 			var notifications []AccountNotification
-			v := r.Form["notifications"]
-			for n := MinNotification; n <= MaxNotification; n++ {
-				if slices.Contains(v, strconv.Itoa(int(n))) {
-					notifications = append(notifications, n)
+			if s.opt.Notifications {
+				v := r.Form["notifications"]
+				for n := MinNotification; n <= MaxNotification; n++ {
+					if slices.Contains(v, strconv.Itoa(int(n))) {
+						notifications = append(notifications, n)
+					}
 				}
 			}
 
