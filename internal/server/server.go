@@ -384,7 +384,7 @@ type Server struct {
 
 	lastSearch map[string]int64
 
-	queueSize map[AccountRole]int
+	queueSize map[AccountRole]map[AccountNotification]int
 
 	buildQueue chan *buildInfo
 
@@ -398,6 +398,8 @@ type Server struct {
 	httpsCert   *tls.Certificate
 
 	refreshDisks chan struct{}
+
+	staffNotifications chan struct{}
 
 	connCount   *atomic.Int32
 	recordConns int32
@@ -421,7 +423,7 @@ func NewServer() *Server {
 	httpClient := &http.Client{
 		Timeout: 15 * time.Second,
 	}
-	return &Server{
+	s := &Server{
 		captchaCache:   make(map[string]string),
 		keywordCache:   make(map[int][]*cachedKeyword),
 		thresholdCache: make(map[ThresholdEvent][]*Threshold),
@@ -435,15 +437,23 @@ func NewServer() *Server {
 		indexCache:            make(map[int][][]int),
 		indexCacheLock:        &sync.Mutex{},
 		lastSearch:            make(map[string]int64),
-		queueSize:             make(map[AccountRole]int),
+		queueSize:             make(map[AccountRole]map[AccountNotification]int),
 		buildQueue:            make(chan *buildInfo),
 		rebuildQueue:          make(chan *rebuildInfo),
 		httpClient:            httpClient,
 		refreshDisks:          make(chan struct{}),
+		staffNotifications:    make(chan struct{}),
 		connCount:             &atomic.Int32{},
 		pageTimings:           make(map[string]int32),
 		msgPrinter:            message.NewPrinter(language.English),
 	}
+	for role := MinRole; role <= MaxActiveRole; role++ {
+		s.queueSize[role] = make(map[AccountNotification]int)
+		for n := MinNotification; n <= MaxNotification; n++ {
+			s.queueSize[role][n] = -1
+		}
+	}
+	return s
 }
 
 // parseBuildInfo parses version control information embedded in the binary

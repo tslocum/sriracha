@@ -213,3 +213,37 @@ func (s *Server) handleNotifications() {
 		}
 	}
 }
+
+func (s *Server) handleStaffNotifications() {
+	const delay = 10 * time.Minute
+	for {
+		<-s.staffNotifications
+
+		t := time.NewTimer(delay)
+		var timeout bool
+		for {
+			select {
+			case <-t.C:
+				timeout = true
+			case <-s.staffNotifications:
+			}
+			if timeout {
+				break
+			}
+		}
+
+		s.lock.Lock()
+		db := s.begin()
+
+		addresses := make(map[string][]AccountNotification)
+		for _, a := range db.AllAccounts() {
+			if a.Role == RoleDisabled || a.Email == "" || len(a.Notifications) == 0 {
+				continue
+			}
+			addresses[a.Email] = a.Notifications
+		}
+
+		db.Commit()
+		s.lock.Unlock()
+	}
+}

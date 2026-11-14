@@ -234,27 +234,30 @@ func (s *Server) _buildBoardCatalog(info *buildInfo) {
 func (s *Server) _buildStaffQueues(info *buildInfo) {
 	db := info.db
 
-	queueSize := make(map[AccountRole]int)
-	add := func(required AccountRole, v int) {
+	queueSize := make(map[AccountRole]map[AccountNotification]int)
+	for role := MinRole; role <= MaxActiveRole; role++ {
+		queueSize[role] = make(map[AccountNotification]int)
+	}
+	add := func(required AccountRole, notification AccountNotification, v int) {
 		if v == 0 {
 			return
 		}
 		for role := required; role >= RoleSuperAdmin; role-- {
-			queueSize[role] += v
+			queueSize[role][notification] += v
 		}
 	}
 
-	queueSize[RoleScreener] += len(db.PendingPosts(RoleScreener))
-	queueSize[RoleJanitor] += len(db.PendingPosts(RoleJanitor))
-	add(RoleMod, len(db.PendingPosts(RoleMod)))
+	queueSize[RoleScreener][NotificationPending] += len(db.PendingPosts(RoleScreener))
+	queueSize[RoleJanitor][NotificationPending] += len(db.PendingPosts(RoleJanitor))
+	add(RoleMod, NotificationPending, len(db.PendingPosts(RoleMod)))
 
-	add(RoleMod, len(db.AllReports()))
+	add(RoleMod, NotificationReport, len(db.AllReports()))
 
 	rolePrune := min(s.requiredAccess("post.archive"), s.requiredAccess("post.delete"))
-	add(rolePrune, len(db.PrunedThreads()))
+	add(rolePrune, NotificationPrune, len(db.PrunedThreads()))
 
 	if s.opt.Appeals {
-		add(s.requiredAccess("ban.appeal"), len(db.PendingBanAppeals()))
+		add(s.requiredAccess("ban.appeal"), NotificationAppeal, len(db.PendingBanAppeals()))
 	}
 
 	writeQueue := func(name string, size int) {
@@ -277,22 +280,30 @@ func (s *Server) _buildStaffQueues(info *buildInfo) {
 			log.Fatal(err)
 		}
 	}
-	if s.opt.ScreenerQueue != "" && queueSize[RoleScreener] != s.queueSize[RoleScreener] {
-		writeQueue(s.opt.ScreenerQueue, queueSize[RoleScreener])
-		s.queueSize[RoleScreener] = queueSize[RoleScreener]
+	sum := func(m map[AccountNotification]int) int {
+		var total int
+		for _, v := range m {
+			total += v
+		}
+		return total
 	}
-	if s.opt.JanitorQueue != "" && queueSize[RoleJanitor] != s.queueSize[RoleJanitor] {
-		writeQueue(s.opt.JanitorQueue, queueSize[RoleJanitor])
-		s.queueSize[RoleJanitor] = queueSize[RoleJanitor]
+	screenerSum := sum(queueSize[RoleScreener])
+	if s.opt.ScreenerQueue != "" && screenerSum != sum(s.queueSize[RoleScreener]) {
+		writeQueue(s.opt.ScreenerQueue, screenerSum)
 	}
-	if s.opt.ModQueue != "" && queueSize[RoleMod] != s.queueSize[RoleMod] {
-		writeQueue(s.opt.ModQueue, queueSize[RoleMod])
-		s.queueSize[RoleMod] = queueSize[RoleMod]
+	janitorSum := sum(queueSize[RoleJanitor])
+	if s.opt.JanitorQueue != "" && janitorSum != sum(s.queueSize[RoleJanitor]) {
+		writeQueue(s.opt.JanitorQueue, janitorSum)
 	}
-	if s.opt.AdminQueue != "" && queueSize[RoleAdmin] != s.queueSize[RoleMod] {
-		writeQueue(s.opt.AdminQueue, s.queueSize[RoleMod])
-		s.queueSize[RoleAdmin] = s.queueSize[RoleMod]
+	modSum := sum(queueSize[RoleMod])
+	if s.opt.ModQueue != "" && modSum != sum(s.queueSize[RoleMod]) {
+		writeQueue(s.opt.ModQueue, modSum)
 	}
+	adminSum := sum(queueSize[RoleAdmin])
+	if s.opt.AdminQueue != "" && adminSum != sum(s.queueSize[RoleMod]) {
+		writeQueue(s.opt.AdminQueue, adminSum)
+	}
+	s.queueSize = queueSize
 }
 
 func (s *Server) _queueBoardIndexes(info *buildInfo) {

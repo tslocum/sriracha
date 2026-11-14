@@ -20,8 +20,9 @@ const (
 	RoleScreener   AccountRole = 5
 	RoleDisabled   AccountRole = 99
 
-	MinRole = RoleSuperAdmin
-	MaxRole = RoleDisabled
+	MinRole       = RoleSuperAdmin
+	MaxActiveRole = RoleScreener
+	MaxRole       = RoleDisabled
 )
 
 func FormatRole(role AccountRole) string {
@@ -47,18 +48,18 @@ type AccountNotification int
 
 // Account notification types.
 const (
-	NotificationPost   AccountNotification = 1
-	NotificationReport AccountNotification = 2
-	NotificationPrune  AccountNotification = 3
-	NotificationAppeal AccountNotification = 4
+	NotificationPending AccountNotification = 1
+	NotificationReport  AccountNotification = 2
+	NotificationPrune   AccountNotification = 3
+	NotificationAppeal  AccountNotification = 4
 
-	MinNotification = NotificationPost
+	MinNotification = NotificationPending
 	MaxNotification = NotificationAppeal
 )
 
 func FormatNotification(notification AccountNotification) string {
 	switch notification {
-	case NotificationPost:
+	case NotificationPending:
 		return "Pending Posts"
 	case NotificationReport:
 		return "Reports"

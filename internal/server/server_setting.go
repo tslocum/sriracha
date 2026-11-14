@@ -180,6 +180,12 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 			db.SaveBool("global."+setting, false)
 		}
 
+		for role := MinRole; role <= MaxActiveRole; role++ {
+			for n := MinNotification; n <= MaxNotification; n++ {
+				s.queueSize[role][n] = -1
+			}
+		}
+
 		db.ClearBoardCache()
 		s.removeInvalidBoardOptions(db)
 
@@ -455,6 +461,12 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 				s.opt.Global = append(s.opt.Global, setting)
 			}
 			db.SaveBool("global."+setting, global)
+		}
+
+		for role := MinRole; role <= MaxActiveRole; role++ {
+			for n := MinNotification; n <= MaxNotification; n++ {
+				s.queueSize[role][n] = -1
+			}
 		}
 
 		db.ClearBoardCache()
