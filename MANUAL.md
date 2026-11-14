@@ -1714,6 +1714,7 @@ As a moderator, in addition to janitor privileges you may:
 - Extend bans
 - Sticky threads
 - Lock threads
+- Process post reports
 - Add news
 - Update news
 
@@ -1735,6 +1736,7 @@ When the Site Index is enabled, the latest news entry will be displayed on the h
 As an administrator, in addition to moderator privileges you may:
 
 - Lift bans
+- Process ban appeals
 - Add boards
 - Update boards
 - Add keywords
