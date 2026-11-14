@@ -3,8 +3,10 @@ package server
 import (
 	"net/http"
 	"slices"
+	"strconv"
 	"strings"
 
+	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
 
@@ -83,6 +85,22 @@ func (s *Server) servePreference(data *templateData, db serverDB, w http.Respons
 
 			if email != oldEmail {
 				db.UpdateAccountEmail(data.Account.ID, email)
+			}
+
+			data.Redirect(w, r, "/sriracha/preference/")
+			return
+		case "notifications":
+			oldNotifications := data.Account.Notifications
+			var notifications []AccountNotification
+			v := r.Form["notifications"]
+			for n := MinNotification; n <= MaxNotification; n++ {
+				if slices.Contains(v, strconv.Itoa(int(n))) {
+					notifications = append(notifications, n)
+				}
+			}
+
+			if !slices.Equal(notifications, oldNotifications) {
+				db.UpdateAccountNotifications(data.Account.ID, notifications)
 			}
 
 			data.Redirect(w, r, "/sriracha/preference/")
