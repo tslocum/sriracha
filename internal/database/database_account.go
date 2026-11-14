@@ -233,6 +233,16 @@ func (db *DB) UpdateAccountLocale(id int, locale string) {
 	}
 }
 
+func (db *DB) UpdateAccountEmail(id int, email string) {
+	if id <= 0 {
+		dbErr(fmt.Errorf("invalid account ID %d", id))
+	}
+	_, err := db.conn.Exec(context.Background(), "UPDATE account SET email = $1 WHERE id = $2", email, id)
+	if err != nil {
+		dbErr(fmt.Errorf("failed to update account: %w", err))
+	}
+}
+
 func (db *DB) LoginAccount(username string, password string, newSession bool) (*Account, string) {
 	a := &Account{}
 	err := scanAccount(a, db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE username = $1 AND role != $2", username, RoleDisabled))

@@ -70,6 +70,23 @@ func (s *Server) servePreference(data *templateData, db serverDB, w http.Respons
 
 			data.Redirect(w, r, "/sriracha/")
 			return
+		case "email":
+			oldEmail := data.Account.Email
+			email := FormString(r, "email")
+			if email != "" {
+				email = ParseEmail(email)
+				if email == "" {
+					data.ManageError(data.Get("Invalid %s.", strings.ToLower(data.G("Email"))))
+					return
+				}
+			}
+
+			if email != oldEmail {
+				db.UpdateAccountEmail(data.Account.ID, email)
+			}
+
+			data.Redirect(w, r, "/sriracha/preference/")
+			return
 		}
 	}
 }

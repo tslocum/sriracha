@@ -36,6 +36,7 @@ type DB interface {
 	UpdateAccountLastActive(id int)
 	UpdateAccountStyle(id int, style string)
 	UpdateAccountLocale(id int, locale string)
+	UpdateAccountEmail(id int, email string)
 	LoginAccount(username string, password string, newSession bool) (*Account, string)
 	CheckAccountPassword(username string, password string) *Account
 	AccountSessionKeys(accountID int) []string
