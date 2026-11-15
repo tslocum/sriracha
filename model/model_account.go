@@ -82,6 +82,7 @@ type Account struct {
 	Locale        string
 	Email         string
 	Notifications []AccountNotification
+	LastNotified  int64
 }
 
 func (a *Account) Validate() error {

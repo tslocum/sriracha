@@ -13,7 +13,7 @@ import (
 )
 
 func (db *DB) AddAccount(a *Account, password string) {
-	err := db.conn.QueryRow(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4, $5, $6, $7) RETURNING id",
+	err := db.conn.QueryRow(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4, $5, $6, $7, $8) RETURNING id",
 		a.Username,
 		encryptPassword(db.config.SaltPass, password),
 		a.Role,
@@ -21,6 +21,7 @@ func (db *DB) AddAccount(a *Account, password string) {
 		a.Locale,
 		a.Email,
 		a.Notifications,
+		a.LastNotified,
 	).Scan(&a.ID)
 	if err != nil {
 		dbErr(fmt.Errorf("failed to insert account: %w", err))
@@ -255,6 +256,16 @@ func (db *DB) UpdateAccountNotifications(id int, notifications []AccountNotifica
 	}
 }
 
+func (db *DB) UpdateAccountLastNotified(id int, lastNotified int64) {
+	if id <= 0 {
+		dbErr(fmt.Errorf("invalid account ID %d", id))
+	}
+	_, err := db.conn.Exec(context.Background(), "UPDATE account SET lastnotified = $1 WHERE id = $2", lastNotified, id)
+	if err != nil {
+		dbErr(fmt.Errorf("failed to update account: %w", err))
+	}
+}
+
 func (db *DB) LoginAccount(username string, password string, newSession bool) (*Account, string) {
 	a := &Account{}
 	err := scanAccount(a, db.conn.QueryRow(context.Background(), "SELECT * FROM account WHERE username = $1 AND role != $2", username, RoleDisabled))
@@ -303,6 +314,7 @@ func scanAccount(a *Account, row pgx.Row) error {
 		&a.Locale,
 		&a.Email,
 		&a.Notifications,
+		&a.LastNotified,
 	)
 }
 

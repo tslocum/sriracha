@@ -116,6 +116,7 @@ func (db *mockDB) UpdateAccountStyle(id int, style string)                      
 func (db *mockDB) UpdateAccountLocale(id int, locale string)                              {}
 func (db *mockDB) UpdateAccountEmail(id int, email string)                                {}
 func (db *mockDB) UpdateAccountNotifications(id int, notifications []AccountNotification) {}
+func (db *mockDB) UpdateAccountLastNotified(id int, lastNotified int64)                   {}
 func (db *mockDB) LoginAccount(username string, password string, newSession bool) (*Account, string) {
 	return nil, ""
 }

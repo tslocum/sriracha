@@ -91,10 +91,22 @@ msgstr ""
 msgid "2 Weeks"
 msgstr ""
 
+msgid "A ban appeal is pending."
+msgstr ""
+
 msgid "A file %s or larger is required."
 msgstr ""
 
 msgid "A file is required."
+msgstr ""
+
+msgid "A new post is pending."
+msgstr ""
+
+msgid "A post has been reported."
+msgstr ""
+
+msgid "A thread has been pruned."
 msgstr ""
 
 msgid "Access Key"
@@ -1089,6 +1101,9 @@ msgid "Moderate %d post"
 msgid_plural "Moderate %d posts"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Moderation Request"
+msgstr ""
 
 msgid "Moderator"
 msgstr ""

@@ -399,7 +399,9 @@ type Server struct {
 
 	refreshDisks chan struct{}
 
-	staffNotifications chan struct{}
+	staffNotifications          chan struct{}
+	staffNotificationsWaitGroup sync.WaitGroup
+	shutdownStaffNotifications  chan struct{}
 
 	connCount   *atomic.Int32
 	recordConns int32
@@ -431,21 +433,22 @@ func NewServer() *Server {
 			Banners: make(map[int][]*Banner),
 			Rules:   make(map[int][]template.HTML),
 		},
-		whitelists:            make(map[byte][][]*compat.Regexp),
-		blacklists:            make(map[byte][][]*compat.Regexp),
-		shutdownNotifications: make(chan struct{}),
-		indexCache:            make(map[int][][]int),
-		indexCacheLock:        &sync.Mutex{},
-		lastSearch:            make(map[string]int64),
-		queueSize:             make(map[AccountRole]map[AccountNotification]int),
-		buildQueue:            make(chan *buildInfo),
-		rebuildQueue:          make(chan *rebuildInfo),
-		httpClient:            httpClient,
-		refreshDisks:          make(chan struct{}),
-		staffNotifications:    make(chan struct{}),
-		connCount:             &atomic.Int32{},
-		pageTimings:           make(map[string]int32),
-		msgPrinter:            message.NewPrinter(language.English),
+		whitelists:                 make(map[byte][][]*compat.Regexp),
+		blacklists:                 make(map[byte][][]*compat.Regexp),
+		shutdownNotifications:      make(chan struct{}),
+		indexCache:                 make(map[int][][]int),
+		indexCacheLock:             &sync.Mutex{},
+		lastSearch:                 make(map[string]int64),
+		queueSize:                  make(map[AccountRole]map[AccountNotification]int),
+		buildQueue:                 make(chan *buildInfo),
+		rebuildQueue:               make(chan *rebuildInfo),
+		httpClient:                 httpClient,
+		refreshDisks:               make(chan struct{}),
+		staffNotifications:         make(chan struct{}),
+		shutdownStaffNotifications: make(chan struct{}),
+		connCount:                  &atomic.Int32{},
+		pageTimings:                make(map[string]int32),
+		msgPrinter:                 message.NewPrinter(language.English),
 	}
 	for role := MinRole; role <= MaxActiveRole; role++ {
 		s.queueSize[role] = make(map[AccountNotification]int)
@@ -2648,6 +2651,9 @@ func (s *Server) serveManage(db serverDB, w http.ResponseWriter, r *http.Request
 		return
 	} else if s.config.TemplateError != nil {
 		data.Info = Get(nil, data.Account, "Running in safe mode because a custom template failed validation: %s", s.config.TemplateError)
+	} else if data.Account.LastNotified != 0 {
+		data.Account.LastNotified = 0
+		db.UpdateAccountLastNotified(data.Account.ID, data.Account.LastNotified)
 	}
 
 	switch {
@@ -3768,6 +3774,9 @@ func (s *Server) Run() error {
 	if s.config.MailAddress != "" {
 		s.notificationsWaitGroup.Add(1)
 		go s.handleNotifications()
+
+		s.staffNotificationsWaitGroup.Add(1)
+		go s.handleStaffNotifications()
 	}
 
 	if s.config.ImportMode {
@@ -3840,7 +3849,9 @@ func (s *Server) Run() error {
 	// Flush notification queue.
 	if s.opt.Notifications {
 		s.shutdownNotifications <- struct{}{}
+		s.shutdownStaffNotifications <- struct{}{}
 		s.notificationsWaitGroup.Wait()
+		s.staffNotificationsWaitGroup.Wait()
 	}
 
 	// Lock before exiting.

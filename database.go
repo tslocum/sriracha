@@ -38,6 +38,7 @@ type DB interface {
 	UpdateAccountLocale(id int, locale string)
 	UpdateAccountEmail(id int, email string)
 	UpdateAccountNotifications(id int, notifications []AccountNotification)
+	UpdateAccountLastNotified(id int, lastNotified int64)
 	LoginAccount(username string, password string, newSession bool) (*Account, string)
 	CheckAccountPassword(username string, password string) *Account
 	AccountSessionKeys(accountID int) []string
