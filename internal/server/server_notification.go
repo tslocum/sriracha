@@ -214,6 +214,10 @@ func (s *Server) handleNotifications() {
 	}
 }
 
+func (s *Server) queueStaffNotifications() {
+	s.staffNotifications <- struct{}{}
+}
+
 func (s *Server) sendStaffNotifications() {
 	s.lock.Lock()
 	defer s.lock.Unlock()
@@ -282,7 +286,7 @@ func (s *Server) sendStaffNotifications() {
 			client.Close()
 			client, err = s.connectToMailServer()
 			if err != nil {
-				log.Fatalf("failed to send notifications: %s", err)
+				log.Fatalf("failed to send staff notifications: %s", err)
 			}
 			sent = 0
 		}

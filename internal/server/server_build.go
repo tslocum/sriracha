@@ -304,6 +304,13 @@ func (s *Server) _buildStaffQueues(info *buildInfo) {
 		writeQueue(s.opt.AdminQueue, adminSum)
 	}
 	s.queueSize = queueSize
+
+	for role := MinRole; role <= MaxActiveRole; role++ {
+		if sum(s.queueSize[role]) != 0 {
+			go s.queueStaffNotifications()
+			return
+		}
+	}
 }
 
 func (s *Server) _queueBoardIndexes(info *buildInfo) {

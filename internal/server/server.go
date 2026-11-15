@@ -2185,10 +2185,6 @@ func (s *Server) rebuildThreads(db serverDB, wg *sync.WaitGroup, delta *atomic.I
 }
 
 func (s *Server) writeStaffQueues(wg *sync.WaitGroup) {
-	if s.opt.ScreenerQueue == "" && s.opt.JanitorQueue == "" && s.opt.ModQueue == "" && s.opt.AdminQueue == "" {
-		return
-	}
-
 	wg.Add(1)
 	info := &buildInfo{
 		build: buildStaffQueues,
