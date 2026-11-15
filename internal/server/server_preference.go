@@ -98,9 +98,13 @@ func (s *Server) servePreference(data *templateData, db serverDB, w http.Respons
 			if s.opt.Notifications {
 				v := r.Form["notifications"]
 				for n := MinNotification; n <= MaxNotification; n++ {
-					if slices.Contains(v, strconv.Itoa(int(n))) {
-						notifications = append(notifications, n)
+					if !slices.Contains(v, strconv.Itoa(int(n))) ||
+						(n == NotificationReport && data.Account.Role > RoleMod) ||
+						(n == NotificationPrune && !s.may(data, "post.archive")) ||
+						(n == NotificationAppeal && !s.may(data, "ban.appeal")) {
+						continue
 					}
+					notifications = append(notifications, n)
 				}
 			}
 

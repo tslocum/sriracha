@@ -3,11 +3,40 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"slices"
 	"strings"
 
 	. "codeberg.org/tslocum/sriracha/model"
 	. "codeberg.org/tslocum/sriracha/util"
 )
+
+func (s *Server) removeInvalidPreferences(db serverDB, a *Account) {
+	if a.Email != "" && (!s.opt.Notifications || a.Role == RoleDisabled) {
+		db.UpdateAccountEmail(a.ID, "")
+	}
+
+	if len(a.Notifications) == 0 {
+		return
+	}
+	var notifications []AccountNotification
+	if s.opt.Notifications {
+		if slices.Contains(a.Notifications, NotificationPending) {
+			notifications = append(notifications, NotificationPending)
+		}
+		if slices.Contains(a.Notifications, NotificationReport) && a.Role <= RoleMod {
+			notifications = append(notifications, NotificationReport)
+		}
+		if slices.Contains(a.Notifications, NotificationPrune) && s.roleMay(a.Role, "post.archive") {
+			notifications = append(notifications, NotificationPrune)
+		}
+		if slices.Contains(a.Notifications, NotificationAppeal) && s.roleMay(a.Role, "ban.appeal") {
+			notifications = append(notifications, NotificationAppeal)
+		}
+	}
+	if !slices.Equal(a.Notifications, notifications) {
+		db.UpdateAccountNotifications(a.ID, notifications)
+	}
+}
 
 func (s *Server) loadAccountForm(db serverDB, r *http.Request, a *Account) {
 	a.Username = FormString(r, "username")
@@ -51,6 +80,7 @@ func (s *Server) serveAccount(data *templateData, db serverDB, w http.ResponseWr
 			}
 
 			db.UpdateAccountRole(data.Manage.Account)
+			s.removeInvalidPreferences(db, data.Manage.Account)
 
 			password := r.FormValue("password")
 			if strings.TrimSpace(password) != "" {

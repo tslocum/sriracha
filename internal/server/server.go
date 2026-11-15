@@ -3600,16 +3600,9 @@ func (s *Server) Run() error {
 		}
 	}
 
-	// Reset staff notification preferences when email notifications are disabled.
-	if !s.opt.Notifications {
-		for _, a := range db.AllAccounts() {
-			if a.Email != "" {
-				db.UpdateAccountEmail(a.ID, "")
-			}
-			if len(a.Notifications) > 0 {
-				db.UpdateAccountNotifications(a.ID, nil)
-			}
-		}
+	// Remove invalid staff notification preferences.
+	for _, a := range db.AllAccounts() {
+		s.removeInvalidPreferences(db, a)
 	}
 
 	s.refreshMaxRequestSize(db)
