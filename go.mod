@@ -9,7 +9,7 @@ require (
 	codeberg.org/tslocum/bbcode v0.0.0-20260210194643-496280381f96
 	codeberg.org/tslocum/gotext v0.0.0-20260702153535-d0250b83dac7
 	codeberg.org/tslocum/list2regexp v1.0.6-0.20260929191204-a6743d7ac826
-	github.com/PuerkitoBio/goquery v1.13.0
+	github.com/PuerkitoBio/goquery v1.14.0
 	github.com/alecthomas/chroma/v2 v2.27.0
 	github.com/alexedwards/argon2id v1.0.0
 	github.com/aquilax/tripcode v1.0.1
@@ -23,7 +23,7 @@ require (
 	github.com/pquerna/otp v1.5.0
 	github.com/r3labs/diff/v3 v3.0.2
 	github.com/steambap/captcha v1.4.1
-	golang.org/x/exp v0.0.0-20261109185158-a52e3aef5920
+	golang.org/x/exp v0.0.0-20261113113407-e3970619a1a4
 	golang.org/x/net v0.62.0
 	golang.org/x/sys v0.50.0
 	golang.org/x/term v0.48.0
@@ -55,7 +55,7 @@ require (
 	golang.org/x/crypto v0.59.0 // indirect
 	golang.org/x/image v0.48.0 // indirect
 	golang.org/x/sync v0.25.0 // indirect
-	modernc.org/libc v1.81.0 // indirect
+	modernc.org/libc v1.81.2 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
-	modernc.org/memory v1.12.1 // indirect
+	modernc.org/memory v1.13.0 // indirect
 )
