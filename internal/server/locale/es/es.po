@@ -97,11 +97,23 @@ msgstr "2 días"
 msgid "2 Weeks"
 msgstr "2 semanas"
 
+msgid "A ban appeal is pending."
+msgstr ""
+
 msgid "A file %s or larger is required."
 msgstr "El archivo debe ser de %s o superior"
 
 msgid "A file is required."
 msgstr "Debes adjuntar un archivo."
+
+msgid "A new post is pending."
+msgstr ""
+
+msgid "A post has been reported."
+msgstr ""
+
+msgid "A thread has been pruned."
+msgstr ""
 
 msgid "Access Key"
 msgstr "Clave de acceso"
@@ -371,6 +383,9 @@ msgstr ""
 msgid "Categories"
 msgstr ""
 
+msgid "Change Email"
+msgstr ""
+
 msgid "Change Locale"
 msgstr ""
 
@@ -378,6 +393,9 @@ msgid "Change Password"
 msgstr ""
 
 msgid "Change Style"
+msgstr ""
+
+msgid "Change Subscriptions"
 msgstr ""
 
 msgid "Choose where to import posts"
@@ -1126,6 +1144,9 @@ msgid_plural "Moderate %d posts"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Moderation Request"
+msgstr ""
+
 msgid "Moderator"
 msgstr ""
 
@@ -1222,6 +1243,9 @@ msgid "None"
 msgstr ""
 
 msgid "Notice"
+msgstr ""
+
+msgid "Notifications"
 msgstr ""
 
 msgid "Notifications are disabled. Click to enable."
@@ -1709,6 +1733,9 @@ msgid "Subscribe to request a confirmation link."
 msgstr ""
 
 msgid "Subscription confirmed."
+msgstr ""
+
+msgid "Subscriptions"
 msgstr ""
 
 msgid "Super-administrator"

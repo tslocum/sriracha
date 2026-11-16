@@ -90,11 +90,23 @@ msgstr "2 天"
 msgid "2 Weeks"
 msgstr "2 周"
 
+msgid "A ban appeal is pending."
+msgstr ""
+
 msgid "A file %s or larger is required."
 msgstr "需要一个 %s 或更大的文件。"
 
 msgid "A file is required."
 msgstr "需要一个文件。"
+
+msgid "A new post is pending."
+msgstr ""
+
+msgid "A post has been reported."
+msgstr ""
+
+msgid "A thread has been pruned."
+msgstr ""
 
 msgid "Access Key"
 msgstr ""
@@ -358,6 +370,9 @@ msgstr "图墙模式"
 msgid "Categories"
 msgstr "分类管理"
 
+msgid "Change Email"
+msgstr ""
+
 msgid "Change Locale"
 msgstr "变更语言"
 
@@ -366,6 +381,9 @@ msgstr "变更密码"
 
 msgid "Change Style"
 msgstr "变更风格"
+
+msgid "Change Subscriptions"
+msgstr ""
 
 msgid "Choose where to import posts"
 msgstr "选择将帖子导入的地方"
@@ -1110,6 +1128,9 @@ msgid "Moderate %d post"
 msgid_plural "Moderate %d posts"
 msgstr[0] ""
 
+msgid "Moderation Request"
+msgstr ""
+
 msgid "Moderator"
 msgstr ""
 
@@ -1206,6 +1227,9 @@ msgid "None"
 msgstr ""
 
 msgid "Notice"
+msgstr ""
+
+msgid "Notifications"
 msgstr ""
 
 msgid "Notifications are disabled. Click to enable."
@@ -1692,6 +1716,9 @@ msgid "Subscribe to request a confirmation link."
 msgstr ""
 
 msgid "Subscription confirmed."
+msgstr ""
+
+msgid "Subscriptions"
 msgstr ""
 
 msgid "Super-administrator"

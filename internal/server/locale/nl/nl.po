@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-11-06 19:43+0000\n"
+"PO-Revision-Date: 2026-11-16 04:01+0000\n"
 "Last-Translator: Vistaus <vistaus@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/sriracha/"
 "sriracha/nl/>\n"
@@ -97,11 +97,23 @@ msgstr "2 dagen"
 msgid "2 Weeks"
 msgstr "2 weken"
 
+msgid "A ban appeal is pending."
+msgstr "Er is een te beoordelen bezwaarschrift."
+
 msgid "A file %s or larger is required."
 msgstr "Er is een bestand van %s of groter vereist."
 
 msgid "A file is required."
 msgstr "Er is een bestand vereist."
+
+msgid "A new post is pending."
+msgstr "Er is een te beoordelen bericht."
+
+msgid "A post has been reported."
+msgstr "Er is een bericht gemeld."
+
+msgid "A thread has been pruned."
+msgstr "Er is een onderwerp verwijderd."
 
 msgid "Access Key"
 msgstr "Toegangssleutel"
@@ -379,6 +391,9 @@ msgstr "Catalogusmodus"
 msgid "Categories"
 msgstr "Categorieën"
 
+msgid "Change Email"
+msgstr "E-mailadres wĳzigen"
+
 msgid "Change Locale"
 msgstr "Taal wijzigen"
 
@@ -387,6 +402,9 @@ msgstr "Wachtwoord wĳzigen"
 
 msgid "Change Style"
 msgstr "Stijl aanpassen"
+
+msgid "Change Subscriptions"
+msgstr "Abonnementen aanpassen"
 
 msgid "Choose where to import posts"
 msgstr "Kies de locatie van de te importeren berichten"
@@ -1174,6 +1192,9 @@ msgid_plural "Moderate %d posts"
 msgstr[0] "%d bericht modereren"
 msgstr[1] "%d berichten modereren"
 
+msgid "Moderation Request"
+msgstr "Moderatorverzoek"
+
 msgid "Moderator"
 msgstr "Moderator"
 
@@ -1273,6 +1294,9 @@ msgstr "Geen"
 
 msgid "Notice"
 msgstr "Opmerking"
+
+msgid "Notifications"
+msgstr "Meldingen"
 
 msgid "Notifications are disabled. Click to enable."
 msgstr "Meldingen zijn uitgeschakeld — klik om in te schakelen."
@@ -1794,6 +1818,9 @@ msgstr "Abonneer je om een bevestigingslink aan te vragen."
 
 msgid "Subscription confirmed."
 msgstr "Abonnement bevestigd."
+
+msgid "Subscriptions"
+msgstr "Abonnementen"
 
 msgid "Super-administrator"
 msgstr "Superbeheerder"

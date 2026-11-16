@@ -97,11 +97,23 @@ msgstr "2 dagar"
 msgid "2 Weeks"
 msgstr "2 veckor"
 
+msgid "A ban appeal is pending."
+msgstr ""
+
 msgid "A file %s or larger is required."
 msgstr "En fil på minst %s krävs."
 
 msgid "A file is required."
 msgstr "En fil krävs."
+
+msgid "A new post is pending."
+msgstr ""
+
+msgid "A post has been reported."
+msgstr ""
+
+msgid "A thread has been pruned."
+msgstr ""
 
 msgid "Access Key"
 msgstr "Åtkomstnyckel"
@@ -373,6 +385,9 @@ msgstr "Katalogläge"
 msgid "Categories"
 msgstr "Kategorier"
 
+msgid "Change Email"
+msgstr ""
+
 msgid "Change Locale"
 msgstr "Byt språk"
 
@@ -381,6 +396,9 @@ msgstr "Byt lösenord"
 
 msgid "Change Style"
 msgstr "Byt stil"
+
+msgid "Change Subscriptions"
+msgstr ""
 
 msgid "Choose where to import posts"
 msgstr "Välj var inlägg ska importeras"
@@ -1159,6 +1177,9 @@ msgid_plural "Moderate %d posts"
 msgstr[0] "Moderera %d inlägg"
 msgstr[1] "Moderera %d inlägg"
 
+msgid "Moderation Request"
+msgstr ""
+
 msgid "Moderator"
 msgstr "Moderator"
 
@@ -1258,6 +1279,9 @@ msgstr "Inget"
 
 msgid "Notice"
 msgstr "Meddelande"
+
+msgid "Notifications"
+msgstr ""
 
 msgid "Notifications are disabled. Click to enable."
 msgstr "Aviseringar är inaktiverade. Klicka för att aktivera."
@@ -1777,6 +1801,9 @@ msgstr "Prenumerera för att begära en bekräftelselänk."
 
 msgid "Subscription confirmed."
 msgstr "Prenumerationen har bekräftats."
+
+msgid "Subscriptions"
+msgstr ""
 
 msgid "Super-administrator"
 msgstr "Huvudadministratör"
