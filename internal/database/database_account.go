@@ -13,6 +13,9 @@ import (
 )
 
 func (db *DB) AddAccount(a *Account, password string) {
+	if a.Notifications == nil {
+		a.Notifications = []AccountNotification{}
+	}
 	err := db.conn.QueryRow(context.Background(), "INSERT INTO account VALUES (DEFAULT, $1, $2, $3, 0, $4, $5, $6, $7, $8) RETURNING id",
 		a.Username,
 		encryptPassword(db.config.SaltPass, password),

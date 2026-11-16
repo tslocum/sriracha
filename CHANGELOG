@@ -1,3 +1,6 @@
+2.2.5:
+- Fix creating accounts
+
 2.2.4:
 - Support sending moderation queue email notifications
 - Replace links to deleted posts with strikethrough text
