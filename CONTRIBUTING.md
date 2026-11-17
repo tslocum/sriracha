@@ -22,5 +22,8 @@ your issue. Disclose whether you are running an official tagged release archive,
 official Docker image or building Sriracha from source. If you are building
 from source, specify which commit hash you are building.
 
+Please do not include any external links to specific imageboards or forums.
+Screenshots may be included as long as they do not identify a specific site.
+
 Official and unofficial support is also available via [/help/](https://sriracha.rocket9labs.com/help/)
 and [Matrix](https://matrix.to/#/#sriracha:matrix.org).
