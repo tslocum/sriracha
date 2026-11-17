@@ -293,6 +293,21 @@ address domains, set `maildomains` to a reguar expression:
 maildomains: '^(example\.com|example2\.com|example3\.com)$'
 ```
 
+#### Staff email notifications
+
+When Sriracha is configured to send emails, staff may also subscribe to
+moderation queue notifications.
+
+To receive staff email notifications, visit the Preferences page and set an
+email address for your account, then select which types of notifications you
+wish to receive.
+
+Staff email notifications are sent when a post or ban appeal remains in the
+moderation queue for ten minutes without action by logged in staff members.
+
+Only one email notification is sent, regardless of new entries, until you visit
+the mangement panel.
+
 ### Staff queues
 
 The 'Screener Queue', 'Janitor Queue', 'Mod Queue' and 'Admin Queue' options specify the
