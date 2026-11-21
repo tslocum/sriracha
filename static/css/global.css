@@ -269,6 +269,17 @@ legend {
 	padding: 2px 8px;
 }
 
+.navgrid {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	grid-gap: 3px;
+}
+
+.naventry {
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
 .globe {
 	float: right;
 	padding-left: 5px;
@@ -537,7 +548,7 @@ details {
 		table-layout: fixed;
 	}
 
-	.managegrid {
+	.navgrid, .managegrid {
 		grid-template-columns: 1fr;
 	}
 

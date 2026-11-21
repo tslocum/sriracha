@@ -50,6 +50,7 @@
                 <option value="0"{{if eq .Opt.SiteIndex 0}} selected{{end}}>✗ {{T "Disable"}}</option>
                 <option value="2"{{if eq .Opt.SiteIndex 2}} selected{{end}}>✓ {{T "Enable - Write to %s" "nav.html"}}</option>
                 <option value="1"{{if eq .Opt.SiteIndex 1}} selected{{end}}>✓ {{T "Enable - Write to %s" "index.html"}}</option>
+                <option value="3"{{if eq .Opt.SiteIndex 3}} selected{{end}}>✓ {{T "Enable - Write to %s with sidebar" "index.html"}}</option>
             </select></div>
             <div>{{T "Write site index page, which contains the most recent news item, links to boards and the most recent posts."}}</div>
 

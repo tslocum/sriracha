@@ -140,9 +140,10 @@ type IndexOption int
 
 // Site Index options.
 const (
-	IndexDisable      IndexOption = 0
-	IndexWriteToIndex IndexOption = 1 // Backwards compatible with boolean Site Index option.
-	IndexWriteToNav   IndexOption = 2
+	IndexDisable                 IndexOption = 0
+	IndexWriteToIndex            IndexOption = 1 // Backwards compatible with boolean Site Index option.
+	IndexWriteToNav              IndexOption = 2
+	IndexWriteToIndexWithSidebar IndexOption = 3
 )
 
 type categoryInfo struct {
@@ -1072,7 +1073,7 @@ func (s *Server) loadServerConfig() error {
 	s.opt.SiteHome = siteHome
 
 	index := IndexOption(db.GetInt("siteindex"))
-	if index == IndexDisable || index == IndexWriteToIndex || index == IndexWriteToNav {
+	if index == IndexDisable || index == IndexWriteToIndex || index == IndexWriteToNav || index == IndexWriteToIndexWithSidebar {
 		s.opt.SiteIndex = index
 	}
 
@@ -1660,7 +1661,7 @@ func (s *Server) dirAvailable(db serverDB, dir string) error {
 	if dir == "" {
 		if s.opt.News == NewsWriteToIndex {
 			return wrapErr(fmt.Errorf("site news is currently configured to write to /index.html"))
-		} else if s.opt.SiteIndex == IndexWriteToIndex {
+		} else if s.opt.SiteIndex == IndexWriteToIndex || s.opt.SiteIndex == IndexWriteToIndexWithSidebar {
 			return wrapErr(fmt.Errorf("site index is currently configured to write to /index.html"))
 		}
 	}
@@ -3641,7 +3642,7 @@ func (s *Server) Run() error {
 		if s.opt.News == NewsWriteToIndex {
 			matches = append(matches, matchNews)
 		}
-		if s.opt.SiteIndex == IndexWriteToIndex {
+		if s.opt.SiteIndex == IndexWriteToIndex || s.opt.SiteIndex == IndexWriteToIndexWithSidebar {
 			matches = append(matches, matchSiteIndex)
 		}
 		if s.opt.Overboard == "/" {

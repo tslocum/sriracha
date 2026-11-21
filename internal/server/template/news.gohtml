@@ -4,6 +4,37 @@ hr {
     max-width: 930px;
 }
 </style>
+{{if eq .Template "index"}}{{/* This template is included from index.gohtml when the navigation sidebar is enabled. */}}
+    <div class="navgrid">
+        <div class="navsidebar">
+            {{$needSpacer := false}}
+            {{range $i, $category := .Opt.Categories}}
+                {{if eq (len $category.Boards) 0}}
+                    {{continue}}
+                {{else if $needSpacer}}
+                    <div class="naventry">&nbsp;</div>
+                    {{$needSpacer = false}}
+                {{end}}
+                {{if ne $category.Name ""}}
+                    {{$needSpacer = true}}
+                    <div class="naventry faded">
+                        {{if ne $category.Description ""}}<span title="{{$category.Description}}">{{end}}
+                        <b>{{$category.Name}}</b>
+                        {{if ne $category.Description ""}}</span>{{end}}
+                    </div>
+                {{end}}
+                {{range $j, $board := $category.Boards}}
+                    {{$needSpacer = true}}
+                    <div class="naventry">
+                        {{if ne .Description ""}}<span title="{{.Description}}">{{end}}
+                        <a href="{{.Path}}"><b>{{.Path}} - {{.Name}}</b></a>
+                        {{if ne .Description ""}}</span>{{end}}
+                    </div>
+                {{end}}
+            {{end}}
+        </div>
+        <div>
+{{end}}
 <hr style="width: 90%;">
 <div class="news">
     {{if eq (len .AllNews) 0}}
@@ -27,19 +58,24 @@ hr {
             </div>
         {{end}}
         {{if eq .Extra "view"}}
-            <div style="text-align: center;margin-bottom: 1.5rem;">[<a href="/{{if eq .Opt.News 1}}news.html{{end}}">{{T "Return"}}</a>]</div>
+            <div style="text-align: center;margin-bottom: 1.5rem;">[<a href="/{{if and (eq .Opt.News 1) (ne .Opt.SiteIndex 3)}}news.html{{end}}">{{T "Return"}}</a>]</div>
             <hr>
         {{else}}
+            {{if eq .Template "index"}}
+                        </div>
+                    </div>
+                </div>
+            {{end}}
             <hr>
             {{if ne .Pages 1}}
                 <div style="text-align: center;margin-top: 1rem;margin-bottom: 0.5rem;">
                     <table class="navtable" style="margin: 0 auto;">
                         <tbody>
                             <tr>
-                                <td>{{if gt .Page 0}}<form method="get" action="/{{if gt .Page 1}}news-p{{.Page | MinusOne}}.html{{else if eq .Opt.News 1}}news.html{{end}}"><input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
+                                <td>{{if gt .Page 0}}<form method="get" action="/{{if gt .Page 1}}news-p{{.Page | MinusOne}}.html{{else if and (eq .Opt.News 1) (ne .Opt.SiteIndex 3)}}news.html{{end}}"><input type="submit" value="{{T "Previous"}}"></form>{{else}}{{T "Previous"}}{{end}}</td>
                                 <td>
                                     {{range $i := Iterate (.Pages | MinusOne)}}
-                                        [{{if eq $i $.Page}}{{$i}}{{else}}<a href="/{{if gt $i 0}}news-p{{$i}}.html{{else if eq $.Opt.News 1}}news.html{{end}}">{{$i}}</a>{{end}}]
+                                        [{{if eq $i $.Page}}{{$i}}{{else}}<a href="/{{if gt $i 0}}news-p{{$i}}.html{{else if and (eq $.Opt.News 1) (ne $.Opt.SiteIndex 3)}}news.html{{end}}">{{$i}}</a>{{end}}]
                                     {{end}}
                                 </td>
                                 <td>{{if lt .Page (.Pages | MinusOne)}}<form method="get" action="/news-p{{.Page | PlusOne}}.html"><input type="submit" value="{{T "Next"}}"></form>{{else}}{{T "Next"}}{{end}}</td>
@@ -50,5 +86,7 @@ hr {
             {{end}}
         {{end}}
     {{end}}
-</div>
+{{if ne .Template "index"}}
+    </div>
+{{end}}
 {{template "imgboard_end.gohtml" .}}

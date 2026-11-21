@@ -1,4 +1,4 @@
-{{template "imgboard_begin.gohtml" .}}
+{{if eq .Opt.SiteIndex 3}}{{template "news.gohtml" .}}{{else}}{{template "imgboard_begin.gohtml" .}}
 <style type="text/css">
 hr {
     max-width: 930px;
@@ -79,3 +79,4 @@ hr {
 </div>
 <hr>
 {{template "imgboard_end.gohtml" .}}
+{{end}}

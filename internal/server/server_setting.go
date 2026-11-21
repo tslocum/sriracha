@@ -251,7 +251,9 @@ func (s *Server) serveSetting(data *templateData, db serverDB, w http.ResponseWr
 		}
 
 		siteIndex := FormInt(r, "siteindex")
-		if siteIndex != int(s.opt.SiteIndex) && siteIndex == int(IndexWriteToIndex) {
+		oldIndex := s.opt.SiteIndex == IndexWriteToIndex || s.opt.SiteIndex == IndexWriteToIndexWithSidebar
+		newIndex := siteIndex == int(IndexWriteToIndex) || siteIndex == int(IndexWriteToIndexWithSidebar)
+		if !oldIndex && newIndex {
 			err = s.dirAvailable(db, "")
 			if err != nil {
 				data.ManageError(fmt.Sprintf("failed to enable site index: %s", err))

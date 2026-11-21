@@ -636,6 +636,9 @@ msgstr ""
 msgid "Enable - Write to %s"
 msgstr ""
 
+msgid "Enable - Write to %s with sidebar"
+msgstr ""
+
 msgid "Enable All"
 msgstr ""
 

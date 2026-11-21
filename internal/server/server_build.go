@@ -678,6 +678,8 @@ func (s *Server) _buildSiteIndex(info *buildInfo) {
 
 	if s.opt.News != NewsDisable {
 		allNews := db.AllNews(true)
+		data.AllNews = allNews
+		data.Pages = pageCount(len(allNews), newsCount)
 		if len(allNews) > 0 {
 			n := allNews[0]
 			subData := s.newTemplateData(db, info.buf)
